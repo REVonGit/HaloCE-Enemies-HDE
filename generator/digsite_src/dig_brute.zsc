@@ -19,6 +19,16 @@ class HCE_BruteHelmetDebris : Actor
 		Scale 64;
 	}
 	int life;
+	String hce_piece;                // armour kit helmet: debris_<piece>.iqm swapped in on the first tick
+	override void Tick()
+	{
+		if(hce_piece.Length() > 0)
+		{
+			A_ChangeModel('None', 0, "models/hce_dig/BruteKit", hce_piece);
+			hce_piece = "";
+		}
+		super.Tick();
+	}
 	States
 	{
 	Spawn:

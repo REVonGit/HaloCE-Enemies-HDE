@@ -196,8 +196,8 @@ class HCE_JackalShield : Actor
 		let e = HaloDoom_EnemyBase(j);
 		if(!e || !e.bHCE_FrontShield) return;
 		int SURF = e.HCE_ShieldSurface();                   // the model surface the shield's energy field is drawn on
-		if(on) j.A_ChangeModel('', 0, "", '', SURF, "", '', CMDL_USESURFACESKIN);
-		else j.A_ChangeModel('', 0, "", '', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(on) j.A_ChangeModel('None', 0, "", 'None', SURF, "", 'None', CMDL_USESURFACESKIN);
+		else j.A_ChangeModel('None', 0, "", 'None', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 
 	override void Tick()

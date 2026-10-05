@@ -30,16 +30,16 @@ HAMMER = r'h2\weapons\gravity hammer'
 # Halo 2 Brute ranks: body vitality from their char tags (08b: the honor guard inherits brute_major's); hlmt
 # variant -> region permutations they wear; fur colours come from the biped's per-variant change colours.
 # Loadouts (all rifle stance): CE plasma rifle / assault rifle / shotgun, the Majors carry the Spiker.
+# Minors, Majors and Captains wear only their body here: their helmets and armour come from the armour kit
+# (extract_brute_kit.py, KIT_JSON), rolled per Brute when it spawns (brute_code / kit_code).
 # The Chieftain is a custom rank: Tartarus's look, hammer stance and gravity hammer.
 BRUTE_RANKS = {
     'minor': dict(body=175, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
-                  wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'default'), ('sensors', 'default')}),
+                  wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
     'major': dict(body=150, variants=('major_bth', 'major_crl'), weapons=(SPIKER, CE_SG),
-                  wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'default'), ('sensors', 'default'),
-                        ('sh_armor', 'default')}),
+                  wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
     'captain': dict(body=200, variants=('captain_bth', 'captain_crl'), weapons=(CE_PR, CE_SG),
-                    wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'default'), ('sensors', 'default'),
-                          ('sh_armor', 'default'), ('flag', 'captain')}),
+                    wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default'), ('flag', 'captain')}),
     'honor guard': dict(body=150, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
                         wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'honor_on'), ('sensors', 'honor_on'),
                               ('sh_armor', 'honor_on'), ('hg_arm', 'honor_on'), ('hg_legs', 'honor_on')}),
@@ -48,6 +48,9 @@ BRUTE_RANKS = {
                             ('sensors', 'default'), ('sh_armor', 'skull'), ('hg_arm', 'honor_off'), ('hg_legs', 'honor_off')}),
 }
 ELITE_RIFLE = r'characters\elite\elite rifle'
+KIT_DIR = f'{bp.OUT}/models/BruteKit'
+KIT_JSON = f'{KIT_DIR}/BruteKit.json'
+KIT_RANKS = ['minor', 'major', 'captain', 'chieftain']
 # Halo 2 Jackals (extract_h2_jackal.py): one model, three ranks. Ultra (the CE pack's plasma-rifle Ultra moved onto
 # the Halo 2 body, same class and DoomEdNum), Zealot (Spiker, gold shield) and Sniper (Halo 2's beam rifle, no shield)
 H2JACKAL = r'objects\characters\jackal\jackal'
@@ -754,11 +757,107 @@ def h2jackal_sounds():
     if ids: lines.append(f'$random HCE/Jackal/ShieldPop {{ {" ".join(ids)} }}')
     return lines
 
-def brute_code():
+def kit_code():
+    """armour kit dressing: per rank, a weighted pick per slot (model attachments 1-6) or a whole outfit"""
+    if not os.path.exists(KIT_JSON): return '\tvoid HCE_DressArmour() {}\n'
+    kit = json.load(open(KIT_JSON))
     meta = json.load(open(OUT + '/models/Brute/Brute.json'))
-    helm = [i for i, n in enumerate(meta['mesh_names']) if n.startswith('helmet.default.')]
-    hide = ''.join(f'\t\tA_ChangeModel(\'\', 0, "", \'\', {i}, "models/hce_dig/Brute/skins", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for i in helm)
-    return '''
+    armour = [i for i, n in enumerate(meta['mesh_names']) if not n.startswith('weapon_') and n.split('.')[0] not in ('body', 'head', 'hair', 'sensors')]
+    pools, outfits, keep = [], [], []
+    for r in KIT_RANKS:
+        rd = kit['ranks'][r]
+        for slot in kit['slots']: pools.append('|'.join(f'{f}:{w}' for f, w in rd['slots'][slot]))
+        outfits.append('|'.join(f'{c};' + ','.join(o[slot] for slot in kit['slots']) for c, o in rd['outfits']))
+        keep.append(rd['keep_base'])
+    pool_cases = ''.join(f'\t\t\tcase {i}: return "{p}";\n' for i, p in enumerate(pools))
+    out_cases = ''.join(f'\t\t\tcase {i}: return "{o}";\n' for i, o in enumerate(outfits) if o)
+    keep_cases = ''.join(f'\t\t\tcase {i}: return {k};\n' for i, k in enumerate(keep) if k)
+    hide = ''.join(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {i}, "models/hce_dig/Brute/skins", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for i in armour)
+    n = len(kit['slots'])
+    return f'''
+	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
+	// arm, leg and waist pieces when it spawns (some ranks may also roll a whole outfit); the Chieftain keeps
+	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {{1-{n}}} riding the
+	// Brute's own bones; their textures are named in the piece models.
+	String hce_kitHelmet;
+	static String HCE_KitPool(int i)
+	{{
+		switch(i)
+		{{
+{pool_cases}		}}
+		return "";
+	}}
+	static String HCE_KitOutfits(int r)
+	{{
+		switch(r)
+		{{
+{out_cases}		}}
+		return "";
+	}}
+	static double HCE_KitKeepBase(int r)
+	{{
+		switch(r)
+		{{
+{keep_cases}		}}
+		return 0;
+	}}
+	static String HCE_KitRoll(String pool)
+	{{
+		Array<String> opts; pool.Split(opts, "|");
+		double tot = 0;
+		for(int i = 0; i < opts.Size(); i++) {{ Array<String> p; opts[i].Split(p, ":"); if(p.Size() > 1) tot += p[1].ToDouble(); }}
+		double x = frandom[HCEKit](0, tot);
+		for(int i = 0; i < opts.Size(); i++)
+		{{
+			Array<String> p; opts[i].Split(p, ":");
+			if(p.Size() < 2) continue;
+			x -= p[1].ToDouble();
+			if(x <= 0) return p[0];
+		}}
+		return "";
+	}}
+	void HCE_DressArmour()
+	{{
+		String cn = GetClassName();
+		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
+		if(r < 0) return;
+		double keep = HCE_KitKeepBase(r);
+		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		Array<String> pick;
+		for(int s = 0; s < {n}; s++) pick.Push("");
+		bool outfit = false;
+		String outs = HCE_KitOutfits(r);
+		if(outs.Length() > 0)
+		{{
+			Array<String> ol; outs.Split(ol, "|");
+			double x = frandom[HCEKit](0, 1);
+			for(int i = 0; i < ol.Size() && !outfit; i++)
+			{{
+				Array<String> p; ol[i].Split(p, ";");
+				if(p.Size() < 2) continue;
+				double c = p[0].ToDouble();
+				if(x < c)
+				{{
+					Array<String> f; p[1].Split(f, ",");
+					for(int s = 0; s < {n} && s < f.Size(); s++) pick[s] = f[s];
+					outfit = true;
+				}}
+				else x -= c;
+			}}
+		}}
+		if(!outfit) for(int s = 0; s < {n}; s++) pick[s] = HCE_KitRoll(HCE_KitPool(r * {n} + s));
+		if(r == 3)
+		{{
+{hide}		}}
+		for(int s = 0; s < {n}; s++)
+			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitHelmet = pick[0];
+		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
+	}}
+'''
+
+def brute_code():
+    return kit_code() + '''
 	// ---- Halo 2 Brute behaviour ----------------------------------------------------------------------
 	// berserk (badly hurt, or the pack is gone): roar, throw the gun away, charge on all fours with the
 	// berserk swings and tackles. Headshots knock a Minor/Major/Captain's helmet off. Losing pack mates
@@ -770,6 +869,7 @@ def brute_code():
 	Name hce_lastSwing;
 	override void PostBeginPlay()
 	{
+		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -852,9 +952,11 @@ def brute_code():
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
 		hce_helmetOff = true;
-''' + hide + '''		let h = Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE);
+		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
+		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
+			h.hce_piece = "debris_" .. hce_kitHelmet;
 			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
@@ -1038,9 +1140,15 @@ def build():
     if os.path.exists(f'{hs}/BruteHelmet.iqm'):
         hd = f'{PACK}/models/hce_dig/BruteHelmet'; os.makedirs(hd, exist_ok=True)
         for f in ('BruteHelmet.iqm', 'BruteHelmet_0.png'): shutil.copy(f'{hs}/{f}', f'{hd}/{f}')
+        # no Skin line: the model names its own texture, so the kit helmets swapped in keep theirs
         open(f'{PACK}/modeldef.dig', 'a').write('\nModel HCE_BruteHelmetDebris\n{\n\tPath "models/hce_dig/BruteHelmet"\n'
-            '\tModel 0 "BruteHelmet.iqm"\n\tSkin 0 "BruteHelmet_0.png"\n\tScale 72 72 86\n\tUseActorPitch\n\tUseActorRoll\n'
+            '\tModel 0 "BruteHelmet.iqm"\n\tScale 72 72 86\n\tUseActorPitch\n\tUseActorRoll\n'
             '\tFrameIndex HCEM A 0 0\n}\n')
+    # Brute armour kit pieces (model attachments, swapped in by HCE_DressArmour)
+    if os.path.exists(KIT_JSON):
+        kd = f'{PACK}/models/hce_dig/BruteKit'; os.makedirs(kd, exist_ok=True)
+        for f in os.listdir(KIT_DIR):
+            if f.endswith(('.iqm', '.jpg', '.png')): shutil.copy(f'{KIT_DIR}/{f}', f'{kd}/{f}')
 
 if __name__ == '__main__':
     build()

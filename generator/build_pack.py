@@ -1,6 +1,4 @@
 """Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
 from PIL import Image
@@ -695,7 +693,7 @@ def build(cfg=None):
                 # hide the held weapon's surfaces at runtime (a Brute throwing its gun away to go berserk)
                 ws = [si for si, wv in enumerate(mesh_weapon) if wv]
                 extra += '\tvoid HCE_HideWeaponSurfaces()\n\t{\n' + ''.join(
-                    f'\t\tA_ChangeModel(\'\', 0, "", \'\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for si in ws) + '\t}\n'
+                    f'\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for si in ws) + '\t}\n'
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))}\n{extra}}}\n')
             if char in SHELL_TINT and shield > 0 and char not in shells:
                 shells.add(char)

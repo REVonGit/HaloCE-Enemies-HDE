@@ -275,7 +275,7 @@ class HCE_ReplaceHandler : EventHandler
 
 // Console command "punkassbitches" (KEYCONF alias for "netevent hce_spawnall"): spawns one of every Halo CE enemy
 // class that's loaded (every pack and add-on), side by side in lines in front of the player, facing them.
-// Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
+// They don't patrol while idle. Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
 {
@@ -338,6 +338,8 @@ class HCE_SpawnAllHandler : EventHandler
 			}
 			if(!mo) { blocked++; continue; }
 			mo.angle = mo.AngleTo(pl);
+			let en = HaloDoom_EnemyBase(mo);
+			if(en) en.hce_standStill = true;      // no idle patrols: they hold their place in the line
 			made++;
 		}
 		Console.Printf("punkassbitches: %d enemies spawned%s", made, blocked ? String.Format(", %d had no room", blocked) : "");

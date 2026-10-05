@@ -725,10 +725,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	vector3 hce_home, hce_patrolTo;
 	int     hce_patrolState, hce_patrolTics;
+	bool    hce_standStill;                 // no idle walking at all, patrols or squad stations (punkassbitches spawns)
 
 	bool HCE_IdleMove()
 	{
-		if(bHCE_Flying || bHCE_FollowPlayer || hce_action == HCE_ACT_FEED || bDORMANT) return false;
+		if(bHCE_Flying || bHCE_FollowPlayer || hce_action == HCE_ACT_FEED || bDORMANT || hce_standStill) return false;
 		let L = HCE_SquadLeader();
 		if(L) return HCE_KeepStation(L, false);
 		CVar cv = CVar.FindCVar("hce_patrols");

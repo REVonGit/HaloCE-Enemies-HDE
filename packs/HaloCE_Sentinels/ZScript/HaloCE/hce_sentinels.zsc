@@ -1,0 +1,411 @@
+class HCE_SentinelBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 19;
+		Radius 30;
+		Mass 26;
+		PainChance 0;
+		Tag "Sentinel";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+		Goto Dead;
+	XDeath:
+		HCEM A 1 HCE_GibDeath();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel\sentinel
+class HCE_Sentinel : HCE_SentinelBase
+{
+	Default
+	{
+		Health 80;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.80, 1.20, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -4.8);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 1, 0.70, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.25, 2.25, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Drops "None", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+}
+
+// characters\sentinel\sentinel major
+class HCE_SentinelMajor : HCE_SentinelBase
+{
+	Default
+	{
+		Health 120;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel major";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 1.20, 1.60, 0.80, 1.20, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -4.8);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 1, 0.70, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.00, 1.80, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Drops "None", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+}
+
+// characters\sentinel\sentinel_defensive
+class HCE_SentinelDefensive : HCE_SentinelBase
+{
+	Default
+	{
+		Health 80;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel_defensive";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.80, 1.20, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -4.8);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 1, 0.70, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.25, 2.25, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Drops "None", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+}
+
+// characters\sentinel\sentinel_shielded
+class HCE_SentinelShielded : HCE_SentinelBase
+{
+	Default
+	{
+		Health 60;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel_shielded";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.80, 1.20, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -4.8);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 1, 0.70, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.25, 2.25, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Drops "None", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+}
+
+// characters\sentinel\sentinel_shielded major
+class HCE_SentinelShieldedMajor : HCE_SentinelBase
+{
+	Default
+	{
+		Health 80;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel_shielded major";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 1.20, 1.60, 0.80, 1.20, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -4.8);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 1, 0.70, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.00, 1.80, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Drops "None", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+}
+
+class HCE_RandomSentinel : RandomSpawner
+{
+	Default
+	{
+		DropItem "HCE_Sentinel", 255, 1;
+		DropItem "HCE_SentinelMajor", 255, 1;
+		DropItem "HCE_SentinelDefensive", 255, 1;
+		DropItem "HCE_SentinelShielded", 255, 1;
+		DropItem "HCE_SentinelShieldedMajor", 255, 1;
+	}
+}

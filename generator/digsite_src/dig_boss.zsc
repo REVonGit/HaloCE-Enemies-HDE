@@ -1,0 +1,126 @@
+// Drinol war beast: Doom's Cyberdemon stand-in. Bigger and tougher than the Pinky-slot Drinol, plus
+//  * charge: a straight-line stampede that bowls the target over (Hunter-style shoulder hit)
+//  * pounce slam: landing from a leap sends out a ground shockwave (hurts enemies only, not its allies)
+// HCE_DigsiteHandler.CheckReplacee maps it back to Cyberdemon, so A_BossDeath map specials still fire.
+class HCE_BossCyberdemonDrinol : HCE_Drinol
+{
+	int dashTics, dashReady, dashStuck, prevLeap;
+	vector2 dashLast;
+
+	Default
+	{
+		Health 1800;
+		Height 110;
+		Radius 40;
+		Mass 2000;
+		Speed 10.7;
+		Tag "Drinol Alpha";
+		Obituary "%o was trampled by a Drinol.";
+		+BOSS
+		+DONTMORPH
+		+NOTARGETSWITCH
+		HaloDoom_EnemyBase.HCE_Melee 52, 65;
+		HaloDoom_EnemyBase.HCE_Leap 160, 560, 0.8, 15.0;
+	}
+
+	override void BeginPlay()
+	{
+		super.BeginPlay();
+		dashReady = 35 * 3;
+	}
+
+	double Dmg(double d) { return d * HCE_DamageScale(); }
+	void Dbg(String m) { CVar cv = CVar.FindCVar("hce_digdebug"); if(cv && cv.GetInt()) console.printf("DRINOL %s t%d", m, level.maptime); }
+
+	// heavy swings: a longer recovery between swats than the small Drinol
+	override bool HCE_TryMelee()
+	{
+		if(!super.HCE_TryMelee()) return false;
+		hce_meleeTics += 25;
+		return true;
+	}
+
+	override bool HCE_TryLeap(double dist)
+	{
+		if(dashTics > 0) { DashTick(); return true; }
+		if(target && hce_canSee && level.maptime >= dashReady && pos.z <= floorz + 1
+			&& dist > 220 && dist < 1100 && frandom(0, 1) < 0.05)
+		{
+			dashTics = 70; dashStuck = 0; dashLast = pos.xy; Dbg(String.Format("dash start d%.0f", dist));
+			A_SetAngle(AngleTo(target));
+			HCE_Say('Berserk', 1.0, 0, true);
+			A_StartSound("cyber/hoof", CHAN_BODY, CHANF_OVERLAP, 1.0);
+			A_Quake(2, 10, 0, 640, "");
+			return true;
+		}
+		return super.HCE_TryLeap(dist);
+	}
+
+	void DashTick()
+	{
+		if(!target || target.health <= 0) { EndDash(35); return; }
+		// steer like a bull: a few degrees a tic, so side-stepping works
+		double want = AngleTo(target);
+		A_SetAngle(angle + clamp(DeltaAngle(angle, want), -3.5, 3.5), SPF_INTERPOLATE);
+		vel.xy = AngleToVector(angle, 22);
+		HCE_Play(HCE_A_MOVE_F);
+		if((dashTics % 9) == 0) { A_StartSound("cyber/hoof", CHAN_BODY, CHANF_OVERLAP, 0.9); A_Quake(1, 6, 0, 512, ""); }
+		if(Distance2D(target) < radius + target.radius + 14 && abs(target.pos.z - pos.z) < height)
+		{
+			target.DamageMobj(self, self, int(Dmg(frandom(50, 60))), 'Melee', 0, angle);
+			target.vel.xy += AngleToVector(angle, 16);
+			target.vel.z += 7;
+			A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
+			A_Quake(4, 12, 0, 512, "");
+			EndDash(35 * 5); Dbg("dash hit");
+			if(HCE_HasAnim(HCE_A_MELEE)) HCE_PlayLocked(HCE_A_MELEE);
+			return;
+		}
+		// ran into a wall: stagger briefly
+		if((pos.xy - dashLast).Length() < 3) { if(++dashStuck > 4) { A_Quake(3, 10, 0, 512, ""); EndDash(35 * 4); Dbg("dash wall"); return; } }
+		else dashStuck = 0;
+		dashLast = pos.xy;
+		if(--dashTics <= 0) EndDash(35 * 4);
+	}
+
+	void EndDash(int cooldown)
+	{
+		dashTics = 0;
+		vel.xy *= 0.3;
+		dashReady = level.maptime + cooldown + random(0, 70);
+	}
+
+	override void Tick()
+	{
+		super.Tick();
+		if(health > 0 && prevLeap == 2 && hce_leapState == 0 && pos.z <= floorz + 1) Slam();
+		prevLeap = hce_leapState;
+	}
+
+	void Slam()
+	{
+		Dbg("slam");
+		A_StartSound("cyber/hoof", CHAN_BODY, CHANF_OVERLAP, 1.0);
+		A_Quake(5, 18, 0, 900, "");
+		for(int i = 0; i < 32; i++)
+		{
+			double a = i * 360.0 / 32;
+			A_SpawnParticle("A08868", 0, 24, 10, 0, cos(a) * radius, sin(a) * radius, 4,
+				cos(a) * 9, sin(a) * 9, 1.5, 0, 0, -0.1, 0.9, -0.035, 2);
+		}
+		let it = BlockThingsIterator.Create(self, 260);
+		while(it.Next())
+		{
+			Actor o = it.thing;
+			if(o == self || o.health <= 0 || !o.bSHOOTABLE) continue;
+			if(!o.player && !HCE_IsEnemy(o)) continue;          // spares its own side
+			if(o.pos.z > floorz + 40) continue;                   // jump it
+			double d = Distance2D(o);
+			if(d > 260) continue;
+			double f = 1.0 - d / 260.0;
+			o.DamageMobj(self, self, int(Dmg(15 + 55 * f)), 'Melee', 0, AngleTo(o));
+			o.vel.xy += AngleToVector(AngleTo(o), 6 + 10 * f);
+			o.vel.z += 4 + 6 * f;
+		}
+	}
+}

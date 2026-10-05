@@ -1,0 +1,2085 @@
+// ============================================================================
+// enemies_base.zsc -- HaloDoom Evolved enemy API, extended for the Halo CE
+// enemy pack.
+//
+// The first half of this file is HDE's original HaloDoom_EnemyBase (Local_DEV
+// branch). Every original member keeps its name and signature, so classes
+// written against HDE's API still compile against this file.
+//
+// The second half ("HCE layer") is a port of Halo CE's actor AI (the decomp's
+// ai/actor_type_*.c and ai/actions.c) onto that same base class:
+//   perception (vision cone, hearing, surprise)      -> HCE_Perceive / HCE_Look
+//   combat status, firing positions, burst fire      -> HCE_Fight / HCE_UpdateFiring
+//   grenades, melee, evasion dives                   -> HCE_TryGrenade / HCE_TryMelee / HCE_TryEvade
+//   emotions: panic, berserk, cover-seeking          -> HCE_Emotions
+//   teams (human / covenant / flood / sentinel)      -> HCE_IsEnemy, HCE_ScanTargets
+// Behaviour switches mirror which actor_action_handle_* calls each Halo actor
+// type makes; numbers come from the actr/actv/coll tags at generation time.
+// ============================================================================
+
+struct LastDamageInfo
+{
+	bool processing; // If true, needs to be set to false before updated again.
+	class<Actor> damager;
+	bool headshot;
+	bool killed;
+	double dmgTaken;
+	State prevState;
+}
+
+enum HCE_Teams
+{
+	HCE_TEAM_HUMAN = 0,
+	HCE_TEAM_COVENANT,
+	HCE_TEAM_FLOOD,
+	HCE_TEAM_SENTINEL,
+	HCE_TEAM_NEUTRAL,
+};
+
+enum HCE_Actions
+{
+	HCE_ACT_IDLE = 0,
+	HCE_ACT_FIGHT,      // _actor_action_fight
+	HCE_ACT_CHARGE,     // _actor_action_charge (melee goal)
+	HCE_ACT_COVER,      // active cover seeking (shields low)
+	HCE_ACT_FLEE,       // _actor_action_flee (panic)
+	HCE_ACT_SEARCH,     // _actor_action_search / uncover
+	HCE_ACT_FOLLOW,     // marines: stay with the player
+	HCE_ACT_FEED,       // infection forms reanimating a corpse
+	HCE_ACT_KAMIKAZE,   // Grunt suicide run with two live plasma grenades (Halo 3)
+};
+
+enum HCE_AnimKinds
+{
+	HCE_A_IDLE = 0, HCE_A_ALERT, HCE_A_MOVE_F, HCE_A_MOVE_B, HCE_A_MOVE_L, HCE_A_MOVE_R,
+	HCE_A_CROUCH_IDLE, HCE_A_CROUCH_MOVE, HCE_A_FLEE, HCE_A_FIRE, HCE_A_MELEE, HCE_A_THROW,
+	HCE_A_DIVE_L, HCE_A_DIVE_R, HCE_A_DIVE_F, HCE_A_EVADE_L, HCE_A_EVADE_R,
+	HCE_A_SURPRISE_F, HCE_A_SURPRISE_B, HCE_A_BERSERK, HCE_A_WARN, HCE_A_SIGNAL,
+	HCE_A_AIRBORNE, HCE_A_LAND, HCE_A_LEAP_START, HCE_A_LEAP_AIR, HCE_A_LEAP_MELEE,
+	HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R,
+	HCE_A_HPING_F, HCE_A_HPING_B,
+	HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_AIR, HCE_A_DIE_LAND,
+	HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_FEED, HCE_A_CELEBRATE, HCE_A_SLEEP, HCE_A_TURN_L, HCE_A_TURN_R,
+	HCE_A_COUNT
+};
+
+class HaloDoom_EnemyBase : Actor abstract
+{
+	// ------------------------------------------------------------------
+	// Original HDE API (unchanged interface)
+	// ------------------------------------------------------------------
+	transient LastDamageInfo damageInfo;
+	double moveFriction, curChaseAngle, curDesiredAngle;
+	vector3 targetLastPos, curTrackingPos;
+	bool trackLastPos;
+	int wanderTime;
+	bool keepChaseAngle;
+
+	Property HDE_MoveFriction : moveFriction;
+
+	Default
+	{
+		HaloDoom_EnemyBase.HDE_MoveFriction 0.7;
+	}
+
+	override void Tick()
+	{
+		super.Tick();
+		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
+			damageInfo.processing = false;
+
+		if(!hce_enabled) vel.xy *= moveFriction;
+
+		// Only use this when Chase3D is being used.
+		if(!keepChaseAngle)
+			curDesiredAngle = angle;
+	}
+
+	States
+	{
+		Info.DamageTaken:
+			"####" "#" 0 A_ResumePrevious();
+	}
+
+	override int DamageMobJ(Actor inflictor, Actor source, int dmg, Name mod, int flags, double angle)
+	{
+		Actor keepTarget = target;
+		if(hce_enabled)
+		{
+			// explosions (A_Explode passes DMG_EXPLOSION) and Hunter punches throw bodies when they kill
+			bool blast = (flags & DMG_EXPLOSION) || mod == 'Explosive' || mod == 'PlasmaExplosion' || mod == 'Explosion';
+			let hm = HaloDoom_EnemyBase(source);
+			bool punch = mod == 'Melee' && hm && hm.bHCE_FrontArmor;
+			bool kick = mod == 'Kick';
+			hce_blastHit = blast || punch || kick;
+			if(hce_blastHit)
+			{
+				Actor from = (blast && inflictor) ? inflictor : source;
+				hce_blastFrom = from ? from.pos : pos;
+				hce_blastDmg = punch ? 160 : (kick && !blast ? min(dmg, 90) * 0.6 : dmg);
+			}
+		}
+		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
+		int dealt = super.DamageMobJ(inflictor, source, dmg, mod, flags, angle);
+		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
+		if(hce_enabled && target != keepTarget && target && !HCE_IsEnemy(target)) target = keepTarget;
+		if(hce_enabled) HCE_OnDamaged(inflictor, source, dealt, mod);
+		if(hce_enabled || dealt <= 0 || damageInfo.processing) return dealt;
+
+		Actor damageSource = inflictor ? inflictor : source;
+		if(!damageSource) return dealt; // Skip if we cannot find a damager.
+
+		double headsize = 8;
+		double dmgz = damageSource.pos.z;
+		double headz    = (pos.z + default.height);
+
+		bool isHeadshot = (dmgz <= headz) && (dmgz >= headz-headsize);
+		damageInfo.damager = damageSource.getClass();
+		damageInfo.headshot = isHeadshot;
+		damageInfo.prevState = CurState;
+		damageInfo.dmgTaken = dealt;
+		damageInfo.killed = (health <= 0 || bCORPSE);
+		damageInfo.processing = true;
+		State dt = ResolveState("Info.DamageTaken");
+		if(dt) SetState(dt);
+		return dealt;
+	}
+
+	State A_ResumePrevious()
+	{
+		damageInfo.processing = false;
+		if(damageInfo.prevState)
+		{
+			State st = damageInfo.prevState;
+			damageInfo.prevState = NULL;
+			return st;
+		}
+
+		// Go back to doing whatever if there is nothing to resume to.
+		return ResolveState(null);
+	}
+
+	bool A_CheckDamageInfo(class<Actor> damager, bool isHeadshot)
+	{
+		return (damageInfo.damager is damager) && (damageInfo.headshot == isHeadshot);
+	}
+	int A_GetDamageTaken(bool killed = false)
+	{
+		if(killed)
+			return damageInfo.killed;
+		else
+			return ceil(damageInfo.dmgTaken);
+	}
+
+	void A_AimToTarget(double heightAimScale, Actor victim = NULL)
+	{
+		if(!target) return;
+
+		if(!victim) victim = target;
+		vector3 aimFrom = (pos.xy, pos.z + (height * 0.5));
+		vector3 aimTo = (victim.pos.xy, victim.pos.z + (victim.height * heightAimScale));
+
+		let diff = level.vec3diff(aimFrom, aimTo);
+		if(diff.Length() > 1) diff = diff.Unit();
+		vector2 aimDir = (atan2(diff.y, diff.x), -asin(diff.z));
+
+		A_SetAngle(aimDir.x, SPF_INTERPOLATE);
+		A_SetPitch(aimDir.y, SPF_INTERPOLATE);
+	}
+
+	Actor A_Fire3DProjectile(class<Actor> proj, double forward = 0, double leftright = 0, double updown = 0, double angleOffset = 0, double pitchOffset = 0)
+	{
+		let projActor = HaloMath.Fire3DProjectile(self, proj, forward, leftright, updown, false, angleOffset, pitchOffset);
+		if(projActor) projActor.target = self;
+
+		return projActor;
+	}
+
+	void A_Fire3DProjectiles(class<Actor> proj, double count, double angleSpread = 0, double pitchSpread = 0, double forward = 0, double leftright = 0, double updown = 0)
+	{
+		for(int i = 0; i < count; i++)
+		{
+			vector2 spread = (
+				frandom(-angleSpread, angleSpread),
+				frandom(-pitchSpread, pitchSpread)
+			);
+			A_Fire3DProjectile(proj, forward, leftright, updown, spread.x, spread.y);
+		}
+	}
+
+	BulletCasing A_SpawnWeaponDebris(class<BulletCasing> debris, double fw, double lr, double ud, double vel_fw, double vel_lr, double vel_ud)
+	{
+		CVar doSpawnFX = CVar.GetCVar("halodoom_fx_casings", players[consoleplayer]);
+		if(!doSpawnFX || !doSpawnFX.GetBool()) return NULL;
+
+		vector3 spawnDir = Quat.FromAngles(angle, pitch, roll) * (fw, lr, ud);
+		vector3 spawnPos = level.vec3offset( (pos.xy, pos.z + (height * 0.5)), spawnDir );
+
+		let proj = BulletCasing(Spawn(debris, spawnPos));
+		if(proj)
+		{
+			proj.vel = Quat.FromAngles(angle, pitch, roll) * (vel_fw, vel_lr, vel_ud);
+			proj.target = self;
+		}
+		return proj;
+	}
+
+	ShieldProcessor A_SetupShield(double maxShields, double regenDelay, double regenSpeed, Sound snd_ShieldBreak = "Shield/Explode", Sound snd_ShieldLow = "Shield/Low", Sound snd_ShieldRecover = "Shield/Regenerate", class<ShieldProcessor> type = "ShieldProcessor")
+	{
+		ShieldProcessor shields;
+		if(type == "ShieldProcessor")
+		{
+			shields = ShieldProcessor.Attach(self);
+		}
+		else
+		{
+			shields = ShieldProcessor(FindInventory(type));
+			if(!shields)
+			{
+				GiveInventory(type, 1);
+				shields = ShieldProcessor(FindInventory(type));
+			}
+		}
+		if(!shields) return null;
+		shields.maxShields = maxShields;
+		shields.shields = maxShields;
+		shields.regenDelay = int(regenDelay);
+		shields.regenSpeed = int(regenSpeed);
+		shields.snd_ShieldBreak = snd_ShieldBreak;
+		shields.snd_ShieldLow = snd_ShieldLow;
+		shields.snd_ShieldRecover = snd_ShieldRecover;
+
+		return shields;
+	}
+
+	// Smooth directional chase
+	virtual void A_Chase3D(StateLabel meleeState = "Melee", StateLabel missileState = "Missile", int flags = 0)
+	{
+		bool noMove = flags & CHF_DONTMOVE;
+
+		State prevState = CurState;
+		A_Chase(meleeState, missileState, flags | CHF_DONTMOVE | CHF_DONTTURN);
+
+		// Jump occured, leave control to missile or see
+		bool changedStates = (prevState != CurState);
+		keepChaseAngle = !changedStates;
+		if(changedStates) return;
+
+		// Wander if no target
+		if(!target)
+		{
+			A_Wander3D();
+			return;
+		}
+
+		// Find real move direction
+		LookExParams look;
+		look.FOV = 360;
+		bool canSee = IsVisible(target, true, look);
+
+		FLineTraceData lt;
+		LineTrace(angle, 64, pitch, data:lt);
+		bool canMoveTo = lt.HitType == TRACE_HitNone;
+
+		if(canSee && canMoveTo)
+		{
+			UpdateDesiredAngle(target.pos);
+			if(!noMove) MoveTowardsFacing();
+
+			targetLastPos = target.pos;
+			trackLastPos = true;
+		}
+		else if(canMoveTo)
+		{
+			if(trackLastPos)
+			{
+				vector3 diff = level.Vec3Diff(pos, targetLastPos);
+				curDesiredAngle = atan2(diff.y, diff.x);
+				if(!noMove) MoveTowardsFacing(0.8);
+
+				if( diff.Length() <= radius*2.0 )
+					trackLastPos = false;
+			}
+			else
+			{
+				A_Wander3D();
+			}
+		}
+		else
+		{
+			NewChaseDir();
+			curDesiredAngle = HaloMath.LerpDegrees(curDesiredAngle, movedir*45, 0.25);
+
+			if(!noMove) MoveTowardsFacing(0.9);
+		}
+	}
+
+	virtual void A_Wander3D()
+	{
+		wanderTime++;
+
+		vector3 posDiff = level.Vec3Diff(pos, curTrackingPos);
+		bool atChasePos = (posDiff.Length() <= radius*2.0);
+
+		FLineTraceData lt;
+		LineTrace(angle, radius+128, pitch, data:lt);
+		bool canMoveTo = lt.HitType == TRACE_HitNone;
+
+		if(atChasePos || wanderTime >= (35*10) || !canMoveTo)
+		{
+			vector3 wanderPos = (
+				frandom[HDEWanderRNG](-1,1),
+				frandom[HDEWanderRNG](-1,1),
+				frandom[HDEWanderRNG](-1,1)
+			) * frandom[HDEWanderRNG](-1024, 1024);
+
+			wanderPos = level.vec3offset(pos, Quat.FromAngles(angle,0,0) * wanderPos);
+			curTrackingPos = wanderPos;
+			wanderTime = 0;
+		}
+
+		UpdateDesiredAngle(curTrackingPos);
+		MoveTowardsFacing(0.9);
+	}
+
+	void MoveTowardsFacing(double precision = 0)
+	{
+		curChaseAngle = HaloMath.LerpDegrees(curChaseAngle, curDesiredAngle, 0.1);
+		A_SetAngle(curChaseAngle, SPF_INTERPOLATE);
+
+		double deltaAngle = HaloMath.AngleDiff(angle, curDesiredAngle);
+		double diff = clamp(1.0 - (atan2(sin(deltaAngle), cos(deltaAngle)) / 180.), 0, 1.0);
+
+		if(diff > precision)
+			vel += Quat.FromAngles(angle, 0, 0) * (Speed * diff, 0, 0);
+	}
+
+	void UpdateDesiredAngle(vector3 toPos)
+	{
+		vector3 diff = level.Vec3Diff(pos, toPos);
+		double toAngle = atan2(diff.y, diff.x);
+		curDesiredAngle = toAngle;
+	}
+
+	// ==================================================================
+	// HCE layer -- Halo CE actor AI
+	// ==================================================================
+	const HCE_UNITS = 80.0;          // map units per Halo world unit
+	const HCE_TICK  = 30.0 / 35.0;   // Halo ticks per Doom tic
+
+	bool hce_enabled;                 // set by every Halo CE enemy class
+	int  hce_team;
+	int  hce_type;                    // actor type (_actor_elite etc.)
+	Name hce_variant;                 // Halo actor variant tag name
+
+	// perception (actr.perception)
+	double hce_visionDist, hce_visionFOV, hce_hearingDist, hce_surpriseDist;
+	// movement (from animation root motion)
+	double hce_walkSpeed, hce_runSpeed, hce_turnRate;
+	// ranged combat (actv.ranged_combat + weapon trigger)
+	Name   hce_projectile;
+	double hce_projSpeed;
+	double hce_damageMod;
+	int    hce_projectilesPerShot;
+	double hce_rateOfFire, hce_errorAngle, hce_maxRange, hce_rangeMin, hce_rangeMax;
+	double hce_burstMin, hce_burstMax, hce_sepMin, hce_sepMax, hce_firstBurstDelay, hce_leadFraction;
+	vector3 hce_gunOffset;
+	int    hce_specialFire;           // 1 = plasma pistol overcharge
+	double hce_specialChance;
+	// melee
+	double hce_meleeRange, hce_meleeDamage, hce_leapMin, hce_leapMax, hce_leapChance, hce_leapVel;
+	// grenades (actv.grenade_combat)
+	int    hce_grenadeType, hce_grenades;
+	double hce_grenadeChance, hce_grenadeDelay, hce_grenadeMin, hce_grenadeMax, hce_grenadeVel;
+	// emotions (actr.panic / berserk / defensive / moving)
+	double hce_panicDamage, hce_panicLeaderChance, hce_cowerMin, hce_cowerMax;
+	double hce_berserkAmount, hce_berserkThreshold, hce_proximityBerserk;
+	double hce_shieldHide, hce_shieldEmerge, hce_evadeChance, hce_grenadeDiveChance, hce_coverDiveChance;
+	double hce_feignChance, hce_feignTime;
+	// shields (coll + actv.unit)
+	double hce_shieldMax, hce_shieldStun, hce_shieldRecharge;
+	// behaviour switches -- which actor_action_handle_* the Halo actor type runs
+	int hce_bflags;
+	double hce_flyHeight;
+
+	// runtime state
+	int    hce_action, hce_actionTics, hce_animLock, hce_thinkTimer;
+	bool   hce_berserk, hce_surprised, hce_crouch, hce_canSee;
+	int    hce_lastSeen, hce_scanTimer, hce_burstTics, hce_sepTics, hce_shotTics, hce_grenadeTics, hce_evadeTics;
+	int    hce_strafeTics, hce_strafeDir, hce_panicTics, hce_coverTics, hce_meleeTics, hce_leapState;
+	double hce_recentDamage;
+	int    hce_recentDamageTics;
+	double hce_moveAngle, hce_moveSpeed;
+	Name   hce_curAnim;
+	int    hce_curAnimKind;
+	vector3 hce_lastKnown;
+	double hce_frontShieldHP, hce_frontShieldMax;
+	int    hce_frontShieldRegen;
+	Actor  hce_feedTarget;
+	bool   hce_resurrected;
+	vector2 hce_dieDir;
+	bool   hce_hardKill;
+
+	// fire pattern: fixed rounds per burst, spacing and pause (replaces Halo's
+	// duration-based bursts when hce_patShotsMax > 0)
+	int    hce_patShotsMin, hce_patShotsMax, hce_patInterval, hce_patChargeTics;
+	double hce_patPauseMin, hce_patPauseMax;
+	int    hce_shotsLeft, hce_chargeTics;
+	// weapon audio (HDE SNDINFO names). hce_fireLoop: fire sound loops for the
+	// whole burst (flamethrower, sentinel beam) with start/end sounds
+	String hce_fireSound, hce_fireSoundBass, hce_specialSound, hce_chargeSound;
+	bool   hce_fireLoop;
+	// dialogue: comma separated voice sets; one is picked per actor
+	String hce_voiceSet;
+	// special (charged) shot: projectile class and how many (default: one HCE_ChargedPlasma)
+	Name   hce_specialProj;
+	int    hce_specialCount;
+	// Halo-style drops: the weapon in hand (HDE pickup class) and leftover grenades
+	Name   hce_dropWeapon, hce_dropGrenade;
+	Name   hce_voice;
+	int    hce_voiceTics, hce_tauntTics;
+
+	Property HCE_Enabled : hce_enabled;
+	Property HCE_Team : hce_team;
+	Property HCE_Type : hce_type;
+	Property HCE_Variant : hce_variant;
+	Property HCE_Perception : hce_visionDist, hce_visionFOV, hce_hearingDist, hce_surpriseDist;
+	Property HCE_Movement : hce_walkSpeed, hce_runSpeed, hce_turnRate;
+	Property HCE_Weapon : hce_projectile, hce_projectilesPerShot, hce_rateOfFire, hce_errorAngle, hce_maxRange;
+	Property HCE_CombatRange : hce_rangeMin, hce_rangeMax;
+	Property HCE_Burst : hce_burstMin, hce_burstMax, hce_sepMin, hce_sepMax, hce_firstBurstDelay, hce_leadFraction;
+	Property HCE_GunOffset : hce_gunOffset;
+	Property HCE_ProjectileSpeed : hce_projSpeed;
+	Property HCE_DamageModifier : hce_damageMod;
+	Property HCE_SpecialFire : hce_specialFire, hce_specialChance;
+	Property HCE_SpecialShot : hce_specialProj, hce_specialCount;
+	Property HCE_Melee : hce_meleeRange, hce_meleeDamage;
+	Property HCE_Leap : hce_leapMin, hce_leapMax, hce_leapChance, hce_leapVel;
+	Property HCE_Grenades : hce_grenadeType, hce_grenades, hce_grenadeChance, hce_grenadeDelay, hce_grenadeMin, hce_grenadeMax, hce_grenadeVel;
+	Property HCE_Panic : hce_panicDamage, hce_panicLeaderChance, hce_cowerMin, hce_cowerMax;
+	Property HCE_Berserk : hce_berserkAmount, hce_berserkThreshold, hce_proximityBerserk;
+	Property HCE_Defensive : hce_shieldHide, hce_shieldEmerge, hce_evadeChance, hce_grenadeDiveChance, hce_coverDiveChance;
+	Property HCE_Feign : hce_feignChance, hce_feignTime;
+	Property HCE_Shield : hce_shieldMax, hce_shieldStun, hce_shieldRecharge;
+	Property HCE_FlyHeight : hce_flyHeight;
+	Property HCE_FirePattern : hce_patShotsMin, hce_patShotsMax, hce_patInterval, hce_patPauseMin, hce_patPauseMax, hce_patChargeTics;
+	Property HCE_FireSounds : hce_fireSound, hce_fireSoundBass, hce_specialSound, hce_chargeSound;
+	Property HCE_FireLoop : hce_fireLoop;
+	Property HCE_Voices : hce_voiceSet;
+	Property HCE_Drops : hce_dropWeapon, hce_dropGrenade;
+	Property HCE_Kamikaze : hce_kamiChance;
+
+	flagdef HCE_Surprise : hce_bflags, 0;
+	flagdef HCE_Panics : hce_bflags, 1;
+	flagdef HCE_Berserks : hce_bflags, 2;
+	flagdef HCE_SeeksCover : hce_bflags, 3;
+	flagdef HCE_Evades : hce_bflags, 4;
+	flagdef HCE_ThrowsGrenades : hce_bflags, 5;
+	flagdef HCE_AlwaysBerserk : hce_bflags, 6;
+	flagdef HCE_Flying : hce_bflags, 7;
+	flagdef HCE_Swarm : hce_bflags, 8;
+	flagdef HCE_Leaps : hce_bflags, 9;
+	flagdef HCE_Resurrects : hce_bflags, 10;
+	flagdef HCE_FrontArmor : hce_bflags, 11;
+	flagdef HCE_PairBond : hce_bflags, 12;
+	flagdef HCE_Leader : hce_bflags, 13;
+	flagdef HCE_ActiveCamo : hce_bflags, 14;
+	flagdef HCE_Explodes : hce_bflags, 15;
+	flagdef HCE_Beam : hce_bflags, 16;
+	flagdef HCE_FollowPlayer : hce_bflags, 17;
+	flagdef HCE_FrontShield : hce_bflags, 18;
+	flagdef HCE_Lobbed : hce_bflags, 19;       // weapon lobs gravity projectiles on a ballistic arc
+
+	// ------------------------------------------------------------------
+	// Animation table -- overridden by each generated character class
+	// ------------------------------------------------------------------
+	virtual Name HCE_AnimName(int kind) { return 'None'; }
+	virtual int  HCE_AnimTics(Name anim) { return 30; }   // length in Doom tics
+
+	bool HCE_HasAnim(int kind) { return HCE_AnimName(kind) != 'None'; }
+
+	// force: only locked one-shots (throw, dive, flinch...) and deaths may replace a locked animation
+	void HCE_Play(int kind, bool loop = true, bool restart = false, int blend = 4, bool force = false)
+	{
+		if(!bDECOUPLEDANIMATIONS) return;
+		if(hce_animLock > 0 && !force) return;
+		if(!restart && loop && kind == hce_curAnimKind && hce_curAnim != 'None') return;
+		Name n = HCE_AnimName(kind);
+		if(n == 'None')
+		{
+			// sensible fallbacks
+			if(kind == HCE_A_ALERT || kind == HCE_A_CROUCH_IDLE || kind == HCE_A_FIRE) n = HCE_AnimName(HCE_A_IDLE);
+			else if(kind >= HCE_A_MOVE_B && kind <= HCE_A_MOVE_R || kind == HCE_A_CROUCH_MOVE || kind == HCE_A_FLEE) n = HCE_AnimName(HCE_A_MOVE_F);
+			else if(kind >= HCE_A_DIE_F && kind <= HCE_A_DIE_AIR) n = HCE_AnimName(HCE_A_DIE_F);
+			if(n == 'None') return;
+		}
+		hce_curAnimKind = kind;
+		hce_curAnim = n;
+		HCE_ApplyAnim(n, blend, loop);
+	}
+
+	// Model animation backend. SetAnimation needs ZScript 4.12+, and this file must
+	// also compile inside HDE Local_DEV (version 4.10.0), so subclasses in a newer
+	// unit (the Halo CE pack's HCE_<Character>Base classes) implement it.
+	virtual void HCE_ApplyAnim(Name n, int blend, bool loop) {}
+
+	// play a one-shot animation and lock the AI for its length
+	int HCE_PlayLocked(int kind, double fraction = 1.0)
+	{
+		Name n = HCE_AnimName(kind);
+		if(n == 'None') return 0;
+		HCE_Play(kind, false, true, 4, true);
+		hce_animLock = max(1, int(HCE_AnimTics(n) * fraction));
+		return hce_animLock;
+	}
+
+	// ------------------------------------------------------------------
+	// Setup
+	// ------------------------------------------------------------------
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		if(!hce_enabled) return;
+		curChaseAngle = angle;
+		hce_strafeDir = random(0, 1) ? 1 : -1;
+		hce_grenadeTics = int(hce_grenadeDelay * 35 * frandom(0.5, 1.0));
+		// toughness nerf (hce_nerf_health / hce_nerf_shields): StartHealth keeps SpawnHealth()-based
+		// thresholds (berserk, panic, hard kills) in proportion
+		double hs = HCE_HealthScale();
+		if(hs != 1.0 && !bFRIENDLY)
+		{
+			StartHealth = max(1, int(GetDefaultByType(GetClass()).health * hs));
+			health = SpawnHealth();
+		}
+		if(!bFRIENDLY) hce_shieldMax *= HCE_ShieldScale();
+		if(hce_shieldMax > 0 && !bHCE_FrontShield)
+		{
+			A_SetupShield(hce_shieldMax, max(1, hce_shieldStun) * 35, max(1, hce_shieldRecharge) * 35,
+				"Shield/Explode", "", "Shield/Regenerate", "HCE_Shield");
+		}
+		if(bHCE_FrontShield)
+		{
+			hce_frontShieldMax = hce_frontShieldHP = max(40 * (bFRIENDLY ? 1.0 : HCE_ShieldScale()), hce_shieldMax);
+		}
+		if(bHCE_ActiveCamo)
+		{
+			A_SetRenderStyle(0.12, STYLE_Translucent);
+		}
+		if(bHCE_Flying)
+		{
+			bNOGRAVITY = true; bFLOAT = true;
+		}
+		if(hce_voiceSet.Length() > 0)
+		{
+			Array<String> vs; hce_voiceSet.Split(vs, ",", TOK_SKIPEMPTY);
+			if(vs.Size() > 0) hce_voice = vs[random(0, vs.Size() - 1)];
+		}
+		hce_tauntTics = level.maptime + random(35 * 4, 35 * 10);
+		HCE_Play(HCE_A_IDLE);
+	}
+
+	// ------------------------------------------------------------------
+	// Teams
+	// ------------------------------------------------------------------
+	static int HCE_TeamOf(Actor a)
+	{
+		if(!a) return HCE_TEAM_NEUTRAL;
+		let e = HaloDoom_EnemyBase(a);
+		if(e && e.hce_enabled) return e.hce_team;
+		if(a.player || a.bFRIENDLY) return HCE_TEAM_HUMAN;
+		if(a.bISMONSTER) return HCE_TEAM_NEUTRAL;
+		return HCE_TEAM_NEUTRAL;
+	}
+
+	virtual bool HCE_IsEnemy(Actor other)
+	{
+		if(!other || other == self || other.health <= 0 || !other.bSHOOTABLE) return false;
+		int t = HCE_TeamOf(other);
+		if(t == HCE_TEAM_NEUTRAL)
+		{
+			// plain Doom monsters: humans fight them, everyone else ignores them
+			return hce_team == HCE_TEAM_HUMAN && other.bISMONSTER && !other.bFRIENDLY;
+		}
+		if(t == hce_team) return false;
+		if(hce_team == HCE_TEAM_SENTINEL && t == HCE_TEAM_COVENANT) return false;
+		if(hce_team == HCE_TEAM_COVENANT && t == HCE_TEAM_SENTINEL) return false;
+		return true;
+	}
+
+	bool HCE_SightOf(Actor other, double fov)
+	{
+		if(!other) return false;
+		double d = Distance3D(other);
+		if(d > hce_visionDist) return false;
+		if(fov < 360)
+		{
+			double rel = abs(DeltaAngle(angle, AngleTo(other)));
+			if(rel > fov * 0.5) return false;
+		}
+		return CheckSight(other, SF_IGNOREVISIBILITY | SF_IGNOREWATERBOUNDARY);
+	}
+
+	// periodic target selection (players, marines, rival factions)
+	// after a fight an actor stays alert (full awareness) for 10 seconds
+	int hce_combatUntil, hce_flipTics;
+	bool HCE_Alerted() { return target != null || level.maptime < hce_combatUntil; }
+
+	void HCE_ScanTargets()
+	{
+		Actor best = null; double bestScore = 1e9;
+		if(target && target.health > 0 && HCE_IsEnemy(target))
+		{
+			best = target; bestScore = Distance3D(target) * (hce_canSee ? 0.6 : 1.0);
+		}
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo) continue;
+			let p = players[i].mo;
+			if(!HCE_IsEnemy(p) || (p.player.cheats & CF_NOTARGET)) continue;
+			double d = Distance3D(p);
+			if(d < bestScore && HCE_SightOf(p, HCE_Alerted() ? 360 : hce_visionFOV)) { best = p; bestScore = d; }
+		}
+		let it = BlockThingsIterator.Create(self, min(hce_visionDist, 2048));
+		while(it.Next())
+		{
+			let o = it.thing;
+			if(!o.bISMONSTER || !HCE_IsEnemy(o)) continue;
+			double d = Distance3D(o) * 1.15;
+			if(d < bestScore && HCE_SightOf(o, HCE_Alerted() ? 360 : hce_visionFOV)) { best = o; bestScore = d; }
+		}
+		if(best && best != target)
+		{
+			bool fresh = target == null;
+			target = best;
+			hce_lastKnown = best.pos;
+			if(fresh) HCE_OnAcquire();
+		}
+	}
+
+	virtual void HCE_OnAcquire()
+	{
+		hce_burstTics = 0; hce_shotsLeft = 0; hce_chargeTics = 0;
+		// reaction time before the first burst (Halo first_burst_delay, at least ~0.4 s)
+		hce_sepTics = int(max(hce_firstBurstDelay, 0.4) * 35) + random(0, 10);
+		HCE_Say('Alert', 0.7, 35 * 3);
+		hce_grenadeTics = max(hce_grenadeTics, int(35 * frandom(3, 6) * HCE_GrenadeScale()));
+		if(bHCE_Surprise && !hce_surprised && target && Distance3D(target) < hce_surpriseDist)
+		{
+			hce_surprised = true;
+			bool behind = abs(DeltaAngle(angle, AngleTo(target))) > 90;
+			A_SetAngle(AngleTo(target));
+			HCE_PlayLocked(behind ? HCE_A_SURPRISE_B : HCE_A_SURPRISE_F, 0.8);
+			if(bHCE_Panics && random(0, 2) == 0) HCE_StartPanic();
+		}
+		else if(HCE_HasAnim(HCE_A_WARN) && random(0, 3) == 0)
+		{
+			A_SetAngle(AngleTo(target));
+			HCE_PlayLocked(HCE_A_WARN, 0.6);
+		}
+		if(bHCE_AlwaysBerserk) HCE_GoBerserk(false);
+	}
+
+	// ------------------------------------------------------------------
+	// Spawn / look state helper: Halo perception before combat
+	// ------------------------------------------------------------------
+	void HCE_Look()
+	{
+		if(hce_animLock > 0) { hce_animLock--; return; }
+		HCE_Play(HCE_A_IDLE);
+		if(bHCE_Flying) HCE_Hover();
+		if(HCE_SeekCorpse()) { SetStateLabel("See"); return; }
+		if(++hce_scanTimer < 8) return;
+		hce_scanTimer = 0;
+		HCE_ScanTargets();
+		// hearing: Doom's sound propagation (sector soundtarget)
+		if(!target && CurSector.SoundTarget && HCE_IsEnemy(CurSector.SoundTarget) && Distance3D(CurSector.SoundTarget) < hce_hearingDist)
+		{
+			target = CurSector.SoundTarget;
+			hce_lastKnown = target.pos;
+			HCE_OnAcquire();
+		}
+		if(bHCE_FollowPlayer && !target)
+		{
+			hce_action = HCE_ACT_FOLLOW;
+			SetStateLabel("See");
+			return;
+		}
+		if(target)
+		{
+			hce_action = HCE_ACT_FIGHT;
+			SetStateLabel("See");
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Main think (See state, every tic)
+	// ------------------------------------------------------------------
+	void HCE_Think()
+	{
+		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
+		if(bHCE_FrontShield) HCE_UpdateFrontShield();
+		if(bHCE_ActiveCamo && alpha < 0.12) A_SetRenderStyle(min(0.12, alpha + 0.01), STYLE_Translucent);
+		else if(bHCE_ActiveCamo && alpha > 0.12) A_SetRenderStyle(max(0.12, alpha - 0.02), STYLE_Translucent);
+
+		if(bHCE_Flying) HCE_Hover();
+		if(hce_animLock > 0)
+		{
+			hce_animLock--;
+			HCE_LockedTick();
+			return;
+		}
+		if(hce_leapState > 0) { HCE_LeapTick(); return; }
+
+		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); }
+
+		if(target && (target.health <= 0 || !HCE_IsEnemy(target)))
+		{
+			if(target.health <= 0) HCE_Say(target.player ? 'KillPlayer' : 'Taunt', target.player ? 0.9 : 0.35, 35 * 2);
+			HCE_StopFireLoop();
+			target = null;
+			HCE_ScanTargets();   // next enemy in view, any direction
+			if(target) return;
+			if(HCE_HasAnim(HCE_A_CELEBRATE) && random(0, 3) == 0) { HCE_PlayLocked(HCE_A_CELEBRATE); return; }
+		}
+
+		if(!target)
+		{
+			if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);   // lost the target mid-run: the grenades go off where it stands
+			if(hce_action == HCE_ACT_FEED) { HCE_Feed(); return; }
+			if(HCE_SeekCorpse()) return;
+			if(bHCE_FollowPlayer) { HCE_Follow(); return; }
+			hce_action = HCE_ACT_IDLE;
+			HCE_Brake();
+			SetStateLabel("Spawn");
+			return;
+		}
+
+		hce_combatUntil = level.maptime + 35 * 10;
+		hce_canSee = HCE_SightOf(target, 360);
+		if(hce_canSee) { hce_lastSeen = level.maptime; hce_lastKnown = target.pos; }
+
+		HCE_Emotions();
+
+		switch(hce_action)
+		{
+		case HCE_ACT_FLEE:   HCE_Flee(); break;
+		case HCE_ACT_COVER:  HCE_Cover(); break;
+		case HCE_ACT_CHARGE: HCE_Charge(); break;
+		case HCE_ACT_FEED:   HCE_Feed(); break;
+		case HCE_ACT_KAMIKAZE: HCE_KamikazeTick(); return;
+		default:             HCE_Fight(); break;
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Emotions: panic, berserk, cover (actor_action_handle_*)
+	// ------------------------------------------------------------------
+	virtual void HCE_Emotions()
+	{
+		double vit = health / double(max(1, SpawnHealth()));
+		// berserking_from_damage
+		if(bHCE_Berserks && !hce_berserk && hce_recentDamage > hce_berserkAmount && vit < hce_berserkThreshold)
+			HCE_GoBerserk(true);
+		// berserking_from_proximity
+		if(bHCE_Berserks && !hce_berserk && hce_proximityBerserk > 0 && hce_canSee && Distance3D(target) < hce_proximityBerserk)
+			HCE_GoBerserk(false);
+		// panic_from_damage
+		if(bHCE_Panics && hce_action != HCE_ACT_FLEE && hce_panicDamage > 0 && hce_recentDamage > hce_panicDamage)
+		{
+			hce_recentDamage = 0;
+			HCE_StartPanic();
+		}
+		// active cover seeking (shield fraction <= hide)
+		if(bHCE_SeeksCover && !hce_berserk && hce_action == HCE_ACT_FIGHT && hce_shieldMax > 0)
+		{
+			let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
+			if(sh && sh.shields <= sh.maxShields * hce_shieldHide)
+			{
+				hce_action = HCE_ACT_COVER;
+				hce_coverTics = 35 * 3;
+			}
+		}
+		if(bHCE_Evades && hce_evadeTics <= 0 && hce_action != HCE_ACT_KAMIKAZE) HCE_TryEvade();
+		if(hce_evadeTics > 0) hce_evadeTics--;
+	}
+
+	void HCE_GoBerserk(bool roar)
+	{
+		if(hce_action == HCE_ACT_KAMIKAZE) return;
+		hce_berserk = true;
+		hce_action = HCE_ACT_CHARGE;
+		HCE_Say('Berserk', roar ? 1.0 : 0.6, 35 * 2, roar);
+		if(roar && HCE_HasAnim(HCE_A_BERSERK)) HCE_PlayLocked(HCE_A_BERSERK);
+	}
+
+	void HCE_StartPanic()
+	{
+		if(hce_action == HCE_ACT_KAMIKAZE) return;
+		if(hce_action != HCE_ACT_FLEE) HCE_Say('Panic', 0.9, 35 * 2, true);
+		hce_action = HCE_ACT_FLEE;
+		HCE_StopFireLoop();
+		hce_shotsLeft = 0; hce_chargeTics = 0;
+		hce_panicTics = int(35 * frandom(max(1.5, hce_cowerMin), max(3.0, hce_cowerMax)));
+	}
+
+	// a leader (elite) died nearby -> grunts/jackals roll panic_chance_leader_type_killed
+	static void HCE_LeaderDied(Actor leader)
+	{
+		let it = BlockThingsIterator.Create(leader, 768);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || !e.hce_enabled || e.health <= 0 || e == leader || e.hce_team != HaloDoom_EnemyBase(leader).hce_team) continue;
+			e.HCE_Say('LeaderDead', 0.8, 35 * 3);
+			if(e.hce_kamiChance > 0 && frandom(0, 1) < 0.3 && e.HCE_StartKamikaze()) continue;
+			if(e.bHCE_Panics && frandom(0, 1) < max(0.35, e.hce_panicLeaderChance)) e.HCE_StartPanic();
+			if(e.bHCE_PairBond && e.GetClass() == leader.GetClass()) e.HCE_GoBerserk(true);
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Fight: firing positions inside combat range, strafing, bursts
+	// ------------------------------------------------------------------
+	virtual void HCE_Fight()
+	{
+		double d = Distance2D(target);
+		double want = (hce_rangeMin + hce_rangeMax) * 0.5;
+		double moveA = angle; double spd = 0;
+		HCE_FaceTarget();
+		HCE_TauntTick();
+
+		// lost line of sight: a strafe that broke it is undone first, then go find a firing position
+		if(!hce_canSee && hce_strafeDir != 0 && level.maptime - hce_lastSeen < 3 && hce_flipTics < level.maptime)
+		{
+			hce_strafeDir = -hce_strafeDir; hce_strafeTics = random(20, 40); hce_flipTics = level.maptime + 35;
+		}
+		if(!hce_canSee && level.maptime - hce_lastSeen > 25)
+		{
+			// pursue / search: walk to last known position with Doom pathing
+			HCE_Pursue();
+			return;
+		}
+
+		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
+		if(bHCE_Leaps && HCE_TryLeap(d)) return;
+
+		double toT = AngleTo(target);
+		if(d > hce_rangeMax) { moveA = toT; spd = hce_runSpeed; }
+		else if(d < hce_rangeMin * 0.5 && hce_rangeMin > 0)
+		{
+			// too close: give ground diagonally, only where there is room behind
+			moveA = toT + 180 + 45 * (hce_strafeDir != 0 ? hce_strafeDir : 1);
+			spd = hce_walkSpeed;
+		}
+		else
+		{
+			// strafe along the firing position band (Halo picks new firing positions every few seconds)
+			if(--hce_strafeTics <= 0)
+			{
+				hce_strafeTics = random(25, 80);
+				hce_strafeDir = random(0, 3) == 0 ? 0 : (random(0, 1) ? 1 : -1);
+			}
+			if(hce_strafeDir != 0)
+			{
+				// drift slightly toward the target while strafing so nobody ends up pinned to the far wall
+				double drift = d > (hce_rangeMin + hce_rangeMax) * 0.5 ? 20 : 0;
+				moveA = toT + (90 - drift) * hce_strafeDir;
+				spd = hce_walkSpeed * 0.8;
+			}
+		}
+		if(spd > 0) moveA = HCE_PickHeading(moveA, toT);
+		HCE_Move(moveA, spd);
+		HCE_UpdateFiring(d);
+		if(hce_kamiChance > 0 && level.maptime % 35 == 0 && frandom(0, 1) < hce_kamiChance * (health < SpawnHealth() / 2 ? 3 : 1)
+			&& HCE_StartKamikaze()) return;
+		if(bHCE_ThrowsGrenades) HCE_TryGrenade(d);
+		HCE_PickMoveAnim();
+	}
+
+	virtual void HCE_Pursue()
+	{
+		if(bHCE_Flying)
+		{
+			HCE_Move(AngleTo(target), hce_walkSpeed);
+			HCE_PickMoveAnim();
+			return;
+		}
+		double sp = speed;
+		speed = max(1, hce_runSpeed);
+		A_Chase(null, null, CHF_NOPLAYACTIVE | CHF_NODIRECTIONTURN);
+		speed = sp;
+		hce_moveSpeed = hce_runSpeed;
+		hce_moveAngle = movedir * 45.;
+		HCE_Play(HCE_A_MOVE_F);
+		if(level.maptime - hce_lastSeen > 35 * 20) target = null;   // give up the search
+	}
+
+	virtual void HCE_Charge()
+	{
+		double d = Distance2D(target);
+		HCE_FaceTarget(2.0);
+		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
+		if(bHCE_Leaps && HCE_TryLeap(d)) return;
+		if(!hce_canSee) { HCE_Pursue(); return; }
+		HCE_Move(AngleTo(target), hce_runSpeed * 1.15);
+		if(hce_projectile != 'None' && d < hce_maxRange * 0.5) HCE_UpdateFiring(d);
+		HCE_PickMoveAnim();
+		if(bHCE_Explodes && d < radius + target.radius + 24) HCE_Detonate();
+	}
+
+	virtual void HCE_Flee()
+	{
+		if(--hce_panicTics <= 0) { hce_action = HCE_ACT_FIGHT; HCE_Say('Regroup', 0.5, 35 * 2); return; }
+		if(random(0, 50) == 0) HCE_Say('Flee', 1.0, 35 * 2);
+		HCE_Move(HCE_PickHeading(AngleTo(target) + 180 + frandom(-30, 30), AngleTo(target)), hce_runSpeed);
+		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
+	}
+
+	virtual void HCE_Cover()
+	{
+		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
+		bool recovered = !sh || sh.shields >= sh.maxShields * hce_shieldEmerge;
+		if(--hce_coverTics <= 0 && recovered) { hce_action = HCE_ACT_FIGHT; return; }
+		if(hce_canSee)
+		{
+			// sidestep out of the line of fire toward whichever side has room
+			double toT = AngleTo(target);
+			if(hce_strafeDir == 0 || HCE_Clearance(toT + 90 * hce_strafeDir, 160) < 96)
+				hce_strafeDir = HCE_Clearance(toT + 90, 256) >= HCE_Clearance(toT - 90, 256) ? 1 : -1;
+			HCE_Move(HCE_PickHeading(toT + 120 * hce_strafeDir, toT), hce_runSpeed);
+			HCE_FaceTarget();
+			HCE_UpdateFiring(Distance2D(target));
+		}
+		else
+		{
+			HCE_Brake();
+			hce_crouch = HCE_HasAnim(HCE_A_CROUCH_IDLE);
+			if(recovered) hce_coverTics = min(hce_coverTics, 10);
+		}
+		HCE_PickMoveAnim();
+	}
+
+	// ------------------------------------------------------------------
+	// Movement
+	// ------------------------------------------------------------------
+	void HCE_FaceTarget(double mul = 1.0)
+	{
+		if(!target) return;
+		double want = AngleTo(target);
+		double d = DeltaAngle(angle, want);
+		double rate = hce_turnRate * mul;
+		A_SetAngle(angle + clamp(d, -rate, rate), SPF_INTERPOLATE);
+		double dz = (target.pos.z + target.height * 0.5) - (pos.z + height * 0.6);
+		A_SetPitch(-atan2(dz, max(1, Distance2D(target))), SPF_INTERPOLATE);
+	}
+
+	void HCE_Brake()
+	{
+		vel.xy *= 0.6;
+		hce_moveSpeed = 0;
+	}
+
+	// distance to the nearest wall along a heading (at chest height)
+	double HCE_Clearance(double ang, double maxd)
+	{
+		FLineTraceData tr;
+		if(LineTrace(ang, maxd, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, height * 0.5, data: tr))
+			return tr.Distance;
+		return maxd;
+	}
+
+	// pick a heading near 'want' that has room ahead; headings that keep
+	// the target in view (not straight away from it) are preferred
+	double hce_headCache, hce_headWant;
+	int    hce_headTics;
+	double HCE_PickHeading(double want, double toTarget)
+	{
+		if(hce_unstickTics > 0) return hce_unstickAngle;
+		if(hce_headTics > level.maptime && abs(DeltaAngle(want, hce_headWant)) < 25) return hce_headCache;
+		static const double offs[] = { 0, 25, -25, 50, -50, 80, -80, 115, -115 };
+		double best = want, bestScore = -1e9;
+		double need = radius + 40;
+		for(int i = 0; i < offs.Size(); i++)
+		{
+			double a = want + offs[i];
+			double c = HCE_Clearance(a, 256);
+			if(c < need) continue;
+			double score = cos(offs[i]) * 1.2 + min(c, 256) / 256.0
+			             - max(0, cos(DeltaAngle(a, toTarget + 180))) * 0.35;   // backing straight off is the last resort
+			if(score > bestScore) { bestScore = score; best = a; }
+		}
+		if(bestScore < -1e8) best = toTarget + 90 * (hce_strafeDir != 0 ? hce_strafeDir : 1);
+		// keep off the walls: nudge away from a wall close beside the chosen heading
+		double wl = HCE_Clearance(best + 90, 96), wr = HCE_Clearance(best - 90, 96);
+		if(wl < radius + 32 && wl < wr) best -= 30;
+		else if(wr < radius + 32 && wr < wl) best += 30;
+		hce_headCache = best; hce_headWant = want; hce_headTics = level.maptime + 6;
+		return best;
+	}
+
+	// stuck: barely moved for half a second while trying to -> head for open space
+	vector2 hce_stuckPos;
+	int     hce_stuckTics, hce_unstickTics;
+	double  hce_unstickAngle;
+	void HCE_StuckCheck(double spd)
+	{
+		if(hce_unstickTics > 0) { hce_unstickTics--; return; }
+		if(spd <= 0.5) { hce_stuckTics = 0; hce_stuckPos = pos.xy; return; }
+		if(++hce_stuckTics < 18) return;
+		hce_stuckTics = 0;
+		bool stuck = (pos.xy - hce_stuckPos).Length() < spd * 4;
+		hce_stuckPos = pos.xy;
+		if(!stuck) return;
+		double toT = target ? AngleTo(target) : angle;
+		double best = toT, bc = -1;
+		for(int i = 0; i < 8; i++)
+		{
+			double a = toT + 45 * i;
+			double c = HCE_Clearance(a, 384) + (i == 0 ? 64 : 0);
+			if(c > bc) { bc = c; best = a; }
+		}
+		hce_unstickAngle = best;
+		hce_unstickTics = 25;
+		hce_strafeDir = -hce_strafeDir;
+	}
+
+	// steering: try the wanted heading, then fan out
+	bool HCE_Move(double ang, double spd)
+	{
+		HCE_StuckCheck(spd);
+		if(hce_unstickTics > 0) ang = hce_unstickAngle;
+		hce_moveAngle = ang;
+		hce_moveSpeed = spd;
+		if(spd <= 0) { HCE_Brake(); return false; }
+		static const double fan[] = { 0, 30, -30, 60, -60, 90, -90, 135, -135 };
+		for(int i = 0; i < fan.Size(); i++)
+		{
+			double a = ang + fan[i];
+			vector2 step = AngleToVector(a, spd);
+			vector2 np = pos.xy + step;
+			if(TryMove(np, 0))
+			{
+				hce_moveAngle = a;
+				vel.xy = (0, 0);
+				return true;
+			}
+		}
+		HCE_Brake();
+		return false;
+	}
+
+	void HCE_PickMoveAnim()
+	{
+		if(hce_moveSpeed <= 0.1)
+		{
+			if(hce_crouch) HCE_Play(HCE_A_CROUCH_IDLE);
+			else if(hce_curAnimKind != HCE_A_FIRE || !hce_canSee) HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
+			return;
+		}
+		hce_crouch = false;
+		double rel = DeltaAngle(angle, hce_moveAngle);
+		int k = HCE_A_MOVE_F;
+		if(rel > 45 && rel < 135) k = HCE_A_MOVE_L;
+		else if(rel < -45 && rel > -135) k = HCE_A_MOVE_R;
+		else if(abs(rel) >= 135) k = HCE_A_MOVE_B;
+		if(!HCE_HasAnim(k)) k = HCE_A_MOVE_F;
+		HCE_Play(k);
+	}
+
+	void HCE_Hover()
+	{
+		double want = max(floorz + hce_flyHeight, min(ceilingz - height - 8, (target ? target.pos.z + target.height * 0.6 : pos.z)));
+		vel.z = clamp((want - pos.z) * 0.08, -3, 3) + sin(level.maptime * 6) * 0.15;
+	}
+
+	virtual void HCE_Follow()
+	{
+		let p = players[consoleplayer].mo;
+		if(!p) { HCE_Brake(); HCE_Play(HCE_A_IDLE); return; }
+		double d = Distance2D(p);
+		if(d > 220) { HCE_Move(AngleTo(p), d > 500 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
+		else HCE_Brake();
+		HCE_PickMoveAnim();
+		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) { hce_action = HCE_ACT_FIGHT; HCE_OnAcquire(); } }
+	}
+
+	// ------------------------------------------------------------------
+	// Ranged combat: Halo burst model (actor_burst_geometry)
+	// ------------------------------------------------------------------
+	virtual void HCE_UpdateFiring(double dist)
+	{
+		if(hce_projectile == 'None' && !bHCE_Beam) return;
+		if(hce_patShotsMax > 0) { HCE_UpdatePattern(dist); return; }
+		// legacy: Halo burst duration / separation
+		if(!hce_canSee || dist > hce_maxRange) { hce_burstTics = 0; return; }
+		if(hce_burstTics > 0)
+		{
+			hce_burstTics--;
+			if(--hce_shotTics <= 0)
+			{
+				hce_shotTics = max(1, int(35.0 / max(0.25, hce_rateOfFire)));
+				HCE_FireShot();
+			}
+			if(hce_burstTics == 0) hce_sepTics = int(35 * frandom(hce_sepMin, hce_sepMax));
+			return;
+		}
+		if(--hce_sepTics <= 0)
+		{
+			hce_burstTics = max(1, int(35 * frandom(hce_burstMin, hce_burstMax)));
+			hce_shotTics = 0;
+		}
+	}
+
+	// Pattern fire: N rounds at a fixed spacing, then a real pause. Plasma
+	// pistol overcharge replaces a whole burst and is telegraphed by a charge-up.
+	void HCE_UpdatePattern(double dist)
+	{
+		if(!hce_canSee || dist > hce_maxRange || !target)
+		{
+			if(hce_shotsLeft > 0) HCE_EndBurst(0.5);
+			if(hce_chargeTics > 0) { hce_chargeTics = 0; A_StopSound(CHAN_7); hce_sepTics = 20; }
+			return;
+		}
+		if(hce_chargeTics > 0)
+		{
+			HCE_FaceTarget();
+			if(--hce_chargeTics == 0)
+			{
+				A_StopSound(CHAN_7);
+				HCE_FireShot(true);
+				hce_sepTics = int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * 1.6 * HCE_PauseScale());
+			}
+			return;
+		}
+		if(hce_shotsLeft > 0)
+		{
+			if(--hce_shotTics <= 0)
+			{
+				HCE_FireShot();
+				hce_shotTics = max(1, hce_patInterval);
+				if(--hce_shotsLeft <= 0) HCE_EndBurst(1.0);
+			}
+			return;
+		}
+		if(--hce_sepTics > 0) return;
+		if(hce_specialFire > 0 && hce_patChargeTics > 0 && frandom(0, 1) < hce_specialChance
+			&& !(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)))
+		{
+			hce_chargeTics = hce_patChargeTics;
+			if(hce_chargeSound.Length() > 0) A_StartSound(hce_chargeSound, CHAN_7, 0, 0.8);
+			return;
+		}
+		// lobbed weapons hold fire under a ceiling too low for the arc
+		if(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)) { hce_sepTics = 35; return; }
+		hce_shotsLeft = random(hce_patShotsMin, max(hce_patShotsMin, hce_patShotsMax));
+		hce_shotTics = 0;
+		if(hce_fireLoop)
+		{
+			if(hce_chargeSound.Length() > 0) A_StartSound(hce_chargeSound, CHAN_AUTO, CHANF_OVERLAP, 0.8);
+			if(hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_LOOPING, 0.8);
+		}
+	}
+
+	void HCE_EndBurst(double pauseScale)
+	{
+		hce_shotsLeft = 0;
+		HCE_StopFireLoop();
+		hce_sepTics = max(1, int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * pauseScale * HCE_PauseScale()));
+	}
+
+	void HCE_StopFireLoop()
+	{
+		if(!hce_fireLoop) return;
+		A_StopSound(CHAN_WEAPON);
+		if(hce_shotsLeft > 0 && hce_specialSound.Length() > 0) A_StartSound(hce_specialSound, CHAN_AUTO, CHANF_OVERLAP, 0.8);
+		hce_shotsLeft = 0;
+	}
+
+	// hce_burstpause CVar: >1 = longer pauses between bursts (easier)
+	static double HCE_PauseScale()
+	{
+		CVar cv = CVar.FindCVar("hce_burstpause");
+		return cv ? max(0.25, cv.GetFloat()) : 1.0;
+	}
+
+	virtual void HCE_FireShot(bool special = false)
+	{
+		if(!target) return;
+		if(bHCE_Beam) { HCE_FireBeam(); return; }
+		class<Actor> pc = (class<Actor>)(hce_projectile);
+		if(!pc) return;
+		// legacy mode rolls the overcharge per shot
+		if(!special && hce_patShotsMax <= 0) special = hce_specialFire > 0 && frandom(0, 1) < hce_specialChance;
+		int n = max(1, hce_projectilesPerShot);
+		if(special)
+		{
+			Name scn = (hce_specialProj != 'None' && hce_specialProj != '') ? hce_specialProj : 'HCE_ChargedPlasma';
+			class<Actor> sc = (class<Actor>)(scn);
+			if(sc) pc = sc;
+			n = max(1, hce_specialCount);
+		}
+		double err = hce_errorAngle;
+		vector3 from = pos + (0, 0, height * 0.5 + hce_gunOffset.z);
+		if(bHCE_Lobbed)
+		{
+			// gravity projectiles: ballistic arc to where the target will be
+			for(int i = 0; i < n; i++)
+			{
+				let g = Spawn(pc, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z), ALLOW_REPLACE);
+				if(!g) continue;
+				g.target = self;
+				if(!HCE_LobAt(g, g.pos, 40 + 30 * i + err * 6)) { g.Destroy(); continue; }   // would stick to the ceiling
+				HCE_ScaleShot(g);
+			}
+		}
+		else
+		{
+			// lead the target (target_lead_fraction) and add Halo's error cone
+			double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
+			vector3 aimPos = target.pos + (0, 0, target.height * 0.55) + target.vel * t * hce_leadFraction;
+			vector3 diff = level.Vec3Diff(from, aimPos);
+			double aAng = atan2(diff.y, diff.x);
+			double aPit = -atan2(diff.z, diff.xy.Length());
+			for(int i = 0; i < n; i++)
+			{
+				let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
+					DeltaAngle(angle, aAng) + frandom(-err, err), DeltaAngle(pitch, aPit) + frandom(-err, err));
+				HCE_ScaleShot(shot);
+			}
+		}
+		HCE_PlayFireSound(special);
+		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		if(bHCE_ActiveCamo) A_SetRenderStyle(0.45, STYLE_Translucent);
+	}
+
+	void HCE_PlayFireSound(bool special)
+	{
+		if(hce_fireLoop) return;
+		if(special && hce_specialSound.Length() > 0) { A_StartSound(hce_specialSound, CHAN_WEAPON, CHANF_OVERLAP, 1.0); return; }
+		if(hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_OVERLAP, 0.85);
+		if(hce_fireSoundBass.Length() > 0) A_StartSound(hce_fireSoundBass, CHAN_AUTO, CHANF_OVERLAP, 0.4);
+	}
+
+	// ------------------------------------------------------------------
+	// Dialogue: "HCE/<voice>/<event>" from the optional voice pk3.
+	// One line at a time per actor, plus nearby allies hold their tongue
+	// for a moment so a squad doesn't talk over itself.
+	// ------------------------------------------------------------------
+	virtual void HCE_Say(Name ev, double chance = 1.0, int cooldown = 70, bool force = false)
+	{
+		if(hce_voice == 'None' || hce_voice == '') return;
+		if(!force && level.maptime < hce_voiceTics) return;
+		if(frandom(0, 1) > chance) return;
+		String snd = String.Format("HCE/%s/%s", hce_voice, ev);
+		A_StartSound(snd, CHAN_VOICE, force ? 0 : CHANF_NOSTOP, 1.0, ATTN_NORM);
+		hce_voiceTics = level.maptime + max(cooldown, 35);
+		hce_tauntTics = max(hce_tauntTics, level.maptime + 35 * 5);
+		let it = BlockThingsIterator.Create(self, 512);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(e && e != self && e.hce_team == hce_team && e.health > 0)
+				e.hce_voiceTics = max(e.hce_voiceTics, level.maptime + 35);
+		}
+	}
+
+	// combat chatter between bursts
+	void HCE_TauntTick()
+	{
+		if(level.maptime < hce_tauntTics || !hce_canSee) return;
+		hce_tauntTics = level.maptime + random(35 * 6, 35 * 14);
+		HCE_Say('Taunt', 0.6, 35 * 3);
+	}
+
+	// HDE's plasma grenade puts its victim in Pain.PlasmaStuck
+	virtual void HCE_OnStuck()
+	{
+		if(health <= 0) return;
+		// Elites (and anything else that berserks) roar and charge whoever stuck them
+		if(bHCE_Berserks && hce_action != HCE_ACT_KAMIKAZE)
+		{
+			let it = ThinkerIterator.Create("PlasmaGrenade_Proj");
+			PlasmaGrenade_Proj g;
+			while(g = PlasmaGrenade_Proj(it.Next()))
+			{
+				if(g.hitactor != self || !g.target || g.target == self) continue;
+				if(HCE_IsEnemy(g.target)) { target = g.target; hce_lastKnown = target.pos; }
+				break;
+			}
+			if(!target) HCE_ScanTargets();       // no known thrower: charge the nearest enemy in sight
+			hce_berserk = false;                 // re-trigger even if already berserk: always roar
+			HCE_GoBerserk(true);
+			return;
+		}
+		if(bHCE_Panics) HCE_StartPanic();
+		HCE_Say('Stuck', 1.0, 35 * 2, true);
+	}
+
+	// actv.ranged_combat.weapon_damage_modifier, hce_enemydamage and the hce_nerf_projectiles nerf. Only what an enemy fires or
+	// throws is scaled (bullets, plasma, needles, rockets, grenades and their blasts); melee is untouched.
+	void HCE_ScaleShot(Actor shot, bool thrown = false)
+	{
+		double m = (thrown || hce_damageMod <= 0 ? 1.0 : hce_damageMod) * (bFRIENDLY ? 1.0 : HCE_DamageScale());   // allies keep full damage
+		HCE_ScaleProjectile(shot, m);
+	}
+
+	static void HCE_ScaleProjectile(Actor shot, double m)
+	{
+		if(!shot) return;
+		// carried for the pack's own grenade / rocket / fuel-rod / needle subclasses, which multiply their
+		// explosions by it (DamageMultiply only acts when the actor itself is the damage source)
+		shot.DamageMultiply = m;
+		let fp = HaloProjectile(shot);
+		if(fp) { fp.truedamage *= m; fp.explode_dmg *= m; return; }
+		let np = HaloNeedleProjectile(shot);
+		if(np) np.shatterdmg *= m;
+		let sp = HaloSlowProjectile(shot);
+		if(sp) { sp.truedamage *= m; sp.explode_dmg *= m; return; }
+		let fl = HaloFlames(shot);
+		if(fl) { if(frandom(0, 1) > m) fl.SetDamage(0); return; }      // 1 damage a tic: thin the flames out instead
+		if(shot.bMISSILE) shot.SetDamage(max(1, int(shot.GetMissileDamage(0, 1) * m + frandom(0, 1))));
+	}
+
+	static double HCE_DamageScale()
+	{
+		CVar cv = CVar.FindCVar("hce_enemydamage");
+		CVar nerf = CVar.FindCVar("hce_nerf_projectiles");
+		return (cv ? max(0., cv.GetFloat()) : 1.0) * (nerf ? max(0., nerf.GetFloat()) : 0.4);
+	}
+	static double HCE_HealthScale()
+	{
+		CVar cv = CVar.FindCVar("hce_nerf_health");
+		return cv ? max(0.05, cv.GetFloat()) : 0.6;
+	}
+	static double HCE_ShieldScale()
+	{
+		CVar cv = CVar.FindCVar("hce_nerf_shields");
+		return cv ? max(0., cv.GetFloat()) : 0.5;
+	}
+	// damage a hitscan beam does, scaled with random rounding so small numbers still average out
+	static int HCE_ScaledHit(double dmg)
+	{
+		double d = dmg * HCE_DamageScale();
+		return int(d) + (frandom(0, 1) < d - int(d) ? 1 : 0);
+	}
+
+	// sentinel beam: continuous hitscan, 30 shots/s at 1 damage in Halo
+	void HCE_FireBeam()
+	{
+		FTranslatedLineTarget t;
+		double ang = AngleTo(target) + frandom(-hce_errorAngle, hce_errorAngle);
+		double dz = (target.pos.z + target.height * 0.5) - (pos.z + height * 0.5);
+		double pit = -atan2(dz, max(1, Distance2D(target)));
+		int bd = HCE_ScaledHit(random(2, 3));
+		if(bd > 0) LineAttack(ang, hce_maxRange, pit, bd, 'Fire', "HCE_BeamPuff", LAF_NORANDOMPUFFZ, t);
+		vector3 from = pos + (0, 0, height * 0.5);
+		vector3 to = target.pos + (0, 0, target.height * 0.5);
+		vector3 step = (to - from) / 16.0;
+		for(int i = 0; i < 16; i++)
+			A_SpawnParticle("FF9020", SPF_FULLBRIGHT, 3, 3, 0, from.x - pos.x + step.x * i, from.y - pos.y + step.y * i, from.z - pos.z + step.z * i);
+	}
+
+	// ------------------------------------------------------------------
+	// Grenades (actor_action_handle_grenade_throwing)
+	// ------------------------------------------------------------------
+	virtual bool HCE_TryGrenade(double dist)
+	{
+		if(hce_grenadeType <= 0 || hce_grenades <= 0 || !hce_canSee) return false;
+		if(--hce_grenadeTics > 0) return false;
+		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group
+		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale());
+		if(dist < hce_grenadeMin || dist > hce_grenadeMax) return false;
+		if(frandom(0, 1) > hce_grenadeChance * 0.45) return false;
+		if(!HCE_GrenadeArcClear()) { hce_grenadeTics = 35; return false; }   // low ceiling: hold it, look again in a second
+		hce_grenades--;
+		hce_grenadeTics = int(35 * frandom(12, 20) * HCE_GrenadeScale());
+		// squad discipline: nearby allies hold their grenades for a few seconds
+		let it = BlockThingsIterator.Create(self, 640);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(e && e != self && e.hce_team == hce_team) e.hce_grenadeTics = max(e.hce_grenadeTics, int(35 * 5 * HCE_GrenadeScale()));
+		}
+		HCE_Say('GrenadeThrow', 0.8, 35 * 2);
+		A_SetAngle(AngleTo(target));
+		HCE_PlayLocked(HCE_A_THROW, 0.9);
+		hce_pendingGrenade = max(4, int(hce_animLock * 0.45));
+		return true;
+	}
+	int hce_pendingGrenade;
+
+	// hce_grenadefreq: 2 = twice as often, 0.5 = half as often
+	static double HCE_GrenadeScale()
+	{
+		CVar cv = CVar.FindCVar("hce_grenadefreq");
+		return cv ? 1.0 / clamp(cv.GetFloat(), 0.1, 5.0) : 1.0;
+	}
+
+	// ------------------------------------------------------------------
+	// Ballistic arcs that respect the ceiling: a lob is simulated against the
+	// ceiling (and ledge) heights along its path; if the natural arc would hit,
+	// flatter/faster arcs are tried. Returns false when nothing clears.
+	// ------------------------------------------------------------------
+	static double HCE_GravityOf(class<Actor> c, Sector sec)
+	{
+		let d = GetDefaultByType(c);
+		if(!d || d.bNOGRAVITY) return 0.1;
+		return max(0.05, level.gravity * (sec ? sec.gravity : 1.0) * d.Gravity * 0.00125);
+	}
+
+	bool HCE_ArcClear(vector3 from, vector2 dir, double vh, double vz, double grav, double tt)
+	{
+		int steps = 12;
+		for(int i = 1; i <= steps; i++)
+		{
+			double t = tt * i / steps;
+			vector2 p = level.Vec2Offset(from.xy, dir * vh * t);
+			double z = from.z + vz * t - 0.5 * grav * t * t;
+			Sector sec = level.PointInSector(p);
+			if(!sec) return false;
+			if(z > sec.ceilingplane.ZAtPoint(p) - 12) return false;                 // would hit/stick to the ceiling
+			if(i < steps && z < sec.floorplane.ZAtPoint(p) - 2) return false;      // would hit a ledge on the way
+		}
+		return true;
+	}
+
+	// returns the launch velocity; hce_lobClear says whether it clears the ceilings
+	// (no 'out vector3': UZDoom's JIT can't pass vectors by reference)
+	bool hce_lobClear;
+	vector3 HCE_SolveLob(vector3 from, vector3 to, double grav, double maxV)
+	{
+		vector3 vel;
+		vector3 diff = level.Vec3Diff(from, to);
+		double horiz = max(1, diff.xy.Length());
+		vector2 dir = horiz > 1 ? diff.xy.Unit() : AngleToVector(angle, 1);
+		double vh0 = clamp(horiz / 28.0, 8, maxV);
+		double vhMax = max(vh0, maxV * 1.6);           // a harder, flatter throw is allowed under low ceilings
+		for(int k = 0; k <= 6; k++)
+		{
+			double vh = vh0 + (vhMax - vh0) * k / 6.0;
+			double tt = horiz / vh;
+			double vz = diff.z / tt + 0.5 * grav * tt;
+			vel = (dir * vh, vz);
+			if(HCE_ArcClear(from, dir, vh, vz, grav, tt)) { hce_lobClear = true; return vel; }
+		}
+		hce_lobClear = false;                           // vel holds the flattest arc
+		return vel;
+	}
+
+	// launch a gravity-affected projectile so it lands near the target (scatter = map units of spread)
+	bool HCE_LobAt(Actor g, vector3 from, double scatter = 0)
+	{
+		vector3 to = target.pos + target.vel * 20 + (frandom(-scatter, scatter), frandom(-scatter, scatter), 0);
+		vector3 v = HCE_SolveLob(from, to, max(0.05, g.GetGravity()), max(10, hce_grenadeVel > 0 ? hce_grenadeVel : 26));
+		g.vel = v;
+		g.angle = atan2(v.y, v.x);
+		return hce_lobClear;
+	}
+
+	// would a lob of this class thrown now clear the ceiling?
+	bool HCE_LobPossible(class<Actor> c, double fromZ, double maxV)
+	{
+		if(!target || !c) return false;
+		HCE_SolveLob(pos + (0, 0, fromZ), target.pos + target.vel * 20, HCE_GravityOf(c, CurSector), maxV);
+		return hce_lobClear;
+	}
+
+	// the pack's grenade subclasses (their blasts follow HCE_ScaleShot), HDE's own if the core isn't loaded
+	class<Actor> HCE_GrenadeClass()
+	{
+		Name n = hce_grenadeType == 2 ? 'HCE_PlasmaGrenade' : 'HCE_FragGrenade';
+		class<Actor> gc = (class<Actor>)(n);
+		if(!gc) gc = (class<Actor>)(hce_grenadeType == 2 ? 'PlasmaGrenade_Proj' : 'FragGrenade_Proj');
+		return gc;
+	}
+
+	bool HCE_GrenadeArcClear()
+	{
+		class<Actor> gc = HCE_GrenadeClass();
+		return HCE_LobPossible(gc, height * 0.8, max(10, hce_grenadeVel));
+	}
+
+	void HCE_ThrowGrenadeNow()
+	{
+		if(!target) return;
+		class<Actor> gc = HCE_GrenadeClass();
+		if(!gc) return;
+		vector3 from = pos + (0, 0, height * 0.8);
+		vector3 v = HCE_SolveLob(from, target.pos + target.vel * 20, HCE_GravityOf(gc, CurSector), max(10, hce_grenadeVel));
+		if(!hce_lobClear)
+		{
+			hce_grenades++;          // target moved under a low ceiling mid-throw: keep the grenade
+			return;
+		}
+		let g = Spawn(gc, from, ALLOW_REPLACE);
+		if(!g) return;
+		g.target = self;
+		g.vel = v;
+		HCE_ScaleShot(g, true);
+		g.angle = angle;
+	}
+
+	// ------------------------------------------------------------------
+	// Melee and leaps
+	// ------------------------------------------------------------------
+	// melee reach: Halo's melee range is capped per class in the generator; this
+	// measures center to center so big targets aren't hit from across the room
+	bool HCE_InMeleeRange(double d, double slack = 0)
+	{
+		return hce_meleeRange > 0 && target && d < hce_meleeRange + radius + target.radius + slack;
+	}
+
+	virtual bool HCE_TryMelee()
+	{
+		if(hce_meleeTics > level.maptime) return false;
+		if(!HCE_HasAnim(HCE_A_MELEE) && !bHCE_Explodes) return false;
+		if(bHCE_Explodes) { HCE_Detonate(); return true; }
+		A_SetAngle(AngleTo(target));
+		HCE_Say('Melee', 0.35, 35 * 3);
+		HCE_PlayLocked(HCE_A_MELEE);
+		hce_pendingMelee = max(3, int(hce_animLock * 0.4));
+		hce_meleeTics = level.maptime + hce_animLock + 10;
+		return true;
+	}
+	int hce_pendingMelee;
+
+	void HCE_MeleeHitNow()
+	{
+		if(!target || !HCE_InMeleeRange(Distance2D(target), 14)) return;
+		if(abs(target.pos.z - pos.z) > max(height, target.height)) return;
+		if(abs(DeltaAngle(angle, AngleTo(target))) > 70) return;   // swung at empty air
+		int dmg = int(hce_meleeDamage * frandom(0.9, 1.1));
+		target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
+		target.Thrust(dmg * 0.08, AngleTo(target));
+		A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
+	}
+
+	virtual bool HCE_TryLeap(double dist)
+	{
+		if(!hce_canSee || hce_leapMax <= 0) return false;
+		if(dist < hce_leapMin || dist > hce_leapMax) return false;
+		if(hce_meleeTics > level.maptime || frandom(0, 1) > hce_leapChance * 0.08) return false;
+		A_SetAngle(AngleTo(target));
+		hce_leapState = 1;
+		HCE_Play(HCE_HasAnim(HCE_A_LEAP_START) ? HCE_A_LEAP_START : HCE_A_AIRBORNE, false, true);
+		hce_actionTics = HCE_HasAnim(HCE_A_LEAP_START) ? min(12, HCE_AnimTics(HCE_AnimName(HCE_A_LEAP_START))) : 4;
+		return true;
+	}
+
+	// infection_swarm_aim_jump: ballistic hop at the target, capped vertical speed
+	void HCE_LeapTick()
+	{
+		if(hce_leapState == 1)
+		{
+			if(--hce_actionTics > 0) return;
+			if(!target) { hce_leapState = 0; return; }
+			vector3 diff = level.Vec3Diff(pos, target.pos + (0, 0, target.height * 0.4));
+			double horiz = diff.xy.Length();
+			double vh = max(6, hce_leapVel);
+			double tt = horiz / vh;
+			double vz = clamp(diff.z / max(1, tt) + 0.5 * GetGravity() * tt, 2, vh * 0.9);
+			vel = (diff.xy.Unit() * vh, vz);
+			hce_leapState = 2;
+			hce_actionTics = 70;
+			HCE_Play(HCE_HasAnim(HCE_A_LEAP_AIR) ? HCE_A_LEAP_AIR : HCE_A_AIRBORNE, true, true);
+			return;
+		}
+		// airborne
+		if(target && Distance3D(target) < radius + target.radius + 16)
+		{
+			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1));
+			target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
+			if(bHCE_Swarm)
+			{
+				// infection forms latch, nibble and hop off again
+				vel = (-vel.xy * 0.35, 3);
+				hce_meleeTics = level.maptime + random(10, 25);
+				hce_leapState = 0;
+				return;
+			}
+			hce_leapState = 0;
+			hce_meleeTics = level.maptime + 35;
+			if(HCE_HasAnim(HCE_A_LEAP_MELEE)) HCE_PlayLocked(HCE_A_LEAP_MELEE, 0.7);
+			return;
+		}
+		if((pos.z <= floorz + 1 && vel.z <= 0) || --hce_actionTics <= 0)
+		{
+			hce_leapState = 0;
+			hce_meleeTics = level.maptime + 20;
+			if(HCE_HasAnim(HCE_A_LAND)) HCE_PlayLocked(HCE_A_LAND, 0.4);
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Evasion: dodge incoming projectiles and grenades
+	// ------------------------------------------------------------------
+	virtual void HCE_TryEvade()
+	{
+		hce_evadeTics = 6;
+		let it = BlockThingsIterator.Create(self, 300);
+		while(it.Next())
+		{
+			let p = it.thing;
+			if(!p.bMISSILE && !(p is "HaloGrenade_Proj")) continue;
+			if(p.target && !HCE_IsEnemy(p.target)) continue;
+			vector3 rel = level.Vec3Diff(p.pos, pos);
+			bool isNade = p is "HaloGrenade_Proj";
+			double chance;
+			if(isNade)
+			{
+				if(rel.Length() > 220) continue;
+				HCE_Say('EnemyGrenade', 0.9, 35 * 2, true);
+				chance = hce_grenadeDiveChance;
+			}
+			else
+			{
+				if(p.vel.Length() < 1) continue;
+				double closing = (rel.Unit() dot p.vel.Unit());
+				if(closing < 0.93 || rel.Length() > 260) continue;
+				chance = hce_evadeChance * 0.25;
+			}
+			if(frandom(0, 1) > chance) { hce_evadeTics = 25; return; }
+			// dive perpendicular to the threat
+			double away = atan2(rel.y, rel.x);
+			int side = DeltaAngle(angle, away) > 0 ? 1 : -1;
+			double diveAng = isNade ? away : AngleTo(p) + 90 * side;
+			int k = HCE_A_DIVE_F;
+			double relDive = DeltaAngle(angle, diveAng);
+			if(relDive > 45) k = HCE_HasAnim(HCE_A_DIVE_L) ? HCE_A_DIVE_L : HCE_A_EVADE_L;
+			else if(relDive < -45) k = HCE_HasAnim(HCE_A_DIVE_R) ? HCE_A_DIVE_R : HCE_A_EVADE_R;
+			else if(abs(relDive) > 135) { diveAng = angle + 90; k = HCE_A_DIVE_L; }
+			if(!HCE_HasAnim(k)) return;
+			HCE_PlayLocked(k, 0.75);
+			hce_diveAngle = diveAng;
+			hce_diveTics = min(14, hce_animLock);
+			hce_evadeTics = 35 * 2;
+			return;
+		}
+	}
+	double hce_diveAngle;
+	int hce_diveTics;
+
+	// per-tic work while a one-shot animation plays
+	virtual void HCE_LockedTick()
+	{
+		if(hce_diveTics > 0)
+		{
+			hce_diveTics--;
+			HCE_Move(hce_diveAngle, hce_runSpeed * 1.4);
+		}
+		else if(!bHCE_Flying) HCE_Brake();
+		if(hce_pendingGrenade > 0 && --hce_pendingGrenade == 0) HCE_ThrowGrenadeNow();
+		if(hce_pendingMelee > 0 && --hce_pendingMelee == 0) HCE_MeleeHitNow();
+		if(target) HCE_FaceTarget(0.5);
+	}
+
+	// ------------------------------------------------------------------
+	// Flood: corpse hunting (infection forms), resurrection, carrier pop
+	// ------------------------------------------------------------------
+	virtual bool HCE_SeekCorpse() { return false; }
+	virtual void HCE_Feed() {}
+
+	void HCE_Detonate()
+	{
+		if(health <= 0 && hce_detonated) return;
+		hce_detonated = true;
+		A_StartSound("HCE/FloodPop", CHAN_BODY, CHANF_OVERLAP);
+		A_Explode(int(max(10, hce_meleeDamage)), int(radius * 3 + 32), XF_NOTMISSILE, true, int(radius * 2));
+		for(int i = 0; i < 24; i++)
+			A_SpawnParticle("B8A060", 0, random(20, 40), random(3, 6), frandom(0, 360), 0, 0, height * 0.5, frandom(-3, 3), frandom(-3, 3), frandom(0, 4), 0, 0, -0.2);
+		HCE_OnDetonate();
+		if(health > 0) DamageMobj(self, self, health + 50, 'Explosive', DMG_FORCED);
+	}
+	bool hce_detonated;
+	virtual void HCE_OnDetonate() {}
+
+	// ------------------------------------------------------------------
+	// Damage: Hunter front armour, Jackal shield, flinches, stealth flicker
+	// ------------------------------------------------------------------
+	virtual int HCE_ModifyIncoming(Actor inflictor, Actor source, int dmg, Name mod, int flags, double dangle)
+	{
+		Actor from = inflictor ? inflictor : source;
+		if(!from || (flags & DMG_FORCED)) return dmg;
+		// friendly fire: Halo AI avoids it (avoid_friend_line_of_fire); allies only take splash
+		if(source && source != self && HCE_TeamOf(source) == hce_team && !source.player)
+		{
+			if(mod != 'Explosive') return 0;
+			dmg /= 2;
+		}
+		double rel = abs(DeltaAngle(angle, AngleTo(from)));
+		bool explosive = mod == 'Explosive' || mod == 'Fire' || (inflictor && inflictor.bEXTREMEDEATH);
+		if(bHCE_FrontArmor && rel < 70 && !explosive && mod != 'Melee')
+			dmg = max(1, int(dmg * 0.08));            // shield arm / armour plates
+		if(bHCE_FrontShield && hce_frontShieldHP > 0 && rel < 55 && mod != 'Melee')
+		{
+			double absorbed = min(hce_frontShieldHP, dmg);
+			hce_frontShieldHP -= absorbed;
+			hce_frontShieldRegen = 35 * 4;
+			for(int i = 0; i < 4; i++)
+				A_SpawnParticle("60A0FF", SPF_FULLBRIGHT, 10, 4, 0, cos(angle) * 20, sin(angle) * 20, height * 0.5, frandom(-2, 2), frandom(-2, 2), frandom(-1, 2));
+			dmg -= int(absorbed);
+			if(hce_frontShieldHP <= 0) A_StartSound("Shield/Explode", CHAN_AUTO, CHANF_OVERLAP);
+		}
+		return dmg;
+	}
+
+	void HCE_UpdateFrontShield()
+	{
+		if(hce_frontShieldRegen > 0) { hce_frontShieldRegen--; return; }
+		hce_frontShieldHP = min(hce_frontShieldMax, hce_frontShieldHP + hce_frontShieldMax / 70.0);
+	}
+
+	virtual void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
+	{
+		if(dealt <= 0) return;
+		double frac = dealt / double(max(1, SpawnHealth()));
+		hce_recentDamage += frac;
+		hce_recentDamageTics = 35 * 2;
+		Actor from = inflictor ? inflictor : source;
+		if(from) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));
+		hce_hardKill = mod == 'Explosive' || dealt > SpawnHealth() * 0.6;
+		if(source && source != self && HCE_IsEnemy(source) && (!target || !hce_canSee))
+		{
+			bool fresh = !target;
+			target = source; hce_lastKnown = source.pos;
+			if(health > 0 && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+			if(fresh) HCE_OnAcquire();
+		}
+		if(bHCE_ActiveCamo) A_SetRenderStyle(0.7, STYLE_Translucent);
+		if(health > 0)
+		{
+			if(mod == 'Fire') HCE_Say('OnFire', 0.8, 35 * 2);
+			else if(frac > 0.35) HCE_Say('PainHeavy', 0.9, 35);
+			else if(frac > 0.15) HCE_Say('PainMed', 0.5, 35);
+			else HCE_Say('Pain', 0.3, 35 * 2);
+		}
+		if(health > 0 && hce_animLock <= 0 && hce_leapState == 0 && frandom(0, 1) < 0.25 + frac * 2)
+		{
+			int k = HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R);
+			if(frac > 0.3 && HCE_HasAnim(HCE_A_HPING_F)) k = HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
+			if(HCE_HasAnim(k)) HCE_PlayLocked(k, 0.6);
+		}
+	}
+
+	int HCE_DirKind(int front, int back, int left, int right)
+	{
+		double from = atan2(hce_dieDir.y, hce_dieDir.x);
+		double rel = DeltaAngle(angle, from);
+		if(abs(rel) <= 45) return front;
+		if(abs(rel) >= 135) return back;
+		return rel > 0 ? left : right;
+	}
+
+	// ------------------------------------------------------------------
+	// Death
+	// ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Gore: XDeath (an overkill past the gib threshold). With Nash's Gore Mod loaded, its gibs (in this
+	// race's BloodColor) replace the body, so the model is hidden; without it, the body stays and sprays blood.
+	// ------------------------------------------------------------------
+	bool hce_gibbed;
+	int  hce_gibHideTics;
+	virtual void HCE_GibDeath()
+	{
+		hce_gibbed = true;
+		HCE_Die();
+		hce_reviveTics = 0;                    // no feigning or reviving from a pile of gibs
+		if(bNOBLOOD) return;
+		Name ngm = 'NashGoreGibs';
+		if((class<Actor>)(ngm)) { hce_gibHideTics = 3; return; }   // let NashGore see the XDeath first
+		for(int i = 0; i < 16; i++)
+			A_SpawnItemEx("Blood", frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.2, 0.8),
+				frandom(-4, 4), frandom(-4, 4), frandom(2, 7), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+	}
+
+	virtual void HCE_Die()
+	{
+		bool hard = hce_hardKill || hce_detonated;
+		int k = hard ? HCE_DirKind(HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_F)
+		             : HCE_DirKind(HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R);
+		bool thrown = hce_blastHit && !bHCE_Explodes && HCE_Launch();
+		if(thrown || bHCE_Flying || pos.z > floorz + 24) k = HCE_HasAnim(HCE_A_DIE_AIR) ? HCE_A_DIE_AIR : k;
+		if(k == HCE_A_DIE_AIR) { hce_airPhase = 1; hce_airSince = level.maptime; }
+		if(!HCE_HasAnim(k)) k = HCE_HasAnim(HCE_A_DIE_F) ? HCE_A_DIE_F : HCE_A_DIE_HARD_F;
+		HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
+		HCE_StopFireLoop();
+		HCE_Say(hard || thrown ? 'DeathHard' : 'Death', 1.0, 0, true);   // voices without a hard set alias it to Death
+		hce_animLock = 0; hce_leapState = 0;
+		if(bHCE_Flying) { bNOGRAVITY = false; bFLOAT = false; }
+		if(bHCE_ActiveCamo) A_SetRenderStyle(1.0, STYLE_Normal);
+		if(bHCE_Leader || bHCE_PairBond) HCE_LeaderDied(self);
+		if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);
+		HCE_DropLoot();
+		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
+		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
+		if(bHCE_Resurrects && !hard && frandom(0, 1) < max(0.25, hce_feignChance)) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
+	}
+	int hce_reviveTics;
+
+	void HCE_DropLoot()
+	{
+		if(hce_resurrected) return;            // a revived Flood form already dropped its gun
+		CVar cv = CVar.FindCVar("hce_dropweapons");
+		if(cv && !cv.GetBool()) return;
+		if(hce_dropWeapon != 'None' && hce_dropWeapon != '')
+		{
+			class<Actor> wc = (class<Actor>)(hce_dropWeapon);
+			if(wc) HCE_Toss(wc);
+		}
+		if(hce_dropGrenade != 'None' && hce_dropGrenade != '' && hce_grenades > 0 && random(0, 1))
+		{
+			class<Actor> gc = (class<Actor>)(hce_dropGrenade);
+			if(gc) HCE_Toss(gc);
+		}
+	}
+
+	void HCE_Toss(class<Actor> c)
+	{
+		// spawned at the feet: HDE's pickup system recognises a weapon next to a dying monster as an
+		// enemy drop (and applies its usual dropped-weapon rules, e.g. keeping only half of them)
+		let it = Spawn(c, pos, ALLOW_REPLACE);
+		if(!it) return;
+		it.bDROPPED = true;
+		it.vel = (frandom(-2, 2), frandom(-2, 2), frandom(2, 4));
+	}
+
+	// ------------------------------------------------------------------
+	// Thrown by explosions (Halo: units killed by blasts are flung in their
+	// airborne-dead pose, then play landing-dead). Flight is plain engine
+	// physics: gravity, wall collisions, ground friction.
+	// ------------------------------------------------------------------
+	bool   hce_blastHit;
+	vector3 hce_blastFrom;
+	double hce_blastDmg;
+	int    hce_airPhase, hce_airSince;
+
+	// ------------------------------------------------------------------
+	// Kamikaze (Halo 3): pull two plasma grenades (surprise/jump animation),
+	// scream, and sprint at the target in the panic run. They blow on contact
+	// or after 6 s; killing the Grunt first arms them on the normal 2 s fuse.
+	// ------------------------------------------------------------------
+	double hce_kamiChance;
+	int    hce_kamiTics;
+	bool   hce_kamiUsed;
+	Array<Actor> hce_kamiNades;
+
+	bool HCE_StartKamikaze()
+	{
+		if(hce_kamiUsed || health <= 0 || !target || hce_grenadeType != 2 || hce_grenades <= 0) return false;
+		if(!hce_canSee || hce_action == HCE_ACT_KAMIKAZE) return false;
+		double d = Distance2D(target);
+		if(d < 160 || d > 1100) return false;
+		// one suicide run at a time per squad
+		let it = BlockThingsIterator.Create(self, 1024);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(e && e != self && e.health > 0 && e.hce_action == HCE_ACT_KAMIKAZE) return false;
+		}
+		Name gn = 'HCE_PlasmaGrenade';                     // the core's nerfable subclass, looked up at run time
+		class<Actor> gc = gn;
+		if(!gc) gc = 'PlasmaGrenade_Proj';
+		if(!gc) return false;
+		hce_kamiUsed = true;
+		hce_grenades = max(0, hce_grenades - 2);
+		hce_action = HCE_ACT_KAMIKAZE;
+		hce_kamiTics = 35 * 6;
+		HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0;
+		A_SetAngle(AngleTo(target));
+		HCE_PlayLocked(HCE_A_SURPRISE_F);                 // the jumping alert = pulling the grenades
+		HCE_Say('Kamikaze', 1.0, 35 * 3, true);
+		for(int side = -1; side <= 1; side += 2)
+		{
+			let g = PlasmaGrenade_Proj(Spawn(gc, pos + (0, 0, height * 0.6), ALLOW_REPLACE));
+			if(!g) continue;
+			g.target = self;
+			g.bMISSILE = false; g.bNOGRAVITY = true;       // held, not thrown: follows the hand, not yet armed
+			g.vel = (0, 0, 0);
+			g.hitactor = self;
+			g.hitoffs = (48, 12 * side, height * 0.6);
+			HCE_ScaleShot(g, true);
+			hce_kamiNades.Push(g);
+		}
+		return true;
+	}
+
+	void HCE_KamikazeTick()
+	{
+		if(!target || target.health <= 0) { HCE_KamikazeBoom(false); return; }
+		double d = Distance2D(target);
+		HCE_FaceTarget(3.0);
+		HCE_Move(HCE_PickHeading(AngleTo(target), AngleTo(target)), hce_runSpeed * 1.35);
+		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);   // the panic run, at the enemy
+		if(random(0, 60) == 0) HCE_Say('Kamikaze', 1.0, 35 * 2);
+		if(--hce_kamiTics <= 0 || d < radius + target.radius + 20) HCE_KamikazeBoom(true);
+	}
+
+	// now = detonate immediately; otherwise arm them on their own 2 s fuse
+	void HCE_KamikazeBoom(bool now)
+	{
+		for(int i = 0; i < hce_kamiNades.Size(); i++)
+		{
+			let g = hce_kamiNades[i];
+			if(!g || g.InStateSequence(g.CurState, g.ResolveState("Death")) || g.InStateSequence(g.CurState, g.ResolveState("Detonate"))) continue;
+			if(now) g.SetStateLabel("Detonate"); else g.SetStateLabel("Death");
+		}
+		hce_kamiNades.Clear();
+		if(health > 0 && hce_action == HCE_ACT_KAMIKAZE) hce_action = HCE_ACT_FIGHT;
+	}
+
+	bool HCE_Launch()
+	{
+		vector3 d = level.Vec3Diff(hce_blastFrom, pos);
+		vector2 dir = d.xy.Length() > 4 ? d.xy.Unit() : AngleToVector(frandom(0, 360), 1);
+		// lighter bodies fly further (Doom mass ~100 for a Jackal, ~85 Grunt, ~180 Elite)
+		double power = hce_blastDmg * 140.0 / max(40, mass);
+		if(bHCE_FrontArmor) power *= 0.25;                        // Hunters are far too heavy to fly
+		if(power < 25) return false;                               // a weak blast just drops them
+		double vxy = clamp(power * 0.11, 4, 19);
+		double vz = clamp(power * 0.06 + 4, 5, 12);
+		// closer to straight up when the blast was right underneath
+		if(d.z < -8 && d.xy.Length() < 48) { vz = min(14, vz + 3); vxy *= 0.6; }
+		vel = (dir * vxy, vz);
+		bNOGRAVITY = false; bFLOAT = false;
+		angle = atan2(-dir.y, -dir.x);                            // facing the blast: thrown backwards
+		return true;
+	}
+
+	void HCE_AirTick()
+	{
+		if(hce_airPhase != 1) return;
+		bool grounded = pos.z <= floorz + 0.5 && vel.z <= 0.5;
+		if(!grounded || level.maptime - hce_airSince < 4) return;
+		hce_airPhase = 2;
+		vel.xy *= 0.35;                                           // the impact scrubs most of the slide
+		if(HCE_HasAnim(HCE_A_DIE_LAND)) HCE_Play(HCE_A_DIE_LAND, false, true, 2, true);
+		A_StartSound("HCE/BodyLand", CHAN_BODY, CHANF_OVERLAP, 0.6);
+	}
+
+	void HCE_CorpseTick()
+	{
+		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
+		HCE_AirTick();
+		if(hce_reviveTics > 0 && --hce_reviveTics == 0) HCE_Revive();
+	}
+
+	void HCE_Revive()
+	{
+		if(!bHCE_Resurrects || !bCORPSE) return;
+		if(!RaiseActor(self, RF_NOCHECKPOSITION)) return;
+		hce_resurrected = true;
+		hce_action = HCE_ACT_FIGHT;
+		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
+		if(HCE_HasAnim(k)) HCE_PlayLocked(k);
+	}
+}
+
+// Halo-style shield: HDE's regen/absorb logic, drawn as sparks + a flare
+// instead of HDE's sprite copy (which can't follow a skeletal model).
+class HCE_Shield : ShieldProcessor
+{
+	Default
+	{
+		+NOINTERACTION
+		RenderStyle "None";
+	}
+	override void DisplayShields()
+	{
+		if(prevShields > 0 && shields <= 0) OnShieldBreak();
+		if(shields < prevShields - 0.5 && Owner)
+		{
+			// shield impact flare
+			for(int i = 0; i < 5; i++)
+				Owner.A_SpawnParticle(shields > maxshields * 0.25 ? "7FB2FF" : "FF5040", SPF_FULLBRIGHT, 8, frandom(2, 4), 0,
+					frandom(-Owner.radius, Owner.radius), frandom(-Owner.radius, Owner.radius), frandom(Owner.height * 0.2, Owner.height),
+					frandom(-1, 1), frandom(-1, 1), frandom(0, 1.5));
+		}
+		prevShields = shields;
+		bInvisible = true;
+	}
+	override void OnShieldBreak()
+	{
+		if(!Owner) return;
+		Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP);
+		for(int i = 0; i < 30; i++)
+			Owner.A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 18, frandom(3, 6), 0, 0, 0, Owner.height * 0.6,
+				frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
+	}
+}
+
+class HCE_BeamPuff : Actor
+{
+	Default { +NOINTERACTION +PUFFONACTORS +ALWAYSPUFF +BLOODLESSIMPACT DamageType "Fire"; }
+	States { Spawn: TNT1 A 2; Stop; }
+}
+
+// ---- HDE's original usage example, kept verbatim ----
+/* Example
+class TestImp : HaloDoom_EnemyBase
+{
+	Default
+	{
+		Health 60;
+		Radius 20;
+		Height 56;
+		Mass 100;
+		Speed 8;
+		PainChance 200;
+		Monster;
+		+FLOORCLIP
+		SeeSound "imp/sight";
+		PainSound "imp/pain";
+		DeathSound "imp/death";
+		ActiveSound "imp/active";
+		HitObituary "$OB_IMPHIT";
+		Obituary "$OB_IMP";
+		Tag "$FN_IMP";
+	}
+	States
+	{
+		Info.DamageTaken:
+			TNT1 A 0 A_JumpIf(A_CheckDamageInfo("HaloShotgun_Bullet", false) && A_GetDamageTaken(killed:true), "Death.Shotgun");
+ 			TNT1 A 0 A_ResumePrevious();
+		goto See;
+	
+		Spawn:
+			TROO AB 10 A_Look;
+		Loop;
+		See:
+			TROO AABBCCDD 3 A_Chase;
+		Loop;
+		Melee:
+		Missile:
+			TROO EF 8 A_FaceTarget;
+			TROO G 6 A_TroopAttack ;
+		Goto See;
+		Pain:
+			TROO H 2;
+			TROO H 2 A_Pain;
+		Goto See;
+		Death:
+			TROO I 8;
+			TROO J 8 A_Scream;
+			TROO K 6;
+			TROO L 6 A_NoBlocking;
+			TROO M -1;
+		Stop;
+		
+		Death.Shotgun:
+			TNT1 A 0 { console.printf("Shotgun death"); }
+		XDeath:
+			TROO N 5;
+			TROO O 5 A_XScream;
+			TROO P 5;
+			TROO Q 5 A_NoBlocking;
+			TROO RST 5;
+			TROO U -1;
+		Stop;
+		Raise:
+			TROO ML 8;
+			TROO KJI 6;
+		Goto See;
+	}
+}
+*/

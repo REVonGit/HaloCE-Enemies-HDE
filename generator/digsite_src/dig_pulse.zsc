@@ -1,0 +1,28 @@
+// the core's HCE_NerfMixin, repeated here (mixins don't cross pk3s): HDE recomputes a projectile's damage when it
+// hits, so the enemy damage nerf is re-applied there
+mixin class HCE_DigNerfMixin
+{
+	override void AdjustRangeDamage()
+	{
+		super.AdjustRangeDamage();
+		if(range_max > 0 && !bDESTROYED && DamageMultiply > 0) truedamage *= DamageMultiply;
+	}
+}
+
+// Pulse Carbine bolts for the Elites: HDE's Pulse Carbine projectile (slow launch, accelerating, homing),
+// locked onto the shooter's target. HDE's own homing grabs the nearest visible thing, which for a monster
+// would include its allies, so this one never picks a new target once its victim is gone.
+class HCE_PulseCarbineHoming : HaloPulseCarbine_Proj
+{
+	mixin HCE_DigNerfMixin;
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		if(target && !target.player && target.target) tracer = target.target;
+	}
+	override void Handle_Homing(double turnMax, bool ignoreCorpses)
+	{
+		if(!tracer) return;
+		super.Handle_Homing(turnMax, ignoreCorpses);
+	}
+}

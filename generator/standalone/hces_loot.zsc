@@ -1,0 +1,262 @@
+// ============================================================================
+// hces_loot.zsc -- standalone loot director.
+//
+// Halo enemies carry Halo guns the Doom player can't use, so in the standalone packs every kill instead
+// earns loot points (scaled by how tough the enemy was), and the points are spent on what the player is
+// shortest of right now:
+//   * health    when hurt (bonus -> stimpack -> medikit, bigger for tougher enemies)
+//   * armor     when unarmoured (armor bonuses, now and then a green armor from a big kill)
+//   * ammo      for the weapons the player actually owns, most-needed first. The ammo class is taken
+//               from the weapon itself, so weapon mods get their own ammo.
+//   * weapons   themed to what the enemy carried (rifles -> chaingun, shotguns -> shotgun / super shotgun,
+//               rockets and fuel rods -> rocket launcher, Covenant energy weapons -> plasma rifle,
+//               bosses -> BFG), as the player gets far enough into the fight to earn them. A pity counter
+//               makes a missing weapon steadily more likely, so nobody goes too long without one.
+// Items are vanilla Doom classes spawned with replacement, so gameplay mods' versions drop instead.
+// CVars: hces_loot (0 = off, 1 = normal, 2 = generous), hces_loot_weapons.
+// ============================================================================
+
+class HCES_LootHandler : EventHandler
+{
+	double points;                       // banked loot points (shared by all players)
+	int weaponCooldown;                  // tics until another weapon may drop
+	int pity[6];                         // kills since each weapon family could have dropped
+	int kills;
+	// supplies already dropped but maybe not picked up yet count toward the player's need for a while
+	// (half-life about 4 s), so a burst of kills doesn't bury a hurt player in stimpacks
+	double promisedHealth, promisedArmor;
+	Array<class<Ammo> > promisedAmmoType;
+	Array<double> promisedAmmo;
+
+	// weapon families and the vanilla weapon each one gives
+	enum EFamily { F_NONE = -1, F_BULLET, F_SHOTGUN, F_EXPLOSIVE, F_ENERGY, F_BOSS }
+
+	static double CV(Name n, double def)
+	{
+		CVar cv = CVar.FindCVar(n);
+		return cv ? cv.GetFloat() : def;
+	}
+
+	static class<Actor> Cls(Name n) { return (class<Actor>)(n); }
+
+	override void WorldTick()
+	{
+		if(weaponCooldown > 0) weaponCooldown--;
+		promisedHealth *= 0.995; promisedArmor *= 0.995;
+		for(int i = 0; i < promisedAmmo.Size(); i++) promisedAmmo[i] *= 0.995;
+	}
+
+	double Promised(class<Ammo> t)
+	{
+		int i = promisedAmmoType.Find(t);
+		return i < promisedAmmoType.Size() ? promisedAmmo[i] : 0;
+	}
+	void Promise(class<Ammo> t, double amt)
+	{
+		int i = promisedAmmoType.Find(t);
+		if(i < promisedAmmoType.Size()) promisedAmmo[i] += amt;
+		else { promisedAmmoType.Push(t); promisedAmmo.Push(amt); }
+	}
+
+	override void WorldLoaded(WorldEvent e)
+	{
+		if(e.IsSaveGame) return;
+		points = 0; weaponCooldown = 0; kills = 0;
+		for(int i = 0; i < 6; i++) pity[i] = 0;
+	}
+
+	override void WorldThingDied(WorldEvent e)
+	{
+		let m = HCES_EnemyBase(e.Thing);
+		if(!m || !m.hce_enabled || m.bFRIENDLY) return;
+		double scale = CV('hces_loot', 1.0);
+		if(scale <= 0) return;
+		let p = NeediestPlayer();
+		if(!p) return;
+		kills++;
+
+		int tier = Tier(m);
+		// value from the enemy's unscaled toughness: Grunt ~1, Elite ~1.7, Brute ~3, Hunter / Chieftain ~6
+		double hp = GetDefaultByType(m.GetClass()).health + m.hce_shieldMax * 0.5;
+		points += clamp(hp / 60.0, 0.1, 6.0) * scale;
+
+		int drops = 0, maxDrops = 1 + tier;
+		// weapons first: they're rare, and a fight is easier once the player has the right gun
+		if(CV('hces_loot_weapons', 1) > 0 && TryWeapon(m, p, tier)) drops++;
+		while(points >= 1.5 && drops < maxDrops)
+		{
+			if(!DropSupply(m, p, tier)) break;
+			points -= 1.5;
+			drops++;
+		}
+	}
+
+	// the living player who needs the most (lowest health share), so co-op loot goes where it helps
+	PlayerPawn NeediestPlayer()
+	{
+		PlayerPawn best = null; double bestFrac = 1e9;
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo || players[i].mo.health <= 0) continue;
+			let mo = players[i].mo;
+			double f = mo.health / double(max(1, mo.GetMaxHealth(true)));
+			if(f < bestFrac) { bestFrac = f; best = mo; }
+		}
+		return best;
+	}
+
+	static int Tier(HCES_EnemyBase m)
+	{
+		String cn = m.GetClassName();
+		if(cn.IndexOf("Boss") >= 0 || cn.IndexOf("Chieftain") >= 0 || cn.IndexOf("Drinol") >= 0) return 4;
+		int h = GetDefaultByType(m.GetClass()).health;
+		if(h <= 60) return 1;
+		if(h <= 150) return 2;
+		if(h <= 400) return 3;
+		return 4;
+	}
+
+	static int Family(HCES_EnemyBase m)
+	{
+		String pr = m.hce_projectile;
+		if(pr == "None" || pr == "") return F_NONE;
+		if(pr.IndexOf("Shotgun") >= 0) return F_SHOTGUN;
+		if(pr.IndexOf("Rocket") >= 0 || pr.IndexOf("FuelRod") >= 0 || pr.IndexOf("PlasmaCaster") >= 0) return F_EXPLOSIVE;
+		if(pr.IndexOf("ARBullet") >= 0 || pr.IndexOf("PistolBullet") >= 0 || pr.IndexOf("Sniper") >= 0 || pr.IndexOf("Spiker") >= 0)
+			return F_BULLET;
+		return F_ENERGY;                 // plasma, needles, carbines, beams, flames
+	}
+
+	// owns the weapon or whatever replaces it (weapon mods)
+	static bool Owns(PlayerPawn p, Name wn)
+	{
+		class<Inventory> c = (class<Inventory>)(Cls(wn));
+		if(!c) return true;              // not in this game: treat as owned
+		class<Inventory> r = (class<Inventory>)(Actor.GetReplacement(c));
+		return p.FindInventory(c, true) || (r && p.FindInventory(r, true));
+	}
+
+	bool TryWeapon(HCES_EnemyBase m, PlayerPawn p, int tier)
+	{
+		if(weaponCooldown > 0) return false;
+		int fam = Family(m);
+		if(tier >= 4) fam = F_BOSS;
+		Name want = 'None';
+		double base = 0.2;
+		// progression roughly follows Doom's: shotgun / chaingun first, then super shotgun and rocket
+		// launcher, then the plasma rifle, and the BFG only from bosses once the player has the big guns
+		bool sg = Owns(p, 'Shotgun'), cg = Owns(p, 'Chaingun'), ssg = Owns(p, 'SuperShotgun');
+		bool rl = Owns(p, 'RocketLauncher'), pr = Owns(p, 'PlasmaRifle');
+		bool canRL = sg || cg, canPR = (sg || ssg) && cg, canBFG = pr || rl;
+		switch(fam)
+		{
+		case F_BULLET:
+			if(!cg) want = 'Chaingun';
+			else if(!sg) { want = 'Shotgun'; fam = F_SHOTGUN; }
+			break;
+		case F_SHOTGUN:
+			if(!sg) { want = 'Shotgun'; base = 0.35; }
+			else if(tier >= 2 && !ssg) want = 'SuperShotgun';
+			else if(!cg) { want = 'Chaingun'; fam = F_BULLET; }
+			break;
+		case F_EXPLOSIVE:
+			if(!rl && canRL) want = 'RocketLauncher';
+			else if(!sg) { want = 'Shotgun'; fam = F_SHOTGUN; }
+			break;
+		case F_ENERGY:
+			// Covenant guns stand in for the Doom basics until the player has them
+			if(!sg) { want = 'Shotgun'; fam = F_SHOTGUN; }
+			else if(!cg) { want = 'Chaingun'; fam = F_BULLET; }
+			else if(tier >= 2 && !pr && canPR) { want = 'PlasmaRifle'; base = 0.12; }
+			break;
+		case F_BOSS:
+			if(!Owns(p, 'BFG9000') && canBFG) { want = 'BFG9000'; base = 0.3; }
+			else if(!rl && canRL) want = 'RocketLauncher';
+			else if(!pr && canPR) want = 'PlasmaRifle';
+			else if(!ssg && sg) want = 'SuperShotgun';
+			break;
+		default:
+			return false;
+		}
+		if(want == 'None' || !Cls(want)) return false;
+		int slot = fam < 0 ? 5 : fam;
+		pity[slot]++;
+		if(frandom[HCESLoot](0, 1) >= base + 0.06 * (pity[slot] - 1)) return false;
+		pity[slot] = 0;
+		weaponCooldown = 35 * 20;
+		m.A_DropItem(Cls(want));
+		return true;
+	}
+
+	bool DropSupply(HCES_EnemyBase m, PlayerPawn p, int tier)
+	{
+		int maxHp = p.GetMaxHealth(true);
+		double hpNeed = max(0., 1.0 - (p.health + promisedHealth) / double(max(1, maxHp)));
+		let armor = BasicArmor(p.FindInventory("BasicArmor"));
+		int armorAmt = armor ? armor.Amount : 0;
+		double armorNeed = max(0., 1.0 - (armorAmt + promisedArmor) / 100.0);
+
+		// most-needed ammo among the weapons the player owns (the weapon in hand counts double)
+		class<Ammo> ammoType = null; double ammoNeed = 0;
+		for(Inventory it = p.Inv; it; it = it.Inv)
+		{
+			let w = Weapon(it);
+			if(!w || !w.AmmoType1) continue;
+			let a = p.FindInventory(w.AmmoType1);
+			int have = a ? a.Amount : 0;
+			int cap = a ? a.MaxAmount : GetDefaultByType(w.AmmoType1).MaxAmount;
+			double need = max(0., 1.0 - (have + Promised(w.AmmoType1)) / double(max(1, cap)));
+			if(p.player && p.player.ReadyWeapon == w) need *= 1.5;
+			if(need > ammoNeed) { ammoNeed = need; ammoType = w.AmmoType1; }
+		}
+
+		// weighted pick: health is urgent when low, armor is a steady trickle, ammo for what's emptiest
+		double wH = hpNeed > 0.05 ? (0.3 + 3.0 * hpNeed * hpNeed) : 0;
+		double wA = 0.15 + 0.5 * armorNeed;
+		double wM = ammoType ? (0.25 + 1.6 * ammoNeed) : 0;
+		double r = frandom[HCESLoot](0, wH + wA + wM);
+		if(r < wH) return DropHealth(m, p, tier, maxHp);
+		if(r < wH + wA) return DropArmor(m, armorAmt, tier);
+		return DropAmmo(m, ammoType, tier);
+	}
+
+	bool DropHealth(HCES_EnemyBase m, PlayerPawn p, int tier, int maxHp)
+	{
+		int missing = maxHp - p.health;
+		Name n = 'HealthBonus';
+		if(missing >= 35 && tier >= 3 && Cls('Medikit')) n = 'Medikit';
+		else if(missing >= 15 && Cls('Stimpack')) n = 'Stimpack';
+		if(!Cls(n)) return false;
+		int count = n == 'HealthBonus' ? 2 + tier : 1;
+		for(int i = 0; i < count; i++) m.A_DropItem(Cls(n));
+		promisedHealth += n == 'Medikit' ? 25 : n == 'Stimpack' ? 10 : count;
+		return true;
+	}
+
+	bool DropArmor(HCES_EnemyBase m, int armorAmt, int tier)
+	{
+		if(tier >= 3 && armorAmt < 40 && frandom[HCESLoot](0, 1) < 0.35 && Cls('GreenArmor'))
+		{
+			m.A_DropItem(Cls('GreenArmor'));
+			promisedArmor += 100;
+			return true;
+		}
+		if(!Cls('ArmorBonus')) return false;
+		for(int i = 0; i < 2 + tier * 2; i++) m.A_DropItem(Cls('ArmorBonus'));
+		promisedArmor += 2 + tier * 2;
+		return true;
+	}
+
+	bool DropAmmo(HCES_EnemyBase m, class<Ammo> ammoType, int tier)
+	{
+		if(!ammoType) return false;
+		// the ammo's own small-pickup amount (clip 10, shells 4, rocket 1, cells 20), a bit more from tougher
+		// enemies; given explicitly so the drop isn't halved like a zombieman's clip
+		let d = GetDefaultByType(ammoType);
+		int base = d.Amount > 0 ? d.Amount : max(1, d.MaxAmount / 20);
+		int amt = max(1, int(base * (0.75 + 0.25 * tier) + 0.5));
+		m.A_DropItem(ammoType, amt);
+		Promise(ammoType, amt);
+		return true;
+	}
+}

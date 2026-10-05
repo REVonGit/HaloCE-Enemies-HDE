@@ -1,0 +1,8 @@
+{
+  "title": "Halo CE enemies (HDE version)",
+  "bundle": {"output": "HaloCE_HDE_Bundle.pk3",
+             "packs": ["HaloCE_Core", "HaloCE_Covenant", "HaloCE_Enemies_Digsite", "HCE_EnemyAPI_LocalDEV", "HaloCE_Enemies_Voices"]},
+  "merged": {"output": "HaloCE_Merged.pk3",
+             "packs": ["HaloCE_Core", "HaloCE_Covenant", "HaloCE_Flood", "HaloCE_Sentinels", "HaloCE_Marines", "HaloCE_Enemies_Digsite"]},
+  "load": "HDE (Local_DEV) -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> faction packs / Digsite -> HaloCE_Enemies_Voices.pk3   (or: HDE -> HaloCE_HDE_Bundle.pk3)"
+}

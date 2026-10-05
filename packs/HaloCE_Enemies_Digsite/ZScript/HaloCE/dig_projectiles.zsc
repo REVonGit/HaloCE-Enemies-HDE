@@ -1,0 +1,33 @@
+// Enemy projectiles: HDE visuals, Halo CE impact damage
+class HCE_BeamRifleShot : HCE_BeamPuff
+{
+	Default
+	{
+	}
+}
+
+class HCE_CarbineRound : HaloCarbine_Bullet
+{
+	mixin HCE_DigNerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 15;
+	}
+}
+
+class HCE_PulseCarbineBolt : HCE_PulseCarbineHoming
+{
+	Default
+	{
+		HaloProjectile.BaseDamage 8;
+	}
+}
+
+class HCE_SpikerSpike : HaloSpiker_Bullet
+{
+	mixin HCE_DigNerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 10;
+	}
+}

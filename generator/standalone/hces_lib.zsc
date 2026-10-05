@@ -1,0 +1,955 @@
+// ============================================================================
+// hces_lib.zsc -- standalone support library for the Halo CE enemy packs.
+//
+// Everything the enemies used to borrow from HaloDoom Evolved (Local_DEV), rebuilt so the packs run on
+// plain (UZ/GZ)Doom and next to other mods:
+//   * HCES_Math             HDE's HaloMath helpers the enemy API calls (Fire3DProjectile, LerpDegrees ...)
+//   * HCES_ShieldProcessor  HDE's ShieldProcessor (regenerating energy shield), unchanged logic
+//   * projectiles           AR / pistol / shotgun / sniper / carbine bullets, plasma pistol / rifle / charged
+//                           bolts, pulse-carbine homing bolts, needles (stick + supercombine), spiker spikes,
+//                           fuel rod, rocket, flamethrower flames, frag / plasma grenades, plasma caster
+//   * effects               explosions, shockwave, flares, sparks, smoke (HDE's sprites and models, renamed)
+// Every class, sprite and sound here has an HCES_ / HZ** / HCES/ name, so nothing collides with HDE or
+// with other mods. Damage is plain Doom damage: BaseDamage (Halo's numbers) x the hce_enemydamage CVar,
+// which the enemy API applies when it fires.
+// ============================================================================
+
+// ---------------------------------------------------------------- math
+class HCES_Math abstract
+{
+	static double Lerp(double a, double b, double t) { return a + (b - a) * t; }
+
+	static double LerpDegrees(double a, double b, double t)
+	{
+		double diff = b - a;
+		if(diff < -180.)
+		{
+			b += 360.;
+			double r = Lerp(a, b, t);
+			return r >= 360. ? r - 360. : r;
+		}
+		if(diff > 180.)
+		{
+			b -= 360.;
+			double r = Lerp(a, b, t);
+			return r < 0. ? r + 360. : r;
+		}
+		return Lerp(a, b, t);
+	}
+
+	static double AngleDiff(double angle1, double angle2)
+	{
+		double diff = (angle2 - angle1 + 180) % 360 - 180;
+		return diff < -180 ? diff + 360 : diff;
+	}
+
+	static vector3 VecFromAngles(double ang, double pit, double len = 1.0)
+	{
+		return (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * len;
+	}
+
+	// HDE's HaloMath.Fire3DProjectile, for monsters (no crosshair convergence)
+	play static Actor Fire3DProjectile(Actor shooter, class<Actor> proj, double forward, double leftright, double updown,
+		bool crosshairConverge = true, double angleoffs = 0, double pitchoffs = 0)
+	{
+		double a = shooter.angle + angleoffs;
+		double p = shooter.pitch + pitchoffs;
+		double r = shooter.roll;
+		Quat dir = Quat.FromAngles(a, p, r);
+		vector3 offsetPos = dir * (forward, -leftright, updown);
+		vector3 shooterPos = (shooter.pos.xy, shooter.pos.z + shooter.height * 0.5);
+		if(shooter.player) shooterPos.z = shooter.player.viewz;
+		offsetPos = level.vec3offset(offsetPos, shooterPos);
+		vector3 projVel = dir * (GetDefaultByType(proj).Speed, 0, 0);
+		let pr = Actor.Spawn(proj, offsetPos);
+		if(pr)
+		{
+			pr.angle = a; pr.pitch = p; pr.roll = r;
+			pr.vel = projVel;
+		}
+		return pr;
+	}
+
+	// HDE's HaloMath.ParticlesFX
+	play static void Particles(Actor ptr, Color col = 0xFFF0E11A, double amt = 30, double size = 2, double spd = 5,
+		vector3 spread = (30, 30, 30), vector2 angSpread = (90, 30))
+	{
+		for(int i = 0; i < amt; i++)
+		{
+			double pa = (ptr.angle + 180) + frandom[HCESFX](-angSpread.x, angSpread.x);
+			double pp = ptr.pitch + frandom[HCESFX](-angSpread.y, angSpread.y);
+			vector3 ppos = (cos(pa) * frandom[HCESFX](-spread.x, spread.x), sin(pa) * frandom[HCESFX](-spread.y, spread.y),
+				sin(pp) * frandom[HCESFX](-spread.z, spread.z));
+			vector3 pvel = (sin(pa) * cos(pp + 90), sin(pa) * cos(pp + 90), sin(pp)) * spd;
+			ptr.A_SpawnParticle(col, SPF_FULLBRIGHT | SPF_RELATIVE, 16, size, pa, ppos.x, ppos.y, ppos.z, pvel.x, pvel.y, pvel.z);
+		}
+	}
+
+	// radius damage that spares the shooter's own side (same species) and the shooter
+	play static void Blast(Actor src, Actor shooter, int dmg, double radius, Name type = 'Explosive', double thrust = 1.0)
+	{
+		let it = BlockThingsIterator.Create(src, radius);
+		while(it.Next())
+		{
+			Actor mo = it.thing;
+			if(!mo || !mo.bSHOOTABLE || mo.health <= 0 || mo == src) continue;
+			if(shooter && mo != shooter && !mo.player && mo.GetSpecies() == shooter.GetSpecies() && !shooter.player) continue;
+			double d = src.Distance3D(mo);
+			if(d > radius || !src.CheckSight(mo, SF_IGNOREVISIBILITY | SF_IGNOREWATERBOUNDARY)) continue;
+			double f = 1.0 - d / radius;
+			int hurt = int(dmg * (0.25 + 0.75 * f) + frandom[HCESFX](0, 1));
+			if(mo == shooter) hurt /= 4;
+			if(hurt > 0) mo.DamageMobj(src, shooter ? shooter : src, hurt, type, DMG_EXPLOSION);
+			if(thrust > 0 && !mo.bDONTTHRUST && mo.mass < 10000)
+			{
+				vector3 dir = level.Vec3Diff(src.pos, mo.pos + (0, 0, mo.height * 0.5));
+				if(dir.Length() > 0.01) dir = dir.Unit();
+				mo.vel += dir * (8 * f * thrust * 100. / max(100, mo.mass));
+			}
+		}
+	}
+}
+
+// ---------------------------------------------------------------- shields (HDE's ShieldProcessor)
+class HCES_ShieldProcessor : Inventory
+{
+	const CHAN_SHIELDLOOP = 81;
+	double shields, maxshields, prevShields, forwardOffs;
+	int regenDelay, regenSpeed, regenTimer;
+	bool regenerating;
+	Sound snd_ShieldBreak, snd_ShieldRecharging, snd_ShieldLow, snd_ShieldRecover;
+
+	Property MaxShields : maxshields;
+	Property RegenSpeeds : regenDelay, regenSpeed;
+	Property BreakSound : snd_ShieldBreak;
+	Property WarningSound : snd_ShieldLow;
+	Property RecoverSound : snd_ShieldRecover;
+
+	Default
+	{
+		Inventory.MaxAmount 1;
+		+INVENTORY.UNDROPPABLE
+		+INVENTORY.UNTOSSABLE
+		HCES_ShieldProcessor.MaxShields 100;
+		HCES_ShieldProcessor.RegenSpeeds 2 * 35, 4 * 35;
+	}
+
+	override void AttachToOwner(Actor other)
+	{
+		shields = maxshields;
+		super.AttachToOwner(other);
+	}
+
+	static HCES_ShieldProcessor Attach(Actor src)
+	{
+		let shp = HCES_ShieldProcessor(src.FindInventory("HCES_ShieldProcessor"));
+		if(shp) return shp;
+		src.GiveInventory("HCES_ShieldProcessor", 1);
+		return HCES_ShieldProcessor(src.FindInventory("HCES_ShieldProcessor"));
+	}
+
+	virtual void DisplayShields()
+	{
+		if(prevShields > 0 && shields <= 0) OnShieldBreak();
+		prevShields = shields;
+	}
+
+	virtual void OnShieldBreak() { if(Owner) Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP); }
+
+	virtual void updateShields()
+	{
+		if(shields <= 0) regenTimer++;
+		if(snd_ShieldLow)
+		{
+			if(shields <= maxshields * 0.25) Owner.A_StartSound(snd_ShieldLow, CHAN_SHIELDLOOP, CHANF_LOOPING);
+			else Owner.A_StopSound(CHAN_SHIELDLOOP);
+		}
+		if(regenTimer < regenDelay)
+		{
+			regenTimer++;
+			if(shields > maxshields) regenTimer = regenDelay;
+		}
+		regenTimer = clamp(regenTimer, -regenDelay, regenDelay);
+		if(regenTimer >= regenDelay && shields < maxshields)
+		{
+			shields = clamp(shields + maxshields / max(1, regenSpeed), 0, maxshields);
+			if(!regenerating) Owner.A_StartSound(snd_ShieldRecover, CHAN_AUTO, CHANF_OVERLAP);
+			else if(snd_ShieldRecharging) Owner.A_StartSound(snd_ShieldRecharging, CHAN_AUTO, CHANF_OVERLAP);
+			regenerating = true;
+		}
+		else regenerating = false;
+	}
+
+	override void DoEffect()
+	{
+		super.DoEffect();
+		if(!Owner) return;
+		if(Owner.health <= 0)
+		{
+			Owner.A_StopSound(CHAN_SHIELDLOOP);
+			Owner.RemoveInventory(self);
+			Destroy();
+			return;
+		}
+		DisplayShields();
+		updateShields();
+	}
+
+	virtual double applyShieldBleedDamage(int dmg, Name mod) { return dmg; }
+	virtual double OnShieldDamage(double dmg, Name mod, Actor inflictor, Actor source) { return dmg; }
+	virtual double AdjustDamage(int dmg, Name type) { return dmg; }
+
+	override void ModifyDamage(int damage, Name damageType, out int newdamage, bool passive, Actor inflictor, Actor source, int flags)
+	{
+		if(!Owner || !passive) return;
+		damage = int(AdjustDamage(damage, damageType));
+		newdamage = max(0, ApplyDamageFactors(GetClass(), damageType, damage, damage));
+		if(damage > 0 && shields > 0)
+		{
+			regenTimer = 0;
+			double td = OnShieldDamage(newdamage, damageType, inflictor, source);
+			shields -= td;
+			newdamage = 0;
+			if(shields <= 0)
+			{
+				newdamage = int(applyShieldBleedDamage(int(abs(shields)), damageType));
+				shields = 0;
+			}
+		}
+	}
+}
+
+// ---------------------------------------------------------------- effects
+class HCES_Fx : Actor
+{
+	Default { Radius 1; Height 1; +NOINTERACTION +NOBLOCKMAP +NOGRAVITY RenderStyle "Add"; }
+	override void Tick()
+	{
+		if(alpha <= 0) { Destroy(); return; }
+		if(isFrozen()) return;
+		vel *= 0.92;
+		if(vel != (0, 0, 0)) SetOrigin(pos + vel, true);
+		if(tics != -1)
+		{
+			if(tics > 0) tics--;
+			while(!tics) if(!SetState(CurState.NextState)) return;
+		}
+	}
+}
+
+class HCES_Explosion : HCES_Fx                     // HDE's SX04 fireball
+{
+	Default { Scale 1.0; Alpha 0.85; }
+	States { Spawn: HZX4 ABCDEFGHIJKLMNOPQ 1 Bright; Stop; }
+}
+
+class HCES_Flare : HCES_Fx                         // HDE's TankRocket_Flare
+{
+	Default { Scale 0.75; }
+	States { Spawn: HZF1 ABCDEFGHHIJKLMNOPQRS 1 Bright; Stop; }
+}
+
+class HCES_Sparks : HCES_Fx                        // HDE's ImpactSparks
+{
+	Default { Scale 1.0; Alpha 0.8; }
+	States { Spawn: HZIP A 0 NoDelay { frame = random[HCESFX](0, 3); } HZIP "#" 4 Bright; Stop; }
+}
+
+class HCES_Smoke : HCES_Fx                         // HDE's MuzzleSmoke
+{
+	Default { RenderStyle "Translucent"; Alpha 0.35; Scale 0.25; +ROLLSPRITE }
+	override void Tick()
+	{
+		super.Tick();
+		if(isFrozen()) return;
+		vel.z += 0.02; roll += 1.5; alpha -= 0.01;
+		A_SetScale(scale.x * 1.02);
+	}
+	States { Spawn: HZSM A -1; Stop; }
+}
+
+class HCES_Shockwave : HCES_Fx                     // HDE's FX_Shockwave (expanding sphere)
+{
+	double exSpeed;
+	Default { Scale 0.5; Alpha 0.5; }
+	override void BeginPlay() { super.BeginPlay(); exSpeed = 1.0; }
+	override void Tick()
+	{
+		if(isFrozen()) return;
+		scale *= 1.15 / max(exSpeed, 1.);
+		alpha *= 0.95 * exSpeed;
+		exSpeed *= 0.98;
+		if(alpha <= 0.01) Destroy();
+	}
+	States { Spawn: HCEM A -1; Stop; }
+}
+
+class HCES_NeedleBurst : HCES_Fx                   // HDE's NeedleExplosion
+{
+	Default { Scale 1.0; Translation "0:255=@60[248, 67, 255]"; }
+	States { Spawn: HZ58 ABCDEFGHIJKLMNOPQ 1 Bright; Stop; }
+}
+
+class HCES_PlasmaGlow : HCES_Fx                    // HDE's PlasmaGrenade_Trail
+{
+	Default { Scale 0.15; }
+	States { Spawn: HZL2 B 2 Bright; HZL2 B 1 Bright { A_FadeOut(0.06); A_SetScale(scale.x * 0.9); } Wait; }
+}
+
+// big explosion: fireball, flare, sparks, shockwave, smoke, quake (frag grenade / rocket / plasma)
+class HCES_Boom : HCES_Fx
+{
+	Color shade;
+	double fxScale;
+	static HCES_Boom Make(Actor src, Actor shooter, int dmg, double radius, Name type = 'Explosive', Color shade = 0, double fxScale = 1.0)
+	{
+		let b = HCES_Boom(Spawn("HCES_Boom", src.pos));
+		if(!b) return null;
+		b.target = shooter; b.shade = shade; b.fxScale = fxScale;
+		HCES_Math.Blast(src, shooter, dmg, radius, type);
+		return b;
+	}
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		let e = Spawn("HCES_Explosion", pos);
+		if(e) { e.A_SetScale(fxScale); if(shade) { e.A_SetRenderStyle(0.9, STYLE_AddShaded); e.SetShade(shade); } }
+		let f = Spawn("HCES_Flare", pos + (0, 0, 20));
+		if(f) { f.A_SetScale(0.6 * fxScale); if(shade) { f.A_SetRenderStyle(1.0, STYLE_AddShaded); f.SetShade(shade); } }
+		let s = Spawn("HCES_Sparks", pos);
+		if(s) s.A_SetScale(fxScale);
+		let w = Spawn("HCES_Shockwave", pos);
+		if(w) { w.A_SetScale(0.4 * fxScale); if(shade) { w.A_SetRenderStyle(0.5, STYLE_AddShaded); w.SetShade(shade); } }
+		for(int i = 0; i < 4 * fxScale; i++)
+		{
+			let k = Spawn("HCES_Smoke", pos + (frandom[HCESFX](-20, 20), frandom[HCESFX](-20, 20), frandom[HCESFX](0, 30)));
+			if(k) { k.vel = (frandom[HCESFX](-2, 2), frandom[HCESFX](-2, 2), frandom[HCESFX](0, 2)); k.A_SetScale(0.4 * fxScale); }
+		}
+		A_QuakeEx(2, 2, 2, 12, 0, 768 * fxScale, "", QF_SCALEDOWN);
+		Destroy();
+	}
+}
+
+// gravity hammer impact (HDE's GravityHammerExplosion look; the damage is the Chieftain's own shockwave)
+class HCES_HammerBlast : HCES_Fx
+{
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		let e = Spawn("HCES_Explosion", pos);
+		if(e) { e.A_SetRenderStyle(0.9, STYLE_AddShaded); e.SetShade("18B4ED"); e.A_SetScale(0.8); }
+		let f = Spawn("HCES_Flare", pos + (0, 0, 30));
+		if(f) { f.A_SetRenderStyle(1.0, STYLE_AddShaded); f.SetShade("18B4ED"); f.A_SetScale(0.5); }
+		let w = Spawn("HCES_Shockwave", pos);
+		if(w) { w.A_SetRenderStyle(0.6, STYLE_AddShaded); w.SetShade("1D5EF5"); w.A_SetScale(0.5); }
+		for(int i = 0; i < 40; i++)
+			A_SpawnParticle("4FA8FF", SPF_FULLBRIGHT, 20, frandom[HCESFX](3, 6), 0, frandom[HCESFX](-40, 40), frandom[HCESFX](-40, 40), frandom[HCESFX](0, 20),
+				frandom[HCESFX](-4, 4), frandom[HCESFX](-4, 4), frandom[HCESFX](1, 6), 0, 0, -0.2);
+		A_QuakeEx(2, 2, 2, 10, 0, 1024, "", QF_SCALEDOWN);
+		Destroy();
+	}
+}
+
+// ---------------------------------------------------------------- projectile bases
+mixin class HCES_ProjCommon
+{
+	double truedamage, explode_dmg;
+	Property BaseDamage : truedamage;
+	Property ExplodeDamage : explode_dmg;
+
+	// one hit = BaseDamage (scaled by the firing enemy); Doom's random multiplier is not used
+	override int DoSpecialDamage(Actor victim, int damage, Name damagetype)
+	{
+		if(damage <= 0) return damage;
+		return max(1, int(truedamage + 0.5));
+	}
+
+	// turn toward the tracer by up to turnMax degrees a tic
+	virtual void Handle_Homing(double turnMax, bool ignoreCorpses)
+	{
+		if(!tracer || (ignoreCorpses && tracer.health <= 0)) return;
+		double spd = vel.Length();
+		if(spd < 0.1) return;
+		vector3 to = level.Vec3Diff(pos, tracer.pos + (0, 0, tracer.height * 0.5));
+		double wantA = atan2(to.y, to.x), wantP = -atan2(to.z, to.xy.Length());
+		double curA = atan2(vel.y, vel.x), curP = -atan2(vel.z, vel.xy.Length());
+		curA += clamp(DeltaAngle(curA, wantA), -turnMax, turnMax);
+		curP += clamp(wantP - curP, -turnMax, turnMax);
+		vel = HCES_Math.VecFromAngles(curA, curP, spd);
+		angle = curA; pitch = curP;
+	}
+
+	// never hurt the shooter's own side (same species), like Doom's monster projectiles
+	bool HCES_SameSide(Actor victim)
+	{
+		return target && victim && victim != target && !target.player && !victim.player && victim.GetSpecies() == target.GetSpecies();
+	}
+}
+
+class HCES_Projectile : FastProjectile
+{
+	mixin HCES_ProjCommon;
+	Default
+	{
+		Radius 3; Height 3; Speed 100; Damage 1;
+		Projectile;
+		+INTERPOLATEANGLES +BLOODSPLATTER
+		DamageType "Bullet";
+		HCES_Projectile.BaseDamage 10;
+	}
+	override int SpecialMissileHit(Actor victim) { return HCES_SameSide(victim) ? 1 : -1; }
+}
+
+class HCES_SlowProjectile : Actor
+{
+	mixin HCES_ProjCommon;
+	Default
+	{
+		Radius 3; Height 3; Speed 20; Damage 1;
+		Projectile;
+		+INTERPOLATEANGLES +BLOODSPLATTER
+		DamageType "Bullet";
+		HCES_SlowProjectile.BaseDamage 10;
+	}
+	override int SpecialMissileHit(Actor victim) { return HCES_SameSide(victim) ? 1 : -1; }
+}
+
+// ---------------------------------------------------------------- bullets (HDE tracer model)
+class HCES_Bullet : HCES_Projectile
+{
+	Color impactCol;
+	Property ImpactColor : impactCol;
+	Default { Radius 1; Height 1; RenderStyle "Add"; Decal "BulletChip"; HCES_Bullet.ImpactColor "FAF611"; }
+	States
+	{
+	Spawn:
+		HCEM A 1 Bright;
+		Loop;
+	Death:
+		TNT1 A 1
+		{
+			HCES_Math.Particles(self, impactCol, 12, 2, 8, (4, 4, 4));
+			let s = Spawn("HCES_Smoke", pos);
+			if(s) s.A_SetScale(0.1);
+		}
+		Stop;
+	XDeath:
+		TNT1 A 1;
+		Stop;
+	}
+}
+class HCES_ARBullet : HCES_Bullet { Default { Speed 137; HCES_Projectile.BaseDamage 6; } }
+class HCES_PistolBullet : HCES_Bullet { Default { Speed 200; HCES_Projectile.BaseDamage 12; } }
+class HCES_ShotgunPellet : HCES_Bullet { Default { Speed 97; DamageType "Shotgun"; HCES_Projectile.BaseDamage 7; } }
+class HCES_SniperBullet : HCES_Bullet { Default { Radius 2; Height 2; Speed 300; DamageType "SSG"; HCES_Projectile.BaseDamage 128; } }
+class HCES_CarbineBullet : HCES_Bullet { Default { Speed 200; DamageType "Fire"; HCES_Projectile.BaseDamage 16; HCES_Bullet.ImpactColor "11F220"; } }
+
+// ---------------------------------------------------------------- plasma bolts (HDE plasma model + core)
+class HCES_PlasmaCore : Actor
+{
+	Default { Radius 1; Height 1; RenderStyle "Shaded"; +NOINTERACTION +NOBLOCKMAP }
+	override void Tick()
+	{
+		if(!master) { Destroy(); return; }
+		bInvisible = master.bInvisible;
+		SetOrigin(master.pos, true);
+		angle = master.angle; pitch = master.pitch;
+	}
+	States { Spawn: HCEM A -1 Bright; Stop; }
+}
+
+class HCES_PlasmaBolt : HCES_Projectile
+{
+	Color col, core1, core2;
+	Property PlasmaColor : col;
+	Property CoreColors : core1, core2;
+	Default
+	{
+		Speed 73; RenderStyle "Shaded"; Alpha 0.6; Scale 0.5; DamageType "Plasma";
+		HCES_Projectile.BaseDamage 10;
+		HCES_PlasmaBolt.PlasmaColor "13ED63";
+		HCES_PlasmaBolt.CoreColors "13EDA8", "FFFFFF";
+	}
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		SetShade(col);
+		for(int i = 0; i < 2; i++)
+		{
+			let c = Spawn("HCES_PlasmaCore", pos);
+			if(c) { c.master = self; c.A_SetScale(scale.x * (i ? 0.7 : 1.0)); c.SetShade(i ? core2 : core1); }
+		}
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 Bright { HCES_Math.Particles(self, col, 2, 2, 10, (4, 4, 4)); }
+		Loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1 { HCES_Math.Particles(self, col, 24, 3, 8, (6, 6, 6)); }
+		Stop;
+	}
+}
+class HCES_PlasmaPistolBolt : HCES_PlasmaBolt { }
+class HCES_PlasmaRifleBolt : HCES_PlasmaBolt
+{
+	Default { Speed 87; Scale 0.65; HCES_Projectile.BaseDamage 12; HCES_PlasmaBolt.PlasmaColor "13AFED"; HCES_PlasmaBolt.CoreColors "1358ED", "FFFFFF"; }
+}
+class HCES_ChargedPlasma : HCES_PlasmaBolt          // overcharged plasma pistol: big, homing, splash
+{
+	Default { Speed 25; Alpha 1.0; Scale 1.0; Decal "Scorch"; HCES_Projectile.BaseDamage 70; HCES_Projectile.ExplodeDamage 32; }
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		if(target && target.target) tracer = target.target;
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(bMISSILE && !isFrozen()) Handle_Homing(3.0, true);
+	}
+	States
+	{
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1
+		{
+			HCES_Math.Particles(self, col, 40, 4, 10, (8, 8, 8));
+			HCES_Math.Blast(self, target, int(explode_dmg), 128, 'Plasma', 0.5);
+		}
+		Stop;
+	}
+}
+class HCES_PulseCarbineProj : HCES_PlasmaBolt       // slow launch, accelerating, homing
+{
+	double thrust;
+	Default { Speed 11; Alpha 0.9; Scale 0.8; HCES_Projectile.BaseDamage 20; HCES_PlasmaBolt.PlasmaColor "13AFED"; HCES_PlasmaBolt.CoreColors "1358ED", "FFFFFF"; }
+	override void Tick()
+	{
+		super.Tick();
+		if(!bMISSILE || isFrozen()) return;
+		thrust = min((thrust ? thrust : 0.25) + 0.05, 1.5);
+		double s = 46 * thrust;
+		if(vel.Length() > 0.01) vel = vel.Unit() * s;
+		Handle_Homing(1.0 + thrust * 2, true);
+	}
+}
+
+// ---------------------------------------------------------------- needles (stick, then shatter or supercombine)
+class HCES_NeedleCounter : Inventory
+{
+	int count, combo;
+	Default { Inventory.MaxAmount 1; +INVENTORY.UNDROPPABLE +INVENTORY.UNTOSSABLE }
+}
+
+class HCES_Needle : HCES_SlowProjectile
+{
+	Actor hitactor;
+	vector3 hitoffs;
+	double hitangle;
+	int timer, myCombo;
+	double shatterdmg;
+	HCES_NeedleCounter cnt;
+	Default
+	{
+		Radius 2; Height 5; Speed 15; Scale 0.25; RenderStyle "Add";
+		Translation "0:255=@70[128, 17, 247]";
+		BounceType "Doom"; BounceCount 3; +BOUNCEONWALLS +BOUNCEONFLOORS +BOUNCEONCEILINGS -BOUNCEONACTORS
+		BounceSound "HCES/Needler/Ricochet";
+		HCES_SlowProjectile.BaseDamage 5;
+	}
+	override void BeginPlay() { super.BeginPlay(); shatterdmg = 4; }
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		if(target && target.target) tracer = target.target;
+	}
+	override int SpecialMissileHit(Actor victim)
+	{
+		if(!victim || victim == target || !victim.bSHOOTABLE || victim.health <= 0 || HCES_SameSide(victim)) return 1;
+		victim.DamageMobj(self, target, int(truedamage), 'Needle', 0, angle);
+		if(!victim || victim.health <= 0) { SetStateLabel("Shatter"); bMISSILE = false; vel = (0, 0, 0); return 1; }
+		hitactor = victim;
+		bMISSILE = false; bNOGRAVITY = true; vel = (0, 0, 0);
+		hitoffs = level.Vec3Diff(victim.pos, pos);
+		hitangle = victim.angle;
+		timer = 35;
+		cnt = HCES_NeedleCounter(victim.FindInventory("HCES_NeedleCounter"));
+		if(!cnt) { victim.GiveInventory("HCES_NeedleCounter", 1); cnt = HCES_NeedleCounter(victim.FindInventory("HCES_NeedleCounter")); }
+		if(cnt)
+		{
+			myCombo = cnt.combo;
+			if(++cnt.count >= 7)
+			{
+				cnt.count = 0; cnt.combo++;
+				Supercombine(victim);
+			}
+		}
+		SetStateLabel("Stuck");
+		return 1;
+	}
+	void Supercombine(Actor victim)
+	{
+		vector3 at = victim.pos + (0, 0, victim.height * 0.5);
+		let b = Spawn("HCES_NeedleBurst", at);
+		if(b) b.A_SetScale(1.5);
+		A_StartSound("HCES/Halo/Weapons/Needler/SuperCombine", CHAN_AUTO, CHANF_OVERLAP);
+		for(int i = 0; i < 60; i++)
+			victim.A_SpawnParticle("Purple", SPF_FULLBRIGHT, 20, 8, 0, 0, 0, victim.height * 0.5,
+				frandom[HCESFX](-10, 10), frandom[HCESFX](-10, 10), frandom[HCESFX](-6, 10), 0, 0, 0, 1.0, 0.03);
+		victim.DamageMobj(self, target, max(1, int(70 * DamageMultiply)), 'Explosive', 0, angle);
+		HCES_Math.Blast(self, target, int(30 * DamageMultiply), 128, 'Explosive', 0.5);
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(isFrozen()) return;
+		if(bMISSILE)
+		{
+			if(GetAge() < 30) Handle_Homing(4, true);
+			if(GetAge() > 35 * 3) SetStateLabel("Shatter");
+			return;
+		}
+		if(hitactor && InStateSequence(CurState, ResolveState("Stuck")))
+		{
+			double da = hitactor.angle - hitangle;
+			vector2 r = RotateVector(hitoffs.xy, da);
+			SetOrigin(hitactor.pos + (r, hitoffs.z), true);
+			if(!cnt || cnt.combo != myCombo) { Destroy(); return; }        // part of a supercombine
+			if(hitactor.health <= 0 || --timer <= 0) SetStateLabel("Shatter");
+		}
+	}
+	States
+	{
+	Spawn:
+		HCEM A 2 Bright { A_SpawnParticle("Purple", SPF_FULLBRIGHT, 10, 3, 0, 0, 0, 0, -vel.x * 0.1, -vel.y * 0.1, -vel.z * 0.1); }
+		Loop;
+	Stuck:
+		HCEM A 1 Bright;
+		Loop;
+	Death:
+	Crash:
+	XDeath:
+	Shatter:
+		TNT1 A 1
+		{
+			bMISSILE = false; vel = (0, 0, 0);
+			if(hitactor && hitactor.health > 0)
+			{
+				if(shatterdmg >= 1 || frandom[HCESFX](0, 1) < shatterdmg) hitactor.DamageMobj(self, target, max(1, int(shatterdmg)), 'Explosive', 0, angle);
+				if(cnt && cnt.combo == myCombo && cnt.count > 0) cnt.count--;
+			}
+			let b = Spawn("HCES_NeedleBurst", pos);
+			if(b) b.A_SetScale(0.25);
+			for(int i = 0; i < 8; i++)
+				A_SpawnParticle("Purple", SPF_FULLBRIGHT, 25, 4, 0, 0, 0, 0, frandom[HCESFX](-4, 4), frandom[HCESFX](-4, 4), frandom[HCESFX](-3, 4), 0, 0, -0.1);
+		}
+		Stop;
+	}
+}
+
+// ---------------------------------------------------------------- spiker spike (HDE spike model, light arc)
+class HCES_SpikerSpike : HCES_SlowProjectile
+{
+	Default
+	{
+		Speed 46; Gravity 0.25; -NOGRAVITY Scale 0.5; DamageType "Nailgun";
+		Translation "0:255=@65[245, 164, 66]";
+		HCES_SlowProjectile.BaseDamage 12;
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(bMISSILE && vel.Length() > 0.1) pitch = -atan2(vel.z, vel.xy.Length());
+	}
+	States
+	{
+	Spawn:
+		HCEM A 2 Bright { A_SpawnParticle("F5A442", SPF_FULLBRIGHT, 8, 2, 0, 0, 0, 0); }
+		Loop;
+	Death:
+		HCEM A 30 { A_StartSound("HCES/Halo/Weapons/Spiker/Impact", CHAN_AUTO, CHANF_OVERLAP, 0.7); vel = (0, 0, 0); bNOGRAVITY = true; }
+		HCEM A 1 A_FadeOut(0.05);
+		Wait;
+	XDeath:
+		TNT1 A 1 A_StartSound("HCES/Halo/Weapons/Spiker/Impact", CHAN_AUTO, CHANF_OVERLAP, 0.7);
+		Stop;
+	}
+}
+
+// ---------------------------------------------------------------- fuel rod (HDE's green plasma, arcing, splash)
+class HCES_FuelRod : HCES_SlowProjectile
+{
+	Default
+	{
+		Radius 8; Height 8; Speed 56; -NOGRAVITY Gravity 0.8; Scale 0.5; RenderStyle "AddShaded"; StencilColor "0BE058";
+		DamageType "Plasma";
+		HCES_SlowProjectile.BaseDamage 20;
+	}
+	States
+	{
+	Spawn:
+		HZFP A 1 Bright { let g = Spawn("HCES_PlasmaGlow", pos); if(g) { g.A_SetRenderStyle(1.0, STYLE_AddShaded); g.SetShade("05F02C"); g.A_SetScale(0.3); } }
+		Loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1
+		{
+			A_StartSound("HCES/Halo/Weapons/Fuelrod/Explosion", CHAN_AUTO, CHANF_OVERLAP, 1.0, 0.5);
+			HCES_Boom.Make(self, target, int(90 * DamageMultiply), 160, 'Plasma', "05F02C", 0.8);
+		}
+		Stop;
+	}
+}
+
+// ---------------------------------------------------------------- rocket (HDE rocket model, accelerating)
+class HCES_Rocket : HCES_SlowProjectile
+{
+	double thrust;
+	Default
+	{
+		Radius 4; Height 4; Speed 11; Scale 0.35; +BRIGHT DamageType "Rocket";
+		HCES_SlowProjectile.BaseDamage 20;
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(!bMISSILE || isFrozen()) return;
+		if(GetAge() >= 6)
+		{
+			thrust = min(HCES_Math.Lerp(thrust, 1.5, 0.2), 1.5);
+			if(vel.Length() > 0.01) vel = vel.Unit() * max(11, 46 * thrust);
+		}
+		let s = Spawn("HCES_Smoke", pos - vel.Unit() * 8);
+		if(s) { s.A_SetScale(0.2); s.alpha = 0.3; }
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 Bright A_StartSound("HCES/Halo/Weapons/RocketLauncher/Loop", CHAN_BODY, CHANF_LOOPING, 0.7);
+		Loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1
+		{
+			A_StopSound(CHAN_BODY);
+			A_StartSound("HCES/Halo/Weapons/RocketLauncher/Explode", CHAN_AUTO, CHANF_OVERLAP, 1.0, 0.3);
+			HCES_Boom.Make(self, target, int(128 * DamageMultiply), 160, 'Explosive', 0, 1.0);
+		}
+		Stop;
+	}
+}
+
+// ---------------------------------------------------------------- flamethrower flame (HDE's HaloFlames)
+class HCES_BurnTimer : Inventory
+{
+	int last;
+	Default { Inventory.MaxAmount 1; +INVENTORY.UNDROPPABLE +INVENTORY.UNTOSSABLE }
+}
+
+class HCES_Flame : Actor
+{
+	double rollDir;
+	Default
+	{
+		Radius 8; Height 8; Speed 10; Damage 1; Scale 0.08; RenderStyle "Add"; DamageType "Fire";
+		+BRIGHT +ROLLSPRITE +NOGRAVITY +NOBLOCKMAP +DROPOFF +NOTELEPORT
+	}
+	override void BeginPlay()
+	{
+		super.BeginPlay();
+		roll = frandom[HCESFX](-180, 180);
+		rollDir = randompick[HCESFX](-1, 1);
+		double s = frandom[HCESFX](0.95, 1.05);
+		A_SetScale(default.Scale.X * s, default.Scale.Y * s * randompick[HCESFX](-1, 1));
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(isFrozen()) return;
+		if(GetAge() == 1 && vel.Length() < 0.1) vel = HCES_Math.VecFromAngles(angle, pitch, Speed);
+		vector3 to = pos + vel;
+		if(!CheckMove(to.xy, PCM_NOACTORS) || to.z < floorz || to.z > ceilingz)
+		{
+			vel.xy = (0, 0); vel.z *= 0.25; to = pos + vel;
+		}
+		SetOrigin(to, true);
+		roll += frandom[HCESFX](0.1, 1.0) * rollDir;
+		A_SetScale(scale.x * 1.02, scale.y * 1.02);
+		alpha *= 0.98;
+		if(!(GetAge() % 2) && GetAge() < 35 && GetMissileDamage(0, 1) > 0)
+		{
+			let it = BlockThingsIterator.Create(self, 32);
+			while(it.Next())
+			{
+				Actor v = it.thing;
+				if(!v || !v.bSHOOTABLE || v == target || Distance3D(v) > 48) continue;
+				if(target && !target.player && !v.player && v.GetSpecies() == target.GetSpecies()) continue;
+				// overlapping flames don't stack: each victim burns for 2 at most every 3 tics (about 23 a second)
+				let burn = HCES_BurnTimer(v.FindInventory("HCES_BurnTimer"));
+				if(!burn) { v.GiveInventory("HCES_BurnTimer", 1); burn = HCES_BurnTimer(v.FindInventory("HCES_BurnTimer")); }
+				if(burn && level.maptime - burn.last < 3) continue;
+				if(burn) burn.last = level.maptime;
+				v.DamageMobj(self, target, 2, 'Fire');
+			}
+		}
+		if(alpha <= 0.1) Destroy();
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 0 NoDelay A_Jump(255, random[HCESFX](0, 10));
+		HZT1 ABCDEFGHIJKLMNOPQRSTUVWXYZ 2;
+		HZT2 ABCDEFGHIJKLMNOP 1 A_FadeOut(0.02);
+		HZT2 V 1;
+		Wait;
+	}
+}
+
+// ---------------------------------------------------------------- grenades (HDE's frag and plasma grenades)
+class HCES_Grenade : Actor
+{
+	Default
+	{
+		Projectile; -NOGRAVITY Gravity 0.67; +ROLLSPRITE Radius 3; Height 3; Speed 20; Scale 0.08;
+	}
+}
+
+class HCES_FragGrenade : HCES_Grenade
+{
+	Default
+	{
+		BounceType "Doom"; BounceCount 2; BounceFactor 0.6; +BOUNCEONWALLS +BOUNCEONFLOORS +BOUNCEONCEILINGS +USEBOUNCESTATE
+	}
+	override int SpecialMissileHit(Actor victim) { return -1; }
+	States
+	{
+	Spawn:
+		HZFG A 1 { roll += 5; }
+		Loop;
+	Bounce:
+		HZFG A 1 { A_StartSound("HCES/Halo/Grenade/Frag/Bounce", CHAN_BODY, CHANF_OVERLAP); roll -= 20; }
+		Goto Spawn;
+	Crash:
+	XDeath:
+	Death:
+		HZFG A 28;
+	Detonate:
+		TNT1 A 1
+		{
+			A_StartSound("HCES/Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP, 1.0, 0.3);
+			HCES_Boom.Make(self, target, int(100 * DamageMultiply), 192, 'Explosive', 0, 1.0);
+		}
+		Stop;
+	}
+}
+
+class HCES_PlasmaGrenade : HCES_Grenade
+{
+	Actor hitactor;
+	vector3 hitoffs;
+	bool onfloor, onceiling;
+	int boomDmg; double boomRadius; double boomScale;
+	Property Blast : boomDmg, boomRadius, boomScale;
+	Default { Speed 40; Radius 5; Height 5; HCES_PlasmaGrenade.Blast 110, 192, 1.0; }
+	virtual bool ShouldStick() { return true; }
+	void StickToActor(Actor t)
+	{
+		vector2 r = RotateVector((hitoffs.x * 0.25, hitoffs.y * 0.25), t.angle);
+		SetOrigin(t.pos + (r, hitoffs.z), true);
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(isFrozen()) return;
+		if(!bMISSILE && !bNOGRAVITY)
+		{
+			onfloor = pos.z <= floorz; onceiling = pos.z >= ceilingz;
+			if(ShouldStick()) { bNOGRAVITY = true; vel = (0, 0, 0); if(!InStateSequence(CurState, ResolveState("Death"))) SetStateLabel("Death"); }
+		}
+		let g = Spawn("HCES_PlasmaGlow", pos);
+		if(g && !bMISSILE) g.vel = (frandom[HCESFX](-1, 1), frandom[HCESFX](-1, 1), 1);
+		if(onfloor || onceiling) SetOrigin((pos.xy, onfloor ? floorz : ceilingz), true);
+		if(hitactor)
+		{
+			if(hitactor.health > 0 || hitactor.bCORPSE) StickToActor(hitactor);
+		}
+	}
+	override int SpecialMissileHit(Actor victim)
+	{
+		if(!victim.bSHOOTABLE || hitactor) return -1;
+		if(victim == target) return 1;
+		if(ShouldStick())
+		{
+			vel = (0, 0, 0);
+			hitactor = victim;
+			vector3 d = level.Vec3Diff(victim.pos, pos);
+			hitoffs = (RotateVector(d.xy, -victim.angle) * 4, d.z);
+		}
+		return -1;
+	}
+	virtual void DoExplode()
+	{
+		HCES_Boom.Make(self, target, int(boomDmg * DamageMultiply), boomRadius, 'PlasmaExplosion', "18B4ED", boomScale);
+	}
+	States
+	{
+	Spawn:
+		HZPG A 1 { roll += 5; }
+		Loop;
+	Crash:
+	XDeath:
+	Death:
+		HZPG A 70 { A_StartSound("HCES/Halo/Grenade/Plasma/Armed", CHAN_BODY, CHANF_OVERLAP); A_AlertMonsters(128); }
+	Detonate:
+		TNT1 A 1
+		{
+			A_StartSound("HCES/Halo/Grenade/Plasma/Explode", CHAN_AUTO, CHANF_OVERLAP, 1.0, 0.3);
+			DoExplode();
+		}
+		Stop;
+	}
+}
+
+// ---------------------------------------------------------------- plasma caster (White Hunter / Engineer)
+class HCES_PlasmaCasterProj : HCES_PlasmaGrenade
+{
+	Default
+	{
+		BounceType "Grenade"; BounceCount 2; BounceFactor 0.35; WallBounceFactor 0.35; +ALLOWBOUNCEONACTORS +BOUNCEONACTORS
+	}
+	override void DoExplode()
+	{
+		super.DoExplode();
+		HCES_Math.Particles(self, "18B4ED", 30, 4, 10);
+	}
+}
+
+class HCES_PlasmaCasterMini : HCES_PlasmaGrenade
+{
+	Default { Scale 0.05; HCES_PlasmaGrenade.Blast 60, 80, 0.35; }
+	override bool ShouldStick() { return false; }
+	States { Death: HZPG A 20; Goto Detonate; }
+}
+
+class HCES_PlasmaCasterCluster : HCES_PlasmaGrenade
+{
+	override void DoExplode()
+	{
+		super.DoExplode();
+		for(int i = 0; i < 2; i++)
+		{
+			let m = Spawn("HCES_PlasmaCasterMini", pos);
+			if(!m) continue;
+			m.target = target;
+			m.DamageMultiply = DamageMultiply;
+			m.vel = HCES_Math.VecFromAngles(angle + 180 + frandom[HCESFX](-60, 60), 0, 8);
+			m.vel.z = frandom[HCESFX](5, 10);
+		}
+	}
+}

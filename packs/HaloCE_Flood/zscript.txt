@@ -1,0 +1,5 @@
+version "4.15.1"
+
+// Halo CE enemies, Flood: infection, carrier and combat forms.
+// Load after HaloCE_Core.pk3 (and HCE_EnemyAPI_LocalDEV.pk3 before both).
+#include "ZScript/HaloCE/hce_flood.zsc"

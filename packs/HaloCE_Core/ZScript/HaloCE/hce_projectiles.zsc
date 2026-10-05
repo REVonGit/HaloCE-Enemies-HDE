@@ -1,0 +1,98 @@
+// Enemy projectiles: HDE visuals, Halo CE impact damage
+class HCE_ARBullet : HaloMAB_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 10;
+	}
+}
+
+class HCE_Flame : HaloFlames
+{
+	Default
+	{
+	}
+}
+
+class HCE_FuelRodBolt : HCE_FuelRodScaled
+{
+	Default
+	{
+	}
+}
+
+class HCE_Needle : HCE_NeedleScaled
+{
+	Default
+	{
+	}
+}
+
+class HCE_PistolBullet : HaloSidekick_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 25;
+	}
+}
+
+class HCE_PlasmaCasterGrenade : HCE_PlasmaCasterScaled
+{
+	Default
+	{
+	}
+}
+
+class HCE_PlasmaPistolBolt : HaloPlasma_Proj
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 18;
+	}
+}
+
+class HCE_PlasmaRifleBolt : HaloPlasmaRifle_Proj
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 13;
+	}
+}
+
+class HCE_Rocket : HCE_RocketScaled
+{
+	Default
+	{
+	}
+}
+
+class HCE_ShotgunPellet : HaloShotgun_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 20;
+	}
+}
+
+class HCE_SniperBullet : HaloSniper_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 101;
+	}
+}
+
+class HCE_ChargedPlasma : HaloChargedPlasma_Proj
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 70;
+	}
+}

@@ -1,0 +1,7 @@
+version "4.15.1"
+
+// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.
+// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.
+#include "ZScript/HaloCE/hce_explosives.zsc"
+#include "ZScript/HaloCE/hce_projectiles.zsc"
+#include "ZScript/HaloCE/hce_handler.zsc"

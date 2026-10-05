@@ -1,0 +1,71 @@
+// Digsite add-on: mixes Slug Men, carbine Elites, the SPV3 creatures and Halo 2's Drones and Brutes into the
+// Doom monster replacements;
+// the Drinol appears only as the Cyberdemon boss; Brute Chieftains take some Barons' places.
+// Each rule rolls a chance per Doom monster (easy | normal | hard); a hit picks from the weighted list and
+// marks the replacement final, so it wins whichever order the main pack's handler runs in.
+class HCE_DigsiteHandler : EventHandler
+{
+	static const String RULES[] =
+	{
+		// Doom monster   chance easy normal hard    picks (most likely first)
+		"ZombieMan",      "0.06 0.08 0.10", "HCE_SlugManPlasmaPistol*1",
+		"ShotgunGuy",     "0.06 0.08 0.10", "HCE_SlugManPlasmaPistol*2 HCE_EliteMinorPlasmaCarbine*1",
+		"DoomImp",        "0.05 0.07 0.09", "HCE_SlugManPlasmaPistol*2 HCE_EliteMinorPlasmaCarbine*1",
+		// hitscan snipers and carbine Elites take over some chaingunners
+		"ChaingunGuy",    "0.15 0.20 0.25", "HCE_SlugManParticleBeam*3 HCE_EliteMinorPlasmaCarbine*2 HCE_EliteMinorPulseCarbine*2 HCE_EliteMajorPlasmaCarbine*1",
+		// melee charger: the Blind Wolf is the Pinky's replacement (always, while this add-on is loaded);
+		// the Drinol is the Cyberdemon boss only
+		"Demon",          "1 1 1",          "HCE_BlindWolf*1",
+		"Spectre",        "0.25 0.30 0.35", "HCE_BlindWolf*1",
+		// Hell Knight: the Thorn Beast rolls first (a slow, tough brute), then the carbine Elites
+		"HellKnight",     "0.10 0.15 0.20", "HCE_ThornBeast*1",
+		// then Halo 2 Brute Minors and Majors
+		"HellKnight",     "0.25 0.30 0.35", "HCE_BruteMinorPlasmaRifle*3 HCE_BruteMinorAssaultRifle*2 HCE_BruteMajorSpiker*2 HCE_BruteMajorShotgun*1",
+		"HellKnight",     "0.15 0.20 0.25", "HCE_EliteMajorPlasmaCarbine*3 HCE_EliteMajorPulseCarbine*2 HCE_EliteMinorPlasmaCarbine*2 HCE_EliteSpecopsPlasmaCarbine*1",
+		// Revenant (homing missiles): homing Pulse Carbines fit best
+		// Brute Captains and Spiker Majors roll first
+		"Revenant",       "0.20 0.25 0.30", "HCE_BruteCaptainShotgun*2 HCE_BruteMajorSpiker*2 HCE_BruteCaptainPlasmaRifle*1 HCE_BruteHonorGuardAssaultRifle*1",
+		"Revenant",       "0.15 0.20 0.25", "HCE_EliteSpecopsPulseCarbine*3 HCE_EliteMajorPulseCarbine*2 HCE_EliteSpecopsPlasmaCarbine*1 HCE_SlugManParticleBeam*1",
+		"Archvile",       "0.20 0.25 0.30", "HCE_BruteHonorGuardPlasmaRifle*2 HCE_BruteHonorGuardAssaultRifle*1",
+		"Archvile",       "0.10 0.12 0.15", "HCE_EliteCommanderPlasmaCarbine*1 HCE_EliteCommanderPulseCarbine*1",
+		// Baron of Hell: some become Brute Chieftains (Tartarus's look, gravity hammer); still a Baron for boss deaths
+		"BaronOfHell",    "0.20 0.25 0.30", "HCE_BruteChieftainGravityHammer*1",
+		// Lost Soul (small flying swarmer): Halo 2 Drones
+		"LostSoul",       "0.60 0.65 0.70", "HCE_DronePlasmaPistol*1",
+		// Pain Elemental: always the Engineer while this add-on is loaded (a harmless floater that bursts
+		// into charged plasma grenades when killed)
+		"PainElemental",  "1 1 1",          "HCE_Engineer*1",
+		// boss: the Drinol war beast always takes the Cyberdemon's place (chance 1 = always, unless spawns are 0)
+		"Cyberdemon",     "1 1 1",          "HCE_BossCyberdemonDrinol*1"
+	};
+
+	// boss stand-in -> the Doom boss it replaces, so A_BossDeath map specials fire (E2M8, E4M2, MAP30-style exits)
+	override void CheckReplacee(ReplacedEvent e)
+	{
+		if(!e.Replacement) return;
+		Name rn = e.Replacement.GetClassName();
+		if(rn == 'HCE_BossCyberdemonDrinol') e.Replacee = "Cyberdemon";
+		else if(rn == 'HCE_BruteChieftainGravityHammer') e.Replacee = "BaronOfHell";
+	}
+
+	override void CheckReplacement(ReplaceEvent e)
+	{
+		if(e.IsFinal || !e.Replacee) return;
+		if(HCE_ReplaceHandler.KeepDoomMonsters()) return;
+		CVar cv = CVar.FindCVar("hce_digsite_spawns");
+		double mul = cv ? cv.GetFloat() : 1.0;
+		if(mul <= 0) return;
+		Name rn = e.Replacee.GetClassName();
+		for(int i = 0; i < RULES.Size(); i += 3)
+		{
+			if(rn != RULES[i]) continue;
+			Array<String> ch; RULES[i + 1].Split(ch, " ", TOK_SKIPEMPTY);
+			double c0 = ch[HCE_ReplaceHandler.SkillTier()].ToDouble();
+			double c = c0 >= 1 ? 1.0 : c0 * mul;
+			if(frandom[HCEDig](0, 1) >= c) continue;              // several rules per monster roll in order
+			class<Actor> rc = HCE_ReplaceHandler.PickWeighted(RULES[i + 2]);
+			if(rc) { e.Replacement = rc; e.IsFinal = true; }
+			return;
+		}
+	}
+}

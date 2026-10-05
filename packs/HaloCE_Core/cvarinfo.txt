@@ -1,0 +1,9 @@
+server bool hce_keepdoommonsters = false;  // true = leave Doom's monsters alone (Doom marines are still replaced)
+server bool hce_hunterpairs = true;        // hunters spawn as bonded pairs
+server float hce_enemydamage = 1.0;        // scale for Halo enemy weapon damage (multiplies with hce_nerf_projectiles)
+server float hce_nerf_projectiles = 0.4;   // enemy projectile nerf: bullets, plasma, needles, rockets, grenades and their blasts (melee untouched; allies unaffected)
+server float hce_nerf_health = 0.6;        // enemy health multiplier (allies unaffected)
+server float hce_nerf_shields = 0.5;       // enemy energy shields / Jackal shield gauntlets multiplier
+server float hce_burstpause = 1.0;        // >1 = longer pauses between enemy bursts
+server bool hce_dropweapons = true;        // enemies drop their weapon (and sometimes grenades) like in Halo
+server float hce_grenadefreq = 1.0;        // enemy grenade frequency (2 = twice as often, 0.5 = half)

@@ -1,0 +1,35 @@
+// Halo 2 Brute support class: the helmet that pops off when a Brute takes a headshot.
+class HCE_BruteHelmetDebris : Actor
+{
+	Default
+	{
+		Radius 6;
+		Height 8;
+		Gravity 0.8;
+		BounceType "Doom";
+		BounceFactor 0.4;
+		WallBounceFactor 0.4;
+		BounceCount 4;
+		+MISSILE
+		+NOBLOCKMAP
+		+DROPOFF
+		+MOVEWITHSECTOR
+		+THRUACTORS
+		+DECOUPLEDANIMATIONS
+		Scale 64;
+	}
+	int life;
+	States
+	{
+	Spawn:
+		HCEM A 1
+		{
+			roll += 14; pitch += 9;
+			if(++life > 35 * 20) A_FadeOut(0.05);
+		}
+		Loop;
+	Death:
+		HCEM A 1 { if(++life > 35 * 20) A_FadeOut(0.05); }
+		Loop;
+	}
+}

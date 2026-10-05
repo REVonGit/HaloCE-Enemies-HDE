@@ -105,6 +105,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 
 * **Place in maps:** use DoomEdNums **30200–30281** (table below), or the `HCE_Random*` spawners for a random variant of a character.
 * **Summon:** e.g. `summon HCE_EliteMajorPlasmaRifle`.
+* **Spawn everything:** the console command `punkassbitches` spawns one of every enemy class that's loaded (every pack and add-on), side by side in lines in front of you and facing you: 640 units of enemies per line, a line every 128 units. Spots blocked by walls are retried further ahead, then behind you, then anywhere free within 1024 units. Marines come out as allies. It's a console alias (`KEYCONF`) for `netevent hce_spawnall`, so it works in multiplayer too.
 * **Doom monsters are replaced automatically.** See the next section for what replaces what. To keep Doom's monsters, set `hce_keepdoommonsters 1`.
 
 | CVar | Default | Effect |

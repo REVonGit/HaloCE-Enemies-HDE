@@ -272,3 +272,74 @@ class HCE_ReplaceHandler : EventHandler
 		toMarine.Clear();
 	}
 }
+
+// Console command "punkassbitches" (KEYCONF alias for "netevent hce_spawnall"): spawns one of every Halo CE enemy
+// class that's loaded (every pack and add-on), side by side in lines in front of the player, facing them.
+// Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
+// player, then anywhere free nearby.
+class HCE_SpawnAllHandler : EventHandler
+{
+	override void NetworkProcess(ConsoleEvent e)
+	{
+		if(e.Name != "hce_spawnall") return;
+		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
+		let pl = players[e.Player].mo;
+		// every concrete enemy class, sorted by name so ranks and weapons of a species stand together
+		Array<String> names;
+		for(int i = 0; i < AllActorClasses.Size(); i++)
+		{
+			class<Actor> c = AllActorClasses[i];
+			if(!c || c.IsAbstract() || !(c is "HaloDoom_EnemyBase")) continue;
+			String n = c.GetClassName();
+			if(n.Length() < 4 || n.Mid(n.Length() - 4) == "Base") continue;
+			names.Push(n);
+		}
+		for(int i = 1; i < names.Size(); i++)
+		{
+			String k = names[i]; int j = i - 1;
+			while(j >= 0 && names[j] > k) { names[j + 1] = names[j]; j--; }
+			names[j + 1] = k;
+		}
+		if(names.Size() == 0) { Console.Printf("punkassbitches: no Halo CE enemies loaded"); return; }
+		// lines across the player's view, starting 160 units ahead: each enemy its own width apart, a new line
+		// every 640 units of width (128 further on), so they fit an ordinary room
+		vector2 fwd = Actor.AngleToVector(pl.angle, 1), across = Actor.AngleToVector(pl.angle - 90, 1);
+		Array<int> rowOf; Array<double> offOf; Array<double> rowWidth;
+		double cur = 0; int row = 0;
+		for(int i = 0; i < names.Size(); i++)
+		{
+			double w = GetDefaultByType((class<Actor>)(names[i])).radius * 2 + 24;
+			if(cur + w > 640 && cur > 0) { rowWidth.Push(cur); row++; cur = 0; }
+			rowOf.Push(row); offOf.Push(cur + w / 2); cur += w;
+		}
+		rowWidth.Push(cur);
+		int made = 0, blocked = 0;
+		for(int i = 0; i < names.Size(); i++)
+		{
+			class<Actor> c = (class<Actor>)(names[i]);
+			double at = offOf[i] - rowWidth[rowOf[i]] / 2;
+			Actor mo = null;
+			for(int tryStep = 0; tryStep < 40 && !mo; tryStep++)
+			{
+				// a little further on if the spot is blocked, then the same line behind the player; failing that
+				// (a wall in the way), any free spot within 1024 units
+				double ahead = (160 + 128 * rowOf[i] + 48 * (tryStep % 4)) * (tryStep < 4 ? 1 : -1);
+				vector3 spot = (pl.pos.x + fwd.x * ahead + across.x * at, pl.pos.y + fwd.y * ahead + across.y * at, pl.pos.z);
+				if(tryStep >= 8)
+				{
+					vector2 r = Actor.AngleToVector(frandom[HCESpawnAll](0, 360), frandom[HCESpawnAll](96, 1024));
+					spot = (pl.pos.x + r.x, pl.pos.y + r.y, pl.pos.z);
+				}
+				if(!level.IsPointInLevel(spot)) continue;
+				mo = Actor.Spawn(c, spot, NO_REPLACE);
+				if(!mo) continue;
+				mo.SetZ(mo.floorz);
+				if(!mo.TestMobjLocation() || mo.ceilingz - mo.floorz < mo.height) { mo.ClearCounters(); mo.Destroy(); mo = null; }
+			}
+			if(!mo) { blocked++; continue; }
+			mo.angle = mo.AngleTo(pl);
+			made++;
+		}
+		Console.Printf("punkassbitches: %d enemies spawned%s", made, blocked ? String.Format(", %d had no room", blocked) : "");
+	}
+}

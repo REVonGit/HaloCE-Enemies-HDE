@@ -37,6 +37,7 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 | `split_factions.py` | Splits the generated tree into the shared core (no Halo assets) and one pack per faction |
 | `addons/localdev/ZScript/BaseAI/enemies_base.zsc` | Extended HaloDoom_EnemyBase (hand-written): the AI, grenade dodging, jumping, flinches, gore |
 | `pack/ZScript/HaloCE/hce_core.zsc` | Hand-written core code that needs ZScript 4.15 bone queries: the Jackal shield entity riding the arm's `frame shield` node |
+| `extract_h2_grunt.py` | Extra Crazy Grunt dialogue from Halo 2's `grunt_crazy` set in `08a_deltacliffs.map` (same `HCE_H2_MAP08` / `HCE_H2_SOUNDS` settings as the Brutes): fills the events the Crazy set is short on, skipping lines it already has (`HCE_VOICE_SRC`). Writes `voice_extra/Grunt_Crazy/`, which `build_voices.py` adds on top of the main source |
 | `louden_voices.py` | Levels the dialogue (EBU R128, raised toward -11 LUFS with a limiter): `python3 louden_voices.py voices <digsite pack dir>` after `build_voices.py` / `build_digsite.py` |
 
 Every Halo world unit becomes 80 map units. In MODELDEF, Z is scaled ×1.2 to cancel Doom's pixel-aspect squash.

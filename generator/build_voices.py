@@ -7,6 +7,8 @@ _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 
 import os, re, sys, shutil
 SRC = os.environ.get('HCE_VOICE_SRC', 'HaloDoomEnemies/Sounds')
 OUT = os.environ.get('HCE_VOICE_OUT', 'voices')
+# extra lines added on top of the main source, same layout (<Voice>/<Category> N.ogg): extract_h2_grunt.py
+EXTRA = os.environ.get('HCE_VOICE_EXTRA', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voice_extra'))
 
 # source category (lowercased, number stripped) -> pack events
 CAT = {
@@ -30,12 +32,13 @@ def main():
     lines = ['// Halo CE enemy dialogue (sound files from Lewisk3/HaloDoomEnemies).',
              '// Logical names HCE/<Voice>/<Event> are played by HaloDoom_EnemyBase.HCE_Say().', '']
     total = 0
-    for voice in sorted(os.listdir(SRC)):
-        vdir = os.path.join(SRC, voice)
+    extra = set(os.listdir(EXTRA)) if os.path.isdir(EXTRA) else set()
+    for voice in sorted(set(os.listdir(SRC)) | extra):
         vname = voice.replace(' ', '_')
-        if not os.path.isdir(vdir): continue
+        dirs = [d for d in (os.path.join(SRC, voice), os.path.join(EXTRA, voice)) if os.path.isdir(d)]
+        if not dirs: continue
         events = {}
-        for fn in sorted(os.listdir(vdir)):
+        for vdir, fn in [(d, f) for d in dirs for f in sorted(os.listdir(d))]:
             if not fn.lower().endswith('.ogg'): continue
             cat = re.sub(r'\s*\d+$', '', fn[:-4]).strip().lower()
             if cat not in CAT: print('skip', voice, fn); continue

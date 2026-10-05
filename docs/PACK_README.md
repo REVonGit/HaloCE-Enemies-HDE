@@ -270,13 +270,16 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   | Ultra (Halo 2 Jackal) | Orange | Plasma rifle | 100 / 350 | `HCE_JackalUltraPlasmaRifle` (30248) |
   | Zealot (Halo 2 Jackal) | Gold | Spiker | 120 / 450 | `HCE_JackalZealotSpiker` (30433) |
   | Sniper (Halo 2 Jackal) | none | Halo 2 beam rifle | 60 / – | `HCE_JackalSniperBeamRifle` (30434) |
+  | Marksman (Halo 2 Jackal) | none | Plasma carbine | 70 / – | `HCE_JackalMarksmanPlasmaCarbine` (30436) |
+  | Marksman (Halo 2 Jackal) | none | Pulse carbine | 70 / – | `HCE_JackalMarksmanPulseCarbine` (30437) |
 
   Halo CE only has Minor and Major plasma-pistol Jackals. The plasma-rifle Jackal (rate of fire and bursts from the Minor plasma-rifle Elite) is the **Ultra**, and the needler Jackal (the Major Grunt's needler timing) the **Major**. Each keeps its weapon, shield colour and DoomEdNum: 30248 is the plasma-rifle Ultra, 30279 the needler Major. The rank's name and stats moved with the swap; older builds had them the other way round, as `HCE_JackalMajorPlasmaRifle` and `HCE_JackalUltraNeedler`. `HCE_RandomJackalMajor` spawns either.
-* **Halo 2 Jackals (Digsite add-on):** the Ultra, the Zealot and the Sniper wear Halo 2's Jackal, ripped from MCC's `08a_deltacliffs.map`: its 40-bone model and textures, its arm shield, and its own animations (one-handed pistol stance for the plasma rifle and Spiker, two-handed rifle stance for the beam rifle, crouches, dives, evades, surprise, flinches and deaths). Halo 2's Jackal holds its shield on the right forearm and its gun in the left hand; the shield entity, the gun-hand hit and the shield's switch-off follow those bones (`HCE_ShieldBone`, `HCE_GunHandBone`, `HCE_ShieldSurface`).
+* **Halo 2 Jackals (Digsite add-on):** the Ultra, the Zealot, the Sniper and the Marksmen wear Halo 2's Jackal, ripped from MCC's `08a_deltacliffs.map`: its 40-bone model and textures, its arm shield, and its own animations (one-handed pistol stance for the plasma rifle and Spiker, two-handed rifle stance for the beam rifle, crouches, dives, evades, surprise, flinches and deaths). Halo 2's Jackal holds its shield on the right forearm and its gun in the left hand; the shield entity, the gun-hand hit and the shield's switch-off follow those bones (`HCE_ShieldBone`, `HCE_GunHandBone`, `HCE_ShieldSurface`).
   * **Ultra:** the CE pack's plasma-rifle Ultra moved onto the Halo 2 body; same class, stats and DoomEdNum. Its armour takes Halo 2's Major Jackal colours.
   * **Zealot (new):** a tougher Ultra (120 body, 450 shield) with the **Spiker**, a gold shield and gold armour, the colour Halo gives its zealots.
   * **Sniper (new):** Halo 2's Sniper Jackal: no shield (60 body), keeps its distance (combat range 640–2240), and carries **Halo 2's beam rifle**, which fires like HaloDoom's (see Beam rifle below).
-  * `HCE_RandomH2Jackal` (30435) picks one of the three.
+  * **Marksman (new):** Halo 3's carbine Jackal on the Halo 2 body: no shield (70 body), Halo 2's Major armour colours, the rifle stance, and the Elites' **plasma carbine** (`HCE_JackalMarksmanPlasmaCarbine`) or the homing **pulse carbine** (`HCE_JackalMarksmanPulseCarbine`), fired like the carbine Elites'. It hangs back at 480–1760 units, a little closer than the Sniper.
+  * `HCE_RandomH2Jackal` (30435) picks one of the five.
 * **Jackal shield pop:** every Jackal's shield (CE and Halo 2) now pops with Halo 2's Jackal shield-break sound (three variations from `jackal_shield_death`).
 * **Beam rifle (Halo 2):** the Sniper Jackal and the beam-rifle Spec Ops Elite carry Halo 2's beam rifle model and fire it like HaloDoom's beam rifle: a held purple beam whose damage climbs while it stays on a target (from about 1 to 4 a tic, three times as much after half a second on target), in bursts of about a second with a 2.5–3.5 s cool-down. It uses HDE's laser sounds and the same slow-tracking aim as every other enemy weapon, so strafing drags the beam off you. It drops HDE's beam rifle. In testing, a Sniper Jackal held on a standing target for up to about 120 damage in a second of beam.
 * **Jackal bodies:** no energy shield of their own; the arm shield is all they have. Shots from a Jackal's side or back that clip the shield's hitbox (held out to the side) go on into the Jackal.
@@ -428,14 +431,14 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | `HCE_Elite{Minor,Major,Specops,Commander}PlasmaCarbine` | Elites with **CMT's Covenant carbine** (model and textures from the CMT tags: purple carapace, glowing status lights and ammo read-out) in a real two-handed **rifle stance**. Semi-auto pairs and triples of HDE's green carbine rounds (15 base damage), with longer combat ranges than the plasma-rifle Elites. They drop HDE's Carbine. |
 
 * **Rifle stance.** The animations come from the CE-rig Elite graph you supplied (`elite.model_animations`): stand/crouch/alert idles, moves and turns, dives, evades, berserk, both rifle melees, surprise, signal and land. Its uncompressed frames decode directly. CMT's carbine sits on the `right hand elite` marker, and the support hand lands where the set already places it. A two-bone IK step keeps the support hand on the fore-grip during strides. The graph has no rifle fire overlay, so firing uses a short synthetic recoil kick. Actions the graph lacks (airborne, hard landing, throw, warn, alert move) use the Elite's pistol body, with the support hand solved onto the carbine. The same graph also has cannon (fuel rod) and flamethrower sets that aren't used yet.
-* **Slug Man.** Model, 187 animations (full pistol and rifle sets) and stats come from the Digsite JMS/JMA sources and tags. Its hand marker points the barrel down z instead of x, so held weapons are rotated to match. The voice lines are its own Digsite dialogue (Xbox ADPCM decoded to ogg): sighted, taunt, pain, death, retreat, evade and communication.
+* **Slug Man.** Model, 187 animations (full pistol and rifle sets) and stats come from the Digsite JMS/JMA sources and tags. Its hand marker points the barrel down z instead of x, so held weapons are rotated to match: barrel along the marker's z, the gun's top along its −x, which holds both guns upright and pointing ahead in every aim and fire animation. The voice lines are its own Digsite dialogue (Xbox ADPCM decoded to ogg): sighted, taunt, pain, death, retreat, evade and communication.
 * **Spawns.** Each listed Doom monster has a chance to become a Digsite enemy (easy / normal / hard). Otherwise the main pack's mix applies. `hce_digsite_spawns` scales the chances (0 turns them off), and `hce_keepdoommonsters` is respected.
 
 | Doom monster | Chance | Picks |
 |---|---|---|
 | ZombieMan | 6 / 8 / 10% | plasma-pistol Slug Man |
 | ShotgunGuy, DoomImp | 5–10% | plasma-pistol Slug Man, Minor carbine Elite |
-| ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite |
+| ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite, carbine and pulse-carbine Jackal Marksmen |
 | Cacodemon | **always** | Halo 2 Drone |
 | LostSoul | 60 / 65 / 70% | Halo 2 Drone |
 | HellKnight (after the Thorn Beast roll) | 25 / 30 / 35% | Brute Minors (plasma rifle, assault rifle) and Majors (Spiker, shotgun) |
@@ -450,7 +453,7 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | Archvile | 10 / 12 / 15% | Commander carbine or pulse-carbine Elite |
 | **Cyberdemon** | **always** | Drinol boss (`HCE_BossCyberdemonDrinol`), unless `hce_digsite_spawns` is 0, which hands it back to the main pack's Hunter bosses |
 
-DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434 and `HCE_RandomH2Jackal` 30435. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`).
+DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`).
 
 **License: keep this add-on private.** Digsite's README says its content is not open source and is licensed only for MCC mod projects. The Elites' carbine is CMT's and private too. Sources are listed in the pk3's `CREDITS.txt`.
 
@@ -558,6 +561,26 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
 * **Without NashGore:** a large blood burst.
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
+
+**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
+* **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it, picked at random from Halo CE's and Halo 2's splats:
+
+  | Species | Halo decals |
+  |---|---|
+  | Elites, Jackals | lavender Elite splats (CE + H2) |
+  | Grunts | blue Grunt splats (CE + H2) |
+  | Hunters | orange Hunter splats (CE + H2) and CE's glowing splat (drawn bright) |
+  | Brutes | Halo 2's navy Brute splat |
+  | Drones | Halo 2's khaki "bugger" splats |
+  | Engineers | Halo CE's pink Engineer splat |
+  | Slug Men | Halo 2's green Flood-style splats |
+  | Drinol, Blind Wolf, Thorn Beast | red Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
+
+* **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour (Halo CE's and Halo 2's blood-burst sheets), with a few blood streaks flung away from the shot (Halo 2's blood trails).
+* **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears and Halo 2's large Flood splat.
+* **Toggle:** `hce_halogore 0` turns the Halo gore off and leaves NashGore's own.
+* Splats fade after about a minute.
+* Fire, freezing, drowning and telefrags don't bleed.
 
 **BLUDTYPE:** none is needed. The enemies, HDE's projectiles and the standalone projectiles all spawn Doom's standard `Blood`, which NashGore replaces on its own. If another mod gives these enemies a custom blood class, list it in a `BLUDTYPE.txt` as described in [nashgore_bludtype](https://github.com/nashmuhandes/nashgore_bludtype).
 

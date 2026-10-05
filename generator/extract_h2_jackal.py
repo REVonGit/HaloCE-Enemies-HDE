@@ -25,7 +25,7 @@ TEXTURES = os.environ.get('HCE_H2_TEXTURES', 'textures.dat')
 JACKAL = r'objects\characters\jackal\jackal'
 BEAM = r'objects\weapons\rifle\beam_rifle\beam_rifle'
 BMP = r'objects\characters\jackal\bitmaps' + '\\'
-HAND_WEAPONS = ['plasma_rifle', 'spiker']                 # out/weapons/<id>/<id>.pkl (CE weapon space: origin = grip)
+HAND_WEAPONS = ['plasma_rifle', 'spiker', 'cmt_carbine']   # + the CMT carbine (the Marksmen; blue-skinned for the pulse carbine)                 # out/weapons/<id>/<id>.pkl (CE weapon space: origin = grip)
 KEEP = {('body', 'standard'), ('shield', 'active')}
 # shader -> (base bitmap, change-colour mask or None)
 SHADER_MAPS = {

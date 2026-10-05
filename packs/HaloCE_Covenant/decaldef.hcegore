@@ -1,0 +1,961 @@
+// Halo CE and Halo 2 blood decals (extract_halo_gore.py), used by the NashGore patch (hce_gore.zsc)
+Fader HCEGoreFade
+{
+	DecayStart 60.0
+	DecayTime 20.0
+}
+
+Decal HCEG_ce_blood_splat_elite_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_elite_0.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_elite_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_elite_1.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_elite_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_elite_2.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_elite_3
+{
+	Pic "graphics/hcegore/ce_blood_splat_elite_3.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_elite_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_elite_0.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_elite_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_elite_1.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_elite_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_elite_2.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_elite_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_elite_3.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_grunt_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_grunt_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_grunt_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_grunt_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_grunt_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_grunt_2.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_grunt_3
+{
+	Pic "graphics/hcegore/ce_blood_splat_grunt_3.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_grunt_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_grunt_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_grunt_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_grunt_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_grunt_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_grunt_2.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_grunt_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_grunt_3.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_glow_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_0.png"
+	Add 0.8
+	Fullbright
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_glow_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_1.png"
+	Add 0.8
+	Fullbright
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_glow_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_2.png"
+	Add 0.8
+	Fullbright
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_hunter_glow_3
+{
+	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_3.png"
+	Add 0.8
+	Fullbright
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter_3.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter2_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter2_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter2_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter2_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter2_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter2_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_hunter2_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_hunter2_3.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_brute_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_brute_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_brute_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_brute_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_brute_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_brute_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_brute_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_brute_3.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger_0.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger_1.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger_2.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger_3.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger2_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger2_0.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger2_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger2_1.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger2_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger2_2.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_bugger2_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_bugger2_3.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_engineer_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_engineer_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_engineer_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_engineer_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_engineer_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_engineer_2.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_engineer_3
+{
+	Pic "graphics/hcegore/ce_blood_splat_engineer_3.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_flood_splat_0
+{
+	Pic "graphics/hcegore/h2_flood_splat_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_flood_splat_1
+{
+	Pic "graphics/hcegore/h2_flood_splat_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_flood_splat_2
+{
+	Pic "graphics/hcegore/h2_flood_splat_2.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_flood_splat_3
+{
+	Pic "graphics/hcegore/h2_flood_splat_3.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_0
+{
+	Pic "graphics/hcegore/ce_blood_splat_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_1
+{
+	Pic "graphics/hcegore/ce_blood_splat_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_2
+{
+	Pic "graphics/hcegore/ce_blood_splat_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_splat_3
+{
+	Pic "graphics/hcegore/ce_blood_splat_3.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_0
+{
+	Pic "graphics/hcegore/h2_blood_splat_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_1
+{
+	Pic "graphics/hcegore/h2_blood_splat_1.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_2
+{
+	Pic "graphics/hcegore/h2_blood_splat_2.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_blood_splat_3
+{
+	Pic "graphics/hcegore/h2_blood_splat_3.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_elite_lg_0
+{
+	Pic "graphics/hcegore/ce_blood_smear_elite_lg_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_elite_lg_1
+{
+	Pic "graphics/hcegore/ce_blood_smear_elite_lg_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_elite_med_0
+{
+	Pic "graphics/hcegore/ce_blood_smear_elite_med_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_elite_med_1
+{
+	Pic "graphics/hcegore/ce_blood_smear_elite_med_1.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_grunt_lg_0
+{
+	Pic "graphics/hcegore/ce_blood_smear_grunt_lg_0.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_grunt_lg_1
+{
+	Pic "graphics/hcegore/ce_blood_smear_grunt_lg_1.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_grunt_med_0
+{
+	Pic "graphics/hcegore/ce_blood_smear_grunt_med_0.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_ce_blood_smear_grunt_med_1
+{
+	Pic "graphics/hcegore/ce_blood_smear_grunt_med_1.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_bloodsplat_drippy_0
+{
+	Pic "graphics/hcegore/h2_bloodsplat_drippy_0.png"
+	Translucent 0.95
+	X-Scale 0.60
+	Y-Scale 0.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_h2_flood_splat_large_0
+{
+	Pic "graphics/hcegore/h2_flood_splat_large_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+DecalGroup HCEGore_Elite
+{
+	HCEG_ce_blood_splat_elite_0 1
+	HCEG_ce_blood_splat_elite_1 1
+	HCEG_ce_blood_splat_elite_2 1
+	HCEG_ce_blood_splat_elite_3 1
+	HCEG_h2_blood_splat_elite_0 1
+	HCEG_h2_blood_splat_elite_1 1
+	HCEG_h2_blood_splat_elite_2 1
+	HCEG_h2_blood_splat_elite_3 1
+}
+
+DecalGroup HCEGore_Grunt
+{
+	HCEG_ce_blood_splat_grunt_0 1
+	HCEG_ce_blood_splat_grunt_1 1
+	HCEG_ce_blood_splat_grunt_2 1
+	HCEG_ce_blood_splat_grunt_3 1
+	HCEG_h2_blood_splat_grunt_0 1
+	HCEG_h2_blood_splat_grunt_1 1
+	HCEG_h2_blood_splat_grunt_2 1
+	HCEG_h2_blood_splat_grunt_3 1
+}
+
+DecalGroup HCEGore_Hunter
+{
+	HCEG_ce_blood_splat_hunter_0 1
+	HCEG_ce_blood_splat_hunter_1 1
+	HCEG_ce_blood_splat_hunter_2 1
+	HCEG_ce_blood_splat_hunter_glow_0 1
+	HCEG_ce_blood_splat_hunter_glow_1 1
+	HCEG_ce_blood_splat_hunter_glow_2 1
+	HCEG_ce_blood_splat_hunter_glow_3 1
+	HCEG_h2_blood_splat_hunter_0 1
+	HCEG_h2_blood_splat_hunter_1 1
+	HCEG_h2_blood_splat_hunter_2 1
+	HCEG_h2_blood_splat_hunter_3 1
+	HCEG_h2_blood_splat_hunter2_0 1
+	HCEG_h2_blood_splat_hunter2_1 1
+	HCEG_h2_blood_splat_hunter2_2 1
+	HCEG_h2_blood_splat_hunter2_3 1
+}
+
+DecalGroup HCEGore_Brute
+{
+	HCEG_h2_blood_splat_brute_0 1
+	HCEG_h2_blood_splat_brute_1 1
+	HCEG_h2_blood_splat_brute_2 1
+	HCEG_h2_blood_splat_brute_3 1
+}
+
+DecalGroup HCEGore_Drone
+{
+	HCEG_h2_blood_splat_bugger_0 1
+	HCEG_h2_blood_splat_bugger_1 1
+	HCEG_h2_blood_splat_bugger_2 1
+	HCEG_h2_blood_splat_bugger_3 1
+	HCEG_h2_blood_splat_bugger2_0 1
+	HCEG_h2_blood_splat_bugger2_1 1
+	HCEG_h2_blood_splat_bugger2_2 1
+	HCEG_h2_blood_splat_bugger2_3 1
+}
+
+DecalGroup HCEGore_Engineer
+{
+	HCEG_ce_blood_splat_engineer_0 1
+	HCEG_ce_blood_splat_engineer_1 1
+	HCEG_ce_blood_splat_engineer_2 1
+	HCEG_ce_blood_splat_engineer_3 1
+}
+
+DecalGroup HCEGore_SlugMan
+{
+	HCEG_h2_flood_splat_0 1
+	HCEG_h2_flood_splat_1 1
+	HCEG_h2_flood_splat_2 1
+	HCEG_h2_flood_splat_3 1
+}
+
+DecalGroup HCEGore_Beast
+{
+	HCEG_ce_blood_splat_0 1
+	HCEG_ce_blood_splat_1 1
+	HCEG_ce_blood_splat_2 1
+	HCEG_ce_blood_splat_3 1
+	HCEG_h2_blood_splat_0 1
+	HCEG_h2_blood_splat_1 1
+	HCEG_h2_blood_splat_2 1
+	HCEG_h2_blood_splat_3 1
+}
+
+DecalGroup HCEGore_EliteBig
+{
+	HCEG_ce_blood_smear_elite_lg_0 1
+	HCEG_ce_blood_smear_elite_lg_1 1
+	HCEG_ce_blood_smear_elite_med_0 1
+	HCEG_ce_blood_smear_elite_med_1 1
+	HCEG_ce_blood_splat_elite_0 1
+	HCEG_ce_blood_splat_elite_1 1
+	HCEG_ce_blood_splat_elite_2 1
+	HCEG_ce_blood_splat_elite_3 1
+	HCEG_h2_blood_splat_elite_0 1
+	HCEG_h2_blood_splat_elite_1 1
+	HCEG_h2_blood_splat_elite_2 1
+	HCEG_h2_blood_splat_elite_3 1
+}
+
+DecalGroup HCEGore_GruntBig
+{
+	HCEG_ce_blood_smear_grunt_lg_0 1
+	HCEG_ce_blood_smear_grunt_lg_1 1
+	HCEG_ce_blood_smear_grunt_med_0 1
+	HCEG_ce_blood_smear_grunt_med_1 1
+	HCEG_ce_blood_splat_grunt_0 1
+	HCEG_ce_blood_splat_grunt_1 1
+	HCEG_ce_blood_splat_grunt_2 1
+	HCEG_ce_blood_splat_grunt_3 1
+	HCEG_h2_blood_splat_grunt_0 1
+	HCEG_h2_blood_splat_grunt_1 1
+	HCEG_h2_blood_splat_grunt_2 1
+	HCEG_h2_blood_splat_grunt_3 1
+}
+
+DecalGroup HCEGore_BeastBig
+{
+	HCEG_h2_bloodsplat_drippy_0 1
+	HCEG_ce_blood_splat_0 1
+	HCEG_ce_blood_splat_1 1
+	HCEG_ce_blood_splat_2 1
+	HCEG_ce_blood_splat_3 1
+	HCEG_h2_blood_splat_0 1
+	HCEG_h2_blood_splat_1 1
+	HCEG_h2_blood_splat_2 1
+	HCEG_h2_blood_splat_3 1
+}
+
+DecalGroup HCEGore_SlugManBig
+{
+	HCEG_h2_flood_splat_large_0 1
+	HCEG_h2_flood_splat_0 1
+	HCEG_h2_flood_splat_1 1
+	HCEG_h2_flood_splat_2 1
+	HCEG_h2_flood_splat_3 1
+}
+
+DecalGroup HCEGore_HunterBig
+{
+	HCEG_ce_blood_splat_hunter_0 1
+	HCEG_ce_blood_splat_hunter_1 1
+	HCEG_ce_blood_splat_hunter_2 1
+	HCEG_ce_blood_splat_hunter_glow_0 1
+	HCEG_ce_blood_splat_hunter_glow_1 1
+	HCEG_ce_blood_splat_hunter_glow_2 1
+	HCEG_ce_blood_splat_hunter_glow_3 1
+	HCEG_h2_blood_splat_hunter_0 1
+	HCEG_h2_blood_splat_hunter_1 1
+	HCEG_h2_blood_splat_hunter_2 1
+	HCEG_h2_blood_splat_hunter_3 1
+	HCEG_h2_blood_splat_hunter2_0 1
+	HCEG_h2_blood_splat_hunter2_1 1
+	HCEG_h2_blood_splat_hunter2_2 1
+	HCEG_h2_blood_splat_hunter2_3 1
+}
+
+DecalGroup HCEGore_BruteBig
+{
+	HCEG_h2_blood_splat_brute_0 1
+	HCEG_h2_blood_splat_brute_1 1
+	HCEG_h2_blood_splat_brute_2 1
+	HCEG_h2_blood_splat_brute_3 1
+}
+
+DecalGroup HCEGore_DroneBig
+{
+	HCEG_h2_blood_splat_bugger_0 1
+	HCEG_h2_blood_splat_bugger_1 1
+	HCEG_h2_blood_splat_bugger_2 1
+	HCEG_h2_blood_splat_bugger_3 1
+	HCEG_h2_blood_splat_bugger2_0 1
+	HCEG_h2_blood_splat_bugger2_1 1
+	HCEG_h2_blood_splat_bugger2_2 1
+	HCEG_h2_blood_splat_bugger2_3 1
+}
+
+DecalGroup HCEGore_EngineerBig
+{
+	HCEG_ce_blood_splat_engineer_0 1
+	HCEG_ce_blood_splat_engineer_1 1
+	HCEG_ce_blood_splat_engineer_2 1
+	HCEG_ce_blood_splat_engineer_3 1
+}

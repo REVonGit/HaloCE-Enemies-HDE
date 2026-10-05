@@ -74,9 +74,11 @@ DoomEdNums
 	30433 = HCE_JackalZealotSpiker
 	30434 = HCE_JackalSniperBeamRifle
 	30435 = HCE_RandomH2Jackal
+	30436 = HCE_JackalMarksmanPlasmaCarbine
+	30437 = HCE_JackalMarksmanPulseCarbine
 }
 
 GameInfo
 {
-	AddEventHandlers = "HCE_DigsiteHandler"
+	AddEventHandlers = "HCE_HaloGoreHandler", "HCE_DigsiteHandler"
 }

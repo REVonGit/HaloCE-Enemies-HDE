@@ -25,8 +25,10 @@ CHARS = {
                     anims='characters/slug_man/animations',
                     tex={'body': 'characters/slug_man/bitmaps/slugman'},
                     multi={'body': 'characters/slug_man/bitmaps/slugman_multi'},
-                    # the Slug Man's hand marker has its z axis down the barrel (Blender rig), not x like Halo's bipeds
-                    weapons=('right hand elite', ['particle_beam_dig', 'plasma_pistol'], lambda v: np.array([v[1], v[2], v[0]]))),
+                    # the Slug Man's hand marker has its z axis down the barrel (Blender rig), not x like Halo's bipeds:
+                    # weapon +x (barrel) -> marker +z, +y -> +y, +z (top) -> -x, which keeps the gun upright and
+                    # pointing ahead in every aim and fire animation (checked against the posed hand marker)
+                    weapons=('right hand elite', ['particle_beam_dig', 'plasma_pistol'], lambda v: np.array([-v[2], v[1], v[0]]))),
 }
 
 def load_tex(base):

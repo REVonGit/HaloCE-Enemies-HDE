@@ -56,9 +56,10 @@ KIT_RANKS = ['minor', 'major', 'captain', 'chieftain']
 H2JACKAL = r'objects\characters\jackal\jackal'
 H2BEAM = bp.H2BEAM
 H2J_JSON = f'{bp.OUT}/models/H2Jackal/H2Jackal.json'
+H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (Halo 3's long-range Jackals)
 # armour change colours per rank (primary, secondary, tertiary): Ultra and Sniper take the Halo 2 major / minor
 # biped colours; the Zealot is a custom gold with pale trim
-H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor',
+H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
 CHIEFTAIN_BERSERK = {
@@ -191,6 +192,14 @@ def load_ai():
         sn['ranged_combat'].update(combat_range_lower_bound=8.0, combat_range_upper_bound=28.0, maximum_firing_range=48.0)
         sn['items']['grenades_lower_bound'] = 0; sn['items']['grenades_upper_bound'] = 0
         variants[H2JACKAL + '\\jackal sniper beam rifle'] = sn
+        # Marksmen (Halo 3's carbine Jackals): the Sniper's build with the plasma carbine or the pulse carbine, a
+        # little closer in; no shield, rifle stance
+        for wref, key in ((CARBINE, 'plasma carbine'), (PULSE, 'pulse carbine')):
+            mk = h2j(A['variants'][r'characters\jackal\jackal minor plasma pistol'], 'marksman', 70, 0, wref,
+                     _ov=dict(stance='rifle', shield=0, flags=['HCE_Surprise', 'HCE_Panics', 'HCE_SeeksCover', 'HCE_Evades']))
+            mk['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=40.0)
+            mk['items']['grenades_lower_bound'] = 0; mk['items']['grenades_upper_bound'] = 0
+            variants[H2JACKAL + f'\\jackal marksman {key}'] = mk
     return dict(variants=variants, actors=actors, bipeds=bipeds, collisions=colls,
                 weapons={k: A['weapons'][k] for k in (CE_PR, CE_AR, CE_SG)})     # shotgun pellets per shot etc.
 
@@ -710,7 +719,7 @@ def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
     nm = names[si]
     os.makedirs(skin_dir, exist_ok=True)
     rank = v.get('_rank')
-    if nm.startswith('shield.') and rank == 'sniper':
+    if nm.startswith('shield.') and rank in H2J_NO_SHIELD:
         hid = f'{skin_dir}/hce_hidden.png'
         if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
         return 'hce_hidden.png'
@@ -1119,7 +1128,8 @@ def build():
                            'HCE_EliteMinorPulseCarbine', 'HCE_EliteMajorPulseCarbine', 'HCE_EliteSpecopsPulseCarbine',
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
-                           'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
+                           'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     src = HERE + '/digsite_src'

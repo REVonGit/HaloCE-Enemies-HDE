@@ -14,6 +14,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
 
 OUTDIR = os.environ.get('HCE_FACTIONS', os.path.join(os.path.dirname(PACK), 'factions'))
+from build_pack import OUT
+GORE = f'{OUT}/gore'                 # extract_halo_gore.py: the Covenant pack's NashGore patch
 FACTION = {'COVENANT': 'covenant', 'FLOOD': 'flood', 'SENTINEL': 'sentinels', 'HUMAN': 'marines'}
 TITLE = {'covenant': 'Covenant: Grunts, Jackals, Elites, Hunters', 'flood': 'Flood: infection, carrier and combat forms',
          'sentinels': 'Sentinels', 'marines': 'Marines'}
@@ -106,7 +108,16 @@ def main():
                 out += [f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}' for t in mycamo]
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
-        open(f'{d}/mapinfo.txt', 'w').write('DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n')
+        mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'
+        if fac == 'covenant' and os.path.exists(f'{GORE}/decaldef.hcegore'):
+            # NashGore patch: Halo CE / Halo 2 blood decals and bursts (extract_halo_gore.py, hce_gore.zsc)
+            shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{d}/ZScript/HaloCE/hce_gore.zsc')
+            with open(f'{d}/zscript.txt', 'a') as zf: zf.write('#include "ZScript/HaloCE/hce_gore.zsc"\n')
+            shutil.copy(f'{GORE}/decaldef.hcegore', f'{d}/decaldef.hcegore')
+            for sub in ('graphics/hcegore', 'sprites/hcegore'): shutil.copytree(f'{GORE}/{sub}', f'{d}/{sub}')
+            open(f'{d}/cvarinfo.txt', 'w').write('server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies\n')
+            mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_HaloGoreHandler"\n}\n\n' + mi
+        open(f'{d}/mapinfo.txt', 'w').write(mi)
         print(fac, 'classes', len(mine), 'models', len(mblocks), 'files', len(need), 'ednums', len(mynums))
 
 if __name__ == '__main__':

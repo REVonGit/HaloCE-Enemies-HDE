@@ -1,7 +1,7 @@
 @echo off
 setlocal
-rem Compile packs\ into dist\*.pk3.  Double-click: every pack + the bundle + the merged pack.
-rem Or run from a command prompt:  Build_PK3s.bat Covenant Digsite   (only those packs)
+rem Compile packs\ into dist\*.pk3.  Double-click: every pack + the merged pack.
+rem Or run from a command prompt:  Build_PK3s.bat Bundle Flood   (only those packs)
 title Halo CE enemy pk3 builder
 cd /d "%~dp0"
 set "PY="

@@ -1,8 +1,32 @@
 {
   "title": "Halo CE enemies (HDE version)",
-  "bundle": {"output": "HaloCE_HDE_Bundle.pk3",
-             "packs": ["HaloCE_Core", "HaloCE_Covenant", "HaloCE_Enemies_Digsite", "HCE_EnemyAPI_LocalDEV", "HaloCE_Enemies_Voices"]},
-  "merged": {"output": "HaloCE_Merged.pk3",
-             "packs": ["HaloCE_Core", "HaloCE_Covenant", "HaloCE_Flood", "HaloCE_Sentinels", "HaloCE_Marines", "HaloCE_Enemies_Digsite"]},
-  "load": "HDE (Local_DEV) -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> faction packs / Digsite -> HaloCE_Enemies_Voices.pk3   (or: HDE -> HaloCE_HDE_Bundle.pk3)"
+  "merged": {
+    "output": "HaloCE_Merged.pk3",
+    "packs": [
+      "HaloCE_Core",
+      "HaloCE_HDE_Bundle",
+      "HaloCE_Flood",
+      "HaloCE_Sentinels",
+      "HaloCE_Marines"
+    ]
+  },
+  "load": "HDE (Local_DEV) -> HaloCE_HDE_Bundle.pk3 (Covenant + Digsite + voices + API + Core code; nothing else).   Flood / Sentinels / Marines: HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> faction packs, or HDE -> HaloCE_Merged.pk3 for everything. Never load the bundle together with HaloCE_Core or HCE_EnemyAPI_LocalDEV.",
+  "bundle_folder": {
+    "name": "HaloCE_HDE_Bundle",
+    "merge": [
+      "HaloCE_Covenant",
+      "HaloCE_Enemies_Digsite",
+      "HaloCE_Enemies_Voices"
+    ],
+    "api": [
+      "HCE_EnemyAPI_LocalDEV"
+    ],
+    "core": "HaloCE_Core",
+    "header": [
+      "// Halo CE enemies, HDE bundle: Covenant (Grunts, Jackals, Elites, Hunters), the Digsite add-on (Drinol + Cyberdemon",
+      "// boss, Slug Man, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes), the enemy",
+      "// dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.",
+      "// Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it."
+    ]
+  }
 }

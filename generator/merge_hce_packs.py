@@ -14,6 +14,9 @@ How files are combined:
   * mapinfo.txt     one DoomEdNums block (a number used twice for different classes is an error),
                     one GameInfo with every pack's AddEventHandlers in load order, other blocks kept as-is
   * cvarinfo, CREDITS and other root text lumps of the same name: concatenated, one section per pack
+  * a #include already made by an earlier pack is dropped (a bundle carries Core's code; Core may be merged too)
+  * a root lump in two packs where one holds every line of the other (Core's sndinfo vs a bundle's trimmed
+    copy): the fuller one is kept
   * everything else (models, sounds, ZScript sources, modeldef.*/gldefs.*/sndinfo.*): copied; a path present
     in two packs must be byte-identical, otherwise the merge stops and names the file
 Packs are ordered core first (the one carrying hce_handler.zsc), then the rest in the order given.
@@ -56,11 +59,19 @@ def top_blocks(src):
 
 
 def merge_zscript(parts):
-    versions, body = [], []
+    versions, body, seen = [], [], set()
     for name, src in parts:
         m = re.search(r'^\s*version\s+"([\d.]+)"', src, re.M)
         if m: versions.append(tuple(int(x) for x in m.group(1).split('.')))
         rest = re.sub(r'^\s*version\s+"[\d.]+"\s*\n', '', src, count=1, flags=re.M).strip('\n')
+        keep = []                              # a file #included by an earlier pack (Core inside a bundle) only once
+        for line in rest.split('\n'):
+            m = re.match(r'\s*#include\s+"([^"]+)"', line)
+            if m:
+                if m.group(1).lower() in seen: continue
+                seen.add(m.group(1).lower())
+            keep.append(line)
+        rest = '\n'.join(keep)
         body.append(f'// ---- from {name}\n{rest}\n')
     head = f'version "{".".join(map(str, max(versions)))}"\n\n' if versions else ''
     return head + '// Merged by merge_hce_packs.py\n\n' + '\n'.join(body)
@@ -102,6 +113,15 @@ def merge_mapinfo(parts):
     return '\n\n'.join(out) + '\n', len(ednums), handlers
 
 
+def superset(a, b):
+    """two versions of a root text lump: the one that holds every line of the other, or None"""
+    la = {l.strip() for l in text(a).split('\n') if l.strip() and not l.strip().startswith('//')}
+    lb = {l.strip() for l in text(b).split('\n') if l.strip() and not l.strip().startswith('//')}
+    if la <= lb: return b
+    if lb <= la: return a
+    return None
+
+
 def pack_kind(z):
     """'standalone' (HCES_EnemyBase, no HDE needed), 'hde' (needs HDE + HCE_EnemyAPI) or None (voices etc.)"""
     for n in z.namelist():
@@ -136,6 +156,10 @@ def merge(inputs, output):
                 special[low].append((name, text(data))); continue
             if path in files:
                 if files[path] == data: continue
+                if '/' not in path and low not in SPECIAL:
+                    sup = superset(files[path], data)    # Core's file vs a bundle's copy of it (all of it or a part)
+                    if sup is not None:
+                        files[path] = sup; continue
                 root = '/' not in path and os.path.splitext(low)[1] in CONCAT_EXT
                 if root:
                     concat.setdefault(path, [(sources[path], files[path])]).append((name, data)); continue

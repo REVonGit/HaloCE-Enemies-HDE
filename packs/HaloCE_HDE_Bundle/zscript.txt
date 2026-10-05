@@ -1,0 +1,17 @@
+version "4.15.1"
+
+// Halo CE enemies, HDE bundle: Covenant (Grunts, Jackals, Elites, Hunters), the Digsite add-on (Drinol + Cyberdemon
+// boss, Slug Man, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes), the enemy
+// dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.
+// Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it.
+
+#include "ZScript/HaloCE/hce_explosives.zsc"
+#include "ZScript/HaloCE/hce_projectiles.zsc"
+#include "ZScript/HaloCE/hce_handler.zsc"
+#include "ZScript/HaloCE/hce_covenant.zsc"
+#include "ZScript/HaloCE/dig_pulse.zsc"
+#include "ZScript/HaloCE/dig_brute.zsc"
+#include "ZScript/HaloCE/dig_projectiles.zsc"
+#include "ZScript/HaloCE/dig_enemies.zsc"
+#include "ZScript/HaloCE/dig_boss.zsc"
+#include "ZScript/HaloCE/dig_handler.zsc"

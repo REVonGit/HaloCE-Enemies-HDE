@@ -3,9 +3,8 @@
 
     python build.py                    # every pack folder -> dist/<folder>.pk3
     python build.py Covenant Digsite   # only the packs whose folder name contains one of these words
-    python build.py --bundle           # also the all-in-one bundle (see BUNDLE in repo.json)
-    python build.py --merged           # also every enemy pack merged into one (no API / voices)
-    python build.py --all              # packs + bundle + merged
+    python build.py --merged           # also every enemy pack merged into one (see "merged" in repo.json)
+    python build.py --all              # packs + merged
 
 Edit the files under packs/<Pack>/ directly: each folder is exactly the root of its pk3.
 Needs only Python 3 (standard library). tools/merge_hce_packs.py does the merging.
@@ -53,9 +52,8 @@ def merged(names, output):
 def main():
     ap = argparse.ArgumentParser(description='Compile packs/ into dist/*.pk3')
     ap.add_argument('only', nargs='*', help='build only packs whose folder name contains one of these words')
-    ap.add_argument('--bundle', action='store_true', help=f'also build {CFG["bundle"]["output"]}')
     ap.add_argument('--merged', action='store_true', help=f'also build {CFG["merged"]["output"]}')
-    ap.add_argument('--all', action='store_true', help='packs + bundle + merged')
+    ap.add_argument('--all', action='store_true', help='packs + merged')
     a = ap.parse_args()
     os.makedirs(DIST, exist_ok=True)
     names = sorted(d for d in os.listdir(PACKS) if os.path.isdir(os.path.join(PACKS, d)))
@@ -64,13 +62,12 @@ def main():
         if not names: sys.exit('no pack folder matches ' + ' '.join(a.only))
     print(f'{CFG["title"]}: building {len(names)} pack(s) into dist/')
     for n in names: zip_pack(n)
-    for key, flag in (('bundle', a.bundle or a.all), ('merged', a.merged or a.all)):
-        if not flag: continue
-        need = CFG[key]['packs']
+    if a.merged or a.all:
+        need = CFG['merged']['packs']
         for n in need:
             if not os.path.exists(os.path.join(DIST, n + '.pk3')): zip_pack(n)
-        print(f'{key}: {CFG[key]["output"]}')
-        merged(need, CFG[key]['output'])
+        print(f'merged: {CFG["merged"]["output"]}')
+        merged(need, CFG['merged']['output'])
     print('load order: ' + CFG['load'])
 
 

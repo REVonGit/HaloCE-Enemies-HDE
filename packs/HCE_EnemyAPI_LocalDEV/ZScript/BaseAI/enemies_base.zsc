@@ -89,10 +89,42 @@ class HaloDoom_EnemyBase : Actor abstract
 			damageInfo.processing = false;
 
 		if(!hce_enabled) vel.xy *= moveFriction;
+		else if(health > 0 && !bHCE_Flying && !bNOGRAVITY && !isFrozen()) HCE_SlideOffTick();
 
 		// Only use this when Chase3D is being used.
 		if(!keepChaseAngle)
 			curDesiredAngle = angle;
+	}
+
+	// Doom lets monsters stand on each other's heads (a kick or a blast can drop one on top of another, and in a
+	// low hallway it then sits wedged under the ceiling). Halo units never stack: one resting on another actor
+	// slides off it, to whichever side has room.
+	int hce_stackTics;
+	void HCE_SlideOffTick()
+	{
+		if(pos.z <= floorz + 1 || abs(vel.z) > 1) { hce_stackTics = 0; return; }
+		Actor under = null;
+		let it = BlockThingsIterator.Create(self, radius + 64);
+		while(it.Next())
+		{
+			let o = it.thing;
+			if(o == self || !o.bSOLID || o.bNOBLOCKMAP || !(o.bISMONSTER || o.player)) continue;   // crates and barrels are fine to stand on
+			if(abs(o.pos.z + o.height - pos.z) > 2) continue;                     // its top is where we stand
+			if(abs(o.pos.x - pos.x) >= o.radius + radius || abs(o.pos.y - pos.y) >= o.radius + radius) continue;
+			under = o; break;
+		}
+		if(!under) { hce_stackTics = 0; return; }
+		hce_stackTics++;
+		// away from the one underneath; if dead centre, to whichever side of our facing has more room
+		vector2 d = level.Vec2Diff(under.pos.xy, pos.xy);
+		double a = d.Length() > 2 ? atan2(d.y, d.x) :
+			(HCE_Clearance(angle + 90, 96) >= HCE_Clearance(angle - 90, 96) ? angle + 90 : angle - 90);
+		if(HCE_Clearance(a, radius + under.radius) < radius)                     // a wall that way: try the sides
+			a = HCE_Clearance(a + 90, 96) >= HCE_Clearance(a - 90, 96) ? a + 90 : a - 90;
+		double push = min(8, 3 + hce_stackTics);
+		vel.xy = AngleToVector(a, push);
+		if(hce_stackTics > 35)                                                     // still stuck after a second: hop off
+			TryMove(pos.xy + AngleToVector(a, radius + under.radius + 2), 0);
 	}
 
 	States

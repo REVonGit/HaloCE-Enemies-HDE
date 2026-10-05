@@ -21,12 +21,13 @@ Edit the files under packs/<Pack>/ directly: each folder is exactly the root of 
 Needs only Python 3 (standard library). tools/merge_hce_packs.py does the merging.
 """
 import argparse, hashlib, json, os, shutil, sys, zipfile
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PACKS = os.path.join(HERE, 'packs')
 DIST = os.path.join(HERE, 'dist')
 CACHE = os.path.join(DIST, '.buildcache.json')
-CFG = json.load(open(os.path.join(HERE, 'repo.json')))
+CFG = json.loads(Path(os.path.join(HERE, 'repo.json')).read_text(encoding='utf-8'))
 SKIP = {'.DS_Store', 'Thumbs.db', 'desktop.ini', '.loudened.json'}
 STORE = ('.ogg', '.png', '.jpg', '.jpeg', '.flac', '.mp3')       # already compressed: stored, not deflated
 
@@ -67,7 +68,7 @@ def write_pk3(files, out):
 
 
 def zip_pack(name, files):
-    write_pk3([(arc, open(p, 'rb').read()) for arc, p in files], os.path.join(DIST, name + '.pk3'))
+    write_pk3([(arc, Path(p).read_bytes()) for arc, p in files], os.path.join(DIST, name + '.pk3'))
 
 
 def build_bundle(cache, force=False, digests=None):
@@ -91,7 +92,7 @@ def build_bundle(cache, force=False, digests=None):
 
 def load_cache(force):
     if force or not os.path.exists(CACHE): return {}
-    try: return json.load(open(CACHE))
+    try: return json.loads(Path(CACHE).read_text(encoding='utf-8'))
     except ValueError: return {}
 
 
@@ -104,9 +105,9 @@ def sync_shared():
         paths = [os.path.join(HERE, *g.split('/')) for g in group if os.path.isfile(os.path.join(HERE, *g.split('/')))]
         if len(paths) < 2: continue
         newest = max(paths, key=os.path.getmtime)
-        data = open(newest, 'rb').read()
+        data = Path(newest).read_bytes()
         for q in paths:
-            if q != newest and open(q, 'rb').read() != data:
+            if q != newest and Path(q).read_bytes() != data:
                 shutil.copy2(newest, q)
                 print(f'  synced {os.path.relpath(newest, HERE)} -> {os.path.relpath(q, HERE)}')
 
@@ -154,7 +155,7 @@ def main():
             cache['merged'] = key
     if not a.no_bundle and not a.only:
         build_bundle(cache, a.force, digests)
-    json.dump(cache, open(CACHE, 'w'), indent=1, sort_keys=True)
+    Path(CACHE).write_text(json.dumps(cache, indent=1, sort_keys=True), encoding='utf-8')
     print('load order: ' + CFG['load'])
 
 

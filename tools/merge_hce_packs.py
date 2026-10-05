@@ -135,6 +135,13 @@ def pack_kind(z):
 
 def merge(inputs, output, quiet=False):
     zips = []
+    try:
+        _merge(inputs, output, quiet, zips)
+    finally:                                   # Windows can't delete a file that is still open
+        for _, z in zips: z.close()
+
+
+def _merge(inputs, output, quiet, zips):
     for p in inputs:
         if not os.path.isfile(p): raise MergeError(f'not found: {p}')
         zips.append((os.path.basename(p), zipfile.ZipFile(p)))

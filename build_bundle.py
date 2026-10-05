@@ -13,6 +13,7 @@ Like build.py, it first syncs the shared copies (generator sources), and it shar
 script knows what the other already built.
 """
 import argparse, json, os, sys
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -30,7 +31,7 @@ def main():
     build.sync_shared()
     print(f'{build.CFG["title"]}: dist/   ({" + ".join([cfg["core"]] + cfg.get("api", []) + cfg["merge"])})')
     build.build_bundle(cache, a.force)
-    json.dump(cache, open(build.CACHE, 'w'), indent=1, sort_keys=True)
+    Path(build.CACHE).write_text(json.dumps(cache, indent=1, sort_keys=True), encoding='utf-8')
     hde = bool(cfg.get('api'))
     print(f'load: {cfg["name"]}.pk3 on its own' + (' after HaloDoom Evolved (Local_DEV)' if hde else '') +
           f'. Don\'t load it with {cfg["core"]}.pk3' + (' or the API pk3' if hde else '') + '.')

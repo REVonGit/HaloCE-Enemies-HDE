@@ -6,7 +6,7 @@ Core they use, in one pk3. Nothing in packs/ is changed: the bundle is put toget
     python tools/make_bundle.py --dry-run       # only report which Core sounds / sprites / models are left out
 
 repo.json:
-  "bundle": {"name": "HDE_CE_Covenant",
+  "bundle": {"name": "HaloCE_HDE_Bundle",
              "merge": ["HaloCE_Covenant", "HaloCE_Enemies_Voices"],
              "api":   ["HCE_EnemyAPI_LocalDEV"],
              "core":  "HaloCE_Core"}
@@ -20,6 +20,7 @@ every class name mentioned in those classes (parents, Spawn / Fire calls, names 
 library, then keep the sounds, sprites, models and GLDEFS entries those classes name.
 """
 import argparse, io, json, os, re, shutil, sys, tempfile, zipfile
+from pathlib import Path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -37,7 +38,7 @@ def read_tree(d):
         dirs[:] = [x for x in dirs if not x.startswith('.git')]
         for f in fs:
             p = os.path.join(root, f)
-            out[os.path.relpath(p, d).replace(os.sep, '/')] = open(p, 'rb').read()
+            out[os.path.relpath(p, d).replace(os.sep, '/')] = Path(p).read_bytes()
     return out
 
 
@@ -159,7 +160,8 @@ def bundle_files(cfg, packs_dir=PACKS, log=print):
             zp = os.path.join(tmp, p + '.pk3'); zip_tree(read_tree(os.path.join(packs_dir, p)), zp); ins.append(zp)
         merged_pk3 = os.path.join(tmp, 'merged.pk3')
         merge(ins, merged_pk3, quiet=True)
-        merged = {i.filename: zipfile.ZipFile(merged_pk3).read(i) for i in zipfile.ZipFile(merged_pk3).infolist()}
+        with zipfile.ZipFile(merged_pk3) as mz:              # closed before the temp folder goes (Windows)
+            merged = {i.filename: mz.read(i) for i in mz.infolist() if not i.is_dir()}
     api = {}
     for p in cfg.get('api', []): api.update(read_tree(os.path.join(packs_dir, p)))
 
@@ -218,17 +220,17 @@ def bundle_files(cfg, packs_dir=PACKS, log=print):
             zp = os.path.join(tmp, f'{name}.pk3'); zip_tree(files, zp); parts.append(zp)
         final = os.path.join(tmp, 'bundle.pk3')
         merge(parts, final, quiet=True)
-        z = zipfile.ZipFile(final)
-        for info in z.infolist():
-            if info.is_dir(): continue
-            data = z.read(info)
-            if info.filename == 'zscript.txt':     # one header (repo.json "header") over the #includes, in load order
-                src = data.decode()
-                ver = re.search(r'^version\s+"[\d.]+"', src, re.M)
-                head = cfg.get('header') or [f'// {cfg["name"]}: ' + ' + '.join(cfg['merge'] + cfg.get('api', [])) + ' + Core code']
-                data = ((ver.group(0) + '\n\n' if ver else '') + '\n'.join(head) + '\n\n' +
-                        '\n'.join(re.findall(r'^#include.*$', src, re.M)) + '\n').encode()
-            out[info.filename] = data
+        with zipfile.ZipFile(final) as z:                   # closed before the temp folder goes (Windows)
+            for info in z.infolist():
+                if info.is_dir(): continue
+                data = z.read(info)
+                if info.filename == 'zscript.txt':     # one header (repo.json "header") over the #includes, in load order
+                    src = data.decode()
+                    ver = re.search(r'^version\s+"[\d.]+"', src, re.M)
+                    head = cfg.get('header') or [f'// {cfg["name"]}: ' + ' + '.join(cfg['merge'] + cfg.get('api', [])) + ' + Core code']
+                    data = ((ver.group(0) + '\n\n' if ver else '') + '\n'.join(head) + '\n\n' +
+                            '\n'.join(re.findall(r'^#include.*$', src, re.M)) + '\n').encode()
+                out[info.filename] = data
     return out
 
 
@@ -236,7 +238,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--dry-run', action='store_true', help='only report what is left out of Core')
     a = ap.parse_args()
-    cfg = json.load(open(os.path.join(ROOT, 'repo.json')))['bundle']
+    cfg = json.loads(Path(os.path.join(ROOT, 'repo.json')).read_text(encoding='utf-8'))['bundle']
     files = bundle_files(cfg)
     if a.dry_run: return
     os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)

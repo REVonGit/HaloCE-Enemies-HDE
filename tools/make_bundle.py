@@ -6,7 +6,7 @@ Core they use, in one pk3. Nothing in packs/ is changed: the bundle is put toget
     python tools/make_bundle.py --dry-run       # only report which Core sounds / sprites / models are left out
 
 repo.json:
-  "bundle": {"name": "HaloCE_HDE_Bundle",
+  "bundle": {"name": "HDE_CE_Covenant",
              "merge": ["HaloCE_Covenant", "HaloCE_Enemies_Voices"],
              "api":   ["HCE_EnemyAPI_LocalDEV"],
              "core":  "HaloCE_Core"}

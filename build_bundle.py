@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compile only the bundle: Core + Covenant (Digsite included) + voices (+ the enemy API in the HDE version).
 
-    python build_bundle.py            # -> dist/<bundle>.pk3 (skipped if none of its packs changed)
+    python build_bundle.py            # -> dist/HDE_CE_Covenant.pk3 (skipped if none of its packs changed)
     python build_bundle.py --force    # rebuild it even if nothing changed
 
 The bundle is put together from the pack folders named in repo.json "bundle" (tools/make_bundle.py): the Covenant

@@ -34,10 +34,10 @@ python build.py --no-bundle  # skip the bundle
 python build.py --force      # rebuild everything, changed or not
 ```
 
-**The bundle** (`dist/HaloCE_HDE_Bundle.pk3`) is the one pk3 most people load: Core, the Covenant (Digsite included), the voices and the API in one file. There's no bundle folder: `tools/make_bundle.py` puts it together from those folders at build time, with all of Core's code but only the Core sounds, sprites and models the bundled enemies use. To compile only the bundle, use `build_bundle.py` (on Windows, double-click `Build_Bundle.bat`); it skips Flood, Sentinels, Marines and the merged pack:
+**The bundle** (`dist/HDE_CE_Covenant.pk3`) is the one pk3 most people load: Core, the Covenant (Digsite included), the voices and the API in one file. There's no bundle folder: `tools/make_bundle.py` puts it together from those folders at build time, with all of Core's code but only the Core sounds, sprites and models the bundled enemies use. To compile only the bundle, use `build_bundle.py` (on Windows, double-click `Build_Bundle.bat`); it skips Flood, Sentinels, Marines and the merged pack:
 
 ```
-python build_bundle.py           # dist/HaloCE_HDE_Bundle.pk3, skipped if none of its packs changed
+python build_bundle.py           # dist/HDE_CE_Covenant.pk3, skipped if none of its packs changed
 python build_bundle.py --force   # rebuild it anyway
 ```
 
@@ -54,7 +54,7 @@ git tag v1.2 && git push origin v1.2
 ## Load order
 
 ```
-HDE (Local_DEV) -> HaloCE_HDE_Bundle.pk3 -> nashgore.pk3 (optional, last)
+HDE (Local_DEV) -> HDE_CE_Covenant.pk3 -> nashgore.pk3 (optional, last)
 ```
 
 * **Everything:** for Flood, Sentinels and Marines too, load `HDE -> HaloCE_Merged.pk3` instead.

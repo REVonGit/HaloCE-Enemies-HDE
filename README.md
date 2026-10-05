@@ -14,6 +14,7 @@ packs/<Pack>/        each folder is exactly the root of one pk3: edit files here
   HaloCE_Core/             replacement handler, enemy projectiles / explosives, CVars, for the faction packs
   HaloCE_Flood/  HaloCE_Sentinels/  HaloCE_Marines/
 build.py, Build_PK3s.bat   compile packs/ into dist/*.pk3
+build_bundle.py, Build_Bundle.bat   compile only the bundle (Core + Covenant + Digsite + voices + API)
 tools/                     merge_hce_packs.py (used by build.py), make_bundle_folder.py (made HaloCE_HDE_Bundle/)
 generator/                 the extraction / generation pipeline that made packs/ (see generator/README.md):
                            the scripts you run at the top, their shared readers / codecs in generator/lib/
@@ -29,6 +30,13 @@ python build.py              # every pack -> dist/<Pack>.pk3, plus the merged pa
 python build.py Bundle       # just the packs whose folder name contains "Bundle"
 python build.py --no-merged  # skip the merged pack
 python build.py --force      # rebuild everything, changed or not
+```
+
+To compile only Core, Covenant, Digsite, voices and the API, use `build_bundle.py` (on Windows, double-click `Build_Bundle.bat`). Those parts are exactly what the bundle folder holds, so it builds that one pk3 and skips Flood, Sentinels, Marines and the merged pack:
+
+```
+python build_bundle.py           # dist/<bundle>.pk3, skipped if nothing in it changed
+python build_bundle.py --force   # rebuild it anyway
 ```
 
 * **Incremental:** only what changed is rebuilt. A pack whose files are the same as at its last build is skipped (`dist/.buildcache.json` remembers), so a full build takes about 4 s and a rebuild after one edit about a second.

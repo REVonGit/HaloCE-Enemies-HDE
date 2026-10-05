@@ -120,6 +120,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			}
 		}
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
+		if(hce_enabled) hce_lastMod = mod;      // read by HCE_Die, which runs inside the call below
 		int dealt = super.DamageMobJ(inflictor, source, dmg, mod, flags, angle);
 		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
 		if(hce_enabled && target != keepTarget && target && !HCE_IsEnemy(target)) target = keepTarget;
@@ -419,6 +420,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool   hce_resurrected;
 	vector2 hce_dieDir;
 	bool   hce_hardKill;
+	Name   hce_lastMod;                // damage type of the latest hit (set before the engine can kill us)
+	Actor  hce_shieldActor;            // Jackals: the separate shield entity on the wrist (pack code spawns it)
+	double hce_jumpHeight;             // tallest ledge / obstacle this actor jumps onto (0 = derive from height)
+	int    hce_jumpState, hce_jumpTics, hce_jumpCooldown;
+	vector2 hce_jumpVel;
 
 	// fire pattern: fixed rounds per burst, spacing and pause (replaces Halo's
 	// duration-based bursts when hce_patShotsMax > 0)
@@ -468,6 +474,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	Property HCE_Voices : hce_voiceSet;
 	Property HCE_Drops : hce_dropWeapon, hce_dropGrenade;
 	Property HCE_Kamikaze : hce_kamiChance;
+	Property HCE_Jump : hce_jumpHeight;
 
 	flagdef HCE_Surprise : hce_bflags, 0;
 	flagdef HCE_Panics : hce_bflags, 1;
@@ -489,6 +496,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	flagdef HCE_FollowPlayer : hce_bflags, 17;
 	flagdef HCE_FrontShield : hce_bflags, 18;
 	flagdef HCE_Lobbed : hce_bflags, 19;       // weapon lobs gravity projectiles on a ballistic arc
+	flagdef HCE_ShieldStun : hce_bflags, 20;   // Elites: a hard-ping stun when the energy shield pops
 
 	// ------------------------------------------------------------------
 	// Animation table -- overridden by each generated character class
@@ -530,6 +538,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(n == 'None') return 0;
 		HCE_Play(kind, false, true, 4, true);
 		hce_animLock = max(1, int(HCE_AnimTics(n) * fraction));
+		hce_lockPing = 0;
 		return hce_animLock;
 	}
 
@@ -560,6 +569,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_FrontShield)
 		{
 			hce_frontShieldMax = hce_frontShieldHP = max(40 * (bFRIENDLY ? 1.0 : HCE_ShieldScale()), hce_shieldMax);
+			// the shield is its own entity on the wrist (HCE_JackalShield in the core pack, found by name
+			// because the core compiles after this file); without it the old front-arc absorb applies
+			Name sn = 'HCE_JackalShield';
+			class<Actor> sc = (class<Actor>)(sn);
+			if(sc)
+			{
+				let sa = Spawn(sc, pos, NO_REPLACE);
+				if(sa) { sa.master = self; hce_shieldActor = sa; }
+			}
 		}
 		if(bHCE_ActiveCamo)
 		{
@@ -569,6 +587,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			bNOGRAVITY = true; bFLOAT = true;
 		}
+		// jump height: about three quarters of the body, Hunters only a low hop, flyers never
+		if(hce_jumpHeight == 0)
+			hce_jumpHeight = bHCE_Flying ? -1 : bHCE_FrontArmor ? 32 : clamp(height * 0.75, 24, 56);
 		if(hce_voiceSet.Length() > 0)
 		{
 			Array<String> vs; hce_voiceSet.Split(vs, ",", TOK_SKIPEMPTY);
@@ -684,7 +705,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	void HCE_Look()
 	{
-		if(hce_animLock > 0) { hce_animLock--; return; }
+		if(hce_animLock > 0) { hce_animLock--; HCE_LockedTick(); return; }
+		if(HCE_GrenadeCheck() || hce_nadeRunTics > 0) { SetStateLabel("See"); return; }
 		HCE_Play(HCE_A_IDLE);
 		if(bHCE_Flying) HCE_Hover();
 		if(HCE_SeekCorpse()) { SetStateLabel("See"); return; }
@@ -729,6 +751,9 @@ class HaloDoom_EnemyBase : Actor abstract
 			return;
 		}
 		if(hce_leapState > 0) { HCE_LeapTick(); return; }
+		if(hce_jumpState > 0) { HCE_JumpTick(); return; }
+		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
+		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
 
 		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); }
 
@@ -904,6 +929,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			HCE_PickMoveAnim();
 			return;
 		}
+		if(level.maptime % 6 == 0 && hce_lastKnown.z > pos.z + MaxStepHeight)
+		{
+			double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
+			if(HCE_TryJump(toward, false)) return;
+		}
 		double sp = speed;
 		speed = max(1, hce_runSpeed);
 		A_Chase(null, null, CHF_NOPLAYACTIVE | CHF_NODIRECTIONTURN);
@@ -980,11 +1010,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_moveSpeed = 0;
 	}
 
-	// distance to the nearest wall along a heading (at chest height)
+	// distance to the nearest wall along a heading (at chest height, or just above the tallest ledge it
+	// can jump onto, so a jumpable step doesn't count as a wall)
 	double HCE_Clearance(double ang, double maxd)
 	{
 		FLineTraceData tr;
-		if(LineTrace(ang, maxd, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, height * 0.5, data: tr))
+		double z = hce_jumpHeight > 0 ? min(height - 4, max(height * 0.5, hce_jumpHeight + 4)) : height * 0.5;
+		if(LineTrace(ang, maxd, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, z, data: tr))
 			return tr.Distance;
 		return maxd;
 	}
@@ -1064,9 +1096,72 @@ class HaloDoom_EnemyBase : Actor abstract
 				vel.xy = (0, 0);
 				return true;
 			}
+			if(i == 0 && HCE_TryJump(a, true)) { hce_moveAngle = a; return true; }
 		}
 		HCE_Brake();
 		return false;
+	}
+
+	// ------------------------------------------------------------------
+	// Jumping: a ledge or a low obstacle (crate, barrel) straight ahead that is
+	// too tall to step onto but within hce_jumpHeight is hopped onto / over:
+	// airborne animation in the air, landing animation on touchdown.
+	// ------------------------------------------------------------------
+	bool HCE_TryJump(double ang, bool useBlocker)
+	{
+		if(hce_jumpHeight <= 0 || bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0) return false;
+		if(level.maptime < hce_jumpCooldown || pos.z > floorz + 2 || waterlevel >= 2) return false;
+		CVar cv = CVar.FindCVar("hce_jumping");
+		if(cv && !cv.GetBool()) return false;
+		vector2 dir = AngleToVector(ang, 1);
+		double reach = radius + 10;
+		vector2 p = pos.xy + dir * reach;
+		double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		double cz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING);
+		double top = fz;
+		bool overThing = false;
+		let bm = useBlocker ? BlockingMobj : null;
+		if(bm && bm != target && !bm.bISMONSTER && !bm.player && bm.bSOLID)     // a crate, barrel or lamp
+		{
+			double t = bm.pos.z + bm.height;
+			if(t > top) { top = t; overThing = true; }
+		}
+		double rise = top - pos.z;
+		if(rise <= MaxStepHeight || rise > hce_jumpHeight) return false;
+		if(cz - top < height + 2 || ceilingz - pos.z < rise + height + 4) return false;   // no headroom
+		// somewhere to land: past a ledge the ground must stay up (not a thin wall or a railing);
+		// over a thing it may be back at our own height
+		vector2 p2 = pos.xy + dir * (radius * 2 + 20);
+		double fz2 = GetZAt(p2.x, p2.y, 0, GZF_ABSOLUTEPOS);
+		if(!overThing && fz2 < top - MaxStepHeight) return false;
+		FLineTraceData tr;
+		if(LineTrace(ang, radius * 2 + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;   // wall above it
+		double g = max(0.1, GetGravity());
+		double vz = sqrt(2 * g * (rise + 12));
+		double t = vz / g * 1.6;                               // until it is over the edge and coming down
+		double vh = clamp((reach + radius + (overThing ? bm.radius * 2 : 8)) / t, 2.5, max(4, hce_runSpeed * 1.3));
+		hce_jumpVel = dir * vh;
+		vel = (hce_jumpVel, vz);
+		hce_jumpState = 1; hce_jumpTics = 0; hce_jumpCooldown = level.maptime + 20;
+		HCE_StopFireLoop();
+		int k = HCE_HasAnim(HCE_A_AIRBORNE) ? HCE_A_AIRBORNE : HCE_HasAnim(HCE_A_LEAP_AIR) ? HCE_A_LEAP_AIR : HCE_A_MOVE_F;
+		HCE_Play(k, true, true, 3, true);
+		return true;
+	}
+
+	void HCE_JumpTick()
+	{
+		hce_jumpTics++;
+		if(hce_jumpTics < 25 && vel.z > -3) vel.xy = hce_jumpVel;   // keep driving forward until it is over the edge
+		if(target) HCE_FaceTarget(0.5);
+		bool grounded = pos.z <= floorz + 0.5 && vel.z <= 0;
+		if((grounded && hce_jumpTics > 2) || hce_jumpTics > 70)
+		{
+			hce_jumpState = 0;
+			vel.xy *= 0.3;
+			hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy;
+			if(HCE_HasAnim(HCE_A_LAND)) HCE_PlayLocked(HCE_A_LAND, 0.35);
+		}
 	}
 
 	void HCE_PickMoveAnim()
@@ -1272,7 +1367,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!force && level.maptime < hce_voiceTics) return;
 		if(frandom(0, 1) > chance) return;
 		String snd = String.Format("HCE/%s/%s", hce_voice, ev);
-		A_StartSound(snd, CHAN_VOICE, force ? 0 : CHANF_NOSTOP, 1.0, ATTN_NORM);
+		A_StartSound(snd, CHAN_VOICE, force ? 0 : CHANF_NOSTOP, 1.0, 0.6);   // dialogue carries further than ATTN_NORM
 		hce_voiceTics = level.maptime + max(cooldown, 35);
 		hce_tauntTics = max(hce_tauntTics, level.maptime + 35 * 5);
 		let it = BlockThingsIterator.Create(self, 512);
@@ -1621,24 +1716,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		while(it.Next())
 		{
 			let p = it.thing;
-			if(!p.bMISSILE && !(p is "HaloGrenade_Proj")) continue;
+			if(!p.bMISSILE || HCE_IsGrenade(p)) continue;        // grenades: HCE_GrenadeCheck
 			if(p.target && !HCE_IsEnemy(p.target)) continue;
 			vector3 rel = level.Vec3Diff(p.pos, pos);
-			bool isNade = p is "HaloGrenade_Proj";
-			double chance;
-			if(isNade)
-			{
-				if(rel.Length() > 220) continue;
-				HCE_Say('EnemyGrenade', 0.9, 35 * 2, true);
-				chance = hce_grenadeDiveChance;
-			}
-			else
-			{
-				if(p.vel.Length() < 1) continue;
-				double closing = (rel.Unit() dot p.vel.Unit());
-				if(closing < 0.93 || rel.Length() > 260) continue;
-				chance = hce_evadeChance * 0.25;
-			}
+			bool isNade = false;
+			if(p.vel.Length() < 1) continue;
+			double closing = (rel.Unit() dot p.vel.Unit());
+			if(closing < 0.93 || rel.Length() > 260) continue;
+			double chance = hce_evadeChance * 0.25;
 			if(frandom(0, 1) > chance) { hce_evadeTics = 25; return; }
 			// dive perpendicular to the threat
 			double away = atan2(rel.y, rel.x);
@@ -1672,6 +1757,137 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_pendingGrenade > 0 && --hce_pendingGrenade == 0) HCE_ThrowGrenadeNow();
 		if(hce_pendingMelee > 0 && --hce_pendingMelee == 0) HCE_MeleeHitNow();
 		if(target) HCE_FaceTarget(0.5);
+	}
+
+	// ------------------------------------------------------------------
+	// Grenades: any actor that notices a live grenade near it gets clear, with
+	// its dive / evade animation in the escape direction (or a sprint for the
+	// ones that have none). Each look (every 4 tics) the chance of noticing it
+	// depends on how deep inside the vision cone it is: dead ahead almost at
+	// once, at the edge of the cone rarely, behind not at all unless it is at
+	// its feet. Whoever spots it shouts, and squadmates who hear the shout
+	// notice that grenade much sooner.
+	// ------------------------------------------------------------------
+	int    hce_nadeCheckTics, hce_nadeRunTics, hce_nadeHeardTics, hce_lockPing;
+	double hce_nadeRunAngle;
+	Actor  hce_nadeHeard;
+	Array<Actor> hce_nadeSeen;
+
+	static bool HCE_IsGrenade(Actor g)
+	{
+		if(!g || g.bNOINTERACTION || g is "Inventory") return false;
+		if(g is "HaloGrenade_Proj") return true;
+		if(!g.bMISSILE) return false;
+		String cn = String.Format("%s", g.GetClassName());
+		cn = cn.MakeLower();
+		return cn.IndexOf("grenade") >= 0;                    // other mods' grenades
+	}
+
+	bool HCE_GrenadeCheck()
+	{
+		if(health <= 0 || level.maptime < hce_nadeCheckTics || hce_nadeRunTics > 0) return false;
+		hce_nadeCheckTics = level.maptime + 4;
+		CVar cv = CVar.FindCVar("hce_grenadedodge");
+		if(cv && !cv.GetBool()) return false;
+		double danger = 200;
+		// thrown grenades are projectiles, which aren't in the blockmap: walk the grenade class instead
+		let it = ThinkerIterator.Create("HaloGrenade_Proj");
+		Actor g;
+		while(g = Actor(it.Next()))
+		{
+			if(g.bNOINTERACTION || Distance3D(g) > 320 || hce_nadeSeen.Find(g) != hce_nadeSeen.Size()) continue;
+			let pg = PlasmaGrenade_Proj(g);
+			if(pg && pg.hitactor)
+			{
+				if(pg.hitactor == self) continue;                   // stuck to us: HCE_OnStuck
+				let h = HaloDoom_EnemyBase(pg.hitactor);
+				if(h && h.health > 0 && h.hce_team == hce_team && h.hce_action == HCE_ACT_KAMIKAZE) continue;
+			}
+			// a grenade still in the air is judged by where it is about to come down
+			vector3 at = g.pos;
+			if(g.bMISSILE && g.vel.Length() > 2)
+			{
+				at = g.pos + g.vel * 8;
+				at.z = max(at.z, g.floorz);
+			}
+			double d = level.Vec3Diff(pos, at).Length();
+			if(d > danger && Distance3D(g) > danger) continue;
+			// noticing it: how deep inside the vision cone it sits
+			double half = clamp(hce_visionFOV, 60, 300) * 0.5;
+			double rel = abs(DeltaAngle(angle, AngleTo(g)));
+			double depth = rel < half ? 1.0 - rel / half : 0;
+			double chance = 0;
+			if(depth > 0 && CheckSight(g, SF_IGNOREVISIBILITY | SF_IGNOREWATERBOUNDARY))
+				chance = 0.06 + 0.9 * depth * depth;
+			else if(Distance3D(g) < radius + 48)
+				chance = 0.04;                                      // right at its feet: it may still catch it
+			if(hce_nadeHeard == g && level.maptime < hce_nadeHeardTics) chance = max(chance, 0.5);
+			chance *= 1.0 + max(0, danger - min(d, Distance3D(g))) / danger * 0.5;   // the closer, the more alarming
+			if(frandom(0, 1) >= chance) continue;
+			hce_nadeSeen.Push(g);
+			if(hce_nadeSeen.Size() > 16) hce_nadeSeen.Delete(0);
+			return HCE_DodgeGrenade(g, at);
+		}
+		return false;
+	}
+
+	// the clearest heading near 'want'
+	double HCE_OpenHeading(double want, double need = 112)
+	{
+		static const double offs[] = { 0, 30, -30, 60, -60, 90, -90, 125, -125 };
+		double best = want, bc = -1;
+		for(int i = 0; i < offs.Size(); i++)
+		{
+			double c = HCE_Clearance(want + offs[i], need + 32);
+			if(c >= need) return want + offs[i];
+			if(c > bc) { bc = c; best = want + offs[i]; }
+		}
+		return best;
+	}
+
+	bool HCE_DodgeGrenade(Actor g, vector3 at)
+	{
+		HCE_Say('EnemyGrenade', 1.0, 35 * 2, true);
+		let it = BlockThingsIterator.Create(self, 480);              // squadmates hear the shout
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(e && e != self && e.hce_enabled && e.hce_team == hce_team && e.health > 0) { e.hce_nadeHeard = g; e.hce_nadeHeardTics = level.maptime + 35; }
+		}
+		if(hce_berserk && frandom(0, 1) < 0.7) return false;         // a berserker mostly ignores it
+		vector3 aw = level.Vec3Diff(at, pos);
+		double esc = HCE_OpenHeading(aw.xy.Length() > 1 ? atan2(aw.y, aw.x) : angle + 180);
+		double rel = DeltaAngle(angle, esc);
+		int k = -1;
+		if(abs(rel) <= 40 && HCE_HasAnim(HCE_A_DIVE_F)) k = HCE_A_DIVE_F;
+		else if(abs(rel) <= 40)
+		{
+			// only sideways dives: throw itself to the more open side, angled away
+			int sd = HCE_Clearance(angle + 90, 160) >= HCE_Clearance(angle - 90, 160) ? 1 : -1;
+			esc = angle + 60 * sd; rel = 60 * sd;
+		}
+		if(k < 0 && rel > 0) k = HCE_HasAnim(HCE_A_DIVE_L) ? HCE_A_DIVE_L : HCE_HasAnim(HCE_A_EVADE_L) ? HCE_A_EVADE_L : -1;
+		else if(k < 0) k = HCE_HasAnim(HCE_A_DIVE_R) ? HCE_A_DIVE_R : HCE_HasAnim(HCE_A_EVADE_R) ? HCE_A_EVADE_R : -1;
+		HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0; hce_burstTics = 0;
+		if(k >= 0)
+		{
+			HCE_PlayLocked(k, 0.8);
+			hce_diveAngle = esc;
+			hce_diveTics = min(16, hce_animLock);
+			hce_evadeTics = 35;
+			return true;
+		}
+		hce_nadeRunAngle = esc;                                       // no dive animations: sprint clear
+		hce_nadeRunTics = 30;
+		return true;
+	}
+
+	void HCE_NadeRunTick()
+	{
+		hce_nadeRunTics--;
+		HCE_Move(HCE_PickHeading(hce_nadeRunAngle, target ? AngleTo(target) : hce_nadeRunAngle + 180), hce_runSpeed * 1.2);
+		if(target) HCE_FaceTarget(); else A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
 	}
 
 	// ------------------------------------------------------------------
@@ -1711,7 +1927,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		bool explosive = mod == 'Explosive' || mod == 'Fire' || (inflictor && inflictor.bEXTREMEDEATH);
 		if(bHCE_FrontArmor && rel < 70 && !explosive && mod != 'Melee')
 			dmg = max(1, int(dmg * 0.08));            // shield arm / armour plates
-		if(bHCE_FrontShield && hce_frontShieldHP > 0 && rel < 55 && mod != 'Melee')
+		if(bHCE_FrontShield && !hce_shieldActor && hce_frontShieldHP > 0 && rel < 55 && mod != 'Melee')
 		{
 			double absorbed = min(hce_frontShieldHP, dmg);
 			hce_frontShieldHP -= absorbed;
@@ -1732,12 +1948,12 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	virtual void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
 	{
+		Actor from = inflictor ? inflictor : source;
+		if(from && from != self) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));   // shield hits too: the stun faces it
 		if(dealt <= 0) return;
 		double frac = dealt / double(max(1, SpawnHealth()));
 		hce_recentDamage += frac;
 		hce_recentDamageTics = 35 * 2;
-		Actor from = inflictor ? inflictor : source;
-		if(from) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));
 		hce_hardKill = mod == 'Explosive' || dealt > SpawnHealth() * 0.6;
 		if(source && source != self && HCE_IsEnemy(source) && (!target || !hce_canSee))
 		{
@@ -1754,12 +1970,44 @@ class HaloDoom_EnemyBase : Actor abstract
 			else if(frac > 0.15) HCE_Say('PainMed', 0.5, 35);
 			else HCE_Say('Pain', 0.3, 35 * 2);
 		}
-		if(health > 0 && hce_animLock <= 0 && hce_leapState == 0 && frandom(0, 1) < 0.25 + frac * 2)
+		// flinches: a hard ping (h-ping) for a heavy hit -- a quarter of its health at once, a blast, a hard
+		// melee -- which also cuts a soft ping short; otherwise a chance of a soft ping (s-ping)
+		if(health > 0 && hce_leapState == 0 && hce_jumpState == 0 && hce_action != HCE_ACT_KAMIKAZE)
 		{
-			int k = HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R);
-			if(frac > 0.3 && HCE_HasAnim(HCE_A_HPING_F)) k = HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
-			if(HCE_HasAnim(k)) HCE_PlayLocked(k, 0.6);
+			bool hard = frac >= 0.25 || (hce_blastHit && frac >= 0.08) || (mod == 'Melee' && frac >= 0.12);
+			// a hard hit cuts short anything but a swing / throw in progress, a dive or an earlier hard ping
+			bool free = hce_animLock <= 0 || (hard && hce_lockPing != 2 && hce_pendingMelee <= 0 && hce_pendingGrenade <= 0 && hce_diveTics <= 0);
+			if(free && (hard || frandom(0, 1) < 0.25 + frac * 2))
+			{
+				int k = -1;
+				if(hard)
+				{
+					k = HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
+					if(!HCE_HasAnim(k)) k = HCE_A_HPING_F;
+				}
+				if(k < 0 || !HCE_HasAnim(k)) { k = HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R); hard = false; }
+				if(HCE_HasAnim(k))
+				{
+					HCE_PlayLocked(k, hard ? 0.85 : 0.6);
+					hce_lockPing = hard ? 2 : 1;
+					hce_diveTics = 0; hce_pendingMelee = 0;
+				}
+			}
 		}
+	}
+
+	// Elites: when the energy shield pops they reel in a hard ping for its full length
+	virtual void HCE_OnShieldPop()
+	{
+		if(!bHCE_ShieldStun || health <= 0 || hce_leapState > 0 || hce_jumpState > 0 || hce_action == HCE_ACT_KAMIKAZE) return;
+		int k = HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
+		if(!HCE_HasAnim(k)) k = HCE_A_HPING_F;
+		if(!HCE_HasAnim(k)) return;
+		HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0; hce_burstTics = 0;
+		hce_diveTics = 0; hce_pendingMelee = 0; hce_pendingGrenade = 0;
+		HCE_PlayLocked(k, 1.0);
+		hce_lockPing = 2;
+		HCE_Say('PainHeavy', 0.8, 35, true);
 	}
 
 	int HCE_DirKind(int front, int back, int left, int right)
@@ -1775,32 +2023,68 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Death
 	// ------------------------------------------------------------------
 	// ------------------------------------------------------------------
-	// Gore: XDeath (an overkill past the gib threshold). With Nash's Gore Mod loaded, its gibs (in this
-	// race's BloodColor) replace the body, so the model is hidden; without it, the body stays and sprays blood.
+	// Gore: blood only. A body is never torn apart or removed: Nash's Gore Mod gibs a monster that is in an
+	// XDeath state or below its GibHealth, so the classes have no XDeath and an overkill is clamped to
+	// GibHealth (it just sprays more blood, in the race's BloodColor). The one exception: frozen solid by
+	// HDE's Cryo Cannon (the ice block's 'IceBlock' kill) it bursts into a huge splatter of blood and meat
+	// (NashGore's gibs, when it is loaded) and the body is gone.
 	// ------------------------------------------------------------------
 	bool hce_gibbed;
 	int  hce_gibHideTics;
-	virtual void HCE_GibDeath()
+	virtual void HCE_GibDeath() { HCE_Die(); }     // older generated classes' XDeath: a normal death now
+
+	void HCE_Gore()
+	{
+		if(hce_lastMod == 'IceBlock') { HCE_IceShatter(); return; }
+		bool over = health < GetGibHealth();
+		if(over) health = GetGibHealth();
+		if(bNOBLOOD || !(over || hce_hardKill)) return;
+		for(int i = 0; i < (over ? 14 : 6); i++)
+			A_SpawnItemEx("Blood", frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
+				frandom(-3, 3), frandom(-3, 3), frandom(1, 5), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+	}
+
+	void HCE_IceShatter()
 	{
 		hce_gibbed = true;
-		HCE_Die();
-		hce_reviveTics = 0;                    // no feigning or reviving from a pile of gibs
+		hce_reviveTics = 0;
+		vel = (0, 0, 0);                                     // the burst stays where the ice block stood
+		health = min(health, GetGibHealth() - 1);          // NashGore's own gib burst: meat, wall and ceiling splats
+		bInvisible = true;
+		A_SetRenderStyle(0, STYLE_None);
 		if(bNOBLOOD) return;
+		for(int i = 0; i < 40; i++)
+			A_SpawnItemEx("Blood", frandom(-radius, radius), frandom(-radius, radius), height * frandom(0.1, 0.9),
+				frandom(-6, 6), frandom(-6, 6), frandom(1, 9), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
 		Name ngm = 'NashGoreGibs';
-		if((class<Actor>)(ngm)) { hce_gibHideTics = 3; return; }   // let NashGore see the XDeath first
-		for(int i = 0; i < 16; i++)
-			A_SpawnItemEx("Blood", frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.2, 0.8),
-				frandom(-4, 4), frandom(-4, 4), frandom(2, 7), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+		class<Actor> gib = (class<Actor>)(ngm);
+		if(!gib) return;
+		for(int i = 0; i < 24; i++)
+		{
+			bool ok; Actor m;
+			[ok, m] = A_SpawnItemEx(gib, frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
+				frandom(-6, 6), frandom(-6, 6), frandom(3, 12), frandom(0, 360), SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+			if(m) m.target = self;
+		}
 	}
 
 	virtual void HCE_Die()
 	{
+		HCE_Gore();
+		bool stumble = hce_kamiNades.Size() > 0 && hce_action == HCE_ACT_KAMIKAZE;   // shot down mid suicide run
+		hce_jumpState = 0; hce_nadeRunTics = 0;
 		bool hard = hce_hardKill || hce_detonated;
 		int k = hard ? HCE_DirKind(HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_F)
 		             : HCE_DirKind(HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R);
 		bool thrown = hce_blastHit && !bHCE_Explodes && HCE_Launch();
 		if(thrown || bHCE_Flying || pos.z > floorz + 24) k = HCE_HasAnim(HCE_A_DIE_AIR) ? HCE_A_DIE_AIR : k;
 		if(k == HCE_A_DIE_AIR) { hce_airPhase = 1; hce_airSince = level.maptime; }
+		if(stumble && !thrown && k != HCE_A_DIE_AIR)
+		{
+			// pitching forward out of the run: a falling-forward death and the body keeps some momentum
+			if(HCE_HasAnim(HCE_A_DIE_B)) k = HCE_A_DIE_B;
+			vel.xy = AngleToVector(angle, hce_runSpeed * 0.9);
+		}
 		if(!HCE_HasAnim(k)) k = HCE_HasAnim(HCE_A_DIE_F) ? HCE_A_DIE_F : HCE_A_DIE_HARD_F;
 		HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
 		HCE_StopFireLoop();
@@ -1809,7 +2093,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Flying) { bNOGRAVITY = false; bFLOAT = false; }
 		if(bHCE_ActiveCamo) A_SetRenderStyle(1.0, STYLE_Normal);
 		if(bHCE_Leader || bHCE_PairBond) HCE_LeaderDied(self);
-		if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);
+		if(hce_kamiNades.Size() > 0) HCE_KamikazeFling();
 		HCE_DropLoot();
 		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
 		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
@@ -1825,7 +2109,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_dropWeapon != 'None' && hce_dropWeapon != '')
 		{
 			class<Actor> wc = (class<Actor>)(hce_dropWeapon);
-			if(wc) HCE_Toss(wc);
+			if(wc) HCE_Toss(wc, hce_team == HCE_TEAM_COVENANT);      // the Covenant always leave their gun
 		}
 		if(hce_dropGrenade != 'None' && hce_dropGrenade != '' && hce_grenades > 0 && random(0, 1))
 		{
@@ -1834,11 +2118,24 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
-	void HCE_Toss(class<Actor> c)
+	void HCE_Toss(class<Actor> c, bool always = false)
 	{
-		// spawned at the feet: HDE's pickup system recognises a weapon next to a dying monster as an
-		// enemy drop (and applies its usual dropped-weapon rules, e.g. keeping only half of them)
-		let it = Spawn(c, pos, ALLOW_REPLACE);
+		// spawned at the feet. HDE's pickup system treats a weapon that appears within its radius (10) of a
+		// dying monster as an enemy drop and deletes half of them on its first tic; 'always' drops it just
+		// clear of the body (a short way out to one side, where there is room) so it is always kept
+		vector3 at = pos;
+		if(always)
+		{
+			double a0 = angle + (random(0, 1) ? 90 : -90);
+			for(int i = 0; i < 4; i++)
+			{
+				double a = a0 + 90 * i;
+				if(HCE_Clearance(a, 40) < 32) continue;
+				at = pos + (AngleToVector(a, 22), 0);
+				break;
+			}
+		}
+		let it = Spawn(c, at, ALLOW_REPLACE);
 		if(!it) return;
 		it.bDROPPED = true;
 		it.vel = (frandom(-2, 2), frandom(-2, 2), frandom(2, 4));
@@ -1913,6 +2210,28 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);   // the panic run, at the enemy
 		if(random(0, 60) == 0) HCE_Say('Kamikaze', 1.0, 35 * 2);
 		if(--hce_kamiTics <= 0 || d < radius + target.radius + 20) HCE_KamikazeBoom(true);
+	}
+
+	// shot down mid-run: the two live grenades fly out of its hands as it pitches forward -- they keep the run's
+	// momentum, scatter to either side and pop up, then stick wherever they land and blow on their own fuse
+	void HCE_KamikazeFling()
+	{
+		double run = hce_runSpeed * 1.35;
+		for(int i = 0; i < hce_kamiNades.Size(); i++)
+		{
+			let g = hce_kamiNades[i];
+			if(!g || g.InStateSequence(g.CurState, g.ResolveState("Death")) || g.InStateSequence(g.CurState, g.ResolveState("Detonate"))) continue;
+			let pg = PlasmaGrenade_Proj(g);
+			if(pg) pg.hitactor = null;
+			double side = (i % 2) ? 1 : -1;
+			double a = angle + side * frandom(6, 28);
+			g.SetOrigin(pos + (AngleToVector(angle, radius * 0.5) + AngleToVector(angle + 90 * side, 8), height * 0.6), false);
+			g.vel = (AngleToVector(a, run * frandom(0.75, 1.15)), frandom(3.0, 6.5));
+			g.bNOGRAVITY = false;
+			g.bMISSILE = true;
+			g.target = self;
+		}
+		hce_kamiNades.Clear();
 	}
 
 	// now = detonate immediately; otherwise arm them on their own 2 s fuse
@@ -2001,6 +2320,8 @@ class HCE_Shield : ShieldProcessor
 	override void OnShieldBreak()
 	{
 		if(!Owner) return;
+		let e = HaloDoom_EnemyBase(Owner);
+		if(e) e.HCE_OnShieldPop();
 		Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP);
 		for(int i = 0; i < 30; i++)
 			Owner.A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 18, frandom(3, 6), 0, 0, 0, Owner.height * 0.6,

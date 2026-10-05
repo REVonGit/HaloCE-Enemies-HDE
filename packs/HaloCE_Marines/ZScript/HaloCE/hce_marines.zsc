@@ -28,10 +28,6 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -740,10 +736,6 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();

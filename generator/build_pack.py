@@ -76,8 +76,9 @@ FIRE_SOUNDS = {
     'plasma caster':   (W + 'PlasmaCaster/Fire', '', W + 'PlasmaCaster/ChargedFire', W + 'PlasmaCaster/ChargeBegin', False),
     'sentinel beam':   (W + 'SentinelBeam/Fire/Loop', '', W + 'SentinelBeam/Fire/End', W + 'SentinelBeam/Fire/Begin', True),
 }
-# Halo-style drops: HDE Local_DEV pickup classes (the energy sword vanishes in CE; Hunters/Sentinels drop nothing)
-DROP_WEAPON = {'plasma pistol': 'Halo_PlasmaPistol', 'plasma rifle': 'Halo_PlasmaRifle', 'needler': 'Halo_Needler',
+# Halo-style drops: HDE Local_DEV pickup classes (Covenant always drop theirs, the energy sword included -- HDE has
+# one to pick up; Hunters' fuel rod arms and Sentinels drop nothing)
+DROP_WEAPON = {'energy sword': 'Halo_EnergySword', 'plasma pistol': 'Halo_PlasmaPistol', 'plasma rifle': 'Halo_PlasmaRifle', 'needler': 'Halo_Needler',
                'fuel rod': 'Halo_FuelRod', 'assault rifle': 'Halo_MA5B', 'pistol': 'Halo_Magnum', 'shotgun': 'Halo_Shotgun',
                'sniper rifle': 'Halo_SniperRifle', 'rocket launcher': 'Halo_RocketLauncher', 'flamethrower': 'Halo_Flamethrower'}
 # Doom boss stand-ins: unique subclasses so CheckReplacee can map them back to the Doom boss
@@ -316,8 +317,8 @@ def build(cfg=None):
                   f'\t\tHeight {height};\n\t\tRadius {radius};\n\t\tMass {int(100 * (h / 0.6) ** 2)};\n'
                   f'\t\tPainChance 0;\n\t\tTag "{char}";\n{blood_props(char)}\t}}\n'
                   f'\tStates\n\t{{\n\tSpawn:\n\t\tHCEM A 1 HCE_Look();\n\t\tLoop;\n\tSee:\n\t\tHCEM A 1 HCE_Think();\n\t\tLoop;\n'
-                  f'\tDeath:\n\t\tHCEM A 1 HCE_Die();\n\t\tHCEM A 2 A_NoBlocking;\n\t\tGoto Dead;\n'
-                  f'\tXDeath:\n\t\tHCEM A 1 HCE_GibDeath();\n\t\tHCEM A 2 A_NoBlocking;\n\tDead:\n\t\tHCEM A 1 HCE_CorpseTick();\n\t\tLoop;\n'
+                  f'\tDeath:\n\t\tHCEM A 1 HCE_Die();\n\t\tHCEM A 2 A_NoBlocking;\n'            # no XDeath: gore stays blood-only (see HCE_Gore)
+                  f'\tDead:\n\t\tHCEM A 1 HCE_CorpseTick();\n\t\tLoop;\n'
                   f'\tRaise:\n\t\tHCEM A 1;\n\t\tGoto See;\n\tPain.PlasmaStuck:\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n}}\n')
         # ---------------- variants
@@ -457,6 +458,7 @@ def build(cfg=None):
             if weapon in LOBBED: flags.append('HCE_Lobbed')
             if 'flags' in ov: flags = list(ov['flags'])
             if weapon in LOBBED and 'HCE_Lobbed' not in flags: flags.append('HCE_Lobbed')
+            if char.startswith('Elite') and shield > 0: flags.append('HCE_ShieldStun')   # hard-ping stun when the shield pops
             flags = sorted(set(flags))
             # skins
             color = variant_color(v, b)

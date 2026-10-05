@@ -6,6 +6,7 @@ version "4.15.1"
 // Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it.
 
 #include "ZScript/HaloCE/hce_explosives.zsc"
+#include "ZScript/HaloCE/hce_core.zsc"
 #include "ZScript/HaloCE/hce_projectiles.zsc"
 #include "ZScript/HaloCE/hce_handler.zsc"
 #include "ZScript/HaloCE/hce_covenant.zsc"

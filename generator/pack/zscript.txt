@@ -4,6 +4,7 @@ version "4.15.1"
 // Needs HaloDoom_EnemyBase from an HCE_EnemyAPI_*.pk3 addon loaded before this file
 // (HCE_EnemyAPI_LocalDEV.pk3 for HDE Local_DEV, HCE_EnemyAPI_Master.pk3 for HDE master).
 #include "ZScript/HaloCE/hce_explosives.zsc"
+#include "ZScript/HaloCE/hce_core.zsc"
 #include "ZScript/HaloCE/hce_projectiles.zsc"
 #include "ZScript/HaloCE/hce_enemies.zsc"
 #include "ZScript/HaloCE/hce_handler.zsc"

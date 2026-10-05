@@ -28,10 +28,6 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -83,6 +79,7 @@ class HCE_EliteMajorNeedler : HCE_EliteBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -225,6 +222,7 @@ class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -367,6 +365,7 @@ class HCE_EliteMinorNeedler : HCE_EliteBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -509,6 +508,7 @@ class HCE_EliteMinorPlasmaRifle : HCE_EliteBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -651,6 +651,7 @@ class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -788,10 +789,6 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -836,11 +833,13 @@ class HCE_EliteCommanderEnergySword : HCE_EliteSpecialBase
 		HaloDoom_EnemyBase.HCE_Shield 300, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_EnergySword", "None";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -983,6 +982,7 @@ class HCE_EliteCommanderPlasmaRifle : HCE_EliteSpecialBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -1125,6 +1125,7 @@ class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
@@ -1268,6 +1269,7 @@ class HCE_EliteSpecopsPlasmaRifle : HCE_EliteSpecialBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
@@ -1404,12 +1406,14 @@ class HCE_StealthEliteMajorEnergySword : HCE_EliteSpecialBase
 		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_EnergySword", "None";
 		+HaloDoom_EnemyBase.HCE_ActiveCamo
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -1553,6 +1557,7 @@ class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -1696,6 +1701,7 @@ class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -1832,10 +1838,6 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -2938,10 +2940,6 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -3359,10 +3357,6 @@ class HCE_HunterBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -3838,10 +3832,6 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -4017,10 +4007,6 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();

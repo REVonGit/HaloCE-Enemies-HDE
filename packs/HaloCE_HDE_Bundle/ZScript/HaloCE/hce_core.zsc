@@ -1,0 +1,180 @@
+// ============================================================================
+// hce_core.zsc -- shared Halo CE enemy code that needs ZScript 4.15 (bone queries), so it
+// lives in the core pack instead of the enemy API (which also compiles inside HDE's 4.10 unit).
+// ============================================================================
+
+// ---------------------------------------------------------------------------
+// Jackal energy shield as its own entity. The shield you see is part of the Jackal's model
+// (skinned to the 'frame shield' node of its left arm); this invisible, shootable cylinder rides
+// that node every tic, so it sits wherever the arm holds the shield, and it soaks up what hits it:
+//   bullets, pellets, spikes   nothing (they spark off it)
+//   needles / fire             a little
+//   explosions                 full damage
+//   melee                      2.5x, and the Jackal staggers
+//   plasma                     4x (an overcharged plasma bolt 10x)
+// Hits that miss the shield hit the Jackal itself. When it is drained it flickers out and the
+// Jackal reels (hard ping); it comes back on its own after a few seconds out of harm.
+// ---------------------------------------------------------------------------
+class HCE_JackalShield : Actor
+{
+	double hp, maxhp;
+	int regenWait, bone;
+	bool down, skinHidden;
+
+	Default
+	{
+		+SHOOTABLE
+		+NOGRAVITY
+		+NOBLOOD
+		+DONTTHRUST
+		+NOTAUTOAIMED
+		+NOTONAUTOMAP
+		+DONTSPLASH
+		+NODAMAGETHRUST
+		+NOTARGET
+		+NEVERTARGET
+		+DONTBLAST
+		-SOLID
+		-COUNTKILL
+		Health 1000000;
+		Radius 10;
+		Height 34;
+		Mass 100000;
+		Tag "Jackal shield";
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A -1;
+		Stop;
+	}
+
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		bone = -2;                     // master is set right after the spawn: set up on the first tic
+	}
+
+	static double HitMul(Actor inflictor, Name mod, int flags)
+	{
+		String cn = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
+		cn = cn.MakeLower();
+		if(mod == 'Melee' || mod == 'Kick' || mod == 'Sword' || mod == 'Punch' || mod == 'Fist' || mod == 'Chainsaw') return 2.5;
+		if(cn.IndexOf("charged") >= 0 && cn.IndexOf("plasma") >= 0) return 10.0;
+		if(mod == 'Plasma' || mod == 'PlasmaExplosion' || cn.IndexOf("plasma") >= 0) return 4.0;
+		if((flags & DMG_EXPLOSION) || mod == 'Explosive' || mod == 'Explosion' || mod == 'Grenade' || mod == 'Rocket') return 1.0;
+		if(cn.IndexOf("needle") >= 0) return 0.3;
+		if(mod == 'Fire' || mod == 'Burn') return 0.5;
+		return 0;                                               // bullets, pellets, spikes
+	}
+
+	override bool CanCollideWith(Actor other, bool passive)
+	{
+		// the Jackal's own shots and its squad's pass through
+		if(other == master) return false;
+		let j = HaloDoom_EnemyBase(master);
+		if(j && other.bMISSILE && other.target && (other.target == master || HaloDoom_EnemyBase.HCE_TeamOf(other.target) == j.hce_team))
+			return false;
+		return Super.CanCollideWith(other, passive);
+	}
+
+	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle)
+	{
+		let j = HaloDoom_EnemyBase(master);
+		if(!j || j.health <= 0 || down || damage <= 0) return 0;
+		if(source == j) return 0;
+		if(source && !source.player && HaloDoom_EnemyBase.HCE_TeamOf(source) == j.hce_team) return 0;
+		double m = HitMul(inflictor, mod, flags);
+		vector3 at = inflictor && inflictor != source ? inflictor.pos : pos + (0, 0, height * 0.5);
+		if(m <= 0)
+		{
+			// glances off: a spark at the shield face
+			for(int i = 0; i < 3; i++)
+				A_SpawnParticle("9FD0FF", SPF_FULLBRIGHT, 8, 3, 0, at.x - pos.x, at.y - pos.y, at.z - pos.z, frandom(-2, 2), frandom(-2, 2), frandom(0, 2));
+			regenWait = max(regenWait, 35);
+			return 0;
+		}
+		hp -= damage * m;
+		regenWait = 35 * 4;
+		for(int i = 0; i < 5; i++)
+			A_SpawnParticle("60A0FF", SPF_FULLBRIGHT, 10, 4, 0, frandom(-radius, radius), frandom(-radius, radius), frandom(0, height), frandom(-2, 2), frandom(-2, 2), frandom(-1, 2));
+		if(mod == 'Melee' && hp > 0 && j.hce_animLock <= 0)
+		{
+			int k = j.HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R);
+			if(j.HCE_HasAnim(k)) j.HCE_PlayLocked(k, 0.6);
+		}
+		if(hp <= 0) BreakShield(j);
+		return 0;
+	}
+
+	void BreakShield(HaloDoom_EnemyBase j)
+	{
+		down = true;
+		hp = 0;
+		bSHOOTABLE = false;
+		regenWait = 35 * 6;
+		A_StartSound("Shield/Explode", CHAN_AUTO, CHANF_OVERLAP);
+		for(int i = 0; i < 24; i++)
+			A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 16, frandom(3, 6), 0, 0, 0, height * 0.5, frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
+		SetShieldVisible(j, false);
+		// the Jackal reels from it
+		if(j.health > 0 && j.hce_leapState == 0 && j.hce_jumpState == 0)
+		{
+			int k = j.HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
+			if(!j.HCE_HasAnim(k)) k = HCE_A_HPING_F;
+			if(j.HCE_HasAnim(k)) { j.HCE_StopFireLoop(); j.HCE_PlayLocked(k, 0.9); j.hce_lockPing = 2; }
+			j.HCE_Say('PainHeavy', 0.8, 35, true);
+		}
+	}
+
+	// the shield surface on the Jackal's model: hidden while it's down
+	void SetShieldVisible(Actor j, bool on)
+	{
+		if(skinHidden == !on) return;
+		skinHidden = !on;
+		let e = HaloDoom_EnemyBase(j);
+		if(!e || !e.bHCE_FrontShield) return;
+		int SURF = 5;                                       // the shield surface of both Jackal models
+		if(on) j.A_ChangeModel('', 0, "", '', SURF, "", '', CMDL_USESURFACESKIN);
+		else j.A_ChangeModel('', 0, "", '', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
+	override void Tick()
+	{
+		let j = HaloDoom_EnemyBase(master);
+		if(!j || j.health <= 0) { if(j && skinHidden) SetShieldVisible(j, true); Destroy(); return; }
+		if(isFrozen()) return;
+		// ride the arm's 'frame shield' node (the model's bone positions are on for the Jackal)
+		if(bone == -2)
+		{
+			maxhp = hp = max(1, j.hce_frontShieldMax);
+			A_SetSize(max(8, j.radius * 0.9), j.height * 0.7);
+			j.SetModelFlag(0, IQM_GET_BONE_INFO);
+			bone = j.GetBoneIndex('frame shield');
+		}
+		vector3 p = j.pos + (AngleToVector(j.angle, j.radius + 4), j.height * 0.5);
+		if(bone >= 0)
+		{
+			vector3 bp, f, u;
+			[bp, f, u] = j.GetBonePosition(bone);
+			if(bp != (0, 0, 0)) p = bp;
+		}
+		SetOrigin(p - (0, 0, height * 0.5), true);
+		angle = j.angle;
+		// recharge out of harm
+		if(regenWait > 0) regenWait--;
+		else if(hp < maxhp)
+		{
+			hp = min(maxhp, hp + maxhp / 70.0);
+			if(down && hp >= maxhp * 0.5)
+			{
+				down = false;
+				bSHOOTABLE = true;
+				SetShieldVisible(j, true);
+				A_StartSound("Shield/Regenerate", CHAN_AUTO, CHANF_OVERLAP, 0.6);
+			}
+		}
+		j.hce_frontShieldHP = down ? 0 : hp;
+	}
+}

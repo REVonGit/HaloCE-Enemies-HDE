@@ -117,6 +117,8 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_enemydamage` | 1.0 | An extra multiplier on enemy projectile damage, on top of `hce_nerf_projectiles` |
 | `hce_dropweapons` | true | Enemies drop the weapon they carried (and sometimes grenades), like in Halo |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
+| `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
+| `hce_jumping` | true | Enemies jump onto ledges and over low obstacles in their way |
 | `hce_burstpause` | 1.0 | Scales the pause between enemy bursts (1.5 = 50% longer, easier; 0.75 = more aggressive) |
 
 Marines are on the human team and fight Covenant and Flood alongside the player. Their stray shots can still hit you, as in Halo.
@@ -170,7 +172,7 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 
 **Boss levels still work.** Barons, Mancubi, Arachnotrons, the Cyberdemon and the Spider Mastermind are replaced by dedicated stand-in classes (`HCE_Boss*`). The pack's `CheckReplacee` maps each one back to its Doom boss, and every Halo enemy calls `A_BossDeath` when it dies. So E1M8's Barons, MAP07's Mancubus and Arachnotron triggers and the Cyberdemon/Spider exits fire as usual. Verified on MAP07: killing the Hunter "Mancubi" lowered the tag-666 walls.
 
-**Drops.** Halo enemies drop the weapon they carried as an HDE pickup (`Halo_PlasmaPistol`, `Halo_Needler`, `Halo_PlasmaRifle`, `Halo_FuelRod`, `Halo_MA5B`, …), so the replaced zombies' clip and shotgun drops still turn into ammo. HDE's pickup system applies its normal rules for enemy-dropped guns. Grunts and Elites with grenades left may also drop plasma grenades, and Marines frag grenades. Energy swords vanish as in CE, and Hunters and Sentinels drop nothing. Turn drops off with `hce_dropweapons 0`.
+**Drops.** Halo enemies drop the weapon they carried as an HDE pickup (`Halo_PlasmaPistol`, `Halo_Needler`, `Halo_PlasmaRifle`, `Halo_FuelRod`, `Halo_MA5B`, …), so the replaced zombies' clip and shotgun drops still turn into ammo. **The Covenant always drop the weapon they carry**, energy swords included (as HDE's Energy Sword): their gun lands just beside the body, clear of HDE's rule that deletes half of all enemy-dropped guns. Flood and Marines still go through that rule. Grunts and Elites with grenades left may also drop plasma grenades, and Marines frag grenades. Hunters (their fuel-rod cannon is part of the arm) and Sentinels drop nothing. Turn drops off with `hce_dropweapons 0`.
 
 ## What the AI does (all verified in-engine)
 
@@ -195,12 +197,25 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 * **Kamikaze Grunts (Halo 3):** Grunts carrying plasma grenades sometimes make a suicide run:
   * They play the jumping alert animation as the pull-out, with two live plasma grenades in their hands, and scream a kamikaze line.
   * They sprint at you in the panic run. On contact, or after 6 s, both grenades go off; that's lethal at point-blank.
-  * Kill one mid-run and the grenades arm on their normal 2 s fuse, so back off.
+  * Kill one mid-run and it pitches forward out of the sprint (a falling-forward death, the body sliding on), and the two grenades fly out of its hands: they keep the run's momentum, scatter to either side and pop up, stick wherever they land (or to whoever they hit), and go off on their normal 2 s fuse. In testing they landed 120–160 units ahead of where it fell.
   * Chance per second in combat: 0.4% Minor, 0.8% Major, 1.2% Spec-Ops, tripled below half health, and a 30% roll when their Elite leader dies.
   * One run at a time per squad, once per Grunt, and panic or berserk never interrupts it.
 * **Low ceilings:** before every throw, the grenade's arc is simulated against the ceiling and ledge heights along its path. If the natural lob would hit, the thrower tries flatter, harder throws; if none clear, it holds the grenade and checks again a second later. The White Hunter's plasma-caster volleys follow the same rule. In a test room with a 96-unit ceiling, 21 of 30 grenades used to stick to the roof; now none do, and enemies still throw flatter grenades there.
-* **Elites:** take cover when their shields drop below `shield_fraction_hide` and come back out at `emerge`. They evade and dive, and go **berserk** (roar, charge, melee) on heavy damage below 30% vitality or at close range. Grunts and Jackals **panic** when their Elite leader dies.
-* **Jackals:** the energy shield blocks frontal fire within 55°, has its own HP and regenerates. Shoot around it, or break it. The shield's colour shows the rank, and it glows (brightmap in `gldefs.hce`):
+* **Grenade awareness:** every enemy that notices a live grenade near it (about 200 units, judged by where a thrown one is about to land) gets clear: a dive or evade animation in the escape direction, or a sprint for the ones without dive animations (Flood, Engineers, Blind Wolves, Thorn Beasts, Sentinels and Drones).
+  * **Noticing it** depends on how deep inside its vision cone the grenade is: each look (every 4 tics) the chance runs from about 6% at the edge of the cone to almost 100% dead ahead. Behind it, it won't see one at all, unless the grenade lands right at its feet.
+  * Whoever spots it shouts its grenade line, and squadmates within 480 units who hear the shout notice that grenade much sooner.
+  * The escape heading turns away from walls. Grunts, Jackals, Elites, Hunters, Brutes, Marines and Slug Men use their dive or evade animations, and a berserk Elite or Brute mostly ignores the grenade.
+  * `hce_grenadedodge 0` turns it off.
+* **Jumping:** a ledge or a low obstacle (crate, barrel) in the way that is too tall to step onto is jumped onto or over, in the airborne animation, with the landing animation on touchdown. Jump height is about three quarters of the body (24–56 units: a Grunt manages about 30, an Elite or Brute 50+), Hunters only hop 32, and flyers never jump. A ledge that is jumpable doesn't count as a wall when they pick a heading, so they head for it; enemies hunting you by Doom pathfinding also jump up toward you when you are on higher ground. `hce_jumping 0` turns it off.
+* **Elites:** take cover when their shields drop below `shield_fraction_hide` and come back out at `emerge`. When an Elite's shield pops it reels in a **hard ping** for the animation's full length (about a second), a moment to finish it off. They evade and dive, and go **berserk** (roar, charge, melee) on heavy damage below 30% vitality or at close range. Grunts and Jackals **panic** when their Elite leader dies.
+* **Jackals:** the energy shield is its own entity (`HCE_JackalShield`) riding the `frame shield` node of the Jackal's arm every tic, so it sits wherever the animation holds the shield. Shots that hit it don't reach the Jackal; shots that get around it do.
+  * **Bullets:** shotgun pellets and Spiker spikes spark off it without harm.
+  * **Needles and fire:** do a little.
+  * **Explosions:** full damage.
+  * **Melee:** 2.5×, and the Jackal staggers.
+  * **Plasma:** 4×, and an overcharged plasma bolt 10×.
+  * **Drained:** it flickers out (the shield vanishes from the model) and the Jackal reels in a hard ping. It recharges after about 6 s out of harm.
+  * The shield's colour shows the rank, and it glows (brightmap in `gldefs.hce`):
 
   | Rank | Shield | Weapon | Body / shield HP | Class |
   |---|---|---|---|---|
@@ -227,6 +242,10 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   * Combat forms leap and fire whatever weapon they carry. Dead combat forms can be revived.
 * **Sentinels:** hover at Halo's flying height and fire a hitscan beam.
 * **Deaths:** directional (front/back/left/right) soft and hard death animations, airborne deaths, and Halo's flinch ("ping") animations by hit direction.
+* **Flinches:** a heavy hit plays a **hard ping** (h-ping) every time: a quarter of its health in one hit, a blast, or a hard melee. It cuts short a soft flinch, a landing or a taunt, though not a swing, throw, dive or an earlier hard ping. Lighter hits have a chance of a soft ping (s-ping).
+  * Hits a shield soaks up cause no flinch, as in Halo, but popping an Elite's shield does (see Elites).
+  * Hunters, the Drinol, Sentinels and the Thorn Beast have no hard-ping animations, so they use their soft one.
+  * An audit hit every class for 30% of its health from behind: every one with a hard ping played it. Marines ignore your shots (friendly fire), and infection forms die first.
 * **Thrown by explosions:** a kill from a grenade, rocket, fuel rod or any other explosion (anything dealing damage through `A_Explode`), from a Hunter's punch, or from a melee hit with the `Kick` damage type (HDE's player melee) flings the body away from the blast. Kicks throw at about 40% of a grenade's strength: in testing, a kicked Grunt flew about 30 units up versus 100 for a grenade. It flies in Halo's `airborne-dead` pose, facing the blast so it goes backwards, and plays `landing-dead` when it hits the ground.
   * **Physics:** the flight is real engine physics: gravity, wall collisions and ground friction, with most of the slide scrubbed off on impact.
   * **Strength:** the throw scales with the damage dealt and the body's mass, so lighter enemies fly further. In testing, a frag grenade threw a Grunt about 100 units up and over 150 units back. A Jackal went about 80 up, and an Elite about 60.
@@ -271,6 +290,12 @@ The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/H
 * **Blind Wolf:** Howl doubles as alert and taunt, and Bite plays for melee.
 
 The fork's Acid Breath lines aren't used.
+
+**Loudness:** every voice line is levelled at build time (`louden_voices.py`).
+* **Method:** its EBU R128 loudness is measured, and it is raised toward -11 LUFS with a peak limiter. Lines are only ever raised, by at most 18 dB.
+* **Scope:** this covers the 443 lines above and the Digsite voices (Brutes, Drones, Engineer, Slug Men, Thorn Beast).
+* **Before:** the sets were uneven. Whimpy Grunts averaged -26 LUFS, Jackals -19.5, Elites about -16, against the Blind Wolf's -5.
+* **Range:** voices also carry further, at attenuation 0.6 instead of Doom's normal 1.0.
 
 | Event | When |
 |---|---|
@@ -457,11 +482,14 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 | Slug Men | yellow-green |
 | Drinol, Blind Wolf, Thorn Beast | dark reds |
 
-**Gibbing:**
-* **When:** only an overkill gibs, as with Doom's monsters: damage that takes an enemy past its gib health (minus its spawn health) sends it to a separate `XDeath` state. Ordinary kills leave the animated corpse.
-* **With NashGore:** its gibs replace the body, and the model is hidden.
-* **Without NashGore:** the body stays and sprays the race's blood.
-* **No revivals:** Flood infection forms can't reanimate a gibbed body, and feigning Elites stay down.
+**Blood only:** the gore is strictly blood.
+* **No gibbing:** a body is never torn apart or removed, so there are no meat chunks and no vanishing body on an overkill. The classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
+* **Overkills and hard kills:** these spray extra blood in the race's colour; NashGore turns it into its sprays, splats, decals and pools.
+
+**Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
+* **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
+* **Without NashGore:** a large blood burst.
+* **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
 **BLUDTYPE:** none is needed. The enemies, HDE's projectiles and the standalone projectiles all spawn Doom's standard `Blood`, which NashGore replaces on its own. If another mod gives these enemies a custom blood class, list it in a `BLUDTYPE.txt` as described in [nashgore_bludtype](https://github.com/nashmuhandes/nashgore_bludtype).
 

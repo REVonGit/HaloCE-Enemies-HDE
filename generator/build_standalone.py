@@ -55,7 +55,7 @@ DROP_MAP = {
     'Halo_PlasmaPistol': 'Cell', 'Halo_PlasmaRifle': 'Cell', 'Halo_Needler': 'Cell', 'Halo_Carbine': 'Cell',
     'Halo_PulseCarbine': 'Cell', 'Halo_BeamRifle': 'Cell', 'Halo_Flamethrower': 'Cell', 'Halo_FuelRod': 'RocketAmmo',
     'Halo_RocketLauncher': 'RocketAmmo', 'Halo_MA5B': 'Clip', 'Halo_Magnum': 'Clip', 'Halo_SniperRifle': 'Clip',
-    'Halo_Spiker': 'Clip', 'Halo_Shotgun': 'Shell', 'Halo_GravityHammer': 'None',
+    'Halo_Spiker': 'Clip', 'Halo_Shotgun': 'Shell', 'Halo_GravityHammer': 'None', 'Halo_EnergySword': 'None',
     'PlasmaGrenades': 'None', 'FragGrenades': 'None',
 }
 # sprites copied from HDE, renamed to unique HZ** names
@@ -208,7 +208,7 @@ def standalone_defaults(t):
 
 
 def copytree_text(src, dst):
-    shutil.copytree(src, dst)
+    shutil.copytree(src, dst, ignore=shutil.ignore_patterns('.loudened.json'))
     for root, _, fs in os.walk(dst):
         for f in fs:
             p = os.path.join(root, f)

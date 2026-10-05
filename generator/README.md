@@ -34,7 +34,9 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 | `extract_h2.py` | Halo 2 Drone -> IQM + JSON. Set `HCE_H2_MAP` to `01b_spacestation.map`, `HCE_H2_TEXTURES` to MCC's `textures.dat` (real skins) and `HCE_H2_SOUNDS` to the `h2_maps_win64_dx11` folder (`sounds_en.dat` dialogue, `sounds_neutral.dat` effects) |
 | `extract_h2_brute.py` | Halo 2 Brutes from `08b_deltacontrol.map` (`HCE_H2_MAP08B` / `HCE_H2_CACHE08B`): model with every rank's armour plus Tartarus's pieces, the regular and gravity-hammer animations, the CE plasma rifle / assault rifle / shotgun, the Spiker and the H2 gravity hammer in the hand, helmet debris; voices and effects come from `08a_deltacliffs.map` (`HCE_H2_MAP08`) (same `HCE_H2_TEXTURES` / `HCE_H2_SOUNDS` settings). Run `python3 cmt_weapon.py spiker <Spiker folder>` first to convert the Spiker |
 | `split_factions.py` | Splits the generated tree into the shared core (no Halo assets) and one pack per faction |
-| `pack/ZScript/BaseAI/enemies_base.zsc` | Extended HaloDoom_EnemyBase (hand-written) |
+| `addons/localdev/ZScript/BaseAI/enemies_base.zsc` | Extended HaloDoom_EnemyBase (hand-written): the AI, grenade dodging, jumping, flinches, gore |
+| `pack/ZScript/HaloCE/hce_core.zsc` | Hand-written core code that needs ZScript 4.15 bone queries: the Jackal shield entity riding the arm's `frame shield` node |
+| `louden_voices.py` | Levels the dialogue (EBU R128, raised toward -11 LUFS with a limiter): `python3 louden_voices.py voices <digsite pack dir>` after `build_voices.py` / `build_digsite.py` |
 
 Every Halo world unit becomes 80 map units. In MODELDEF, Z is scaled ×1.2 to cancel Doom's pixel-aspect squash.
 
@@ -57,7 +59,7 @@ HCE_VOICE_SRC=/path/to/HaloDoomEnemies/Sounds HCE_VOICE_OUT=./voices python3 bui
 cd voices && zip -r9 ../HaloCE_Enemies_Voices.pk3 .
 ```
 
-It maps each source category (e.g. `Grenade Thrw 3.ogg`) to an event (`GrenadeThrow`) and writes `$random HCE/<Voice>/<Event>` entries. Missing events alias to a related one, e.g. a Jackal's `KillPlayer` uses its `Taunt` lines.
+Then run `python3 louden_voices.py voices` to level the lines (it only raises quiet ones, and running it twice does nothing). It maps each source category (e.g. `Grenade Thrw 3.ogg`) to an event (`GrenadeThrow`) and writes `$random HCE/<Voice>/<Event>` entries. Missing events alias to a related one, e.g. a Jackal's `KillPlayer` uses its `Taunt` lines.
 
 ## Fire patterns and weapon sounds
 

@@ -28,10 +28,6 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -161,10 +157,6 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -2750,10 +2742,6 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -2916,10 +2904,6 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -3238,10 +3222,6 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	Death:
 		HCEM A 1 HCE_Die();
 		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
-		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
 		Loop;
@@ -3293,6 +3273,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -3436,6 +3417,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -3579,6 +3561,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -3722,6 +3705,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -3865,6 +3849,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -4008,6 +3993,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
 	override Name HCE_AnimName(int kind)
@@ -4151,6 +4137,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
@@ -4295,6 +4282,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Leader
 		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
@@ -4433,10 +4421,6 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -4595,10 +4579,6 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();
@@ -4981,10 +4961,6 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 		Loop;
 	Death:
 		HCEM A 1 HCE_Die();
-		HCEM A 2 A_NoBlocking;
-		Goto Dead;
-	XDeath:
-		HCEM A 1 HCE_GibDeath();
 		HCEM A 2 A_NoBlocking;
 	Dead:
 		HCEM A 1 HCE_CorpseTick();

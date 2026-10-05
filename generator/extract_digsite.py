@@ -2,6 +2,8 @@
 
 Source assets are JMS models and JMA-family animations (not compiled tags), so root motion,
 overlays and rename.txt aliases are processed here the way Halo's tool.exe would."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, re, glob
 import numpy as np
 from PIL import Image

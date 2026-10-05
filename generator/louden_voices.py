@@ -10,6 +10,8 @@ How: per file, the integrated loudness (EBU R128) is measured and the line is ra
 lowered, at most MAX_GAIN dB), with a limiter holding the peaks under -0.8 dBFS. A manifest (.loudened.json)
 records the processed files' hashes, so running it again on the same files does nothing.
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import hashlib, json, os, re, subprocess, sys
 
 TARGET = -11.0      # LUFS

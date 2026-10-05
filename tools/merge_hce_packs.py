@@ -27,7 +27,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_INPUTS = ['HaloCE_Core.pk3', 'HaloCE_Covenant.pk3', 'HaloCE_Enemies_Digsite.pk3']
 STANDALONE_INPUTS = ['HaloCE_Standalone_Core.pk3', 'HaloCE_Standalone_Covenant.pk3', 'HaloCE_Standalone_Digsite.pk3']
 SPECIAL = {'zscript.txt', 'mapinfo.txt'}
-CONCAT_EXT = ('.txt', '.lmp', '')        # root lumps of these kinds that collide get concatenated
+CONCAT_EXT = ('.txt', '.lmp', '')
+STORE = ('.ogg', '.png', '.jpg', '.jpeg', '.flac', '.mp3')        # root lumps of these kinds that collide get concatenated
 
 
 class MergeError(Exception):
@@ -173,9 +174,13 @@ def merge(inputs, output):
         mi, nums, handlers = merge_mapinfo(special['mapinfo.txt'])
         files['mapinfo.txt'] = mi.encode()
     tmp = output + '.tmp'
-    with zipfile.ZipFile(tmp, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as out:
+    with zipfile.ZipFile(tmp, 'w') as out:
         for path in sorted(files, key=lambda p: (p.count('/'), p.lower())):
-            out.writestr(path, files[path])
+            info = zipfile.ZipInfo(path, date_time=(2026, 1, 1, 0, 0, 0))   # byte-stable output
+            info.external_attr = 0o644 << 16
+            stored = path.lower().endswith(STORE)                          # sounds/images are compressed already
+            info.compress_type = zipfile.ZIP_STORED if stored else zipfile.ZIP_DEFLATED
+            out.writestr(info, files[path], compresslevel=None if stored else 9)
     os.replace(tmp, output)
     print(f'merged {", ".join(n for n, _ in zips)}')
     print(f'  -> {output}: {len(files)} files, {nums} DoomEdNums, handlers {", ".join(handlers) or "none"}, '

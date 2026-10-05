@@ -1,4 +1,6 @@
 """Loose CE .gbxmodel weapon (e.g. CMT's Covenant carbine) -> weapon pkl (+x forward, +z up, origin at the grip)."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import struct, pickle, os, sys
 import numpy as np
 import loosewalk as lw

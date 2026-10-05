@@ -4,6 +4,8 @@ Builds 'EliteRifle' (Elite body + the Plasma Carbine on the right hand) whose ri
 Elite's own legs, pelvis and spine from the matching pistol animation and take the arms from the
 Marine's rifle animation of the same action (both are 3ds Max bipeds, so arm bones share local axes).
 The left hand is then solved onto the carbine's fore-grip with two-bone IK."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, os, re, copy
 import numpy as np
 import halomodel as hm

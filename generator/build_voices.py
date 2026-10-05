@@ -2,6 +2,8 @@
 
 Logical sounds: HCE/<Voice>/<Event>, played by HaloDoom_EnemyBase.HCE_Say().
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, sys, shutil
 SRC = os.environ.get('HCE_VOICE_SRC', 'HaloDoomEnemies/Sounds')
 OUT = os.environ.get('HCE_VOICE_OUT', 'voices')

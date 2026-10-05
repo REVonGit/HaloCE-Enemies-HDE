@@ -2,6 +2,8 @@
 rifle stance.  Generated with build_pack.build() so the classes behave exactly like the main pack's.
 
 Needs out/models/{Drinol,SlugMan,EliteRifle} (extract_digsite.py, extract_elite_rifle.py) and the weapon pkls
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 from extract_sketchfab.py.  Digsite content is licensed for MCC projects only: never part of a public release."""
 import os, sys, json, copy, shutil, subprocess, glob
 import numpy as np

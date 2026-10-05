@@ -9,6 +9,8 @@
 
 Every faction pack only needs the core (and the enemy API addon); load any combination.
 DoomEdNums are unchanged: each pack lists the numbers of its own classes."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM

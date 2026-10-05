@@ -1,4 +1,6 @@
 """Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
 from PIL import Image

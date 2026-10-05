@@ -5,6 +5,8 @@ armour permutations are separate surfaces, and build_digsite.py's skin hook show
 each variant's fur change colours. Weapons baked into the right hand (shown one at a time per class): the CE
 plasma rifle, assault rifle and shotgun, the Spiker (cmt_weapon.py spiker) and Halo 2's gravity hammer.
 08b carries Tartarus's hammer stance (combat:melee / berserk:melee) on top of the regular Brute animations."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, os, json, pickle, shutil
 import numpy as np
 from PIL import Image

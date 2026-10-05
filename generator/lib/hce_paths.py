@@ -1,6 +1,6 @@
 """Paths for the Halo CE enemy tools. Override with environment variables."""
 import os
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # the generator folder (this file is in lib/)
 HALO_SRC = os.environ.get('HCE_HALO_SRC', os.path.join(HERE, 'halo-ce-universal', 'source'))  # decomp headers
 MAPS_DIR = os.environ.get('HCE_MAPS', os.path.join(HERE, 'maps'))      # a10.map ... d40.map (Xbox)
 OUT = os.environ.get('HCE_OUT', os.path.join(HERE, 'out'))             # intermediate IQM/PNG/JSON

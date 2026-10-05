@@ -1,6 +1,6 @@
 @echo off
 setlocal
-rem Compile packs\ into dist\*.pk3.  Double-click: every pack + the merged pack.
+rem Compile packs\ into dist\*.pk3.  Double-click: every pack + the merged pack (only what changed is rebuilt).
 rem Or run from a command prompt:  Build_PK3s.bat Bundle Flood   (only those packs)
 title Halo CE enemy pk3 builder
 cd /d "%~dp0"
@@ -12,7 +12,7 @@ if not defined PY (
   echo and tick "Add python.exe to PATH" in the installer.
   goto end
 )
-if "%~1"=="" (%PY% build.py --all) else (%PY% build.py %*)
+if "%~1"=="" (%PY% build.py) else (%PY% build.py %*)
 if errorlevel 1 (echo. & echo The build did not finish. The message above says why.) else (echo. & echo Done: the pk3s are in the dist folder.)
 :end
 echo.

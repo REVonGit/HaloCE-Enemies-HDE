@@ -1,4 +1,6 @@
 """Extract Halo CE third-person weapon models (weap -> mod2) for attaching to character IQMs."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, pickle
 import numpy as np
 from PIL import Image

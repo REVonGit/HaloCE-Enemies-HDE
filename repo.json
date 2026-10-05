@@ -28,5 +28,43 @@
       "// dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.",
       "// Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it."
     ]
-  }
+  },
+  "sync": [
+    [
+      "packs/HCE_EnemyAPI_LocalDEV/ZScript/BaseAI/enemies_base.zsc",
+      "packs/HaloCE_HDE_Bundle/ZScript/BaseAI/enemies_base.zsc",
+      "generator/addons/localdev/ZScript/BaseAI/enemies_base.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_core.zsc",
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_core.zsc",
+      "generator/pack/ZScript/HaloCE/hce_core.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_explosives.zsc",
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_explosives.zsc",
+      "generator/pack/ZScript/HaloCE/hce_explosives.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_handler.zsc",
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_handler.zsc",
+      "generator/pack/ZScript/HaloCE/hce_handler.zsc"
+    ],
+    [
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_handler.zsc",
+      "generator/digsite_src/dig_handler.zsc"
+    ],
+    [
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_boss.zsc",
+      "generator/digsite_src/dig_boss.zsc"
+    ],
+    [
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_pulse.zsc",
+      "generator/digsite_src/dig_pulse.zsc"
+    ],
+    [
+      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_brute.zsc",
+      "generator/digsite_src/dig_brute.zsc"
+    ]
+  ]
 }

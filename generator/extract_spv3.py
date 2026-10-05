@@ -1,5 +1,7 @@
 """Characters from a Halo CE PC / MCC map (e.g. SPV3's a30 with the Blind Wolf) -> IQM + skins + JSON,
 reusing extract_chars.extract() with gbxmodel geometry, and the AI/stat dump for the pack generator."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, json, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import halomodel as hm

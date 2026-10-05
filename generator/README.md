@@ -1,5 +1,7 @@
 # Halo CE enemy tools
 
+**Layout:** the pipeline scripts you run sit in this folder; the format readers and writers they share (Xbox/MCC map readers, tag layouts, model/animation/bitmap/sound codecs, the IQM writer, `hce_paths.py`) are in `lib/`, which every script puts on its import path. The hand-written ZScript sources are `addons/localdev/` (enemy API), `pack/` (core), `digsite_src/` (Digsite add-on) and `standalone/` (standalone library and loot). Merging pk3s is done by the repository's `build.py` and `tools/merge_hce_packs.py`.
+
 These scripts regenerate `HaloCE_Enemies.pk3` from your own Halo CE **Xbox** campaign maps (a10, a30, a50, b30, b40, c10, c20, c40, d20, d40).
 
 Requirements: Python 3.10+, numpy, Pillow, and a checkout of https://github.com/cybersecurity/halo-ce-universal. Its decomp headers provide every tag struct layout.
@@ -18,19 +20,18 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 
 | File | Role |
 |---|---|
-| `halomap.py` | Xbox cache-file reader (zlib, tag index) |
-| `clayout.py` | i386 struct layout calculator over the decomp headers |
-| `tags.py` | Typed tag access (`Tag['path.to.field']`, blocks) |
-| `halomodel.py` | `mode` geometry (compressed verts, strips) and `antr` animations (raw + compressed, overlays, root motion) |
-| `iqm.py` | IQM v2 writer |
-| `bitmaps.py`, `render.py` | Xbox bitmap decoding (DXT/swizzled) and shader lookup |
+| `lib/halomap.py` | Xbox cache-file reader (zlib, tag index) |
+| `lib/clayout.py` | i386 struct layout calculator over the decomp headers |
+| `lib/tags.py` | Typed tag access (`Tag['path.to.field']`, blocks) |
+| `lib/halomodel.py` | `mode` geometry (compressed verts, strips) and `antr` animations (raw + compressed, overlays, root motion) |
+| `lib/iqm.py` | IQM v2 writer |
+| `lib/bitmaps.py`, `lib/render.py` | Xbox bitmap decoding (DXT/swizzled) and shader lookup |
 | `extract_weapons.py` | Weapon `mod2` geometry; sword blade and needles get solid glow textures |
 | `extract_chars.py` | Character list, LOD/permutation pick, overlay baking, weapons bound to the hand marker, surfaces merged per material (UZDoom max 32) |
 | `extract_ai.py` | AI and stat dump |
 | `build_pack.py` | Pack generator: weapon table, animation mapping, per-type AI flags |
 | `build_standalone.py` | Builds the `HaloCE_Standalone_*.pk3` set from the built faction packs and add-on. It needs HDE Local_DEV (`HCE_HDE_PK3`: its pk3 or an unpacked folder) to copy sounds, sprites and models from. `standalone/hces_lib.zsc` holds the HDE-derived projectiles, grenades, effects and shields. |
-| `merge_hce_packs.py` | Merges any set of the built pk3s (core, factions, add-on) into one, reconciling zscript/mapinfo/cvarinfo |
-| `h2map.py`, `h2anim.py`, `h2opus.py` | Halo 2 MCC readers: chunk-compressed cache, tag index, render models, animation codecs (ported from TagTool), sound gestalt and the Opus audio in `sounds_*.dat` |
+| `lib/h2map.py`, `lib/h2anim.py`, `lib/h2opus.py` | Halo 2 MCC readers: chunk-compressed cache, tag index, render models, animation codecs (ported from TagTool), sound gestalt and the Opus audio in `sounds_*.dat` |
 | `extract_h2.py` | Halo 2 Drone -> IQM + JSON. Set `HCE_H2_MAP` to `01b_spacestation.map`, `HCE_H2_TEXTURES` to MCC's `textures.dat` (real skins) and `HCE_H2_SOUNDS` to the `h2_maps_win64_dx11` folder (`sounds_en.dat` dialogue, `sounds_neutral.dat` effects) |
 | `extract_h2_brute.py` | Halo 2 Brutes from `08b_deltacontrol.map` (`HCE_H2_MAP08B` / `HCE_H2_CACHE08B`): model with every rank's armour plus Tartarus's pieces, the regular and gravity-hammer animations, the CE plasma rifle / assault rifle / shotgun, the Spiker and the H2 gravity hammer in the hand, helmet debris; voices and effects come from `08a_deltacliffs.map` (`HCE_H2_MAP08`) (same `HCE_H2_TEXTURES` / `HCE_H2_SOUNDS` settings). Run `python3 cmt_weapon.py spiker <Spiker folder>` first to convert the Spiker |
 | `split_factions.py` | Splits the generated tree into the shared core (no Halo assets) and one pack per faction |
@@ -84,14 +85,14 @@ cd addons/digsite && zip -r9 ../../HaloCE_Enemies_Digsite.pk3 .
 
 | File | Role |
 |---|---|
-| `jms.py` | JMS 8200 model and JMA/JMM/JMT/JMO/JMR/JMZ animation readers |
-| `loosewalk.py` | Generic loose (source) tag walker: block children, data blobs, tag paths |
-| `looset.py` | Loose actor / variant / biped stats |
-| `looseantr.py` | Loose `model_animations` reader (uncompressed frames) |
-| `loosebitmap.py` | Loose `.bitmap` decoding (DXT, 32-bit) |
-| `pcmap.py` | Halo CE PC/MCC cache reader (tag index at 0x50000000, gbxmodel vertex/strip data) |
+| `lib/jms.py` | JMS 8200 model and JMA/JMM/JMT/JMO/JMR/JMZ animation readers |
+| `lib/loosewalk.py` | Generic loose (source) tag walker: block children, data blobs, tag paths |
+| `lib/looset.py` | Loose actor / variant / biped stats |
+| `lib/looseantr.py` | Loose `model_animations` reader (uncompressed frames) |
+| `lib/loosebitmap.py` | Loose `.bitmap` decoding (DXT, 32-bit) |
+| `lib/pcmap.py` | Halo CE PC/MCC cache reader (tag index at 0x50000000, gbxmodel vertex/strip data) |
 | `extract_spv3.py` | SPV3 characters (Blind Wolf, Thorn Beast, Engineer) through `extract_chars.extract()`, plus their in-map sounds (ogg / PCM / Xbox ADPCM) |
 | `cmt_weapon.py` | Loose `.gbxmodel` weapon geometry (triangle strips, LOD 0) |
-| `halosound.py` | Loose `.sound` reader + Xbox ADPCM decoder |
-| `preview.py` | Software renderer for checking skinned poses |
+| `lib/halosound.py` | Loose `.sound` reader + Xbox ADPCM decoder |
+| `lib/preview.py` | Software renderer for checking skinned poses |
 | `digsite_src/` | Hand-written add-on files: spawn handler, Drinol boss, ZSCRIPT, CVARINFO, credits |

@@ -2,6 +2,8 @@
 Currently: the Drone ("bugger") from 01b_spacestation.map. Animations are renamed onto the CE-style names
 build_pack.py looks for; overlays (fire, soft flinches) are baked onto the flight idle like the CE ones.
 Textures come from MCC's textures.dat when HCE_H2_TEXTURES points at it, otherwise placeholder skins."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, os, json, pickle, struct
 import numpy as np
 from PIL import Image

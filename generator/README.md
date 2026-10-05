@@ -37,6 +37,8 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 | `split_factions.py` | Splits the generated tree into the shared core (no Halo assets) and one pack per faction |
 | `addons/localdev/ZScript/BaseAI/enemies_base.zsc` | Extended HaloDoom_EnemyBase (hand-written): the AI, grenade dodging, jumping, flinches, gore |
 | `pack/ZScript/HaloCE/hce_core.zsc` | Hand-written core code that needs ZScript 4.15 bone queries: the Jackal shield entity riding the arm's `frame shield` node |
+| `extract_h2_jackal.py` | Halo 2 Jackal from `08a_deltacliffs.map` (`HCE_H2_MAP08` / `HCE_H2_SOUNDS` / `HCE_H2_TEXTURES`): model, skins and change-colour masks, arm shield, pistol and rifle stances with fire overlays, deaths; the CE plasma rifle, the Spiker and Halo 2's beam rifle in the gun hand; the shield-pop sound. `build_digsite.py` builds the Ultra, Zealot and Sniper Jackals from it. Run before `extract_chars.py` (the Elite Special carries its beam rifle) |
+| `h2_elite_anims.py` | Halo 2 Elite animations on the CE Elite skeleton (the two are the same biped): the fuel-rod stance for the Elite and the rifle stance for the Elite Special. Called by `extract_chars.py` |
 | `extract_h2_grunt.py` | Extra Crazy Grunt dialogue from Halo 2's `grunt_crazy` set in `08a_deltacliffs.map` (same `HCE_H2_MAP08` / `HCE_H2_SOUNDS` settings as the Brutes): fills the events the Crazy set is short on, skipping lines it already has (`HCE_VOICE_SRC`). Writes `voice_extra/Grunt_Crazy/`, which `build_voices.py` adds on top of the main source |
 | `extract_elite_loose.py` | The Loose Elite dialogue set: Halo CE's Elite dialogue from the campaign maps (`HCE_MAPS`), plus Halo 2's `elite_loose` lines from `08a_deltacliffs.map` (`HCE_H2_MAP08` / `HCE_H2_SOUNDS`) played backwards, the way CE's Elites speak. Writes `voice_extra/Elite_Loose/` with a `REPLACE` marker, so `build_voices.py` uses it instead of the main source's Loose set |
 | `louden_voices.py` | Levels the dialogue (EBU R128, raised toward -11 LUFS with a limiter): `python3 louden_voices.py voices <digsite pack dir>` after `build_voices.py` / `build_digsite.py` |
@@ -98,3 +100,5 @@ cd addons/digsite && zip -r9 ../../HaloCE_Enemies_Digsite.pk3 .
 | `lib/halosound.py` | Loose `.sound` reader + Xbox ADPCM decoder |
 | `lib/preview.py` | Software renderer for checking skinned poses |
 | `digsite_src/` | Hand-written add-on files: spawn handler, Drinol boss, ZSCRIPT, CVARINFO, credits |
+
+`ednum_pins.json` holds every released class's DoomEdNum. `build_pack.py` keeps those numbers whatever order the classes come out in, and gives new classes the next free numbers; add a new class there once it has shipped.

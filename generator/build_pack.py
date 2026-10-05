@@ -1,4 +1,6 @@
 """Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
 from PIL import Image
@@ -27,6 +29,61 @@ def swap_jackal_ranks(variants):
     variants[J + 'jackal major needler'] = nd
 
 swap_jackal_ranks(AI['variants'])
+
+# Fuel-rod Elite (new): an Elite Major carrying the Spec Ops Grunts' fuel rod gun, in Halo 2's fuel-rod stance
+# (h2_elite_anims.py puts it on the CE skeleton). Its firing data is the fuel-rod Grunt's.
+def add_fuel_rod_elite(variants):
+    E = 'characters\\elite\\elite major\\elite major '
+    base, fr = variants.get(E + 'plasma rifle'), variants.get('characters\\grunt\\grunt specops fuel rod')
+    if not (base and fr) or (E + 'fuel rod') in variants: return
+    import copy
+    v = copy.deepcopy(base)
+    v['ranged_combat'] = copy.deepcopy(fr['ranged_combat'])
+    v['_late'] = True
+    variants[E + 'fuel rod'] = v
+
+add_fuel_rod_elite(AI['variants'])
+
+# Beam-rifle Spec Ops Elite (new): the Spec Ops plasma-rifle Elite's stats with Halo 2's beam rifle, in Halo 2's own
+# Elite rifle stance (h2_elite_anims.py), fighting from further back
+def add_beam_rifle_specops(variants):
+    E = 'characters\\elite\\elite specops\\elite specops '
+    base = variants.get(E + 'plasma rifle')
+    if not base or (E + 'beam rifle') in variants: return
+    import copy
+    v = copy.deepcopy(base)
+    v['ranged_combat']['reference'] = H2BEAM_REF
+    v['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=45.0)
+    v['_late'] = True
+    variants[E + 'beam rifle'] = v
+
+H2BEAM_REF = r'h2\weapons\beam rifle'
+add_beam_rifle_specops(AI['variants'])
+
+# The Ultra Jackal is the Digsite add-on's now, on the Halo 2 Jackal (build_digsite.py takes its variant from MOVED;
+# same class name, same DoomEdNum 30248)
+MOVED = {k: AI['variants'].pop(k) for k in [r'characters\jackal\jackal ultra plasma rifle'] if k in AI['variants']}
+
+# The gold Elite (Commander) wears the regular Elite body: its colour mask leaves the hands their own dark colour,
+# where the Elite Special's covers the gauntlets too. Its stats, weapons and DoomEdNums stay its own.
+for _vn, _v in AI['variants'].items():
+    if 'elite commander' in _vn and _v['unit_reference'] == r'characters\elite\elite special':
+        _v['unit_reference'] = r'characters\elite\elite'
+
+# DoomEdNums already released never change (maps place them): ednum_pins.json holds every shipped class's number.
+# A class that is still there keeps its pinned number even if its position in the list moved; new classes take the
+# lowest numbers no pinned class uses, from where the generated list would have put them.
+PINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ednum_pins.json')
+
+def pin_ednums(ednums):
+    pins = json.load(open(PINS_PATH)) if os.path.exists(PINS_PATH) else {}
+    used = set(pins.values())
+    out = []
+    for n, cls in ednums:
+        if cls in pins: out.append((pins[cls], cls)); continue
+        while n in used: n += 1
+        used.add(n); out.append((n, cls))
+    return sorted(out)
 CHAR_OF_UNIT = {
     r'characters\grunt\grunt': 'Grunt', r'characters\grunt\grunt specops': 'GruntSpecOps',
     r'characters\jackal\jackal': 'Jackal', r'characters\jackal\jackal major': 'JackalMajor',
@@ -262,7 +319,8 @@ def variant_color(v, b):
     return None
 
 # Jackal energy shield colour by rank (Halo shows it through a translucent shader we can't use, so it's baked + brightmapped)
-SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'ultra': (1.00, 0.55, 0.10), 'major': (1.00, 0.30, 0.85)}   # Ultra orange, Major pink
+SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'ultra': (1.00, 0.55, 0.10), 'major': (1.00, 0.30, 0.85),   # Ultra orange, Major pink
+               'zealot': (1.00, 0.84, 0.30)}   # Zealot (the Halo 2 Spiker Jackal): gold, the colour of Covenant zealots
 SHIELD_MAT = {'Jackal': 'Jackal_5', 'JackalMajor': 'JackalMajor_5'}
 
 def bake_shield(char, mat, tint, outpath):
@@ -320,8 +378,30 @@ def bake_vivid(char, mat, color, outpath):
     # tinted toward the regular Elites' teal undersuit so the Commander matches its lower ranks
     teal = np.array(UNDERSUIT, dtype=np.float32).reshape(1, 1, 3) * (0.25 + 2.2 * lum)
     suit = b * 0.45 + teal * 0.55
+    # the hands stay out of the gold: Halo's gold Elites have dark gauntlets, like the lower ranks' hands
+    hm = hand_mask(char, mat, base.size)[..., None]
+    msk = msk * (1 - hm)
     o = suit * (1 - msk) + gold * msk
+    glove = np.array(UNDERSUIT, dtype=np.float32).reshape(1, 1, 3) * (0.18 + 0.55 * lum)   # dark slate, shading kept
+    o = o * (1 - hm) + glove * hm
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
+def hand_mask(char, mat, size):
+    """0..1 mask of the texture area the model's hands use (triangles skinned to the hand bones), slightly grown"""
+    from iqm import read_iqm
+    from PIL import ImageDraw, ImageFilter
+    W, H = size
+    m = Image.new('L', (W, H), 0); dr = ImageDraw.Draw(m)
+    J, M, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
+    hand = {i for i, j in enumerate(J) if 'hand' in j[0] or 'finger' in j[0] or 'thumb' in j[0]}
+    for x in M:
+        if x['material'] != f'{mat}.png': continue
+        dom = x['bidx'][np.arange(len(x['bidx'])), x['bw'].argmax(1)]
+        for t in x['tris']:
+            if all(dom[v] in hand for v in t):
+                dr.polygon([(x['uv'][v][0] * W, x['uv'][v][1] * H) for v in t], fill=255)
+    m = m.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.GaussianBlur(1.5))
+    return np.asarray(m).astype(np.float32) / 255.0
 
 # Energy-shield flare (the shell actor drawn additively over a shielded unit when it's hit): tint per character
 SHELL_TINT = {'Elite': (0.45, 0.70, 1.00), 'EliteSpecial': (0.45, 0.70, 1.00), 'Brute': (1.00, 0.78, 0.30)}
@@ -413,8 +493,9 @@ def build(cfg=None):
             if ov.get('stance'): w = ov['stance'].get(weapon, ov['stance'].get(None)) if isinstance(ov['stance'], dict) else ov['stance']
             elif char in ('Hunter', 'FloodInfection', 'FloodCarrier'): w = 'unarmed'
             elif char == 'Sentinel': w = 'fixed'
-            elif char.startswith('Grunt') and weapon and 'fuel rod' in weapon: w = 'missle'
+            elif (char.startswith('Grunt') or char.startswith('Elite')) and weapon and 'fuel rod' in weapon: w = 'missle'
             elif char.startswith('Elite') and weapon == 'energy sword': w = 'sword'
+            elif char.startswith('Elite') and weapon == 'beam rifle': w = 'rifle'
             elif char.startswith('Flood'): w = 'pistol' if weapon else 'unarmed'
             elif char.startswith('Marine'): w = 'pistol' if weapon in ('pistol', 'needler', 'plasma pistol') else 'rifle'
             else: w = 'pistol'
@@ -709,6 +790,7 @@ def build(cfg=None):
     open(f'{pack}/ZScript/HaloCE/{tg}_enemies.zsc', 'w').write('\n'.join(zs))
     open(f'{pack}/ZScript/HaloCE/{tg}_projectiles.zsc', 'w').write('\n'.join(pz))
     open(f'{pack}/modeldef.{tg}', 'w').write('\n'.join(md))
+    ednums = pin_ednums(ednums)
     mi = ['DoomEdNums', '{'] + [f'\t{n} = {c}' for n, c in ednums] + ['}', '', 'GameInfo', '{', f'\tAddEventHandlers = "{cfg["handler"]}"', '}', '']
     open(f'{pack}/mapinfo.txt', 'w').write('\n'.join(mi))
     json.dump(dict(ednums=ednums, spawners=spawners), open(f'{OUT}/{cfg["index"]}', 'w'), indent=1)
@@ -790,11 +872,71 @@ TYPE_CODE = {
 ''',
 }
 
+# Halo 2's beam rifle (extract_h2_jackal.py extracts it): the Sniper Jackal (build_digsite.py) and the Spec Ops Elite
+# carry it. It behaves like HaloDoom's: a held beam whose damage climbs while it stays on a target, fired in ~1 s
+# bursts (one trace a tic) with a cool-down between them; HDE's laser sounds; drops HDE's beam rifle.
+H2BEAM = H2BEAM_REF
+WEAPONS['beam rifle'] = ('HCE_H2BeamShot', 'HCE_BeamPuff', None, 30.0)
+PATTERNS['beam rifle'] = (30, 45, 1, 2.4, 3.4, 0, False, 1.0, 1.0)
+FIRE_SOUNDS['beam rifle'] = (W + 'BeamRifle/Laser/Loop', '', W + 'BeamRifle/Laser/LoopEnd', W + 'BeamRifle/Laser/Fire', True)
+FIRE_CODE['beam rifle'] = 'csr'
+DROP_WEAPON['beam rifle'] = 'Halo_BeamRifle'
+WEAPON_IDS[H2BEAM] = 'h2_beam_rifle'
+BEAMRIFLE_CODE = '''
+	// Halo 2's beam rifle, the way HaloDoom's behaves: a held purple beam that cooks whatever it stays on. Each burst
+	// is ~1 s of beam (one trace a tic); the damage climbs while it holds the same target (to 3x in half a second)
+	// and resets when it slips off. Between bursts the rifle cools down. The aim is the API's slow-tracking aim
+	// point, so strafing drags the beam off you.
+	Actor hce_beamVictim;
+	double hce_beamRamp;
+	override void HCE_FireShot(bool special)
+	{
+		if(!target) return;
+		vector3 ap = HCE_AimPoint();
+		double gz = height * 0.5 + hce_gunOffset.z;
+		vector3 from = Vec3Angle(hce_gunOffset.x, angle, gz);
+		vector3 diff = level.Vec3Diff(from, ap);
+		double ang = atan2(diff.y, diff.x);
+		double pit = -atan2(diff.z, diff.xy.Length());
+		FLineTraceData lt;
+		LineTrace(ang, hce_maxRange, pit, TRF_THRUSPECIES, gz, hce_gunOffset.x, 0, lt);
+		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
+		vector3 d = level.Vec3Diff(from, to);
+		double len = d.Length();
+		if(len >= 1)
+		{
+			vector3 rel = level.Vec3Diff(pos, from);
+			int n = min(300, int(len / 7));
+			double ph = (level.maptime % 4) / 4.0;
+			for(int i = 0; i < n; i++)
+			{
+				vector3 p = rel + d * ((i + ph) / double(n));
+				A_SpawnParticle("B040FF", SPF_FULLBRIGHT, 2, 6, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 0.55);
+				A_SpawnParticle("FF9CFF", SPF_FULLBRIGHT, 2, 2.5, 0, p.x, p.y, p.z);
+			}
+			if(level.maptime % 3 == 0)
+				A_SpawnParticle("D080FF", SPF_FULLBRIGHT, 10, 6, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-0.5, 0.5), frandom(-0.5, 0.5), frandom(0.3, 1.0), 0, 0, 0, 0.8, -0.06);
+		}
+		Actor hit = lt.HitActor;
+		if(hit && hit != self && hit.bSHOOTABLE && hit.health > 0)
+		{
+			hce_beamRamp = hit == hce_beamVictim ? min(3.0, hce_beamRamp + 2.0 / 17) : 1.0;
+			hce_beamVictim = hit;
+			int dmg = max(1, int(round(3.0 * hce_beamRamp * HCE_DamageScale())));
+			hit.DamageMobj(self, self, dmg, 'Fire');
+		}
+		else { hce_beamVictim = null; hce_beamRamp = 1.0; }
+		if(hce_moveSpeed <= 0.1 && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		hce_burstShot++;
+	}
+'''
+
+
 MAIN_WEAPONS = set(WEAPONS)
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
             handler='HCE_ReplaceHandler', index='pack_index.json')
 CHAR_OVERRIDES = {}   # per-character tweaks (used by add-on packs: see build_digsite.py)
-WEAPON_CODE = {}      # extra ZScript for every variant carrying a weapon
+WEAPON_CODE = {'beam rifle': BEAMRIFLE_CODE}      # extra ZScript for every variant carrying a weapon
 SPECIAL_FIRE = {}     # weapon -> chance a burst becomes the charged special shot
 WEAPON_SKIN = {}      # weapon -> {weapon surface texture: replacement} (recoloured variants of one mesh)
 SKIN_HOOK = {}        # char -> f(cls, v, si, mat, meta, skin_dir) -> skin file name (or None for the default bake)

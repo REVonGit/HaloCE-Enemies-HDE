@@ -56,11 +56,19 @@ def char_weapons(name):
     if not os.path.exists(p): return []
     AI = json.load(open(p))
     out = []
-    for v in AI['variants'].values():
-        if v['unit_reference'] != name: continue
+    for vn, v in AI['variants'].items():
+        unit = v['unit_reference']
+        if 'elite commander' in vn and unit == r'characters\elite\elite special':
+            unit = r'characters\elite\elite'           # the gold Elite wears the regular body (build_pack.py)
+        if unit != name: continue
         w = WEAPONS.get((v.get('ranged_combat') or {}).get('reference') or '')
         if w and w not in out and os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'): out.append(w)
+    for w in EXTRA_WEAPONS.get(name, []):
+        if w not in out and os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'): out.append(w)
     return sorted(out)
+
+# weapons a biped carries only in variants the pack adds (build_pack.py): the fuel-rod Elite, the beam-rifle Spec Ops
+EXTRA_WEAPONS = {r'characters\elite\elite': ['fuel_rod'], r'characters\elite\elite special': ['h2_beam_rifle']}
 
 def attach_weapons(pid, name, model, markers, meshes):
     """Bake each weapon rigidly onto the hand node at Halo's hand marker (weapon origin = marker)."""
@@ -191,6 +199,12 @@ def extract(name, pid, sources, maps):
         b.frames = hm.bake_overlay(base.frames[0], ov.frames)
         b.nframes = len(b.frames); b.dx = np.zeros((b.nframes, 4))
         anims[b.name] = b
+    # Halo 2 stances on the CE skeleton -- the rigs are the same biped (h2_elite_anims.py): the fuel rod for the
+    # Elite, the beam rifle (rifle stance) for the Elite Special
+    from h2_elite_anims import stance_anims
+    for st in {'Elite': ['missile'], 'EliteSpecial': ['rifle']}.get(pid, []):
+        for a in stance_anims(joints, st):
+            anims.setdefault(a.name, a)
     alist = []
     for nm in sorted(anims):
         a = anims[nm]

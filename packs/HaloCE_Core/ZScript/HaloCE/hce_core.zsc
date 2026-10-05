@@ -5,7 +5,7 @@
 
 // ---------------------------------------------------------------------------
 // Jackal energy shield as its own entity. The shield you see is part of the Jackal's model
-// (skinned to the 'frame shield' node of its left arm); this invisible, shootable cylinder rides
+// (skinned to the shield node of its arm, HCE_ShieldBone()); this invisible, shootable cylinder rides
 // that node every tic, so it sits wherever the arm holds the shield, and it soaks up what hits it:
 //   bullets, pellets, spikes   nothing (they spark off it)
 //   needles / fire             a little
@@ -135,7 +135,7 @@ class HCE_JackalShield : Actor
 		return 0;
 	}
 
-	// did the shot's line pass the gun hand ('bip01 r hand')? Hitscans: from the shooter's eye through the puff;
+	// did the shot's line pass the gun hand (HCE_GunHandBone)? Hitscans: from the shooter's eye through the puff;
 	// projectiles: along their flight path to where they struck
 	bool HandHit(HaloDoom_EnemyBase j, Actor inflictor, Actor source)
 	{
@@ -174,7 +174,7 @@ class HCE_JackalShield : Actor
 		hp = 0;
 		bSHOOTABLE = false;
 		regenWait = 35 * 6;
-		A_StartSound("Shield/Explode", CHAN_AUTO, CHANF_OVERLAP);
+		A_StartSound("HCE/Jackal/ShieldPop", CHAN_AUTO, CHANF_OVERLAP);     // Halo 2's Jackal shield popping
 		for(int i = 0; i < 24; i++)
 			A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 16, frandom(3, 6), 0, 0, 0, height * 0.5, frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
 		SetShieldVisible(j, false);
@@ -195,7 +195,7 @@ class HCE_JackalShield : Actor
 		skinHidden = !on;
 		let e = HaloDoom_EnemyBase(j);
 		if(!e || !e.bHCE_FrontShield) return;
-		int SURF = 5;                                       // the shield surface of both Jackal models
+		int SURF = e.HCE_ShieldSurface();                   // the model surface the shield's energy field is drawn on
 		if(on) j.A_ChangeModel('', 0, "", '', SURF, "", '', CMDL_USESURFACESKIN);
 		else j.A_ChangeModel('', 0, "", '', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
@@ -211,8 +211,8 @@ class HCE_JackalShield : Actor
 			maxhp = hp = max(1, j.hce_frontShieldMax);
 			A_SetSize(max(8, j.radius * 0.9), j.height * 0.7);
 			j.SetModelFlag(0, IQM_GET_BONE_INFO);
-			bone = j.GetBoneIndex('frame shield');
-			handBone = j.GetBoneIndex('bip01 r hand');
+			bone = j.GetBoneIndex(j.HCE_ShieldBone());          // CE 'frame shield'; Halo 2 'shield'
+			handBone = j.GetBoneIndex(j.HCE_GunHandBone());    // CE 'bip01 r hand'; Halo 2 'l_hand'
 		}
 		vector3 p = j.pos + (AngleToVector(j.angle, j.radius + 4), j.height * 0.5);
 		if(bone >= 0)

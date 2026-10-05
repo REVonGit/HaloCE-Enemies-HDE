@@ -839,6 +839,10 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// the energy-shield flare: a copy of the model that glows when the shield takes a hit (pack code)
 	Actor hce_shellActor;
+	// the Jackal arm shield (pack code): the node it rides, the gun hand that pokes past it, the surface it's drawn on
+	virtual Name HCE_ShieldBone() { return 'frame shield'; }
+	virtual Name HCE_GunHandBone() { return 'bip01 r hand'; }
+	virtual int HCE_ShieldSurface() { return 5; }
 	virtual Name HCE_ShellClass() { return 'None'; }
 
 	// ------------------------------------------------------------------

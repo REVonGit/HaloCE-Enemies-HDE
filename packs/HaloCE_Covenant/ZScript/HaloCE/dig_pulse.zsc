@@ -2,10 +2,15 @@
 // hits, so the enemy damage nerf is re-applied there
 mixin class HCE_DigNerfMixin
 {
+	// HDE's range falloff rebuilds truedamage from the unscaled default once a shot is past its falloff range, so the
+	// enemy damage scale goes back on it then. Inside that range HDE leaves the value alone, and it was scaled when
+	// fired (HCE_ScaleProjectile): scaling it again there used to apply the nerf twice (0.16x for 0.4), and small
+	// rounds such as Spiker spikes rounded down to no damage at all.
 	override void AdjustRangeDamage()
 	{
+		double before = truedamage;
 		super.AdjustRangeDamage();
-		if(range_max > 0 && !bDESTROYED && DamageMultiply > 0) truedamage *= DamageMultiply;
+		if(range_max > 0 && !bDESTROYED && DamageMultiply > 0 && truedamage != before) truedamage *= DamageMultiply;
 	}
 }
 

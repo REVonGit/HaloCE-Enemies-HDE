@@ -64,7 +64,7 @@ python3 merge_hce_packs.py -o MyHalo.pk3 HaloCE_Core.pk3 HaloCE_Covenant.pk3 Hal
 
 | Launcher | Needs next to it | Output | Load |
 |---|---|---|---|
-| `Merge_HDE_Bundle.bat` (`merge_bundle.py hde`) | `HaloCE_Core`, `HaloCE_Covenant`, `HaloCE_Enemies_Digsite`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices` | `HDE_CE_Covenant.pk3` | HDE (Local_DEV), then the bundle; nothing else |
+| `Merge_HDE_Bundle.bat` (`merge_bundle.py hde`) | `HaloCE_Core`, `HaloCE_Covenant`, `HaloCE_Enemies_Digsite`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices` | `HaloCE_HDE_Bundle.pk3` | HDE (Local_DEV), then the bundle; nothing else |
 | `Merge_Standalone_Bundle.bat` (`merge_bundle.py standalone`) | `HaloCE_Standalone_Core`, `_Covenant`, `_Digsite`, `HaloCE_Enemies_Voices` | `HaloCE_Standalone_Bundle.pk3` | the bundle on its own, with any other mods |
 
 * **Standalone API:** the standalone core already contains the enemy API, so that bundle has no separate API pack.
@@ -266,9 +266,18 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   |---|---|---|---|---|
   | Minor | Blue | Plasma pistol (with overcharge) | 60 / 200 | `HCE_JackalMinorPlasmaPistol` (30247) |
   | Major | Pink | Needler | 75 / 250 | `HCE_JackalMajorNeedler` (30279) |
-  | Ultra | Orange | Plasma rifle | 100 / 350 | `HCE_JackalUltraPlasmaRifle` (30248) |
+  | Ultra (Halo 2 Jackal) | Orange | Plasma rifle | 100 / 350 | `HCE_JackalUltraPlasmaRifle` (30248) |
+  | Zealot (Halo 2 Jackal) | Gold | Spiker | 120 / 450 | `HCE_JackalZealotSpiker` (30433) |
+  | Sniper (Halo 2 Jackal) | none | Halo 2 beam rifle | 60 / – | `HCE_JackalSniperBeamRifle` (30434) |
 
   Halo CE only has Minor and Major plasma-pistol Jackals. The plasma-rifle Jackal (rate of fire and bursts from the Minor plasma-rifle Elite) is the **Ultra**, and the needler Jackal (the Major Grunt's needler timing) the **Major**. Each keeps its weapon, shield colour and DoomEdNum: 30248 is the plasma-rifle Ultra, 30279 the needler Major. The rank's name and stats moved with the swap; older builds had them the other way round, as `HCE_JackalMajorPlasmaRifle` and `HCE_JackalUltraNeedler`. `HCE_RandomJackalMajor` spawns either.
+* **Halo 2 Jackals (Digsite add-on):** the Ultra, the Zealot and the Sniper wear Halo 2's Jackal, ripped from MCC's `08a_deltacliffs.map`: its 40-bone model and textures, its arm shield, and its own animations (one-handed pistol stance for the plasma rifle and Spiker, two-handed rifle stance for the beam rifle, crouches, dives, evades, surprise, flinches and deaths). Halo 2's Jackal holds its shield on the right forearm and its gun in the left hand; the shield entity, the gun-hand hit and the shield's switch-off follow those bones (`HCE_ShieldBone`, `HCE_GunHandBone`, `HCE_ShieldSurface`).
+  * **Ultra:** the CE pack's plasma-rifle Ultra moved onto the Halo 2 body; same class, stats and DoomEdNum. Its armour takes Halo 2's Major Jackal colours.
+  * **Zealot (new):** a tougher Ultra (120 body, 450 shield) with the **Spiker**, a gold shield and gold armour, the colour Halo gives its zealots.
+  * **Sniper (new):** Halo 2's Sniper Jackal: no shield (60 body), keeps its distance (combat range 640–2240), and carries **Halo 2's beam rifle**, which fires like HaloDoom's (see Beam rifle below).
+  * `HCE_RandomH2Jackal` (30435) picks one of the three.
+* **Jackal shield pop:** every Jackal's shield (CE and Halo 2) now pops with Halo 2's Jackal shield-break sound (three variations from `jackal_shield_death`).
+* **Beam rifle (Halo 2):** the Sniper Jackal and the beam-rifle Spec Ops Elite carry Halo 2's beam rifle model and fire it like HaloDoom's beam rifle: a held purple beam whose damage climbs while it stays on a target (from about 1 to 4 a tic, three times as much after half a second on target), in bursts of about a second with a 2.5–3.5 s cool-down. It uses HDE's laser sounds and the same slow-tracking aim as every other enemy weapon, so strafing drags the beam off you. It drops HDE's beam rifle. In testing, a Sniper Jackal held on a standing target for up to about 120 damage in a second of beam.
 * **Jackal bodies:** no energy shield of their own; the arm shield is all they have. Shots from a Jackal's side or back that clip the shield's hitbox (held out to the side) go on into the Jackal.
 * **Jackal gun hand:** a shot whose path passes the gun hand poking out past the shield gets through: the hit goes into the Jackal and it reels in a hard ping. Tested by shooting a Jackal's hand with a 5-damage bullet: it took the damage and played its h-ping.
 * **Hunters:** front armour reduces damage by 92% within 70°, so flank them. Their weak spots are where Halo's are:
@@ -286,7 +295,9 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   White and Red are new. They're the regular Hunter with the arm cannon's weapon swapped for HDE's plasma caster (the `PlasmaCasterProj` / `PlasmaCasterClusterProj` grenades) or the flamethrower, and the blue armour recoloured. Both come in bonded pairs, and `HCE_RandomHunter` includes them. The Red Hunter is lethal up close: in testing it burned a player from full to 1 HP in about 4 seconds.
 * **Stuck Elites go berserk:** an Elite (or anything else that berserks: Flood combat forms, Hunters) stuck by a plasma grenade roars and charges whoever threw it, trying to take them down in the blast. If the thrower is unknown, it charges the nearest enemy in sight. Grunts and Jackals panic instead.
 * **Stealth Elites:** active camo flickers when shot or firing. The camo is their protection: they have **no energy shield** and a fragile body (45% of the tag's vitality, 45 health before `hce_nerf_health`).
-* **Elite Commander (gold):** its tag colour, a dark ochre multiplied into the dark Elite Special armour, came out a muddy olive. The armour is now baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The bodysuit between the plates is tinted toward the teal undersuit of the Minor and Major Elites, instead of reading as black holes next to the gold.
+* **Elite Commander (gold):** the gold Elites wear the regular Elite body, the one the Minors and Majors wear, instead of the Elite Special's: its colour mask leaves the hands their dark gauntlet colour, where the Elite Special's turned the hands gold too. The armour is baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The Commanders keep their own stats, weapons (the regular Elite model now carries the energy sword) and DoomEdNums.
+* **Fuel-rod Elite (new, `HCE_EliteMajorFuelRod`, 30282):** a Major Elite with the fuel rod gun, in **Halo 2's fuel-rod stance**. Halo CE's and Halo 2's Elites are the same 3ds Max biped: every CE bone has a Halo 2 twin with the same parent and the same offset in its parent's frame, so Halo 2's animations play on the CE Elite as they are (`h2_elite_anims.py`). It gets Halo 2's fuel-rod idle, moves, turns, dives, evades, grenade throw, berserk, melee and the firing overlay. Its firing data is the Spec Ops Grunt's fuel rod; it drops HDE's fuel rod.
+* **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Flood:**
   * Infection forms swarm, leap and nibble, then crawl to dead Marines and Elites. The feed animation raises the corpse as a Flood combat form.
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
@@ -377,6 +388,8 @@ Without the voice pk3 the sound names don't exist, so enemies are silent and not
 
 **The nerf (default on).** Enemies are cut to 60% health and 50% shields. Everything they shoot or throw does 40% damage (30% in the standalone packs, where the Doom player has no shield).
 
+**Fixed: the nerf was applied twice.** Most HDE projectiles (plasma bolts, bullets, needles, spikes) have damage falloff, and the nerf was re-applied on impact even inside the falloff range, where the shot had already been scaled when fired. Those hits did 0.16× instead of 0.4×, and the smallest (Spiker spikes) rounded down to nothing: an enemy Spiker hit for 0 almost every time. Now the nerf is applied once. Enemy fire hits harder than in earlier builds (a plasma-rifle Elite's bolts about 5 instead of 2–4, Spiker spikes 3 instead of 0); lower `hce_nerf_projectiles` if you preferred it before.
+
 In a test squad (Elite Major, two Grunts, a Jackal) shooting at a player standing still:
 * An HDE Spartan now lasts about 12 seconds instead of 2–3. Plasma bolts hit for 2–4 instead of 18–23.
 * A vanilla Doom player lasts about 6 seconds.
@@ -436,7 +449,7 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | Archvile | 10 / 12 / 15% | Commander carbine or pulse-carbine Elite |
 | **Cyberdemon** | **always** | Drinol boss (`HCE_BossCyberdemonDrinol`), unless `hce_digsite_spawns` is 0, which hands it back to the main pack's Hunter bosses |
 
-DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431.
+DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434 and `HCE_RandomH2Jackal` 30435. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`).
 
 **License: keep this add-on private.** Digsite's README says its content is not open source and is licensed only for MCC mod projects. The Elites' carbine is CMT's and private too. Sources are listed in the pk3's `CREDITS.txt`.
 
@@ -620,7 +633,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30245 | `HCE_Hunter` |
 | 30246 | `HCE_HunterMajor` |
 | 30247 | `HCE_JackalMinorPlasmaPistol` |
-| 30248 | `HCE_JackalUltraPlasmaRifle` |
+| 30248 | `HCE_JackalUltraPlasmaRifle` (Digsite add-on: Halo 2 Jackal) |
 | 30249 | `HCE_MarineAssaultRifle` |
 | 30250 | `HCE_MarineAssaultRifleMajor` |
 | 30251 | `HCE_MarineNeedler` |
@@ -654,3 +667,5 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30279 | `HCE_JackalMajorNeedler` |
 | 30280 | `HCE_HunterWhite` |
 | 30281 | `HCE_HunterRed` |
+| 30282 | `HCE_EliteMajorFuelRod` |
+| 30283 | `HCE_EliteSpecopsBeamRifle` |

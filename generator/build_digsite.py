@@ -48,6 +48,15 @@ BRUTE_RANKS = {
                             ('sensors', 'default'), ('sh_armor', 'skull'), ('hg_arm', 'honor_off'), ('hg_legs', 'honor_off')}),
 }
 ELITE_RIFLE = r'characters\elite\elite rifle'
+# Halo 2 Jackals (extract_h2_jackal.py): one model, three ranks. Ultra (the CE pack's plasma-rifle Ultra moved onto
+# the Halo 2 body, same class and DoomEdNum), Zealot (Spiker, gold shield) and Sniper (Halo 2's beam rifle, no shield)
+H2JACKAL = r'objects\characters\jackal\jackal'
+H2BEAM = bp.H2BEAM
+H2J_JSON = f'{bp.OUT}/models/H2Jackal/H2Jackal.json'
+# armour change colours per rank (primary, secondary, tertiary): Ultra and Sniper take the Halo 2 major / minor
+# biped colours; the Zealot is a custom gold with pale trim
+H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor',
+               'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
 CHIEFTAIN_BERSERK = {
     'IDLE': ['berserk hammer idle'], 'ALERT': ['berserk hammer idle'], 'MOVE_F': ['berserk hammer move-front'],
@@ -156,6 +165,29 @@ def load_ai():
                                     flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Leader'],
                                     berserk_anims=CHIEFTAIN_BERSERK)
                 variants[f'{BRUTE} {rank} {wref.split(chr(92))[-1]}'] = v
+    # Halo 2 Jackals: the Ultra keeps the CE Ultra's combat data (moved out of the main pack, build_pack.MOVED); the
+    # Zealot is a tougher Ultra with the Spiker; the Sniper starts from the CE Minor and keeps its distance
+    ultra = bp.MOVED.get(r'characters\jackal\jackal ultra plasma rifle')
+    if ultra and os.path.exists(H2J_JSON):
+        actors[H2JACKAL] = copy.deepcopy(A['actors'][ultra['actor_reference']])
+        jb = copy.deepcopy(A['bipeds'][ultra['unit_reference']]); jb['change_colors_list'] = []
+        bipeds[H2JACKAL] = jb
+        def h2j(src, rank, body, shield, wref, **kw):
+            v = copy.deepcopy(src)
+            v['unit_reference'] = H2JACKAL; v['actor_reference'] = H2JACKAL
+            v['unit'] = dict(v['unit'], maximum_body_vitality=float(body), maximum_shield_vitality=float(shield))
+            v['ranged_combat']['reference'] = wref
+            v['change_colors'] = None; v['change_colors_list'] = []
+            v['_rank'] = rank; v['_late'] = True
+            v.update(kw)
+            return v
+        variants[H2JACKAL + '\\jackal ultra plasma rifle'] = h2j(ultra, 'ultra', 100, 350, CE_PR)
+        variants[H2JACKAL + '\\jackal zealot spiker'] = h2j(ultra, 'zealot', 120, 450, SPIKER)
+        sn = h2j(A['variants'][r'characters\jackal\jackal minor plasma pistol'], 'sniper', 60, 0, H2BEAM,
+                 _ov=dict(stance='rifle', shield=0, flags=['HCE_Surprise', 'HCE_Panics', 'HCE_SeeksCover', 'HCE_Evades']))
+        sn['ranged_combat'].update(combat_range_lower_bound=8.0, combat_range_upper_bound=28.0, maximum_firing_range=48.0)
+        sn['items']['grenades_lower_bound'] = 0; sn['items']['grenades_upper_bound'] = 0
+        variants[H2JACKAL + '\\jackal sniper beam rifle'] = sn
     return dict(variants=variants, actors=actors, bipeds=bipeds, collisions=colls,
                 weapons={k: A['weapons'][k] for k in (CE_PR, CE_AR, CE_SG)})     # shotgun pellets per shot etc.
 
@@ -668,6 +700,60 @@ def brute_skin(cls, v, si, mat, meta, skin_dir):
     (out if has_a else out.convert('RGB')).save(dst)
     return fn
 
+def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
+    """Halo 2 Jackal skins: armour change colours per rank; the Sniper carries no shield (its surfaces hidden)"""
+    names = meta.get('mesh_names')
+    if not names or not mat.startswith('H2Jackal_'): return None
+    nm = names[si]
+    os.makedirs(skin_dir, exist_ok=True)
+    rank = v.get('_rank')
+    if nm.startswith('shield.') and rank == 'sniper':
+        hid = f'{skin_dir}/hce_hidden.png'
+        if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+        return 'hce_hidden.png'
+    shader = nm.split('.', 1)[1]
+    src = f'{bp.OUT}/models/H2Jackal/H2Jackal_{shader}.png'
+    mp = f'{bp.OUT}/models/H2Jackal/H2Jackal_{shader}_mask.png'
+    if not os.path.exists(mp):
+        fn = f'h2jackal_{shader}.png'
+        if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(src, f'{skin_dir}/{fn}')
+        return fn
+    fn = f'h2jackal_{rank}_{shader}.png'
+    dst = f'{skin_dir}/{fn}'
+    if os.path.exists(dst): return fn
+    cols = H2J_COLOURS.get(rank, 'minor')
+    if isinstance(cols, str): cols = meta['change_colors'][cols]
+    im = Image.open(src).convert('RGB')
+    rgb = np.asarray(im).astype(np.float64) / 255.0
+    mk = np.asarray(Image.open(mp).convert('RGB').resize(im.size)).astype(np.float64) / 255.0
+    for ch, col in enumerate(cols[:3]):                   # red / green / blue mask = primary / secondary / tertiary
+        if col is None: continue
+        m_ = mk[..., ch:ch + 1]
+        rgb = rgb * (1 - m_) + rgb * np.array(col) * 1.5 * m_
+    Image.fromarray((np.clip(rgb, 0, 1) * 255).astype(np.uint8)).save(dst)
+    return fn
+
+def h2jackal_code():
+    meta = json.load(open(H2J_JSON))
+    return f'''
+	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
+	override Name HCE_ShieldBone() {{ return '{meta['shield_bone']}'; }}
+	override Name HCE_GunHandBone() {{ return '{meta['hand_bone']}'; }}
+	override int HCE_ShieldSurface() {{ return {meta['shield_surface']}; }}
+'''
+
+def h2jackal_sounds():
+    """Halo 2's Jackal shield popping (jackal_shield_death) -> HCE/Jackal/ShieldPop (played for every Jackal's shield)"""
+    if not os.path.exists(H2J_JSON): return []
+    meta = json.load(open(H2J_JSON))
+    dst = f'{PACK}/sounds/hce_dig/jackal'; os.makedirs(dst, exist_ok=True)
+    lines = ['', "// Jackal shield pop (Halo 2's jackal_shield_death)"]; ids = []
+    for i, f in enumerate(meta.get('sounds', [])):
+        shutil.copy(f'{bp.OUT}/models/H2Jackal/{f}', f'{dst}/{os.path.basename(f)}')
+        sid = f'HCE/Jackal/ShieldPop/{i}'; lines.append(f'{sid} "sounds/hce_dig/jackal/{os.path.basename(f)}"'); ids.append(sid)
+    if ids: lines.append(f'$random HCE/Jackal/ShieldPop {{ {" ".join(ids)} }}')
+    return lines
+
 def brute_code():
     meta = json.load(open(OUT + '/models/Brute/Brute.json'))
     helm = [i for i, n in enumerate(meta['mesh_names']) if n.startswith('helmet.default.')]
@@ -872,6 +958,14 @@ def configure():
     bp.VOICES.update({'SlugMan': 'Slug', 'EliteRifle': 'Elite_Dogmatic,Elite_Loose', 'Drinol': 'Drinol', 'BlindWolf': 'Blind_Wolf',
                       'ThornBeast': 'ThornBeast', 'Engineer': 'Engineer', 'Drone': 'Drone',
                       'Brute': 'Brute_Bloodthirsty,Brute_Cruel'})
+    # Halo 2 Jackals and Halo 2's beam rifle (it behaves like HaloDoom's: a held beam whose damage climbs while it
+    # stays on a target, fired in ~1 s bursts with a cool-down between them; HDE's laser sounds)
+    if os.path.exists(H2J_JSON):
+        bp.SKIN_HOOK['H2Jackal'] = h2jackal_skin
+        bp.TYPE_CODE['H2Jackal'] = h2jackal_code()
+        bp.SHIELD_MAT['H2Jackal'] = 'H2Jackal_jackal_shield'
+        bp.VOICES['H2Jackal'] = 'Jackal'
+    # (the beam rifle itself is set up in build_pack.py: the Spec Ops Elite carries it too)
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.TYPE_CODE['Drone'] = DRONE_CODE
@@ -901,6 +995,7 @@ def configure():
         'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=0.9,
                       height_fixed=68, radius_fixed=26, melee=(120, 35), weapon_toss=True, shield=0, speed=5.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
+        'H2Jackal': dict(stance='pistol'),
         'Drone': dict(stance='pistol', flying=True, radius_fixed=22, height_fixed=48, shield=0, speed=9.5, flags=['HCE_Flying']),
         'BlindWolf': dict(stance='unarmed', health=90, melee=(30, 22),
                           flags=['HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps'], leap=(48, 300, 0.7, 14.0)),
@@ -914,14 +1009,15 @@ def build():
     cou = {r'digsite\characters\drinol\00_mac\drinol': 'Drinol', r'digsite\characters\slug_man\slug_man': 'SlugMan',
            ELITE_RIFLE: 'EliteRifle', r'characters\blind_wolf\blind_wolf': 'BlindWolf',
            r'characters\thorn_beast\thorn_beast': 'ThornBeast', r'characters\engineer\engineer': 'Engineer',
-           DRONE: 'Drone', BRUTE: 'Brute'}
-    team = {'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT'}
+           DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal'}
+    team = {'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT'}
     cfg = dict(char_of_unit=cou, team=team, ai=ai, pack=PACK, mdir='hce_dig', tag='dig', ed0=30400, main=False,
-               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute'],
+               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal'],
                late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf', 'HCE_ThornBeast', 'HCE_RandomThornBeast',
                            'HCE_EliteMinorPulseCarbine', 'HCE_EliteMajorPulseCarbine', 'HCE_EliteSpecopsPulseCarbine',
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
-                           'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
+                           'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     src = HERE + '/digsite_src'
@@ -929,7 +1025,7 @@ def build():
         shutil.copy(f'{src}/{f}', f'{PACK}/ZScript/HaloCE/{f}')
     for f in ('zscript.txt', 'cvarinfo.txt', 'CREDITS.txt'):
         shutil.copy(f'{src}/{f}', f'{PACK}/{f}')
-    open(f'{PACK}/sndinfo.dig', 'w').write('\n'.join(voices() + thorn_sounds() + engineer_sounds() + drone_sounds() + brute_sounds()) + '\n')
+    open(f'{PACK}/sndinfo.dig', 'w').write('\n'.join(voices() + thorn_sounds() + engineer_sounds() + drone_sounds() + brute_sounds() + h2jackal_sounds()) + '\n')
     # Cyberdemon stand-in: the Drinol at 78% instead of 62% (dig_boss.zsc)
     import re
     md = open(f'{PACK}/modeldef.dig').read()

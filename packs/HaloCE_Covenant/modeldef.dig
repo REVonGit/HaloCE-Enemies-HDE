@@ -628,6 +628,87 @@ Model HCE_Engineer
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalSniperBeamRifle
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 0 "skins/h2jackal_sniper_jackal_torso.png"
+	SurfaceSkin 0 1 "skins/h2jackal_sniper_jackal_legs.png"
+	SurfaceSkin 0 2 "skins/h2jackal_jackal_head.png"
+	SurfaceSkin 0 3 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 4 "skins/h2jackal_jackal_teethandspikes.png"
+	SurfaceSkin 0 5 "skins/h2jackal_sniper_jackal_armor_torso.png"
+	SurfaceSkin 0 6 "skins/h2jackal_sniper_jackal_armor_legs.png"
+	SurfaceSkin 0 7 "skins/h2jackal_jackal_eyes.png"
+	SurfaceSkin 0 8 "skins/h2jackal_jackal_pupils.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "w_h2_beam_rifle_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_JackalUltraPlasmaRifle
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 0 "skins/h2jackal_ultra_jackal_torso.png"
+	SurfaceSkin 0 1 "skins/h2jackal_ultra_jackal_legs.png"
+	SurfaceSkin 0 2 "skins/h2jackal_jackal_head.png"
+	SurfaceSkin 0 3 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 4 "skins/h2jackal_jackal_teethandspikes.png"
+	SurfaceSkin 0 5 "skins/h2jackal_ultra_jackal_armor_torso.png"
+	SurfaceSkin 0 6 "skins/h2jackal_ultra_jackal_armor_legs.png"
+	SurfaceSkin 0 7 "skins/h2jackal_jackal_eyes.png"
+	SurfaceSkin 0 8 "skins/h2jackal_jackal_pupils.png"
+	SurfaceSkin 0 9 "skins/h2jackal_jackal_shield_emitter.png"
+	SurfaceSkin 0 10 "skins/jackalultraplasmarifle_shield.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_JackalZealotSpiker
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 0 "skins/h2jackal_zealot_jackal_torso.png"
+	SurfaceSkin 0 1 "skins/h2jackal_zealot_jackal_legs.png"
+	SurfaceSkin 0 2 "skins/h2jackal_jackal_head.png"
+	SurfaceSkin 0 3 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 4 "skins/h2jackal_jackal_teethandspikes.png"
+	SurfaceSkin 0 5 "skins/h2jackal_zealot_jackal_armor_torso.png"
+	SurfaceSkin 0 6 "skins/h2jackal_zealot_jackal_armor_legs.png"
+	SurfaceSkin 0 7 "skins/h2jackal_jackal_eyes.png"
+	SurfaceSkin 0 8 "skins/h2jackal_jackal_pupils.png"
+	SurfaceSkin 0 9 "skins/h2jackal_jackal_shield_emitter.png"
+	SurfaceSkin 0 10 "skins/jackalzealotspiker_shield.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "w_spiker_body.png"
+	SurfaceSkin 0 13 "w_spiker_heat.png"
+	SurfaceSkin 0 14 "w_spiker_clip.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_SlugManParticleBeam
 {
 	Path "models/hce_dig/SlugMan"

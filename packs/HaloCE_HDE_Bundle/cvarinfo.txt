@@ -10,6 +10,10 @@ server bool hce_dropweapons = true;        // enemies drop their weapon (and som
 server float hce_grenadefreq = 1.0;        // enemy grenade frequency (2 = twice as often, 0.5 = half)
 server bool hce_grenadedodge = true;   // enemies that notice a live grenade near them dive / run clear
 server bool hce_jumping = true;        // enemies jump onto ledges and over low obstacles in their way
+server float hce_enemyspread = 1.75;    // enemy aim error multiplier (automatic weapons also bloom over a burst; allies unaffected)
+server float hce_enemytracking = 5.0;   // how fast enemy aim follows a moving target, map units per tic (lower = easier to strafe)
+server float hce_hearing = 1024;       // how far (map units) gunfire wakes idle enemies through Doom's sound propagation (deaf/ambush ones only wake on sight)
+server int hce_maxpursuers = 4;        // at most this many enemies of a team hunt one target they can't see at a time (0 = no limit); the rest hold position
 
 // ---- from merged.pk3
 // Digsite add-on: how often Doom monsters become Digsite enemies (0 = never, 1 = default, 2 = twice as often)

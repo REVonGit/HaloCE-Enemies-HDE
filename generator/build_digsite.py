@@ -791,9 +791,10 @@ def configure():
                          flags=['HCE_Flying']),
         # Halo 2 Drone (Yanme'e): fragile darting flier with a plasma pistol; perches on walls, scatters when the
         # swarm takes losses, falls out of the air when killed
-        # Halo 2 Brutes: shrunk to 80% (1.07 WU = 86 units would not fit Doom doors), melee 2.0 WU / 1.5 WU from
-        # their char tag, berserk charge that throws the gun away, plasma grenades
-        'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=0.8,
+        # Halo 2 Brutes: scaled to 90% so a Brute stands as tall as an Elite (its rifle idle is 0.90 WU tall against
+        # the Elite's 0.80; full size would not fit Doom doors), melee 2.0 WU / 1.5 WU from their char tag, berserk
+        # charge that throws the gun away, plasma grenades
+        'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=0.9,
                       height_fixed=68, radius_fixed=26, melee=(120, 35), weapon_toss=True, shield=0, speed=5.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'Drone': dict(stance='pistol', flying=True, radius_fixed=22, height_fixed=48, shield=0, speed=9.5, flags=['HCE_Flying']),
@@ -838,7 +839,7 @@ def build():
         hd = f'{PACK}/models/hce_dig/BruteHelmet'; os.makedirs(hd, exist_ok=True)
         for f in ('BruteHelmet.iqm', 'BruteHelmet_0.png'): shutil.copy(f'{hs}/{f}', f'{hd}/{f}')
         open(f'{PACK}/modeldef.dig', 'a').write('\nModel HCE_BruteHelmetDebris\n{\n\tPath "models/hce_dig/BruteHelmet"\n'
-            '\tModel 0 "BruteHelmet.iqm"\n\tSkin 0 "BruteHelmet_0.png"\n\tScale 64 64 77\n\tUseActorPitch\n\tUseActorRoll\n'
+            '\tModel 0 "BruteHelmet.iqm"\n\tSkin 0 "BruteHelmet_0.png"\n\tScale 72 72 86\n\tUseActorPitch\n\tUseActorRoll\n'
             '\tFrameIndex HCEM A 0 0\n}\n')
 
 if __name__ == '__main__':

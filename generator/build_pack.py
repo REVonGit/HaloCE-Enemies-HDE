@@ -9,6 +9,24 @@ TICK = 30.0 / 35.0           # Halo ticks per Doom tic
 DEG = 180.0 / math.pi
 
 AI = json.load(open(f'{OUT}/ai_data.json'))
+
+def swap_jackal_ranks(variants):
+    """The plasma-rifle Jackal is the Ultra and the needler Jackal the Major (extract_ai.synthesize built them the
+    other way round). Each keeps its weapon, its shield colour and its DoomEdNum (30248 plasma rifle, 30279 needler);
+    the rank's name and stats move: Ultra 100 body / 350 shield, Major 75 / 250."""
+    J = 'characters\\jackal\\'
+    pr, nd = variants.pop(J + 'jackal major plasma rifle', None), variants.pop(J + 'jackal ultra needler', None)
+    if not (pr and nd): return
+    for v, rank, body, shield, late in ((pr, 'ultra', 100.0, 350.0, False), (nd, 'major', 75.0, 250.0, True)):
+        v['unit']['maximum_body_vitality'] = body
+        v['unit']['maximum_shield_vitality'] = shield
+        v['_rank'] = rank
+        v.pop('_late', None)
+        if late: v['_late'] = True
+    variants[J + 'jackal ultra plasma rifle'] = pr
+    variants[J + 'jackal major needler'] = nd
+
+swap_jackal_ranks(AI['variants'])
 CHAR_OF_UNIT = {
     r'characters\grunt\grunt': 'Grunt', r'characters\grunt\grunt specops': 'GruntSpecOps',
     r'characters\jackal\jackal': 'Jackal', r'characters\jackal\jackal major': 'JackalMajor',
@@ -244,7 +262,7 @@ def variant_color(v, b):
     return None
 
 # Jackal energy shield colour by rank (Halo shows it through a translucent shader we can't use, so it's baked + brightmapped)
-SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'major': (1.00, 0.55, 0.10), 'ultra': (1.00, 0.30, 0.85)}
+SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'ultra': (1.00, 0.55, 0.10), 'major': (1.00, 0.30, 0.85)}   # Ultra orange, Major pink
 SHIELD_MAT = {'Jackal': 'Jackal_5', 'JackalMajor': 'JackalMajor_5'}
 
 def bake_shield(char, mat, tint, outpath):
@@ -279,6 +297,30 @@ def bake_skin(char, mat, color, outpath):
     msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0   # Xbox: blue = colour change
     col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
     o = b * (1 - msk) + b * col * msk
+    Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
+# Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
+# armour, came out a muddy olive. Halo draws it with a bright specular sheen we can't, so the armour is re-baked as
+# a vibrant gold that keeps the armour's shading (dark creases stay darker, raised edges catch the light).
+VIVID = {'elite commander': (1.00, 0.78, 0.22)}
+UNDERSUIT = (0.30, 0.52, 0.52)
+
+def bake_vivid(char, mat, color, outpath):
+    base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
+    mp = f'{OUT}/models/{char}/{mat}_multi.png'
+    if not os.path.exists(mp):
+        base.save(outpath); return
+    mask = Image.open(mp).convert('RGBA').resize(base.size)
+    b = np.asarray(base).astype(np.float32) / 255.0
+    msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0
+    lum = b.mean(axis=2, keepdims=True)
+    col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
+    gold = col * (0.12 + 1.15 * lum) + np.clip(lum - 0.62, 0, 1) * 0.8          # body colour + highlight on the edges
+    # the bodysuit between the plates: the dark slate of the Elite Special read as a black hole next to the gold;
+    # tinted toward the regular Elites' teal undersuit so the Commander matches its lower ranks
+    teal = np.array(UNDERSUIT, dtype=np.float32).reshape(1, 1, 3) * (0.25 + 2.2 * lum)
+    suit = b * 0.45 + teal * 0.55
+    o = suit * (1 - msk) + gold * msk
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # ---------------------------------------------------------------- generation
@@ -357,6 +399,8 @@ def build(cfg=None):
             body = un['maximum_body_vitality'] or coll.get('maximum_body_vitality') or 0
             shield = un['maximum_shield_vitality'] or coll.get('maximum_shield_vitality') or 0
             if 'shield' in ov: shield = ov['shield']
+            # Stealth Elites: the camo is their protection -- no energy shield and a fragile body
+            if 'stealth elite' in vname and char.startswith('Elite'): shield = 0; body = body * 0.45
             if char == 'FloodInfection': body = max(body, 3)
             body = max(1, int(round(ov.get('health', body))))
             # weapon
@@ -501,7 +545,9 @@ def build(cfg=None):
                 fn = f'{cls[4:].lower()}_{matn.lower()}.png'
                 dst = f'{pack}/models/{mdir}/{char}/skins/{fn}'
                 if not os.path.exists(dst):
+                    vivid = next((c for k, c in VIVID.items() if k in vname), None)
                     if v.get('_hunter_color'): bake_hunter(char, matn, v['_hunter_color'], dst)
+                    elif vivid: bake_vivid(char, matn, vivid, dst)
                     else: bake_skin(char, matn, color, dst)
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''
@@ -577,7 +623,7 @@ def build(cfg=None):
                   f'class {alias} : {base}\n{{\n\tDefault\n\t{{\n\t\tHealth {hp};\n\t}}\n}}\n')
         md.append(blocks[base].replace(f'Model {base}\n', f'Model {alias}\n', 1))
     # classes added after the first release keep their numbers: appended in release order, never re-sorted
-    LATE_ORDER = cfg.get('late_order', ['HCE_JackalUltraNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'])
+    LATE_ORDER = cfg.get('late_order', ['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'])
     late_items = late + [f'HCE_Random{c}' for c in late_chars if c in spawners]
     late_items.sort(key=lambda c: (LATE_ORDER.index(c) if c in LATE_ORDER else len(LATE_ORDER), c))
     for cls in late_items:                 # classes added after the first release keep old numbers stable

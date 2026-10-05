@@ -714,7 +714,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_scanTimer = 0;
 		HCE_ScanTargets();
 		// hearing: Doom's sound propagation (sector soundtarget)
-		if(!target && CurSector.SoundTarget && HCE_IsEnemy(CurSector.SoundTarget) && Distance3D(CurSector.SoundTarget) < hce_hearingDist)
+		// hearing: Doom's sound propagation, but like Doom a deaf (ambush) actor only wakes on sight, and the
+		// range is capped (hce_hearing) so one gunshot doesn't pull in every squad on the map
+		if(!target && !bAMBUSH && CurSector.SoundTarget && HCE_IsEnemy(CurSector.SoundTarget)
+			&& Distance3D(CurSector.SoundTarget) < min(hce_hearingDist, HCE_CVarF('hce_hearing', 1024)))
 		{
 			target = CurSector.SoundTarget;
 			hce_lastKnown = target.pos;
@@ -880,10 +883,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		if(!hce_canSee && level.maptime - hce_lastSeen > 25)
 		{
-			// pursue / search: walk to last known position with Doom pathing
-			HCE_Pursue();
+			// pursue / search: walk to last known position with Doom pathing -- only a few at a time
+			if(HCE_MayPursue()) HCE_Pursue(); else HCE_Hold();
 			return;
 		}
+		hce_pursuing = false;
 
 		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
 		if(bHCE_Leaps && HCE_TryLeap(d)) return;
@@ -944,13 +948,48 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(level.maptime - hce_lastSeen > 35 * 20) target = null;   // give up the search
 	}
 
+	// ------------------------------------------------------------------
+	// Pursuit cap: only hce_maxpursuers enemies of a team chase one target they can't see at a time (within
+	// 2048 units); the rest hold where they are, facing where it was last seen, until it shows up. Without it
+	// every squad that heard the fight converged at once, three encounters' worth of enemies in one room.
+	// ------------------------------------------------------------------
+	bool hce_pursuing;
+	int  hce_pursueCheck;
+
+	bool HCE_MayPursue()
+	{
+		if(hce_pursuing) return true;
+		if(level.maptime < hce_pursueCheck) return false;
+		hce_pursueCheck = level.maptime + 35;
+		int cap = int(HCE_CVarF('hce_maxpursuers', 4));
+		if(cap <= 0) { hce_pursuing = true; return true; }
+		int n = 0;
+		let it = BlockThingsIterator.Create(self, 2048);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(e && e != self && e.hce_enabled && e.health > 0 && e.hce_pursuing && e.target == target && e.hce_team == hce_team) n++;
+		}
+		hce_pursuing = n < cap;
+		return hce_pursuing;
+	}
+
+	void HCE_Hold()
+	{
+		HCE_Brake();
+		double want = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
+		A_SetAngle(angle + clamp(DeltaAngle(angle, want), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
+		if(level.maptime - hce_lastSeen > 35 * 25) { target = null; hce_pursuing = false; }   // forget it
+	}
+
 	virtual void HCE_Charge()
 	{
 		double d = Distance2D(target);
 		HCE_FaceTarget(2.0);
 		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
 		if(bHCE_Leaps && HCE_TryLeap(d)) return;
-		if(!hce_canSee) { HCE_Pursue(); return; }
+		if(!hce_canSee) { if(HCE_MayPursue()) HCE_Pursue(); else HCE_Hold(); return; }
 		HCE_Move(AngleTo(target), hce_runSpeed * 1.15);
 		if(hce_projectile != 'None' && d < hce_maxRange * 0.5) HCE_UpdateFiring(d);
 		HCE_PickMoveAnim();
@@ -1223,6 +1262,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			hce_burstTics = max(1, int(35 * frandom(hce_burstMin, hce_burstMax)));
 			hce_shotTics = 0;
+			hce_burstShot = 0;
 		}
 	}
 
@@ -1269,6 +1309,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)) { hce_sepTics = 35; return; }
 		hce_shotsLeft = random(hce_patShotsMin, max(hce_patShotsMin, hce_patShotsMax));
 		hce_shotTics = 0;
+		hce_burstShot = 0;
 		if(hce_fireLoop)
 		{
 			if(hce_chargeSound.Length() > 0) A_StartSound(hce_chargeSound, CHAN_AUTO, CHANF_OVERLAP, 0.8);
@@ -1314,7 +1355,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(sc) pc = sc;
 			n = max(1, hce_specialCount);
 		}
-		double err = hce_errorAngle;
+		double err = HCE_ShotError();
 		vector3 from = pos + (0, 0, height * 0.5 + hce_gunOffset.z);
 		if(bHCE_Lobbed)
 		{
@@ -1330,9 +1371,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		else
 		{
-			// lead the target (target_lead_fraction) and add Halo's error cone
-			double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
-			vector3 aimPos = target.pos + (0, 0, target.height * 0.55) + target.vel * t * hce_leadFraction;
+			// aim at the tracked aim point (it lags behind a moving target) and add the error cone
+			vector3 aimPos = HCE_AimPoint();
 			vector3 diff = level.Vec3Diff(from, aimPos);
 			double aAng = atan2(diff.y, diff.x);
 			double aPit = -atan2(diff.z, diff.xy.Length());
@@ -1346,6 +1386,63 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_PlayFireSound(special);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		if(bHCE_ActiveCamo) A_SetRenderStyle(0.45, STYLE_Translucent);
+	}
+
+	// ------------------------------------------------------------------
+	// Aim (enemy accuracy nerf). Enemies don't aim at where the target is: they aim at an aim point that
+	// chases it at a limited speed (hce_enemytracking map units a tic), so strafing pulls their fire behind
+	// you, and a fresh burst starts off by up to the distance you're moving. They lead only half as much
+	// as Halo's tags say. The error cone is widened (hce_enemyspread) and automatic weapons bloom: each
+	// round of a burst adds 12% more spread, up to double. Allies (Marines) keep their tag accuracy.
+	// ------------------------------------------------------------------
+	vector3 hce_aimPt;
+	int     hce_aimTic, hce_burstShot;
+
+	static double HCE_CVarF(Name n, double def)
+	{
+		CVar cv = CVar.FindCVar(n);
+		return cv ? cv.GetFloat() : def;
+	}
+
+	double HCE_SpreadScale()
+	{
+		if(bFRIENDLY) return 1.0;
+		return max(0.0, HCE_CVarF('hce_enemyspread', 1.75));
+	}
+
+	double HCE_ShotError()
+	{
+		double err = hce_errorAngle;
+		if(bFRIENDLY) return err;
+		bool isAuto = hce_patShotsMax >= 4 || hce_burstMax > 0.5;
+		err = max(err, isAuto ? 2.5 : 1.2) * HCE_SpreadScale();             // automatics: no laser-accurate tags
+		if(isAuto) err *= min(2.0, 1.0 + 0.12 * hce_burstShot);            // automatic bloom
+		hce_burstShot++;
+		return err;
+	}
+
+	vector3 HCE_AimPoint()
+	{
+		double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
+		double lead = bFRIENDLY ? hce_leadFraction : hce_leadFraction * 0.5;
+		vector3 want = target.pos + (0, 0, target.height * 0.55) + target.vel * t * lead;
+		if(bFRIENDLY) return want;
+		double rate = max(0.5, HCE_CVarF('hce_enemytracking', 5.0));
+		int dt = level.maptime - hce_aimTic;
+		if(hce_aimTic == 0 || dt > 30)
+		{
+			// a fresh burst: the first rounds land off the mark by up to how far the target moves in ~6 tics
+			double off = min(64, target.vel.xy.Length() * 6) + 4;
+			hce_aimPt = want + (frandom(-off, off), frandom(-off, off), frandom(-off, off) * 0.4);
+		}
+		else
+		{
+			vector3 d = want - hce_aimPt;
+			double step = rate * max(1, dt);
+			hce_aimPt = d.Length() > step ? hce_aimPt + d.Unit() * step : want;
+		}
+		hce_aimTic = level.maptime;
+		return hce_aimPt;
 	}
 
 	void HCE_PlayFireSound(bool special)
@@ -1463,9 +1560,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_FireBeam()
 	{
 		FTranslatedLineTarget t;
-		double ang = AngleTo(target) + frandom(-hce_errorAngle, hce_errorAngle);
-		double dz = (target.pos.z + target.height * 0.5) - (pos.z + height * 0.5);
-		double pit = -atan2(dz, max(1, Distance2D(target)));
+		vector3 ap = HCE_AimPoint();
+		vector3 dv = level.Vec3Diff(pos + (0, 0, height * 0.5), ap);
+		double ang = atan2(dv.y, dv.x) + frandom(-hce_errorAngle, hce_errorAngle) * HCE_SpreadScale();
+		double pit = -atan2(dv.z, max(1, dv.xy.Length()));
 		int bd = HCE_ScaledHit(random(2, 3));
 		if(bd > 0) LineAttack(ang, hce_maxRange, pit, bd, 'Fire', "HCE_BeamPuff", LAF_NORANDOMPUFFZ, t);
 		vector3 from = pos + (0, 0, height * 0.5);

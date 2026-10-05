@@ -21,19 +21,19 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_GruntMinorPlasmaPistol*4 HCE_GruntMinorNeedler*3 HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_EliteMinorPlasmaRifle*2",
 		// Shotgun Guy: Major Grunts, then Jackals (Minor/Major), then Elites (Minor/Major)
 		"ShotgunGuy",
-			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorPlasmaRifle*1 HCE_EliteMinorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorPlasmaRifle*2 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorPlasmaRifle*3 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteMajorNeedler*1",
-		// Chaingunner (sustained fire): Major Jackals, Spec-Ops needler Grunts, Ultra Jackals, needler Elites
+			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*1 HCE_EliteMinorPlasmaRifle*1",
+			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*2 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1",
+			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*3 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteMajorNeedler*1",
+		// Chaingunner (sustained fire): Major Jackals (needler), Spec-Ops needler Grunts, Ultra Jackals (plasma rifle), needler Elites
 		"ChaingunGuy",
-			"HCE_JackalMajorPlasmaRifle*5 HCE_GruntSpecopsNeedler*2 HCE_JackalUltraNeedler*1 HCE_EliteMinorNeedler*1",
-			"HCE_JackalMajorPlasmaRifle*4 HCE_JackalUltraNeedler*2 HCE_GruntSpecopsNeedler*2 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1",
-			"HCE_JackalMajorPlasmaRifle*3 HCE_JackalUltraNeedler*3 HCE_GruntSpecopsNeedler*2 HCE_EliteMinorNeedler*2 HCE_EliteMajorNeedler*1",
+			"HCE_JackalMajorNeedler*5 HCE_GruntSpecopsNeedler*2 HCE_JackalUltraPlasmaRifle*1 HCE_EliteMinorNeedler*1",
+			"HCE_JackalMajorNeedler*4 HCE_JackalUltraPlasmaRifle*2 HCE_GruntSpecopsNeedler*2 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1",
+			"HCE_JackalMajorNeedler*3 HCE_JackalUltraPlasmaRifle*3 HCE_GruntSpecopsNeedler*2 HCE_EliteMinorNeedler*2 HCE_EliteMajorNeedler*1",
 		// Imp (the everyday enemy): Major Grunts, Minor needler Grunts, Jackals, a few Minor Elites
 		"DoomImp",
 			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMinorNeedler*3 HCE_GruntMajorNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_EliteMinorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_GruntMinorNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorPlasmaRifle*1 HCE_EliteMinorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_GruntSpecopsNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorPlasmaRifle*2 HCE_EliteMinorPlasmaRifle*2",
+			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_GruntMinorNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorNeedler*1 HCE_EliteMinorPlasmaRifle*1",
+			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_GruntSpecopsNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorNeedler*2 HCE_EliteMinorPlasmaRifle*2",
 		// Pinky (melee charger): unarmed Flood combat forms, a few with shotguns
 		"Demon",
 			"HCE_FloodcombatHumanUnarmed*5 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanShotgun*1",
@@ -53,9 +53,9 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_Sentinel*1",
 		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major Elites
 		"HellKnight",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraNeedler*1 HCE_GruntSpecopsFuelRod*1",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1",
-			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraNeedler*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1",
+			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1",
 		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health)
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",

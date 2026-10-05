@@ -6,8 +6,8 @@ Halo: Combat Evolved's campaign enemies (plus Marines) are extracted from the te
 
 | | |
 |---|---|
-| Characters | 14: Grunt, Grunt Spec-Ops, Jackal, Jackal Major, Elite, Elite Special (Spec-Ops/Stealth/Commander), Hunter, Flood Infection, Flood Carrier, Flood Combat Elite, Flood Combat Human, Sentinel, Marine, Armored Marine |
-| Spawnable classes | 82: 68 actor variants (65 from Halo CE plus the new Ultra Jackal and White/Red Hunters) plus 14 `HCE_Random<Character>` spawners |
+| Characters | 14: Grunt, Grunt Spec-Ops, Jackal, Jackal Major/Ultra, Elite, Elite Special (Spec-Ops/Stealth/Commander), Hunter, Flood Infection, Flood Carrier, Flood Combat Elite, Flood Combat Human, Sentinel, Marine, Armored Marine |
+| Spawnable classes | 82: 68 actor variants (65 from Halo CE plus the new needler Jackal and White/Red Hunters) plus 14 `HCE_Random<Character>` spawners |
 | Animations | 40–200+ per character, played by name (`SetAnimation`). Fire, flinch and reload overlays are baked into standalone clips |
 | Weapons | Each enemy holds its Halo CE weapon (11 third-person models: plasma pistol, plasma rifle, needler, fuel rod, energy sword, assault rifle, pistol, shotgun, sniper rifle, rocket launcher, flamethrower), bound to Halo's hand marker |
 | Skins | Halo base maps, with each variant's colours (Minor/Major/Spec-Ops etc.) pre-baked from the multipurpose map's change-colour mask. Flood forms use their untinted base maps; on Xbox the change colour covers almost the whole body and turned them green |
@@ -120,6 +120,10 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
 | `hce_jumping` | true | Enemies jump onto ledges and over low obstacles in their way |
 | `hce_burstpause` | 1.0 | Scales the pause between enemy bursts (1.5 = 50% longer, easier; 0.75 = more aggressive) |
+| `hce_enemyspread` | 1.75 | Enemy aim error multiplier (automatic weapons also bloom over a burst; Marines unaffected) |
+| `hce_enemytracking` | 5.0 | How fast enemy aim follows a moving target, in map units a tic (lower = easier to strafe out of) |
+| `hce_hearing` | 1024 | How far gunfire wakes idle enemies (deaf/ambush enemies only wake on sight, as in Doom) |
+| `hce_maxpursuers` | 4 | At most this many enemies of a team hunt one target they can't see at a time; the rest hold position (0 = no limit) |
 
 Marines are on the human team and fight Covenant and Flood alongside the player. Their stray shots can still hit you, as in Halo.
 
@@ -134,14 +138,14 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Doom monster | Halo enemies (most → least likely, normal skill) |
 |---|---|
 | Zombieman | Minor plasma-pistol Grunt 30%, Major Grunt 18%, Minor needler Grunt 17%, Minor Jackal 16%, Major needler Grunt 11%, Minor Elite 6% |
-| Shotgun Guy | Major Grunts (plasma pistol 22%, needler 20%), Minor Jackal 21%, Major Jackal 13%, Minor Elites 16%, Major Elite 6% |
-| Chaingunner | Major Jackal 36%, Ultra Jackal 19%, Spec-Ops needler Grunt 17%, needler Elite 16%, ranged Elite 10% |
-| Imp | Major Grunts 55%, Minor Jackal 15%, Minor needler Grunt 14%, Major Jackal 7%, Minor Elite 7% (Spec-Ops Grunts on hard) |
+| Shotgun Guy | Major Grunts (plasma pistol 22%, needler 20%), Minor Jackal 21%, Major (needler) Jackal 13%, Minor Elites 16%, Major Elite 6% |
+| Chaingunner | Major (needler) Jackal 36%, Ultra (plasma rifle) Jackal 19%, Spec-Ops needler Grunt 17%, needler Elite 16%, ranged Elite 10% |
+| Imp | Major Grunts 55%, Minor Jackal 15%, Minor needler Grunt 14%, Major (needler) Jackal 7%, Minor Elite 7% (Spec-Ops Grunts on hard) |
 | Pinky | unarmed Flood Human 41% / Flood Elite 40%, shotgun Flood 18% |
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
 | Lost Soul | Flood infection form |
-| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills |
-| Hell Knight | Minor Elites 71%, Spec-Ops fuel-rod Grunt 9%, Ultra Jackal 9%, Major Elite 8% |
+| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills. With the Digsite add-on (or in a bundle), always Halo 2 Drones |
+| Hell Knight | Minor Elites 71%, Spec-Ops fuel-rod Grunt 9%, Ultra (plasma rifle) Jackal 9%, Major Elite 8% |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
 | Pain Elemental | Flood Carrier (Flood pack); the Digsite add-on makes it the Engineer instead |
@@ -178,7 +182,16 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 
 * **Teams:** Human, Covenant, Flood and Sentinel all fight each other the way they do in Halo, e.g. Flood vs Covenant vs Sentinels on 343 Guilty Spark. Same-team damage is ignored, and same-team explosive splash is halved.
 * **Perception:** vision cone and range, hearing, and surprise. Grunts and Jackals react with the "surprise" animation when you appear close by.
-* **Combat:** pattern burst fire (see Fire patterns), with first-burst delay, projectile error and target leading taken from each variant. Units strafe and reposition inside the variant's firing-range band.
+* **Waking up and converging:** encounters stay the size the map intended. Before, gunfire woke every enemy Doom's sound reached, map placement flags were ignored, and every awake enemy hunted you down, so two or three encounters' worth piled into one room.
+  * **Hearing:** gunfire wakes idle enemies only within `hce_hearing` (1024 units).
+  * **Deaf monsters:** monsters a mapper placed as deaf ("ambush") wake only on sight, as in Doom.
+  * **Hunting:** at most `hce_maxpursuers` (4) enemies of a team hunt one target they can't see at a time. The rest hold their ground, facing where you were last seen, until you show up.
+* **Combat:** pattern burst fire (see Fire patterns), with first-burst delay and projectile error taken from each variant. Units strafe and reposition inside the variant's firing-range band.
+* **Aim (accuracy nerf):** enemies don't aim at you; they aim at a point that chases you at a limited speed (`hce_enemytracking`), so strafing drags their fire behind you, and a fresh burst opens off the mark.
+  * **Leading:** they lead targets half as much as Halo's tags say.
+  * **Spread:** the error cone is widened 1.75× (`hce_enemyspread`). Automatic weapons (plasma rifle, assault rifle, needler, Spiker, carbines) get at least 2.5° and bloom by 12% a round up to double over a burst.
+  * **Measured:** against a standing target at about 500 units, hit rates fell from 72% to about 20–40% for a plasma-rifle Elite and from 61% to about 35–45% for a plasma-rifle Jackal. Needles still home, so the needler suffers least.
+  * Marines keep their tag accuracy.
 * **Movement:**
   * Units steer with wall probes: each heading is scored for room ahead, and they drift away from walls beside them. Backing straight off is a last resort, and they only give ground when you're inside half their minimum range, diagonally and only where there's room behind.
   * If a strafe breaks line of sight it reverses. After 0.7 s without sight they move to find a firing position.
@@ -220,10 +233,12 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   | Rank | Shield | Weapon | Body / shield HP | Class |
   |---|---|---|---|---|
   | Minor | Blue | Plasma pistol (with overcharge) | 60 / 200 | `HCE_JackalMinorPlasmaPistol` (30247) |
-  | Major | Orange | Plasma rifle | 75 / 250 | `HCE_JackalMajorPlasmaRifle` (30248) |
-  | Ultra | Pink | Needler | 100 / 350 | `HCE_JackalUltraNeedler` (30279) |
+  | Major | Pink | Needler | 75 / 250 | `HCE_JackalMajorNeedler` (30279) |
+  | Ultra | Orange | Plasma rifle | 100 / 350 | `HCE_JackalUltraPlasmaRifle` (30248) |
 
-  Halo CE only has Minor and Major plasma-pistol Jackals. The Major is re-armed with the plasma rifle (rate of fire and bursts from the Minor plasma-rifle Elite). The Ultra is new, built on the Major body with the Major Grunt's needler timing. `HCE_RandomJackalMajor` spawns Majors or Ultras. The old `HCE_JackalMajorPlasmaPistol` class is gone; maps using DoomEdNum 30248 now get the plasma-rifle Major.
+  Halo CE only has Minor and Major plasma-pistol Jackals. The plasma-rifle Jackal (rate of fire and bursts from the Minor plasma-rifle Elite) is the **Ultra**, and the needler Jackal (the Major Grunt's needler timing) the **Major**. Each keeps its weapon, shield colour and DoomEdNum: 30248 is the plasma-rifle Ultra, 30279 the needler Major. The rank's name and stats moved with the swap; older builds had them the other way round, as `HCE_JackalMajorPlasmaRifle` and `HCE_JackalUltraNeedler`. `HCE_RandomJackalMajor` spawns either.
+* **Jackal bodies:** no energy shield of their own; the arm shield is all they have. Shots from a Jackal's side or back that clip the shield's hitbox (held out to the side) go on into the Jackal.
+* **Jackal gun hand:** a shot whose path passes the gun hand poking out past the shield gets through: the hit goes into the Jackal and it reels in a hard ping. Tested by shooting a Jackal's hand with a 5-damage bullet: it took the damage and played its h-ping.
 * **Hunters:** front armour reduces damage by 92% within 70°, so flank them. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs. Killing one sends its brother berserk.
 * **Hunter colours:**
 
@@ -235,7 +250,8 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 
   White and Red are new. They're the regular Hunter with the arm cannon's weapon swapped for HDE's plasma caster (the `PlasmaCasterProj` / `PlasmaCasterClusterProj` grenades) or the flamethrower, and the blue armour recoloured. Both come in bonded pairs, and `HCE_RandomHunter` includes them. The Red Hunter is lethal up close: in testing it burned a player from full to 1 HP in about 4 seconds.
 * **Stuck Elites go berserk:** an Elite (or anything else that berserks: Flood combat forms, Hunters) stuck by a plasma grenade roars and charges whoever threw it, trying to take them down in the blast. If the thrower is unknown, it charges the nearest enemy in sight. Grunts and Jackals panic instead.
-* **Stealth Elites:** active camo flickers when shot or firing.
+* **Stealth Elites:** active camo flickers when shot or firing. The camo is their protection: they have **no energy shield** and a fragile body (45% of the tag's vitality, 45 health before `hce_nerf_health`).
+* **Elite Commander (gold):** its tag colour, a dark ochre multiplied into the dark Elite Special armour, came out a muddy olive. The armour is now baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The bodysuit between the plates is tinted toward the teal undersuit of the Minor and Major Elites, instead of reading as black holes next to the gold.
 * **Flood:**
   * Infection forms swarm, leap and nibble, then crawl to dead Marines and Elites. The feed animation raises the corpse as a Flood combat form.
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
@@ -350,7 +366,7 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 |---|---|
 | `HCE_Drinol` | Map-placeable only (DoomEdNum 30400); it no longer replaces any Doom monster. Digsite's war beast (model, 76 animations and stats from its tags). Melee charger that swats and pounces with its `charging_jump`. In Halo it stands about 160 map units tall, so it is shrunk to 62% (99 tall, radius 34) to fit Doom corridors; health 320. Uses the new Drinol sounds from the voice pack: alert, melee, grave injury, death, extreme death, and sonic roar on the boss's charge. |
 | `HCE_BossCyberdemonDrinol` | **Boss: replaces every Cyberdemon** while the add-on is loaded. A bigger Drinol (78% scale, 110 tall, radius 40, health 1800) with three attacks. Its swats (~65) are slower than the small Drinol's. Its **charge** is a 22-speed stampede that steers a few degrees per tic, so you can side-step it; a hit does ~55 and bowls you over, and running into a wall staggers it. When it lands from a pounce it **slams** out a 260-unit shockwave that hurts and knocks back its enemies but spares its allies; jumping avoids it. It maps back to `Cyberdemon` (`CheckReplacee`), so boss-death map specials still fire. |
-| `HCE_Brute{Minor,Major,Captain,HonorGuard,Chieftain}…` | **Halo 2's Brutes**, ripped from MCC's `08b_deltacontrol.map` (voices from `08a_deltacliffs.map`): one 48-bone model with every rank's armour, 73 animations (including Tartarus's gravity-hammer stance), real textures, both voices (bloodthirsty and cruel) and their footsteps, thumps and body falls.<br>• **Ranks and loadouts** (looks from Halo 2's model variants, health from the rank tags; all hold their guns in the rifle stance):<br>&nbsp;&nbsp;– **Minor**: 175 health, bare shoulders, olive fur. Carries the **CE plasma rifle** (`HCE_BruteMinorPlasmaRifle`) or the **CE assault rifle** (`HCE_BruteMinorAssaultRifle`).<br>&nbsp;&nbsp;– **Major**: 150 health, shoulder armour, reddish fur. Carries the **Spiker** (`HCE_BruteMajorSpiker`), which fires HDE's own spikes in automatic bursts and drops HDE's Spiker, or the **CE shotgun** (`HCE_BruteMajorShotgun`), 15 pellets a shot.<br>&nbsp;&nbsp;– **Captain**: 200 health, shoulder armour and the flag pack, grey fur. Carries the CE plasma rifle or the CE shotgun.<br>&nbsp;&nbsp;– **Honor Guard**: 150 health (Halo 2's Honor Guard inherits the Major's stats), the red ceremonial armour. Carries the CE plasma rifle or the CE assault rifle.<br>&nbsp;&nbsp;Each gun is the real model in the Brute's hand: the CE weapons and the Spiker (a community CE port of Halo 3's). Each drops its HDE pickup.<br>• **Brute Chieftain** (`HCE_BruteChieftainGravityHammer`), a custom rank:<br>&nbsp;&nbsp;– **Look:** Tartarus's crested white mohawk and helmet, his grey fur and gold armour, and the elite-skull trophy pauldron.<br>&nbsp;&nbsp;– **Weapon and animations:** Halo 2's gravity hammer, held two-handed with Tartarus's own hammer animations (idles, moves, three swings, two side smashes, leap, berserk hammer run and swings).<br>&nbsp;&nbsp;– **Stats:** 350 health and a 150-point shield (Tartarus's 1000-point overshield, cut down so it can be broken). It is melee only, with no grenades.<br>&nbsp;&nbsp;– **Attacks:** it leaps at targets 150–400 units away at Tartarus's 50% leap chance. Every hammer swing (about 70) and every leap landing sets off a **gravity shockwave**: HDE's hammer blast effect, 10–35 damage within 150 units, knocking things back and sparing other Covenant. It keeps the hammer when berserk and drops HDE's gravity hammer when killed.<br>• **Combat:** strafing, dives and evades, plasma grenades (10% a second, 3–20 unit range, 6 s apart, carrying 1–2, all from the tag), heavy melee (about 35), cheer, taunt and point animations.<br>• **Berserk:** when badly hurt, or when its pack is wiped out (the last Brute nearby always goes, others 35% of the time), it roars and thumps its chest, **throws its gun away** (the pickup lands nearby), then charges on all fours with five swings and two tackles.<br>• **Helmets:** a headshot knocks a Minor's, Major's or Captain's helmet off; it bounces away as debris. Honor Guard and Chieftain helmets stay on.<br>Scaled to 80% (68 tall, radius 26) so they fit Doom doors. DoomEdNums 30422–30430, `HCE_RandomBrute` 30431. |
+| `HCE_Brute{Minor,Major,Captain,HonorGuard,Chieftain}…` | **Halo 2's Brutes**, ripped from MCC's `08b_deltacontrol.map` (voices from `08a_deltacliffs.map`): one 48-bone model with every rank's armour, 73 animations (including Tartarus's gravity-hammer stance), real textures, both voices (bloodthirsty and cruel) and their footsteps, thumps and body falls.<br>• **Ranks and loadouts** (looks from Halo 2's model variants, health from the rank tags; all hold their guns in the rifle stance):<br>&nbsp;&nbsp;– **Minor**: 175 health, bare shoulders, olive fur. Carries the **CE plasma rifle** (`HCE_BruteMinorPlasmaRifle`) or the **CE assault rifle** (`HCE_BruteMinorAssaultRifle`).<br>&nbsp;&nbsp;– **Major**: 150 health, shoulder armour, reddish fur. Carries the **Spiker** (`HCE_BruteMajorSpiker`), which fires HDE's own spikes in automatic bursts and drops HDE's Spiker, or the **CE shotgun** (`HCE_BruteMajorShotgun`), 15 pellets a shot.<br>&nbsp;&nbsp;– **Captain**: 200 health, shoulder armour and the flag pack, grey fur. Carries the CE plasma rifle or the CE shotgun.<br>&nbsp;&nbsp;– **Honor Guard**: 150 health (Halo 2's Honor Guard inherits the Major's stats), the red ceremonial armour. Carries the CE plasma rifle or the CE assault rifle.<br>&nbsp;&nbsp;Each gun is the real model in the Brute's hand: the CE weapons and the Spiker (a community CE port of Halo 3's). Each drops its HDE pickup.<br>• **Brute Chieftain** (`HCE_BruteChieftainGravityHammer`), a custom rank:<br>&nbsp;&nbsp;– **Look:** Tartarus's crested white mohawk and helmet, his grey fur and gold armour, and the elite-skull trophy pauldron.<br>&nbsp;&nbsp;– **Weapon and animations:** Halo 2's gravity hammer, held two-handed with Tartarus's own hammer animations (idles, moves, three swings, two side smashes, leap, berserk hammer run and swings).<br>&nbsp;&nbsp;– **Stats:** 350 health and a 150-point shield (Tartarus's 1000-point overshield, cut down so it can be broken). It is melee only, with no grenades.<br>&nbsp;&nbsp;– **Attacks:** it leaps at targets 150–400 units away at Tartarus's 50% leap chance. Every hammer swing (about 70) and every leap landing sets off a **gravity shockwave**: HDE's hammer blast effect, 10–35 damage within 150 units, knocking things back and sparing other Covenant. It keeps the hammer when berserk and drops HDE's gravity hammer when killed.<br>• **Combat:** strafing, dives and evades, plasma grenades (10% a second, 3–20 unit range, 6 s apart, carrying 1–2, all from the tag), heavy melee (about 35), cheer, taunt and point animations.<br>• **Berserk:** when badly hurt, or when its pack is wiped out (the last Brute nearby always goes, others 35% of the time), it roars and thumps its chest, **throws its gun away** (the pickup lands nearby), then charges on all fours with five swings and two tackles.<br>• **Helmets:** a headshot knocks a Minor's, Major's or Captain's helmet off; it bounces away as debris. Honor Guard and Chieftain helmets stay on.<br>Scaled to 90% so a Brute stands as tall as an Elite (its rifle idle is 0.90 world units against the Elite's 0.80); collision 68 tall, radius 26, so they still fit Doom doors. DoomEdNums 30422–30430, `HCE_RandomBrute` 30431. |
 | `HCE_DronePlasmaPistol` | **Halo 2's Drone** (Yanme'e), ripped from MCC's `01b_spacestation.map` (Cairo Station): model, 32-bone skeleton, 36 animations (flight idle and four-way flight, wall perching, take-off/landing, fire, flinches, falling deaths) its real textures (from MCC's `textures.dat`) and 219 sounds: 149 dialogue lines from `sounds_en.dat`, plus its wing buzz, wing whooshes, wall-cling, claw and body-fall effects from `sounds_neutral.dat` (Halo 2 MCC stores them as raw Opus; the tools wrap them as Ogg). It holds a plasma pistol in its claw, has 30 health and no shield (from its Halo 2 character tag), and is 48 tall with radius 22. Behaviour:<br>• **Darting flight:** swarm-style zig-zags above its target at changing heights, firing plasma pistol bursts.<br>• **Dodges:** when hit there's a 50% chance it darts sideways, at most every 4 s (its tag's evasion values).<br>• **Wall perching:** it flies to a nearby wall and clings with its back to it, firing from there (3–6 s in combat, 8–20 s when idle), and leaves early if you get within 96 units.<br>• **Swarm scatter:** when a drone dies, others within 400 units scatter in panic.<br>• **Falling death:** it falls out of the air and lands dead.<br>• **Sounds:** its wings buzz while it flies, it whooshes on dodges and darts, clicks when it grabs a wall, and thuds when it lands dead.<br>It replaces **Lost Souls** (60/65/70% by difficulty) and drops a plasma pistol.DoomEdNum 30420 (`HCE_RandomDrone` 30421). |
 | `HCE_Engineer` | SPV3's Engineer, extracted from its b30 map (model, texture, 25 animations, health, dialogue). **Replaces every Pain Elemental** while the add-on is loaded; without it, Pain Elementals become Flood Carriers if the Flood pack is loaded. It carries **no weapon and never fights**: it treats nothing as an enemy, even whoever shoots it, and just drifts around, sometimes pausing in mid-air. It's an environmental hazard rather than a combatant. It's still tough to pop (150 body plus a 200 recharging shield), and **when it dies it bursts and sprays 4–6 charged Plasma Caster shots** (HDE's `PlasmaCasterClusterProj`). Each one sticks to what it hits, arms for two seconds, then explodes and throws two mini-bolts, so don't kill it next to yourself. Its dialogue (idle, surprise, pain) and explosion sound come from the map. 70 tall, radius 26 (1.25× scale). Was `HCE_EngineerMajorPlasmaPistol`; same DoomEdNum, 30418. |
 | `HCE_ThornBeast` | SPV3's Thorn Beast from the same a30 map: a slow, tough melee brute in the Hell Knight mix. It has health 350 and heavy swipes of about 45, and walks at speed 6 (its animation stride is 4.3). Shrunk to 70% (67 tall, radius 36). It plays its own sounds from the map: idle growls as alert and taunt, melee roars, minor and major pain, death, and footsteps while it walks. |
@@ -369,6 +385,7 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | ZombieMan | 6 / 8 / 10% | plasma-pistol Slug Man |
 | ShotgunGuy, DoomImp | 5–10% | plasma-pistol Slug Man, Minor carbine Elite |
 | ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite |
+| Cacodemon | **always** | Halo 2 Drone |
 | LostSoul | 60 / 65 / 70% | Halo 2 Drone |
 | HellKnight (after the Thorn Beast roll) | 25 / 30 / 35% | Brute Minors (plasma rifle, assault rifle) and Majors (Spiker, shotgun) |
 | Revenant (rolls first) | 20 / 25 / 30% | shotgun and plasma-rifle Captains, Spiker Majors, assault-rifle Honor Guards |
@@ -566,7 +583,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30245 | `HCE_Hunter` |
 | 30246 | `HCE_HunterMajor` |
 | 30247 | `HCE_JackalMinorPlasmaPistol` |
-| 30248 | `HCE_JackalMajorPlasmaRifle` |
+| 30248 | `HCE_JackalUltraPlasmaRifle` |
 | 30249 | `HCE_MarineAssaultRifle` |
 | 30250 | `HCE_MarineAssaultRifleMajor` |
 | 30251 | `HCE_MarineNeedler` |
@@ -597,6 +614,6 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30276 | `HCE_RandomMarine` |
 | 30277 | `HCE_RandomMarineArmored` |
 | 30278 | `HCE_RandomSentinel` |
-| 30279 | `HCE_JackalUltraNeedler` |
+| 30279 | `HCE_JackalMajorNeedler` |
 | 30280 | `HCE_HunterWhite` |
 | 30281 | `HCE_HunterRed` |

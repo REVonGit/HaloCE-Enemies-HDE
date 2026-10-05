@@ -12,13 +12,14 @@
 //   explosions                 full damage
 //   melee                      2.5x, and the Jackal staggers
 //   plasma                     4x (an overcharged plasma bolt 10x)
-// Hits that miss the shield hit the Jackal itself. When it is drained it flickers out and the
+// Hits that miss the shield hit the Jackal itself; so do shots from its side or back that clip the shield's
+// hitbox, and a shot whose line passes the gun hand poking out past the shield makes the Jackal reel (hard ping). When it is drained it flickers out and the
 // Jackal reels (hard ping); it comes back on its own after a few seconds out of harm.
 // ---------------------------------------------------------------------------
 class HCE_JackalShield : Actor
 {
 	double hp, maxhp;
-	int regenWait, bone;
+	int regenWait, bone, handBone;
 	bool down, skinHidden;
 
 	Default
@@ -53,7 +54,7 @@ class HCE_JackalShield : Actor
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
-		bone = -2;                     // master is set right after the spawn: set up on the first tic
+		bone = -2; handBone = -1;      // master is set right after the spawn: set up on the first tic
 	}
 
 	static double HitMul(Actor inflictor, Name mod, int flags)
@@ -85,6 +86,15 @@ class HCE_JackalShield : Actor
 		if(!j || j.health <= 0 || down || damage <= 0) return 0;
 		if(source == j) return 0;
 		if(source && !source.player && HaloDoom_EnemyBase.HCE_TeamOf(source) == j.hce_team) return 0;
+		bool blast = (flags & DMG_EXPLOSION) != 0;          // a blast reaches the Jackal on its own: no hand-over
+		// the shield only covers what it faces: a shot from the Jackal's side or back that happens to clip the
+		// shield's hitbox (held out to the side) goes on into the Jackal
+		Actor from = source ? source : inflictor;
+		if(!blast && from && abs(DeltaAngle(j.angle, j.AngleTo(from))) > 80)
+			return PassOn(j, inflictor, source, damage, mod, flags, false);
+		// the gun hand poking out past the shield: the hit goes into the Jackal and it reels (hard ping)
+		if(!blast && HandHit(j, inflictor, source))
+			return PassOn(j, inflictor, source, damage, mod, flags, true);
 		double m = HitMul(inflictor, mod, flags);
 		vector3 at = inflictor && inflictor != source ? inflictor.pos : pos + (0, 0, height * 0.5);
 		if(m <= 0)
@@ -106,6 +116,56 @@ class HCE_JackalShield : Actor
 		}
 		if(hp <= 0) BreakShield(j);
 		return 0;
+	}
+
+	int PassOn(HaloDoom_EnemyBase j, Actor inflictor, Actor source, int damage, Name mod, int flags, bool hand)
+	{
+		j.DamageMobj(inflictor, source, damage, mod, flags);
+		if(hand && j.health > 0 && j.hce_leapState == 0 && j.hce_jumpState == 0 && j.hce_lockPing != 2)
+		{
+			int k = j.HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
+			if(!j.HCE_HasAnim(k)) k = HCE_A_HPING_F;
+			if(j.HCE_HasAnim(k))
+			{
+				j.HCE_StopFireLoop(); j.hce_shotsLeft = 0; j.hce_chargeTics = 0; j.hce_pendingMelee = 0; j.hce_diveTics = 0;
+				j.HCE_PlayLocked(k, 0.85);
+				j.hce_lockPing = 2;
+			}
+		}
+		return 0;
+	}
+
+	// did the shot's line pass the gun hand ('bip01 r hand')? Hitscans: from the shooter's eye through the puff;
+	// projectiles: along their flight path to where they struck
+	bool HandHit(HaloDoom_EnemyBase j, Actor inflictor, Actor source)
+	{
+		if(handBone < 0 || !inflictor) return false;
+		vector3 hand, f, u;
+		[hand, f, u] = j.GetBonePosition(handBone);
+		if(hand == (0, 0, 0)) return false;
+		vector3 o, d;
+		if(inflictor != source && inflictor.bMISSILE && inflictor.vel.Length() > 0.1)
+		{
+			d = inflictor.vel.Unit();
+			o = inflictor.pos - d * 64;
+		}
+		else
+		{
+			if(!source || inflictor == source) return false;
+			// where a hitscan leaves the shooter (Doom: half its height plus the attack offset)
+			double oz = source.height * 0.5 + 8;
+			let pp = PlayerPawn(source);
+			if(pp && source.player) oz = source.height * 0.5 + pp.AttackZOffset * source.player.crouchfactor;
+			o = source.pos + (0, 0, oz);
+			vector3 to = level.Vec3Diff(o, inflictor.pos);
+			if(to.Length() < 1) return false;
+			d = to.Unit();
+		}
+		vector3 rel = level.Vec3Diff(o, hand);
+		double along = rel dot d;
+		if(along < 0) return false;
+		double miss = (rel - d * along).Length();
+		return miss < 6 + (inflictor.bMISSILE ? inflictor.radius : 0);
 	}
 
 	void BreakShield(HaloDoom_EnemyBase j)
@@ -152,6 +212,7 @@ class HCE_JackalShield : Actor
 			A_SetSize(max(8, j.radius * 0.9), j.height * 0.7);
 			j.SetModelFlag(0, IQM_GET_BONE_INFO);
 			bone = j.GetBoneIndex('frame shield');
+			handBone = j.GetBoneIndex('bip01 r hand');
 		}
 		vector3 p = j.pos + (AngleToVector(j.angle, j.radius + 4), j.height * 0.5);
 		if(bone >= 0)

@@ -1,5 +1,5 @@
 // Digsite add-on: mixes Slug Men, carbine Elites, the SPV3 creatures and Halo 2's Drones and Brutes into the
-// Doom monster replacements;
+// Doom monster replacements (Cacodemons always become Drones);
 // the Drinol appears only as the Cyberdemon boss; Brute Chieftains take some Barons' places.
 // Each rule rolls a chance per Doom monster (easy | normal | hard); a hit picks from the weighted list and
 // marks the replacement final, so it wins whichever order the main pack's handler runs in.
@@ -30,6 +30,8 @@ class HCE_DigsiteHandler : EventHandler
 		"Archvile",       "0.10 0.12 0.15", "HCE_EliteCommanderPlasmaCarbine*1 HCE_EliteCommanderPulseCarbine*1",
 		// Baron of Hell: some become Brute Chieftains (Tartarus's look, gravity hammer); still a Baron for boss deaths
 		"BaronOfHell",    "0.20 0.25 0.30", "HCE_BruteChieftainGravityHammer*1",
+		// Cacodemon (flying): always Halo 2 Drones while this add-on is loaded
+		"Cacodemon",      "1 1 1",          "HCE_DronePlasmaPistol*1",
 		// Lost Soul (small flying swarmer): Halo 2 Drones
 		"LostSoul",       "0.60 0.65 0.70", "HCE_DronePlasmaPistol*1",
 		// Pain Elemental: always the Engineer while this add-on is loaded (a harmless floater that bursts

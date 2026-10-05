@@ -514,40 +514,40 @@ Model HCE_JackalMinorPlasmaPistol
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_JackalMajorPlasmaRifle
+Model HCE_JackalMajorNeedler
 {
 	Path "models/hce/JackalMajor"
 	Model 0 "JackalMajor.iqm"
-	SurfaceSkin 0 0 "skins/jackalmajorplasmarifle_jackalmajor_0.png"
-	SurfaceSkin 0 1 "skins/jackalmajorplasmarifle_jackalmajor_1.png"
-	SurfaceSkin 0 2 "skins/jackalmajorplasmarifle_jackalmajor_2.png"
-	SurfaceSkin 0 3 "skins/jackalmajorplasmarifle_jackalmajor_3.png"
-	SurfaceSkin 0 4 "skins/jackalmajorplasmarifle_jackalmajor_4.png"
-	SurfaceSkin 0 5 "skins/jackalmajorplasmarifle_shield.png"
+	SurfaceSkin 0 0 "skins/jackalmajorneedler_jackalmajor_0.png"
+	SurfaceSkin 0 1 "skins/jackalmajorneedler_jackalmajor_1.png"
+	SurfaceSkin 0 2 "skins/jackalmajorneedler_jackalmajor_2.png"
+	SurfaceSkin 0 3 "skins/jackalmajorneedler_jackalmajor_3.png"
+	SurfaceSkin 0 4 "skins/jackalmajorneedler_jackalmajor_4.png"
+	SurfaceSkin 0 5 "skins/jackalmajorneedler_shield.png"
 	Path "models/hce/weapons"
-	SurfaceSkin 0 6 "hce_hidden.png"
-	SurfaceSkin 0 7 "hce_hidden.png"
-	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 6 "w_needler_glow.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
 	Scale 80 80 96
 	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_JackalUltraNeedler
+Model HCE_JackalUltraPlasmaRifle
 {
 	Path "models/hce/JackalMajor"
 	Model 0 "JackalMajor.iqm"
-	SurfaceSkin 0 0 "skins/jackalultraneedler_jackalmajor_0.png"
-	SurfaceSkin 0 1 "skins/jackalultraneedler_jackalmajor_1.png"
-	SurfaceSkin 0 2 "skins/jackalultraneedler_jackalmajor_2.png"
-	SurfaceSkin 0 3 "skins/jackalultraneedler_jackalmajor_3.png"
-	SurfaceSkin 0 4 "skins/jackalultraneedler_jackalmajor_4.png"
-	SurfaceSkin 0 5 "skins/jackalultraneedler_shield.png"
+	SurfaceSkin 0 0 "skins/jackalultraplasmarifle_jackalmajor_0.png"
+	SurfaceSkin 0 1 "skins/jackalultraplasmarifle_jackalmajor_1.png"
+	SurfaceSkin 0 2 "skins/jackalultraplasmarifle_jackalmajor_2.png"
+	SurfaceSkin 0 3 "skins/jackalultraplasmarifle_jackalmajor_3.png"
+	SurfaceSkin 0 4 "skins/jackalultraplasmarifle_jackalmajor_4.png"
+	SurfaceSkin 0 5 "skins/jackalultraplasmarifle_shield.png"
 	Path "models/hce/weapons"
-	SurfaceSkin 0 6 "w_needler_glow.png"
-	SurfaceSkin 0 7 "w_needler_1.png"
-	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
 	Scale 80 80 96
 	UseActorPitch
 	BaseFrame

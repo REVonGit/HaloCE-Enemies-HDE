@@ -36,6 +36,8 @@ def main():
     for voice in sorted(set(os.listdir(SRC)) | extra):
         vname = voice.replace(' ', '_')
         dirs = [d for d in (os.path.join(SRC, voice), os.path.join(EXTRA, voice)) if os.path.isdir(d)]
+        if os.path.exists(os.path.join(EXTRA, voice, 'REPLACE')):            # this extra set replaces the main one
+            dirs = [os.path.join(EXTRA, voice)]
         if not dirs: continue
         events = {}
         for vdir, fn in [(d, f) for d in dirs for f in sorted(os.listdir(d))]:

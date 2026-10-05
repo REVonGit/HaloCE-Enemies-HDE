@@ -335,7 +335,7 @@ Enemy fire uses HDE's own SNDINFO sounds, both the fire layer and its `/Bass` la
 
 ## Dialogue (optional `HaloCE_Enemies_Voices.pk3`)
 
-The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/HaloDoomEnemies) (your fork REVonGit/HaloDoomEnemies-Proto): 443 lines in 9 voices, plus 53 Crazy Grunt lines from Halo 2 (see below). Each Grunt picks one of three personalities (Crazy, Whiley, Whimpy) and each Elite one of two (Dogmatic, Loose). Jackals and Hunters have one voice each. The Digsite add-on's Drinol and Blind Wolf use the two new creature sets:
+The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/HaloDoomEnemies) (your fork REVonGit/HaloDoomEnemies-Proto): 443 lines in 9 voices, plus 53 Crazy Grunt lines from Halo 2 and a rebuilt Loose Elite set (see below). Each Grunt picks one of three personalities (Crazy, Whiley, Whimpy) and each Elite one of two (Dogmatic, Loose). Jackals and Hunters have one voice each. The Digsite add-on's Drinol and Blind Wolf use the two new creature sets:
 
 * **Drinol:** Grave Injury plays for medium and heavy pain, Death XTR for explosive or hard deaths (`DeathHard`), and Sonic Roar for `Berserk`, including the boss's charge.
 * **Blind Wolf:** Howl doubles as alert and taunt, and Bite plays for melee.
@@ -345,6 +345,7 @@ The fork's Acid Breath lines aren't used.
 **Loudness:** every voice line is levelled at build time (`louden_voices.py`).
 * **Method:** its EBU R128 loudness is measured, and it is raised toward -11 LUFS with a peak limiter. Lines are only ever raised, by at most 18 dB.
 * **Crazy Grunt fill-in:** Crazy was short of Whiley and Whimpy in most events and had no kamikaze lines at all, so 53 lines of its own voice were added from Halo 2's `grunt_crazy` dialogue (`08a_deltacliffs.map`), skipping any it already had (matched by waveform): 7 kamikaze (threats), 6 kill-player (gloats), 6 taunts, 8 leader-dead, 6 regroup, 4 deaths, 6 hard deaths (it had none of its own), 2 alerts, 3 grenade throws, 1 enemy-grenade warning, 2 stuck, 1 heavy pain and 1 on-fire. It now has at least as many lines as the other two personalities in every event. Halo CE has only one generic Grunt voice, a different voice from Crazy's, so none of its lines were mixed in.
+* **Loose Elite voice:** the Loose set is rebuilt from Halo CE's own Elite dialogue (its taunts, kill gloats, sightings, regroup calls, berserk roars, melee shouts, grenade calls, and all of its pain, death and burning screams) plus Halo 2's Loose Elite lines played backwards. CE's Elites speak recorded English run in reverse, so the reversed Halo 2 lines sound like the same alien tongue. Each reversed line fades out over its last few hundredths of a second so it doesn't stop on a click. 229 lines, against 52 before; the Dogmatic set is unchanged. CE reuses some screams across its pain and death sounds, so the same scream can come up as either, but never twice within one event.
 * **Scope:** this covers the 443 lines above and the Digsite voices (Brutes, Drones, Engineer, Slug Men, Thorn Beast).
 * **Before:** the sets were uneven. Whimpy Grunts averaged -26 LUFS, Jackals -19.5, Elites about -16, against the Blind Wolf's -5.
 * **Range:** voices also carry further, at attenuation 0.6 instead of Doom's normal 1.0.

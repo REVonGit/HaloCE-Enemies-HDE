@@ -14,6 +14,9 @@ server float hce_enemyspread = 1.75;    // enemy aim error multiplier (automatic
 server float hce_enemytracking = 5.0;   // how fast enemy aim follows a moving target, map units per tic (lower = easier to strafe)
 server float hce_hearing = 1024;       // how far (map units) gunfire wakes idle enemies through Doom's sound propagation (deaf/ambush ones only wake on sight)
 server int hce_maxpursuers = 4;        // at most this many enemies of a team hunt one target they can't see at a time (0 = no limit); the rest hold position
+server bool hce_squads = true;         // Grunts and Jackals form squads around an Elite / Brute leader (follow it, share targets)
+server bool hce_patrols = true;        // idle leaders and loners walk short patrols (or a map's PatrolPoint route)
+server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (deaf / ambush Grunts always do)
 
 // ---- from merged.pk3
 // Digsite add-on: how often Doom monsters become Digsite enemies (0 = never, 1 = default, 2 = twice as often)

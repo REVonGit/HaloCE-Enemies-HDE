@@ -239,3 +239,41 @@ class HCE_JackalShield : Actor
 		j.hce_frontShieldHP = down ? 0 : hp;
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Energy-shield flare: a copy of the wearer's model, a touch larger and skinned with a bright noise
+// texture, drawn additively over it. Invisible until the shield is hit; then it flares (brighter when the
+// shield pops, softer while it recharges) and fades in a fraction of a second. The enemy API sets the alpha;
+// the shell follows its wearer and mirrors its animation (the generated code drives both).
+// ---------------------------------------------------------------------------
+class HCE_ShieldShell : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+DECOUPLEDANIMATIONS
+		+NOTONAUTOMAP
+		+INVISIBLE
+		RenderStyle "Add";
+		Alpha 0;
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
+	}
+
+	override void Tick()
+	{
+		if(!master || master.health <= 0) { Destroy(); return; }
+		if(isFrozen()) return;
+		SetOrigin(master.pos, true);
+		angle = master.angle; pitch = master.pitch; roll = master.roll;
+		scale = master.scale;
+		bInvisible = master.bInvisible || alpha <= 0.01;
+		if(alpha > 0) alpha = max(0, alpha - 0.045);
+	}
+}

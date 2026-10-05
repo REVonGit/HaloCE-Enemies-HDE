@@ -1,4 +1,4 @@
-// Halo CE enemies, covenant: glowing surfaces
+// Halo CE enemies, covenant: glowing surfaces, active camo shimmer
 brightmap texture "models/hce/Jackal/skins/jackalminorplasmapistol_shield.png"
 {
 	map "models/hce/brightmap_full.png"
@@ -18,4 +18,64 @@ brightmap texture "models/hce/weapons/w_energy_sword_glow.png"
 brightmap texture "models/hce/weapons/w_needler_glow.png"
 {
 	map "models/hce/brightmap_full.png"
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_1.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_2.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_3.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_1.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_2.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_3.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_1.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_2.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_3.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
 }

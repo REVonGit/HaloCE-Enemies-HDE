@@ -41,6 +41,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 
@@ -750,6 +751,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 

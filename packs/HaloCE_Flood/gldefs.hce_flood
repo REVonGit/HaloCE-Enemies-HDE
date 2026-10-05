@@ -1,5 +1,15 @@
-// Halo CE enemies, flood: glowing surfaces
+// Halo CE enemies, flood: glowing surfaces, active camo shimmer
 brightmap texture "models/hce/weapons/w_needler_glow.png"
 {
 	map "models/hce/brightmap_full.png"
+}
+HardwareShader Texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_1.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
 }

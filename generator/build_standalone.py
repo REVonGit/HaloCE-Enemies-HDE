@@ -10,8 +10,6 @@ enemy API, and writes standalone/out/<pack>/ trees + HaloCE_Standalone_<Pack>.pk
   * HDE's sounds, sprites and models those classes need are copied in under unique names
     (sounds HCES/..., sprites HZ**, models/hces/...), so nothing collides with HDE or other mods
 """
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, sys, zipfile
 from PIL import Image
 

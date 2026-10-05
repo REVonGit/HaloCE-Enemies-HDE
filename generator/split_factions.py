@@ -9,8 +9,6 @@
 
 Every faction pack only needs the core (and the enemy API addon); load any combination.
 DoomEdNums are unchanged: each pack lists the numbers of its own classes."""
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
@@ -45,6 +43,8 @@ def main():
             if parent in char_of: char_of[cls] = char_of[parent]
             m = re.fullmatch(r'HCE_Random(\w+)', cls)
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
+            m = re.fullmatch(r'HCE_(\w+)ShieldShell', cls)
+            if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
     fac_of = {c: FACTION[TEAM[ch]] for c, ch in char_of.items()}
     missing = [c for c, _, _ in parts if c not in fac_of]
     assert not missing, missing
@@ -60,13 +60,14 @@ def main():
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
         '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n')
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler"\n}\n')
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker"\n}\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}
     ed = re.findall(r'^\t(\d+) = (\w+)$', open(f'{PACK}/mapinfo.txt').read(), re.M)
     gl = open(f'{PACK}/gldefs.hce').read()
     bms = re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "[^"]+"\n\}', gl)
+    camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -90,10 +91,17 @@ def main():
             os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True)
             shutil.copy(f'{PACK}/{f}', f'{d}/{f}')
         mybms = [t for t in bms if t in need]
-        if mybms:
-            shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
-            open(f'{d}/gldefs.hce_{fac}', 'w').write(f'// Halo CE enemies, {fac}: glowing surfaces\n' + '\n'.join(
-                f'brightmap texture "{t}"\n{{\n\tmap "models/hce/brightmap_full.png"\n}}' for t in mybms) + '\n')
+        mycamo = [t for t in camo if t in need]
+        if mybms or mycamo:
+            out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
+            if mybms:
+                shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
+                out += [f'brightmap texture "{t}"\n{{\n\tmap "models/hce/brightmap_full.png"\n}}' for t in mybms]
+            if mycamo:
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_camo.fp', f'{d}/shaders/hce_camo.fp')
+                out += [f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}' for t in mycamo]
+            open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         open(f'{d}/mapinfo.txt', 'w').write('DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n')
         print(fac, 'classes', len(mine), 'models', len(mblocks), 'files', len(need), 'ednums', len(mynums))

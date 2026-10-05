@@ -41,7 +41,9 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override Name HCE_ShellClass() { return 'HCE_EliteShieldShell'; }
 }
 
 // characters\elite\elite major\elite major needler
@@ -186,6 +188,9 @@ class HCE_EliteMajorNeedler : HCE_EliteBase
 		return 30;
 	}
 }
+
+// energy-shield flare for the Elites: the same model, every surface the glowing shield texture
+class HCE_EliteShieldShell : HCE_ShieldShell {}
 
 // characters\elite\elite major\elite major plasma rifle
 class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
@@ -802,7 +807,9 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override Name HCE_ShellClass() { return 'HCE_EliteSpecialShieldShell'; }
 }
 
 // characters\elite\elite commander\elite commander energy sword
@@ -946,6 +953,9 @@ class HCE_EliteCommanderEnergySword : HCE_EliteSpecialBase
 		return 30;
 	}
 }
+
+// energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
+class HCE_EliteSpecialShieldShell : HCE_ShieldShell {}
 
 // characters\elite\elite commander\elite commander plasma rifle
 class HCE_EliteCommanderPlasmaRifle : HCE_EliteSpecialBase
@@ -1849,6 +1859,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 
@@ -2950,6 +2961,7 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 
@@ -3368,6 +3380,7 @@ class HCE_HunterBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 
@@ -3842,6 +3855,7 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 
@@ -4018,6 +4032,7 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 }
 

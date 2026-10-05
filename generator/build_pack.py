@@ -1,6 +1,4 @@
 """Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
 from PIL import Image
@@ -325,6 +323,39 @@ def bake_vivid(char, mat, color, outpath):
     o = suit * (1 - msk) + gold * msk
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
+# Energy-shield flare (the shell actor drawn additively over a shielded unit when it's hit): tint per character
+SHELL_TINT = {'Elite': (0.45, 0.70, 1.00), 'EliteSpecial': (0.45, 0.70, 1.00), 'Brute': (1.00, 0.78, 0.30)}
+
+def bake_shell(tint, outpath):
+    """a shimmering energy texture: soft cells of light with bright sparks, in the shield's colour"""
+    if os.path.exists(outpath): return
+    rng = np.random.default_rng(7)
+    n = rng.random((32, 32)).astype(np.float32)
+    big = np.asarray(Image.fromarray((n * 255).astype(np.uint8)).resize((128, 128), Image.BICUBIC)).astype(np.float32) / 255.0
+    fine = rng.random((128, 128)).astype(np.float32)
+    v = np.clip(big * 0.85 + (fine > 0.985) * 0.9, 0, 1) ** 1.4
+    col = np.array(tint, dtype=np.float32).reshape(1, 1, 3)
+    o = col * (0.25 + 0.85 * v[..., None]) + (v[..., None] ** 4) * 0.5
+    os.makedirs(os.path.dirname(outpath), exist_ok=True)
+    Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
+# Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
+CAMO_SHADER = '''// Halo active camo: the body almost vanishes; slow bands of light ripple over it, with a fine sparkle
+vec4 ProcessTexel()
+{
+	vec2 uv = vTexCoord.st;
+	vec4 c = getTexel(uv);
+	float t = timer;
+	float w = sin(uv.y * 34.0 - t * 4.0 + sin(uv.x * 11.0 + t * 1.3) * 2.2);
+	float band = smoothstep(0.80, 1.0, w);
+	float n = fract(sin(dot(floor(uv * 64.0) + floor(t * 14.0), vec2(12.9898, 78.233))) * 43758.5453);
+	vec3 body = c.rgb * 0.35 + vec3(0.30, 0.36, 0.42);
+	vec3 col = mix(body, vec3(0.80, 0.92, 1.0), band);
+	float a = 0.30 + band * 0.70 + step(0.93, n) * 0.25;
+	return vec4(col, c.a * a);
+}
+'''
+
 # ---------------------------------------------------------------- generation
 def build(cfg=None):
     cfg = cfg or MAIN
@@ -333,7 +364,7 @@ def build(cfg=None):
     if os.path.exists(f'{pack}/models'): shutil.rmtree(f'{pack}/models')
     os.makedirs(f'{pack}/ZScript/HaloCE', exist_ok=True)
     metas = {c: json.load(open(f'{OUT}/models/{c}/{c}.json')) for c in set(char_of_unit.values())}
-    zs = []; md = []; ednums = []; spawners = {}; late = []; brightmaps = []
+    zs = []; md = []; ednums = []; spawners = {}; late = []; brightmaps = []; shells = set(); camo = []
     projectiles_used = set()
     ed = cfg['ed0']
     # ---------------- per character base classes
@@ -364,7 +395,9 @@ def build(cfg=None):
                   f'\tDeath:\n\t\tHCEM A 1 HCE_Die();\n\t\tHCEM A 2 A_NoBlocking;\n'            # no XDeath: gore stays blood-only (see HCE_Gore)
                   f'\tDead:\n\t\tHCEM A 1 HCE_CorpseTick();\n\t\tLoop;\n'
                   f'\tRaise:\n\t\tHCEM A 1;\n\t\tGoto See;\n\tPain.PlasmaStuck:\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
-                  f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n}}\n')
+                  f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
+                  f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
+                  + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue
@@ -583,6 +616,25 @@ def build(cfg=None):
                 extra += '\tvoid HCE_HideWeaponSurfaces()\n\t{\n' + ''.join(
                     f'\t\tA_ChangeModel(\'\', 0, "", \'\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for si in ws) + '\t}\n'
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))}\n{extra}}}\n')
+            if char in SHELL_TINT and shield > 0 and char not in shells:
+                shells.add(char)
+                zs.append(f'// energy-shield flare for the {char}s: the same model, every surface the glowing shield texture\n'
+                          f'class HCE_{char}ShieldShell : HCE_ShieldShell {{}}\n')
+                tex = f'{pack}/models/{mdir}/{char}/skins/shieldshell.png'
+                bake_shell(SHELL_TINT[char], tex)
+                sl = []
+                for line in skin_lines:
+                    m = re.match(r'\tSurfaceSkin 0 (\d+) "(.*)"', line)
+                    if m: sl.append(f'\tSurfaceSkin 0 {m.group(1)} "skins/shieldshell.png"')
+                if weapon_lines:
+                    sl += [f'\tPath "models/{mdir}/weapons"'] + [re.sub(r'"[^"]*"$', '"hce_hidden.png"', w) for w in weapon_lines]
+                scs = S * msc * 1.035
+                md.append(f'Model HCE_{char}ShieldShell\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
+                          f'\n\tScale {scs:.1f} {scs:.1f} {scs * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+            if 'HCE_ActiveCamo' in flags:
+                for line in skin_lines:
+                    m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
+                    if m: camo.append(f'models/{mdir}/{char}/{m.group(1)}')
             if weapon_lines: skin_lines += [f'\tPath "models/{mdir}/weapons"'] + weapon_lines
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
@@ -641,6 +693,12 @@ def build(cfg=None):
     Image.new('RGB', (8, 8), (255, 255, 255)).save(full)
     for t in sorted(set(brightmaps)):
         gl.append(f'brightmap texture "{t}"\n{{\n\tmap "models/{mdir}/brightmap_full.png"\n}}')
+    # active camo: a shimmer shader on the camo variants' own skins (bands of light running over a faint body)
+    if camo:
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_camo.fp', 'w').write(CAMO_SHADER)
+        for t in sorted(set(camo)):
+            gl.append(f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}')
     tg = cfg['tag']
     open(f'{pack}/gldefs.{tg}', 'w').write('\n'.join(gl) + '\n')
     # HCEM A: placeholder sprite. Models draw instead, but the map spawner rejects actors whose sprite

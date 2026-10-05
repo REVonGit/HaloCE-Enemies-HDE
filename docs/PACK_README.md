@@ -214,6 +214,7 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
   * Units steer with wall probes: each heading is scored for room ahead, and they drift away from walls beside them. Backing straight off is a last resort, and they only give ground when you're inside half their minimum range, diagonally and only where there's room behind.
   * If a strafe breaks line of sight it reverses. After 0.7 s without sight they move to find a firing position.
   * A stuck check (barely moved in half a second) sends them toward open space.
+  * **No stacking:** an enemy knocked or blasted onto another one's head (Doom lets monsters stand on each other) slides off to the roomier side within a few tics instead of riding it or getting wedged under a low ceiling. Crates and barrels can still be stood on.
   * Shield-down cover is a sidestep toward the roomier side, not a backpedal.
   * After a fight they stay alert for 10 s with 360° awareness, so they notice you even if you're behind them.
 * **Dodging fire:** enemies watch the projectiles coming at them and sidestep across a shot's path, toward the roomier side, with their evade animation (or a dive if they have none). Grenades are handled separately (see Grenade awareness).

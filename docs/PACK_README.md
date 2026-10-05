@@ -543,14 +543,13 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 | Elites (Sangheili) | dark blue/purple |
 | Jackals (Kig-Yar) | dark blue/purple |
 | Grunts (Unggoy) | light blue / teal |
-| Hunters (Mgalekgolo) | bright orange |
+| Hunters (Mgalekgolo) and Slug Men (a Mgalekgolo sub-species) | bright orange |
 | Brutes (Jiralhanae, Halo 2) | dark navy blue / black |
 | Drones (Yanme'e) | white, slight green tint |
 | Engineers (Huragok) | reddish pink |
 | Flood (all forms) | brownish green |
 | Marines | red |
 | Sentinels | none (machines) |
-| Slug Men | yellow-green |
 | Drinol, Blind Wolf, Thorn Beast | dark reds |
 
 **Blood only:** the gore is strictly blood.
@@ -569,15 +568,14 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
   |---|---|
   | Elites, Jackals | lavender Elite splats (CE + H2) |
   | Grunts | blue Grunt splats (CE + H2) |
-  | Hunters | orange Hunter splats (CE + H2) and CE's glowing splat (drawn bright) |
+  | Hunters, Slug Men | orange Hunter splats (CE + H2) and CE's glowing splat (drawn bright) |
   | Brutes | Halo 2's navy Brute splat |
   | Drones | Halo 2's khaki "bugger" splats |
   | Engineers | Halo CE's pink Engineer splat |
-  | Slug Men | Halo 2's green Flood-style splats |
   | Drinol, Blind Wolf, Thorn Beast | red Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
 
 * **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour (Halo CE's and Halo 2's blood-burst sheets), with a few blood streaks flung away from the shot (Halo 2's blood trails).
-* **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears and Halo 2's large Flood splat.
+* **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears.
 * **Toggle:** `hce_halogore 0` turns the Halo gore off and leaves NashGore's own.
 * Splats fade after about a minute.
 * Fire, freezing, drowning and telefrags don't bleed.

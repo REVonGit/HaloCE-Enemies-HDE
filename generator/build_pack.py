@@ -191,7 +191,8 @@ BLOOD = {
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
     'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010',                        # human: red
-    'SlugMan': '9AB040', 'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
+    'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
+    'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
 }
 NO_BLOOD = {'Sentinel'}
 

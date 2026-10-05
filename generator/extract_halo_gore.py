@@ -6,7 +6,7 @@
   Engineer and generic splats and the Elite / Grunt smears - cut out of their sprite sheets by the bitmap's own
   sequence rectangles; effects\\particles\\solid\\bitmaps\\blood generic burst / blood burst for impact puffs.
 * Halo 2 (08b_deltacontrol.map + MCC textures.dat): effects\\decals\\blood_splats\\bitmaps\\* - Elite, Grunt, Brute,
-  Hunter, Drone ("bugger"), Flood and generic splats, the drippy combat splat - 2x2 sheets; blood_generic_burst and
+  Hunter, Drone ("bugger") and generic splats, the drippy combat splat - 2x2 sheets; blood_generic_burst and
   blood_trails for impact puffs and spray streaks.
 Halo draws its decals multiplied (white background) or added (black background); both become plain coloured RGBA
 here (alpha from how much the decal changes the wall), so they look the same on a mid-grey wall. Puffs become white
@@ -36,14 +36,12 @@ SPLATS = {
     'Brute':    [('h2', H2_DEC + 'blood_splat_brute', 0.9)],
     'Drone':    [('h2', H2_DEC + 'blood_splat_bugger', 0.6), ('h2', H2_DEC + 'blood_splat_bugger2', 0.6)],
     'Engineer': [('ce', CE_DEC + 'blood splat engineer', 0.7)],
-    'SlugMan':  [('h2', H2_DEC + 'flood_splat', 0.7)],
     'Beast':    [('ce', CE_DEC + 'blood splat', 0.9), ('h2', H2_DEC + 'blood_splat', 0.9)],
 }
 BIG = {
     'Elite':  [('ce', CE_DEC + 'blood smear elite lg', 0.7), ('ce', CE_DEC + 'blood smear elite med', 0.7)],
     'Grunt':  [('ce', CE_DEC + 'blood smear grunt lg', 0.6), ('ce', CE_DEC + 'blood smear grunt med', 0.6)],
     'Beast':  [('h2', 'scenarios\\decorators\\combat\\bitmaps\\bloodsplat_drippy', 0.6)],
-    'SlugMan': [('h2', H2_DEC + 'flood_splat_large', 0.9)],
 }
 PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\solids\\blood_generic_burst')]
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]

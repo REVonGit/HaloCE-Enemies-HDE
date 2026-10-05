@@ -2,7 +2,7 @@
 // on top of NashGore's own sprays, splats and pools, Covenant enemies bleed the way they do in Halo CE and Halo 2:
 // * every hit sprays the species' Halo blood decal onto the wall behind it (Halo CE and Halo 2 splats, chosen at
 //   random: the Elite's lavender, the Grunt's blue, the Hunter's orange with its glowing splats, the Brute's
-//   navy, the Drone's khaki, the Engineer's pink; the Slug Man splashes Flood-style green, the beasts red)
+//   navy, the Drone's khaki, the Engineer's pink; Slug Men, a Mgalekgolo sub-species, bleed the Hunter's orange; the beasts red)
 // * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks;
 // * kills leave bigger splats and the Elite / Grunt smears, and a larger burst.
 // Textures and decals: extract_halo_gore.py (graphics/hcegore, sprites/hcegore, decaldef.hcegore).
@@ -29,7 +29,7 @@ class HCE_HaloGoreHandler : EventHandler
 		String n = a.GetClassName();
 		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Marine") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
 		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
-		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Elite", "Elite", "Beast", "Beast", "Beast" };
+		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Elite", "Elite", "Beast", "Beast", "Beast" };
 		for(int i = 0; i < keys.Size(); i++) if(n.IndexOf(keys[i]) >= 0) return groups[i];
 		return "";
 	}

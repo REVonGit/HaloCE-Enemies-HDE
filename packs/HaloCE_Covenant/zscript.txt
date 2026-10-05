@@ -1,0 +1,13 @@
+version "4.15.1"
+
+// Halo CE enemies, Covenant: Grunts, Jackals, Elites, Hunters, plus the Digsite add-on (Drinol + Cyberdemon boss,
+// Slug Man, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes).
+// Load after HaloCE_Core.pk3 (and HCE_EnemyAPI_LocalDEV.pk3 before both).
+
+#include "ZScript/HaloCE/hce_covenant.zsc"
+#include "ZScript/HaloCE/dig_pulse.zsc"
+#include "ZScript/HaloCE/dig_brute.zsc"
+#include "ZScript/HaloCE/dig_projectiles.zsc"
+#include "ZScript/HaloCE/dig_enemies.zsc"
+#include "ZScript/HaloCE/dig_boss.zsc"
+#include "ZScript/HaloCE/dig_handler.zsc"

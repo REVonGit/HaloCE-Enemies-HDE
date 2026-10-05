@@ -4,18 +4,53 @@
     "output": "HaloCE_Merged.pk3",
     "packs": [
       "HaloCE_Core",
-      "HaloCE_HDE_Bundle",
+      "HCE_EnemyAPI_LocalDEV",
+      "HaloCE_Covenant",
+      "HaloCE_Enemies_Voices",
       "HaloCE_Flood",
       "HaloCE_Sentinels",
       "HaloCE_Marines"
     ]
   },
-  "load": "HDE (Local_DEV) -> HaloCE_HDE_Bundle.pk3 (Covenant + Digsite + voices + API + Core code; nothing else).   Flood / Sentinels / Marines: HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> faction packs, or HDE -> HaloCE_Merged.pk3 for everything. Never load the bundle together with HaloCE_Core or HCE_EnemyAPI_LocalDEV.",
-  "bundle_folder": {
+  "load": "Bundle: HDE (Local_DEV) -> HaloCE_HDE_Bundle.pk3 (Core + Covenant + voices + API; nothing else).   Separate packs: HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> HaloCE_Covenant.pk3 / HaloCE_Flood.pk3 / HaloCE_Sentinels.pk3 / HaloCE_Marines.pk3 -> HaloCE_Enemies_Voices.pk3, or HDE -> HaloCE_Merged.pk3 for everything. Never load the bundle together with HaloCE_Core or HCE_EnemyAPI_LocalDEV.",
+  "sync": [
+    [
+      "packs/HCE_EnemyAPI_LocalDEV/ZScript/BaseAI/enemies_base.zsc",
+      "generator/addons/localdev/ZScript/BaseAI/enemies_base.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_core.zsc",
+      "generator/pack/ZScript/HaloCE/hce_core.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_explosives.zsc",
+      "generator/pack/ZScript/HaloCE/hce_explosives.zsc"
+    ],
+    [
+      "packs/HaloCE_Core/ZScript/HaloCE/hce_handler.zsc",
+      "generator/pack/ZScript/HaloCE/hce_handler.zsc"
+    ],
+    [
+      "packs/HaloCE_Covenant/ZScript/HaloCE/dig_handler.zsc",
+      "generator/digsite_src/dig_handler.zsc"
+    ],
+    [
+      "packs/HaloCE_Covenant/ZScript/HaloCE/dig_boss.zsc",
+      "generator/digsite_src/dig_boss.zsc"
+    ],
+    [
+      "packs/HaloCE_Covenant/ZScript/HaloCE/dig_pulse.zsc",
+      "generator/digsite_src/dig_pulse.zsc"
+    ],
+    [
+      "packs/HaloCE_Covenant/ZScript/HaloCE/dig_brute.zsc",
+      "generator/digsite_src/dig_brute.zsc"
+    ]
+  ],
+  "bundle": {
     "name": "HaloCE_HDE_Bundle",
     "merge": [
       "HaloCE_Covenant",
-      "HaloCE_Enemies_Digsite",
       "HaloCE_Enemies_Voices"
     ],
     "api": [
@@ -23,48 +58,10 @@
     ],
     "core": "HaloCE_Core",
     "header": [
-      "// Halo CE enemies, HDE bundle: Covenant (Grunts, Jackals, Elites, Hunters), the Digsite add-on (Drinol + Cyberdemon",
-      "// boss, Slug Man, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes), the enemy",
-      "// dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.",
+      "// Halo CE enemies, HDE bundle: the Covenant (Grunts, Jackals, Elites, Hunters, and the Digsite add-on's Drinol +",
+      "// Cyberdemon boss, Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes),",
+      "// the enemy dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.",
       "// Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it."
     ]
-  },
-  "sync": [
-    [
-      "packs/HCE_EnemyAPI_LocalDEV/ZScript/BaseAI/enemies_base.zsc",
-      "packs/HaloCE_HDE_Bundle/ZScript/BaseAI/enemies_base.zsc",
-      "generator/addons/localdev/ZScript/BaseAI/enemies_base.zsc"
-    ],
-    [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_core.zsc",
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_core.zsc",
-      "generator/pack/ZScript/HaloCE/hce_core.zsc"
-    ],
-    [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_explosives.zsc",
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_explosives.zsc",
-      "generator/pack/ZScript/HaloCE/hce_explosives.zsc"
-    ],
-    [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_handler.zsc",
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/hce_handler.zsc",
-      "generator/pack/ZScript/HaloCE/hce_handler.zsc"
-    ],
-    [
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_handler.zsc",
-      "generator/digsite_src/dig_handler.zsc"
-    ],
-    [
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_boss.zsc",
-      "generator/digsite_src/dig_boss.zsc"
-    ],
-    [
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_pulse.zsc",
-      "generator/digsite_src/dig_pulse.zsc"
-    ],
-    [
-      "packs/HaloCE_HDE_Bundle/ZScript/HaloCE/dig_brute.zsc",
-      "generator/digsite_src/dig_brute.zsc"
-    ]
-  ]
+  }
 }

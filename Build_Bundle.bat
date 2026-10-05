@@ -1,6 +1,6 @@
 @echo off
 setlocal
-rem Compile only the bundle: Core + Covenant + Digsite + voices + API -> dist\<bundle>.pk3 (skipped if unchanged).
+rem Compile only the bundle: Core + Covenant (Digsite included) + voices + API -> dist\<bundle>.pk3 (skipped if unchanged).
 rem Or from a command prompt:  Build_Bundle.bat --force   (rebuild even if unchanged)
 title Halo CE bundle pk3 builder
 cd /d "%~dp0"

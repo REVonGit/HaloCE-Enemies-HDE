@@ -133,7 +133,7 @@ def pack_kind(z):
     return None
 
 
-def merge(inputs, output):
+def merge(inputs, output, quiet=False):
     zips = []
     for p in inputs:
         if not os.path.isfile(p): raise MergeError(f'not found: {p}')
@@ -182,6 +182,7 @@ def merge(inputs, output):
             info.compress_type = zipfile.ZIP_STORED if stored else zipfile.ZIP_DEFLATED
             out.writestr(info, files[path], compresslevel=None if stored else 9)
     os.replace(tmp, output)
+    if quiet: return
     print(f'merged {", ".join(n for n, _ in zips)}')
     print(f'  -> {output}: {len(files)} files, {nums} DoomEdNums, handlers {", ".join(handlers) or "none"}, '
           f'{os.path.getsize(output) / 1e6:.1f} MB')

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Fold pack folders into one bundle folder: the merged packs, plus the enemy API and the parts of Core they use.
+"""Make the bundle pk3: the Covenant pack (Digsite included) and the voices, plus the enemy API and the parts of
+Core they use, in one pk3. Nothing in packs/ is changed: the bundle is put together at build time.
 
-    python tools/make_bundle_folder.py            # uses "bundle_folder" in repo.json
-    python tools/make_bundle_folder.py --dry-run  # only report what would be kept / left out
+    python tools/make_bundle.py                 # -> dist/<name>.pk3   (build_bundle.py calls this)
+    python tools/make_bundle.py --dry-run       # only report which Core sounds / sprites / models are left out
 
 repo.json:
-  "bundle_folder": {"name": "HaloCE_HDE_Bundle",
-                    "merge":  ["HaloCE_Covenant", "HaloCE_Enemies_Digsite", "HaloCE_Enemies_Voices"],
-                    "api":    ["HCE_EnemyAPI_LocalDEV"],
-                    "core":   "HaloCE_Core"}
+  "bundle": {"name": "HaloCE_HDE_Bundle",
+             "merge": ["HaloCE_Covenant", "HaloCE_Enemies_Voices"],
+             "api":   ["HCE_EnemyAPI_LocalDEV"],
+             "core":  "HaloCE_Core"}
 
-  1. the "merge" packs are merged into packs/<name>/ (same rules as merge_hce_packs.py) and then deleted
-  2. the "api" packs are copied in whole (and kept, the other faction packs still use them)
-  3. Core is copied in: all of its ZScript (the replacement handler, enemy base, loot handler and projectile
+  1. the "merge" packs are merged (same rules as merge_hce_packs.py)
+  2. the "api" packs are added whole
+  3. Core goes in with all of its ZScript (the replacement handler, enemy base, loot handler and projectile
      library are shared code), but of its sounds, sprites and models only what the bundled enemies reach.
-     Core stays in packs/ for Flood, Sentinels and Marines.
 What is "reached": start from every class the merged packs define plus Core's handler / API / loot code, follow
 every class name mentioned in those classes (parents, Spawn / Fire calls, names in strings) through Core's
 library, then keep the sounds, sprites, models and GLDEFS entries those classes name.
@@ -148,26 +148,20 @@ def prune_blocks(text, kw, keep):
     return re.sub(r'\n{3,}', '\n\n', ''.join(pieces)).strip() + '\n', dropped
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--dry-run', action='store_true')
-    a = ap.parse_args()
-    cfg = json.load(open(os.path.join(ROOT, 'repo.json')))['bundle_folder']
-    out_dir = os.path.join(PACKS, cfg['name'])
-    for p in cfg['merge'] + cfg['api'] + [cfg['core']]:
-        if not os.path.isdir(os.path.join(PACKS, p)): sys.exit(f'packs/{p} is missing')
-    if os.path.exists(out_dir) and not a.dry_run: sys.exit(f'packs/{cfg["name"]} already exists')
-
-    core = read_tree(os.path.join(PACKS, cfg['core']))
+def bundle_files(cfg, packs_dir=PACKS, log=print):
+    """{path in pk3: bytes} of the bundle described by cfg (repo.json "bundle")"""
+    for p in cfg['merge'] + cfg.get('api', []) + [cfg['core']]:
+        if not os.path.isdir(os.path.join(packs_dir, p)): sys.exit(f'packs/{p} is missing')
+    core = read_tree(os.path.join(packs_dir, cfg['core']))
     with tempfile.TemporaryDirectory() as tmp:
         ins = []
         for p in cfg['merge']:
-            zp = os.path.join(tmp, p + '.pk3'); zip_tree(read_tree(os.path.join(PACKS, p)), zp); ins.append(zp)
+            zp = os.path.join(tmp, p + '.pk3'); zip_tree(read_tree(os.path.join(packs_dir, p)), zp); ins.append(zp)
         merged_pk3 = os.path.join(tmp, 'merged.pk3')
-        merge(ins, merged_pk3)
+        merge(ins, merged_pk3, quiet=True)
         merged = {i.filename: zipfile.ZipFile(merged_pk3).read(i) for i in zipfile.ZipFile(merged_pk3).infolist()}
     api = {}
-    for p in cfg['api']: api.update(read_tree(os.path.join(PACKS, p)))
+    for p in cfg.get('api', []): api.update(read_tree(os.path.join(packs_dir, p)))
 
     merged_code = '\n'.join(strip_comments(txt(d)) for n, d in {**merged, **api}.items() if n.lower().endswith('.zsc'))
     # text in the merged packs that can name core sounds / classes (sndinfo aliases, gldefs, modeldef, mapinfo)
@@ -210,39 +204,45 @@ def main():
         body = re.sub(r'//[^\n]*', '', txt(new_core[n])).strip()
         if not body: del new_core[n]
 
-    print(f'Core classes reached by the bundle: {len(reached)}')
-    for k in ('sounds', 'sprites', 'models'):
-        v = dropped[k]; print(f'  left out {len(v)} Core {k}' + (': ' + ', '.join(sorted(set(
-            x[len('sounds/'):] if k == 'sounds' else os.path.basename(x)[:4] if k == 'sprites' else os.path.basename(x)
-            for x in v))) if v else ''))
-    print(f'  left out modeldef: {", ".join(dropped["modeldef"]) or "none"}')
-    print(f'  left out gldefs objects: {", ".join(dropped["gldefs"]) or "none"}')
-    print(f'  left out {dropped["sndinfo"]} sndinfo lines')
-    if a.dry_run: return
+    if log:
+        log(f'  Core classes the bundle reaches: {len(reached)}; left out of Core: ' +
+            ', '.join(f'{len(dropped[k])} {k}' for k in ('sounds', 'sprites', 'models')) +
+            f', {len(dropped["modeldef"])} modeldef / {len(dropped["gldefs"])} gldefs entries, {dropped["sndinfo"]} sndinfo lines')
 
     # merge Core + API + merged packs exactly like merge_hce_packs (Core first, so its handler & includes lead)
+    out = {}
     with tempfile.TemporaryDirectory() as tmp:
         parts = []
         for name, files in (('core', new_core), ('api', api), ('merged', merged)):
             if not files: continue
             zp = os.path.join(tmp, f'{name}.pk3'); zip_tree(files, zp); parts.append(zp)
         final = os.path.join(tmp, 'bundle.pk3')
-        merge(parts, final)
+        merge(parts, final, quiet=True)
         z = zipfile.ZipFile(final)
         for info in z.infolist():
-            dst = os.path.join(out_dir, *info.filename.split('/'))
-            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            if info.is_dir(): continue
             data = z.read(info)
             if info.filename == 'zscript.txt':     # one header (repo.json "header") over the #includes, in load order
                 src = data.decode()
                 ver = re.search(r'^version\s+"[\d.]+"', src, re.M)
-                head = cfg.get('header') or [f'// {cfg["name"]}: ' + ' + '.join(cfg['merge'] + cfg['api']) + ' + Core code']
+                head = cfg.get('header') or [f'// {cfg["name"]}: ' + ' + '.join(cfg['merge'] + cfg.get('api', [])) + ' + Core code']
                 data = ((ver.group(0) + '\n\n' if ver else '') + '\n'.join(head) + '\n\n' +
                         '\n'.join(re.findall(r'^#include.*$', src, re.M)) + '\n').encode()
-            with open(dst, 'wb') as fh: fh.write(data)
-    for p in cfg['merge']: shutil.rmtree(os.path.join(PACKS, p))
-    print(f'packs/{cfg["name"]}: {sum(len(f) for _, _, f in os.walk(out_dir))} files; removed packs/' +
-          ', packs/'.join(cfg['merge']))
+            out[info.filename] = data
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
+    ap.add_argument('--dry-run', action='store_true', help='only report what is left out of Core')
+    a = ap.parse_args()
+    cfg = json.load(open(os.path.join(ROOT, 'repo.json')))['bundle']
+    files = bundle_files(cfg)
+    if a.dry_run: return
+    os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
+    out = os.path.join(ROOT, 'dist', cfg['name'] + '.pk3')
+    zip_tree(files, out)
+    print(f'  {cfg["name"]}.pk3  {len(files)} files  {os.path.getsize(out) / 1e6:.1f} MB')
 
 
 if __name__ == '__main__':

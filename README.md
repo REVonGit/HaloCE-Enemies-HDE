@@ -8,14 +8,15 @@ The standalone version, which doesn't need HDE, is in **HaloCE-Enemies-Standalon
 
 ```
 packs/<Pack>/        each folder is exactly the root of one pk3: edit files here
-  HaloCE_HDE_Bundle/       Covenant + Digsite / SPV3 / Halo 2 add-on + dialogue, with the enemy API and the
-                           Core code in it: the one pack most people load
-  HCE_EnemyAPI_LocalDEV/   enemy AI (overrides HDE's ZScript/BaseAI/enemies_base.zsc), for the faction packs
-  HaloCE_Core/             replacement handler, enemy projectiles / explosives, CVars, for the faction packs
+  HaloCE_Covenant/         the Covenant: Grunts, Jackals, Elites, Hunters, and the Digsite / SPV3 / Halo 2 add-on
+                           (Drones, Brutes, Engineer, Blind Wolf, Thorn Beast, Slug Men, Drinol, carbine Elites)
+  HaloCE_Enemies_Voices/   enemy dialogue
+  HCE_EnemyAPI_LocalDEV/   enemy AI (overrides HDE's ZScript/BaseAI/enemies_base.zsc)
+  HaloCE_Core/             replacement handler, enemy projectiles / explosives, CVars
   HaloCE_Flood/  HaloCE_Sentinels/  HaloCE_Marines/
-build.py, Build_PK3s.bat   compile packs/ into dist/*.pk3
-build_bundle.py, Build_Bundle.bat   compile only the bundle (Core + Covenant + Digsite + voices + API)
-tools/                     merge_hce_packs.py (used by build.py), make_bundle_folder.py (made HaloCE_HDE_Bundle/)
+build.py, Build_PK3s.bat   compile packs/ into dist/*.pk3, plus the merged pack and the bundle
+build_bundle.py, Build_Bundle.bat   compile only the bundle (Core + Covenant + voices + API)
+tools/                     merge_hce_packs.py (merging), make_bundle.py (puts the bundle together)
 generator/                 the extraction / generation pipeline that made packs/ (see generator/README.md):
                            the scripts you run at the top, their shared readers / codecs in generator/lib/
 docs/PACK_README.md        the full player-facing manual: AI, CVars, replacements, gore, loot ...
@@ -26,20 +27,21 @@ docs/PACK_README.md        the full player-facing manual: AI, CVars, replacement
 You need Python 3 and nothing else. On Windows, double-click `Build_PK3s.bat`.
 
 ```
-python build.py              # every pack -> dist/<Pack>.pk3, plus the merged pack
-python build.py Bundle       # just the packs whose folder name contains "Bundle"
+python build.py              # every pack -> dist/<Pack>.pk3, plus the merged pack and the bundle
+python build.py Covenant     # just the packs whose folder name contains "Covenant"
 python build.py --no-merged  # skip the merged pack
+python build.py --no-bundle  # skip the bundle
 python build.py --force      # rebuild everything, changed or not
 ```
 
-To compile only Core, Covenant, Digsite, voices and the API, use `build_bundle.py` (on Windows, double-click `Build_Bundle.bat`). Those parts are exactly what the bundle folder holds, so it builds that one pk3 and skips Flood, Sentinels, Marines and the merged pack:
+**The bundle** (`dist/HaloCE_HDE_Bundle.pk3`) is the one pk3 most people load: Core, the Covenant (Digsite included), the voices and the API in one file. There's no bundle folder: `tools/make_bundle.py` puts it together from those folders at build time, with all of Core's code but only the Core sounds, sprites and models the bundled enemies use. To compile only the bundle, use `build_bundle.py` (on Windows, double-click `Build_Bundle.bat`); it skips Flood, Sentinels, Marines and the merged pack:
 
 ```
-python build_bundle.py           # dist/<bundle>.pk3, skipped if nothing in it changed
+python build_bundle.py           # dist/HaloCE_HDE_Bundle.pk3, skipped if none of its packs changed
 python build_bundle.py --force   # rebuild it anyway
 ```
 
-* **Incremental:** only what changed is rebuilt. A pack whose files are the same as at its last build is skipped (`dist/.buildcache.json` remembers), so a full build takes about 4 s and a rebuild after one edit about a second.
+* **Incremental:** only what changed is rebuilt. A pack whose files are the same as at its last build is skipped (`dist/.buildcache.json` remembers), so a full build takes about 20 s and a rebuild after one edit about a second.
 * **Compression:** sounds and images, which are compressed already, are stored as they are, and text and models are deflated. That took a full build from about 18 s to about 4 s, for about 1 MB more per pk3.
 * **Byte-stable:** the same files always give the same pk3.
 
@@ -56,17 +58,16 @@ HDE (Local_DEV) -> HaloCE_HDE_Bundle.pk3 -> nashgore.pk3 (optional, last)
 ```
 
 * **Everything:** for Flood, Sentinels and Marines too, load `HDE -> HaloCE_Merged.pk3` instead.
-* **Without the bundle:** `HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> HaloCE_Flood / _Sentinels / _Marines`.
+* **Separate packs:** `HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> HaloCE_Covenant / _Flood / _Sentinels / _Marines -> HaloCE_Enemies_Voices.pk3` (any of the faction packs; the voices are optional).
 * **Don't mix:** never load the bundle together with `HaloCE_Core` or `HCE_EnemyAPI_LocalDEV`, because it already contains them and the classes would be defined twice.
 
 ## Editing notes
 
-* **ZScript:** `packs/HaloCE_HDE_Bundle/zscript.txt` includes the Core, Covenant and Digsite files in load order.
-* **Shared copies stay in sync:** Core's code files and the API's `ZScript/BaseAI/enemies_base.zsc` exist in the bundle, in `HaloCE_Core/` / `HCE_EnemyAPI_LocalDEV/`, and as the hand-written sources in `generator/` (the Digsite scripts in `generator/digsite_src/`). Edit any one copy. At the start of every build, `build.py` copies the newest version to the others and names each file it synced. The pairs are listed under `"sync"` in `repo.json`.
-* **Bundle sounds:** Covenant's, Digsite's and the voices' files are only in the bundle now.
+* **ZScript:** `packs/HaloCE_Covenant/zscript.txt` includes the Covenant and Digsite files in load order.
+* **Shared copies stay in sync:** Core's hand-written code files, the API's `ZScript/BaseAI/enemies_base.zsc` and the Digsite scripts exist in `packs/` and as the sources in `generator/` (the Digsite scripts in `generator/digsite_src/`). Edit any one copy. At the start of every build, `build.py` copies the newest version to the others and names each file it synced. The pairs are listed under `"sync"` in `repo.json`.
 * **Generated files:** files under `ZScript/HaloCE/hce_<faction>.zsc`, `modeldef.*`, `gldefs.*` and the models were generated by `generator/` from the Halo maps. Small hand edits in `packs/` are fine. A full regeneration overwrites them, so carry the edits into `generator/` too.
-* **Regenerating:** `generator/` still writes the separate Covenant / Digsite / voice packs. To fold fresh ones in, put them in `packs/`, delete `packs/HaloCE_HDE_Bundle/`, and run `python tools/make_bundle_folder.py`.
-* **Defaults:** enemy damage, health and shields are controlled by `hce_nerf_projectiles`, `hce_nerf_health` and `hce_nerf_shields` in `cvarinfo.txt` (the bundle's and Core's).
+* **Regenerating:** `generator/` still writes separate Covenant and Digsite packs. Merge fresh ones into one Covenant folder: `python tools/merge_hce_packs.py HaloCE_Covenant.pk3 HaloCE_Enemies_Digsite.pk3 -o cov.pk3`, then unpack it over `packs/HaloCE_Covenant/`.
+* **Defaults:** enemy damage, health and shields are controlled by `hce_nerf_projectiles`, `hce_nerf_health` and `hce_nerf_shields` in Core's `cvarinfo.txt`.
 
 ## Credits and rights
 

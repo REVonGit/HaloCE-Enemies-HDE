@@ -198,7 +198,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Dmr` | the E3 1999 assault rifle (Digsite) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
 | `Shotgun` (unchanged) | Halo CE's shotgun | Halo CE pellets | `Halo_Shotgun` |
-| `Bulldog` | the E3 1999 shotgun (Digsite) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
+| `Bulldog` | HaloDoom Evolved's own Bulldog, reinterpreted as a Halo CE gun: its drum-fed shape cut to a CE polygon budget (1,230 triangles) with one 512x512 CE-style painted texture baked from it (gunmetal receiver, olive-drab stock, drum and fore-end, black rubber grips, painted edge wear) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
 | `DoubleBarrel` | the 1998 Lens Flare demo assault rifle (Digsite) | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
 | `Sniper` | Halo CE's sniper rifle | Halo CE sniper rounds (101), from far back | `Halo_SniperRifle` |
 | `RocketLauncher` | Halo 2's rocket launcher | Halo CE rockets | `Halo_RocketLauncher` |

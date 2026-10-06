@@ -4,7 +4,8 @@ space (+x forward, +z up, origin on the grip), for the Marines' weapon overlays.
     python3 marine_arsenal.py            # -> out/weapons/<id>/<id>.pkl + textures
 
 Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation / 08a_deltacliffs) and the Digsite
-prototypes (github.com/digsite/h1, JMS + TIFF)."""
+prototypes (github.com/digsite/h1, JMS + TIFF). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
+Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py."""
 import os, sys, pickle, json
 import numpy as np
 from PIL import Image
@@ -36,7 +37,7 @@ ARSENAL = {
     'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
     'ma37':             ('dig', ('weapons/assault_rifle/00_e3/models/h assault rifle.JMS', SH + '00_e3/bitmaps/h small arms ARGL SG')),
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
-    'bulldog':          ('dig', ('weapons/shotgun/99_e3/models/base superhigh.JMS', SH + '99_e3/bitmaps/h small arms SR SG')),
+    'bulldog':          ('ce_bulldog', None),     # HDE's own Bulldog, reinterpreted as a Halo CE gun (bulldog_ce.py)
     'grenade_launcher': ('dig', ('weapons/shotgun/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
     'stanchion':        ('dig', ('weapons/sniper_rifle/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
     'hydra':            ('dig', ('weapons/missile_launcher/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h support RL ML')),
@@ -299,6 +300,8 @@ def main(only=None):
         if only and name not in only: continue
         if kind == 'dig': build_dig(wid, *src)
         elif kind == 'h2': build_h2(wid, *src)
+        elif kind == 'ce_bulldog':
+            import bulldog_ce; bulldog_ce.build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy
             import shutil
             wid = 'm_' + name; d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)

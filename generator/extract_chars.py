@@ -235,9 +235,9 @@ def extract(name, pid, sources, maps):
         b.nframes = len(b.frames); b.dx = np.zeros((b.nframes, 4))
         anims[b.name] = b
     # Halo 2 stances on the CE skeleton -- the rigs are the same biped (h2_elite_anims.py): the fuel rod for the
-    # Elite, the beam rifle (rifle stance) for the Elite Special, Halo 2's pistol stance for the Marines
+    # Elite, the beam rifle (rifle stance) for the Elite Special, Halo 2's pistol and rifle stances for the Marines
     from h2_elite_anims import stance_anims
-    for st in {'Elite': ['missile'], 'EliteSpecial': ['rifle'], 'Marine': ['h2pistol'], 'MarineArmored': ['h2pistol']}.get(pid, []):
+    for st in {'Elite': ['missile'], 'EliteSpecial': ['rifle'], 'Marine': ['h2pistol', 'h2rifle'], 'MarineArmored': ['h2pistol', 'h2rifle']}.get(pid, []):
         for a in stance_anims(joints, st):
             anims.setdefault(a.name, a)
     alist = []

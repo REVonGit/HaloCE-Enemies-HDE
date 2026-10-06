@@ -1174,8 +1174,8 @@ MARINE_ARSENAL = {
     'commando':         ('commando', 'rifle', 3, 16, 32, None, None, 'Halo_Commando'),
     'battle rifle':     ('battle_rifle', 'rifle', 5, 22, 45, None, 1.0, 'Halo_BattleRifle'),
     'dmr':              ('dmr', 'rifle', 6, 26, 50, None, 0.6, 'Halo_DMR'),
-    'smg':              ('smg', 'rifle', 2, 10, 22, None, None, 'Halo_SMG'),
-    'bulldog':          ('bulldog', 'rifle', 1, 6, 14, 8, 5.0, 'Halo_Bulldog'),
+    'smg':              ('smg', 'h2rifle', 2, 10, 22, None, None, 'Halo_SMG'),       # Halo 2's own SMG Marines' stance
+    'bulldog':          ('bulldog', 'h2rifle', 1, 6, 14, 8, 5.0, 'Halo_Bulldog'),   # held like the SMG
     'double barrel':    ('double_barrel', 'rifle', 1, 4, 10, 14, 7.0, 'Halo_DBLShotgun'),
     'sniper rifle':     ('sniper', 'rifle', 8, 35, 70, None, 0.25, 'Halo_SniperRifle'),
     'rocket launcher':  ('rocket_launcher', 'rifle', 7, 25, 45, None, 0.5, 'Halo_RocketLauncher'),

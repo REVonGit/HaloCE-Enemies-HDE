@@ -78,7 +78,27 @@ H2PISTOL = {
 }
 H2PISTOL_FIRE = ('combat:pistol:fire_1', 'combat:pistol:idle', 'stand h2pistol fire-1 baked')
 STANCES['h2pistol'] = (H2PISTOL, H2PISTOL_FIRE)
-STANCE_SOURCE = {'missile': (ELITE, MAP08A, CACHE08A), 'rifle': (ELITE, MAP08A, CACHE08A), 'h2pistol': (MARINE, MAP01B, CACHE01B)}
+# Halo 2's Marine rifle stance, which is also how its Marines carry the SMG (the SMG's animation labels are 'rifle',
+# 'smg' and the Marine graph has no smg set: only a left-hand finger grip, combat:rifle:smg:grip, which the CE
+# skeleton has no finger bones for). Named 'h2rifle'; the SMG and Bulldog Marines use it.
+H2RIFLE = {
+    'combat:rifle:idle:var0': 'stand h2rifle idle', 'combat:rifle:warn:var1': 'stand h2rifle warn',
+    'combat:rifle:move_front': 'stand h2rifle move-front', 'combat:rifle:move_back': 'stand h2rifle move-back',
+    'combat:rifle:move_left': 'stand h2rifle move-left', 'combat:rifle:move_right': 'stand h2rifle move-right',
+    'combat:rifle:turn_left': 'stand h2rifle turn-left', 'combat:rifle:turn_right': 'stand h2rifle turn-right',
+    'combat:rifle:dive_front': 'stand h2rifle dive-front', 'combat:rifle:dive_left:var1': 'stand h2rifle dive-left',
+    'combat:rifle:dive_right:var1': 'stand h2rifle dive-right',
+    'combat:rifle:evade_left': 'stand h2rifle evade-left', 'combat:rifle:evade_right': 'stand h2rifle evade-right',
+    'combat:rifle:airborne': 'stand h2rifle airborne', 'combat:rifle:land_soft': 'stand h2rifle land-soft',
+    'combat:rifle:land_hard': 'stand h2rifle land-hard', 'combat:rifle:melee': 'stand h2rifle melee',
+    'combat:rifle:throw_grenade': 'stand h2rifle throw-grenade', 'combat:rifle:berserk:var3': 'stand h2rifle berserk',
+    'combat:rifle:signal_attack': 'stand h2rifle signal-attack', 'combat:rifle:celebrate:var1': 'stand h2rifle celebrate',
+    'crouch:rifle:idle': 'crouch h2rifle idle', 'crouch:rifle:move_front': 'crouch h2rifle move-front',
+}
+H2RIFLE_FIRE = ('combat:rifle:fire_1', 'combat:rifle:idle:var0', 'stand h2rifle fire-1 baked')
+STANCES['h2rifle'] = (H2RIFLE, H2RIFLE_FIRE)
+STANCE_SOURCE = {'missile': (ELITE, MAP08A, CACHE08A), 'rifle': (ELITE, MAP08A, CACHE08A), 'h2pistol': (MARINE, MAP01B, CACHE01B),
+                 'h2rifle': (MARINE, MAP01B, CACHE01B)}
 
 
 def _qmul(a, b):

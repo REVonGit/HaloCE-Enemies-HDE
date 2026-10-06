@@ -1,0 +1,8 @@
+// enemy laser tracers: HaloDoom Evolved's laser beam model (Models/Lasers, in HDE)
+Model HCE_EnemyLaser
+{
+	Model 0 "Models/Lasers/beam_simple.md3"
+	Skin 0 "Models/Lasers/BEAM_detailed.png"
+	USEACTORPITCH
+	FrameIndex HCEM A 0 0
+}

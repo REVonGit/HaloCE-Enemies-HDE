@@ -1663,11 +1663,47 @@ class HaloDoom_EnemyBase : Actor abstract
 				let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
 					DeltaAngle(angle, aAng) + frandom(-err, err), DeltaAngle(pitch, aPit) + frandom(-err, err));
 				HCE_ScaleShot(shot);
+				if(shot) HCE_OnShot(shot);
 			}
 		}
 		HCE_PlayFireSound(special);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		if(bHCE_ActiveCamo) A_SetRenderStyle(0.45, STYLE_Translucent);
+	}
+
+	// ------------------------------------------------------------------
+	// Laser tracers: HaloDoom Evolved's laser beams (its carbine's green trail, its beam rifle's purple beam with
+	// the pink core) drawn from an enemy's gun. HCE_OnShot runs for every projectile fired (packs override it:
+	// the carbine traces its round's path); HCE_HeldBeam keeps a beam on from one tic to the next.
+	// ------------------------------------------------------------------
+	virtual void HCE_OnShot(Actor shot) {}
+	HCE_EnemyLaser hce_beamOuter, hce_beamCore, hce_aimBeam;
+
+	// the thin, harmless targeting laser of a beam weapon taking aim
+	void HCE_AimLaser(vector3 from, vector3 to)
+	{
+		if(!hce_aimBeam) hce_aimBeam = HCE_EnemyLaser.Make(from, "Purple", 0.3, 0.2, 1.0, 0.9);
+		if(hce_aimBeam) hce_aimBeam.Hold(from, to, 2);
+	}
+
+	// where a shot travelling from 'from' along 'dir' stops (wall, floor or something in the way)
+	vector3 HCE_TraceEnd(vector3 from, vector3 dir, double range = 8192)
+	{
+		FLineTraceData lt;
+		double ang = atan2(dir.y, dir.x), pit = -atan2(dir.z, dir.xy.Length());
+		vector3 rel = level.Vec3Diff(pos, from);
+		double ahead = rel.xy dot AngleToVector(ang);                       // the muzzle, in the trace's offsets
+		double sideOfs = rel.xy dot AngleToVector(ang - 90);               // (forward / right of the trace's angle)
+		LineTrace(ang, range, pit, TRF_THRUSPECIES, rel.z, ahead, sideOfs, lt);
+		return lt.HitType != TRACE_HitNone ? lt.HitLocation : from + dir.Unit() * range;
+	}
+
+	void HCE_HeldBeam(vector3 from, vector3 to)
+	{
+		if(!hce_beamOuter) hce_beamOuter = HCE_EnemyLaser.Make(from, "Purple", 1.5, 0.25, 1.02);
+		if(!hce_beamCore) hce_beamCore = HCE_EnemyLaser.Make(from, "Pink", 0.75, 0.25, 1.02);
+		if(hce_beamOuter) hce_beamOuter.Hold(from, to, 2);
+		if(hce_beamCore) hce_beamCore.Hold(from, to, 2);
 	}
 
 	// ------------------------------------------------------------------
@@ -3123,5 +3159,78 @@ class HCE_LimbGib : Actor
 			if(++life > 35 * 30) A_FadeOut(0.02);
 		}
 		Loop;
+	}
+}
+
+// One of HaloDoom Evolved's laser beams (smoothlaser_base.zsc's look: its beam model, additive and shaded in the
+// laser's colour, stretched from the muzzle to where it stops), fired by an enemy. A flash fades at once
+// (the carbine's trail: 'fade' alpha a tic); a held beam stays while its gun keeps calling Hold, then fades
+// and spreads (the beam rifle's turn-off).
+class HCE_EnemyLaser : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+BRIGHT
+		RenderStyle "AddShaded";
+		Alpha 2.0;
+	}
+	double fadeStep, widen, baseAlpha;
+	int holdTics;
+
+	static HCE_EnemyLaser Make(vector3 from, color c, double width, double fade, double widen = 1.0, double alpha = 2.0)
+	{
+		let l = HCE_EnemyLaser(Spawn("HCE_EnemyLaser", from, ALLOW_REPLACE));
+		if(!l) return null;
+		l.SetShade(c);
+		l.scale.x = width;
+		l.fadeStep = fade;
+		l.widen = widen;
+		l.baseAlpha = alpha;
+		l.alpha = alpha;
+		l.bInvisible = true;
+		return l;
+	}
+
+	static void Flash(vector3 from, vector3 to, color c, double width, double fade)
+	{
+		let l = Make(from, c, width, fade);
+		if(l) l.Aim(from, to);
+	}
+
+	void Aim(vector3 from, vector3 to)
+	{
+		SetOrigin(from, true);
+		vector3 d = level.Vec3Diff(from, to);
+		double len = d.Length();
+		if(len < 1) { bInvisible = true; return; }
+		bInvisible = false;
+		angle = atan2(d.y, d.x);
+		pitch = -atan2(d.z, d.xy.Length()) + 90;
+		scale.y = len * level.pixelstretch;
+	}
+
+	void Hold(vector3 from, vector3 to, int tics)
+	{
+		Aim(from, to);
+		holdTics = tics;
+		alpha = baseAlpha;
+	}
+
+	override void Tick()
+	{
+		if(isFrozen()) return;
+		if(holdTics > 0) { holdTics--; return; }
+		alpha -= fadeStep;
+		scale.x *= widen;
+		if(alpha <= 0.05) Destroy();
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
 	}
 }

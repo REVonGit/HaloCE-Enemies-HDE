@@ -1457,7 +1457,8 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 	// and resets when it slips off. Between bursts the rifle cools down. The aim is the API's slow-tracking aim
 	// point, so strafing drags the beam off you.
 	// Each burst opens with ~0.9 s of aiming: a purple sniper glint flashes at the rifle and a thin, harmless
-	// targeting laser runs to where it's aiming; then the beam fires.
+	// targeting laser runs to where it's aiming; then the beam fires, drawn with HaloDoom Evolved's own beam rifle
+	// laser (the purple beam with its pink core, fading and spreading when it stops).
 	Actor hce_beamVictim;
 	double hce_beamRamp;
 	const HCE_BEAM_AIM = 30;
@@ -1479,32 +1480,14 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 		{
 			if(hce_burstShot == 0) A_StopSound(CHAN_WEAPON);               // the beam's hum starts with the beam
 			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
-			if(len >= 1 && (hce_burstShot & 1))
-			{
-				vector3 rel = level.Vec3Diff(pos, from);
-				int n = min(200, int(len / 18));
-				for(int i = 1; i < n; i++)
-				{
-					vector3 p = rel + d * (i / double(n));
-					A_SpawnParticle("C040FF", SPF_FULLBRIGHT, 3, 1.4, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 0.55);
-				}
-				A_SpawnParticle("E080FF", SPF_FULLBRIGHT, 3, 3, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, 0, 0, 0, 0, 0, 0, 0.8);
-			}
+			if(len >= 1) HCE_AimLaser(from, to);                          // the targeting laser
 			if(hce_burstShot == HCE_BEAM_AIM - 1 && hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_LOOPING, 0.8);
 			hce_burstShot++;
 			return;
 		}
 		if(len >= 1)
 		{
-			vector3 rel = level.Vec3Diff(pos, from);
-			int n = min(300, int(len / 7));
-			double ph = (level.maptime % 4) / 4.0;
-			for(int i = 0; i < n; i++)
-			{
-				vector3 p = rel + d * ((i + ph) / double(n));
-				A_SpawnParticle("B040FF", SPF_FULLBRIGHT, 2, 6, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 0.55);
-				A_SpawnParticle("FF9CFF", SPF_FULLBRIGHT, 2, 2.5, 0, p.x, p.y, p.z);
-			}
+			HCE_HeldBeam(from, to);                                         // HDE's beam rifle laser: purple beam, pink core
 			if(level.maptime % 3 == 0)
 				A_SpawnParticle("D080FF", SPF_FULLBRIGHT, 10, 6, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-0.5, 0.5), frandom(-0.5, 0.5), frandom(0.3, 1.0), 0, 0, 0, 0.8, -0.06);
 		}

@@ -65,7 +65,7 @@ MODELS = ['Models/Weapons/tracer.md3', 'Models/Weapons/tracer1.tga', 'Models/Wea
           'Models/Weapons/plasma_core.md3', 'Models/Weapons/laser.png', 'Models/Weapons/needle_crystal.MD3',
           'Models/Weapons/needle_crystal.png', 'Models/Weapons/rocket.MD3', 'Models/Weapons/rocket.png',
           'Models/Weapons/spike_shard.MD3', 'Models/Weapons/spike_shard.png', 'Models/Title/sky_sphere.md3',
-          'Models/Lasers/lazer.png']
+          'Models/Lasers/lazer.png', 'Models/Lasers/beam_simple.md3', 'Models/Lasers/BEAM_detailed.png']
 # model per standalone class (subclasses in the packs get the same entry: MODELDEF is per class)
 MODEL_OF = {
     'HCES_Bullet': ('tracer.md3', 'tracer1.tga', '3.0 3.0 1.5', 'PITCHFROMMOMENTUM'),
@@ -77,6 +77,7 @@ MODEL_OF = {
     'HCES_Rocket': ('rocket.MD3', 'rocket.png', '10.0 10.0 10.0', 'AngleOffset 90\n\tUSEACTORPITCH'),
     'HCES_SpikerSpike': ('spike_shard.MD3', 'spike_shard.png', '4.0 4.0 2.5', 'AngleOffset 90\n\tUSEACTORPITCH'),
     'HCES_Shockwave': ('sky_sphere.md3', 'lazer.png', '50.0 50.0 50.0', 'DONTCULLBACKFACES'),
+    'HCE_EnemyLaser': ('beam_simple.md3', 'BEAM_detailed.png', '1.0 1.0 1.0', 'USEACTORPITCH'),   # enemy laser tracers
 }
 LIGHT_OF = {'HCES_PlasmaPistolBolt': 'HCES_GreenLight', 'HCES_ChargedPlasma': 'HCES_GreenLightBig',
             'HCES_PlasmaRifleBolt': 'HCES_BlueLight', 'HCES_PulseCarbineProj': 'HCES_BlueLight',
@@ -270,6 +271,8 @@ def build():
             zt = zt.replace('// Needs HCES_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.',
                             '// Standalone: carries the enemy API and the HDE-derived projectiles/effects; needs no other pk3.')
             zt = zt.replace('#include "ZScript/HaloCE/hce_explosives.zsc"\n', '')   # HDE-only; hces_lib has its own
+            lm = os.path.join(dst, 'modeldef.hce_lasers')            # HDE's paths: the standalone entry comes from MODEL_OF
+            if os.path.exists(lm): os.remove(lm)
             ex = os.path.join(zs_dir, 'hce_explosives.zsc')
             if os.path.exists(ex): os.remove(ex)
             zt = re.sub(r'(#include "ZScript/HaloCE/hce_projectiles.zsc")',

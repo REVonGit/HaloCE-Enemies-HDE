@@ -545,14 +545,27 @@ THORN_CODE = '''
 	}
 '''
 
+BRUTE_SCALE = 1.15     # Halo 2 Brutes are drawn at 115% (model, armour kit and helmet debris)
+
+CARBINE_CODE = '''
+	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
+	// muzzle to where it will land, fading in a few tics
+	override void HCE_OnShot(Actor shot)
+	{
+		if(shot.vel.Length() < 0.1) return;
+		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
+	}
+'''
+
 BEAM_CODE = '''
-	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan beam
+	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan
+	// beam, drawn with HaloDoom Evolved's beam rifle laser
 	override void HCE_UpdateFiring(double dist)
 	{
 		super.HCE_UpdateFiring(dist);
 		if(hce_chargeTics > 0 && target)
 		{
-			if(hce_chargeTics & 1) HCE_BeamTrace(false);
+			HCE_BeamTrace(false);
 			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
 		}
 	}
@@ -578,20 +591,12 @@ BEAM_CODE = '''
 		vector3 d = level.Vec3Diff(from, to);
 		double len = d.Length();
 		if(len < 1) return;
-		double step = fire ? 6 : 20;
-		int n = min(400, int(len / step));
-		vector3 rel = level.Vec3Diff(pos, from);
-		for(int i = 0; i < n; i++)
-		{
-			vector3 p = rel + d * (i / double(n));
-			if(fire)
-			{
-				A_SpawnParticle("FF66FF", SPF_FULLBRIGHT, 12, 5, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 1.0, -0.08);
-				A_SpawnParticle("FFFFFF", SPF_FULLBRIGHT, 6, 2, 0, p.x, p.y, p.z);
-			}
-			else A_SpawnParticle("CC44FF", SPF_FULLBRIGHT, 3, 1.5, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 0.6);
-		}
-		if(!fire) return;
+		if(!fire) { HCE_AimLaser(from, to); return; }                  // the targeting laser
+		// the shot: HaloDoom Evolved's beam rifle laser, a purple beam with a pink core, flashing out and spreading
+		let o = HCE_EnemyLaser.Make(from, "Purple", 1.5, 0.25, 1.02);
+		if(o) o.Hold(from, to, 3);
+		let c = HCE_EnemyLaser.Make(from, "Pink", 0.75, 0.25, 1.02);
+		if(c) c.Hold(from, to, 3);
 		{ CVar dbg = CVar.FindCVar("hce_digdebug"); if(dbg && dbg.GetInt()) console.printf("BEAM hit %s at %.0f", lt.HitActor ? lt.HitActor.GetClassName() : 'world', lt.Distance); }
 		if(lt.HitActor && lt.HitActor != self)
 		{
@@ -1099,6 +1104,7 @@ def configure():
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
     bp.WEAPON_CODE['particle beam'] = BEAM_CODE
+    bp.WEAPON_CODE['plasma carbine'] = CARBINE_CODE
     bp.CHAR_OVERRIDES.update({
         # a war beast twice a Hunter's height: shrunk to fit Doom maps; charges, swats, pounces
         'Drinol': dict(stance='unarmed', health=320, scale=0.62, radius=34, melee=(44, 60),
@@ -1118,11 +1124,11 @@ def configure():
                          flags=['HCE_Flying']),
         # Halo 2 Drone (Yanme'e): fragile darting flier with a plasma pistol; perches on walls, scatters when the
         # swarm takes losses, falls out of the air when killed
-        # Halo 2 Brutes: scaled to 90% so a Brute stands as tall as an Elite (its rifle idle is 0.90 WU tall against
-        # the Elite's 0.80; full size would not fit Doom doors), melee 2.0 WU / 1.5 WU from their char tag, berserk
-        # charge that throws the gun away, plasma grenades
-        'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=0.9,
-                      height_fixed=68, radius_fixed=26, melee=(120, 35), weapon_toss=True, shield=0, speed=5.5,
+        # Halo 2 Brutes: scaled to 115%, a head and more over an Elite (its rifle idle is 0.90 WU tall against the
+        # Elite's 0.80), hulking as in Halo 2; the hitbox stays door-sized (76 high). Melee 2.0 WU / 1.5 WU from
+        # their char tag, berserk charge that throws the gun away, plasma grenades
+        'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=BRUTE_SCALE,
+                      height_fixed=76, radius_fixed=30, melee=(130, 35), weapon_toss=True, shield=0, speed=6.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'H2Jackal': dict(stance='pistol'),
         'Drone': dict(stance='pistol', flying=True, radius_fixed=22, height_fixed=48, shield=0, speed=9.5, flags=['HCE_Flying']),
@@ -1171,7 +1177,7 @@ def build():
         for f in ('BruteHelmet.iqm', 'BruteHelmet_0.png'): shutil.copy(f'{hs}/{f}', f'{hd}/{f}')
         # no Skin line: the model names its own texture, so the kit helmets swapped in keep theirs
         open(f'{PACK}/modeldef.dig', 'a').write('\nModel HCE_BruteHelmetDebris\n{\n\tPath "models/hce_dig/BruteHelmet"\n'
-            '\tModel 0 "BruteHelmet.iqm"\n\tScale 72 72 86\n\tUseActorPitch\n\tUseActorRoll\n'
+            f'\tModel 0 "BruteHelmet.iqm"\n\tScale {80 * BRUTE_SCALE:.0f} {80 * BRUTE_SCALE:.0f} {96 * BRUTE_SCALE:.0f}\n\tUseActorPitch\n\tUseActorRoll\n'
             '\tFrameIndex HCEM A 0 0\n}\n')
     # Brute armour kit pieces (model attachments, swapped in by HCE_DressArmour)
     if os.path.exists(KIT_JSON):

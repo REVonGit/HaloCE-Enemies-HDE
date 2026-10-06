@@ -1172,10 +1172,10 @@ MARINE_ARSENAL = {
     'sidekick':         ('sidekick', H2PISTOL_STANCE, 2, 10, 25, None, None, 'Halo_Sidekick'),
     'ma37':             ('ma37', 'rifle', 3, 15, 30, None, None, 'Halo_AssaultRifle'),
     'commando':         ('commando', 'rifle', 3, 16, 32, None, None, 'Halo_Commando'),
-    'battle rifle':     ('battle_rifle', 'rifle', 5, 22, 45, None, 1.0, 'Halo_BattleRifle'),
+    'battle rifle':     ('battle_rifle', 'h2br', 5, 22, 45, None, 1.0, 'Halo_BattleRifle'),
     'dmr':              ('dmr', 'rifle', 6, 26, 50, None, 0.6, 'Halo_DMR'),
-    'smg':              ('smg', 'h2rifle', 2, 10, 22, None, None, 'Halo_SMG'),       # Halo 2's own SMG Marines' stance
-    'bulldog':          ('bulldog', 'h2rifle', 1, 6, 14, 8, 5.0, 'Halo_Bulldog'),   # held like the SMG
+    'smg':              ('smg', 'h2smg', 2, 10, 22, None, None, 'Halo_SMG'),         # H2 rifle stance, left hand on the foregrip (marine_grip.py)
+    'bulldog':          ('bulldog', 'h2bulldog', 1, 6, 14, 8, 5.0, 'Halo_Bulldog'),  # H2 rifle stance, stock in the shoulder, foregrip
     'double barrel':    ('double_barrel', 'rifle', 1, 4, 10, 14, 7.0, 'Halo_DBLShotgun'),
     'sniper rifle':     ('sniper', 'rifle', 8, 35, 70, None, 0.25, 'Halo_SniperRifle'),
     'rocket launcher':  ('rocket_launcher', 'rifle', 7, 25, 45, None, 0.5, 'Halo_RocketLauncher'),

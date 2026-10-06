@@ -240,6 +240,16 @@ def extract(name, pid, sources, maps):
     for st in {'Elite': ['missile'], 'EliteSpecial': ['rifle'], 'Marine': ['h2pistol', 'h2rifle'], 'MarineArmored': ['h2pistol', 'h2rifle']}.get(pid, []):
         for a in stance_anims(joints, st):
             anims.setdefault(a.name, a)
+    if pid in ('Marine', 'MarineArmored'):
+        # the SMG, battle rifle and Bulldog stances: Halo 2's rifle set with the hands on each gun's grips (marine_grip.py)
+        from marine_grip import derive
+        from h2_elite_anims import Anim as H2Anim
+        mk = markers.get('right hand')[0]
+        node, mt, mq = mk['node'], np.array(mk['t']), hm.hq(mk['q'])
+        wt, wq = model.world_bind()[node]
+        to_bind = lambda p: wt + hm.qrot(wq, mt + hm.qrot(mq, p))
+        for a in derive(anims, joints, to_bind, H2Anim):
+            anims.setdefault(a.name, a)
     alist = []
     for nm in sorted(anims):
         a = anims[nm]

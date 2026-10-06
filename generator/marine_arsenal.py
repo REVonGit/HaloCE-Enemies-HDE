@@ -105,17 +105,13 @@ def _rot(meshes, R, shift=(0, 0, 0)):
     return meshes
 
 def fix_sidekick(meshes):
-    """the Macworld 2000 pistol's JMS is its left half (the mirror half was made at compile time): mirror it, centre it,
-    and put the origin mid-grip like Halo CE's pistol"""
-    out = []
-    for m in meshes:
-        r = dict(m); r['pos'] = m['pos'] * [1, -1, 1] + [0, -0.002, 0]; r['nrm'] = m['nrm'] * [1, -1, 1]; r['tris'] = m['tris'][:, [0, 2, 1]]
-        out += [m, r]
-    P = np.concatenate([m['pos'] for m in out])
+    """the Macworld 2000 pistol sits off to one side of its origin: centre it and put the origin mid-grip like Halo CE's
+    pistol (it is a whole pistol, only thin: no mirroring)"""
+    P = np.concatenate([m['pos'] for m in meshes])
     grip = P[P[:, 2] < 0.02]
-    shift = -np.array([grip[:, 0].mean(), -0.001, 0.02])
-    for m in out: m['pos'] = m['pos'] + shift
-    return out
+    shift = -np.array([grip[:, 0].mean(), (P[:, 1].min() + P[:, 1].max()) / 2, 0.02])
+    for m in meshes: m['pos'] = m['pos'] + shift
+    return meshes
 
 def fix_gpmg(meshes):
     """Halo 2's machine-gun turret gun without its tripod, turned to point forward (+x) and levelled; the origin stays

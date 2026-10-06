@@ -376,11 +376,11 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 	{
 		Health 12;
 		+FRIENDLY
-		Speed 6.5;
+		Speed 6.4;
 		HaloDoom_EnemyBase.HCE_Type 7;
 		HaloDoom_EnemyBase.HCE_Variant "marine battle rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
-		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BattleRifleARBullet", 1, 10.00, 1.00, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1213.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -410,27 +410,28 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'alert rifle idle%0';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_IDLE: return 'stand h2br idle';
+		case HCE_A_ALERT: return 'stand h2br idle';
+		case HCE_A_MOVE_F: return 'stand h2br move-front';
+		case HCE_A_MOVE_B: return 'stand h2br move-back';
+		case HCE_A_MOVE_L: return 'stand h2br move-left';
+		case HCE_A_MOVE_R: return 'stand h2br move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2br idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2br move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_BERSERK: return 'stand rifle berserk%3';
-		case HCE_A_WARN: return 'stand rifle warn%1';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2br fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2br melee';
+		case HCE_A_THROW: return 'stand h2br throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2br dive-left';
+		case HCE_A_DIVE_R: return 'stand h2br dive-right';
+		case HCE_A_DIVE_F: return 'stand h2br dive-front';
+		case HCE_A_EVADE_L: return 'stand h2br evade-left';
+		case HCE_A_EVADE_R: return 'stand h2br evade-right';
+		case HCE_A_BERSERK: return 'stand h2br berserk';
+		case HCE_A_WARN: return 'stand h2br warn';
+		case HCE_A_SIGNAL: return 'stand h2br signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2br airborne';
+		case HCE_A_LAND: return 'stand h2br land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -442,9 +443,9 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2br celebrate';
+		case HCE_A_TURN_L: return 'stand h2br turn-left';
+		case HCE_A_TURN_R: return 'stand h2br turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -455,9 +456,8 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 	{
 		switch(anim)
 		{
-		case 'alert rifle idle%0': return 93;
-		case 'crouch rifle idle': return 70;
-		case 'crouch rifle move-front': return 28;
+		case 'crouch h2br idle': return 70;
+		case 'crouch h2br move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -478,30 +478,29 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2br airborne': return 55;
+		case 'stand h2br berserk': return 51;
+		case 'stand h2br celebrate': return 72;
+		case 'stand h2br dive-front': return 90;
+		case 'stand h2br dive-left': return 90;
+		case 'stand h2br dive-right': return 90;
+		case 'stand h2br evade-left': return 35;
+		case 'stand h2br evade-right': return 35;
+		case 'stand h2br fire-1 baked': return 13;
+		case 'stand h2br idle': return 105;
+		case 'stand h2br land-soft': return 46;
+		case 'stand h2br melee': return 23;
+		case 'stand h2br move-back': return 23;
+		case 'stand h2br move-front': return 23;
+		case 'stand h2br move-left': return 23;
+		case 'stand h2br move-right': return 23;
+		case 'stand h2br signal-attack': return 55;
+		case 'stand h2br throw-grenade': return 66;
+		case 'stand h2br turn-left': return 16;
+		case 'stand h2br turn-right': return 16;
+		case 'stand h2br warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
-		case 'stand rifle airborne': return 92;
-		case 'stand rifle ar fire-1 baked': return 5;
-		case 'stand rifle berserk%3': return 51;
-		case 'stand rifle celebrate%1': return 72;
-		case 'stand rifle celebrate%2': return 80;
-		case 'stand rifle celebrate%3': return 64;
-		case 'stand rifle dive-front': return 90;
-		case 'stand rifle dive-left': return 90;
-		case 'stand rifle dive-right': return 90;
-		case 'stand rifle evade-left': return 46;
-		case 'stand rifle evade-right': return 46;
-		case 'stand rifle idle': return 57;
-		case 'stand rifle land-soft': return 46;
-		case 'stand rifle move-back': return 23;
-		case 'stand rifle move-front': return 23;
-		case 'stand rifle move-left': return 23;
-		case 'stand rifle move-right': return 23;
-		case 'stand rifle signal-attack': return 55;
-		case 'stand rifle throw-grenade': return 72;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
 	}
@@ -548,28 +547,28 @@ class HCE_MarineBulldog : HCE_MarineBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand h2rifle idle';
-		case HCE_A_ALERT: return 'stand h2rifle idle';
-		case HCE_A_MOVE_F: return 'stand h2rifle move-front';
-		case HCE_A_MOVE_B: return 'stand h2rifle move-back';
-		case HCE_A_MOVE_L: return 'stand h2rifle move-left';
-		case HCE_A_MOVE_R: return 'stand h2rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch h2rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch h2rifle move-front';
+		case HCE_A_IDLE: return 'stand h2bulldog idle';
+		case HCE_A_ALERT: return 'stand h2bulldog idle';
+		case HCE_A_MOVE_F: return 'stand h2bulldog move-front';
+		case HCE_A_MOVE_B: return 'stand h2bulldog move-back';
+		case HCE_A_MOVE_L: return 'stand h2bulldog move-left';
+		case HCE_A_MOVE_R: return 'stand h2bulldog move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2bulldog idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2bulldog move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand h2rifle fire-1 baked';
-		case HCE_A_MELEE: return 'stand h2rifle melee';
-		case HCE_A_THROW: return 'stand h2rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand h2rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand h2rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand h2rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand h2rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand h2rifle evade-right';
-		case HCE_A_BERSERK: return 'stand h2rifle berserk';
-		case HCE_A_WARN: return 'stand h2rifle warn';
-		case HCE_A_SIGNAL: return 'stand h2rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand h2rifle airborne';
-		case HCE_A_LAND: return 'stand h2rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2bulldog fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2bulldog melee';
+		case HCE_A_THROW: return 'stand h2bulldog throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2bulldog dive-left';
+		case HCE_A_DIVE_R: return 'stand h2bulldog dive-right';
+		case HCE_A_DIVE_F: return 'stand h2bulldog dive-front';
+		case HCE_A_EVADE_L: return 'stand h2bulldog evade-left';
+		case HCE_A_EVADE_R: return 'stand h2bulldog evade-right';
+		case HCE_A_BERSERK: return 'stand h2bulldog berserk';
+		case HCE_A_WARN: return 'stand h2bulldog warn';
+		case HCE_A_SIGNAL: return 'stand h2bulldog signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2bulldog airborne';
+		case HCE_A_LAND: return 'stand h2bulldog land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -581,9 +580,9 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: return 'stand h2rifle celebrate';
-		case HCE_A_TURN_L: return 'stand h2rifle turn-left';
-		case HCE_A_TURN_R: return 'stand h2rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2bulldog celebrate';
+		case HCE_A_TURN_L: return 'stand h2bulldog turn-left';
+		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -594,8 +593,8 @@ class HCE_MarineBulldog : HCE_MarineBase
 	{
 		switch(anim)
 		{
-		case 'crouch h2rifle idle': return 70;
-		case 'crouch h2rifle move-front': return 28;
+		case 'crouch h2bulldog idle': return 70;
+		case 'crouch h2bulldog move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -616,27 +615,27 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
-		case 'stand h2rifle airborne': return 55;
-		case 'stand h2rifle berserk': return 51;
-		case 'stand h2rifle celebrate': return 72;
-		case 'stand h2rifle dive-front': return 90;
-		case 'stand h2rifle dive-left': return 90;
-		case 'stand h2rifle dive-right': return 90;
-		case 'stand h2rifle evade-left': return 35;
-		case 'stand h2rifle evade-right': return 35;
-		case 'stand h2rifle fire-1 baked': return 13;
-		case 'stand h2rifle idle': return 105;
-		case 'stand h2rifle land-soft': return 46;
-		case 'stand h2rifle melee': return 23;
-		case 'stand h2rifle move-back': return 23;
-		case 'stand h2rifle move-front': return 23;
-		case 'stand h2rifle move-left': return 23;
-		case 'stand h2rifle move-right': return 23;
-		case 'stand h2rifle signal-attack': return 55;
-		case 'stand h2rifle throw-grenade': return 66;
-		case 'stand h2rifle turn-left': return 16;
-		case 'stand h2rifle turn-right': return 16;
-		case 'stand h2rifle warn': return 51;
+		case 'stand h2bulldog airborne': return 55;
+		case 'stand h2bulldog berserk': return 51;
+		case 'stand h2bulldog celebrate': return 72;
+		case 'stand h2bulldog dive-front': return 90;
+		case 'stand h2bulldog dive-left': return 90;
+		case 'stand h2bulldog dive-right': return 90;
+		case 'stand h2bulldog evade-left': return 35;
+		case 'stand h2bulldog evade-right': return 35;
+		case 'stand h2bulldog fire-1 baked': return 13;
+		case 'stand h2bulldog idle': return 105;
+		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog melee': return 23;
+		case 'stand h2bulldog move-back': return 23;
+		case 'stand h2bulldog move-front': return 23;
+		case 'stand h2bulldog move-left': return 23;
+		case 'stand h2bulldog move-right': return 23;
+		case 'stand h2bulldog signal-attack': return 55;
+		case 'stand h2bulldog throw-grenade': return 66;
+		case 'stand h2bulldog turn-left': return 16;
+		case 'stand h2bulldog turn-right': return 16;
+		case 'stand h2bulldog warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		}
@@ -2619,28 +2618,28 @@ class HCE_MarineSmg : HCE_MarineBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand h2rifle idle';
-		case HCE_A_ALERT: return 'stand h2rifle idle';
-		case HCE_A_MOVE_F: return 'stand h2rifle move-front';
-		case HCE_A_MOVE_B: return 'stand h2rifle move-back';
-		case HCE_A_MOVE_L: return 'stand h2rifle move-left';
-		case HCE_A_MOVE_R: return 'stand h2rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch h2rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch h2rifle move-front';
+		case HCE_A_IDLE: return 'stand h2smg idle';
+		case HCE_A_ALERT: return 'stand h2smg idle';
+		case HCE_A_MOVE_F: return 'stand h2smg move-front';
+		case HCE_A_MOVE_B: return 'stand h2smg move-back';
+		case HCE_A_MOVE_L: return 'stand h2smg move-left';
+		case HCE_A_MOVE_R: return 'stand h2smg move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2smg idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2smg move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand h2rifle fire-1 baked';
-		case HCE_A_MELEE: return 'stand h2rifle melee';
-		case HCE_A_THROW: return 'stand h2rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand h2rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand h2rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand h2rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand h2rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand h2rifle evade-right';
-		case HCE_A_BERSERK: return 'stand h2rifle berserk';
-		case HCE_A_WARN: return 'stand h2rifle warn';
-		case HCE_A_SIGNAL: return 'stand h2rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand h2rifle airborne';
-		case HCE_A_LAND: return 'stand h2rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2smg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2smg melee';
+		case HCE_A_THROW: return 'stand h2smg throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2smg dive-left';
+		case HCE_A_DIVE_R: return 'stand h2smg dive-right';
+		case HCE_A_DIVE_F: return 'stand h2smg dive-front';
+		case HCE_A_EVADE_L: return 'stand h2smg evade-left';
+		case HCE_A_EVADE_R: return 'stand h2smg evade-right';
+		case HCE_A_BERSERK: return 'stand h2smg berserk';
+		case HCE_A_WARN: return 'stand h2smg warn';
+		case HCE_A_SIGNAL: return 'stand h2smg signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2smg airborne';
+		case HCE_A_LAND: return 'stand h2smg land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -2652,9 +2651,9 @@ class HCE_MarineSmg : HCE_MarineBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: return 'stand h2rifle celebrate';
-		case HCE_A_TURN_L: return 'stand h2rifle turn-left';
-		case HCE_A_TURN_R: return 'stand h2rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2smg celebrate';
+		case HCE_A_TURN_L: return 'stand h2smg turn-left';
+		case HCE_A_TURN_R: return 'stand h2smg turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -2665,8 +2664,8 @@ class HCE_MarineSmg : HCE_MarineBase
 	{
 		switch(anim)
 		{
-		case 'crouch h2rifle idle': return 70;
-		case 'crouch h2rifle move-front': return 28;
+		case 'crouch h2smg idle': return 70;
+		case 'crouch h2smg move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -2687,27 +2686,27 @@ class HCE_MarineSmg : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
-		case 'stand h2rifle airborne': return 55;
-		case 'stand h2rifle berserk': return 51;
-		case 'stand h2rifle celebrate': return 72;
-		case 'stand h2rifle dive-front': return 90;
-		case 'stand h2rifle dive-left': return 90;
-		case 'stand h2rifle dive-right': return 90;
-		case 'stand h2rifle evade-left': return 35;
-		case 'stand h2rifle evade-right': return 35;
-		case 'stand h2rifle fire-1 baked': return 13;
-		case 'stand h2rifle idle': return 105;
-		case 'stand h2rifle land-soft': return 46;
-		case 'stand h2rifle melee': return 23;
-		case 'stand h2rifle move-back': return 23;
-		case 'stand h2rifle move-front': return 23;
-		case 'stand h2rifle move-left': return 23;
-		case 'stand h2rifle move-right': return 23;
-		case 'stand h2rifle signal-attack': return 55;
-		case 'stand h2rifle throw-grenade': return 66;
-		case 'stand h2rifle turn-left': return 16;
-		case 'stand h2rifle turn-right': return 16;
-		case 'stand h2rifle warn': return 51;
+		case 'stand h2smg airborne': return 55;
+		case 'stand h2smg berserk': return 51;
+		case 'stand h2smg celebrate': return 72;
+		case 'stand h2smg dive-front': return 90;
+		case 'stand h2smg dive-left': return 90;
+		case 'stand h2smg dive-right': return 90;
+		case 'stand h2smg evade-left': return 35;
+		case 'stand h2smg evade-right': return 35;
+		case 'stand h2smg fire-1 baked': return 13;
+		case 'stand h2smg idle': return 105;
+		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg melee': return 23;
+		case 'stand h2smg move-back': return 23;
+		case 'stand h2smg move-front': return 23;
+		case 'stand h2smg move-left': return 23;
+		case 'stand h2smg move-right': return 23;
+		case 'stand h2smg signal-attack': return 55;
+		case 'stand h2smg throw-grenade': return 66;
+		case 'stand h2smg turn-left': return 16;
+		case 'stand h2smg turn-right': return 16;
+		case 'stand h2smg warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		}
@@ -3719,11 +3718,11 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 	{
 		Health 60;
 		+FRIENDLY
-		Speed 6.5;
+		Speed 6.4;
 		HaloDoom_EnemyBase.HCE_Type 7;
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored battle rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
-		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BattleRifleARBullet", 1, 10.00, 1.00, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1213.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -3753,27 +3752,28 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'alert rifle idle%0';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_IDLE: return 'stand h2br idle';
+		case HCE_A_ALERT: return 'stand h2br idle';
+		case HCE_A_MOVE_F: return 'stand h2br move-front';
+		case HCE_A_MOVE_B: return 'stand h2br move-back';
+		case HCE_A_MOVE_L: return 'stand h2br move-left';
+		case HCE_A_MOVE_R: return 'stand h2br move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2br idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2br move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_BERSERK: return 'stand rifle berserk%3';
-		case HCE_A_WARN: return 'stand rifle warn%1';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2br fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2br melee';
+		case HCE_A_THROW: return 'stand h2br throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2br dive-left';
+		case HCE_A_DIVE_R: return 'stand h2br dive-right';
+		case HCE_A_DIVE_F: return 'stand h2br dive-front';
+		case HCE_A_EVADE_L: return 'stand h2br evade-left';
+		case HCE_A_EVADE_R: return 'stand h2br evade-right';
+		case HCE_A_BERSERK: return 'stand h2br berserk';
+		case HCE_A_WARN: return 'stand h2br warn';
+		case HCE_A_SIGNAL: return 'stand h2br signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2br airborne';
+		case HCE_A_LAND: return 'stand h2br land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -3785,9 +3785,9 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2br celebrate';
+		case HCE_A_TURN_L: return 'stand h2br turn-left';
+		case HCE_A_TURN_R: return 'stand h2br turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -3798,9 +3798,8 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 	{
 		switch(anim)
 		{
-		case 'alert rifle idle%0': return 93;
-		case 'crouch rifle idle': return 70;
-		case 'crouch rifle move-front': return 28;
+		case 'crouch h2br idle': return 70;
+		case 'crouch h2br move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -3821,30 +3820,29 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2br airborne': return 55;
+		case 'stand h2br berserk': return 51;
+		case 'stand h2br celebrate': return 72;
+		case 'stand h2br dive-front': return 90;
+		case 'stand h2br dive-left': return 90;
+		case 'stand h2br dive-right': return 90;
+		case 'stand h2br evade-left': return 35;
+		case 'stand h2br evade-right': return 35;
+		case 'stand h2br fire-1 baked': return 13;
+		case 'stand h2br idle': return 105;
+		case 'stand h2br land-soft': return 46;
+		case 'stand h2br melee': return 23;
+		case 'stand h2br move-back': return 23;
+		case 'stand h2br move-front': return 23;
+		case 'stand h2br move-left': return 23;
+		case 'stand h2br move-right': return 23;
+		case 'stand h2br signal-attack': return 55;
+		case 'stand h2br throw-grenade': return 66;
+		case 'stand h2br turn-left': return 16;
+		case 'stand h2br turn-right': return 16;
+		case 'stand h2br warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
-		case 'stand rifle airborne': return 92;
-		case 'stand rifle ar fire-1 baked': return 5;
-		case 'stand rifle berserk%3': return 51;
-		case 'stand rifle celebrate%1': return 72;
-		case 'stand rifle celebrate%2': return 80;
-		case 'stand rifle celebrate%3': return 64;
-		case 'stand rifle dive-front': return 90;
-		case 'stand rifle dive-left': return 90;
-		case 'stand rifle dive-right': return 90;
-		case 'stand rifle evade-left': return 46;
-		case 'stand rifle evade-right': return 46;
-		case 'stand rifle idle': return 57;
-		case 'stand rifle land-soft': return 46;
-		case 'stand rifle move-back': return 23;
-		case 'stand rifle move-front': return 23;
-		case 'stand rifle move-left': return 23;
-		case 'stand rifle move-right': return 23;
-		case 'stand rifle signal-attack': return 55;
-		case 'stand rifle throw-grenade': return 72;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
 	}
@@ -3891,28 +3889,28 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand h2rifle idle';
-		case HCE_A_ALERT: return 'stand h2rifle idle';
-		case HCE_A_MOVE_F: return 'stand h2rifle move-front';
-		case HCE_A_MOVE_B: return 'stand h2rifle move-back';
-		case HCE_A_MOVE_L: return 'stand h2rifle move-left';
-		case HCE_A_MOVE_R: return 'stand h2rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch h2rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch h2rifle move-front';
+		case HCE_A_IDLE: return 'stand h2bulldog idle';
+		case HCE_A_ALERT: return 'stand h2bulldog idle';
+		case HCE_A_MOVE_F: return 'stand h2bulldog move-front';
+		case HCE_A_MOVE_B: return 'stand h2bulldog move-back';
+		case HCE_A_MOVE_L: return 'stand h2bulldog move-left';
+		case HCE_A_MOVE_R: return 'stand h2bulldog move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2bulldog idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2bulldog move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand h2rifle fire-1 baked';
-		case HCE_A_MELEE: return 'stand h2rifle melee';
-		case HCE_A_THROW: return 'stand h2rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand h2rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand h2rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand h2rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand h2rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand h2rifle evade-right';
-		case HCE_A_BERSERK: return 'stand h2rifle berserk';
-		case HCE_A_WARN: return 'stand h2rifle warn';
-		case HCE_A_SIGNAL: return 'stand h2rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand h2rifle airborne';
-		case HCE_A_LAND: return 'stand h2rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2bulldog fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2bulldog melee';
+		case HCE_A_THROW: return 'stand h2bulldog throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2bulldog dive-left';
+		case HCE_A_DIVE_R: return 'stand h2bulldog dive-right';
+		case HCE_A_DIVE_F: return 'stand h2bulldog dive-front';
+		case HCE_A_EVADE_L: return 'stand h2bulldog evade-left';
+		case HCE_A_EVADE_R: return 'stand h2bulldog evade-right';
+		case HCE_A_BERSERK: return 'stand h2bulldog berserk';
+		case HCE_A_WARN: return 'stand h2bulldog warn';
+		case HCE_A_SIGNAL: return 'stand h2bulldog signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2bulldog airborne';
+		case HCE_A_LAND: return 'stand h2bulldog land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -3924,9 +3922,9 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: return 'stand h2rifle celebrate';
-		case HCE_A_TURN_L: return 'stand h2rifle turn-left';
-		case HCE_A_TURN_R: return 'stand h2rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2bulldog celebrate';
+		case HCE_A_TURN_L: return 'stand h2bulldog turn-left';
+		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -3937,8 +3935,8 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 	{
 		switch(anim)
 		{
-		case 'crouch h2rifle idle': return 70;
-		case 'crouch h2rifle move-front': return 28;
+		case 'crouch h2bulldog idle': return 70;
+		case 'crouch h2bulldog move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -3959,27 +3957,27 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
-		case 'stand h2rifle airborne': return 55;
-		case 'stand h2rifle berserk': return 51;
-		case 'stand h2rifle celebrate': return 72;
-		case 'stand h2rifle dive-front': return 90;
-		case 'stand h2rifle dive-left': return 90;
-		case 'stand h2rifle dive-right': return 90;
-		case 'stand h2rifle evade-left': return 35;
-		case 'stand h2rifle evade-right': return 35;
-		case 'stand h2rifle fire-1 baked': return 13;
-		case 'stand h2rifle idle': return 105;
-		case 'stand h2rifle land-soft': return 46;
-		case 'stand h2rifle melee': return 23;
-		case 'stand h2rifle move-back': return 23;
-		case 'stand h2rifle move-front': return 23;
-		case 'stand h2rifle move-left': return 23;
-		case 'stand h2rifle move-right': return 23;
-		case 'stand h2rifle signal-attack': return 55;
-		case 'stand h2rifle throw-grenade': return 66;
-		case 'stand h2rifle turn-left': return 16;
-		case 'stand h2rifle turn-right': return 16;
-		case 'stand h2rifle warn': return 51;
+		case 'stand h2bulldog airborne': return 55;
+		case 'stand h2bulldog berserk': return 51;
+		case 'stand h2bulldog celebrate': return 72;
+		case 'stand h2bulldog dive-front': return 90;
+		case 'stand h2bulldog dive-left': return 90;
+		case 'stand h2bulldog dive-right': return 90;
+		case 'stand h2bulldog evade-left': return 35;
+		case 'stand h2bulldog evade-right': return 35;
+		case 'stand h2bulldog fire-1 baked': return 13;
+		case 'stand h2bulldog idle': return 105;
+		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog melee': return 23;
+		case 'stand h2bulldog move-back': return 23;
+		case 'stand h2bulldog move-front': return 23;
+		case 'stand h2bulldog move-left': return 23;
+		case 'stand h2bulldog move-right': return 23;
+		case 'stand h2bulldog signal-attack': return 55;
+		case 'stand h2bulldog throw-grenade': return 66;
+		case 'stand h2bulldog turn-left': return 16;
+		case 'stand h2bulldog turn-right': return 16;
+		case 'stand h2bulldog warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		}
@@ -6100,28 +6098,28 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand h2rifle idle';
-		case HCE_A_ALERT: return 'stand h2rifle idle';
-		case HCE_A_MOVE_F: return 'stand h2rifle move-front';
-		case HCE_A_MOVE_B: return 'stand h2rifle move-back';
-		case HCE_A_MOVE_L: return 'stand h2rifle move-left';
-		case HCE_A_MOVE_R: return 'stand h2rifle move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch h2rifle idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch h2rifle move-front';
+		case HCE_A_IDLE: return 'stand h2smg idle';
+		case HCE_A_ALERT: return 'stand h2smg idle';
+		case HCE_A_MOVE_F: return 'stand h2smg move-front';
+		case HCE_A_MOVE_B: return 'stand h2smg move-back';
+		case HCE_A_MOVE_L: return 'stand h2smg move-left';
+		case HCE_A_MOVE_R: return 'stand h2smg move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2smg idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2smg move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand h2rifle fire-1 baked';
-		case HCE_A_MELEE: return 'stand h2rifle melee';
-		case HCE_A_THROW: return 'stand h2rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand h2rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand h2rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand h2rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand h2rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand h2rifle evade-right';
-		case HCE_A_BERSERK: return 'stand h2rifle berserk';
-		case HCE_A_WARN: return 'stand h2rifle warn';
-		case HCE_A_SIGNAL: return 'stand h2rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand h2rifle airborne';
-		case HCE_A_LAND: return 'stand h2rifle land-soft';
+		case HCE_A_FIRE: return 'stand h2smg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2smg melee';
+		case HCE_A_THROW: return 'stand h2smg throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2smg dive-left';
+		case HCE_A_DIVE_R: return 'stand h2smg dive-right';
+		case HCE_A_DIVE_F: return 'stand h2smg dive-front';
+		case HCE_A_EVADE_L: return 'stand h2smg evade-left';
+		case HCE_A_EVADE_R: return 'stand h2smg evade-right';
+		case HCE_A_BERSERK: return 'stand h2smg berserk';
+		case HCE_A_WARN: return 'stand h2smg warn';
+		case HCE_A_SIGNAL: return 'stand h2smg signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2smg airborne';
+		case HCE_A_LAND: return 'stand h2smg land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -6133,9 +6131,9 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
-		case HCE_A_CELEBRATE: return 'stand h2rifle celebrate';
-		case HCE_A_TURN_L: return 'stand h2rifle turn-left';
-		case HCE_A_TURN_R: return 'stand h2rifle turn-right';
+		case HCE_A_CELEBRATE: return 'stand h2smg celebrate';
+		case HCE_A_TURN_L: return 'stand h2smg turn-left';
+		case HCE_A_TURN_R: return 'stand h2smg turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
@@ -6146,8 +6144,8 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 	{
 		switch(anim)
 		{
-		case 'crouch h2rifle idle': return 70;
-		case 'crouch h2rifle move-front': return 28;
+		case 'crouch h2smg idle': return 70;
+		case 'crouch h2smg move-front': return 28;
 		case 'flaming rifle idle': return 62;
 		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
@@ -6168,27 +6166,27 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
-		case 'stand h2rifle airborne': return 55;
-		case 'stand h2rifle berserk': return 51;
-		case 'stand h2rifle celebrate': return 72;
-		case 'stand h2rifle dive-front': return 90;
-		case 'stand h2rifle dive-left': return 90;
-		case 'stand h2rifle dive-right': return 90;
-		case 'stand h2rifle evade-left': return 35;
-		case 'stand h2rifle evade-right': return 35;
-		case 'stand h2rifle fire-1 baked': return 13;
-		case 'stand h2rifle idle': return 105;
-		case 'stand h2rifle land-soft': return 46;
-		case 'stand h2rifle melee': return 23;
-		case 'stand h2rifle move-back': return 23;
-		case 'stand h2rifle move-front': return 23;
-		case 'stand h2rifle move-left': return 23;
-		case 'stand h2rifle move-right': return 23;
-		case 'stand h2rifle signal-attack': return 55;
-		case 'stand h2rifle throw-grenade': return 66;
-		case 'stand h2rifle turn-left': return 16;
-		case 'stand h2rifle turn-right': return 16;
-		case 'stand h2rifle warn': return 51;
+		case 'stand h2smg airborne': return 55;
+		case 'stand h2smg berserk': return 51;
+		case 'stand h2smg celebrate': return 72;
+		case 'stand h2smg dive-front': return 90;
+		case 'stand h2smg dive-left': return 90;
+		case 'stand h2smg dive-right': return 90;
+		case 'stand h2smg evade-left': return 35;
+		case 'stand h2smg evade-right': return 35;
+		case 'stand h2smg fire-1 baked': return 13;
+		case 'stand h2smg idle': return 105;
+		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg melee': return 23;
+		case 'stand h2smg move-back': return 23;
+		case 'stand h2smg move-front': return 23;
+		case 'stand h2smg move-left': return 23;
+		case 'stand h2smg move-right': return 23;
+		case 'stand h2smg signal-attack': return 55;
+		case 'stand h2smg throw-grenade': return 66;
+		case 'stand h2smg turn-left': return 16;
+		case 'stand h2smg turn-right': return 16;
+		case 'stand h2smg warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		}

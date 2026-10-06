@@ -58,6 +58,24 @@ def add_beam_rifle_specops(variants):
 H2BEAM_REF = r'h2\weapons\beam rifle'
 add_beam_rifle_specops(AI['variants'])
 
+# Plasma-Caster Spec Ops Elite (new): the Spec Ops plasma-rifle Elite with HDE's Plasma Caster (plasma_caster_ce.py: a
+# Halo CE-style model, attached as an overlay model on the Elite's own skeleton), in the Elite rifle stance; it lobs
+# Plasma Caster shots (charged: the three-shot cluster) from mid range
+CASTER_REF = r'hde\plasma caster'
+def add_caster_specops(variants):
+    E = 'characters\\elite\\elite specops\\elite specops '
+    base = variants.get(E + 'plasma rifle')
+    if not base or (E + 'plasma caster') in variants: return
+    import copy
+    v = copy.deepcopy(base)
+    v['ranged_combat']['reference'] = CASTER_REF
+    v['ranged_combat'].update(combat_range_lower_bound=4.0, combat_range_upper_bound=14.0, maximum_firing_range=20.0)
+    v['_late'] = True
+    v['_ov'] = dict(overlay='plasma_caster', stance='rifle')
+    variants[E + 'plasma caster'] = v
+
+add_caster_specops(AI['variants'])
+
 # The Ultra Jackal is the Digsite add-on's now, on the Halo 2 Jackal (build_digsite.py takes its variant from MOVED;
 # same class name, same DoomEdNum 30248)
 MOVED = {k: AI['variants'].pop(k) for k in [r'characters\jackal\jackal ultra plasma rifle'] if k in AI['variants']}
@@ -866,6 +884,7 @@ def build(cfg=None):
             gcount = max(v['items']['grenades_upper_bound'], 1 if gtype else 0)
             overcharge = weapon == 'plasma pistol' and char.startswith('Jackal')   # only Jackals overcharge
             dw = DROP_WEAPON.get(weapon or '') if ov.get('drops', True) else None
+            if char == 'Hunter': dw = None if weapon == 'plasma caster' else dw     # the White Hunter's is its arm cannon
             dg = {2: 'PlasmaGrenades', 1: 'FragGrenades'}.get(gtype) if gcount else None
             if dw or dg: pat += f'\t\tHaloDoom_EnemyBase.HCE_Drops "{dw or "None"}", "{dg or "None"}";\n'
             gmin, gmax = gc['grenade_range_lower_bound'] * S, (gc['grenade_range_upper_bound'] or 12) * S
@@ -1203,6 +1222,7 @@ PATTERNS['beam rifle'] = (60, 75, 1, 2.4, 3.4, 0, False, 1.0, 1.0)     # 30 tics
 FIRE_SOUNDS['beam rifle'] = (W + 'BeamRifle/Laser/Loop', '', W + 'BeamRifle/Laser/LoopEnd', W + 'BeamRifle/Laser/Fire', True)
 FIRE_CODE['beam rifle'] = 'csr'
 DROP_WEAPON['beam rifle'] = 'Halo_BeamRifle'
+DROP_WEAPON['plasma caster'] = 'Halo_PlasmaCaster'
 WEAPON_IDS[H2BEAM] = 'h2_beam_rifle'
 BEAMRIFLE_CODE = '''
 	// Halo 2's beam rifle, the way HaloDoom's behaves: a held purple beam that cooks whatever it stays on. Each burst

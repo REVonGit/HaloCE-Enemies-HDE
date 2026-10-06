@@ -361,6 +361,42 @@ Model HCE_EliteSpecopsNeedler
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_EliteSpecopsPlasmaCaster
+{
+	Path "models/hce/EliteSpecial"
+	Model 0 "EliteSpecial.iqm"
+	SurfaceSkin 0 0 "skins/elitespecopsplasmacaster_elitespecial_0.png"
+	SurfaceSkin 0 1 "skins/elitespecopsplasmacaster_elitespecial_1.png"
+	SurfaceSkin 0 2 "skins/elitespecopsplasmacaster_elitespecial_2.png"
+	SurfaceSkin 0 3 "skins/elitespecopsplasmacaster_elitespecial_3.png"
+	SurfaceSkin 0 4 "skins/elitespecopsplasmacaster_elitespecial_4.png"
+	SurfaceSkin 0 5 "skins/elitespecopsplasmacaster_elitespecial_5.png"
+	SurfaceSkin 0 12 "skins/elitespecopsplasmacaster_elitespecial_0.png"
+	SurfaceSkin 0 13 "skins/elitespecopsplasmacaster_elitespecial_0.png"
+	SurfaceSkin 0 14 "skins/elitespecopsplasmacaster_elitespecial_2.png"
+	SurfaceSkin 0 15 "skins/elitespecopsplasmacaster_elitespecial_5.png"
+	SurfaceSkin 0 16 "skins/elitespecopsplasmacaster_elitespecial_5.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Path "models/hce/EliteSpecial"
+	Model 6 "EliteSpecial_w_plasma_caster.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_plasma_caster_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_EliteSpecopsPlasmaRifle
 {
 	Path "models/hce/EliteSpecial"

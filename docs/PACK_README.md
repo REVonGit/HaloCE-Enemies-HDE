@@ -342,6 +342,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Elite Commander (gold):** the gold Elites wear the regular Elite body, the one the Minors and Majors wear, instead of the Elite Special's: its colour mask leaves the hands their dark gauntlet colour, where the Elite Special's turned the hands gold too. The armour is baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The Commanders keep their own stats, weapons (the regular Elite model now carries the energy sword) and DoomEdNums.
 * **Fuel-rod Elite (new, `HCE_EliteMajorFuelRod`, 30282):** a Major Elite with the fuel rod gun, in **Halo 2's fuel-rod stance**. Halo CE's and Halo 2's Elites are the same 3ds Max biped: every CE bone has a Halo 2 twin with the same parent and the same offset in its parent's frame, so Halo 2's animations play on the CE Elite as they are (`h2_elite_anims.py`). It gets Halo 2's fuel-rod idle, moves, turns, dives, evades, grenade throw, berserk, melee and the firing overlay. Its firing data is the Spec Ops Grunt's fuel rod; it drops HDE's fuel rod.
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
+* **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
 * **Flood:**
   * Infection forms swarm, leap and nibble, then crawl to dead Marines and Elites. The feed animation raises the corpse as a Flood combat form.
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
@@ -849,3 +850,4 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30314 | `HCE_MarineSniper` |
 | 30315 | `HCE_MarineStickyDetonator` |
 | 30316 | `HCE_SgtJohnson` |
+| 30317 | `HCE_EliteSpecopsPlasmaCaster` |

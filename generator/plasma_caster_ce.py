@@ -88,9 +88,9 @@ def build():
     hde_ce.build(src, PARTS, caster_paint(src), origin, WID, 'hde:Plasma_Caster_HDE.blend (Halo CE reinterpretation)', hook=caster_hook())
 
 def overlay(char='Brute'):
-    """the Plasma Caster as an overlay model on the Brute's own skeleton (its body is at UZDoom's 32-surface limit, so
-    the gun is a separate model like the Marines' arsenal), placed exactly where the Brute holds its baked CE plasma
-    rifle (marine_arsenal.hand_frame recovers that transform)"""
+    """the Plasma Caster as an overlay model on a character's own skeleton (the Brute's body is at UZDoom's 32-surface
+    limit, so the gun is a separate model like the Marines' arsenal; the Spec Ops Elite's likewise), placed exactly
+    where it holds its baked CE plasma rifle (marine_arsenal.hand_frame recovers that transform)"""
     import json, pickle, shutil
     from iqm import write_iqm
     from marine_arsenal import hand_frame, OUT
@@ -110,5 +110,9 @@ def overlay(char='Brute'):
     print(char, 'overlay', fn)
 
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['overlay']: overlay()
+    if sys.argv[1:2] == ['overlay']:
+        import os as _os
+        from marine_arsenal import OUT as _OUT
+        for c in sys.argv[2:] or ['Brute', 'EliteSpecial']:     # the Brute Captain's and the Spec Ops Elite's
+            if _os.path.exists(f'{_OUT}/models/{c}/{c}.json'): overlay(c)
     else: build()

@@ -41,6 +41,11 @@ CLASS_MAP = {
     'PlasmaCasterClusterProj': 'HCES_PlasmaCasterCluster', 'HaloCarbine_Bullet': 'HCES_CarbineBullet',
     'HaloPulseCarbine_Proj': 'HCES_PulseCarbineProj', 'HaloSpiker_Bullet': 'HCES_SpikerSpike',
     'GravityHammerExplosion': 'HCES_HammerBlast', 'HaloNeedleProjectile': 'HCES_Needle',
+    # the Marine arsenal's HDE rounds (build_pack.py MARINE_ARSENAL)
+    'HaloRifle_Bullet': 'HCES_ARBullet', 'HaloCommando_Bullet': 'HCES_ARBullet', 'HaloBattleRifle_Bullet': 'HCES_ARBullet',
+    'HaloDMR_Bullet': 'HCES_SniperBullet', 'HaloSMG_Bullet': 'HCES_ARBullet', 'HaloGPMG_Bullet': 'HCES_ARBullet',
+    'HaloBulldog_Bullet': 'HCES_ShotgunPellet', 'HaloDBLShotgun_Bullet': 'HCES_ShotgunPellet', 'HydraMissile': 'HCES_Rocket',
+    'Halo_40MM_Proj': 'HCES_FragGrenade', 'HaloStickyDetProj': 'HCES_PlasmaGrenade',
     # the regular core's nerfable explosive subclasses (hce_explosives.zsc) -> the standalone classes, which
     # already scale their blasts by DamageMultiply
     'HCE_NeedleScaled': 'HCES_Needle', 'HCE_FuelRodScaled': 'HCES_FuelRod', 'HCE_RocketScaled': 'HCES_Rocket',

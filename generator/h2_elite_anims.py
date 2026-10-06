@@ -57,6 +57,29 @@ RIFLE = {
 RIFLE_FIRE = ('combat:rifle:fire_1', 'combat:rifle:idle', 'stand rifle fire-1 csr baked')
 STANCES = {'missile': (MISSILE, MISSILE_FIRE), 'rifle': (RIFLE, RIFLE_FIRE)}
 
+# Halo 2's Marine pistol stance (01b_spacestation.map) on the Halo CE Marine -- also one 3ds Max biped (same bone
+# names and offsets; Halo 2 adds fingers, face and physics bones, CE a ponytail bone that holds its rest pose).
+# Named 'h2pistol' so Halo CE's own pistol set (the needler Marines') stays as it was; the Magnum and Sidekick
+# Marines use this one. Halo 2 has no pistol grenade throw, surprise or signal: the generator falls back to CE's.
+MAP01B = os.environ.get('HCE_H2_MAP', '01b_spacestation.map')   # MCC halo2\\h2_maps_win64_dx11
+CACHE01B = os.environ.get('HCE_H2_CACHE') or None
+MARINE = r'objects\characters\marine\marine'
+H2PISTOL = {
+    'combat:pistol:idle': 'stand h2pistol idle', 'combat:pistol:warn': 'stand h2pistol warn',
+    'combat:pistol:move_front': 'stand h2pistol move-front', 'combat:pistol:move_back': 'stand h2pistol move-back',
+    'combat:pistol:move_left': 'stand h2pistol move-left', 'combat:pistol:move_right': 'stand h2pistol move-right',
+    'combat:pistol:turn_left': 'stand h2pistol turn-left', 'combat:pistol:turn_right': 'stand h2pistol turn-right',
+    'combat:pistol:dive_front': 'stand h2pistol dive-front', 'combat:pistol:dive_left:var1': 'stand h2pistol dive-left',
+    'combat:pistol:dive_right:var1': 'stand h2pistol dive-right',
+    'combat:pistol:evade_left': 'stand h2pistol evade-left', 'combat:pistol:evade_right': 'stand h2pistol evade-right',
+    'combat:pistol:airborne': 'stand h2pistol airborne', 'combat:pistol:land_soft': 'stand h2pistol land-soft',
+    'combat:pistol:land_hard': 'stand h2pistol land-hard', 'combat:pistol:melee': 'stand h2pistol melee',
+    'crouch:pistol:idle': 'crouch h2pistol idle', 'crouch:pistol:move_front': 'crouch h2pistol move-front',
+}
+H2PISTOL_FIRE = ('combat:pistol:fire_1', 'combat:pistol:idle', 'stand h2pistol fire-1 baked')
+STANCES['h2pistol'] = (H2PISTOL, H2PISTOL_FIRE)
+STANCE_SOURCE = {'missile': (ELITE, MAP08A, CACHE08A), 'rifle': (ELITE, MAP08A, CACHE08A), 'h2pistol': (MARINE, MAP01B, CACHE01B)}
+
 
 def _qmul(a, b):
     x1, y1, z1, w1 = a; x2, y2, z2, w2 = b
@@ -76,16 +99,19 @@ def missile_anims(ce_joints, path=MAP08A, cache=CACHE08A):
     return stance_anims(ce_joints, 'missile', path, cache)
 
 
-def stance_anims(ce_joints, stance, path=MAP08A, cache=CACHE08A):
-    """ce_joints: [(name, parent, t, q, s)] of a CE Elite model -> [Anim] of a Halo 2 stance, in CE joint order"""
+def stance_anims(ce_joints, stance, path=None, cache=None):
+    """ce_joints: [(name, parent, t, q, s)] of a CE model -> [Anim] of a Halo 2 stance, in CE joint order"""
     plan, fire = STANCES[stance]
+    model, dpath, dcache = STANCE_SOURCE[stance]
+    path = path or dpath; cache = cache or dcache
     if not os.path.exists(path): return []
+    sys.path.insert(0, '/home/claude/spv3')
     from h2map import H2Map, render_model
     import h2anim
     m = H2Map(path, cache)
-    nodes = render_model(m, ELITE)['nodes']
+    nodes = render_model(m, model)['nodes']
     h2i = {n['name']: i for i, n in enumerate(nodes)}
-    _, an = h2anim.graph(m, ELITE)
+    _, an = h2anim.graph(m, model)
     byname = {x['name']: x for x in an}
     defaults = [(np.array(n['t']), np.array(n['q'])) for n in nodes]
     # CE joint -> Halo 2 node (or None: keep the CE rest pose)

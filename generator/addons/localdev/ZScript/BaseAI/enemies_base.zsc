@@ -2666,7 +2666,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Spiker melee, energy sword, plasma pistol overcharge, Light Rifle (normal fire), MA5B, beam rifle, Boltshot
 	// and Commando (and the enemies' own pistols, rifles, carbines, shotguns and beams).
 	// Gib: the rocket launcher, Hydra, Scattershot and Light Rifle alt fire, binary rifle, Unmaker, Stanchion,
-	// gravity hammer, GPMG (autocannon), double-barrel shotgun, fuel rod, needler supercombine, Needle Javelin,
+	// gravity hammer, GPMG (autocannon), double-barrel shotgun (the Marines' too), fuel rod, needler supercombine, Needle Javelin,
 	// plasma caster, Sentinel beam supercombine and sticky detonator.
 	// Grenades never gib: half the time they take one or two limbs. Everything else leaves the body whole.
 	const HCE_WK_NONE = 0;
@@ -2693,7 +2693,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(inf.IndexOf("lsr_scattershot") >= 0 || inf.IndexOf("binaryrifle") >= 0 || inf.IndexOf("lightrifledmr") >= 0) return HCE_WK_GIB;   // Scattershot / Light Rifle alt, binary rifle
 		if(inf.IndexOf("needle") >= 0 && inf.IndexOf("javelin") < 0 && mod == 'Explosive' && dmg >= 40) return HCE_WK_GIB;                    // needler supercombine
 		static const String GIBI[] = { "rocket", "hydra", "unmaker", "stanchion", "hammer", "gpmg", "fuelrod", "javelin",
-			"plasmacaster", "sentinelbeamexplosion", "stickydet", "bfg" };
+			"plasmacaster", "sentinelbeamexplosion", "stickydet", "dblshotgun", "bfg" };
 		for(int i = 0; i < GIBI.Size(); i++) if(inf.IndexOf(GIBI[i]) >= 0) return HCE_WK_GIB;
 		if(inf.IndexOf("grenade") >= 0 || inf.IndexOf("barrel") >= 0) return HCE_WK_GRENADE;
 		// otherwise by the weapon in hand

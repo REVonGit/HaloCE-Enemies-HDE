@@ -555,11 +555,16 @@ def marine_code(meta, mdir):
         cases.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, sorted(hide)))} }}; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]);'
                      + (" hce_voice = 'Marine_Johnson';" if johnson else '') + ' break; }\n')
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
-    return ('\t// a random face per Marine (Halo CE\'s head permutations); Sergeant Johnson\'s always speaks with Johnson\'s voice\n'
+    jk = next((k for k, h in enumerate(heads) if 'johnson' in h), -1)
+    others = [k for k in range(len(heads)) if k != jk]
+    return ('\t// a random face per Marine (Halo CE\'s head permutations). Sergeant Johnson\'s face (with his own voice) is his\n'
+            '\t// alone: only HCE_SgtJohnson wears it\n'
+            f'\tconst HCE_JOHNSON_FACE = {jk};\n'
             '\tArray<int> hce_hideSurf;\n\tint hce_face;\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n\t\tHCE_DressMarine();\n\t}\n'
+            f'\tvirtual int HCE_PickFace() {{ static const int F[] = {{ {", ".join(map(str, others))} }}; return F[random(0, {len(others) - 1})]; }}\n'
             '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
-            f'\t\thce_face = random(0, {len(heads) - 1});\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
+            f'\t\thce_face = HCE_PickFace();\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
             f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
 
@@ -699,6 +704,8 @@ def build(cfg=None):
                     if not rof: rof = trig[0].get('initial_rate_of_fire') or 0
                     err = max(err, (trig[0].get('projectile_error_angle_lower_bound') or 0) * DEG)
                     if pps > 1: err = max(err, (trig[0].get('projectile_distribution_angle') or 0) * DEG * 0.5, 4)
+            if ov.get('pellets'): pps = ov['pellets']                 # Marine arsenal shotguns (no Halo CE trigger data)
+            if ov.get('spread') is not None: err = ov['spread']
             if not rof: rof = {'fuel rod': 0.6, 'hunter fuel rod': 0.7, 'rocket launcher': 0.4, 'needler': 6, 'plasma pistol': 4, 'sniper rifle': 0.6}.get(weapon, 3)
             if weapon in ('fuel rod', 'hunter fuel rod', 'rocket launcher', 'sniper rifle'): rof = min(rof, 0.8)
             beam = char == 'Sentinel'
@@ -833,7 +840,7 @@ def build(cfg=None):
                     if r is not None:
                         skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{r}"')
                         continue
-                fn = f'{cls[4:].lower()}_{matn.lower()}.png'
+                fn = f'{ov.get("skin_as", cls)[4:].lower()}_{matn.lower()}.png'     # arsenal Marines share their AR twin's
                 dst = f'{pack}/models/{mdir}/{char}/skins/{fn}'
                 if not os.path.exists(dst):
                     vivid = next((c for k, c in VIVID.items() if k in vname), None)
@@ -883,7 +890,9 @@ def build(cfg=None):
                           f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tsuper.HCE_ApplyAnim(n, blend, loop);\n'
                           f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n'
                           f'\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{{\n\t\tif(gunArm && hce_bladeActor) {{ hce_bladeActor.Destroy(); hce_bladeActor = null; }}\n\t}}\n')
-            zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))}\n{extra}}}\n')
+            animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))
+            if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx
+            zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
             if blade:
                 zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')
                 bl = [f'\tSurfaceSkin 0 {si} "hce_hidden.png"' for si in range(len(meta['meshes']))]
@@ -911,12 +920,17 @@ def build(cfg=None):
                     m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
                     if m: camo.append(f'models/{mdir}/{char}/{m.group(1)}')
             if weapon_lines: skin_lines += [f'\tPath "models/{mdir}/weapons"'] + weapon_lines
+            frames = '\tFrameIndex HCEM A 0 0'
+            if ov.get('overlay'):
+                # the Marine arsenal (marine_arsenal.py): the gun is its own model on the body's skeleton, model 6
+                skin_lines += arsenal_lines(char, ov['overlay'], meta, pack, mdir)
+                frames += f'\n\tFrameIndex HCEM A {ARSENAL_IDX} 0'
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
-                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n{frames}\n}}\n')
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
-            spawners.setdefault(char, []).append(cls)
+            if not ov.get('unique'): spawners.setdefault(char, []).append(cls)
     # ---------------- projectiles with Halo damage
     pz = ['// Enemy projectiles: HDE visuals, Halo CE impact damage']
     done = set()
@@ -1142,6 +1156,251 @@ WEAPON_SKIN = {}      # weapon -> {weapon surface texture: replacement} (recolou
 SKIN_HOOK = {}        # char -> f(cls, v, si, mat, meta, skin_dir) -> skin file name (or None for the default bake)
 BERSERK_ANIMS = {}    # char -> {kind: [names]} used instead of the normal table while hce_berserk is set
 LOBBED = {'plasma caster'}   # weapons fired in an arc
+
+# ---------------------------------------------------------------- the Marine arsenal
+# HaloDoom Evolved's human weapons as Marine weapons, each with the Halo model the user picked (marine_arsenal.py
+# builds the models: Halo CE's, Halo 2's and the Digsite prototypes', with the MA37 repainted and the grenade
+# launcher kitbashed). Each Marine body gets a class per weapon; the gun is an overlay model (model 6) on the body's
+# skeleton. The pistols use Halo 2's Marine pistol stance (h2_elite_anims.py, 'h2pistol'). Projectiles subclass
+# HDE's own rounds (the standalone build maps them to its HCES_ ones); fire sounds and drops are HDE's.
+ARSENAL_IDX = 6
+H2PISTOL_STANCE = 'h2pistol'
+#  weapon key: overlay model (marine_arsenal.ARSENAL), stance, combat range lo/hi and max range (WU),
+#              pellets, spread (deg; None = the base variant's), drop
+MARINE_ARSENAL = {
+    'pistol':           ('magnum', H2PISTOL_STANCE, 2, 12, 30, None, None, 'Halo_Magnum'),
+    'sidekick':         ('sidekick', H2PISTOL_STANCE, 2, 10, 25, None, None, 'Halo_Sidekick'),
+    'ma37':             ('ma37', 'rifle', 3, 15, 30, None, None, 'Halo_AssaultRifle'),
+    'commando':         ('commando', 'rifle', 3, 16, 32, None, None, 'Halo_Commando'),
+    'battle rifle':     ('battle_rifle', 'rifle', 5, 22, 45, None, 1.0, 'Halo_BattleRifle'),
+    'dmr':              ('dmr', 'rifle', 6, 26, 50, None, 0.6, 'Halo_DMR'),
+    'smg':              ('smg', 'rifle', 2, 10, 22, None, None, 'Halo_SMG'),
+    'bulldog':          ('bulldog', 'rifle', 1, 6, 14, 8, 5.0, 'Halo_Bulldog'),
+    'double barrel':    ('double_barrel', 'rifle', 1, 4, 10, 14, 7.0, 'Halo_DBLShotgun'),
+    'sniper rifle':     ('sniper', 'rifle', 8, 35, 70, None, 0.25, 'Halo_SniperRifle'),
+    'rocket launcher':  ('rocket_launcher', 'rifle', 7, 25, 45, None, 0.5, 'Halo_RocketLauncher'),
+    'hydra':            ('hydra', 'rifle', 6, 24, 45, None, 1.5, 'Halo_Hydra'),
+    'grenade launcher': ('grenade_launcher', 'rifle', 5, 18, 30, None, 1.0, 'Halo_GrenadeLauncher'),
+    'sticky detonator': ('sticky_detonator', 'rifle', 4, 14, 25, None, 1.0, 'Halo_StickyDetonator'),
+    'gpmg':             ('gpmg', 'rifle', 3, 18, 35, None, None, 'Halo_GPMG'),
+    'flamethrower':     ('flamethrower', 'rifle', 1, 5, 8, None, None, 'Halo_Flamethrower'),
+}
+# Halo CE's own refs where CE has the weapon (its trigger data and projectile); new ones get an hde\ ref
+ARSENAL_REF = {'pistol': r'weapons\pistol\pistol', 'sniper rifle': r'weapons\sniper rifle\sniper rifle',
+               'rocket launcher': r'weapons\rocket launcher\rocket launcher', 'flamethrower': r'weapons\flamethrower\flamethrower'}
+# new weapons: (pack projectile, HDE base, damage (None: HDE's own), speed WU/tick). Class names matter: the API's
+# HCE_WeaponKind reads them (pistolbullet / arbullet / sniperbullet / shotgunpellet dismember, gpmg / hydra /
+# stanchion / stickydet / dblshotgun gib, grenade takes limbs).
+WEAPONS.update({
+    'sidekick':         ('HCE_SidekickRound', 'HaloSidekick_Bullet', 18, 10.0),
+    'ma37':             ('HCE_MA37Round', 'HaloRifle_Bullet', 9, 10.8),
+    'commando':         ('HCE_CommandoARBullet', 'HaloCommando_Bullet', 14, 11.0),
+    'battle rifle':     ('HCE_BattleRifleARBullet', 'HaloBattleRifle_Bullet', 12, 13.0),
+    'dmr':              ('HCE_DMRSniperBullet', 'HaloDMR_Bullet', 24, 16.0),
+    'smg':              ('HCE_SMGRound', 'HaloSMG_Bullet', 6, 10.0),
+    'bulldog':          ('HCE_BulldogBuckshot', 'HaloBulldog_Bullet', 7, 4.67),
+    'double barrel':    ('HCE_DBLShotgunPellet', 'HaloDBLShotgun_Bullet', 9, 4.67),
+    'hydra':            ('HCE_HydraMissile', 'HydraMissile', None, 0.6),
+    'grenade launcher': ('HCE_40mmGrenade', 'Halo_40MM_Proj', None, 0.5),
+    'sticky detonator': ('HCE_StickyDetCharge', 'HaloStickyDetProj', None, 0.5),
+    'gpmg':             ('HCE_GPMGBullet', 'HaloGPMG_Bullet', 15, 12.0),
+    'stanchion':        ('HCE_StanchionRail', 'HaloSniper_Bullet', 150, 33.3),
+})
+NO_NERF_MIXIN |= {'HydraMissile', 'Halo_40MM_Proj', 'HaloStickyDetProj'}
+PATTERNS.update({
+    'sidekick':         (2, 4, 7, 0.9, 1.5, 0, False, 1.0, 2.0),
+    'ma37':             (5, 10, 3, 0.8, 1.4, 0, True, 1.0, 2.0),
+    'commando':         (3, 6, 4, 0.7, 1.3, 0, False, 1.0, 1.0),
+    'battle rifle':     (3, 3, 2, 0.6, 1.1, 0, False, 1.0, 1.0),      # Halo's three-round burst
+    'dmr':              (1, 3, 11, 1.0, 1.6, 0, False, 1.0, 1.0),
+    'smg':              (8, 14, 2, 0.8, 1.4, 0, True, 1.0, 2.0),
+    'bulldog':          (2, 4, 9, 1.2, 1.8, 0, False, 1.0, 1.0),
+    'double barrel':    (1, 1, 1, 1.6, 2.2, 0, False, 1.0, 1.0),
+    'hydra':            (4, 4, 5, 2.8, 3.6, 0, False, 1.0, 1.0),      # a four-missile salvo
+    'grenade launcher': (1, 2, 20, 2.2, 3.0, 0, False, 1.0, 1.0),
+    'sticky detonator': (1, 1, 1, 2.6, 3.4, 0, False, 1.0, 1.0),
+    'gpmg':             (10, 20, 3, 1.0, 1.6, 0, True, 1.0, 2.0),
+    'stanchion':        (25, 25, 1, 2.8, 3.8, 0, False, 1.0, 1.0),     # 24 tics of aiming, then the rail
+})
+for _k, _snd in {'sidekick': 'Sidekick', 'ma37': 'Rifle', 'commando': 'Commando', 'battle rifle': 'BattleRifle', 'dmr': 'DMR',
+                 'smg': 'SMG', 'bulldog': 'Bulldog', 'double barrel': 'SuperShotgun', 'hydra': 'Hydra',
+                 'sticky detonator': 'StickyDet', 'gpmg': 'GPMG', 'stanchion': 'Stanchion'}.items():
+    FIRE_SOUNDS[_k] = (W + _snd + '/Fire', W + _snd + '/Fire/Bass' if _k not in ('hydra', 'sticky detonator') else '', '', '', False)
+FIRE_SOUNDS['grenade launcher'] = (W + 'GrenadeLauncher/Fire', '', '', '', False)
+FIRE_SOUNDS['stanchion'] = (W + 'Stanchion/Fire', W + 'Stanchion/Fire/Bass', '', W + 'Stanchion/Charge/PreFire', False)
+LOBBED.add('grenade launcher')
+DROP_WEAPON.update({k: d[7] for k, d in MARINE_ARSENAL.items() if k not in DROP_WEAPON})
+DROP_WEAPON['stanchion'] = 'Halo_Stanchion'
+
+STICKY_CODE = """
+	// the sticky detonator: the Marine sets each charge off a second and a half after it lands
+	Array<Actor> hce_stickies;
+	Array<int> hce_stickyAt;
+	override void HCE_OnShot(Actor shot)
+	{
+		if(shot) { hce_stickies.Push(shot); hce_stickyAt.Push(level.maptime + 52); }
+	}
+	override void Tick()
+	{
+		super.Tick();
+		for(int i = hce_stickies.Size() - 1; i >= 0; i--)
+		{
+			Actor c = hce_stickies[i];
+			if(c && level.maptime < hce_stickyAt[i]) continue;
+			if(c) { State st = c.FindState("ExplodeAndDie"); if(st) c.SetState(st); }
+			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
+		}
+	}
+"""
+WEAPON_CODE['sticky detonator'] = STICKY_CODE
+
+STANCHION_CODE = """
+	// the Stanchion: 24 tics of aiming (the glint and the targeting laser, the charge-up sound), then one rail
+	// shot drawn with HDE's laser beam; it tears what it kills apart (HCE_StanchionRail, HCE_WeaponKind)
+	const HCE_RAIL_AIM = 24;
+	bool hce_cqc;
+	void HCE_FireRail()
+	{
+		if(!target) return;
+		vector3 ap = HCE_AimPoint();
+		double gz = height * 0.5 + hce_gunOffset.z;
+		vector3 from = Vec3Angle(hce_gunOffset.x, angle, gz);
+		vector3 diff = level.Vec3Diff(from, ap);
+		double ang = atan2(diff.y, diff.x);
+		double pit = -atan2(diff.z, diff.xy.Length());
+		FLineTraceData lt;
+		LineTrace(ang, hce_maxRange, pit, TRF_THRUSPECIES, gz, hce_gunOffset.x, 0, lt);
+		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
+		if(hce_burstShot < HCE_RAIL_AIM)
+		{
+			if(hce_burstShot == 0 && hce_chargeSound.Length() > 0) A_StartSound(hce_chargeSound, CHAN_WEAPON, CHANF_OVERLAP, 0.9);
+			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
+			if(level.Vec3Diff(from, to).Length() >= 1) HCE_AimLaser(from, to);
+			hce_burstShot++;
+			return;
+		}
+		HCE_EnemyLaser.Flash(from, to, Color(255, 255, 70, 20), 3.0, 0.08);
+		HCE_EnemyLaser.Flash(from, to, Color(255, 255, 200, 120), 1.2, 0.12);
+		for(int i = 0; i < 12; i++)
+			A_SpawnParticle("FF9020", SPF_FULLBRIGHT, 14, 5, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-2, 2), frandom(-2, 2), frandom(0, 3), 0, 0, -0.1, 1.0, -0.06);
+		Actor hit = lt.HitActor;
+		if(hit && hit != self && hit.bSHOOTABLE)
+			hit.DamageMobj(self, self, max(1, int(round(150 * hce_damageMod * HCE_DamageScale()))), 'Railgun');
+		HCE_PlayFireSound(false);
+		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		hce_burstShot++;
+	}
+	override void HCE_FireShot(bool special)
+	{
+		if(hce_cqc) { super.HCE_FireShot(special); return; }
+		HCE_FireRail();
+	}
+"""
+WEAPON_CODE['stanchion'] = STANCHION_CODE
+
+def add_marine_arsenal(variants):
+    import copy
+    for body in ('marine', 'marine_armored'):
+        base = variants.get(f'characters\\{body}\\{body} assault rifle')
+        if not base: continue
+        for key, (ovl, stance, lo, hi, mx, pellets, spread, _drop) in MARINE_ARSENAL.items():
+            vn = f'characters\\{body}\\{body} {ovl.replace("_", " ")}'      # class named after the gun (HCE_MarineMagnum)
+            if vn in variants: continue
+            v = copy.deepcopy(base)
+            v['ranged_combat']['reference'] = ARSENAL_REF.get(key, 'hde\\' + key)
+            v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
+            v['_late'] = True
+            v['_ov'] = dict(overlay=ovl, stance=stance, pellets=pellets, spread=spread, skin_as=cname(f'{body} assault rifle'))
+            variants[vn] = v
+    # Sergeant Johnson: his own face and voice, the Stanchion, and the Magnum for close quarters (with a harder punch)
+    base = variants.get('characters\\marine\\marine assault rifle')
+    if base and 'characters\\marine\\sgt johnson' not in variants:
+        v = copy.deepcopy(base)
+        v['ranged_combat']['reference'] = 'hde\\stanchion'
+        v['ranged_combat'].update(combat_range_lower_bound=6, combat_range_upper_bound=30, maximum_firing_range=70)
+        v['_late'] = True
+        v['_ov'] = dict(overlay='stanchion', stance='rifle', spread=0.2, unique=True, johnson=True, melee=(40, 90), health=75, skin_as='HCE_MarineAssaultRifle')
+        variants['characters\\marine\\sgt johnson'] = v
+
+add_marine_arsenal(AI['variants'])
+
+def arsenal_lines(char, name, meta, pack, mdir):
+    """MODELDEF lines attaching a Marine arsenal overlay (model 6) and copying its files into the pack"""
+    a = (meta.get('arsenal') or {}).get(name)
+    if not a: raise SystemExit(f'{char}: no arsenal overlay {name!r} (run marine_arsenal.py overlays after blood_kit.py)')
+    os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
+    dst = f'{pack}/models/{mdir}/{char}/{a["model"]}'
+    if not os.path.exists(dst): shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dst)
+    for m in a['materials']:
+        d = f'{pack}/models/{mdir}/weapons/{m}'
+        if not os.path.exists(d): shutil.copy(f'{OUT}/models/{char}/{m}', d)
+    return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {ARSENAL_IDX} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
+            + [f'\tSurfaceSkin {ARSENAL_IDX} {k} "{m}"' for k, m in enumerate(a['materials'])])
+
+def johnson_code(A, animtxt, char, meta, mdir):
+    """Sergeant Johnson: the Stanchion at range, the Magnum (Halo 2's pistol stance) when an enemy closes in"""
+    cqc = zs_anim_funcs(A, anim_table(A, H2PISTOL_STANCE, 'pistol'))
+    animtxt = (animtxt.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameLong(int kind)')
+                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsLong(Name anim)'))
+    cqc = (cqc.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameCQC(int kind)')
+              .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsCQC(Name anim)'))
+    def swap(name):
+        a = meta['arsenal'][name]
+        out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
+        out += [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "", \'None\', {k}, "models/{mdir}/weapons", \'{m}\', CMDL_USESURFACESKIN);\n'
+                for k, m in enumerate(a['materials'])]
+        return ''.join(out)
+    pp = PATTERNS['pistol']; ps = FIRE_SOUNDS['pistol']
+    code = f"""
+	// Sergeant Johnson: always his own face and voice. The Stanchion at range; when an enemy gets within ~6 m he
+	// switches to the Magnum (Halo 2's pistol stance) and back again once it's past ~9 m
+	override int HCE_PickFace() {{ return HCE_JOHNSON_FACE; }}
+	override Name HCE_AnimName(int kind) {{ return hce_cqc ? HCE_AnimNameCQC(kind) : HCE_AnimNameLong(kind); }}
+	override int HCE_AnimTics(Name anim) {{ int t = HCE_AnimTicsLong(anim); return t != 30 ? t : HCE_AnimTicsCQC(anim); }}
+	Name hce_longProj; int hce_longShots[3]; double hce_longPause[2]; double hce_longErr, hce_longSpeed, hce_longRange[2];
+	String hce_longSound[3];
+	override void PostBeginPlay()
+	{{
+		super.PostBeginPlay();
+		hce_voice = 'Marine_Johnson';
+		hce_longProj = hce_projectile; hce_longErr = hce_errorAngle; hce_longSpeed = hce_projSpeed;
+		hce_longShots[0] = hce_patShotsMin; hce_longShots[1] = hce_patShotsMax; hce_longShots[2] = hce_patInterval;
+		hce_longPause[0] = hce_patPauseMin; hce_longPause[1] = hce_patPauseMax;
+		hce_longRange[0] = hce_rangeMin; hce_longRange[1] = hce_rangeMax;
+		hce_longSound[0] = hce_fireSound; hce_longSound[1] = hce_fireSoundBass; hce_longSound[2] = hce_chargeSound;
+	}}
+	override void Tick()
+	{{
+		super.Tick();
+		if(health <= 0 || !target || level.maptime % 6) return;
+		double d = Distance3D(target);
+		if(!hce_cqc && d < 192) HCE_CloseQuarters(true);
+		else if(hce_cqc && d > 288) HCE_CloseQuarters(false);
+	}}
+	void HCE_CloseQuarters(bool on)
+	{{
+		hce_cqc = on;
+		hce_burstShot = 0;
+		if(on)
+		{{
+{swap('magnum')}			hce_projectile = '{WEAPONS['pistol'][0]}'; hce_errorAngle = 1.5; hce_projSpeed = {WEAPONS['pistol'][3] * S / TICK:.1f};
+			hce_patShotsMin = {pp[0]}; hce_patShotsMax = {pp[1]}; hce_patInterval = {pp[2]}; hce_patPauseMin = {pp[3]}; hce_patPauseMax = {pp[4]};
+			hce_rangeMin = 0; hce_rangeMax = 160;
+			hce_fireSound = "{ps[0]}"; hce_fireSoundBass = "{ps[1]}"; hce_chargeSound = "";
+		}}
+		else
+		{{
+{swap('stanchion')}			hce_projectile = hce_longProj; hce_errorAngle = hce_longErr; hce_projSpeed = hce_longSpeed;
+			hce_patShotsMin = hce_longShots[0]; hce_patShotsMax = hce_longShots[1]; hce_patInterval = hce_longShots[2];
+			hce_patPauseMin = hce_longPause[0]; hce_patPauseMax = hce_longPause[1];
+			hce_rangeMin = hce_longRange[0]; hce_rangeMax = hce_longRange[1];
+			hce_fireSound = hce_longSound[0]; hce_fireSoundBass = hce_longSound[1]; hce_chargeSound = hce_longSound[2];
+		}}
+		HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
+	}}
+"""
+    return animtxt + '\n' + cqc, code
+MAIN_WEAPONS |= set(WEAPONS)
 
 if __name__ == '__main__':
     build()

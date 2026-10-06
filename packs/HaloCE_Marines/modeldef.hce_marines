@@ -66,6 +66,444 @@ Model HCE_MarineAssaultRifleMajor
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_MarineBattleRifle
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_battle_rifle.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_battle_rifle_0.png"
+	SurfaceSkin 6 1 "w_m_battle_rifle_1.png"
+	SurfaceSkin 6 2 "w_m_battle_rifle_2.png"
+	SurfaceSkin 6 3 "w_m_battle_rifle_3.png"
+	SurfaceSkin 6 4 "w_m_battle_rifle_4.png"
+	SurfaceSkin 6 5 "w_m_battle_rifle_5.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineBulldog
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_bulldog.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_bulldog_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineCommando
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_commando.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_commando_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineDmr
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_dmr.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_dmr_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineDoubleBarrel
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineFlamethrower
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_flamethrower.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_flamethrower_0.png"
+	SurfaceSkin 6 1 "w_m_flamethrower_0.png"
+	SurfaceSkin 6 2 "w_m_flamethrower_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineGpmg
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_gpmg.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_gpmg_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineGrenadeLauncher
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_grenade_launcher.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_grenade_launcher_0.png"
+	SurfaceSkin 6 1 "w_m_grenade_launcher_parts.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineHydra
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_hydra.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_hydra_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineMa37
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_ma37.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_ma37_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineMagnum
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_magnum.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_pistol_0.png"
+	SurfaceSkin 6 1 "w_pistol_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineNeedler
 {
 	Path "models/hce/Marine"
@@ -134,6 +572,49 @@ Model HCE_MarinePlasmaRifle
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_MarineRocketLauncher
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_rocket_launcher.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_rocket_launcher_0.png"
+	SurfaceSkin 6 1 "w_m_rocket_launcher_1.png"
+	SurfaceSkin 6 2 "w_m_rocket_launcher_2.png"
+	SurfaceSkin 6 3 "w_m_rocket_launcher_3.png"
+	SurfaceSkin 6 4 "w_m_rocket_launcher_4.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineShotgun
 {
 	Path "models/hce/Marine"
@@ -166,6 +647,205 @@ Model HCE_MarineShotgun
 	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
+}
+
+Model HCE_MarineSidekick
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_sidekick.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_sidekick_0.png"
+	SurfaceSkin 6 1 "w_m_sidekick_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineSmg
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_smg.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_smg_0.png"
+	SurfaceSkin 6 1 "w_m_smg_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineSniper
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_sniper.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 1 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 2 "w_sniper_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineStickyDetonator
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_sticky_detonator.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_sticky_detonator_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_SgtJohnson
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_stanchion.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_stanchion_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
 }
 
 Model HCE_MarineArmoredAssaultRifle
@@ -232,6 +912,433 @@ Model HCE_MarineArmoredAssaultRifleMajor
 	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
+}
+
+Model HCE_MarineArmoredBattleRifle
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_battle_rifle.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_battle_rifle_0.png"
+	SurfaceSkin 6 1 "w_m_battle_rifle_1.png"
+	SurfaceSkin 6 2 "w_m_battle_rifle_2.png"
+	SurfaceSkin 6 3 "w_m_battle_rifle_3.png"
+	SurfaceSkin 6 4 "w_m_battle_rifle_4.png"
+	SurfaceSkin 6 5 "w_m_battle_rifle_5.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredBulldog
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_bulldog.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_bulldog_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredCommando
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_commando.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_commando_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredDmr
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_dmr.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_dmr_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredDoubleBarrel
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredFlamethrower
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_flamethrower.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_flamethrower_0.png"
+	SurfaceSkin 6 1 "w_m_flamethrower_0.png"
+	SurfaceSkin 6 2 "w_m_flamethrower_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredGpmg
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_gpmg.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_gpmg_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredGrenadeLauncher
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_grenade_launcher.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_grenade_launcher_0.png"
+	SurfaceSkin 6 1 "w_m_grenade_launcher_parts.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredHydra
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_hydra.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_hydra_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredMa37
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_ma37.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_ma37_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredMagnum
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_magnum.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_pistol_0.png"
+	SurfaceSkin 6 1 "w_pistol_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
 }
 
 Model HCE_MarineArmoredNeedler
@@ -333,6 +1440,48 @@ Model HCE_MarineArmoredPlasmaRifleMajor
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_MarineArmoredRocketLauncher
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_rocket_launcher.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_rocket_launcher_0.png"
+	SurfaceSkin 6 1 "w_m_rocket_launcher_1.png"
+	SurfaceSkin 6 2 "w_m_rocket_launcher_2.png"
+	SurfaceSkin 6 3 "w_m_rocket_launcher_3.png"
+	SurfaceSkin 6 4 "w_m_rocket_launcher_4.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineArmoredShotgunMajor
 {
 	Path "models/hce/MarineArmored"
@@ -364,4 +1513,160 @@ Model HCE_MarineArmoredShotgunMajor
 	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
+}
+
+Model HCE_MarineArmoredSidekick
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_sidekick.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_sidekick_0.png"
+	SurfaceSkin 6 1 "w_m_sidekick_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredSmg
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_smg.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_smg_0.png"
+	SurfaceSkin 6 1 "w_m_smg_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredSniper
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_sniper.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 1 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 2 "w_sniper_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineArmoredStickyDetonator
+{
+	Path "models/hce/MarineArmored"
+	Model 0 "MarineArmored.iqm"
+	SurfaceSkin 0 0 "skins/marinearmoredassaultrifle_marinearmored_0.png"
+	SurfaceSkin 0 1 "skins/marinearmoredassaultrifle_marinearmored_1.png"
+	SurfaceSkin 0 2 "skins/marinearmoredassaultrifle_marinearmored_2.png"
+	SurfaceSkin 0 3 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 4 "skins/marinearmoredassaultrifle_marinearmored_4.png"
+	SurfaceSkin 0 5 "skins/marinearmoredassaultrifle_marinearmored_5.png"
+	SurfaceSkin 0 6 "skins/marinearmoredassaultrifle_marinearmored_3.png"
+	SurfaceSkin 0 7 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 8 "skins/marinearmoredassaultrifle_marinearmored_7.png"
+	SurfaceSkin 0 9 "skins/marinearmoredassaultrifle_marinearmored_8.png"
+	SurfaceSkin 0 10 "skins/marinearmoredassaultrifle_marinearmored_9.png"
+	SurfaceSkin 0 11 "skins/marinearmoredassaultrifle_marinearmored_6.png"
+	SurfaceSkin 0 12 "skins/marinearmoredassaultrifle_marinearmored_10.png"
+	SurfaceSkin 0 13 "skins/marinearmoredassaultrifle_marinearmored_11.png"
+	SurfaceSkin 0 14 "skins/marinearmoredassaultrifle_marinearmored_12.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	Path "models/hce/MarineArmored"
+	Model 6 "MarineArmored_w_sticky_detonator.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_sticky_detonator_0.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
 }

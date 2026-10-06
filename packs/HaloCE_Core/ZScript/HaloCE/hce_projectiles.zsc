@@ -8,10 +8,55 @@ class HCE_ARBullet : HaloMAB_Bullet
 	}
 }
 
+class HCE_BattleRifleARBullet : HaloBattleRifle_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 12;
+	}
+}
+
 class HCE_H2BeamShot : HCE_BeamPuff
 {
 	Default
 	{
+	}
+}
+
+class HCE_BulldogBuckshot : HaloBulldog_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 7;
+	}
+}
+
+class HCE_CommandoARBullet : HaloCommando_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 14;
+	}
+}
+
+class HCE_DMRSniperBullet : HaloDMR_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 24;
+	}
+}
+
+class HCE_DBLShotgunPellet : HaloDBLShotgun_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 9;
 	}
 }
 
@@ -26,6 +71,38 @@ class HCE_FuelRodBolt : HCE_FuelRodScaled
 {
 	Default
 	{
+	}
+}
+
+class HCE_GPMGBullet : HaloGPMG_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 15;
+	}
+}
+
+class HCE_40mmGrenade : Halo_40MM_Proj
+{
+	Default
+	{
+	}
+}
+
+class HCE_HydraMissile : HydraMissile
+{
+	Default
+	{
+	}
+}
+
+class HCE_MA37Round : HaloRifle_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 9;
 	}
 }
 
@@ -86,12 +163,46 @@ class HCE_ShotgunPellet : HaloShotgun_Bullet
 	}
 }
 
+class HCE_SidekickRound : HaloSidekick_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 18;
+	}
+}
+
+class HCE_SMGRound : HaloSMG_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 6;
+	}
+}
+
 class HCE_SniperBullet : HaloSniper_Bullet
 {
 	mixin HCE_NerfMixin;
 	Default
 	{
 		HaloProjectile.BaseDamage 101;
+	}
+}
+
+class HCE_StanchionRail : HaloSniper_Bullet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloProjectile.BaseDamage 150;
+	}
+}
+
+class HCE_StickyDetCharge : HaloStickyDetProj
+{
+	Default
+	{
 	}
 }
 

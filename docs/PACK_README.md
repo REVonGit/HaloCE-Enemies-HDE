@@ -28,7 +28,7 @@ The enemies come as one pack per faction on top of a small shared core. Load the
 | `HaloCE_Covenant.pk3` | Grunts, Jackals, Elites, Hunters, and the Doom boss stand-ins | 14 MB |
 | `HaloCE_Flood.pk3` | Infection, carrier and combat forms | 10 MB |
 | `HaloCE_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these) | 5 MB |
+| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these), the Marine arsenal and Sergeant Johnson | 16 MB |
 
 The replacement table lives in the core. Any pick whose faction pack isn't loaded is skipped, and the remaining picks share its weight. A Doom monster whose entire list is missing stays a Doom monster (for example Pinkies without the Flood pack, or Cacodemons without Sentinels). Without the Marines pack, Doom's marines and allied monsters stay as they are. DoomEdNums didn't change; each pack lists its own.
 
@@ -182,6 +182,39 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 **Boss levels still work.** Barons, Mancubi, Arachnotrons, the Cyberdemon and the Spider Mastermind are replaced by dedicated stand-in classes (`HCE_Boss*`). The pack's `CheckReplacee` maps each one back to its Doom boss, and every Halo enemy calls `A_BossDeath` when it dies. So E1M8's Barons, MAP07's Mancubus and Arachnotron triggers and the Cyberdemon/Spider exits fire as usual. Verified on MAP07: killing the Hunter "Mancubi" lowered the tag-666 walls.
 
 **Drops.** Halo enemies drop the weapon they carried as an HDE pickup (`Halo_PlasmaPistol`, `Halo_Needler`, `Halo_PlasmaRifle`, `Halo_FuelRod`, `Halo_MA5B`, …), so the replaced zombies' clip and shotgun drops still turn into ammo. **The Covenant always drop the weapon they carry**, energy swords included (as HDE's Energy Sword): their gun lands just beside the body, clear of HDE's rule that deletes half of all enemy-dropped guns. Flood and Marines still go through that rule. Grunts and Elites with grenades left may also drop plasma grenades, and Marines frag grenades. Hunters (their fuel-rod cannon is part of the arm) and Sentinels drop nothing. Turn drops off with `hce_dropweapons 0`.
+
+## The Marine arsenal
+
+Every human weapon in HaloDoom Evolved has a Marine who carries it, built from the Halo model you picked for it. Both Marine bodies (Marine and Armored Marine) get each one: `HCE_Marine<Gun>` and `HCE_MarineArmored<Gun>`. `HCE_RandomMarine` and `HCE_RandomMarineArmored` now pick from all of them.
+
+| Gun (class suffix) | Model | Fires | Drops |
+|---|---|---|---|
+| `Magnum` | Halo CE's pistol | Halo CE pistol rounds (25), pairs and triples | `Halo_Magnum` |
+| `Sidekick` | the Macworld 2000 pistol (Digsite) | HDE Sidekick rounds (18) | `Halo_Sidekick` |
+| `Ma37` | the E3 2000 assault rifle (Digsite), repainted Reach-style: near-black gunmetal, dark grey furniture, worn steel edges | HDE assault-rifle rounds (9), long bursts | `Halo_AssaultRifle` |
+| `AssaultRifle` (unchanged) | Halo CE's assault rifle | MA5B rounds | `Halo_MA5B` |
+| `Commando` | the Macworld 1999 assault rifle (Digsite) | HDE Commando rounds (14), short bursts | `Halo_Commando` |
+| `BattleRifle` | Halo 2's battle rifle | three-round bursts (12 a round) | `Halo_BattleRifle` |
+| `Dmr` | the E3 1999 assault rifle (Digsite) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
+| `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
+| `Shotgun` (unchanged) | Halo CE's shotgun | Halo CE pellets | `Halo_Shotgun` |
+| `Bulldog` | the E3 1999 shotgun (Digsite) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
+| `DoubleBarrel` | the 1998 Lens Flare demo assault rifle (Digsite) | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
+| `Sniper` | Halo CE's sniper rifle | Halo CE sniper rounds (101), from far back | `Halo_SniperRifle` |
+| `RocketLauncher` | Halo 2's rocket launcher | Halo CE rockets | `Halo_RocketLauncher` |
+| `Hydra` | the Macworld 1999 missile launcher (Digsite) | four-missile salvos of HDE Hydra missiles | `Halo_Hydra` |
+| `GrenadeLauncher` | a kitbash: the Macworld 1999 shotgun with Halo CE's sniper scope and magazine and a lengthened barrel, all in one UNSC olive-drab-over-gunmetal finish | HDE 40 mm grenades, lobbed | `Halo_GrenadeLauncher` |
+| `StickyDetonator` | the Macworld 1999 speargun (Digsite) | HDE sticky charges; the Marine sets each one off 1.5 s after it lands; it gibs | `Halo_StickyDetonator` |
+| `Gpmg` | Halo 2's machine-gun turret gun, off its tripod | HDE GPMG rounds (15, explosive), long bursts; it gibs | `Halo_GPMG` |
+| `Flamethrower` | Halo CE's flamethrower | Halo CE flames, close in | `Halo_Flamethrower` |
+
+**Sergeant Johnson** (`HCE_SgtJohnson`) carries the **Stanchion** (the Macworld 1999 sniper rifle from Digsite). Each shot takes about 0.7 s of aiming: a glint and a targeting laser show it coming, with the Stanchion's charge sound. Then one rail shot (150) is drawn as a red-orange beam, and it tears apart what it kills. When an enemy gets within about 6 m he switches to his **Magnum** in Halo 2's pistol stance, and goes back to the Stanchion once it's past about 9 m. He is the only Marine with Johnson's face and voice, and he has more health (75) and a harder punch (90). He isn't in the random Marine pool; place him with his DoomEdNum or summon him.
+
+**Pistols in Halo 2's stance.** Both pistols (Magnum, Sidekick) use Halo 2's Marine pistol animations (two-handed aim, moves, turns, dives, evades, melee, crouch, fire), from `01b_spacestation.map`. They are moved onto the Halo CE Marine skeleton, the same biped with the same bones. Halo 2 has no pistol grenade throw, surprise or signal, so those come from Halo CE's pistol set. The Needler Marines keep Halo CE's own pistol set.
+
+**How the guns are attached.** Each gun is its own small model on the body's skeleton, attached as model 6 and weighted to the right hand bone. It sits exactly where Halo puts a held weapon: the placement is the same transform Halo CE's assault rifle has on the hand. The Marines' weapon textures are shared in `models/hce/weapons`, and every arsenal Marine wears its assault-rifle twin's skins.
+
+DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_MarineStickyDetonator`, then `HCE_SgtJohnson`).
 
 ## What the AI does (all verified in-engine)
 
@@ -362,8 +395,8 @@ The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/H
 The fork's Acid Breath lines aren't used.
 
 **Marines:** they speak with Halo CE's and Halo 2's own combat dialogue (1,092 lines in 12 voices, `extract_marine_voices.py`).
-* **Faces:** every Marine wears one of Halo CE's faces at random. Unarmoured Marines have eight (bare-headed, boonie hats, bandanas, Johnson's cap) and Armored Marines all eight of theirs (helmets, the cap, Johnson's).
-* **Sergeant Johnson:** a Marine who rolls Johnson's face (the dark-skinned one, with his full-sleeved arms) always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
+* **Faces:** every Marine wears one of Halo CE's faces at random: seven on unarmoured Marines (bare-headed, boonie hats, bandanas, the cap) and seven on Armored Marines (helmets, the cap).
+* **Sergeant Johnson:** Johnson's face (the dark-skinned one, with his full-sleeved arms) is his alone. Only `HCE_SgtJohnson` wears it (see [The Marine arsenal](#the-marine-arsenal)), and he always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
 * **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald, Mendoza and the second sergeant. From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, Tough, and the cautious and gruff sergeants. Halo 2's female Marine is left out, as the models are men.
 * **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts.
 
@@ -478,7 +511,7 @@ DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elite
 | `HaloCE_Standalone_Covenant.pk3` | Grunts, Jackals, Elites, Hunters | 14.1 MB |
 | `HaloCE_Standalone_Flood.pk3` | infection, carrier and combat forms | 10.3 MB |
 | `HaloCE_Standalone_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Standalone_Marines.pk3` | Marines (allies) | 5.3 MB |
+| `HaloCE_Standalone_Marines.pk3` | Marines (allies), the Marine arsenal and Sergeant Johnson | 16 MB |
 | `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, SPV3 creatures, Drones, Brutes and the Chieftain | 31.7 MB |
 
 **Load order:**
@@ -780,3 +813,36 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30281 | `HCE_HunterRed` |
 | 30282 | `HCE_EliteMajorFuelRod` |
 | 30283 | `HCE_EliteSpecopsBeamRifle` |
+| 30284 | `HCE_MarineArmoredBattleRifle` |
+| 30285 | `HCE_MarineArmoredBulldog` |
+| 30286 | `HCE_MarineArmoredCommando` |
+| 30287 | `HCE_MarineArmoredDmr` |
+| 30288 | `HCE_MarineArmoredDoubleBarrel` |
+| 30289 | `HCE_MarineArmoredFlamethrower` |
+| 30290 | `HCE_MarineArmoredGpmg` |
+| 30291 | `HCE_MarineArmoredGrenadeLauncher` |
+| 30292 | `HCE_MarineArmoredHydra` |
+| 30293 | `HCE_MarineArmoredMa37` |
+| 30294 | `HCE_MarineArmoredMagnum` |
+| 30295 | `HCE_MarineArmoredRocketLauncher` |
+| 30296 | `HCE_MarineArmoredSidekick` |
+| 30297 | `HCE_MarineArmoredSmg` |
+| 30298 | `HCE_MarineArmoredSniper` |
+| 30299 | `HCE_MarineArmoredStickyDetonator` |
+| 30300 | `HCE_MarineBattleRifle` |
+| 30301 | `HCE_MarineBulldog` |
+| 30302 | `HCE_MarineCommando` |
+| 30303 | `HCE_MarineDmr` |
+| 30304 | `HCE_MarineDoubleBarrel` |
+| 30305 | `HCE_MarineFlamethrower` |
+| 30306 | `HCE_MarineGpmg` |
+| 30307 | `HCE_MarineGrenadeLauncher` |
+| 30308 | `HCE_MarineHydra` |
+| 30309 | `HCE_MarineMa37` |
+| 30310 | `HCE_MarineMagnum` |
+| 30311 | `HCE_MarineRocketLauncher` |
+| 30312 | `HCE_MarineSidekick` |
+| 30313 | `HCE_MarineSmg` |
+| 30314 | `HCE_MarineSniper` |
+| 30315 | `HCE_MarineStickyDetonator` |
+| 30316 | `HCE_SgtJohnson` |

@@ -27,9 +27,12 @@ CE_AR = r'weapons\assault rifle\assault rifle'
 CE_SG = r'weapons\shotgun\shotgun'
 SPIKER = r'h3\weapons\spiker'
 HAMMER = r'h2\weapons\gravity hammer'
+CASTER = r'hde\plasma caster'           # HDE's Plasma Caster as a Halo CE gun (plasma_caster_ce.py): an overlay model
+CASTER_IDX = 8                          # its model attachment (the armour kit uses 1-6, blood 7)
 # Halo 2 Brute ranks: body vitality from their char tags (08b: the honor guard inherits brute_major's); hlmt
 # variant -> region permutations they wear; fur colours come from the biped's per-variant change colours.
-# Loadouts (all rifle stance): CE plasma rifle / assault rifle / shotgun, the Majors carry the Spiker.
+# Loadouts (all rifle stance): CE plasma rifle / assault rifle / shotgun, the Majors carry the Spiker, Captains
+# may carry the Plasma Caster.
 # Minors, Majors and Captains wear only their body here: their helmets and armour come from the armour kit
 # (extract_brute_kit.py, KIT_JSON), rolled per Brute when it spawns (brute_code / kit_code).
 # The Chieftain is a custom rank: Tartarus's look, hammer stance and gravity hammer.
@@ -38,7 +41,7 @@ BRUTE_RANKS = {
                   wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
     'major': dict(body=150, variants=('major_bth', 'major_crl'), weapons=(SPIKER, CE_SG),
                   wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
-    'captain': dict(body=200, variants=('captain_bth', 'captain_crl'), weapons=(CE_PR, CE_SG),
+    'captain': dict(body=200, variants=('captain_bth', 'captain_crl'), weapons=(CE_PR, CE_SG, CASTER),
                     wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default'), ('flag', 'captain')}),
     'honor guard': dict(body=150, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
                         wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'honor_on'), ('sensors', 'honor_on'),
@@ -215,7 +218,9 @@ def load_ai():
                           grenade_range_lower_bound=3.0, grenade_range_upper_bound=20.0, grenade_velocity=10.0)
                 v['items']['grenades_lower_bound'] = 1; v['items']['grenades_upper_bound'] = 2
                 v['change_colors'] = None; v['change_colors_list'] = []
-                v['_late'] = True; v['_brute_rank'] = rank; v['_brute_variant'] = rd['variants'][fur]
+                v['_late'] = True; v['_brute_rank'] = rank; v['_brute_variant'] = rd['variants'][fur % len(rd['variants'])]
+                if wref == CASTER:
+                    v['_ov'] = dict(overlay='plasma_caster', overlay_idx=CASTER_IDX)
                 if rank == 'chieftain':
                     # brute_tartarus char: 350 body (his 1000-point overshield cut to a breakable 150), no grenades,
                     # leaps 2.5-6 WU at 50%, smashes with the hammer's gravity shockwave (brute_code)
@@ -1123,6 +1128,7 @@ def configure():
     bp.FIRE_SOUNDS['spiker'] = (W + 'Spiker/Fire', W + 'Spiker/Fire/Bass', '', '', False)
     bp.DROP_WEAPON['spiker'] = 'Halo_Spiker'
     bp.DROP_WEAPON['gravity hammer'] = 'Halo_GravityHammer'
+    bp.DROP_WEAPON['plasma caster'] = 'Halo_PlasmaCaster'
     bp.WEAPON_IDS[SPIKER] = 'spiker'
     bp.WEAPON_IDS[HAMMER] = 'gravity_hammer'
     bp.FIRE_CODE['spiker'] = 'sk'
@@ -1206,7 +1212,7 @@ def build():
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
                            'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
-                           'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     src = HERE + '/digsite_src'

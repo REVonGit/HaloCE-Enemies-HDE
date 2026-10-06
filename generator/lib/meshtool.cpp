@@ -23,7 +23,16 @@ int main(int argc, char** argv) {
     meshopt_remapIndexBuffer(I2.data(), I.data(), I.size(), remap.data());
     std::vector<unsigned> out(I2.size()); float le = 0;
     size_t n = meshopt_simplify(out.data(), I2.data(), I2.size(), P2.data(), uv, 12, target, err, 0, &le);
-    if (n > target * 1.5) n = meshopt_simplifySloppy(out.data(), I2.data(), I2.size(), P2.data(), uv, 12, target, 1.0f, &le);
+    if (n > target * 1.5) n = meshopt_simplify(out.data(), I2.data(), I2.size(), P2.data(), uv, 12, target, err * 4, 0, &le);
+    if (n > target * 1.5) {
+      // sloppy (clustering) undershoots on meshes made of many separate pieces: raise its target until it lands
+      size_t t2 = target;
+      for (int it = 0; it < 8; it++) {
+        n = meshopt_simplifySloppy(out.data(), I2.data(), I2.size(), P2.data(), uv, 12, t2, 1.0f, &le);
+        if (n >= target * 0.8 || t2 >= I2.size()) break;
+        t2 = (size_t)(t2 * (double)target / (n ? n : 3) * 1.05); t2 -= t2 % 3;
+      }
+    }
     out.resize(n);
     std::vector<unsigned> r2(uv); size_t un = meshopt_optimizeVertexFetchRemap(r2.data(), out.data(), out.size(), uv);
     std::vector<float> P3(un * 3); meshopt_remapVertexBuffer(P3.data(), P2.data(), uv, 12, r2.data()); meshopt_remapIndexBuffer(out.data(), out.data(), out.size(), r2.data());

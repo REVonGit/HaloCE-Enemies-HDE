@@ -36,15 +36,17 @@ PERMS = {
 }
 MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
 # Regions kept with several permutations, each on surfaces of its own (named region.perm), for the packs to pick one per
-# enemy at run time: the Marines' faces (eight of the twelve, to stay inside 32 surfaces: Sgt Johnson's among them) and
-# Johnson's full-sleeved arms. The armoured Marines' helmet and HUD visor are the same mesh on every helmeted face:
-# one shared surface (region.shared).
-MULTI_PERMS = {
-    'Marine': {'head': ['__base', 'head_charles-10', 'head_chris_boony-11', 'head_fred-12', 'head_matt_boony-14',
-                        'head_rob_bandana-17', 'head_shiek_bandana-18', 'sgt_johnson head-100'],
-               'arms': ['__base', 'arms_full_sleeve-100']},
-    'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},        # None: every permutation
+# enemy at run time: all twelve of the Marines' faces and headgear (Sgt Johnson's among them), their sleeves (Johnson's
+# full sleeves, the rolled-down ones) and the Armored Marines' battle-damaged vest. The armoured Marines' helmet and HUD
+# visor are the same mesh on every helmeted face: one shared surface (region.shared). The faces keep Halo CE's
+# open-mouth textures: the heads have an articulated jaw (bip01 ponytail1) that closes over them.
+MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: faces, hats, sleeves, the damaged vest)
+    'Marine': {'head': None, 'arms': None},
+    'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100'], 'torso': None},
 }
+# bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
+# model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)
+OVERLAY_GUNS = ('Marine', 'MarineArmored')
 SHARED_SHADERS = ('marine_helmet', 'marine_hud')
 
 def sanitize(n):
@@ -133,6 +135,8 @@ def merge_meshes(meshes, mesh_weapon):
 
 def extract(name, pid, sources, maps):
     os.makedirs(f'{OUT}/models/{pid}', exist_ok=True)
+    for f in os.listdir(f'{OUT}/models/{pid}'):        # left over from an earlier mouth-painting pass
+        if f.endswith('_open.png'): os.remove(f'{OUT}/models/{pid}/{f}')
     m = maps[sources[0]]
     geo_from = MODEL_FROM.get(pid, name)
     if geo_from != name:          # a map that carries both bipeds, so the model comes from the same cache
@@ -199,7 +203,7 @@ def extract(name, pid, sources, maps):
                            uv=uv, bidx=bidx, bw=bw, tris=p['tris'][:, [0, 2, 1]], group=group))
     markers = read_markers(m, model)
     mesh_weapon = [None] * len(meshes)
-    mesh_weapon += attach_weapons(pid, name, model, markers, meshes)
+    if pid not in OVERLAY_GUNS: mesh_weapon += attach_weapons(pid, name, model, markers, meshes)
     meshes, mesh_weapon = merge_meshes(meshes, mesh_weapon)
     joints = [(n['name'], n['parent'], tuple(n['t']), tuple(n['q']), (1, 1, 1)) for n in model.nodes]
     # animations, merged across every map that carries this biped
@@ -250,6 +254,17 @@ def extract(name, pid, sources, maps):
         to_bind = lambda p: wt + hm.qrot(wq, mt + hm.qrot(mq, p))
         for a in derive(anims, joints, to_bind, H2Anim):
             anims.setdefault(a.name, a)
+    if pid in ('Marine', 'MarineArmored'):
+        # Halo CE's Marine heads have an articulated jaw (rigged to 'bip01 ponytail1'; the face textures paint the open
+        # mouth behind it). Halo 2's stances don't drive that bone, which leaves it at the bind pose, jaw dropped:
+        # hold it where Halo CE's own animations keep it, mouth shut
+        jn = [n['name'] for n in model.nodes].index('bip01 ponytail1')
+        ref = anims.get('stand rifle idle') or next(a for k, a in anims.items() if ' idle' in k and 'h2' not in k)
+        jt, jq, js = ref.frames[0][jn]
+        for k, a in anims.items():
+            if ' h2' not in k: continue
+            a.frames = [list(fr) for fr in a.frames]
+            for fr in a.frames: fr[jn] = (jt, jq, js)
     alist = []
     for nm in sorted(anims):
         a = anims[nm]
@@ -270,6 +285,14 @@ def extract(name, pid, sources, maps):
                 collision_height=B['collision_height_standing'], collision_radius=B['collision_radius'],
                 markers=markers, mesh_weapon=mesh_weapon)
     if mperms: meta['mesh_names'] = [mm['name'] for mm in meshes]       # region.perm surfaces (MULTI_PERMS)
+    if pid in OVERLAY_GUNS:
+        # Halo weapon space -> bind pose at the gun hand (weapon origin on the hand marker), for the gun overlays
+        mk = markers.get('right hand')[0]
+        node, mt, mq = mk['node'], np.array(mk['t']), hm.hq(mk['q'])
+        wt, wq = model.world_bind()[node]
+        tq = hm.qnorm(hm.qmul(wq, mq))
+        meta['hand_frame'] = dict(node=int(node), R=np.stack([hm.qrot(tq, e) for e in np.eye(3)], 1).tolist(),
+                                  t=(wt + hm.qrot(wq, mt)).tolist())
     json.dump(meta, open(f'{OUT}/models/{pid}/{pid}.json', 'w'), indent=1)
     return meta
 

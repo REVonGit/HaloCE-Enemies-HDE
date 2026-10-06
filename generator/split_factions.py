@@ -106,6 +106,10 @@ def main():
             for g in sorted(os.listdir(f'{PACK}/{dn}')):
                 if g.startswith(f'{stem}_gib_') or g == f'gore_{stem}.png' or g.startswith(f'{stem}_blood') \
                         or g.startswith('blood') and g.endswith('.png') or g == 'hce_noblood.png': need.add(f'{dn}/{g}')
+        # the transparent skin ZScript swaps in at run time (A_ChangeModel: Marine cosmetics, gore, blood overlays)
+        for b in mblocks:
+            for pth in set(re.findall(r'Path "(models/[^/"]+)/', b)):
+                if os.path.exists(f'{PACK}/{pth}/weapons/hce_hidden.png'): need.add(f'{pth}/weapons/hce_hidden.png')
         for f in sorted(need):
             os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True)
             shutil.copy(f'{PACK}/{f}', f'{d}/{f}')

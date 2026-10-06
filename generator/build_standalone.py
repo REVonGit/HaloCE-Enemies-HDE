@@ -59,7 +59,7 @@ DROP_TO_NONE = True
 DROP_MAP = {
     'Halo_PlasmaPistol': 'Cell', 'Halo_PlasmaRifle': 'Cell', 'Halo_Needler': 'Cell', 'Halo_Carbine': 'Cell',
     'Halo_PulseCarbine': 'Cell', 'Halo_BeamRifle': 'Cell', 'Halo_Flamethrower': 'Cell', 'Halo_FuelRod': 'RocketAmmo',
-    'Halo_RocketLauncher': 'RocketAmmo', 'Halo_MA5B': 'Clip', 'Halo_Magnum': 'Clip', 'Halo_SniperRifle': 'Clip',
+    'Halo_RocketLauncher': 'RocketAmmo', 'Halo_PlasmaCaster': 'RocketAmmo', 'Halo_MA5B': 'Clip', 'Halo_Magnum': 'Clip', 'Halo_SniperRifle': 'Clip',
     'Halo_Spiker': 'Clip', 'Halo_Shotgun': 'Shell', 'Halo_GravityHammer': 'None', 'Halo_EnergySword': 'None',
     'PlasmaGrenades': 'None', 'FragGrenades': 'None',
 }

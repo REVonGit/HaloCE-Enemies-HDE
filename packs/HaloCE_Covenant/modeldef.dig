@@ -9,6 +9,54 @@ Model HCE_BlindWolf
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_BruteCaptainPlasmaCaster
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_captain_bth_brute.png"
+	SurfaceSkin 0 1 "skins/brute_captain_bth_brute.png"
+	SurfaceSkin 0 2 "skins/brute_captain_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_captain_bth_brute_head.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	SurfaceSkin 0 8 "skins/hce_hidden.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/hce_hidden.png"
+	SurfaceSkin 0 11 "skins/hce_hidden.png"
+	SurfaceSkin 0 12 "skins/hce_hidden.png"
+	SurfaceSkin 0 13 "skins/hce_hidden.png"
+	SurfaceSkin 0 14 "skins/brute_captain_bth_brute.png"
+	SurfaceSkin 0 15 "skins/hce_hidden.png"
+	SurfaceSkin 0 16 "skins/hce_hidden.png"
+	SurfaceSkin 0 17 "skins/hce_hidden.png"
+	SurfaceSkin 0 18 "skins/hce_hidden.png"
+	SurfaceSkin 0 19 "skins/hce_hidden.png"
+	SurfaceSkin 0 28 "skins/brute_captain_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_captain_bth_brute_head.png"
+	SurfaceSkin 0 30 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	SurfaceSkin 0 31 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_plasma_caster.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 8 0 "w_plasma_caster_0.png"
+	Scale 92 92 110
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
 Model HCE_BruteCaptainPlasmaRifle
 {
 	Path "models/hce_dig/Brute"

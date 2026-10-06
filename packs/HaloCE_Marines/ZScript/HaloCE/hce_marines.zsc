@@ -59,31 +59,43 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood3.iqm'); break;
 		}
 	}
-	// a random face per Marine (Halo CE's head permutations). Sergeant Johnson's face (with his own voice) is his
-	// alone: only HCE_SgtJohnson wears it
-	const HCE_JOHNSON_FACE = 7;
+	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
+	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
+	const HCE_JOHNSON_FACE = 11;
 	Array<int> hce_hideSurf;
 	int hce_face;
+	bool hce_johnsonArms;
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
 		HCE_DressMarine();
 	}
-	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 3, 4, 5, 6 }; return F[random(0, 6)]; }
+	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; return F[random(0, 10)]; }
 	void HCE_DressMarine()
 	{
 		hce_hideSurf.Clear();
 		hce_face = HCE_PickFace();
+		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE;
 		switch(hce_face)
 		{
-		case 0: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 1: { static const int H[] = { 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 2: { static const int H[] = { 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 3: { static const int H[] = { 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 4: { static const int H[] = { 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 5: { static const int H[] = { 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 6: { static const int H[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 7: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); hce_voice = 'Marine_Johnson'; break; }
+		case 0: { static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 1: { static const int H[] = { 1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 2: { static const int H[] = { 1, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 3: { static const int H[] = { 1, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 4: { static const int H[] = { 1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 5: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 7: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 8: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 9: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 10: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 11: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); hce_voice = 'Marine_Johnson'; break; }
+		}
+		if(!hce_johnsonArms)
+		{
+			int a = random(0, 2) == 2 ? 1 : 0;
+			if(a == 0) { static const int A0[] = { 2 }; for(int i = 0; i < A0.Size(); i++) hce_hideSurf.Push(A0[i]); }
+			if(a == 1) { static const int A1[] = { 0 }; for(int i = 0; i < A1.Size(); i++) hce_hideSurf.Push(A1[i]); }
 		}
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
@@ -3401,11 +3413,12 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood3.iqm'); break;
 		}
 	}
-	// a random face per Marine (Halo CE's head permutations). Sergeant Johnson's face (with his own voice) is his
-	// alone: only HCE_SgtJohnson wears it
+	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
+	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
 	const HCE_JOHNSON_FACE = 7;
 	Array<int> hce_hideSurf;
 	int hce_face;
+	bool hce_johnsonArms;
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -3416,17 +3429,20 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		hce_hideSurf.Clear();
 		hce_face = HCE_PickFace();
+		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE;
 		switch(hce_face)
 		{
-		case 0: { static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 1: { static const int H[] = { 1, 3, 5, 6, 7, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 2: { static const int H[] = { 1, 3, 4, 6, 7, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 3: { static const int H[] = { 1, 2, 3, 4, 5, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 4: { static const int H[] = { 1, 3, 4, 5, 6, 7, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 5: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 0: { static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 1: { static const int H[] = { 1, 3, 5, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 2: { static const int H[] = { 1, 3, 4, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 3: { static const int H[] = { 1, 2, 3, 4, 5, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 4: { static const int H[] = { 1, 3, 4, 5, 6, 7, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 5: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 7: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); hce_voice = 'Marine_Johnson'; break; }
 		}
+		if(!hce_johnsonArms && random(0, 4) == 0) { static const int T[] = { 14 }; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }
+		else { static const int T[] = { 15, 16 }; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override void HCE_BloodHideClass()

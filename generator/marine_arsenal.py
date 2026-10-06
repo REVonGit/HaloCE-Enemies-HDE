@@ -5,7 +5,8 @@ space (+x forward, +z up, origin on the grip), for the Marines' weapon overlays.
 
 Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation / 08a_deltacliffs) and the Digsite
 prototypes (github.com/digsite/h1, JMS + TIFF). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
-Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, and the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py."""
+Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py,
+and the Commando and the Hydra HDE's own (Commando_HDE.blend1, Hydra_HDE.blend) by commando_ce.py / hydra_ce.py."""
 import os, sys, pickle, json
 import numpy as np
 from PIL import Image
@@ -33,14 +34,14 @@ ARSENAL = {
     'gpmg':             ('h2', ('01b', r'objects\weapons\fixed\h_turret_mp\weapon\weapon')),   # the gun off its tripod
     'rocket_launcher':  ('h2', ('08a', r'objects\weapons\support_high\rocket_launcher\rocket_launcher')),
     'double_barrel':    ('dig', ('weapons/assault_rifle/98_lens/models/base superhigh.JMS', 'weapons/assault_rifle/98_lens/bitmaps/h assault rifle')),
-    'commando':         ('dig', ('weapons/assault_rifle/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms ARGL HG')),
+    'commando':         ('hde_ce', 'commando_ce'),   # HDE's own Commando, reinterpreted as a Halo CE gun in its own colours
     'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
     'ma37':             ('dig', ('weapons/assault_rifle/00_e3/models/h assault rifle.JMS', SH + '00_e3/bitmaps/h small arms ARGL SG')),
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
     'bulldog':          ('ce_bulldog', None),     # HDE's own Bulldog, reinterpreted as a Halo CE gun (bulldog_ce.py)
     'grenade_launcher': ('ce_gl', None),         # HDE's own grenade launcher, reinterpreted as a Halo CE gun (gl_ce.py)
     'stanchion':        ('dig', ('weapons/sniper_rifle/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
-    'hydra':            ('dig', ('weapons/missile_launcher/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h support RL ML')),
+    'hydra':            ('hde_ce', 'hydra_ce'),      # HDE's own Hydra, reinterpreted as a Halo CE gun
     'sticky_detonator': ('dig', ('weapons/speargun/99_mac/models/h_speargun.JMS', SH + '99_mac/bitmaps/h small arms SPG SMG')),
 }
 
@@ -182,7 +183,25 @@ def _part(m, sel_tris):
     used = np.unique(m['tris'][sel_tris]); remap = -np.ones(len(m['pos']), int); remap[used] = np.arange(len(used))
     return dict(material=m['material'], pos=m['pos'][used].copy(), nrm=m['nrm'][used].copy(), uv=m['uv'][used].copy(), tris=remap[m['tris'][sel_tris]])
 
-FIX = {'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_upright}
+def fix_rocket_launcher(meshes):
+    """Halo 2 draws the SPNKr's lettering (SPNKr, M41 SSR MAV/AW, the "hold like this" plate) as a decal sheet floating
+    just over the tubes, white paint through the decal bitmap's alpha. build_h2 saved it without alpha (a blank
+    sheet): give it back its alpha (UZDoom alpha-tests model skins, as the Brutes' hair does), lift it a hair off the
+    tubes so it never z-fights them, and let it be seen from both sides"""
+    import extract_h2_brute as hb
+    wid = 'm_rocket_launcher'; d = f'{OUT}/weapons/{wid}'
+    for m in meshes:
+        if 'decal' not in m.get('shader', ''): continue
+        bm = [b for b in m.get('bitmaps', []) if b.endswith('_decal')]
+        im = np.asarray(hb.bitmap(h2map('08a'), bm[0]).convert('RGBA')).copy()
+        im[..., :3] = (np.array([0.88, 0.88, 0.85]) * 255).astype(np.uint8)
+        im[..., 3] = np.where(im[..., 3] > 110, 255, 0)          # crisp letters under the alpha test
+        Image.fromarray(im, 'RGBA').save(f'{d}/{m["material"]}')
+        m['pos'] = m['pos'] + m['nrm'] * 0.0008
+        m['tris'] = np.concatenate([m['tris'], m['tris'][:, [0, 2, 1]]])
+    return meshes
+
+FIX = {'rocket_launcher': fix_rocket_launcher, 'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_upright}
 
 def summary(wid):
     d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
@@ -195,18 +214,21 @@ def wid_of(name):
 
 MARINES = ['Marine', 'MarineArmored']
 
-def hand_frame(char):
+def hand_frame(char, ref='assault_rifle'):
     """(R, t, joint) taking Halo weapon space to the character's bind pose at its gun hand, recovered exactly from the
     Halo CE assault rifle extract_chars.py baked onto it (so every weapon sits where Halo puts a held weapon)"""
     from iqm import read_iqm
     joints, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
     meta = json.load(open(f'{OUT}/models/{char}/{char}.json'))
-    ar = pickle.load(open(f'{OUT}/weapons/assault_rifle/assault_rifle.pkl', 'rb'))
+    if meta.get('hand_frame'):                  # extract_chars.py OVERLAY_GUNS: no baked gun, the frame itself
+        hf = meta['hand_frame']
+        return np.array(hf['R']), np.array(hf['t']), hf['node'], joints
+    ar = pickle.load(open(f'{OUT}/weapons/{ref}/{ref}.pkl', 'rb'))
     groups = {}
     for m in ar['meshes']: groups.setdefault(m['material'], []).append(m['pos'])
     A, B, jn = [], [], None
     for si, w in enumerate(meta['mesh_weapon']):
-        if w != 'assault_rifle': continue
+        if w != ref: continue
         src = np.concatenate(groups[meshes[si]['material']]); dst = meshes[si]['pos']
         if len(src) == len(dst): A.append(src); B.append(dst); jn = int(meshes[si]['bidx'][0, 0])
     A = np.concatenate(A); B = np.concatenate(B)
@@ -216,6 +238,9 @@ def hand_frame(char):
     t = cb - R @ ca
     assert np.abs(A @ R.T + t - B).max() < 1e-4
     return R, t, jn, joints
+
+# Halo CE's own Marine guns not in the arsenal table: overlays too (the bodies carry no baked guns)
+BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle'}
 
 def overlays():
     """one overlay model per Marine body per weapon: the weapon on the gun hand's bone, on the body's own skeleton
@@ -227,8 +252,8 @@ def overlays():
         R, t, jn, joints = hand_frame(char)
         bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
         od = f'{OUT}/models/{char}'
-        for name in ARSENAL:
-            wid = wid_of(name)
+        for name in list(ARSENAL) + list(BASE_OVERLAYS):
+            wid = wid_of(name) if name in ARSENAL else BASE_OVERLAYS[name]
             d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
             ms = []
             for k, m in enumerate(d['meshes']):
@@ -239,7 +264,7 @@ def overlays():
                 shutil.copy(f'{OUT}/weapons/{wid}/{m["material"]}', f'{od}/{m["material"]}')
             fn = f'{char}_w_{name}.iqm'
             write_iqm(f'{od}/{fn}', joints, ms, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
-            made.setdefault(char, {})[name] = dict(model=fn, materials=[m['material'] for m in d['meshes']])
+            made.setdefault(char, {})[name] = dict(model=fn, wid=wid, materials=[m['material'] for m in d['meshes']])
         meta = json.load(open(f'{od}/{char}.json'))
         meta['arsenal'] = made[char]
         json.dump(meta, open(f'{od}/{char}.json', 'w'), indent=1)
@@ -255,6 +280,8 @@ def main(only=None):
             import bulldog_ce; bulldog_ce.build()
         elif kind == 'ce_gl':
             import gl_ce; gl_ce.build()
+        elif kind == 'hde_ce':                  # hde_ce.py: commando_ce, hydra_ce
+            __import__(src).build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy
             import shutil
             wid = 'm_' + name; d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)

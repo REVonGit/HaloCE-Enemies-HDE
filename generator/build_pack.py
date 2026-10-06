@@ -539,32 +539,51 @@ def gore_code(char, meta, mdir, sc):
 
 
 def marine_code(meta, mdir):
-    """a random face per Marine from Halo CE's head permutations (extract_chars.MULTI_PERMS); Sergeant Johnson's face
-    (the dark-skinned one) brings his full-sleeved arms and always his own voice, the others a random Marine's"""
+    """Halo CE's Marine cosmetics, rolled per Marine (extract_chars.MULTI_PERMS): a random face (bare heads, boonie
+    hats, bandanas, caps, helmets), sleeves rolled down on some, the battle-damaged vest on some Armored Marines.
+    Sergeant Johnson's face (the dark-skinned one) brings his full-sleeved arms and always his own voice"""
     names = meta.get('mesh_names') or []
     heads = sorted({n.split('.', 1)[1] for n in names if n.startswith('head.') and n != 'head.shared'})
     if len(heads) < 2: return ''
-    def sis(pred): return [i for i, n in enumerate(names) if pred(n)]
+    def sis(pred): return sorted(i for i, n in enumerate(names) if pred(n))
+    def jarms(n): return 'johnson' in n or 'sleeve-100' in n
+    arms = sorted({n for n in names if n.startswith('arms.') and not jarms(n)})
+    torsos = sorted({n for n in names if n.startswith('torso.')})
     cases = []
     for k, h in enumerate(heads):
         johnson = 'johnson' in h
         helmet = 'cap' not in h and not johnson
         hide = sis(lambda n: n.startswith('head.') and n != 'head.shared' and n != f'head.{h}')
         if not helmet: hide += sis(lambda n: n == 'head.shared')
-        hide += sis(lambda n: n.startswith('arms.') and (('johnson' in n or 'sleeve-100' in n) != johnson))
+        if johnson: hide += sis(lambda n: n.startswith('arms.') and not jarms(n))
+        else: hide += sis(jarms)
         cases.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, sorted(hide)))} }}; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]);'
                      + (" hce_voice = 'Marine_Johnson';" if johnson else '') + ' break; }\n')
+    roll = ''
+    if len(arms) > 1:            # sleeves: rolled up (the base arms) on most, down on about a third
+        sets = [sis(lambda n, a=a: n.startswith('arms.') and not jarms(n) and n != a) for a in arms]
+        pick = 'random(0, 2) == 2 ? 1 : 0' if len(arms) == 2 else f'random(0, {len(arms) - 1})'
+        roll += (f'\t\tif(!hce_johnsonArms)\n\t\t{{\n\t\t\tint a = {pick};\n'
+                 + ''.join(f'\t\t\tif(a == {k}) {{ static const int A{k}[] = {{ {", ".join(map(str, st))} }}; for(int i = 0; i < A{k}.Size(); i++) hce_hideSurf.Push(A{k}[i]); }}\n'
+                           for k, st in enumerate(sets)) + '\t\t}\n')
+    if len(torsos) > 1:          # the Armored Marines' vest: battle-damaged on about one in five
+        base = next(t for t in torsos if '__base' in t)
+        dmg = [t for t in torsos if t != base]
+        hb = sis(lambda n: n == base); hd = sis(lambda n: n in dmg)
+        roll += (f'\t\tif(!hce_johnsonArms && random(0, 4) == 0) {{ static const int T[] = {{ {", ".join(map(str, hb))} }}; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }}\n'
+                 f'\t\telse {{ static const int T[] = {{ {", ".join(map(str, hd))} }}; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }}\n')
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
     jk = next((k for k, h in enumerate(heads) if 'johnson' in h), -1)
     others = [k for k in range(len(heads)) if k != jk]
-    return ('\t// a random face per Marine (Halo CE\'s head permutations). Sergeant Johnson\'s face (with his own voice) is his\n'
-            '\t// alone: only HCE_SgtJohnson wears it\n'
+    return ('\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
+            '\t// Johnson\'s face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it\n'
             f'\tconst HCE_JOHNSON_FACE = {jk};\n'
-            '\tArray<int> hce_hideSurf;\n\tint hce_face;\n'
+            '\tArray<int> hce_hideSurf;\n\tint hce_face;\n\tbool hce_johnsonArms;\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n\t\tHCE_DressMarine();\n\t}\n'
             f'\tvirtual int HCE_PickFace() {{ static const int F[] = {{ {", ".join(map(str, others))} }}; return F[random(0, {len(others) - 1})]; }}\n'
             '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
-            f'\t\thce_face = HCE_PickFace();\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
+            f'\t\thce_face = HCE_PickFace();\n\t\thce_johnsonArms = hce_face == HCE_JOHNSON_FACE;\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
+            + roll +
             f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
 
@@ -802,6 +821,11 @@ def build(cfg=None):
             if char.startswith('Flood'): color = None
             skin_lines = []; weapon_lines = []
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
+            if not ov.get('overlay') and meta.get('hand_frame') and wid_equipped:
+                # a body without baked guns (extract_chars.OVERLAY_GUNS): Halo CE's own gun as its overlay too
+                ars = meta.get('arsenal') or {}
+                hit = sorted((k != wid_equipped, k) for k, a in ars.items() if a.get('wid') == wid_equipped)
+                if hit: ov = dict(ov, overlay=hit[0][1])
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
             stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
             blood_hidden = []
@@ -923,8 +947,9 @@ def build(cfg=None):
             frames = '\tFrameIndex HCEM A 0 0'
             if ov.get('overlay'):
                 # the Marine arsenal (marine_arsenal.py): the gun is its own model on the body's skeleton, model 6
-                skin_lines += arsenal_lines(char, ov['overlay'], meta, pack, mdir)
-                frames += f'\n\tFrameIndex HCEM A {ARSENAL_IDX} 0'
+                oi = ov.get('overlay_idx', ARSENAL_IDX)
+                skin_lines += arsenal_lines(char, ov['overlay'], meta, pack, mdir, oi)
+                frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n{frames}\n}}\n')
@@ -1324,7 +1349,7 @@ def add_marine_arsenal(variants):
 
 add_marine_arsenal(AI['variants'])
 
-def arsenal_lines(char, name, meta, pack, mdir):
+def arsenal_lines(char, name, meta, pack, mdir, idx=None):
     """MODELDEF lines attaching a Marine arsenal overlay (model 6) and copying its files into the pack"""
     a = (meta.get('arsenal') or {}).get(name)
     if not a: raise SystemExit(f'{char}: no arsenal overlay {name!r} (run marine_arsenal.py overlays after blood_kit.py)')
@@ -1334,8 +1359,9 @@ def arsenal_lines(char, name, meta, pack, mdir):
     for m in a['materials']:
         d = f'{pack}/models/{mdir}/weapons/{m}'
         if not os.path.exists(d): shutil.copy(f'{OUT}/models/{char}/{m}', d)
-    return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {ARSENAL_IDX} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
-            + [f'\tSurfaceSkin {ARSENAL_IDX} {k} "{m}"' for k, m in enumerate(a['materials'])])
+    idx = ARSENAL_IDX if idx is None else idx
+    return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {idx} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
+            + [f'\tSurfaceSkin {idx} {k} "{m}"' for k, m in enumerate(a['materials'])])
 
 def johnson_code(A, animtxt, char, meta, mdir):
     """Sergeant Johnson: the Stanchion at range, the Magnum (Halo 2's pistol stance) when an enemy closes in"""

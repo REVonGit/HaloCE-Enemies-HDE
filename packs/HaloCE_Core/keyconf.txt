@@ -1,2 +1,4 @@
-// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you
+// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,
+// "leatherneck" one of every loaded Marine
 alias punkassbitches "netevent hce_spawnall"
+alias leatherneck "netevent hce_spawnmarines"

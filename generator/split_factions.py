@@ -70,8 +70,9 @@ def main():
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
-    open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you\n'
-                                          'alias punkassbitches "netevent hce_spawnall"\n')
+    open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
+                                          '// "leatherneck" one of every loaded Marine\n'
+                                          'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}

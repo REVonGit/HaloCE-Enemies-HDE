@@ -275,13 +275,17 @@ class HCE_ReplaceHandler : EventHandler
 
 // Console command "punkassbitches" (KEYCONF alias for "netevent hce_spawnall"): spawns one of every Halo CE enemy
 // class that's loaded (every pack and add-on), side by side in lines in front of the player, facing them.
+// "leatherneck" ("netevent hce_spawnmarines") does the same with only the Marines (every human-team class: both
+// bodies, every gun, Sergeant Johnson).
 // They don't patrol while idle. Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
 {
 	override void NetworkProcess(ConsoleEvent e)
 	{
-		if(e.Name != "hce_spawnall") return;
+		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines") return;
+		bool marines = e.Name == "hce_spawnmarines";
+		String cmd = marines ? "leatherneck" : "punkassbitches";
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
 		// every concrete enemy class, sorted by name so ranks and weapons of a species stand together
@@ -292,6 +296,11 @@ class HCE_SpawnAllHandler : EventHandler
 			if(!c || c.IsAbstract() || !(c is "HaloDoom_EnemyBase")) continue;
 			String n = c.GetClassName();
 			if(n.Length() < 4 || n.Mid(n.Length() - 4) == "Base") continue;
+			if(marines)
+			{
+				let d = HaloDoom_EnemyBase(GetDefaultByType(c));
+				if(!d || d.hce_team != HCE_TEAM_HUMAN) continue;
+			}
 			names.Push(n);
 		}
 		for(int i = 1; i < names.Size(); i++)
@@ -300,7 +309,7 @@ class HCE_SpawnAllHandler : EventHandler
 			while(j >= 0 && names[j] > k) { names[j + 1] = names[j]; j--; }
 			names[j + 1] = k;
 		}
-		if(names.Size() == 0) { Console.Printf("punkassbitches: no Halo CE enemies loaded"); return; }
+		if(names.Size() == 0) { Console.Printf("%s: no Halo CE %s loaded", cmd, marines ? "Marines" : "enemies"); return; }
 		// lines across the player's view, starting 160 units ahead: each enemy its own width apart, a new line
 		// every 640 units of width (128 further on), so they fit an ordinary room
 		vector2 fwd = Actor.AngleToVector(pl.angle, 1), across = Actor.AngleToVector(pl.angle - 90, 1);
@@ -342,6 +351,6 @@ class HCE_SpawnAllHandler : EventHandler
 			if(en) en.hce_standStill = true;      // no idle patrols: they hold their place in the line
 			made++;
 		}
-		Console.Printf("punkassbitches: %d enemies spawned%s", made, blocked ? String.Format(", %d had no room", blocked) : "");
+		Console.Printf("%s: %d %s spawned%s", cmd, made, marines ? "Marines" : "enemies", blocked ? String.Format(", %d had no room", blocked) : "");
 	}
 }

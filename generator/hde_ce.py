@@ -171,9 +171,10 @@ def ce_shade(col, nm=None, ao=None):
         out = out * (1 - edge) + np.clip(out * 1.8 + 0.08, 0, 1) * edge
     return np.clip(out, 0, 1)
 
-def build(src, parts, paint, origin, wid, tag, to_halo=lambda P: P, seed=3):
+def build(src, parts, paint, origin, wid, tag, to_halo=lambda P: P, seed=3, hook=None):
     """parts: object name -> (role, target tris); paint(mat, role) -> sRGB image or None (None: faces left out);
-    origin: point in Halo axes (metres) that becomes the gun's origin (mid grip)"""
+    origin: point in Halo axes (metres) that becomes the gun's origin (mid grip); hook(role, pos, nrm, col) -> col
+    repaints the colour samples by where they sit (pos in Halo axes, metres, before the origin shift)"""
     bc.ensure_tool()
     rng = np.random.default_rng(seed)
     tmpd = os.path.join(bc.WORK, f'{wid}_tmp'); os.makedirs(tmpd, exist_ok=True)
@@ -207,6 +208,7 @@ def build(src, parts, paint, origin, wid, tag, to_halo=lambda P: P, seed=3):
             h, w = pt.shape[:2]
             x = ((uvs[sel, 0] % 1) * (w - 1)).astype(int); y = ((1 - uvs[sel, 1] % 1) * (h - 1)).astype(int)
             sc[sel] = pt[y, x, :3]
+        if hook is not None: sc = hook(role, sp / bc.M2WU + origin, fn[ti], sc)
         SPs.append(sp); SNs.append(fn[ti]); SCs.append(sc)
         print(f'{role:9s} {len(v["tris"]):6d} -> {len(lt):4d} tris, {ns} samples', flush=True)
     if decals:                                          # decal sheets: paint them onto the surface samples beneath

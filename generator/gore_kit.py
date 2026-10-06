@@ -14,10 +14,12 @@ so no surface index the packs already use moves). Then:
   their skeletons and bind poses are identical to Halo CE's, so they drop straight in, re-boned by name). Everyone
   else gets kitbashed caps: the limb's cut edge, found from the boundary of its triangles, closed with a domed fan
   (a closed limb mesh with no open edge gets a disc across the limb at the joint).
-* texture - gore_<Char>.png, drawn here for the caps' planar UVs (the cut centred, rim at radius 0.42) in the race's
-  blood colour: a bone end and marrow in wet, fibrous flesh for the bony races, a tangle of orange worms for the
-  Mgalekgolo and Slug Men, chitin around pale ichor for the Yanme'e. (SPV3's own gore bitmaps live in its external
-  bitmaps.map, which the .map files don't carry.)
+* texture - gore_<Char>.png: SPV3's own gore (wet, ropy flesh with a bone end), read from SPV3's bitmaps.map
+  (HCE_SPV3_BITMAPS: the file, or the stem of its split pieces bitmaps.map.001, .002 ...; the level map holds only
+  the header). The Kig-Yar's purple for Elites and Jackals, the Unggoy's teal for Grunts, and recoloured to the race's
+  blood for the rest (Brute navy, Mgalekgolo / Slug Man orange, Yanme'e pale ichor). SPV3's stumps keep SPV3's UVs;
+  the kitbashed caps put the bone end in the middle of the cut, or a patch of flesh for the boneless races (Hunters,
+  Slug Men, Drones). Without bitmaps.map a stand-in texture is drawn instead.
 * gibs - <Char>_gib_<limb>.iqm: the severed limb, static and centred on itself, with a cap on its cut end. Its
   surface list mirrors the body's (empty where unused) so a gib drawn with the dead enemy's own MODELDEF wears that
   enemy's skins (rank colours, hidden armour and all); the cap sits on the limb's stump surface index.
@@ -38,6 +40,7 @@ sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
 from hce_paths import OUT
 SPV3_B40 = os.environ.get('HCE_SPV3_B40', 'b40_1.map')      # SPV3's b40_1.map (PC/MCC cache): the Elite/Grunt/Jackal stump caps
+SPV3_BITMAPS = os.environ.get('HCE_SPV3_BITMAPS', 'bitmaps.map')   # SPV3's bitmaps.map (or the stem of its .001, .002 ... pieces)
 
 # char -> blood colour and texture style, spv3 model (or none: kitbashed caps), limbs {name: root bone (subtree)}
 GORE = {
@@ -55,6 +58,17 @@ GORE = {
     'Drone':        dict(style='insect', blood='DDF0D2', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
     'SlugMan':      dict(style='worm', blood='FF8C1A', limbs={'head': 'Bip01 Head', 'larm': 'Bip01 L UpperArm', 'rarm': 'Bip01 R UpperArm'}),
 }
+# SPV3's gore textures (in its bitmaps.map, not the level maps): the Kig-Yar's (purple, also on SPV3's Elites) and the
+# Unggoy's (teal). Each is wet, ropy flesh with a bone end in one corner (BONE: centre and radius in UV).
+SPV3_GORE_BMP = {'jackal gore': r'characters\jackal_new\bitmaps\jackal gore', 'grunt_gore': r'characters\grunt_new\bitmaps\grunt_gore'}
+BONE = ((0.231, 0.199), 0.124)
+FLESH = (0.66, 0.68)                  # a stretch of flesh well clear of the bone, for the boneless races' caps
+# char -> (SPV3 gore texture, recolour to the race's blood?, cap centred on the bone?)
+GORE_TEX = {'Elite': ('jackal gore', False, True), 'EliteSpecial': ('jackal gore', False, True), 'EliteRifle': ('jackal gore', False, True),
+            'Grunt': ('grunt_gore', False, True), 'GruntSpecOps': ('grunt_gore', False, True),
+            'Jackal': ('jackal gore', False, True), 'JackalMajor': ('jackal gore', False, True), 'H2Jackal': ('jackal gore', False, True),
+            'Brute': ('jackal gore', True, True), 'Hunter': ('grunt_gore', True, False), 'SlugMan': ('grunt_gore', True, False),
+            'Drone': ('grunt_gore', True, False)}
 SPV3_MODEL = {'elite_new': r'characters\elite_new\elite_new', 'grunt_new': r'characters\grunt_new\grunt_new',
               'jackal_new': r'characters\jackal_new\jackal_new'}
 
@@ -77,6 +91,52 @@ def _noise(rng, n, scale, aniso=1.0):
     f = np.sqrt((fx / aniso) ** 2 + fy ** 2) * n / scale
     a = np.real(np.fft.ifft2(np.fft.fft2(w) * np.exp(-f * f)))
     return (a - a.min()) / max(a.max() - a.min(), 1e-9)
+
+
+def _bitmaps_read(off, n):
+    """bytes from SPV3's bitmaps.map, whole or split into numbered 100 MB pieces (bitmaps.map.001, .002 ...)"""
+    if os.path.exists(SPV3_BITMAPS):
+        with open(SPV3_BITMAPS, 'rb') as f: f.seek(off); return f.read(n)
+    CH = 104857600; out = b''
+    while n > 0:
+        k, o = divmod(off, CH)
+        with open(f'{SPV3_BITMAPS}.{k + 1:03d}', 'rb') as f: f.seek(o); b = f.read(min(n, CH - o))
+        if not b: raise EOFError(off)
+        out += b; off += len(b); n -= len(b)
+    return out
+
+
+def spv3_gore_image(src):
+    """SPV3's gore bitmap (its pixels live in bitmaps.map; the level map only holds the header), or None"""
+    from bitmaps import decode
+    m, _ = spv3()
+    t = next(t for t in m.tags if t['cls'] == 'bitm' and t['name'] == SPV3_GORE_BMP[src])
+    c, p = m.reflexive(t['data'] + 0x60)
+    _, w, h, _, _, fmt, fl, _, _, _, _, poff, psz = m.u('4s6h2h2hiii', p)[:13]
+    try: d = _bitmaps_read(poff, psz)
+    except (OSError, EOFError): return None
+    return decode(d, 0, w, h, fmt, fl).convert('RGB')
+
+
+def recolour(im, blood):
+    """SPV3's gore in another race's blood: the flesh's shading carried onto the new colour, the bone kept"""
+    a = np.asarray(im).astype(float) / 255.0
+    mx, mn = a.max(2), a.min(2)
+    bone = np.clip(((mx - mn) / np.maximum(mx, 1e-3) - 0.45) / -0.2, 0, 1) * np.clip((mx - 0.45) / 0.15, 0, 1)
+    lum = a @ np.array([0.3, 0.55, 0.15]); lum = lum / max(np.percentile(lum, 98), 1e-3)
+    col = np.array([int(blood[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
+    col = col * max(1.0, 0.6 / max(col.max(), 1e-3))        # very dark bloods (the Brute's navy) lifted to read as colour
+    flesh = col[None, None] * (0.2 + 1.45 * lum[..., None]) + (lum[..., None] ** 4) * 0.3
+    out = flesh * (1 - bone[..., None]) + a * bone[..., None]
+    return Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8))
+
+
+def cap_uv_to_spv3(uv, on_bone):
+    """kitbashed caps' planar UVs (centre 0.5, rim 0.42) onto SPV3's texture: the bone end in the middle of the cut,
+    or (boneless races) a patch of flesh"""
+    if on_bone: c, k = np.array(BONE[0]), BONE[1] / 0.35 / 0.42     # the bone fills about a third of the cut
+    else: c, k = np.array(FLESH), 0.3 / 0.42
+    return c + (uv - 0.5) * k
 
 
 def gore_texture(blood, style, n=256, seed=7):
@@ -325,7 +385,13 @@ def process(char):
         gore[L]['surfaces'].append(len(meshes) - 1); gore[L]['parts'].append(len(meshes) - 1)
     # stumps
     tex = f'gore_{char}.png'
-    gore_texture(cfg['blood'], cfg['style']).save(f'{od}/{tex}')
+    src, recol, on_bone = GORE_TEX[char]
+    gim = spv3_gore_image(src)
+    if gim is not None:                                   # SPV3's own gore (recoloured for the other races)
+        (recolour(gim, cfg['blood']) if recol else gim).resize((512, 512), Image.LANCZOS).save(f'{od}/{tex}')
+    else:                                                 # no bitmaps.map: our own drawing
+        print(char, 'SPV3 bitmaps.map not found: drawing the gore texture')
+        gore_texture(cfg['blood'], cfg['style']).save(f'{od}/{tex}')
     stumps = spv3_stumps(cfg['spv3'], joints, cfg['limbs']) if cfg.get('spv3') else {}
     gibs_cap = {}
     for L, bones in limbs.items():
@@ -343,8 +409,10 @@ def process(char):
         loops = boundary_loops(parts)
         if L in stumps and len(stumps[L]['tris']) >= 6:
             st = stumps[L]; st['material'] = tex
-            rr = max(0.02, np.linalg.norm(st['pos'] - jp_, axis=1).max() * 0.8)
-            st['uv'] = planar_uv(st['pos'], jp_, out_dir, rr)
+            if gim is None:                               # SPV3's UVs only fit SPV3's texture
+                rr = max(0.02, np.linalg.norm(st['pos'] - jp_, axis=1).max() * 0.8)
+                st['uv'] = planar_uv(st['pos'], jp_, out_dir, rr)
+            st['spv3'] = True
         else:
             st = cap_mesh(loops, jp_, out_dir, par if par >= 0 else root, tex)
         gcap = cap_mesh(loops, jp_, -out_dir, root, tex)
@@ -361,6 +429,10 @@ def process(char):
             ring = np.array([jp_ + rr * (np.cos(a) * ax + np.sin(a) * ay) for a in np.linspace(0, 2 * np.pi, 13)[:-1]])
             st = cap_mesh([ring], jp_, out_dir, par if par >= 0 else root, tex)
             gcap = gcap or cap_mesh([ring], jp_, -out_dir, root, tex)
+        if gim is not None:
+            if not st.pop('spv3', False): st['uv'] = cap_uv_to_spv3(st['uv'], on_bone)
+            if gcap is not None: gcap['uv'] = cap_uv_to_spv3(gcap['uv'], on_bone)
+        st.pop('spv3', None)
         st['name'] = f'gore.{L}'
         meshes.append(st); names.append(f'gore.{L}'); mesh_weapon.append(None)
         gore[L]['stub'] = len(meshes) - 1

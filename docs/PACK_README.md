@@ -602,10 +602,11 @@ Covenant enemies can lose their head or arms when they die hard. This works with
 | Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
 | Brutes | head | kitbashed cap |
 
-Each race's stump texture is drawn in its blood colour:
-* **Elites, Jackals, Grunts and Brutes:** bone and marrow in wet flesh.
-* **Hunters and Slug Men:** a cut tangle of orange worms.
-* **Drones:** chitin around pale ichor.
+The stump texture is SPV3's own gore, wet ropy flesh with a bone end:
+* **Elites, Jackals and Halo 2 Jackals:** SPV3's purple Jackal gore.
+* **Grunts:** SPV3's teal Grunt gore.
+* **The others:** recoloured to their blood. Brutes are navy, Hunters and Slug Men orange, and Drones a pale ichor.
+* **Kitbashed caps:** these put the bone end in the middle of the cut. Hunters, Slug Men and Drones have no bones, so theirs show flesh only.
 
 Dismemberment is off for the Flood, Sentinels, Marines, Engineers (which explode) and the beasts. Brutes lose only their head, because their model is already at UZDoom's 32-surface limit. Turn it off with `hce_dismember 0`.
 

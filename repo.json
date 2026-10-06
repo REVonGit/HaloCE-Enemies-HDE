@@ -3,31 +3,28 @@
   "merged": {
     "output": "HaloCE_Merged.pk3",
     "packs": [
-      "HaloCE_Core",
-      "HCE_EnemyAPI_LocalDEV",
       "HaloCE_Covenant",
-      "HaloCE_Enemies_Voices",
       "HaloCE_Flood",
       "HaloCE_Sentinels",
       "HaloCE_Marines"
     ]
   },
-  "load": "Bundle: HDE (Local_DEV) -> HDE_CE_Covenant.pk3 (Core + Covenant + voices + API; nothing else).   Separate packs: HDE -> HCE_EnemyAPI_LocalDEV.pk3 -> HaloCE_Core.pk3 -> HaloCE_Covenant.pk3 / HaloCE_Flood.pk3 / HaloCE_Sentinels.pk3 / HaloCE_Marines.pk3 -> HaloCE_Enemies_Voices.pk3, or HDE -> HaloCE_Merged.pk3 for everything. Never load the bundle together with HaloCE_Core or HCE_EnemyAPI_LocalDEV.",
+  "load": "HDE (Local_DEV) -> HaloCE_Covenant.pk3 (Core, the enemy API, the Covenant and their dialogue) -> HaloCE_Flood / HaloCE_Sentinels / HaloCE_Marines.pk3 (any of them), or HDE -> HaloCE_Merged.pk3 for everything.",
   "sync": [
     [
-      "packs/HCE_EnemyAPI_LocalDEV/ZScript/BaseAI/enemies_base.zsc",
+      "packs/HaloCE_Covenant/ZScript/BaseAI/enemies_base.zsc",
       "generator/addons/localdev/ZScript/BaseAI/enemies_base.zsc"
     ],
     [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_core.zsc",
+      "packs/HaloCE_Covenant/ZScript/HaloCE/hce_core.zsc",
       "generator/pack/ZScript/HaloCE/hce_core.zsc"
     ],
     [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_explosives.zsc",
+      "packs/HaloCE_Covenant/ZScript/HaloCE/hce_explosives.zsc",
       "generator/pack/ZScript/HaloCE/hce_explosives.zsc"
     ],
     [
-      "packs/HaloCE_Core/ZScript/HaloCE/hce_handler.zsc",
+      "packs/HaloCE_Covenant/ZScript/HaloCE/hce_handler.zsc",
       "generator/pack/ZScript/HaloCE/hce_handler.zsc"
     ],
     [
@@ -50,22 +47,5 @@
       "packs/HaloCE_Covenant/ZScript/HaloCE/hce_gore.zsc",
       "generator/pack/ZScript/HaloCE/hce_gore.zsc"
     ]
-  ],
-  "bundle": {
-    "name": "HDE_CE_Covenant",
-    "merge": [
-      "HaloCE_Covenant",
-      "HaloCE_Enemies_Voices"
-    ],
-    "api": [
-      "HCE_EnemyAPI_LocalDEV"
-    ],
-    "core": "HaloCE_Core",
-    "header": [
-      "// Halo CE enemies, HDE bundle: the Covenant (Grunts, Jackals, Elites, Hunters, and the Digsite add-on's Drinol +",
-      "// Cyberdemon boss, Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes),",
-      "// the enemy dialogue, the enemy API (ZScript/BaseAI/enemies_base.zsc, replaces HDE's file of that path) and the Core code.",
-      "// Load after HaloDoom Evolved (Local_DEV). Don't load HaloCE_Core / HCE_EnemyAPI_LocalDEV with it."
-    ]
-  }
+  ]
 }

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 rem Compile packs\ into dist\*.pk3.  Double-click: every pack + the merged pack (only what changed is rebuilt).
-rem Or run from a command prompt:  Build_PK3s.bat Bundle Flood   (only those packs)
+rem Or run from a command prompt:  Build_PK3s.bat Covenant Marines   (only those packs)
 title Halo CE enemy pk3 builder
 cd /d "%~dp0"
 set "PY="

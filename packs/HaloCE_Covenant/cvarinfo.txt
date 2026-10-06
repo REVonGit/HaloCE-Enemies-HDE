@@ -1,3 +1,25 @@
+// ---- from HaloCE_Core.pk3
+server bool hce_keepdoommonsters = false;  // true = leave Doom's monsters alone (Doom marines are still replaced)
+server bool hce_hunterpairs = true;        // hunters spawn as bonded pairs
+server float hce_enemydamage = 1.0;        // scale for Halo enemy weapon damage (multiplies with hce_nerf_projectiles)
+server float hce_nerf_projectiles = 0.4;   // enemy projectile nerf: bullets, plasma, needles, rockets, grenades and their blasts (melee untouched; allies unaffected)
+server float hce_nerf_health = 0.6;        // enemy health multiplier (allies unaffected)
+server float hce_nerf_shields = 0.5;       // enemy energy shields / Jackal shield gauntlets multiplier
+server float hce_burstpause = 1.0;        // >1 = longer pauses between enemy bursts
+server bool hce_dropweapons = true;        // enemies drop their weapon (and sometimes grenades) like in Halo
+server float hce_grenadefreq = 1.0;        // enemy grenade frequency (2 = twice as often, 0.5 = half)
+server bool hce_grenadedodge = true;   // enemies that notice a live grenade near them dive / run clear
+server bool hce_jumping = true;        // enemies jump onto ledges and over low obstacles in their way
+server float hce_enemyspread = 1.75;    // enemy aim error multiplier (automatic weapons also bloom over a burst; allies unaffected)
+server float hce_enemytracking = 5.0;   // how fast enemy aim follows a moving target, map units per tic (lower = easier to strafe)
+server float hce_hearing = 1024;       // how far (map units) gunfire wakes idle enemies through Doom's sound propagation (deaf/ambush ones only wake on sight)
+server int hce_maxpursuers = 4;        // at most this many enemies of a team hunt one target they can't see at a time (0 = no limit); the rest hold position
+server bool hce_squads = true;         // Grunts and Jackals form squads around an Elite / Brute leader (follow it, share targets)
+server bool hce_patrols = true;        // idle leaders and loners walk short patrols (or a map's PatrolPoint route)
+server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (deaf / ambush Grunts always do)
+server bool hce_dismember = true;      // hard kills can take heads and arms off (headshots, explosions, heavy melee)
+
+// ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3
 server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies
 

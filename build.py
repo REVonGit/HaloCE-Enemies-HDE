@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 """Compile the unpacked packs in packs/ into pk3s in dist/.
 
-    python build.py                    # every pack -> dist/<folder>.pk3, plus the merged pack and the bundle
+    python build.py                    # every pack -> dist/<folder>.pk3, plus the merged pack
     python build.py Covenant Flood     # only the packs whose folder name contains one of these words
     python build.py --no-merged        # skip the merged pack
-    python build.py --no-bundle        # skip the bundle
     python build.py --force            # rebuild even what hasn't changed
-    python build_bundle.py             # only the bundle (Core + Covenant + voices [+ API])
 
 Edit the files under packs/<Pack>/ directly: each folder is exactly the root of its pk3.
 
-* The bundle (repo.json "bundle") is put together at build time: the Covenant pack (Digsite included), the
-  voices, the enemy API and the parts of Core they use, in one pk3 (tools/make_bundle.py).
 * Only what changed is rebuilt: a pk3 whose files are the same as at its last build is skipped
   (dist/.buildcache.json remembers), so a rebuild after one edit takes a second or two.
 * The HDE repository's generator/ keeps the hand-written sources too (repo.json "sync"). Edit any copy:
@@ -71,24 +67,6 @@ def zip_pack(name, files):
     write_pk3([(arc, Path(p).read_bytes()) for arc, p in files], os.path.join(DIST, name + '.pk3'))
 
 
-def build_bundle(cache, force=False, digests=None):
-    """dist/<bundle>.pk3 from repo.json "bundle" (Core + Covenant + voices [+ API]); skipped if its packs are unchanged"""
-    cfg = CFG.get('bundle')
-    if not cfg: return
-    parts = [cfg['core']] + cfg.get('api', []) + cfg['merge']
-    digests = digests if digests is not None else {}
-    for n in parts:
-        if n not in digests: digests[n] = digest(pack_files(n))
-    key = '+'.join(digests[n] for n in parts)
-    out = os.path.join(DIST, cfg['name'] + '.pk3')
-    if not force and cache.get('bundle') == key and os.path.exists(out):
-        print(f'  {cfg["name"]}.pk3  unchanged'); return
-    sys.path.insert(0, os.path.join(HERE, 'tools'))
-    from make_bundle import bundle_files
-    files = bundle_files(cfg, PACKS)
-    write_pk3(sorted(files.items(), key=lambda x: (x[0].count('/'), x[0].lower())), out)
-    cache['bundle'] = key
-
 
 def load_cache(force):
     if force or not os.path.exists(CACHE): return {}
@@ -116,7 +94,6 @@ def main():
     ap = argparse.ArgumentParser(description='Compile packs/ into dist/*.pk3 (only what changed)')
     ap.add_argument('only', nargs='*', help='build only packs whose folder name contains one of these words')
     ap.add_argument('--no-merged', action='store_true', help=f'skip {CFG["merged"]["output"]}')
-    ap.add_argument('--no-bundle', action='store_true', help='skip the bundle')
     ap.add_argument('--merged', action='store_true', help='(kept for old scripts: the merged pack is built by default)')
     ap.add_argument('--all', action='store_true', help='(kept for old scripts: same as no options)')
     ap.add_argument('--force', action='store_true', help='rebuild everything, changed or not')
@@ -153,8 +130,6 @@ def main():
             from merge_hce_packs import merge
             merge([os.path.join(DIST, n + '.pk3') for n in merged_cfg['packs']], out)
             cache['merged'] = key
-    if not a.no_bundle and not a.only:
-        build_bundle(cache, a.force, digests)
     Path(CACHE).write_text(json.dumps(cache, indent=1, sort_keys=True), encoding='utf-8')
     print('load order: ' + CFG['load'])
 

@@ -98,12 +98,13 @@ def main():
                 if m: path = m.group(1); continue
                 m = re.match(r'\s*(?:Model 0|SurfaceSkin 0 \d+) "(.*)"', line)
                 if m: need.add(f'{path}/{m.group(1)}')
-        # dismemberment (gore_kit.py): a model's gib pieces and stump texture, swapped in at run time
+        # dismemberment (gore_kit.py) and blood on the body (blood_kit.py): gib pieces, stump texture, blood overlays
         for f in list(need):
             if not f.endswith('.iqm'): continue
             dn, stem = os.path.dirname(f), os.path.basename(f)[:-4]
             for g in sorted(os.listdir(f'{PACK}/{dn}')):
-                if g.startswith(f'{stem}_gib_') or g == f'gore_{stem}.png': need.add(f'{dn}/{g}')
+                if g.startswith(f'{stem}_gib_') or g == f'gore_{stem}.png' or g.startswith(f'{stem}_blood') \
+                        or g.startswith('blood') and g.endswith('.png') or g == 'hce_noblood.png': need.add(f'{dn}/{g}')
         for f in sorted(need):
             os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True)
             shutil.copy(f'{PACK}/{f}', f'{d}/{f}')

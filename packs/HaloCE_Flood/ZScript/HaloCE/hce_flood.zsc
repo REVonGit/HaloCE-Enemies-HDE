@@ -43,6 +43,22 @@ class HCE_FloodCarrierBase : HaloDoom_EnemyBase abstract
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/FloodCarrier", 'FloodCarrier_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/FloodCarrier", 'FloodCarrier_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/FloodCarrier", 'FloodCarrier_blood3.iqm'); break;
+		}
+	}
 }
 
 // characters\floodcarrier\floodcarrier
@@ -194,6 +210,22 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/FloodElite", 'FloodElite_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/FloodElite", 'FloodElite_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/FloodElite", 'FloodElite_blood3.iqm'); break;
+		}
 	}
 }
 
@@ -1580,6 +1612,22 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/FloodHuman", 'FloodHuman_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/FloodHuman", 'FloodHuman_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/FloodHuman", 'FloodHuman_blood3.iqm'); break;
+		}
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human assault rifle
@@ -2567,6 +2615,22 @@ class HCE_FloodInfectionBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/FloodInfection", 'FloodInfection_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/FloodInfection", 'FloodInfection_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/FloodInfection", 'FloodInfection_blood3.iqm'); break;
+		}
 	}
 }
 

@@ -43,6 +43,22 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood3.iqm'); break;
+		}
+	}
 }
 
 // characters\marine\marine assault rifle
@@ -120,6 +136,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -131,6 +149,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -253,6 +273,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -264,6 +286,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -385,6 +409,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -395,6 +421,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		{
 		case 'alert pistol idle': return 93;
 		case 'crouch pistol idle': return 47;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -517,6 +545,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -528,6 +558,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -650,6 +682,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -661,6 +695,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -753,6 +789,22 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood3.iqm'); break;
+		}
+	}
 }
 
 // characters\marine_armored\marine_armored assault rifle
@@ -830,6 +882,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -841,6 +895,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -963,6 +1019,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -974,6 +1032,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -1095,6 +1155,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -1105,6 +1167,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		{
 		case 'alert pistol idle': return 93;
 		case 'crouch pistol idle': return 47;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -1227,6 +1291,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -1238,6 +1304,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -1360,6 +1428,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -1371,6 +1441,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;
@@ -1493,6 +1565,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		}
 		return 'None';
 	}
@@ -1504,6 +1578,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case 'alert rifle idle%0': return 93;
 		case 'crouch rifle idle': return 70;
 		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
 		case 'flee rifle move-front': return 20;
 		case 'h-kill back gut': return 47;
 		case 'h-kill front gut': return 52;

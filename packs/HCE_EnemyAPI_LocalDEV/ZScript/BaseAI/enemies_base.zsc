@@ -59,7 +59,7 @@ enum HCE_AnimKinds
 	HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R,
 	HCE_A_HPING_F, HCE_A_HPING_B,
 	HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_AIR, HCE_A_DIE_LAND,
-	HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_FEED, HCE_A_CELEBRATE, HCE_A_SLEEP, HCE_A_TURN_L, HCE_A_TURN_R,
+	HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_FEED, HCE_A_CELEBRATE, HCE_A_SLEEP, HCE_A_TURN_L, HCE_A_TURN_R, HCE_A_FLAME_IDLE, HCE_A_FLAME_MOVE,
 	HCE_A_COUNT
 };
 
@@ -88,6 +88,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
+		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
 		if(!hce_enabled) vel.xy *= moveFriction;
 		else if(health > 0 && !bHCE_Flying && !bNOGRAVITY && !isFrozen()) HCE_SlideOffTick();
 
@@ -151,7 +152,14 @@ class HaloDoom_EnemyBase : Actor abstract
 				hce_blastDmg = punch ? 160 : (kick && !blast ? min(dmg, 90) * 0.6 : dmg);
 			}
 		}
+		if(hce_enabled)
+		{
+			hce_lastHeadshot = false;
+			HCE_NoteHit(inflictor, source, dmg, mod);
+			if(health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();    // an energy shield up: the hit doesn't bleed
+		}
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
+		if(hce_enabled) dmg = HCE_FireDeathCheck(inflictor, dmg, mod, flags);
 		if(hce_enabled) hce_lastMod = mod;      // read by HCE_Die, which runs inside the call below
 		int dealt = super.DamageMobJ(inflictor, source, dmg, mod, flags, angle);
 		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
@@ -555,8 +563,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		hce_curAnimKind = kind;
 		hce_curAnim = n;
+		hce_animStartTic = level.maptime; hce_curLoop = loop;
 		HCE_ApplyAnim(n, blend, loop);
 	}
+	int hce_animStartTic;
+	bool hce_curLoop;
+	// A_ChangeModel (blood, a severed limb) restarts the model's animation: packs pick it up where it was
+	virtual void HCE_ResumeAnim() {}
 
 	// Model animation backend. SetAnimation needs ZScript 4.12+, and this file must
 	// also compile inside HDE Local_DEV (version 4.10.0), so subclasses in a newer
@@ -974,6 +987,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	void HCE_Look()
 	{
+		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
+		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_animLock > 0) { hce_animLock--; HCE_LockedTick(); return; }
 		if(hce_sleeping) { HCE_SleepTick(); return; }
 		if(HCE_GrenadeCheck() || hce_nadeRunTics > 0) { SetStateLabel("See"); return; }
@@ -1011,6 +1026,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	void HCE_Think()
 	{
+		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
+		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
 		if(bHCE_FrontShield) HCE_UpdateFrontShield();
 		if(bHCE_ActiveCamo && alpha < 0.12) A_SetRenderStyle(min(0.12, alpha + 0.01), STYLE_Translucent);
@@ -1121,16 +1138,40 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// a leader (elite) died nearby -> grunts/jackals roll panic_chance_leader_type_killed
+	// Brutality: when the last Elite / Brute standing over a squad dies, its squad can't regroup under anyone for a
+	// while, and the more brutal the death the longer: 3 s, plus 2.5 s per point of HCE_DeathBrutality (torn apart 6,
+	// burned alive 3, beheaded 3, an arm 1...; a rocket gib is about 18 s, a clean body shot 3-5 s). Panicky
+	// members (Grunts, Jackals) are likelier to panic, and panic for longer, the more brutal it was.
 	static void HCE_LeaderDied(Actor leader)
 	{
-		let it = BlockThingsIterator.Create(leader, 768);
+		let L = HaloDoom_EnemyBase(leader);
+		if(!L) return;
+		int b = L.bHCE_Leader ? L.hce_brutalityFinal : 0;
+		bool last = L.bHCE_Leader;
+		let it = BlockThingsIterator.Create(leader, 900);
 		while(it.Next())
 		{
 			let e = HaloDoom_EnemyBase(it.thing);
-			if(!e || !e.hce_enabled || e.health <= 0 || e == leader || e.hce_team != HaloDoom_EnemyBase(leader).hce_team) continue;
+			if(e && e != leader && e.hce_enabled && e.health > 0 && e.bHCE_Leader && e.hce_team == L.hce_team && !e.bFRIENDLY) { last = false; break; }
+		}
+		int regroup = last ? int(35 * (3 + 2.5 * b)) : 0;
+		it = BlockThingsIterator.Create(leader, 768);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || !e.hce_enabled || e.health <= 0 || e == leader || e.hce_team != L.hce_team) continue;
 			e.HCE_Say('LeaderDead', 0.8, 35 * 3);
 			if(e.hce_kamiChance > 0 && frandom(0, 1) < 0.3 && e.HCE_StartKamikaze()) continue;
-			if(e.bHCE_Panics && frandom(0, 1) < max(0.35, e.hce_panicLeaderChance)) e.HCE_StartPanic();
+			if(regroup > 0 && (e.hce_squadLead == L || e.HCE_IsFollowerType()))
+			{
+				e.hce_squadLead = null;
+				e.hce_squadCheck = level.maptime + regroup;       // no new leader until the squad pulls itself together
+			}
+			if(e.bHCE_Panics && frandom(0, 1) < min(0.95, max(0.35, e.hce_panicLeaderChance) + 0.08 * b))
+			{
+				e.HCE_StartPanic();
+				if(regroup > 0) e.hce_panicTics = max(e.hce_panicTics, min(regroup, 35 * 12));
+			}
 			if(e.bHCE_PairBond && e.GetClass() == leader.GetClass()) e.HCE_GoBerserk(true);
 		}
 	}
@@ -2406,7 +2447,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			bool shielded = sh && sh.shields > 0;
 			if(!shielded && !HCE_HeadProtected())
 			{
-				hce_headshot = true;
+				hce_headshot = true; hce_lastHeadshot = true;
 				if(HCE_IsPrecision(inflictor, source) && HCE_HeadKills()) dmg = max(dmg, health + 50);
 				else dmg = int(dmg * 1.5);
 			}
@@ -2461,6 +2502,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		Actor from = inflictor ? inflictor : source;
 		if(from && from != self) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));   // shield hits too: the stun faces it
 		if(dealt <= 0) return;
+		HCE_BloodHit(dealt);
+		HCE_ArmCheck(dealt);
 		double frac = dealt / double(max(1, SpawnHealth()));
 		hce_recentDamage += frac;
 		hce_recentDamageTics = 35 * 2;
@@ -2559,29 +2602,20 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_gibbed = true;
 		hce_reviveTics = 0;
 		vel = (0, 0, 0);                                     // the burst stays where the ice block stood
-		health = min(health, GetGibHealth() - 1);          // NashGore's own gib burst: meat, wall and ceiling splats
-		bInvisible = true;
-		A_SetRenderStyle(0, STYLE_None);
-		if(bNOBLOOD) return;
-		for(int i = 0; i < 40; i++)
-			A_SpawnItemEx("Blood", frandom(-radius, radius), frandom(-radius, radius), height * frandom(0.1, 0.9),
-				frandom(-6, 6), frandom(-6, 6), frandom(1, 9), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
-		Name ngm = 'NashGoreGibs';
-		class<Actor> gib = (class<Actor>)(ngm);
-		if(!gib) return;
-		for(int i = 0; i < 24; i++)
-		{
-			bool ok; Actor m;
-			[ok, m] = A_SpawnItemEx(gib, frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
-				frandom(-6, 6), frandom(-6, 6), frandom(3, 12), frandom(0, 360), SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
-			if(m) m.target = self;
-		}
+		HCE_GibBurst(40, 24);
 	}
 
 	virtual void HCE_Die()
 	{
-		HCE_Gore();
-		HCE_Dismember();
+		hce_burnDying = false; hce_bleedOut = 0;
+		bNOBLOOD = default.bNOBLOOD;                          // dead: the shield no longer keeps the blood in
+		if(HCE_GibAllowed()) HCE_GibBody();
+		else
+		{
+			HCE_Gore();
+			HCE_Dismember();
+		}
+		hce_brutalityFinal = HCE_DeathBrutality();
 		bool stumble = hce_kamiNades.Size() > 0 && hce_action == HCE_ACT_KAMIKAZE;   // shot down mid suicide run
 		hce_jumpState = 0; hce_nadeRunTics = 0;
 		bool hard = hce_hardKill || hce_detonated;
@@ -2626,24 +2660,327 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual bool HCE_SeverLimb(int limb) { return false; }
 	virtual void HCE_OnSever(int limb, bool gunArm) {}
 
-	void HCE_Dismember()
+	// ---- what the killing weapon may do (HCE_WeaponKind) ----
+	// Dismember: the magnum, battle rifle, DMR, sniper rifle, pump shotgun, carbine, Scattershot (normal fire),
+	// Spiker melee, energy sword, plasma pistol overcharge, Light Rifle (normal fire), MA5B, beam rifle, Boltshot
+	// and Commando (and the enemies' own pistols, rifles, carbines, shotguns and beams).
+	// Gib: the rocket launcher, Hydra, Scattershot and Light Rifle alt fire, binary rifle, Unmaker, Stanchion,
+	// gravity hammer, GPMG (autocannon), double-barrel shotgun, fuel rod, needler supercombine, Needle Javelin,
+	// plasma caster, Sentinel beam supercombine and sticky detonator.
+	// Grenades never gib: half the time they take one or two limbs. Everything else leaves the body whole.
+	const HCE_WK_NONE = 0;
+	const HCE_WK_DISMEMBER = 1;
+	const HCE_WK_GIB = 2;
+	const HCE_WK_GRENADE = 3;
+	int hce_killKind;                      // what the latest hit's weapon may do
+	vector3 hce_hitRel;                    // where it struck, relative to the actor
+	bool hce_lastHeadshot;                 // the latest hit was a headshot
+	int hce_forceLimb;                     // a limb the killing blow has already claimed (0 = none, else limb + 1)
+	int hce_brutality, hce_brutalityFinal; // how brutal the death was (squad morale, HCE_LeaderDied)
+
+	static int HCE_WeaponKind(Actor inflictor, Actor source, Name mod, int dmg)
+	{
+		if(mod == 'Fire' || mod == 'Burn' || mod == 'Flame' || mod == 'Drowning' || mod == 'Falling' || mod == 'Crush' || mod == 'Bleed') return HCE_WK_NONE;
+		String inf = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
+		String wpn = "";
+		if(source && source.player && source.player.ReadyWeapon) wpn = String.Format("%s", source.player.ReadyWeapon.GetClassName());
+		let he = HaloDoom_EnemyBase(source);
+		if(he && wpn.Length() == 0 && (!inflictor || inflictor == source)) inf = String.Format("%s", he.hce_projectile);   // enemy hitscan beams
+		inf = inf.MakeLower(); wpn = wpn.MakeLower();
+		// alt fires and special shots first, told apart by what hit
+		if(inf.IndexOf("chargedplasma") >= 0) return HCE_WK_DISMEMBER;                                     // plasma pistol overcharge
+		if(inf.IndexOf("lsr_scattershot") >= 0 || inf.IndexOf("binaryrifle") >= 0 || inf.IndexOf("lightrifledmr") >= 0) return HCE_WK_GIB;   // Scattershot / Light Rifle alt, binary rifle
+		if(inf.IndexOf("needle") >= 0 && inf.IndexOf("javelin") < 0 && mod == 'Explosive' && dmg >= 40) return HCE_WK_GIB;                    // needler supercombine
+		static const String GIBI[] = { "rocket", "hydra", "unmaker", "stanchion", "hammer", "gpmg", "fuelrod", "javelin",
+			"plasmacaster", "sentinelbeamexplosion", "stickydet", "bfg" };
+		for(int i = 0; i < GIBI.Size(); i++) if(inf.IndexOf(GIBI[i]) >= 0) return HCE_WK_GIB;
+		if(inf.IndexOf("grenade") >= 0 || inf.IndexOf("barrel") >= 0) return HCE_WK_GRENADE;
+		// otherwise by the weapon in hand
+		if(wpn.Length() > 0)
+		{
+			static const String GIBW[] = { "halo_rocketlauncher", "halo_hydra", "halo_binaryrifle", "halo_unmaker", "halo_stanchion",
+				"halo_gravityhammer", "halo_gpmg", "halo_dblshotgun", "halo_fuelrod", "halo_needlerjavelin", "halo_plasmacaster",
+				"halo_stickydetonator", "supershotgun", "rocketlauncher", "bfg9000" };
+			for(int i = 0; i < GIBW.Size(); i++) if(wpn == GIBW[i]) return HCE_WK_GIB;
+			if(wpn == "halo_spiker") return mod == 'Melee' ? HCE_WK_DISMEMBER : HCE_WK_NONE;
+			static const String DISW[] = { "halo_magnum", "halo_battlerifle", "halo_dmr", "halo_sniperrifle", "halo_shotgun",
+				"halo_carbine", "halo_scattershot", "halo_energysword", "halo_lightrifle", "halo_ma5b", "halo_beamrifle",
+				"halo_boltshot", "halo_commando", "pistol", "chaingun", "shotgun", "chainsaw" };
+			for(int i = 0; i < DISW.Size(); i++) if(wpn == DISW[i]) return HCE_WK_DISMEMBER;
+			return HCE_WK_NONE;
+		}
+		// enemies and Marines shooting each other
+		static const String DISI[] = { "sniperbullet", "pistolbullet", "arbullet", "shotgunpellet", "carbineround", "beamshot", "beamrifleshot" };
+		for(int i = 0; i < DISI.Size(); i++) if(inf.IndexOf(DISI[i]) >= 0) return HCE_WK_DISMEMBER;
+		return HCE_WK_NONE;
+	}
+
+	void HCE_NoteHit(Actor inflictor, Actor source, int dmg, Name mod)
+	{
+		hce_killKind = HCE_WeaponKind(inflictor, source, mod, dmg);
+		vector3 at;
+		if(inflictor && inflictor != source && Distance3D(inflictor) < radius * 3 + 48) at = inflictor.pos;
+		else
+		{
+			Actor from = source ? source : inflictor;
+			double a = from ? AngleTo(from) : angle;
+			double z = height * 0.55;
+			if(from && from != self) z = clamp(from.pos.z + from.height * 0.75 - pos.z, height * 0.2, height * 0.95);
+			at = Vec3Angle(radius * 0.5, a, z);
+		}
+		hce_hitRel = level.Vec3Diff(pos, at);
+		hce_struckLimb = HCE_HitLimb();                           // now, before the hit can turn it round
+	}
+	int hce_struckLimb;
+
+	static bool HCE_GoreOn()
 	{
 		CVar cv = CVar.FindCVar("hce_dismember");
-		if((cv && !cv.GetBool()) || bNOBLOOD || hce_gibbed || hce_lastMod == 'IceBlock' || hce_lastMod == 'Fire') return;
-		bool blast = (hce_blastHit && hce_blastDmg >= 50) || hce_lastMod == 'Explosive';
-		bool melee = hce_lastMod == 'Melee';
-		double pHead = 0, pArm = 0;
-		if(hce_headshot && !blast) pHead = 0.85;
-		if(blast) { pHead = max(pHead, 0.3); pArm = 0.4; }
-		else if(melee && hce_hardKill) { pHead = max(pHead, 0.15); pArm = 0.3; }
-		else if(hce_hardKill) pArm = 0.12;
-		if(frandom[HCEGore](0, 1) < pHead) HCE_SeverLimb(HCE_LIMB_HEAD);
-		if(blast)
+		return !cv || cv.GetBool();
+	}
+
+	bool HCE_ShieldUp()
+	{
+		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
+		return sh && sh.shields > 0;
+	}
+
+	// limb geometry (packs: gore_kit.py's limb centres): model space in map units, x forward, y left, z up
+	virtual vector3 HCE_LimbOffset(int limb) { return (0, 0, -1000); }
+	virtual int HCE_GunLimb() { return -1; }
+	vector3 HCE_LimbRel(int limb)
+	{
+		vector3 o = HCE_LimbOffset(limb);
+		vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
+		return (fw * o.x + lf * o.y, o.z);
+	}
+	// the limb the latest hit landed on (-1: the body) -- the nearest limb centre, if nearer than the chest
+	int HCE_HitLimb()
+	{
+		int best = -1; double bd = 1e9;
+		for(int l = 0; l < 3; l++)
 		{
-			if(frandom[HCEGore](0, 1) < pArm) HCE_SeverLimb(HCE_LIMB_LARM);
-			if(frandom[HCEGore](0, 1) < pArm) HCE_SeverLimb(HCE_LIMB_RARM);
+			vector3 o = HCE_LimbOffset(l);
+			if(o.z < -999 || (hce_severed & (1 << l))) continue;
+			double d = (HCE_LimbRel(l) - hce_hitRel).Length();
+			if(d < bd) { bd = d; best = l; }
 		}
-		else if(frandom[HCEGore](0, 1) < pArm) HCE_SeverLimb(random[HCEGore](0, 1) ? HCE_LIMB_LARM : HCE_LIMB_RARM);
+		if(best < 0) return -1;
+		double dc = (hce_hitRel - (0, 0, height * 0.55)).Length();
+		return bd <= dc ? best : -1;
+	}
+
+	void HCE_Dismember()
+	{
+		if(!HCE_GoreOn() || bNOBLOOD || hce_gibbed || hce_lastMod == 'IceBlock') return;
+		if(hce_forceLimb > 0) { HCE_SeverLimb(hce_forceLimb - 1); hce_forceLimb = 0; return; }
+		if(hce_killKind == HCE_WK_GRENADE)
+		{
+			// a grenade never gibs: half the time it takes one or two limbs
+			if(frandom[HCEGore](0, 1) < 0.5)
+			{
+				int n = random[HCEGore](1, 2), first = random[HCEGore](0, 2);
+				HCE_SeverLimb(first);
+				if(n == 2) HCE_SeverLimb((first + random[HCEGore](1, 2)) % 3);
+			}
+		}
+		else if(hce_killKind == HCE_WK_DISMEMBER)
+		{
+			if(hce_lastHeadshot) { if(frandom[HCEGore](0, 1) < 0.85) HCE_SeverLimb(HCE_LIMB_HEAD); }
+			else
+			{
+				int l = hce_struckLimb;
+				if(l >= 0 && frandom[HCEGore](0, 1) < 0.6) HCE_SeverLimb(l);
+			}
+		}
+	}
+
+	bool HCE_GibAllowed()
+	{
+		return hce_killKind == HCE_WK_GIB && !bNOBLOOD && !hce_gibbed && hce_lastMod != 'IceBlock' && HCE_GoreOn()
+			&& hce_team != HCE_TEAM_SENTINEL && !bHCE_Explodes;
+	}
+
+	// torn apart (rockets, fuel rods, hammers, supercombines...): the body is gone in a burst of blood, its head and
+	// arms fly off in pieces, and NashGore (when loaded) adds its meat chunks and splats
+	void HCE_GibBody()
+	{
+		hce_gibbed = true;
+		hce_reviveTics = 0;
+		hce_brutality += 6;
+		for(int l = 0; l < 3; l++) HCE_SeverLimb(l);
+		hce_stumpTics = 0;
+		HCE_GibBurst(30, 18);
+	}
+
+	// the body vanishes in a burst of blood (and NashGore's gibs, when it's loaded)
+	void HCE_GibBurst(int blood, int gibs)
+	{
+		health = min(health, GetGibHealth() - 1);          // NashGore's own gib burst: meat, wall and ceiling splats
+		bInvisible = true;
+		A_SetRenderStyle(0, STYLE_None);
+		if(bNOBLOOD) return;
+		for(int i = 0; i < blood; i++)
+			A_SpawnItemEx("Blood", frandom(-radius, radius), frandom(-radius, radius), height * frandom(0.1, 0.9),
+				frandom(-6, 6), frandom(-6, 6), frandom(1, 9), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+		Name ngm = 'NashGoreGibs';
+		class<Actor> gib = (class<Actor>)(ngm);
+		if(!gib) return;
+		for(int i = 0; i < gibs; i++)
+		{
+			bool ok; Actor m;
+			[ok, m] = A_SpawnItemEx(gib, frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
+				frandom(-6, 6), frandom(-6, 6), frandom(3, 12), frandom(0, 360), SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+			if(m) m.target = self;
+		}
+	}
+
+	// ---- blood on the body (blood_kit.py) ----
+	// Once its shields are down, every hit that draws blood adds to how bloodied the enemy looks: a blood-splatter
+	// overlay (model attachment 7, the body's own surfaces with the race's blood sprayed on) goes on at 8% of its
+	// health lost, gets heavier at 35% and soaked at 70%; a corpse always shows at least the first stage.
+	int hce_bloodStage;
+	double hce_bloodDmg;
+	virtual void HCE_BloodModel(int stage) {}         // packs: attach stage 1-3
+	virtual void HCE_BloodHideClass() {}              // packs: surfaces this variant doesn't show (rank armour...)
+	virtual void HCE_BloodHideLimb(int limb) {}       // packs: a severed limb's overlay surfaces
+	void HCE_BloodHit(int dealt)
+	{
+		if(dealt <= 0 || bNOBLOOD || default.bNOBLOOD || hce_gibbed) return;
+		hce_bloodDmg += dealt / double(max(1, SpawnHealth()));
+		int st = hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : hce_bloodDmg >= 0.08 ? 1 : 0;
+		if(health <= 0) st = max(st, 1);
+		if(st <= hce_bloodStage) return;
+		hce_bloodStage = st;
+		HCE_BloodModel(st);
+		HCE_BloodHideClass();
+		for(int l = 0; l < 3; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l);
+		HCE_ResumeAnim();
+	}
+
+	// ---- burning to death (Halo CE's "flaming" animations) ----
+	// The hit that would kill an enemy that's on fire leaves it at 1 health: it flails and runs about screaming in
+	// flames for 1.5-2.7 s (the flaming run / flaming idle where its model has them, else the panic run), then dies.
+	bool hce_burnDying;
+	int hce_burnTics;
+	bool HCE_Burning()
+	{
+		static const String B[] = { "DamageFX_Fire", "HCES_BurnTimer" };
+		for(int i = 0; i < B.Size(); i++)
+		{
+			String n = B[i];
+			class<Inventory> c = (class<Inventory>)(n);
+			if(c && FindInventory(c)) return true;
+		}
+		return false;
+	}
+	int HCE_FireDeathCheck(Actor inflictor, int dmg, Name mod, int flags)
+	{
+		if(hce_burnDying || health <= 0 || dmg < health || (flags & DMG_FORCED) || bHCE_Explodes || bNOBLOOD && default.bNOBLOOD) return dmg;
+		if(mod != 'Fire' && mod != 'Burn' && mod != 'Flame') return dmg;
+		String inf = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
+		inf = inf.MakeLower();
+		if(!HCE_Burning() && inf.IndexOf("flame") < 0 && inf.IndexOf("burn") < 0) return dmg;     // a beam's heat isn't being on fire
+		hce_burnDying = true;
+		hce_burnTics = random[HCEGore](52, 95);
+		hce_moveAngle = angle + frandom(-90, 90);
+		HCE_StopFireLoop();
+		hce_shotsLeft = 0; hce_chargeTics = 0; hce_animLock = 0; hce_leapState = 0; hce_jumpState = 0;
+		HCE_Say('OnFire', 1.0, 0, true);
+		return 0;                                             // (HDE's fire adds 10% to hits: none can get through)
+	}
+	void HCE_BurnPanicTick()
+	{
+		if(--hce_burnTics <= 0)
+		{
+			hce_burnDying = false;
+			hce_brutality += 3;
+			DamageMobj(null, null, health + 10, 'Fire', DMG_FORCED | DMG_NO_ARMOR);
+			return;
+		}
+		if(hce_burnTics % 18 == 0) hce_moveAngle = angle + frandom(-110, 110);
+		if(hce_burnTics % 30 == 0) HCE_Say('OnFire', 1.0, 0, true);
+		bool run = HCE_HasAnim(HCE_A_FLAME_MOVE) || !HCE_HasAnim(HCE_A_FLAME_IDLE) || (hce_burnTics / 24) % 2 == 0;
+		if(run && !bHCE_Flying)
+		{
+			HCE_Move(hce_moveAngle, hce_runSpeed * 0.85);
+			A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+			HCE_Play(HCE_HasAnim(HCE_A_FLAME_MOVE) ? HCE_A_FLAME_MOVE : HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
+		}
+		else
+		{
+			vel.xy *= 0.8;
+			if(bHCE_Flying) angle += 9;
+			HCE_Play(HCE_HasAnim(HCE_A_FLAME_IDLE) ? HCE_A_FLAME_IDLE : HCE_A_IDLE);
+		}
+		// flames on the body (HDE's fire effect may run out first)
+		for(int i = 0; i < 2; i++)
+			A_SpawnParticle(random(0, 1) ? "FF8020" : "FFC040", SPF_FULLBRIGHT, 14, frandom(4, 9), 0,
+				frandom(-radius, radius) * 0.6, frandom(-radius, radius) * 0.6, frandom(0, height),
+				0, 0, frandom(0.6, 1.6), 0, 0, 0, 0.9, -0.06);
+	}
+
+	// ---- the gun arm shot off ----
+	// A dismembering weapon's hit landing on the arm that holds the gun (a fifth of its health or more) takes it off
+	// half the time. Grunts and Jackals survive it: a hard ping, the gun dropped, and they run in terror, bleeding
+	// from the stump, until they bleed out (5-9 s). Anything else dies on the spot.
+	int hce_bleedOut;
+	void HCE_ArmCheck(int dealt)
+	{
+		if(health <= 0 || dealt <= 0 || hce_killKind != HCE_WK_DISMEMBER || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
+		int gl = HCE_GunLimb();
+		if(gl < 0 || (hce_severed & (1 << gl)) || hce_struckLimb != gl || dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return;
+		bool small = (hce_type == 1 || hce_type == 2) && hce_team == HCE_TEAM_COVENANT;
+		if(!small)
+		{
+			hce_forceLimb = gl + 1;
+			hce_brutality += 1;
+			DamageMobj(null, null, health + 50, 'Normal', DMG_FORCED | DMG_NO_ARMOR);
+			return;
+		}
+		if(!HCE_SeverLimb(gl)) return;
+		hce_brutality += 2;
+		HCE_DropLoot();                                       // the gun falls with the hand
+		hce_dropWeapon = 'None'; hce_grenades = 0;
+		hce_projectile = 'None';
+		HCE_StopFireLoop();
+		hce_shotsLeft = 0; hce_chargeTics = 0;
+		hce_bleedOut = int(35 * frandom[HCEGore](5, 9));
+		hce_action = HCE_ACT_FLEE;
+		hce_panicTics = hce_bleedOut + 35 * 5;
+		HCE_Say('PainHeavy', 1.0, 0, true);
+		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
+	}
+	bool HCE_BleedOutTick()
+	{
+		hce_stumpTics = max(hce_stumpTics, 35 * 4 - 2);      // the stump keeps pumping while it runs
+		HCE_StumpTick();
+		if(--hce_bleedOut <= 0)
+		{
+			DamageMobj(null, null, health + 20, 'Bleed', DMG_FORCED | DMG_NO_ARMOR);
+			return true;
+		}
+		if(hce_action != HCE_ACT_FLEE) { hce_action = HCE_ACT_FLEE; hce_panicTics = hce_bleedOut + 35; }
+		if(random(0, 70) == 0) HCE_Say('Panic', 1.0, 35, true);
+		if(target || hce_animLock > 0) return false;           // the normal panic run, away from its enemy
+		HCE_Move(hce_moveAngle, hce_runSpeed);
+		if(random(0, 25) == 0) hce_moveAngle = angle + frandom(-60, 60);
+		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
+		return true;
+	}
+
+	// how brutal this death was: torn apart 6, burned alive 3, beheaded 3, an arm 1 each (the gun arm shot off
+	// while alive 1-2 more), a headshot 1, a hard kill 1
+	int HCE_DeathBrutality()
+	{
+		int b = hce_brutality;
+		if(hce_severed & 1) b += 3;
+		if(hce_severed & 2) b += 1;
+		if(hce_severed & 4) b += 1;
+		if(hce_lastHeadshot) b += 1;
+		if(hce_hardKill) b += 1;
+		return b;
 	}
 
 	// the severed piece: 'center' is the limb's middle in model units (Halo units, model x forward, y left, z up),
@@ -2651,6 +2988,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_SpawnLimb(int limb, vector3 center, double sc, String path, Name model, int stub, Name tex)
 	{
 		hce_severed |= 1 << limb;
+		if(hce_bloodStage > 0) HCE_BloodHideLimb(limb);
+		if(!hce_gibbed) HCE_ResumeAnim();
 		vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
 		vector3 rel = (fw * center.x * sc + lf * center.y * sc, center.z * sc * 1.2);
 		hce_stumpAt[limb] = rel;
@@ -2663,6 +3002,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector3 from = hce_blastHit ? hce_blastFrom : (target ? target.pos : pos - (fw * 64, 0));
 		double away = atan2(pos.y - from.y, pos.x - from.x);
 		double push = hce_blastHit ? clamp(hce_blastDmg / 20.0, 4, 12) : 4;
+		if(hce_gibbed) push = max(push, 8) * frandom[HCEGore](0.8, 1.3);
 		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (0, 0));
 		g.vel = (AngleToVector(away + frandom[HCEGore](-25, 25), push * frandom[HCEGore](0.6, 1.1)) + sideV * frandom[HCEGore](1, 3),
 		         frandom[HCEGore](3, 7) + (limb == HCE_LIMB_HEAD ? 2 : 0)) + vel * 0.5;
@@ -2677,7 +3017,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// stumps keep pumping for a few seconds, sinking as the body falls
 	void HCE_StumpTick()
 	{
-		if(hce_stumpTics <= 0 || !hce_severed || bNOBLOOD) return;
+		if(hce_stumpTics <= 0 || !hce_severed || bNOBLOOD || hce_gibbed) return;
 		hce_stumpTics--;
 		if(hce_stumpTics % 3) return;
 		double fall = clamp((35 * 4 - hce_stumpTics) / 30.0, 0, 1);

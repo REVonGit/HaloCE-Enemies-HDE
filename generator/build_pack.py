@@ -183,7 +183,7 @@ ACTOR_TYPES = {0: 'elite', 1: 'jackal', 2: 'grunt', 3: 'hunter', 4: 'engineer', 
 # blood both use BloodColor, so gore mods paint each race correctly. Sentinels are machines: no blood.
 BLOOD = {
     'Elite': '3A1E8C', 'EliteSpecial': '3A1E8C', 'EliteRifle': '3A1E8C',   # Sangheili: dark blue/purple (CE)
-    'Jackal': '4A2A9A', 'JackalMajor': '4A2A9A',                          # Kig-Yar: dark blue/purple (CE)
+    'Jackal': '4A2A9A', 'JackalMajor': '4A2A9A', 'H2Jackal': '4A2A9A',    # Kig-Yar: dark blue/purple (CE)
     'Grunt': '40C8D0', 'GruntSpecOps': '40C8D0',                          # Unggoy: light blue / teal
     'Hunter': 'FF8C1A',                                                   # Mgalekgolo: bright orange
     'Brute': '161C40',                                                    # Jiralhanae (Halo 2): dark navy blue / black
@@ -268,13 +268,16 @@ def anim_table(A, w, weapon):
     m['RESURRECT_B'] = f('stand unarmed resurrect-back')
     m['FEED'] = f('stand unarmed feeding')
     m['SLEEP'] = f(f'asleep {w} idle')
+    # Halo CE's burning animations (Elites, Grunts and Jackals flail in place; Jackals, Marines and Slug Men also run)
+    m['FLAME_IDLE'] = f(f'flaming {w} idle', 'flaming pistol idle', 'flaming rifle idle', 'flaming unarmed idle')
+    m['FLAME_MOVE'] = f(f'flaming {w} move-front', 'flaming pistol move-front', 'flaming rifle move-front', 'flaming unarmed move-front')
     return m
 
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
          'THROW', 'DIVE_L', 'DIVE_R', 'DIVE_F', 'EVADE_L', 'EVADE_R', 'SURPRISE_F', 'SURPRISE_B', 'BERSERK', 'WARN',
          'SIGNAL', 'AIRBORNE', 'LAND', 'LEAP_START', 'LEAP_AIR', 'LEAP_MELEE', 'PING_F', 'PING_B', 'PING_L', 'PING_R',
          'HPING_F', 'HPING_B', 'DIE_F', 'DIE_B', 'DIE_L', 'DIE_R', 'DIE_HARD_F', 'DIE_HARD_B', 'DIE_AIR', 'DIE_LAND',
-         'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R']
+         'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE']
 
 def zs_anim_funcs(A, table, bers=None):
     lines = ['\toverride Name HCE_AnimName(int kind)', '\t{']
@@ -521,7 +524,42 @@ def gore_code(char, meta, mdir, sc):
         out.append(f'\t\t\tHCE_SpawnLimb({GORE_LIMBS[L]}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{d["gib"]}\', {d["stub"]}, \'{g["tex"]}\');\n')
         out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
     out.append('\t\t}\n\t\treturn false;\n\t}\n')
+    # limb centres in map units (hit location: which limb a shot struck) and the arm holding the gun
+    out.append('\toverride vector3 HCE_LimbOffset(int limb)\n\t{\n\t\tswitch(limb)\n\t\t{\n')
+    for L, d in g['limbs'].items():
+        c = d['center']
+        out.append(f'\t\tcase {GORE_LIMBS[L]}: return ({c[0] * sc:.1f}, {c[1] * sc:.1f}, {c[2] * sc * 1.2:.1f});\n')
+    out.append('\t\t}\n\t\treturn (0, 0, -1000);\n\t}\n')
+    guns = [GORE_LIMBS[L] for L, d in g['limbs'].items() if L != 'head' and any(si < len(mw) and mw[si] for si in d['surfaces'])]
+    if guns: out.append(f'\toverride int HCE_GunLimb() {{ return {guns[0]}; }}\n')
     return ''.join(out)
+
+
+BLOOD_IDX = 7     # model attachment index of the blood overlay (the Brutes' armour kit uses 1-6)
+
+def blood_code(char, meta, mdir):
+    """HCE_BloodModel / HCE_BloodHideLimb for a character with blood_kit.py's overlay, and HCE_ResumeAnim"""
+    out = ['\toverride void HCE_ResumeAnim()\n\t{\n\t\tif(hce_curAnim == \'None\') return;\n'
+           '\t\tint len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));\n'
+           '\t\tint f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);\n'
+           '\t\tSetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);\n\t}\n']
+    b = meta.get('blood')
+    if not b: return ''.join(out)
+    out.append('\toverride void HCE_BloodModel(int stage)\n\t{\n\t\tswitch(stage)\n\t\t{\n')
+    for k, m in enumerate(b['models']):
+        out.append(f'\t\tcase {k + 1}: A_ChangeModel(\'None\', {BLOOD_IDX}, "models/{mdir}/{char}", \'{m}\'); break;\n')
+    out.append('\t\t}\n\t}\n')
+    g = meta.get('gore')
+    if g:
+        out.append('\toverride void HCE_BloodHideLimb(int limb)\n\t{\n\t\tswitch(limb)\n\t\t{\n')
+        for L, d in g['limbs'].items():
+            sis = [si for si in d['surfaces'] if si in b['surfaces']]
+            out.append(f'\t\tcase {GORE_LIMBS[L]}:\n' + ''.join(blood_hide(si, mdir) for si in sis) + '\t\t\tbreak;\n')
+        out.append('\t\t}\n\t}\n')
+    return ''.join(out)
+
+def blood_hide(si, mdir):
+    return f'\t\t\tA_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n'
 
 
 def build(cfg=None):
@@ -541,9 +579,15 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
+        if meta.get('gore') or meta.get('blood'):
+            os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
+            if not os.path.exists(f'{pack}/models/{mdir}/weapons/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/weapons/hce_hidden.png')
         if meta.get('gore'):                       # dismemberment (gore_kit.py): the gibs and the stump texture
             for d in meta['gore']['limbs'].values(): shutil.copy(f'{OUT}/models/{char}/{d["gib"]}', f'{pack}/models/{mdir}/{char}/{d["gib"]}')
             shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["tex"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["tex"]}')
+        if meta.get('blood'):                      # blood on the body (blood_kit.py): overlay models and textures
+            for f in meta['blood']['models'] + meta['blood']['textures']: shutil.copy(f'{OUT}/models/{char}/{f}', f'{pack}/models/{mdir}/{char}/{f}')
+            Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/{char}/hce_noblood.png')
             os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
             hid = f'{pack}/models/{mdir}/weapons/hce_hidden.png'
             if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
@@ -571,7 +615,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + '}\n')
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue
@@ -723,6 +767,7 @@ def build(cfg=None):
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
             stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
+            blood_hidden = []
             for si, mat in enumerate(meta['meshes']):
                 matn = mat[:-4]
                 if si in stubs:                    # gore stumps: hidden until the limb comes off (HCE_SeverLimb)
@@ -753,6 +798,8 @@ def build(cfg=None):
                 hook = SKIN_HOOK.get(char)
                 if hook:
                     r = hook(cls=cls, v=v, si=si, mat=mat, meta=meta, skin_dir=f'{pack}/models/{mdir}/{char}/skins')
+                    if r is not None and 'hce_hidden' in r and si in (meta.get('blood') or {}).get('surfaces', []):
+                        blood_hidden.append(si)
                     if r is not None:
                         skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{r}"')
                         continue
@@ -794,6 +841,8 @@ def build(cfg=None):
                 ws = [si for si, wv in enumerate(mesh_weapon) if wv]
                 extra += '\tvoid HCE_HideWeaponSurfaces()\n\t{\n' + ''.join(
                     f'\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for si in ws) + '\t}\n'
+            if blood_hidden:                       # the blood overlay skips surfaces this variant doesn't wear
+                extra += '\toverride void HCE_BloodHideClass()\n\t{\n' + ''.join(blood_hide(si, mdir).replace('\t\t\t', '\t\t', 1) for si in blood_hidden) + '\t}\n'
             blade = 'HCE_ActiveCamo' in flags and weapon == 'energy sword'
             if blade:
                 # the energy sword's blade isn't cloaked (Halo shows it): a second copy of the model, only the blade

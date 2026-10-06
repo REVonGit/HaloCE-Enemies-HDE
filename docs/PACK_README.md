@@ -117,7 +117,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_nerf_shields` | 0.5 | Enemy energy shields and Jackal shield-gauntlet strength |
 | `hce_enemydamage` | 1.0 | An extra multiplier on enemy projectile damage, on top of `hce_nerf_projectiles` |
 | `hce_dropweapons` | true | Enemies drop the weapon they carried (and sometimes grenades), like in Halo |
-| `hce_dismember` | true | Hard kills can take an enemy's head or arms off (see [Dismemberment](#dismemberment)) |
+| `hce_dismember` | true | Weapon-based dismemberment and gibbing, and gun arms shot off (see [Dismemberment](#dismemberment)) |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
 | `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
 | `hce_jumping` | true | Enemies jump onto ledges and over low obstacles in their way |
@@ -556,9 +556,10 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 | Sentinels | none (machines) |
 | Drinol, Blind Wolf, Thorn Beast | dark reds |
 
-**No gibbing:** apart from the Covenant's severed heads and arms (below), the gore is blood.
-* **Bodies stay whole:** a body is never burst into meat chunks or removed on an overkill. The classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
+**Gibbing only from the heavy weapons:** only the weapons listed under [Dismemberment](#dismemberment) tear a body apart. Anything else leaves it whole, however hard it hits.
+* **Bodies stay whole otherwise:** the classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
 * **Overkills and hard kills:** these spray extra blood in the race's colour; NashGore turns it into its sprays, splats, decals and pools.
+* **Energy shields keep the blood in:** an enemy with its shield up doesn't bleed (no blood sprays, Halo splats or blood on its body). It starts bleeding once the shield pops, and stops again if the shield recharges.
 
 **Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
 * **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
@@ -588,10 +589,28 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 
 ## Dismemberment
 
-Covenant enemies can lose their head or arms when they die hard. This works with or without NashGore.
+Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
+
+**Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
 * **Headshot kills:** usually take the head off.
-* **Explosions:** big blasts can take off the head and either arm, or both arms.
-* **Heavy melee and other hard kills:** sometimes take an arm, and heavy melee sometimes the head.
+* **Other kills:** a kill landing on an arm (or near the head) takes it off a little over half the time. Body shots leave the limbs on.
+
+**Weapons that gib:** the Rocket Launcher, Hydra, Scattershot alt fire, Light Rifle alt fire, Binary Rifle, Unmaker, Stanchion, Gravity Hammer, GPMG (autocannon), Double Barrel, Fuel Rod, Needler supercombine, Needle Javelin, Plasma Caster, Sentinel Beam supercombine and Sticky Detonator. A body killed by one bursts apart: the head and arms fly off as pieces in a spray of blood, the rest is gone, and NashGore (when loaded) adds its meat chunks and splats.
+
+**Grenades:** they never gib. Half the time a grenade kill takes off one or two limbs.
+
+**Anything else** (plasma rifles, needles that don't supercombine, ordinary melee, fire) leaves the body whole.
+
+**In the standalone packs**, the Doom weapons count as the nearest Halo ones:
+* **Dismember:** pistol, chaingun, shotgun and chainsaw.
+* **Gib:** super shotgun, rocket launcher and BFG.
+* **Neither:** the plasma rifle.
+
+**Losing the gun arm while alive:** a dismembering weapon's hit on the arm holding the gun, taking a fifth of the enemy's health or more, takes the arm off half the time.
+* **Grunts and Jackals survive it:** they take a hard flinch, drop the gun, and run away in terror, bleeding from the stump, until they bleed out 5–9 seconds later.
+* **Anything else:** dies on the spot.
+
+**Severed limbs:**
 * **The severed piece:** it flies off away from the blow, tumbling and trailing blood. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
 * **The body:** the cut is closed with a gore stump that keeps bleeding for a few seconds as the body falls.
 * **Held items:** a gun or shield gauntlet in a severed hand goes with the arm (the gun still drops as a pickup). A stealth Elite that loses its sword arm loses the blade too, and a Brute's armour-kit helmet comes off with the head.
@@ -608,7 +627,40 @@ The stump texture is SPV3's own gore, wet ropy flesh with a bone end:
 * **The others:** recoloured to their blood. Brutes are navy, Hunters and Slug Men orange, and Drones a pale ichor.
 * **Kitbashed caps:** these put the bone end in the middle of the cut. Hunters, Slug Men and Drones have no bones, so theirs show flesh only.
 
-Dismemberment is off for the Flood, Sentinels, Marines, Engineers (which explode) and the beasts. Brutes lose only their head, because their model is already at UZDoom's 32-surface limit. Turn it off with `hce_dismember 0`.
+Limbs don't come off the Flood, Marines, Engineers or the beasts, but the gibbing weapons still burst their bodies apart. Sentinels (machines) and infection forms (which pop) are never gibbed. Brutes lose only their head, because their model is already at UZDoom's 32-surface limit. Turn it off with `hce_dismember 0`.
+
+## Burning
+
+An enemy on fire (HDE's flamethrower and other fire, or the standalone flames) doesn't drop dead from the burn that kills it. It flails and runs about screaming in flames for 1.5–2.7 seconds, then dies.
+* **Elites, Grunts and Jackals:** they use Halo CE's own "flaming" animations, a burning flail, and Jackals also have a burning run.
+* **Marines and Slug Men:** they use their own burning run and flail.
+* **Everything else:** uses its panic run (or its normal run).
+
+A burn death counts as brutal for the squad (below). Any other kill during the flailing ends it at once.
+
+## Blood on the body
+
+Shot enemies show blood on their bodies, in their race's colour. Once the shield is down, every hit that draws blood adds to it.
+* **Stages:** a few splatters at 8% of the enemy's health lost, more at 35%, and soaked at 70%. A corpse always shows at least the first stage.
+* **Where it lands:** each splatter was placed on the 3D body and painted across its textures. A spray crosses seams and armour edges like real blood, with a dark wet core and drips running down from it.
+* **How it's drawn:** it's an overlay that rides the body's own skeleton. Severed limbs and armour a variant doesn't wear stay clean.
+* **Who bleeds:** every enemy that bleeds, Flood and Marines included, but not Sentinels.
+
+## Brutality and squad morale
+
+How brutally an Elite or Brute dies decides how long the squad it led takes to pull itself together, if it was the last leader standing nearby. If another Elite or Brute is still alive within reach, the squad falls in with it as before.
+
+| Death | Brutality |
+|---|---|
+| torn apart (gibbed) | 6 |
+| burned alive | 3 |
+| beheaded | 3 |
+| each arm lost | 1 |
+| headshot | 1 |
+| hard kill (a big hit, an explosion) | 1 |
+
+* **Regrouping:** the squad's Grunts and Jackals can't regroup under anyone for 3 seconds plus 2.5 seconds per point. A clean body shot gives 3–5 seconds; a rocket gib (torn apart, which also takes the head and both arms) about 30.
+* **Panic:** each point also adds 8% to every member's chance to panic, and those that panic stay panicked for up to the same time (at most 12 seconds).
 
 ## Not included / known limits
 

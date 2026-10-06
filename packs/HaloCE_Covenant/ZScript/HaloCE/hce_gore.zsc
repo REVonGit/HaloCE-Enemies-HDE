@@ -1,6 +1,5 @@
-// Halo gore on top of Nash's Gore Mod (built into the core pack; hce_halogore toggles it): on top of NashGore's own
-// sprays, splats and pools, the enemies bleed the way they do in Halo CE and Halo 2 (each faction pack carries its
-// species' decals: the Covenant's, the Flood's Halo 2 splats, the Marines' red human ones):
+// Halo gore for Nash's Gore Mod (Covenant pack). Only runs while NashGore is loaded (and hce_halogore is on):
+// on top of NashGore's own sprays, splats and pools, Covenant enemies bleed the way they do in Halo CE and Halo 2:
 // * every hit sprays the species' Halo blood decal onto the wall behind it (Halo CE and Halo 2 splats, chosen at
 //   random: the Elite's lavender, the Grunt's blue, the Hunter's orange with its glowing splats, the Brute's
 //   navy, the Drone's khaki, the Engineer's pink; Slug Men, a Mgalekgolo sub-species, bleed the Hunter's orange; the beasts red)
@@ -28,9 +27,7 @@ class HCE_HaloGoreHandler : EventHandler
 	static String Species(Actor a)
 	{
 		String n = a.GetClassName();
-		if(n.IndexOf("Sentinel") >= 0) return "";
-		if(n.IndexOf("Flood") >= 0) return "Flood";
-		if(n.IndexOf("Marine") >= 0) return "Human";
+		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Marine") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
 		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
 		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Elite", "Elite", "Beast", "Beast", "Beast" };
 		for(int i = 0; i < keys.Size(); i++) if(n.IndexOf(keys[i]) >= 0) return groups[i];

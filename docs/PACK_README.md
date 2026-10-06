@@ -545,7 +545,7 @@ Don't load these together with the regular HDE packs: they define the same enemi
 
 ## Gore (Nash's Gore Mod)
 
-[Nash's Gore Mod](https://github.com/poperigby/nashgore) (NashGore, by Nash Muhandes, BSD licence) is **built into the core pack**, so every faction has it with nothing extra to load. **Don't load `nashgore.pk3` as well**: the two copies would clash. Its options are in its own menu, as usual.
+The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (NashGore). Load `nashgore.pk3` last, after the HDE or standalone packs. Without it, Doom's normal blood is used, in the same colours.
 
 **Blood colours** follow each species' blood from Halopedia's "Blood" article (Halo CE colours where the games differ). They are set as each enemy's `BloodColor`, so NashGore's sprays, floor splats, wall decals, corpse pools, footprints and gibs all take the race's colour:
 
@@ -569,10 +569,11 @@ Don't load these together with the regular HDE packs: they define the same enemi
 * **Energy shields keep the blood in:** an enemy with its shield up doesn't bleed (no blood sprays, Halo splats or blood on its body). It starts bleeding once the shield pops, and stops again if the shield recharges.
 
 **Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
-* **The burst:** NashGore's full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
+* **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
+* **Without NashGore:** a large blood burst.
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
-**Halo CE and Halo 2 gore:** on top of NashGore's own effects, every faction bleeds the way it does in Halo. The code is in the core; each faction pack carries its own species' Halo decals.
+**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
 * **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it, picked at random from Halo CE's and Halo 2's splats:
 
   | Species | Halo decals |
@@ -584,8 +585,6 @@ Don't load these together with the regular HDE packs: they define the same enemi
   | Drones | Halo 2's khaki "bugger" splats |
   | Engineers | Halo CE's pink Engineer splat |
   | Drinol, Blind Wolf, Thorn Beast | red Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
-  | Flood | Halo 2's Flood splats (and its large Flood splat on death) |
-  | Marines | red human Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
 
 * **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour (Halo CE's and Halo 2's blood-burst sheets), with a few blood streaks flung away from the shot (Halo 2's blood trails).
 * **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears.
@@ -597,7 +596,7 @@ Don't load these together with the regular HDE packs: they define the same enemi
 
 ## Dismemberment
 
-Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them.
+Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
 
 **Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (40% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 

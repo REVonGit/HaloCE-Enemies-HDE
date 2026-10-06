@@ -117,6 +117,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_nerf_shields` | 0.5 | Enemy energy shields and Jackal shield-gauntlet strength |
 | `hce_enemydamage` | 1.0 | An extra multiplier on enemy projectile damage, on top of `hce_nerf_projectiles` |
 | `hce_dropweapons` | true | Enemies drop the weapon they carried (and sometimes grenades), like in Halo |
+| `hce_dismember` | true | Hard kills can take an enemy's head or arms off (see [Dismemberment](#dismemberment)) |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
 | `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
 | `hce_jumping` | true | Enemies jump onto ledges and over low obstacles in their way |
@@ -301,6 +302,7 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 * **Stuck Elites go berserk:** an Elite (or anything else that berserks: Flood combat forms, Hunters) stuck by a plasma grenade roars and charges whoever threw it, trying to take them down in the blast. If the thrower is unknown, it charges the nearest enemy in sight. Grunts and Jackals panic instead.
 * **Halo CE armour permutations:** Halo CE's models carry alternate armour that the Xbox campaign rolls at random; here each rank gets one. The **Spec Ops Elites** (and the stealth Elites, which share their model) wear the regular Elite's **curved, crescent-masked helmet** with the blunt armoured arms and double-pointed armoured legs, in dark Spec Ops colours. The **Spec Ops Grunts** carry the **shellback** (shrimp-back) tank. The **Major Jackals** wear the **armoured helmet**, and the Halo 2 Jackals wear it too: the helmet is cut out of Halo CE's armoured head and fitted to Halo 2's head bone, tinted with each rank's armour colour.
 * **Stealth Elites:** active camo flickers when shot or firing. A cloaked sword Elite's **energy sword blade stays visible**, glowing at full strength (a blade-only copy of the model plays the Elite's animations), as in Halo. The camo is their protection: they have **no energy shield** and a fragile body (45% of the tag's vitality, 45 health before `hce_nerf_health`).
+* **Armour shine:** Halo CE draws Elite and Grunt armour with a cube-map reflection under its specular mask, which gives the plates their glossy metal look. Doom has no cube maps, so a stylised version is baked into the skins: a bright overhead reflection, a horizon streak and highlights following each plate's shape, in the armour's own colour, only where Halo's specular mask marks metal.
 * **Elite Commander (gold):** the gold Elites wear the regular Elite body, the one the Minors and Majors wear, instead of the Elite Special's: its colour mask leaves the hands their dark gauntlet colour, where the Elite Special's turned the hands gold too. The armour is baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The Commanders keep their own stats, weapons (the regular Elite model now carries the energy sword) and DoomEdNums.
 * **Fuel-rod Elite (new, `HCE_EliteMajorFuelRod`, 30282):** a Major Elite with the fuel rod gun, in **Halo 2's fuel-rod stance**. Halo CE's and Halo 2's Elites are the same 3ds Max biped: every CE bone has a Halo 2 twin with the same parent and the same offset in its parent's frame, so Halo 2's animations play on the CE Elite as they are (`h2_elite_anims.py`). It gets Halo 2's fuel-rod idle, moves, turns, dives, evades, grenade throw, berserk, melee and the firing overlay. Its firing data is the Spec Ops Grunt's fuel rod; it drops HDE's fuel rod.
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
@@ -554,8 +556,8 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 | Sentinels | none (machines) |
 | Drinol, Blind Wolf, Thorn Beast | dark reds |
 
-**Blood only:** the gore is strictly blood.
-* **No gibbing:** a body is never torn apart or removed, so there are no meat chunks and no vanishing body on an overkill. The classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
+**No gibbing:** apart from the Covenant's severed heads and arms (below), the gore is blood.
+* **Bodies stay whole:** a body is never burst into meat chunks or removed on an overkill. The classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
 * **Overkills and hard kills:** these spray extra blood in the race's colour; NashGore turns it into its sprays, splats, decals and pools.
 
 **Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
@@ -583,6 +585,29 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * Fire, freezing, drowning and telefrags don't bleed.
 
 **BLUDTYPE:** none is needed. The enemies, HDE's projectiles and the standalone projectiles all spawn Doom's standard `Blood`, which NashGore replaces on its own. If another mod gives these enemies a custom blood class, list it in a `BLUDTYPE.txt` as described in [nashgore_bludtype](https://github.com/nashmuhandes/nashgore_bludtype).
+
+## Dismemberment
+
+Covenant enemies can lose their head or arms when they die hard. This works with or without NashGore.
+* **Headshot kills:** usually take the head off.
+* **Explosions:** big blasts can take off the head and either arm, or both arms.
+* **Heavy melee and other hard kills:** sometimes take an arm, and heavy melee sometimes the head.
+* **The severed piece:** it flies off away from the blow, tumbling and trailing blood. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
+* **The body:** the cut is closed with a gore stump that keeps bleeding for a few seconds as the body falls.
+* **Held items:** a gun or shield gauntlet in a severed hand goes with the arm (the gun still drops as a pickup). A stealth Elite that loses its sword arm loses the blade too, and a Brute's armour-kit helmet comes off with the head.
+
+| Race | What comes off | Stump |
+|---|---|---|
+| Elites, Grunts, Jackals (Halo CE) | head, either arm | SPV3's own stump models |
+| Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
+| Brutes | head | kitbashed cap |
+
+Each race's stump texture is drawn in its blood colour:
+* **Elites, Jackals, Grunts and Brutes:** bone and marrow in wet flesh.
+* **Hunters and Slug Men:** a cut tangle of orange worms.
+* **Drones:** chitin around pale ichor.
+
+Dismemberment is off for the Flood, Sentinels, Marines, Engineers (which explode) and the beasts. Brutes lose only their head, because their model is already at UZDoom's 32-surface limit. Turn it off with `hce_dismember 0`.
 
 ## Not included / known limits
 

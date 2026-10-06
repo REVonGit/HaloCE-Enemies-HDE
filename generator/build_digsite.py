@@ -969,18 +969,26 @@ def brute_code():
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour

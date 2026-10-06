@@ -175,6 +175,26 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
 	override Name HCE_ShellClass() { return 'HCE_BruteShieldShell'; }
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute", 'gore_Brute.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(0, (0.1345, -0.0001, 0.7725), 72.00, "models/hce_dig/Brute", 'Brute_gib_head.iqm', 31, 'gore_Brute.png');
+			HCE_OnSever(0, false);
+			return true;
+		}
+		return false;
+	}
 }
 
 // characters\brute\brute captain plasma rifle
@@ -440,6 +460,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -540,18 +562,26 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -582,7 +612,6 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -849,6 +878,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -949,18 +980,26 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -991,7 +1030,6 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -1258,6 +1296,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -1358,18 +1398,26 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -1400,7 +1448,6 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -1670,6 +1717,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -1770,18 +1819,26 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -1812,7 +1869,6 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2079,6 +2135,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -2179,18 +2237,26 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -2221,7 +2287,6 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2488,6 +2553,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -2588,18 +2655,26 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -2630,7 +2705,6 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2897,6 +2971,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -2997,18 +3073,26 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -3039,7 +3123,6 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -3306,6 +3389,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -3406,18 +3491,26 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -3448,7 +3541,6 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -3715,6 +3807,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 31, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
@@ -3815,18 +3909,26 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		if(health <= 0 || hce_helmetOff || dealt <= 0 || HCE_HelmetFixed()) return;
 		bool head = mod == 'Headshot' || (inflictor && inflictor != source && inflictor.pos.z > pos.z + height * 0.8);
 		if(!head) return;
+		HCE_KnockHelmet(inflictor ? inflictor : source);
+		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	void HCE_KnockHelmet(Actor from)
+	{
 		hce_helmetOff = true;
 		A_ChangeModel('None', 1, "", 'None', 1, "", 'None', CMDL_HIDEMODEL);           // the kit helmet (attachment 1) flies off
 		let h = HCE_BruteHelmetDebris(Spawn("HCE_BruteHelmetDebris", pos + (0, 0, height * 0.95), ALLOW_REPLACE));
 		if(h)
 		{
 			h.hce_piece = "debris_" .. hce_kitHelmet;
-			Actor from = inflictor ? inflictor : source;
 			double a = from ? from.AngleTo(self) : angle + 180;
 			h.vel = (AngleToVector(a + frandom(-30, 30), frandom(3, 6)), frandom(4, 7));
 			h.angle = angle;
 		}
-		HCE_Say('PainHeavy', 1.0, 0, true);
+	}
+	// decapitated with the kit helmet still on: it comes off too (the gib is the bare head)
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		if(limb == HCE_LIMB_HEAD && !hce_helmetOff && !HCE_HelmetFixed() && hce_kitHelmet.Length() > 0) HCE_KnockHelmet(target);
 	}
 	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
@@ -3857,7 +3959,6 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -4245,6 +4346,43 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 			d.hce_zigOff = frandom(-60, 60);
 			d.HCE_Say('Panic', 0.6, 35 * 2);
 		}
+	}
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(0, (0.2755, -0.0001, 0.5189), 80.00, "models/hce_dig/Drone", 'Drone_gib_head.iqm', 17, 'gore_Drone.png');
+			HCE_OnSever(0, false);
+			return true;
+		case 1:
+			A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(1, (0.1047, 0.2033, 0.3465), 80.00, "models/hce_dig/Drone", 'Drone_gib_larm.iqm', 18, 'gore_Drone.png');
+			HCE_OnSever(1, false);
+			return true;
+		case 2:
+			A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(2, (0.1045, -0.2033, 0.3444), 80.00, "models/hce_dig/Drone", 'Drone_gib_rarm.iqm', 19, 'gore_Drone.png');
+			HCE_OnSever(2, true);
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -4672,6 +4810,40 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+	}
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 0, "", 'None', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(0, (0.1664, 0.0003, 0.6444), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_head.iqm', 15, 'gore_EliteRifle.png');
+			HCE_OnSever(0, false);
+			return true;
+		case 1:
+			A_ChangeModel('None', 0, "", 'None', 0, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(1, (0.0048, 0.1506, 0.3901), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_larm.iqm', 16, 'gore_EliteRifle.png');
+			HCE_OnSever(1, false);
+			return true;
+		case 2:
+			A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(2, (0.0058, -0.1484, 0.3862), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_rarm.iqm', 17, 'gore_EliteRifle.png');
+			HCE_OnSever(2, true);
+			return true;
+		}
+		return false;
 	}
 }
 
@@ -6132,6 +6304,50 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 	}
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(0, (0.0715, -0.0001, 0.6408), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_head.iqm', 27, 'gore_H2Jackal.png');
+			HCE_OnSever(0, false);
+			return true;
+		case 1:
+			A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(1, (0.0918, 0.1815, 0.4110), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_larm.iqm', 28, 'gore_H2Jackal.png');
+			HCE_OnSever(1, true);
+			return true;
+		case 2:
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(2, (0.0926, -0.1815, 0.4108), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_rarm.iqm', 29, 'gore_H2Jackal.png');
+			HCE_OnSever(2, false);
+			return true;
+		}
+		return false;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal marksman plasma carbine
@@ -6935,6 +7151,36 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+	}
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(0, (0.0328, -0.0002, 0.5878), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_head.iqm', 8, 'gore_SlugMan.png');
+			HCE_OnSever(0, false);
+			return true;
+		case 1:
+			A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 3, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(1, (-0.0203, 0.1189, 0.4211), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_larm.iqm', 9, 'gore_SlugMan.png');
+			HCE_OnSever(1, true);
+			return true;
+		case 2:
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
+			HCE_SpawnLimb(2, (-0.0200, -0.1205, 0.4189), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_rarm.iqm', 10, 'gore_SlugMan.png');
+			HCE_OnSever(2, false);
+			return true;
+		}
+		return false;
 	}
 }
 

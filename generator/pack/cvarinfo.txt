@@ -16,3 +16,4 @@ server int hce_maxpursuers = 4;        // at most this many enemies of a team hu
 server bool hce_squads = true;         // Grunts and Jackals form squads around an Elite / Brute leader (follow it, share targets)
 server bool hce_patrols = true;        // idle leaders and loners walk short patrols (or a map's PatrolPoint route)
 server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (deaf / ambush Grunts always do)
+server bool hce_dismember = true;      // hard kills can take heads and arms off (headshots, explosions, heavy melee)

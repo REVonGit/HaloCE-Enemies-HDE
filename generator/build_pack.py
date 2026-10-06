@@ -344,16 +344,82 @@ def bake_hunter(char, mat, mode, outpath):
     o = np.where(armour, new, rgb)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
+# Baked armour shine (Elites and Grunts): Halo CE draws their armour with a cube-map reflection under the
+# multipurpose map's specular mask (red channel on Xbox), which gives the metal its glossy, sky-lit look. Doom's
+# renderer has no cube maps, so a stylised version is baked into the skin: every armour texel gets the model's surface
+# normal there (the triangles rasterised into texture space, bind pose), lit by a fixed studio sky - a bright overhead
+# reflection, a sharp horizon streak and two specular lobes, brighter towards grazing angles - tinted by the
+# armour's own colour and masked by Halo's specular mask.
+SHINE = {'Elite': 0.95, 'EliteSpecial': 0.95, 'EliteRifle': 0.95, 'Grunt': 0.8, 'GruntSpecOps': 0.8}
+_normal_maps = {}
+
+def normal_map(char, mat, size):
+    """(H, W, 3) model-space normals per texel of 'mat' (zero where no triangle covers it, then grown into the gaps)"""
+    key = (char, mat, size)
+    if key in _normal_maps: return _normal_maps[key]
+    from iqm import read_iqm
+    from scipy import ndimage
+    W_, H_ = size
+    N = np.zeros((H_, W_, 3), np.float32); hit = np.zeros((H_, W_), bool)
+    _, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
+    for m in meshes:
+        if m['material'] != mat + '.png' or not len(m['tris']): continue
+        uv = m['uv'] % 1.0 * np.array([W_ - 1, H_ - 1]); nr = m['nrm']
+        for t in m['tris']:
+            p = uv[t]; n = nr[t]
+            x0, y0 = np.floor(p.min(0)).astype(int); x1, y1 = np.ceil(p.max(0)).astype(int)
+            if x1 - x0 > W_ * 0.6 or y1 - y0 > H_ * 0.6: continue        # wraps across the seam
+            xs, ys = np.meshgrid(np.arange(x0, x1 + 1), np.arange(y0, y1 + 1))
+            v0, v1 = p[1] - p[0], p[2] - p[0]
+            den = v0[0] * v1[1] - v1[0] * v0[1]
+            if abs(den) < 1e-9: continue
+            dx, dy = xs - p[0][0], ys - p[0][1]
+            b1 = (dx * v1[1] - v1[0] * dy) / den; b2 = (v0[0] * dy - dx * v0[1]) / den; b0 = 1 - b1 - b2
+            ins = (b0 >= -0.02) & (b1 >= -0.02) & (b2 >= -0.02)
+            xi, yi = xs[ins] % W_, ys[ins] % H_
+            N[yi, xi] = b0[ins, None] * n[0] + b1[ins, None] * n[1] + b2[ins, None] * n[2]
+            hit[yi, xi] = True
+    if hit.any():
+        _, (iy, ix) = ndimage.distance_transform_edt(~hit, return_indices=True)
+        N = N[iy, ix]
+    N /= np.maximum(np.linalg.norm(N, axis=2, keepdims=True), 1e-6)
+    _normal_maps[key] = N
+    return N
+
+def add_shine(char, mat, rgb):
+    """rgb (H, W, 3) floats 0..1, the finished skin colours -> with the baked armour shine"""
+    k = SHINE.get(char)
+    mp = f'{OUT}/models/{char}/{mat}_multi.png'
+    if not k or not os.path.exists(mp): return rgb
+    H_, W_ = rgb.shape[:2]
+    spec = np.asarray(Image.open(mp).convert('RGBA').resize((W_, H_))).astype(np.float32)[..., 0] / 255.0
+    if spec.max() < 0.05: return rgb
+    n = normal_map(char, mat, (W_, H_))
+    def lobe(d, p):
+        d = np.array(d, np.float32); d /= np.linalg.norm(d)
+        return np.clip(n @ d, 0, 1) ** p
+    sky = 0.18 + 0.55 * np.clip(n[..., 2], 0, 1) ** 1.5                       # overhead sky
+    horizon = 0.45 * np.exp(-((n[..., 2] - 0.12) / 0.07) ** 2)                 # the cube map's horizon streak
+    key = 1.4 * lobe((0.55, 0.35, 0.75), 28) + 0.6 * lobe((0.35, -0.65, 0.45), 14)
+    graze = 0.35 * (1 - np.abs(n[..., 0])) ** 3                                # facing away from the front: more reflective
+    env = sky + horizon + key + graze
+    lum = rgb.mean(axis=2, keepdims=True)
+    tint = 0.45 + 0.55 * rgb / np.maximum(lum, 0.05) * 0.6                     # the armour's own colour, washed toward white
+    s = (env * spec * k)[..., None] * np.clip(tint, 0, 1.6)
+    return np.clip(rgb + s * (1 - rgb * 0.5), 0, 1)                           # screen-ish: highlights don't clip flat
+
+
 def bake_skin(char, mat, color, outpath):
     base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if color is None or not os.path.exists(mp):
+        if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0) * 255).astype(np.uint8))
         base.save(outpath); return
     mask = Image.open(mp).convert('RGBA').resize(base.size)
     b = np.asarray(base).astype(np.float32) / 255.0
     msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0   # Xbox: blue = colour change
     col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
-    o = b * (1 - msk) + b * col * msk
+    o = add_shine(char, mat, b * (1 - msk) + b * col * msk)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
@@ -382,7 +448,7 @@ def bake_vivid(char, mat, color, outpath):
     msk = msk * (1 - hm)
     o = suit * (1 - msk) + gold * msk
     glove = np.array(UNDERSUIT, dtype=np.float32).reshape(1, 1, 3) * (0.18 + 0.55 * lum)   # dark slate, shading kept
-    o = o * (1 - hm) + glove * hm
+    o = add_shine(char, mat, o * (1 - hm) + glove * hm)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 def hand_mask(char, mat, size):
@@ -436,6 +502,28 @@ vec4 ProcessTexel()
 '''
 
 # ---------------------------------------------------------------- generation
+GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2}
+
+def gore_code(char, meta, mdir, sc):
+    """HCE_SeverLimb for a character with gore_kit.py's dismemberment data: hide the limb's surfaces (and what it
+    holds), show its gore stump, throw the gib"""
+    g = meta.get('gore')
+    if not g: return ''
+    mw = meta.get('mesh_weapon') or []
+    out = ['\toverride bool HCE_SeverLimb(int limb)\n\t{\n\t\tif(hce_severed & (1 << limb)) return false;\n\t\tswitch(limb)\n\t\t{\n']
+    for L, d in g['limbs'].items():
+        gun = any(si < len(mw) and mw[si] for si in d['surfaces'])
+        c = d['center']
+        out.append(f'\t\tcase {GORE_LIMBS[L]}:\n')
+        for si in d['surfaces']:
+            out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
+        out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {d["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n')
+        out.append(f'\t\t\tHCE_SpawnLimb({GORE_LIMBS[L]}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{d["gib"]}\', {d["stub"]}, \'{g["tex"]}\');\n')
+        out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
+    out.append('\t\t}\n\t\treturn false;\n\t}\n')
+    return ''.join(out)
+
+
 def build(cfg=None):
     cfg = cfg or MAIN
     char_of_unit, team, ai, pack, mdir = cfg['char_of_unit'], cfg['team'], cfg['ai'], cfg['pack'], cfg['mdir']
@@ -453,6 +541,12 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
+        if meta.get('gore'):                       # dismemberment (gore_kit.py): the gibs and the stump texture
+            for d in meta['gore']['limbs'].values(): shutil.copy(f'{OUT}/models/{char}/{d["gib"]}', f'{pack}/models/{mdir}/{char}/{d["gib"]}')
+            shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["tex"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["tex"]}')
+            os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
+            hid = f'{pack}/models/{mdir}/weapons/hce_hidden.png'
+            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
         h = max(meta['bounds'][1][2] - max(0, meta['bounds'][0][2]), b.get('collision_height_standing') or 0.3)
         r = b.get('collision_radius') or 0.2
         flying = char == 'Sentinel' or ov.get('flying', False)
@@ -477,7 +571,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + '}\n')
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue
@@ -628,8 +722,12 @@ def build(cfg=None):
             skin_lines = []; weapon_lines = []
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
+            stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
             for si, mat in enumerate(meta['meshes']):
                 matn = mat[:-4]
+                if si in stubs:                    # gore stumps: hidden until the limb comes off (HCE_SeverLimb)
+                    weapon_lines.append(f'\tSurfaceSkin 0 {si} "hce_hidden.png"')
+                    continue
                 if si < len(mesh_weapon) and mesh_weapon[si]:
                     # weapon textures are shared by every character: one copy in models/hce/weapons
                     os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
@@ -704,7 +802,8 @@ def build(cfg=None):
                           f'\t\thce_bladeActor = Spawn("{cls}Blade", pos, NO_REPLACE);\n'
                           f'\t\tif(hce_bladeActor) hce_bladeActor.master = self;\n\t\tsuper.PostBeginPlay();\n\t}}\n'
                           f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tsuper.HCE_ApplyAnim(n, blend, loop);\n'
-                          f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n')
+                          f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n'
+                          f'\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{{\n\t\tif(gunArm && hce_bladeActor) {{ hce_bladeActor.Destroy(); hce_bladeActor = null; }}\n\t}}\n')
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))}\n{extra}}}\n')
             if blade:
                 zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')

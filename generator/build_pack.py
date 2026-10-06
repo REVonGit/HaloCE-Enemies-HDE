@@ -425,12 +425,17 @@ def sample_cube(faces, r):
 # purple instead: the blue skins hue-turned to purple on the Elite bodies, the change colour on the Spec Ops body.
 ELITE_SKINS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'elite_skins')
 ELITE_LAYOUT = ('Elite', 'EliteRifle')
-SPECOPS_PURPLE = (0.30, 0.06, 0.56)
 
-def elite_skin(char, mat, color, outpath):
+# the Spec Ops body (EliteSpecial) shares three of its textures with the Elite: those take the purple-turned skins too
+SPECOPS_SHARED = {'0': '0', '3': '5', '5': '5'}
+MINOR_BLUE = (0.31, 0.30, 0.53)
+
+def elite_skin(char, mat, color, outpath, specops=False):
     """write the hand-painted skin for this Elite rank's material; False when there is none"""
-    if char not in ELITE_LAYOUT: return False
     k = mat.rsplit('_', 1)[-1]
+    if char == 'EliteSpecial' and specops and k in SPECOPS_SHARED:
+        char, k, color = 'Elite', SPECOPS_SHARED[k], (0, 0, 0)
+    if char not in ELITE_LAYOUT: return False
     ci = cube_index(char, color)
     src = {0: 'blue', 1: 'red', 3: 'blue'}.get(ci)
     if not src or not os.path.exists(f'{ELITE_SKINS}/{src}/Elite_{k}.png'): return False
@@ -444,7 +449,9 @@ def purple(im):
     shine kept), a little darker and richer"""
     hsv = np.asarray(im.convert('HSV')).astype(np.float32)
     h, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
-    arm = np.clip((sat - 95) / 50, 0, 1) * (np.abs(h * 360 / 255 - 210) < 55)    # the armour's blues and cyans (not the undersuit)
+    hue = np.abs(h * 360 / 255 - 205) < 60
+    arm = np.clip((sat - 95) / 50, 0, 1) * hue                                   # the armour's blues and cyans (not the undersuit)
+    arm = np.maximum(arm, np.clip((val - 170) / 40, 0, 1) * np.clip((sat - 25) / 30, 0, 1) * hue)   # and its pale cyan glints
     h = h * (1 - arm) + (282 * 255 / 360) * arm
     sat = np.clip(sat * (1 + 0.2 * arm), 0, 255); val = val * (1 - 0.25 * arm)
     return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
@@ -489,7 +496,10 @@ def add_shine(char, mat, rgb, color=None):
 
 
 def bake_skin(char, mat, color, outpath):
-    base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
+    src = Image.open(f'{OUT}/models/{char}/{mat}.png')
+    if src.mode == 'RGBA' and np.asarray(src)[..., 3].min() < 128 and not os.path.exists(f'{OUT}/models/{char}/{mat}_multi.png'):
+        src.save(outpath); return                 # a cutout (the Drones' wings): alpha kept, UZDoom alpha-tests it
+    base = src.convert('RGB')
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if color is None or not os.path.exists(mp):
         if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0, color) * 255).astype(np.uint8))
@@ -943,9 +953,11 @@ def build(cfg=None):
                     vivid = next((c for k, c in VIVID.items() if k in vname), None)
                     if v.get('_hunter_color'): bake_hunter(char, matn, v['_hunter_color'], dst)
                     elif vivid: bake_vivid(char, matn, vivid, dst)
-                    elif elite_skin(char, matn, color, dst): pass
-                    elif 'specops' in vname and char.startswith('Elite'):     # the Spec Ops body: purple, like the skins above
-                        bake_skin(char, matn, SPECOPS_PURPLE, dst); purple(Image.open(dst).convert('RGB')).save(dst)
+                    elif elite_skin(char, matn, color, dst, specops='specops' in vname): pass
+                    elif 'specops' in vname and char.startswith('Elite'):
+                        # the Spec Ops body's own textures: baked as a blue Minor (the blue cube-map sheen the painted
+                        # skins have), then turned purple the same way as the painted skins
+                        bake_skin(char, matn, MINOR_BLUE, dst); purple(Image.open(dst).convert('RGB')).save(dst)
                     else: bake_skin(char, matn, color, dst)
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''

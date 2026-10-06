@@ -2,9 +2,8 @@
 covenant_grenade_launcher) reinterpreted as a Halo CE Covenant gun (hde_ce.py).
 
 Its material in the .blend: a dark metallic base (control map: roughness, gloss, metal; alpha marks the armour
-plates), the armour plates tinted by a Covenant fresnel (violet face, magenta middle, cyan rim) and green glowing
-lights (the colour map's alpha). Painted CE-style from those: violet armour with cyan edge highlights over dark
-gunmetal, the lights a bright plasma green."""
+plates) and glowing lights (the colour map's alpha). Painted like Halo CE's own Covenant guns from those: the armour
+plates in smooth dark vibrant purple with soft violet highlights and edges, the mechanism near-black, the lights cyan."""
 import os, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, 'lib')); sys.path.insert(0, HERE)
@@ -19,22 +18,35 @@ MAT = 'covenant_grenade_launcher_default.001'
 FRONT, MIDDLE, RIM = np.array([0.253, 0.0, 1.0]), np.array([0.694, 0.153, 0.29]), np.array([0.204, 0.882, 1.0])
 GLOW = np.array([0.137, 0.725, 0.29])
 
+# Halo CE's Covenant guns (plasma rifle, plasma pistol, needler): smooth deep metal with soft highlights, near-black
+# mechanical parts, small glowing cyan details. The Plasma Caster is painted the same way, in a dark vibrant purple.
+INDIGO_DARK, INDIGO_LIGHT = np.array([0.11, 0.02, 0.22]), np.array([0.56, 0.20, 0.86])   # dark vibrant purple
+MECH_DARK, MECH_LIGHT = np.array([0.05, 0.03, 0.08]), np.array([0.25, 0.18, 0.34])
+CE_GLOW = np.array([0.35, 0.95, 0.92])
+
 def caster_paint(src):
+    from scipy import ndimage
     col = src.image('covenant_grenade_launcher_default_color{pc}.png.001', alpha=True)
     ctl = src.image('covenant_grenade_launcher_default_control{pc}.png.001', alpha=True)
     nm = src.image('covenant_grenade_launcher_default_normal{pc}.png.001')
     size = ctl.shape[:2]; col = hde_ce._fit(col, size); nm = hde_ce._fit(nm[..., :3], size)
-    gloss = hde_ce.soften(ctl[..., 1:2], 4) ** 1.95            # the material's gamma-1.95 detail channel
-    armour = hde_ce.soften(ctl[..., 3:4], 2)
-    metal = hde_ce.srgb(0.02 + 0.06 * gloss) * np.ones(3, np.float32)
-    plate = hde_ce.srgb((FRONT * 0.45 + MIDDLE * 0.3 + 0.25 * 0.35) * (0.3 + 0.45 * gloss))
-    out = metal * (1 - armour) + plate * armour
-    n = nm * 2 - 1; tilt = 1 - np.clip(n[..., 2:3], 0, 1)        # bevels: the fresnel's cyan rim on the plates
-    rim = np.clip(tilt * 3 - 0.2, 0, 1) * armour * 0.45
-    out = out * (1 - rim) + hde_ce.srgb(RIM * 0.6) * rim
-    out = hde_ce.ce_shade(out, nm)
-    glow = np.clip(col[..., 3:4] * 1.5, 0, 1)
-    out = out * (1 - glow) + hde_ce.srgb(GLOW) * (0.6 + 0.6 * col[..., :3].max(2, keepdims=True)) * glow
+    # broad shapes only: the armour mask closed and smoothed (no speckle), the relief's large-scale bevels
+    plate = ndimage.binary_closing(ndimage.binary_opening(ctl[..., 3] > 0.5, iterations=2), iterations=3)
+    plate = ndimage.gaussian_filter(plate.astype(np.float32), 1.5)[..., None]
+    # the armour mask is broken up across the gun's many small shells; read as CE does, the gun is one purple body
+    # with only its deep mechanism darker
+    plate = 0.55 + 0.45 * plate
+    n = hde_ce.soften(nm * 2 - 1, 4); n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-3)
+    light = np.clip(0.5 + 0.55 * (n[..., 1:2] * 0.75 - n[..., 0:1] * 0.35), 0, 1)        # soft light from above
+    gloss = hde_ce.soften(ctl[..., 1:2], 6)
+    t = np.clip(0.15 + 0.7 * light * (0.6 + 0.4 * gloss), 0, 1)
+    armour = INDIGO_DARK + (INDIGO_LIGHT - INDIGO_DARK) * t ** 1.3
+    mech = MECH_DARK + (MECH_LIGHT - MECH_DARK) * t
+    out = mech * (1 - plate) + armour * plate
+    rim = np.clip((1 - np.clip(n[..., 2:3], 0, 1)) * 3 - 0.4, 0, 1) * plate * 0.35      # bevels catch a lavender edge
+    out = out * (1 - rim) + INDIGO_LIGHT * 1.15 * rim
+    glow = np.clip(ndimage.gaussian_filter(col[..., 3], 0.8) * 2.0, 0, 1)[..., None]
+    out = out * (1 - glow) + CE_GLOW * (0.75 + 0.25 * glow) * glow
     out = np.clip(out, 0, 1)
     def paint(mat, role):
         return out if mat == MAT else None                      # the ADS screen materials are left out

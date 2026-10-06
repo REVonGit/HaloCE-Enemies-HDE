@@ -85,6 +85,52 @@ def placeholder(kind, size=256):
 DRONE_WEAPONS = ['plasma_pistol', 'needler', 'plasma_rifle', 'spiker']   # out/weapons/<id>/<id>.pkl (CE weapon space)
 
 
+# Halo 2's Drone shader: a grey-green diffuse (its alpha a specular mask), a normal map, and a glossy olive-gold
+# sheen under the mask. Doom draws the diffuse alone, which reads flat and grey, so the rest is baked in: the normal
+# map's relief lit from above, the exoskeleton's greys tinted the Yanme'e olive green, and the specular sheen added
+# where the mask marks the hard shell.
+DRONE_OLIVE = np.array([0.60, 0.66, 0.40], np.float32)
+DRONE_SHEEN = np.array([0.85, 0.95, 0.55], np.float32)
+
+def bake_bugger(im, bump):
+    from PIL import Image as _I
+    a = np.asarray(im.convert('RGBA')).astype(np.float32) / 255
+    rgb, spec = a[..., :3], a[..., 3:4]
+    nb = np.asarray(bump.convert('RGB').resize(im.size, _I.BILINEAR)).astype(np.float32) / 255 if bump is not None else None
+    lum = rgb.mean(2, keepdims=True)
+    sat = (rgb.max(2, keepdims=True) - rgb.min(2, keepdims=True)) / np.maximum(rgb.max(2, keepdims=True), 1e-3)
+    grey = np.clip((0.22 - sat) / 0.12, 0, 1)                               # the untinted shell (not the painted greens, browns, eye)
+    out = rgb * (1 - grey) + np.clip(lum * DRONE_OLIVE * 1.55, 0, 1) * grey
+    if nb is not None:
+        n = nb * 2 - 1; n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-3)
+        L = np.array([-0.35, 0.55, 0.76], np.float32); L /= np.linalg.norm(L)
+        Hh = L + np.array([0, 0, 1.0], np.float32); Hh /= np.linalg.norm(Hh)
+        diff = np.clip(n @ L, 0, 1)[..., None]
+        out = out * (0.55 + 0.6 * diff)
+        out = out + spec * (np.clip(n @ Hh, 0, 1)[..., None] ** 14 * 0.55 + 0.08) * DRONE_SHEEN
+    return _I.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8), 'RGB')
+
+def drone_texture(m, kind):
+    """the Drone shader's colour map from MCC's textures.dat (HCE_H2_TEXTURES), baked (bake_bugger); None without it"""
+    if not (TEXTURES and os.path.exists(TEXTURES)): return None
+    from h2map import mcc_bitmap
+    # which bitmap each Drone shader samples (its postprocess bitmap list); the wings keep their alpha cutout
+    src = {'wings': 'bugger_wings'}.get(kind, 'bugger')
+    im = mcc_bitmap(m, r'objects\characters\bugger\bitmaps' + '\\' + src, TEXTURES)
+    if src == 'bugger':                  # alpha is a specular mask there: bake the shader's look into the colour
+        im = bake_bugger(im, mcc_bitmap(m, r'objects\characters\bugger\bitmaps\bugger_bump', TEXTURES))
+    return im
+
+def drone_textures(pid='Drone'):
+    """rewrite only the Drone's textures (the model, its gore and blood kits untouched)"""
+    meta = json.load(open(f'{OUT}/models/{pid}/{pid}.json'))
+    done = set()
+    for n, mat in zip(meta['mesh_names'], meta['meshes']):
+        kind = n.rsplit('_', 1)[0]
+        if not mat.startswith(pid + '_') or mat in done or kind.startswith(('weapon', 'gore')): continue
+        im = drone_texture(m, kind)
+        if im is not None: im.save(f'{OUT}/models/{pid}/{mat}'); done.add(mat); print(kind, '->', mat, im.mode, im.size)
+
 def extract_drone(pid='Drone'):
     m = H2Map(MAP, os.environ.get('HCE_H2_CACHE') or None)
     M = render_model(m, DRONE)
@@ -99,14 +145,7 @@ def extract_drone(pid='Drone'):
         kind = sh.split('bugger_')[-1]
         if kind not in mats:
             mn = f'{pid}_{len(mats)}'
-            im = None
-            if TEXTURES and os.path.exists(TEXTURES):
-                from h2map import mcc_bitmap
-                # which bitmap each Drone shader samples (its postprocess bitmap list), and whether alpha is a cutout
-                src = {'wings': 'bugger_wings'}.get(kind, 'bugger')
-                im = mcc_bitmap(m, r'objects\characters\bugger\bitmaps' + '\\' + src, TEXTURES)
-                if kind in ('exoskeleton', 'eye'): im = im.convert('RGB')        # alpha is a specular mask there
-            (im or placeholder(kind)).save(f'{od}/{mn}.png'); mats[kind] = mn
+            (drone_texture(m, kind) or placeholder(kind)).save(f'{od}/{mn}.png'); mats[kind] = mn
         n = sec['vc']
         bidx = np.clip(sec['bi'], 0, NJ - 1).astype(np.uint8)
         bw = np.clip(np.round(sec['bw'] * 255), 0, 255).astype(np.uint8)
@@ -226,6 +265,8 @@ def extract_drone_sounds(pid='Drone'):
     return idx, sorted(missing)
 
 if __name__ == '__main__':
+    if sys.argv[1:2] == ['textures']:
+        drone_textures(); sys.exit()
     meta, M, m = extract_drone()
     if SOUNDS_DIR:
         idx, missing = extract_drone_sounds()

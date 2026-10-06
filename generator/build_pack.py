@@ -351,12 +351,13 @@ def bake_hunter(char, mat, mode, outpath):
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # Baked armour shine (Elites and Grunts): Halo CE draws their armour with a cube-map reflection under the
-# multipurpose map's specular mask (red channel on Xbox), which gives the metal its glossy, sky-lit look. Doom's
-# renderer has no cube maps, so a stylised version is baked into the skin: every armour texel gets the model's surface
-# normal there (the triangles rasterised into texture space, bind pose), lit by a fixed studio sky - a bright overhead
-# reflection, a sharp horizon streak and two specular lobes, brighter towards grazing angles - tinted by the
-# armour's own colour and masked by Halo's specular mask.
-SHINE = {'Elite': 0.95, 'EliteSpecial': 0.95, 'EliteRifle': 0.95, 'Grunt': 0.8, 'GruntSpecOps': 0.8}
+# multipurpose map's specular mask (red channel on Xbox): the swirling liquid-metal sheen. Doom's renderer has no cube
+# maps, so the reflection is baked into the skin with Halo's own cube maps (extract_cubemaps.py): every armour texel
+# gets the model's surface normal there (the triangles rasterised into texture space, bind pose), nudged by the paint's
+# own relief, and reflects a view from the front into the cube map; the result is added under the specular mask. The
+# Elites' cube map follows their rank colour (blue, magenta, gold, silver), the Grunts' is Halo's dark grey one.
+SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 0.85, 'GruntSpecOps': 0.85}
+SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'dark_gray', 'GruntSpecOps': 'dark_gray'}
 _normal_maps = {}
 
 def normal_map(char, mat, size):
@@ -392,40 +393,112 @@ def normal_map(char, mat, size):
     _normal_maps[key] = N
     return N
 
-def add_shine(char, mat, rgb):
-    """rgb (H, W, 3) floats 0..1, the finished skin colours -> with the baked armour shine"""
+_cubes = {}
+
+def cube_faces(name, index):
+    """Halo's cube map as six 256x256 float faces (+x -x +y -y +z -z), smoothed up from 64x64"""
+    key = (name, index)
+    if key not in _cubes:
+        d = f'{OUT}/cubemaps/{name}'
+        _cubes[key] = [np.asarray(Image.open(f'{d}/{index}_{f}.png').convert('RGB').resize((256, 256), Image.BICUBIC)).astype(np.float32) / 255
+                       for f in range(6)] if os.path.exists(f'{d}/{index}_0.png') else None
+    return _cubes[key]
+
+def sample_cube(faces, r):
+    """r (..., 3) directions -> colours (Direct3D cube face layout, Halo's axes)"""
+    ax = np.abs(r); out = np.zeros(r.shape, np.float32)
+    big = np.argmax(ax, -1); sgn = np.take_along_axis(r, big[..., None], -1)[..., 0] >= 0
+    x, y, z = r[..., 0], r[..., 1], r[..., 2]
+    for f, (axis, pos) in enumerate(((0, True), (0, False), (1, True), (1, False), (2, True), (2, False))):
+        sel = (big == axis) & (sgn == pos)
+        if not sel.any(): continue
+        ma = ax[..., axis][sel]
+        sc, tc = {0: (-z, -y) if pos else (z, -y), 1: (x, z) if pos else (x, -z), 2: (x, -y) if pos else (-x, -y)}[axis]
+        u = (sc[sel] / ma + 1) / 2; v = (tc[sel] / ma + 1) / 2
+        F = faces[f]; h, w = F.shape[:2]
+        out[sel] = F[np.clip((v * (h - 1)).astype(int), 0, h - 1), np.clip((u * (w - 1)).astype(int), 0, w - 1)]
+    return out
+
+# The Minor (blue) and Major (red) Elites wear hand-painted skins with Halo's cube-map shine baked in
+# (assets/elite_skins/<blue|red>/Elite_<k>.png, one per Elite material; any Elite-layout body: Elite, EliteRifle).
+# Halo's black Spec Ops armour reads as a hole against the dark undersuit, so the Spec Ops wear a vibrant dark
+# purple instead: the blue skins hue-turned to purple on the Elite bodies, the change colour on the Spec Ops body.
+ELITE_SKINS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'elite_skins')
+ELITE_LAYOUT = ('Elite', 'EliteRifle')
+SPECOPS_PURPLE = (0.30, 0.06, 0.56)
+
+def elite_skin(char, mat, color, outpath):
+    """write the hand-painted skin for this Elite rank's material; False when there is none"""
+    if char not in ELITE_LAYOUT: return False
+    k = mat.rsplit('_', 1)[-1]
+    ci = cube_index(char, color)
+    src = {0: 'blue', 1: 'red', 3: 'blue'}.get(ci)
+    if not src or not os.path.exists(f'{ELITE_SKINS}/{src}/Elite_{k}.png'): return False
+    im = Image.open(f'{ELITE_SKINS}/{src}/Elite_{k}.png').convert('RGB')
+    if ci == 3: im = purple(im)
+    im.save(outpath)
+    return True
+
+def purple(im):
+    """the blue Minor skin turned vibrant dark purple: the armour's blues and cyans coloured violet (their shading and
+    shine kept), a little darker and richer"""
+    hsv = np.asarray(im.convert('HSV')).astype(np.float32)
+    h, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    arm = np.clip((sat - 95) / 50, 0, 1) * (np.abs(h * 360 / 255 - 210) < 55)    # the armour's blues and cyans (not the undersuit)
+    h = h * (1 - arm) + (282 * 255 / 360) * arm
+    sat = np.clip(sat * (1 + 0.2 * arm), 0, 255); val = val * (1 - 0.25 * arm)
+    return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
+
+def cube_index(char, color):
+    """which of the Elites' four cube maps a rank wears, from its armour colour: blue, magenta/red, gold, silver"""
+    if SHINE_CUBE.get(char) != 'elite' or color is None: return 0 if char != 'EliteSpecial' else 3
+    import colorsys
+    h, l, sat = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
+    if sat < 0.25 or l < 0.08: return 3
+    h *= 360
+    if h < 25 or h > 300: return 1
+    if h < 75: return 2
+    return 0
+
+def add_shine(char, mat, rgb, color=None):
+    """rgb (H, W, 3) floats 0..1, the finished skin colours -> with Halo's armour reflection baked in"""
     k = SHINE.get(char)
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if not k or not os.path.exists(mp): return rgb
+    faces = cube_faces(SHINE_CUBE[char], cube_index(char, color))
+    if faces is None: return rgb
+    from scipy import ndimage
     H_, W_ = rgb.shape[:2]
     spec = np.asarray(Image.open(mp).convert('RGBA').resize((W_, H_))).astype(np.float32)[..., 0] / 255.0
     if spec.max() < 0.05: return rgb
-    n = normal_map(char, mat, (W_, H_))
-    def lobe(d, p):
-        d = np.array(d, np.float32); d /= np.linalg.norm(d)
-        return np.clip(n @ d, 0, 1) ** p
-    sky = 0.18 + 0.55 * np.clip(n[..., 2], 0, 1) ** 1.5                       # overhead sky
-    horizon = 0.45 * np.exp(-((n[..., 2] - 0.12) / 0.07) ** 2)                 # the cube map's horizon streak
-    key = 1.4 * lobe((0.55, 0.35, 0.75), 28) + 0.6 * lobe((0.35, -0.65, 0.45), 14)
-    graze = 0.35 * (1 - np.abs(n[..., 0])) ** 3                                # facing away from the front: more reflective
-    env = sky + horizon + key + graze
-    lum = rgb.mean(axis=2, keepdims=True)
-    tint = 0.45 + 0.55 * rgb / np.maximum(lum, 0.05) * 0.6                     # the armour's own colour, washed toward white
-    s = (env * spec * k)[..., None] * np.clip(tint, 0, 1.6)
-    return np.clip(rgb + s * (1 - rgb * 0.5), 0, 1)                           # screen-ish: highlights don't clip flat
+    n = normal_map(char, mat, (W_, H_)).copy()
+    # the paint's relief (panel lines, plate edges) bends the reflection like a bump map would
+    lum = ndimage.gaussian_filter(rgb.mean(axis=2), 1.2)
+    gy, gx = np.gradient(lum)
+    t1 = np.cross(n, np.array([0, 0, 1.0], np.float32)); t1 /= np.maximum(np.linalg.norm(t1, axis=2, keepdims=True), 1e-3)
+    t2 = np.cross(n, t1)
+    n = n + (gx[..., None] * t1 + gy[..., None] * t2) * 6.0
+    n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
+    view = np.array([-1.0, 0.0, -0.25], np.float32); view /= np.linalg.norm(view)      # looking at the model's front
+    r = view - 2 * (n @ view)[..., None] * n
+    env = sample_cube(faces, r)
+    fres = 0.75 + 0.5 * (1 - np.abs(n @ view)) ** 2                               # brighter towards grazing angles
+    env = np.clip(env * 1.15, 0, 1) ** 1.35 * 1.7                                   # Halo adds it bright: its swirls read as liquid metal
+    s = env * (spec * k * fres)[..., None]
+    return np.clip(rgb * (1 - 0.3 * spec[..., None]) + s, 0, 1)                    # the metal darkens a little under its reflection
 
 
 def bake_skin(char, mat, color, outpath):
     base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if color is None or not os.path.exists(mp):
-        if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0) * 255).astype(np.uint8))
+        if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0, color) * 255).astype(np.uint8))
         base.save(outpath); return
     mask = Image.open(mp).convert('RGBA').resize(base.size)
     b = np.asarray(base).astype(np.float32) / 255.0
     msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0   # Xbox: blue = colour change
     col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
-    o = add_shine(char, mat, b * (1 - msk) + b * col * msk)
+    o = add_shine(char, mat, b * (1 - msk) + b * col * msk, color)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
@@ -454,7 +527,7 @@ def bake_vivid(char, mat, color, outpath):
     msk = msk * (1 - hm)
     o = suit * (1 - msk) + gold * msk
     glove = np.array(UNDERSUIT, dtype=np.float32).reshape(1, 1, 3) * (0.18 + 0.55 * lum)   # dark slate, shading kept
-    o = add_shine(char, mat, o * (1 - hm) + glove * hm)
+    o = add_shine(char, mat, o * (1 - hm) + glove * hm, color)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 def hand_mask(char, mat, size):
@@ -870,6 +943,9 @@ def build(cfg=None):
                     vivid = next((c for k, c in VIVID.items() if k in vname), None)
                     if v.get('_hunter_color'): bake_hunter(char, matn, v['_hunter_color'], dst)
                     elif vivid: bake_vivid(char, matn, vivid, dst)
+                    elif elite_skin(char, matn, color, dst): pass
+                    elif 'specops' in vname and char.startswith('Elite'):     # the Spec Ops body: purple, like the skins above
+                        bake_skin(char, matn, SPECOPS_PURPLE, dst); purple(Image.open(dst).convert('RGB')).save(dst)
                     else: bake_skin(char, matn, color, dst)
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''

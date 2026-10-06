@@ -26,12 +26,13 @@ def ensure_tool():
           [os.path.join(MESHOPT, 'src', f) for f in os.listdir(os.path.join(MESHOPT, 'src')) if f.endswith('.cpp')] + ['-lpthread']
     subprocess.run(cmd, check=True)
 
-def unpack_textures():
+def unpack_textures(blend=None, texdir=None):
     """the .blend's packed images -> WORK/tex"""
-    if os.path.isdir(TEX) and os.listdir(TEX): return
-    os.makedirs(TEX, exist_ok=True)
+    blend = blend or BLEND; texdir = texdir or TEX
+    if os.path.isdir(texdir) and os.listdir(texdir): return
+    os.makedirs(texdir, exist_ok=True)
     from blendfile import Blend
-    B = Blend(BLEND)
+    B = Blend(blend)
     for b in B.of_type('Image'):
         nm = B.id_name(b); B.ctx = b
         pf = B.get('Image', b.off, 'packedfile')
@@ -43,7 +44,7 @@ def unpack_textures():
         pb = B.block(pf); sz = B.get('PackedFile', pb.off, 'size'); db = B.block(B.get('PackedFile', pb.off, 'data'))
         data = B.d[db.off:db.off + sz]
         fn = nm if nm.lower().endswith(('.png', '.jpg')) else nm + ('.jpg' if data[:2] == b'\xff\xd8' else '.png')
-        open(os.path.join(TEX, fn), 'wb').write(data)
+        open(os.path.join(texdir, fn.replace('/', '_')), 'wb').write(data)
 WID = 'm_bulldog'
 M2WU = 1 / 3.048           # metres -> Halo world units
 RES = 512
@@ -154,6 +155,11 @@ def build(debug=None):
         x = ((uvs[:, 0] % 1) * (w - 1)).astype(int); y = ((1 - uvs[:, 1] % 1) * (h - 1)).astype(int)
         samples_p.append(sp); samples_n.append(fn[ti]); samples_c.append(paint[y, x])
         print(f'{role:7s} {len(T):6d} -> {len(lt):4d} tris, {ns} samples', flush=True)
+    finish(lows, samples_p, samples_n, samples_c, WID, 'hde:Bulldog_HDE.blend (Halo CE reinterpretation)', rng)
+
+def finish(lows, samples_p, samples_n, samples_c, wid, tag, rng):
+    """low-poly parts + coloured high-poly samples -> one UV atlas, a baked CE-style texture, the weapon pkl"""
+    tmpd = os.path.join(WORK, 'tmp'); os.makedirs(tmpd, exist_ok=True)
     # one mesh, one atlas
     allp = []; allt = []; base = 0
     for role, lp, lt in lows: allp.append(lp); allt.append(lt + base); base += len(lp)
@@ -200,15 +206,16 @@ def build(debug=None):
     grain = rng.normal(0, 0.007, (RES, RES, 1)).astype(np.float32)
     a = np.clip(a + grain, 0, 1)
     out = Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.UnsharpMask(1.0, 40, 3))
-    d = f'{OUT}/weapons/{WID}'; os.makedirs(d, exist_ok=True)
-    mat = f'w_{WID}_0.png'; out.save(f'{d}/{mat}')
+    d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)
+    mat = f'w_{wid}_0.png'; out.save(f'{d}/{mat}')
     vn = np.zeros_like(P)
     for t, n in zip(T, fn): vn[t] += n
     vn /= np.maximum(np.linalg.norm(vn, axis=1, keepdims=True), 1e-12)
     uvf = UV.copy(); uvf[:, 1] = uvf[:, 1]       # xatlas: v down, like Halo / IQM
-    pickle.dump(dict(id=WID, tag='hde:Bulldog_HDE.blend (Halo CE reinterpretation)', meshes=[dict(material=mat, pos=P, nrm=vn, uv=uvf, tris=T)]),
-                open(f'{d}/{WID}.pkl', 'wb'))
-    print('bulldog', len(T), 'tris', P.min(0).round(3), P.max(0).round(3))
+    pickle.dump(dict(id=wid, tag=tag, meshes=[dict(material=mat, pos=P, nrm=vn, uv=uvf, tris=T)]),
+                open(f'{d}/{wid}.pkl', 'wb'))
+    print(wid, len(T), 'tris', P.min(0).round(3), P.max(0).round(3))
+
 
 if __name__ == '__main__':
     build()

@@ -44,3 +44,48 @@ def meshes(path):
         pos = V[L] @ M[:3, :3].T + M[:3, 3]
         res[B.id_name(o)] = dict(pos=pos, uv=UV, tris=np.array(tris, int).reshape(-1, 3), tmat=np.array(tm, int), mats=mnames, hide=hide, uvname=uvname)
     return B, res
+
+def base_images(B):
+    """material name -> {'color': image name, 'ao': ..., 'normal': ...} from its node tree (walks back from the BSDF inputs)"""
+    out = {}
+    for m in B.of_type('Material'):
+        name = B.id_name(m); B.ctx = m
+        nt = B.block(B.get('Material', m.off, 'nodetree'))
+        if not nt: continue
+        nodes = {}; 
+        for nd in B.listbase(B.get('bNodeTree', nt.off, 'nodes'), 'bNode'):
+            idn = B.get('bNode', nd.off, 'idname'); img = None
+            idp = B.get('bNode', nd.off, 'id')
+            if idp and B.block(idp) and 'Image' in idn or (idp and 'TexImage' in idn):
+                ib = B.block(idp); img = B.id_name(ib) if ib else None
+            socks = {}
+            for s in B.listbase(B.get('bNode', nd.off, 'inputs'), 'bNodeSocket'): socks[s.old] = ('in', B.get('bNodeSocket', s.off, 'name'))
+            nodes[nd.old] = dict(idname=idn, img=img, name=B.get('bNode', nd.off, 'name'))
+        links = []
+        for lk in B.listbase(B.get('bNodeTree', nt.off, 'links'), 'bNodeLink'):
+            fn, tn = B.get('bNodeLink', lk.off, 'fromnode'), B.get('bNodeLink', lk.off, 'tonode')
+            ts = B.block(B.get('bNodeLink', lk.off, 'tosock')); tsn = B.get('bNodeSocket', ts.off, 'name') if ts else ''
+            links.append((fn, tn, tsn))
+        def back(node, depth=0):
+            if depth > 8: return None
+            n = nodes.get(node)
+            if not n: return None
+            if n['img']: return n['img']
+            for fn, tn, tsn in links:
+                if tn == node:
+                    r = back(fn, depth + 1)
+                    if r: return r
+            return None
+        res = {}
+        for k, n in nodes.items():
+            if 'BsdfPrincipled' in n['idname'] or 'Group' in n['idname'] or 'Bsdf' in n['idname']:
+                for fn, tn, tsn in links:
+                    if tn != k: continue
+                    key = {'Base Color': 'color', 'Color': 'color', 'Normal': 'normal'}.get(tsn)
+                    if key and key not in res:
+                        r = back(fn)
+                        if r: res[key] = r
+        imgs = [n['img'] for n in nodes.values() if n['img']]
+        res['all'] = imgs
+        out[name] = res
+    return out

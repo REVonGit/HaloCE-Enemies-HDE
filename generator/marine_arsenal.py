@@ -5,7 +5,7 @@ space (+x forward, +z up, origin on the grip), for the Marines' weapon overlays.
 
 Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation / 08a_deltacliffs) and the Digsite
 prototypes (github.com/digsite/h1, JMS + TIFF). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
-Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py."""
+Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, and the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py."""
 import os, sys, pickle, json
 import numpy as np
 from PIL import Image
@@ -38,7 +38,7 @@ ARSENAL = {
     'ma37':             ('dig', ('weapons/assault_rifle/00_e3/models/h assault rifle.JMS', SH + '00_e3/bitmaps/h small arms ARGL SG')),
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
     'bulldog':          ('ce_bulldog', None),     # HDE's own Bulldog, reinterpreted as a Halo CE gun (bulldog_ce.py)
-    'grenade_launcher': ('dig', ('weapons/shotgun/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
+    'grenade_launcher': ('ce_gl', None),         # HDE's own grenade launcher, reinterpreted as a Halo CE gun (gl_ce.py)
     'stanchion':        ('dig', ('weapons/sniper_rifle/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
     'hydra':            ('dig', ('weapons/missile_launcher/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h support RL ML')),
     'sticky_detonator': ('dig', ('weapons/speargun/99_mac/models/h_speargun.JMS', SH + '99_mac/bitmaps/h small arms SPG SMG')),
@@ -186,52 +186,7 @@ def _part(m, sel_tris):
     used = np.unique(m['tris'][sel_tris]); remap = -np.ones(len(m['pos']), int); remap[used] = np.arange(len(used))
     return dict(material=m['material'], pos=m['pos'][used].copy(), nrm=m['nrm'][used].copy(), uv=m['uv'][used].copy(), tris=remap[m['tris'][sel_tris]])
 
-def fix_grenade_launcher(meshes):
-    """the Macworld 1999 shotgun with Halo CE's sniper scope and magazine, its barrel lengthened, everything in one
-    UNSC olive-drab-over-gunmetal finish"""
-    sg = meshes[0]
-    lab = _islands(sg['pos'], sg['tris'])
-    parts = []
-    for l in np.unique(lab):
-        p = _part(sg, np.where(lab == l)[0]); P = p['pos']
-        lo, hi = P.min(0), P.max(0)
-        if lo[0] > 0.07 and hi[2] < 0.045 and lo[2] < 0.012:            # tube under the barrel: lengthen
-            x = p['pos'][:, 0]; p['pos'][:, 0] = np.where(x > 0.09, 0.09 + (x - 0.09) * 1.75, x)
-        elif lo[0] > 0.07 and lo[2] > 0.035:                             # barrel: lengthen
-            x = p['pos'][:, 0]; p['pos'][:, 0] = np.where(x > 0.09, 0.09 + (x - 0.09) * 1.75, x)
-        elif lo[0] > 0.14:                                               # muzzle ring: to the new end
-            p['pos'][:, 0] += 0.064
-        elif lo[0] > 0.07:                                               # pump fore-end: slid forward a little
-            p['pos'][:, 0] += 0.03
-        parts.append(p)
-    sg_tex = Image.open(f'{OUT}/weapons/m_grenade_launcher/{sg["material"]}')
-    body = dict(material=sg['material'], pos=np.concatenate([p['pos'] for p in parts]), nrm=np.concatenate([p['nrm'] for p in parts]),
-                uv=np.concatenate([p['uv'] for p in parts]), tris=np.concatenate([p['tris'] + sum(len(q['pos']) for q in parts[:i]) for i, p in enumerate(parts)]))
-    repaint(sg_tex, 'unsc').save(f'{OUT}/weapons/m_grenade_launcher/{sg["material"]}')
-    # donor: Halo CE's sniper rifle (its first mesh holds the scope and the magazine)
-    sn = pickle.load(open(f'{OUT}/weapons/sniper_rifle/sniper_rifle.pkl', 'rb'))['meshes'][0]
-    lab = _islands(sn['pos'], sn['tris'])
-    scope_t, mag_t = [], []
-    for l in np.unique(lab):
-        tt = np.where(lab == l)[0]; P = sn['pos'][np.unique(sn['tris'][tt])]; lo, hi = P.min(0), P.max(0)
-        if lo[2] > 0.05 and hi[0] < 0.135 and lo[0] > 0.0 and len(tt) >= 16: scope_t += list(tt)       # scope body, tube, mount
-        elif hi[2] < 0.035 and lo[2] < -0.005 and 0.03 < lo[0] < 0.04 and len(tt) >= 20: mag_t += list(tt)  # box magazine
-    scope = _part(sn, np.array(scope_t)); mag = _part(sn, np.array(mag_t))
-    rcv_top = max(p['pos'][:, 2].max() for p in parts if p['pos'][:, 0].min() < 0 < p['pos'][:, 0].max())
-    sc = 0.85
-    c = scope['pos'].mean(0)
-    scope['pos'] = (scope['pos'] - [c[0], c[1], scope['pos'][:, 2].min()]) * sc + [0.035, 0.0, rcv_top - 0.002]
-    mag['pos'] = mag['pos'] + [0.0, -mag['pos'][:, 1].mean(), 0.0]
-    mag['pos'] += [0.058 - mag['pos'][:, 0].min(), 0, 0.024 - mag['pos'][:, 2].max()]
-    mat = 'w_m_grenade_launcher_parts.png'
-    repaint(Image.open(f'{OUT}/weapons/sniper_rifle/{sn["material"]}'), 'unsc').save(f'{OUT}/weapons/m_grenade_launcher/{mat}')
-    n = len(scope['pos'])
-    parts2 = dict(material=mat, pos=np.concatenate([scope['pos'], mag['pos']]), nrm=np.concatenate([scope['nrm'], mag['nrm']]),
-                  uv=np.concatenate([scope['uv'], mag['uv']]), tris=np.concatenate([scope['tris'], mag['tris'] + n]))
-    print('  grenade launcher: scope tris', len(scope['tris']), 'mag tris', len(mag['tris']))
-    return [body, parts2]
-
-FIX = {'ma37': fix_ma37, 'grenade_launcher': fix_grenade_launcher, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_upright}
+FIX = {'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_upright}
 
 def summary(wid):
     d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
@@ -302,6 +257,8 @@ def main(only=None):
         elif kind == 'h2': build_h2(wid, *src)
         elif kind == 'ce_bulldog':
             import bulldog_ce; bulldog_ce.build()
+        elif kind == 'ce_gl':
+            import gl_ce; gl_ce.build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy
             import shutil
             wid = 'm_' + name; d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)

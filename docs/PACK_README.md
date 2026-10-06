@@ -203,7 +203,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Sniper` | Halo CE's sniper rifle | Halo CE sniper rounds (101), from far back | `Halo_SniperRifle` |
 | `RocketLauncher` | Halo 2's rocket launcher | Halo CE rockets | `Halo_RocketLauncher` |
 | `Hydra` | the Macworld 1999 missile launcher (Digsite) | four-missile salvos of HDE Hydra missiles | `Halo_Hydra` |
-| `GrenadeLauncher` | a kitbash: the Macworld 1999 shotgun with Halo CE's sniper scope and magazine and a lengthened barrel, all in one UNSC olive-drab-over-gunmetal finish | HDE 40 mm grenades, lobbed | `Halo_GrenadeLauncher` |
+| `GrenadeLauncher` | HaloDoom Evolved's own grenade launcher (Halo Reach's launcher on Halo Infinite's Bulldog receiver, with a sniper magazine and a Halo 3 shotgun stock and pump), reinterpreted as a Halo CE gun: 1,298 triangles and one 512x512 CE-style painted texture, every part graded into one olive-drab-over-gunmetal finish | HDE 40 mm grenades, lobbed | `Halo_GrenadeLauncher` |
 | `StickyDetonator` | the Macworld 1999 speargun (Digsite) | HDE sticky charges; the Marine sets each one off 1.5 s after it lands; it gibs | `Halo_StickyDetonator` |
 | `Gpmg` | Halo 2's machine-gun turret gun, off its tripod | HDE GPMG rounds (15, explosive), long bursts; it gibs | `Halo_GPMG` |
 | `Flamethrower` | Halo CE's flamethrower | Halo CE flames, close in | `Halo_Flamethrower` |

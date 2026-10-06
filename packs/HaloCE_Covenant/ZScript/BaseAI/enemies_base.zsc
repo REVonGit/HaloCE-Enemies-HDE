@@ -988,6 +988,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	void HCE_Look()
 	{
+		// a corpse knocked back into its live states (HDE's grenades put whatever they stick to or hit into Pain):
+		// back to lying dead, never a walking corpse
+		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_animLock > 0) { hce_animLock--; HCE_LockedTick(); return; }
@@ -1027,6 +1030,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	void HCE_Think()
 	{
+		// a corpse knocked back into its live states (HDE's grenades put whatever they stick to or hit into Pain):
+		// back to lying dead, never a walking corpse
+		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
@@ -2706,7 +2712,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(wpn == "halo_spiker") return mod == 'Melee' ? HCE_WK_DISMEMBER : HCE_WK_NONE;
 			static const String DISW[] = { "halo_magnum", "halo_battlerifle", "halo_dmr", "halo_sniperrifle", "halo_shotgun",
 				"halo_carbine", "halo_scattershot", "halo_energysword", "halo_lightrifle", "halo_ma5b", "halo_beamrifle",
-				"halo_boltshot", "halo_commando", "pistol", "chaingun", "shotgun", "chainsaw" };
+				"halo_boltshot", "halo_commando", "halo_assaultrifle", "halo_sidekick", "halo_smg", "halo_bulldog",
+				"pistol", "chaingun", "shotgun", "chainsaw" };
 			for(int i = 0; i < DISW.Size(); i++) if(wpn == DISW[i]) return HCE_WK_DISMEMBER;
 			return HCE_WK_NONE;
 		}
@@ -2755,20 +2762,23 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
 		return (fw * o.x + lf * o.y, o.z);
 	}
-	// the limb the latest hit landed on (-1: the body) -- the nearest limb centre, if nearer than the chest
+	// the limb the latest hit landed on (-1: the body), by zones of the collision box rather than the limbs' bind-pose
+	// centres (in the stances the arms are up in front, nowhere near their bind pose): the top of the box is the
+	// head (the headshot zone), its outer thirds at arm height the left and right arms
 	int HCE_HitLimb()
 	{
-		int best = -1; double bd = 1e9;
-		for(int l = 0; l < 3; l++)
+		double z = hce_hitRel.z / max(1, height);
+		vector2 lf = AngleToVector(angle + 90);
+		double side = (hce_hitRel.x * lf.x + hce_hitRel.y * lf.y) / max(1, radius);     // + left, - right
+		bool has[3];
+		for(int l = 0; l < 3; l++) { vector3 o = HCE_LimbOffset(l); has[l] = o.z > -999 && !(hce_severed & (1 << l)); }
+		if(z >= 0.78 && has[HCE_LIMB_HEAD]) return HCE_LIMB_HEAD;
+		if(z >= 0.35 && z < 0.82 && abs(side) >= 0.4)
 		{
-			vector3 o = HCE_LimbOffset(l);
-			if(o.z < -999 || (hce_severed & (1 << l))) continue;
-			double d = (HCE_LimbRel(l) - hce_hitRel).Length();
-			if(d < bd) { bd = d; best = l; }
+			int l = side > 0 ? HCE_LIMB_LARM : HCE_LIMB_RARM;
+			if(has[l]) return l;
 		}
-		if(best < 0) return -1;
-		double dc = (hce_hitRel - (0, 0, height * 0.55)).Length();
-		return bd <= dc ? best : -1;
+		return -1;
 	}
 
 	void HCE_Dismember()
@@ -2787,11 +2797,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		else if(hce_killKind == HCE_WK_DISMEMBER)
 		{
-			if(hce_lastHeadshot) { if(frandom[HCEGore](0, 1) < 0.85) HCE_SeverLimb(HCE_LIMB_HEAD); }
+			// a killing headshot always takes the head; a kill on an arm nearly always takes the arm
+			if(hce_lastHeadshot || hce_struckLimb == HCE_LIMB_HEAD) HCE_SeverLimb(HCE_LIMB_HEAD);
 			else
 			{
 				int l = hce_struckLimb;
-				if(l >= 0 && frandom[HCEGore](0, 1) < 0.6) HCE_SeverLimb(l);
+				if(l >= 0 && frandom[HCEGore](0, 1) < 0.85) HCE_SeverLimb(l);
 			}
 		}
 	}
@@ -3003,11 +3014,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		g.angle = angle; g.pitch = pitch;
 		vector3 from = hce_blastHit ? hce_blastFrom : (target ? target.pos : pos - (fw * 64, 0));
 		double away = atan2(pos.y - from.y, pos.x - from.x);
-		double push = hce_blastHit ? clamp(hce_blastDmg / 20.0, 4, 12) : 4;
+		double push = hce_blastHit ? clamp(hce_blastDmg / 20.0, 4, 12) : 2.2;          // a shot pops it off; a blast flings it
 		if(hce_gibbed) push = max(push, 8) * frandom[HCEGore](0.8, 1.3);
 		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (0, 0));
 		g.vel = (AngleToVector(away + frandom[HCEGore](-25, 25), push * frandom[HCEGore](0.6, 1.1)) + sideV * frandom[HCEGore](1, 3),
-		         frandom[HCEGore](3, 7) + (limb == HCE_LIMB_HEAD ? 2 : 0)) + vel * 0.5;
+		         frandom[HCEGore](2.5, 5) + (limb == HCE_LIMB_HEAD ? 1.5 : 0)) + vel * 0.5;
 		g.hce_spin = (frandom[HCEGore](-25, 25), frandom[HCEGore](-30, 30));
 		// the cut sprays
 		if(!bNOBLOOD)
@@ -3261,8 +3272,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(!(hce_severed & (1 << l)) && lo.z > -999) opts.Push(l);
 		}
 		if(!opts.Size()) return dmg;
-		int pick = opts[random[HCEGore](0, opts.Size() - 1)];
-		if(hce_killKind == HCE_WK_DISMEMBER && dmg >= 8 && frandom[HCEGore](0, 1) < 0.4) HCE_SeverLimb(pick);
+		int pick = opts[random[HCEGore](0, opts.Size() - 1)];         // lying down: any limb
+		if(hce_killKind == HCE_WK_DISMEMBER && dmg >= 8 && frandom[HCEGore](0, 1) < 0.6) HCE_SeverLimb(pick);
 		else if(hce_killKind == HCE_WK_GRENADE && frandom[HCEGore](0, 1) < 0.5) HCE_SeverLimb(pick);
 		return dmg;
 	}

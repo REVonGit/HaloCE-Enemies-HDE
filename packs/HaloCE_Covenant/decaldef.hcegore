@@ -713,6 +713,17 @@ Decal HCEG_h2_bloodsplat_drippy_0
 	Animator HCEGoreFade
 }
 
+Decal HCEG_ce_blood_pool_0
+{
+	Pic "graphics/hcegore/ce_blood_pool_0.png"
+	Translucent 0.95
+	X-Scale 0.90
+	Y-Scale 0.90
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
 DecalGroup HCEGore_Elite
 {
 	HCEG_ce_blood_splat_elite_0 1
@@ -796,6 +807,18 @@ DecalGroup HCEGore_Beast
 	HCEG_h2_blood_splat_3 1
 }
 
+DecalGroup HCEGore_Human
+{
+	HCEG_ce_blood_splat_0 1
+	HCEG_ce_blood_splat_1 1
+	HCEG_ce_blood_splat_2 1
+	HCEG_ce_blood_splat_3 1
+	HCEG_h2_blood_splat_0 1
+	HCEG_h2_blood_splat_1 1
+	HCEG_h2_blood_splat_2 1
+	HCEG_h2_blood_splat_3 1
+}
+
 DecalGroup HCEGore_EliteBig
 {
 	HCEG_ce_blood_smear_elite_lg_0 1
@@ -830,6 +853,20 @@ DecalGroup HCEGore_GruntBig
 
 DecalGroup HCEGore_BeastBig
 {
+	HCEG_h2_bloodsplat_drippy_0 1
+	HCEG_ce_blood_splat_0 1
+	HCEG_ce_blood_splat_1 1
+	HCEG_ce_blood_splat_2 1
+	HCEG_ce_blood_splat_3 1
+	HCEG_h2_blood_splat_0 1
+	HCEG_h2_blood_splat_1 1
+	HCEG_h2_blood_splat_2 1
+	HCEG_h2_blood_splat_3 1
+}
+
+DecalGroup HCEGore_HumanBig
+{
+	HCEG_ce_blood_pool_0 1
 	HCEG_h2_bloodsplat_drippy_0 1
 	HCEG_ce_blood_splat_0 1
 	HCEG_ce_blood_splat_1 1

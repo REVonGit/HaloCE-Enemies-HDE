@@ -10,7 +10,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		Species "HCE_HUMAN";
 		HaloDoom_EnemyBase.HCE_Enabled true;
 		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;
-		Height 51;
+		Height 58;
 		Radius 14;
 		Mass 114;
 		PainChance 0;
@@ -34,7 +34,11 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -122,7 +126,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -260,7 +264,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -398,7 +402,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -535,7 +539,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -672,7 +676,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1280;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -810,7 +814,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2080;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -948,7 +952,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 320;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1086,7 +1090,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 400;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1225,7 +1229,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1363,7 +1367,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1502,7 +1506,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1920;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1640,7 +1644,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1778,7 +1782,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -1917,7 +1921,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2053,7 +2057,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2191,7 +2195,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 560, 2000;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2329,7 +2333,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2467,7 +2471,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2606,7 +2610,7 @@ class HCE_MarineSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2743,7 +2747,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2881,7 +2885,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 1120;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3038,7 +3042,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2400;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 40, 90;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3364,7 +3368,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		Species "HCE_HUMAN";
 		HaloDoom_EnemyBase.HCE_Enabled true;
 		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;
-		Height 51;
+		Height 58;
 		Radius 14;
 		Mass 116;
 		PainChance 0;
@@ -3388,7 +3392,11 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -3468,7 +3476,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3606,7 +3614,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3744,7 +3752,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3881,7 +3889,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4018,7 +4026,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1280;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4156,7 +4164,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2080;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4294,7 +4302,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 320;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4432,7 +4440,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 400;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4571,7 +4579,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4709,7 +4717,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4848,7 +4856,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1920;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4986,7 +4994,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5124,7 +5132,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5263,7 +5271,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5399,7 +5407,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5537,7 +5545,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5675,7 +5683,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 560, 2000;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5813,7 +5821,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5951,7 +5959,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6090,7 +6098,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6227,7 +6235,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6365,7 +6373,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 1120;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;

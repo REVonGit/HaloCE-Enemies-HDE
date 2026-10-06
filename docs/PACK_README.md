@@ -610,7 +610,7 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * **Without NashGore:** a large blood burst.
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
-**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
+**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies and Marines also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
 * **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it, picked at random from Halo CE's and Halo 2's splats:
 
   | Species | Halo decals |
@@ -622,8 +622,9 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
   | Drones | Halo 2's khaki "bugger" splats |
   | Engineers | Halo CE's pink Engineer splat |
   | Drinol, Blind Wolf, Thorn Beast | red Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
+  | Marines | Halo CE's red human splats (and Halo 2's); dying, Halo CE's blood pool and the drippy splat |
 
-* **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour (Halo CE's and Halo 2's blood-burst sheets), with a few blood streaks flung away from the shot (Halo 2's blood trails).
+* **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour, with a few blood streaks flung away from the shot (Halo 2's blood trails). The Covenant's are Halo CE's Covenant impact bursts, the Marines' its human impact bursts (with CE's blood bursts); the beasts use the generic Halo CE and Halo 2 bursts.
 * **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears.
 * **Toggle:** `hce_halogore 0` turns the Halo gore off and leaves NashGore's own.
 * Splats fade after about a minute.
@@ -635,11 +636,12 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 
 Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
 
-**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (40% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
+**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 
-**Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
-* **Headshot kills:** usually take the head off.
-* **Other kills:** a kill landing on an arm (or near the head) takes it off a little over half the time. Body shots leave the limbs on.
+**Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Assault Rifle, SMG, Bulldog, Sidekick, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
+* **Headshot kills:** always take the head off.
+* **Other kills:** a kill landing on an arm takes it off nearly every time (85%). Body shots leave the limbs on.
+* **Where a hit lands:** the top of the enemy (the headshot zone) is the head; the outer sides at arm height are the arms, the middle is the body. The Elites', Grunts', Jackals' and Marines' hit boxes reach the tops of their heads, so a shot at the head connects.
 
 **Weapons that gib:** the Rocket Launcher, Hydra, Scattershot alt fire, Light Rifle alt fire, Binary Rifle, Unmaker, Stanchion, Gravity Hammer, GPMG (autocannon), Double Barrel, Fuel Rod, Needler supercombine, Needle Javelin, Plasma Caster, Sentinel Beam supercombine and Sticky Detonator. A body killed by one bursts apart: the head and arms fly off as pieces in a spray of blood, the rest is gone, and NashGore (when loaded) adds its meat chunks and splats.
 
@@ -657,7 +659,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 * **Anything else:** dies on the spot.
 
 **Severed limbs:**
-* **The severed piece:** it flies off away from the blow, tumbling and trailing blood. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
+* **The severed piece:** it pops off away from the blow (a blast flings it further), tumbling and trailing blood. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
 * **The body:** the cut is closed with a gore stump that keeps bleeding for a few seconds as the body falls.
 * **Held items:** a gun or shield gauntlet in a severed hand goes with the arm (the gun still drops as a pickup). A stealth Elite that loses its sword arm loses the blade too, and a Brute's armour-kit helmet comes off with the head.
 

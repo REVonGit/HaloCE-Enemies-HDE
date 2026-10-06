@@ -689,6 +689,12 @@ def marine_code(meta, mdir):
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
 
 
+# Halo's collision_height_standing stops at the shoulders (Halo hit-tests the head with its own bone collision): in
+# their stances the heads stand above it, so shots at the top of a head passed over the box and headshots and
+# beheadings were rare. Heights up to the top of the head in the idle stances (head bone + its geometry)
+HEAD_CLEAR = {'Elite': 68, 'EliteSpecial': 68, 'Grunt': 48, 'GruntSpecOps': 48, 'Jackal': 54, 'JackalMajor': 54,
+              'Marine': 58, 'MarineArmored': 58}
+
 BLOOD_IDX = 7     # model attachment index of the blood overlay (the Brutes' armour kit uses 1-6)
 
 def blood_code(char, meta, mdir):
@@ -756,6 +762,7 @@ def build(cfg=None):
         if ov.get('radius'): radius = min(radius, ov['radius'])
         if ov.get('radius_fixed'): radius = ov['radius_fixed']
         if ov.get('height_fixed'): height = ov['height_fixed']
+        height = max(height, HEAD_CLEAR.get(char, 0))
         zs.append(f'class HCE_{char}Base : HaloDoom_EnemyBase abstract\n{{\n\tDefault\n\t{{\n'
                   f'\t\tMonster;\n\t\t+DECOUPLEDANIMATIONS\n\t\t+FLOORCLIP\n\t\t+DONTHARMSPECIES\n\t\t+NOINFIGHTSPECIES\n'
                   f'\t\tSpecies "HCE_{team[char]}";\n\t\tHaloDoom_EnemyBase.HCE_Enabled true;\n'
@@ -765,7 +772,10 @@ def build(cfg=None):
                   f'\tStates\n\t{{\n\tSpawn:\n\t\tHCEM A 1 HCE_Look();\n\t\tLoop;\n\tSee:\n\t\tHCEM A 1 HCE_Think();\n\t\tLoop;\n'
                   f'\tDeath:\n\t\tHCEM A 1 HCE_Die();\n\t\tHCEM A 2 A_NoBlocking;\n'            # no XDeath: gore stays blood-only (see HCE_Gore)
                   f'\tDead:\n\t\tHCEM A 1 HCE_CorpseTick();\n\t\tLoop;\n'
-                  f'\tRaise:\n\t\tHCEM A 1;\n\t\tGoto See;\n\tPain.PlasmaStuck:\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
+                  f'\tRaise:\n\t\tHCEM A 1;\n\t\tGoto See;\n'
+                  # HDE's grenades push what they hit into Pain (frag) / Pain.PlasmaStuck (plasma): a corpse stays dead
+                  f'\tPain:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tGoto See;\n'
+                  f'\tPain.PlasmaStuck:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')

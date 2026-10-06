@@ -34,7 +34,11 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -181,7 +185,11 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -4654,7 +4662,11 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -4834,7 +4846,11 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -5520,7 +5536,11 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -6832,7 +6852,11 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -7107,7 +7131,11 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -7994,7 +8022,11 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}
@@ -10344,7 +10376,11 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 	Raise:
 		HCEM A 1;
 		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
 	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
 		HCEM A 1 HCE_OnStuck();
 		Goto See;
 	}

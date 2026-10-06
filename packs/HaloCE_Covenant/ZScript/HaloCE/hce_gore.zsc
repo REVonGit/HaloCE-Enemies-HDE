@@ -1,9 +1,12 @@
 // Halo gore for Nash's Gore Mod (Covenant pack). Only runs while NashGore is loaded (and hce_halogore is on):
-// on top of NashGore's own sprays, splats and pools, Covenant enemies bleed the way they do in Halo CE and Halo 2:
+// on top of NashGore's own sprays, splats and pools, Covenant enemies and Marines bleed the way they do in Halo CE and
+// Halo 2:
 // * every hit sprays the species' Halo blood decal onto the wall behind it (Halo CE and Halo 2 splats, chosen at
 //   random: the Elite's lavender, the Grunt's blue, the Hunter's orange with its glowing splats, the Brute's
-//   navy, the Drone's khaki, the Engineer's pink; Slug Men, a Mgalekgolo sub-species, bleed the Hunter's orange; the beasts red)
-// * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks;
+//   navy, the Drone's khaki, the Engineer's pink; Slug Men, a Mgalekgolo sub-species, bleed the Hunter's orange; the beasts
+//   red; the Marines Halo CE's human red, dying in its blood pool)
+// * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks: Halo CE's Covenant
+//   impact burst for the Covenant, its human impact for the Marines;
 // * kills leave bigger splats and the Elite / Grunt smears, and a larger burst.
 // Textures and decals: extract_halo_gore.py (graphics/hcegore, sprites/hcegore, decaldef.hcegore).
 class HCE_HaloGoreHandler : EventHandler
@@ -27,7 +30,8 @@ class HCE_HaloGoreHandler : EventHandler
 	static String Species(Actor a)
 	{
 		String n = a.GetClassName();
-		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Marine") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
+		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
+		if(n.IndexOf("Marine") >= 0 || n.IndexOf("Johnson") >= 0) return "Human";
 		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
 		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Elite", "Elite", "Beast", "Beast", "Beast" };
 		for(int i = 0; i < keys.Size(); i++) if(n.IndexOf(keys[i]) >= 0) return groups[i];
@@ -54,17 +58,19 @@ class HCE_HaloGoreHandler : EventHandler
 		return v.Vec3Angle(v.radius * 0.7, a, v.height * frandom[HCEGore](0.45, 0.8));
 	}
 
-	static void Burst(Actor v, vector3 at, Actor from, int puffs, int streaks, double size)
+	static void Burst(Actor v, String group, vector3 at, Actor from, int puffs, int streaks, double size)
 	{
 		color c = v.BloodColor;
 		if(c == 0) c = Color(255, 120, 0, 0);
 		double away = from ? from.AngleTo(v) : v.angle + 180;
+		// the puff sheet: Halo CE's human impact for the Marines, its Covenant one for the Covenant, the generic for beasts
+		class<HCE_GorePuff> pc = group == "Human" ? (class<HCE_GorePuff>)("HCE_GorePuffHuman") : group == "Beast" ? (class<HCE_GorePuff>)("HCE_GorePuff") : (class<HCE_GorePuff>)("HCE_GorePuffCov");
 		for(int i = 0; i < puffs; i++)
 		{
-			let p = Actor.Spawn("HCE_GorePuff", at, ALLOW_REPLACE);
+			let p = HCE_GorePuff(Actor.Spawn(pc, at, ALLOW_REPLACE));
 			if(!p) continue;
 			p.SetShade(c);
-			p.frame = random[HCEGore](0, 11);
+			p.frame = random[HCEGore](0, p.Frames() - 1);
 			p.scale *= size * frandom[HCEGore](0.6, 1.1);
 			p.vel = (Actor.AngleToVector(away + frandom[HCEGore](-50, 50), frandom[HCEGore](0.3, 1.6)), frandom[HCEGore](-0.2, 1.0));
 		}
@@ -101,11 +107,11 @@ class HCE_HaloGoreHandler : EventHandler
 		vector3 at = WoundPos(v, e.Inflictor, e.DamageSource);
 		if(dead)
 		{
-			Burst(v, at, from, 6, 5, size * 1.3);
+			Burst(v, sp, at, from, 6, 5, size * 1.3);
 			for(int i = 0; i < 3; i++) Spray(v, "HCEGore_" .. sp .. "Big", from, i == 0 ? 15 : 120, i == 0 ? 15 : 60);
 			return;
 		}
-		Burst(v, at, from, e.Damage >= 15 ? 3 : 2, e.Damage >= 15 ? 3 : 1, size);
+		Burst(v, sp, at, from, e.Damage >= 15 ? 3 : 2, e.Damage >= 15 ? 3 : 1, size);
 		if(!Throttled(v, 6)) Spray(v, "HCEGore_" .. sp, from, 20, 20);
 	}
 }
@@ -113,6 +119,7 @@ class HCE_HaloGoreHandler : EventHandler
 // the Halo blood burst: one puff of Halo CE / Halo 2's blood-burst sheet, stencilled in the victim's blood colour
 class HCE_GorePuff : Actor
 {
+	virtual int Frames() { return 12; }
 	Default
 	{
 		+NOINTERACTION
@@ -129,6 +136,46 @@ class HCE_GorePuff : Actor
 		Stop;
 	Spawn:
 		HGBP # 1
+		{
+			scale *= 1.07;
+			vel *= 0.86; vel.z -= 0.04;
+			A_FadeOut(0.06);
+		}
+		Loop;
+	}
+}
+
+// Halo CE's Covenant impact burst (with its blood bursts): the Covenant's puffs
+class HCE_GorePuffCov : HCE_GorePuff
+{
+	override int Frames() { return 13; }
+	States
+	{
+	Precache:
+		HGBC ABCDEFGHIJKLM 0;
+		Stop;
+	Spawn:
+		HGBC # 1
+		{
+			scale *= 1.07;
+			vel *= 0.86; vel.z -= 0.04;
+			A_FadeOut(0.06);
+		}
+		Loop;
+	}
+}
+
+// Halo CE's human impact burst: the Marines' puffs
+class HCE_GorePuffHuman : HCE_GorePuff
+{
+	override int Frames() { return 13; }
+	States
+	{
+	Precache:
+		HGBH ABCDEFGHIJKLM 0;
+		Stop;
+	Spawn:
+		HGBH # 1
 		{
 			scale *= 1.07;
 			vel *= 0.86; vel.z -= 0.04;

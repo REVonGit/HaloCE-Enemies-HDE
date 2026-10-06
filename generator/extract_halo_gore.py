@@ -3,8 +3,9 @@
     python3 extract_halo_gore.py      # -> out/gore/{graphics/hcegore/*.png, sprites/hcegore/*.png, decaldef.hcegore}
 
 * Halo CE (Xbox maps, HCE_MAPS): effects\\decals\\blood splats\\bitmaps\\* - the Elite, Grunt, Hunter (+ glow),
-  Engineer and generic splats and the Elite / Grunt smears - cut out of their sprite sheets by the bitmap's own
-  sequence rectangles; effects\\particles\\solid\\bitmaps\\blood generic burst / blood burst for impact puffs.
+  Engineer and generic (human) splats and the Elite / Grunt smears - cut out of their sprite sheets by the bitmap's
+  own sequence rectangles; the human blood pool (scenery\\blood_pool); effects\\particles\\solid\\bitmaps\\ blood
+  generic burst / blood burst, and the Covenant (blood elite impact burst) and human (blood h impact) impact puffs.
 * Halo 2 (08b_deltacontrol.map + MCC textures.dat): effects\\decals\\blood_splats\\bitmaps\\* - Elite, Grunt, Brute,
   Hunter, Drone ("bugger") and generic splats, the drippy combat splat - 2x2 sheets; blood_generic_burst and
   blood_trails for impact puffs and spray streaks.
@@ -23,6 +24,7 @@ sys.path.insert(0, HERE)
 from hce_paths import OUT, MAPS_DIR as CE_MAPS
 from extract_h2_brute import MAP as MAP08B, CACHE as CACHE08B
 TEXTURES = os.environ.get('HCE_H2_TEXTURES', 'textures.dat')
+
 CE_DEC = 'effects\\decals\\blood splats\\bitmaps\\'
 CE_PART = 'effects\\particles\\solid\\bitmaps\\'
 H2_DEC = 'effects\\decals\\blood_splats\\bitmaps\\'
@@ -37,13 +39,19 @@ SPLATS = {
     'Drone':    [('h2', H2_DEC + 'blood_splat_bugger', 0.6), ('h2', H2_DEC + 'blood_splat_bugger2', 0.6)],
     'Engineer': [('ce', CE_DEC + 'blood splat engineer', 0.7)],
     'Beast':    [('ce', CE_DEC + 'blood splat', 0.9), ('h2', H2_DEC + 'blood_splat', 0.9)],
+    'Human':    [('ce', CE_DEC + 'blood splat', 0.8), ('h2', H2_DEC + 'blood_splat', 0.8)],      # the Marines' red
 }
 BIG = {
     'Elite':  [('ce', CE_DEC + 'blood smear elite lg', 0.7), ('ce', CE_DEC + 'blood smear elite med', 0.7)],
     'Grunt':  [('ce', CE_DEC + 'blood smear grunt lg', 0.6), ('ce', CE_DEC + 'blood smear grunt med', 0.6)],
     'Beast':  [('h2', 'scenarios\\decorators\\combat\\bitmaps\\bloodsplat_drippy', 0.6)],
+    'Human':  [('ce', 'scenery\\blood_pool\\bitmaps\\blood_pool', 0.9), ('h2', 'scenarios\\decorators\\combat\\bitmaps\\bloodsplat_drippy', 0.6)],
 }
+# impact puffs, per kind of blood: Halo CE's own impact sheets (the Covenant's from the Elite impact burst, the
+# humans' from the human impact) with the generic bursts; all become white masks, shaded per victim at run time
 PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\solids\\blood_generic_burst')]
+PUFFS_COV = [('ce', CE_PART + 'blood elite impact burst'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
+PUFFS_HUMAN = [('ce', CE_PART + 'blood h impact'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
 
 
@@ -60,7 +68,7 @@ def png_grab(path, im, ox, oy):
 def ce_sheet(name):
     from tags import HMap
     from bitmaps import bitmap_image
-    for mp in ('a10', 'a50', 'b30', 'c10'):
+    for mp in ('a10', 'a50', 'b30', 'c10'):           # (c10 carries the blood pool)
         p = os.path.join(CE_MAPS, mp + '.map')
         if not os.path.exists(p): continue
         m = HMap(p)
@@ -74,7 +82,7 @@ def ce_sheet(name):
             for k in range(n):
                 _, l, r, tp, b, _, _ = m.u('h2x4x4f2f', spp + k * 32)
                 rects.append((l, tp, r, b))
-        return im, rects
+        return im, rects or [(0, 0, 1, 1)]            # no sequence rectangles (the blood pool): the whole bitmap
     raise FileNotFoundError(name)
 
 
@@ -186,9 +194,12 @@ def main():
                 n += 1
         return n
     npuff = sprites('HGBP', PUFFS)
+    ncov = sprites('HGBC', PUFFS_COV)
+    nhum = sprites('HGBH', PUFFS_HUMAN)
     nstreak = sprites('HGBS', STREAKS)
-    json.dump(dict(groups={g: len(v) for g, v in groups.items()}, puffs=npuff, streaks=nstreak), open(f'{od}/gore.json', 'w'), indent=1)
-    print({g: len(v) for g, v in groups.items()}, 'puffs', npuff, 'streaks', nstreak)
+    json.dump(dict(groups={g: len(v) for g, v in groups.items()}, puffs=npuff, puffs_cov=ncov, puffs_human=nhum, streaks=nstreak),
+              open(f'{od}/gore.json', 'w'), indent=1)
+    print({g: len(v) for g, v in groups.items()}, 'puffs', npuff, ncov, nhum, 'streaks', nstreak)
 
 
 if __name__ == '__main__':

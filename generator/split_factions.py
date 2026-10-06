@@ -106,6 +106,10 @@ def main():
             for g in sorted(os.listdir(f'{PACK}/{dn}')):
                 if g.startswith(f'{stem}_gib_') or g == f'gore_{stem}.png' or g.startswith(f'{stem}_blood') \
                         or g.startswith('blood') and g.endswith('.png') or g == 'hce_noblood.png': need.add(f'{dn}/{g}')
+        # models and skins the class code swaps in at run time (A_ChangeModel: the sticky detonator's fired gun...)
+        ztxt = '\n'.join(t for _, _, t in mine)
+        for dn, fn in re.findall(r'A_ChangeModel\([^;]*?"(models/[^"]+)", \'([^\']+\.(?:iqm|png))\'', ztxt):
+            if os.path.exists(f'{PACK}/{dn}/{fn}'): need.add(f'{dn}/{fn}')
         # the transparent skin ZScript swaps in at run time (A_ChangeModel: Marine cosmetics, gore, blood overlays)
         for b in mblocks:
             for pth in set(re.findall(r'Path "(models/[^/"]+)/', b)):

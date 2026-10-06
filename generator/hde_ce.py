@@ -251,7 +251,7 @@ def default_paint(src, skip=()):
         p = infinite_paint(src, mat)
         if p is not None: return p
         info = src.mats.get(mat, {}); imgs = info.get('all', [])
-        cn = info.get('color') or next((i for i in imgs if 'base_color' in i.lower() or 'diffuse' in i.lower() or 'color' in i.lower()), None) \
+        cn = info.get('color') or next((i for i in imgs if 'base_color' in i.lower() or 'diff' in i.lower() or 'color' in i.lower()), None) \
             or (imgs[0] if len(imgs) == 1 else None)
         if not cn: return None
         if 'decal' in mat.lower():                       # decal: RGBA, composited onto the surface under it

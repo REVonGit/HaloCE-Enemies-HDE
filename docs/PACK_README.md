@@ -205,7 +205,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `RocketLauncher` | Halo 2's rocket launcher, with its SPNKr lettering decals | Halo CE rockets | `Halo_RocketLauncher` |
 | `Hydra` | HaloDoom Evolved's own Hydra (Halo Infinite's), reinterpreted as a Halo CE gun, its UNSC stripes painted on | four-missile salvos of HDE Hydra missiles | `Halo_Hydra` |
 | `GrenadeLauncher` | HaloDoom Evolved's own grenade launcher (Halo Reach's launcher on Halo Infinite's Bulldog receiver, with a sniper magazine and a Halo 3 shotgun stock and pump), reinterpreted as a Halo CE gun: 1,298 triangles and one 512x512 CE-style painted texture, every part graded into one olive-drab-over-gunmetal finish | HDE 40 mm grenades, lobbed | `Halo_GrenadeLauncher` |
-| `StickyDetonator` | the Macworld 1999 speargun (Digsite) | HDE sticky charges; the Marine sets each one off 1.5 s after it lands; it gibs | `Halo_StickyDetonator` |
+| `StickyDetonator` | the Sidekick repainted green, with HaloDoom Evolved's sticky charge (Halo Infinite's) seated in its muzzle; once fired the muzzle shows empty until it reloads. Held in Halo 2's pistol stance | HDE sticky charges; the Marine sets each one off 1.5 s after it lands; it gibs | `Halo_StickyDetonator` |
 | `Gpmg` | Halo 2's machine-gun turret gun, off its tripod | HDE GPMG rounds (15, explosive), long bursts; it gibs | `Halo_GPMG` |
 | `Flamethrower` | Halo CE's flamethrower | Halo CE flames, close in | `Halo_Flamethrower` |
 

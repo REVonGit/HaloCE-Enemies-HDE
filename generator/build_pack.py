@@ -1014,6 +1014,9 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
+            if '%STICKY_LOADED%' in extra:
+                extra = (extra.replace('%STICKY_LOADED%', overlay_swap(char, meta, mdir, 'sticky_detonator'))
+                              .replace('%STICKY_FIRED%', overlay_swap(char, meta, mdir, 'sticky_detonator_fired')))
             if ov.get('weapon_toss'):
                 # hide the held weapon's surfaces at runtime (a Brute throwing its gun away to go berserk)
                 ws = [si for si, wv in enumerate(mesh_weapon) if wv]
@@ -1324,7 +1327,7 @@ MARINE_ARSENAL = {
     'rocket launcher':  ('rocket_launcher', 'rifle', 7, 25, 45, None, 0.5, 'Halo_RocketLauncher'),
     'hydra':            ('hydra', 'rifle', 6, 24, 45, None, 1.5, 'Halo_Hydra'),
     'grenade launcher': ('grenade_launcher', 'rifle', 5, 18, 30, None, 1.0, 'Halo_GrenadeLauncher'),
-    'sticky detonator': ('sticky_detonator', 'rifle', 4, 14, 25, None, 1.0, 'Halo_StickyDetonator'),
+    'sticky detonator': ('sticky_detonator', 'h2pistol', 4, 14, 25, None, 1.0, 'Halo_StickyDetonator'),   # a pistol-sized launcher
     'gpmg':             ('gpmg', 'rifle', 3, 18, 35, None, None, 'Halo_GPMG'),
     'flamethrower':     ('flamethrower', 'rifle', 1, 5, 8, None, None, 'Halo_Flamethrower'),
 }
@@ -1379,13 +1382,24 @@ STICKY_CODE = """
 	// the sticky detonator: the Marine sets each charge off a second and a half after it lands
 	Array<Actor> hce_stickies;
 	Array<int> hce_stickyAt;
+	// the gun shows its charge seated in the muzzle when loaded, the empty muzzle once fired, until it reloads
+	int hce_stickyReload;
 	override void HCE_OnShot(Actor shot)
 	{
 		if(shot) { hce_stickies.Push(shot); hce_stickyAt.Push(level.maptime + 52); }
+		HCE_StickyFired();
+		hce_stickyReload = level.maptime + 45;
 	}
+	void HCE_StickyLoaded()
+	{
+%STICKY_LOADED%	}
+	void HCE_StickyFired()
+	{
+%STICKY_FIRED%	}
 	override void Tick()
 	{
 		super.Tick();
+		if(hce_stickyReload > 0 && level.maptime >= hce_stickyReload && health > 0) { hce_stickyReload = 0; HCE_StickyLoaded(); }
 		for(int i = hce_stickies.Size() - 1; i >= 0; i--)
 		{
 			Actor c = hce_stickies[i];
@@ -1480,6 +1494,19 @@ def arsenal_lines(char, name, meta, pack, mdir, idx=None):
     idx = ARSENAL_IDX if idx is None else idx
     return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {idx} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
             + [f'\tSurfaceSkin {idx} {k} "{m}"' for k, m in enumerate(a['materials'])])
+
+def overlay_swap(char, meta, mdir, name):
+    """ZScript lines putting arsenal overlay 'name' on the gun model slot (and its files into the pack)"""
+    a = meta['arsenal'][name]
+    for m in a['materials']:
+        dd = f'{PACK}/models/{mdir}/weapons/{m}'
+        if not os.path.exists(dd): os.makedirs(os.path.dirname(dd), exist_ok=True); shutil.copy(f'{OUT}/models/{char}/{m}', dd)
+    dd = f'{PACK}/models/{mdir}/{char}/{a["model"]}'
+    if not os.path.exists(dd): shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dd)
+    out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
+    out += [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "", \'None\', {k}, "models/{mdir}/weapons", \'{m}\', CMDL_USESURFACESKIN);\n'
+            for k, m in enumerate(a['materials'])]
+    return ''.join(out)
 
 def johnson_code(A, animtxt, char, meta, mdir):
     """Sergeant Johnson: the Stanchion at range, the Magnum (Halo 2's pistol stance) when an enemy closes in"""

@@ -42,7 +42,7 @@ ARSENAL = {
     'grenade_launcher': ('ce_gl', None),         # HDE's own grenade launcher, reinterpreted as a Halo CE gun (gl_ce.py)
     'stanchion':        ('dig', ('weapons/sniper_rifle/99_mac/models/base superhigh.JMS', SH + '99_mac/bitmaps/h small arms SR SG')),
     'hydra':            ('hde_ce', 'hydra_ce'),      # HDE's own Hydra, reinterpreted as a Halo CE gun
-    'sticky_detonator': ('dig', ('weapons/speargun/99_mac/models/h_speargun.JMS', SH + '99_mac/bitmaps/h small arms SPG SMG')),
+    'sticky_detonator': ('sticky', None),        # the Sidekick in green with HDE's sticky bomb in its muzzle (sticky_ce.py)
 }
 
 def load_tex(base):
@@ -240,7 +240,8 @@ def hand_frame(char, ref='assault_rifle'):
     return R, t, jn, joints
 
 # Halo CE's own Marine guns not in the arsenal table: overlays too (the bodies carry no baked guns)
-BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle'}
+BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle',
+                 'sticky_detonator_fired': 'm_sticky_detonator_fired'}     # the sticky detonator with its charge gone
 
 def overlays():
     """one overlay model per Marine body per weapon: the weapon on the gun hand's bone, on the body's own skeleton
@@ -280,6 +281,8 @@ def main(only=None):
             import bulldog_ce; bulldog_ce.build()
         elif kind == 'ce_gl':
             import gl_ce; gl_ce.build()
+        elif kind == 'sticky':                  # after the Sidekick (it is built from it)
+            import sticky_ce; sticky_ce.build()
         elif kind == 'hde_ce':                  # hde_ce.py: commando_ce, hydra_ce
             __import__(src).build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy

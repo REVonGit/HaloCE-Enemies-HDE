@@ -1026,22 +1026,340 @@ Model HCE_JackalZealotSpiker
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_SlugManParticleBeam
+Model HCE_SlugManMajorNeedler
 {
 	Path "models/hce_dig/SlugMan"
 	Model 0 "SlugMan.iqm"
-	SurfaceSkin 0 0 "skins/slugmanparticlebeam_slugman_0.png"
-	SurfaceSkin 0 5 "skins/slugmanparticlebeam_slugman_0.png"
-	SurfaceSkin 0 6 "skins/slugmanparticlebeam_slugman_0.png"
-	SurfaceSkin 0 7 "skins/slugmanparticlebeam_slugman_0.png"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "w_needler_glow.png"
+	SurfaceSkin 0 6 "w_needler_1.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMajorParticleBeam
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 0 1 "w_particle_beam_dig_0.png"
 	SurfaceSkin 0 2 "hce_hidden.png"
 	SurfaceSkin 0 3 "hce_hidden.png"
 	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
 	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMajorPlasmaCarbine
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 13 "w_cmt_carbine_lights.png"
+	SurfaceSkin 0 14 "w_cmt_carbine_icon.png"
+	SurfaceSkin 0 15 "w_cmt_carbine_meter.png"
+	SurfaceSkin 0 16 "w_cmt_carbine_purple.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMajorPlasmaPistol
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 3 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 4 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMajorPlasmaRifle
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 10 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMajorPulseCarbine
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_major_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_major_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 13 "w_cmt_carbine_blue_lights.png"
+	SurfaceSkin 0 14 "w_cmt_carbine_blue_icon.png"
+	SurfaceSkin 0 15 "w_cmt_carbine_blue_meter.png"
+	SurfaceSkin 0 16 "w_cmt_carbine_blue_purple.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMinorNeedler
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugmanminorneedler_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugmanminorneedler_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugmanminorneedler_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugmanminorneedler_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "w_needler_glow.png"
+	SurfaceSkin 0 6 "w_needler_1.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMinorPlasmaCarbine
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugmanminorplasmacarbine_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugmanminorplasmacarbine_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugmanminorplasmacarbine_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugmanminorplasmacarbine_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 13 "w_cmt_carbine_lights.png"
+	SurfaceSkin 0 14 "w_cmt_carbine_icon.png"
+	SurfaceSkin 0 15 "w_cmt_carbine_meter.png"
+	SurfaceSkin 0 16 "w_cmt_carbine_purple.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManMinorPlasmaRifle
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugmanminorplasmarifle_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugmanminorplasmarifle_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugmanminorplasmarifle_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugmanminorplasmarifle_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 10 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManParticleBeam
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugmanparticlebeam_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugmanparticlebeam_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugmanparticlebeam_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugmanparticlebeam_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "w_particle_beam_dig_0.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
 	Scale 80 80 96
 	UseActorPitch
 	BaseFrame
@@ -1053,17 +1371,131 @@ Model HCE_SlugManPlasmaPistol
 	Path "models/hce_dig/SlugMan"
 	Model 0 "SlugMan.iqm"
 	SurfaceSkin 0 0 "skins/slugmanplasmapistol_slugman_0.png"
-	SurfaceSkin 0 5 "skins/slugmanplasmapistol_slugman_0.png"
-	SurfaceSkin 0 6 "skins/slugmanplasmapistol_slugman_0.png"
-	SurfaceSkin 0 7 "skins/slugmanplasmapistol_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugmanplasmapistol_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugmanplasmapistol_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugmanplasmapistol_slugman_0.png"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 0 1 "hce_hidden.png"
 	SurfaceSkin 0 2 "w_plasma_pistol_0.png"
 	SurfaceSkin 0 3 "w_plasma_pistol_0.png"
 	SurfaceSkin 0 4 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
 	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManUltraParticleBeam
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_ultra_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "w_particle_beam_dig_0.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManUltraPlasmaCarbine
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_ultra_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 13 "w_cmt_carbine_lights.png"
+	SurfaceSkin 0 14 "w_cmt_carbine_icon.png"
+	SurfaceSkin 0 15 "w_cmt_carbine_meter.png"
+	SurfaceSkin 0 16 "w_cmt_carbine_purple.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SlugManUltraPlasmaRifle
+{
+	Path "models/hce_dig/SlugMan"
+	Model 0 "SlugMan.iqm"
+	SurfaceSkin 0 0 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 17 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 18 "skins/slugman_ultra_slugman_0.png"
+	SurfaceSkin 0 19 "skins/slugman_ultra_slugman_0.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 10 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
 	Scale 80 80 96
 	UseActorPitch
 	BaseFrame

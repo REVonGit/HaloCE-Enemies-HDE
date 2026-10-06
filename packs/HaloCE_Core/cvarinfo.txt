@@ -17,3 +17,19 @@ server bool hce_squads = true;         // Grunts and Jackals form squads around 
 server bool hce_patrols = true;        // idle leaders and loners walk short patrols (or a map's PatrolPoint route)
 server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (deaf / ambush Grunts always do)
 server bool hce_dismember = true;      // hard kills can take heads and arms off (headshots, explosions, heavy melee)
+
+// Nash's Gore Mod
+server int nashgore_maxgore = 1024;
+server int nashgore_bloodtype = 0;
+server int nashgore_bloodamount = 255;
+server bool nashgore_spriteblood = false;
+server bool nashgore_bloodspurt = true;
+server int nashgore_gibtype = 0;
+server int nashgore_gibamount = 255;
+server bool nashgore_corpseblood = true;
+server bool nashgore_footprints = true;
+server bool nashgore_deathflip = true;
+server bool nashgore_squish = true;
+server bool nashgore_icedeath = true;
+server bool nashgore_splat = true;
+server bool hce_halogore = true;        // Halo CE / Halo 2 blood decals and bursts on top of NashGore's

@@ -35,6 +35,17 @@ PERMS = {
     'JackalMajor': {'head': 'armored_head'},
 }
 MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
+# Regions kept with several permutations, each on surfaces of its own (named region.perm), for the packs to pick one per
+# enemy at run time: the Marines' faces (eight of the twelve, to stay inside 32 surfaces: Sgt Johnson's among them) and
+# Johnson's full-sleeved arms. The armoured Marines' helmet and HUD visor are the same mesh on every helmeted face:
+# one shared surface (region.shared).
+MULTI_PERMS = {
+    'Marine': {'head': ['__base', 'head_charles-10', 'head_chris_boony-11', 'head_fred-12', 'head_matt_boony-14',
+                        'head_rob_bandana-17', 'head_shiek_bandana-18', 'sgt_johnson head-100'],
+               'arms': ['__base', 'arms_full_sleeve-100']},
+    'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},        # None: every permutation
+}
+SHARED_SHADERS = ('marine_helmet', 'marine_hud')
 
 def sanitize(n):
     return re.sub(r'[^a-z0-9_]+', '_', n.lower()).strip('_')
@@ -106,9 +117,9 @@ def merge_meshes(meshes, mesh_weapon):
     """One surface per (material, weapon): UZDoom models allow at most 32 surfaces (MD3_MAX_SURFACES)."""
     groups = {}
     for mm, w in zip(meshes, mesh_weapon):
-        groups.setdefault((mm['material'], w), []).append(mm)
+        groups.setdefault((mm['material'], w, mm.get('group')), []).append(mm)
     out, ow = [], []
-    for (mat, w), ms in groups.items():
+    for (mat, w, _), ms in groups.items():
         base = 0; tris = []
         for mm in ms:
             tris.append(mm['tris'] + base); base += len(mm['pos'])
@@ -133,17 +144,24 @@ def extract(name, pid, sources, maps):
     # choose permutation per region: PERMS, else the 'base'-like first permutation; highest-detail geometry
     want = PERMS.get(pid, {})
     parts_all = []
+    mperms = MULTI_PERMS.get(pid, {})
     for r in model.regions:
-        perm = next((p for p in r['perms'] if p['name'] == want.get(r['name'])), None) \
-            or next((p for p in r['perms'] if p['name'].startswith('base')), r['perms'][0])
-        best = None
-        for gi in sorted(set(perm['geoms'])):
-            g = model.geometry(gi)
-            nt = sum(len(p['tris']) for p in g)
-            if best is None or nt > best[0]: best = (nt, g)
-        for p in best[1]:
-            p['region'] = r['name']
-        parts_all += best[1]
+        if r['name'] in mperms:
+            names = mperms[r['name']] or [p['name'] for p in r['perms']]
+            perms = [p for p in r['perms'] if p['name'] in names]
+        else:
+            perms = [next((p for p in r['perms'] if p['name'] == want.get(r['name'])), None)
+                     or next((p for p in r['perms'] if p['name'].startswith('base')), r['perms'][0])]
+        for perm in perms:
+            best = None
+            for gi in sorted(set(perm['geoms'])):
+                g = model.geometry(gi)
+                nt = sum(len(p['tris']) for p in g)
+                if best is None or nt > best[0]: best = (nt, g)
+            for p in best[1]:
+                p['region'] = r['name']
+                p['perm'] = perm['name'] if r['name'] in mperms else None
+            parts_all += best[1]
     # materials
     mats = {}
     meshes = []
@@ -172,8 +190,13 @@ def extract(name, pid, sources, maps):
         wb0 = np.round(w0 * 255).astype(int); wb1 = 255 - wb0
         bidx[:, 0] = nd[:, 0]; bidx[:, 1] = np.where(same, 0, nd[:, 1])
         bw[:, 0] = wb0; bw[:, 1] = np.where(same, 0, wb1)
-        meshes.append(dict(name=f'{p["region"]}_{pi}', material=f'{mats[key]}.png', pos=p['pos'], nrm=p['nrm'],
-                           uv=uv, bidx=bidx, bw=bw, tris=p['tris'][:, [0, 2, 1]]))
+        group, sname = None, f'{p["region"]}_{pi}'
+        if p.get('perm'):
+            shared = sh and sh['name'].split('\\')[-1] in SHARED_SHADERS
+            group = f'{p["region"]}.shared' if shared else f'{p["region"]}.{p["perm"]}'
+            sname = group
+        meshes.append(dict(name=sname, material=f'{mats[key]}.png', pos=p['pos'], nrm=p['nrm'],
+                           uv=uv, bidx=bidx, bw=bw, tris=p['tris'][:, [0, 2, 1]], group=group))
     markers = read_markers(m, model)
     mesh_weapon = [None] * len(meshes)
     mesh_weapon += attach_weapons(pid, name, model, markers, meshes)
@@ -236,6 +259,7 @@ def extract(name, pid, sources, maps):
                 has_multi={v: os.path.exists(f'{OUT}/models/{pid}/{v}_multi.png') for v in mats.values()},
                 collision_height=B['collision_height_standing'], collision_radius=B['collision_radius'],
                 markers=markers, mesh_weapon=mesh_weapon)
+    if mperms: meta['mesh_names'] = [mm['name'] for mm in meshes]       # region.perm surfaces (MULTI_PERMS)
     json.dump(meta, open(f'{OUT}/models/{pid}/{pid}.json', 'w'), indent=1)
     return meta
 

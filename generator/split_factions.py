@@ -15,7 +15,10 @@ from build_pack import PACK, TEAM
 
 OUTDIR = os.environ.get('HCE_FACTIONS', os.path.join(os.path.dirname(PACK), 'factions'))
 from build_pack import OUT
-GORE = f'{OUT}/gore'                 # extract_halo_gore.py: the Covenant pack's NashGore patch
+GORE = f'{OUT}/gore'                 # extract_halo_gore.py: each faction's Halo blood decals and bursts
+NASHGORE = os.environ.get('HCE_NASHGORE', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nashgore.pk3'))
+# Halo blood decal groups per faction pack (extract_halo_gore.py's species; <Species>Big for deaths)
+GORE_GROUPS = {'covenant': ['Elite', 'Grunt', 'Hunter', 'Brute', 'Drone', 'Engineer', 'Beast'], 'flood': ['Flood'], 'marines': ['Human']}
 FACTION = {'COVENANT': 'covenant', 'FLOOD': 'flood', 'SENTINEL': 'sentinels', 'HUMAN': 'marines'}
 TITLE = {'covenant': 'Covenant: Grunts, Jackals, Elites, Hunters', 'flood': 'Flood: infection, carrier and combat forms',
          'sentinels': 'Sentinels', 'marines': 'Marines'}
@@ -30,6 +33,26 @@ def chunks(text):
         m = re.search(r'^class (\w+)(?:\s*:\s*(\w+))?', body, re.M)
         out.append((m.group(1), m.group(2), body))
     return out
+
+def gore_decals(fac, species, d):
+    src = open(f'{GORE}/decaldef.hcegore').read()
+    decals = {m.group(1): m.group(0) for m in re.finditer(r'Decal (\w+)\n\{.*?\n\}\n', src, re.S)}
+    groups = {m.group(1): m.group(2) for m in re.finditer(r'DecalGroup (\w+)\n\{\n(.*?)\}\n', src, re.S)}
+    out = [f'// Halo CE and Halo 2 blood decals for the {fac} (extract_halo_gore.py), used by hce_gore.zsc in the core pack',
+           re.search(r'Fader HCEGoreFade\n\{.*?\n\}\n', src, re.S).group(0)]
+    used = []
+    for sp in species:
+        for g in (f'HCEGore_{sp}', f'HCEGore_{sp}Big'):
+            names = re.findall(r'\t(\w+) 1', groups.get(g, ''))
+            out.append(f'DecalGroup {g}\n{{\n' + ''.join(f'\t{n.replace("HCEG_", f"HCEG_{fac}_")} 1\n' for n in names) + '}\n')
+            used += [n for n in names if n not in used]
+    out[2:2] = [decals[n].replace(f'Decal {n}', f'Decal {n.replace("HCEG_", f"HCEG_{fac}_")}') for n in used]
+    open(f'{d}/decaldef.gore_{fac.lower()}', 'w').write('\n'.join(out))
+    os.makedirs(f'{d}/graphics/hcegore', exist_ok=True)
+    for n in used:
+        pic = re.search(r'Pic "([^"]+)"', decals[n]).group(1)
+        shutil.copy(f'{GORE}/{pic}', f'{d}/{pic}')
+    shutil.copytree(f'{GORE}/sprites/hcegore', f'{d}/sprites/hcegore')
 
 def main():
     if os.path.exists(OUTDIR): shutil.rmtree(OUTDIR)
@@ -64,7 +87,31 @@ def main():
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
         '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n')
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler"\n}\n')
+    handlers = '"HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler"'
+    if os.path.exists(NASHGORE):
+        # Nash's Gore Mod (BSD licence, Nash Muhandes), built into the core so every faction has it: its own ZScript root
+        # (zscript.zc, version 4.1.3), resources and menu; cvars appended to ours. Don't load nashgore.pk3 as well.
+        import zipfile
+        z = zipfile.ZipFile(NASHGORE)
+        for n in z.namelist():
+            if n.endswith('/'): continue
+            low = n.lower()
+            if low == 'mapinfo.txt': continue
+            data = z.read(n)
+            if low == 'cvarinfo.txt':
+                with open(f'{core}/cvarinfo.txt', 'ab') as f: f.write(b'\n// Nash\'s Gore Mod\n' + data)
+                continue
+            if low.startswith('zscript/'): n = 'ZScript/NashGore/' + n.split('/', 1)[1]     # beside ours, one folder name
+            if low == 'zscript.zc': data = data.replace(b'#include "zscript/', b'#include "ZScript/NashGore/')
+            os.makedirs(os.path.dirname(f'{core}/{n}') or core, exist_ok=True)
+            open(f'{core}/{n}', 'wb').write(data)
+        handlers += ', "NashGoreHandler"'
+        # the Halo blood on top of it (hce_gore.zsc): the decals themselves are in each faction pack
+        shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{core}/ZScript/HaloCE/hce_gore.zsc')
+        with open(f'{core}/zscript.txt', 'a') as zf: zf.write('#include "ZScript/HaloCE/hce_gore.zsc"\n')
+        with open(f'{core}/cvarinfo.txt', 'a') as f: f.write('server bool hce_halogore = true;        // Halo CE / Halo 2 blood decals and bursts on top of NashGore\'s\n')
+        handlers += ', "HCE_HaloGoreHandler"'
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = ' + handlers + '\n}\n')
     # enemy laser tracers (HCE_EnemyLaser, in the API): HaloDoom Evolved's own beam model and texture
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
@@ -122,14 +169,10 @@ def main():
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'
-        if fac == 'covenant' and os.path.exists(f'{GORE}/decaldef.hcegore'):
-            # NashGore patch: Halo CE / Halo 2 blood decals and bursts (extract_halo_gore.py, hce_gore.zsc)
-            shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{d}/ZScript/HaloCE/hce_gore.zsc')
-            with open(f'{d}/zscript.txt', 'a') as zf: zf.write('#include "ZScript/HaloCE/hce_gore.zsc"\n')
-            shutil.copy(f'{GORE}/decaldef.hcegore', f'{d}/decaldef.hcegore')
-            for sub in ('graphics/hcegore', 'sprites/hcegore'): shutil.copytree(f'{GORE}/{sub}', f'{d}/{sub}')
-            open(f'{d}/cvarinfo.txt', 'w').write('server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies\n')
-            mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_HaloGoreHandler"\n}\n\n' + mi
+        if fac in GORE_GROUPS and os.path.exists(f'{GORE}/decaldef.hcegore'):
+            # this faction's Halo CE / Halo 2 blood decals and burst sprites (extract_halo_gore.py); decal names get the
+            # faction in them, as two packs can carry the same splat
+            gore_decals(fac, GORE_GROUPS[fac], d)
         open(f'{d}/mapinfo.txt', 'w').write(mi)
         print(fac, 'classes', len(mine), 'models', len(mblocks), 'files', len(need), 'ednums', len(mynums))
 

@@ -28,7 +28,7 @@ CHARS = {
                     # Slug Men are left-handed: the gun goes on the left hand marker, which follows Halo's usual
                     # weapon axes (barrel +x, top +z), so it needs no remapping (checked against the posed marker in
                     # every aim, move and fire animation; the right hand is the free one reaching forward)
-                    weapons=('left hand elite', ['particle_beam_dig', 'plasma_pistol'])),
+                    weapons=('left hand elite', ['particle_beam_dig', 'plasma_pistol', 'needler', 'plasma_rifle', 'cmt_carbine'])),
 }
 
 def load_tex(base):

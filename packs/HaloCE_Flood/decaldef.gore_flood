@@ -1,0 +1,78 @@
+// Halo CE and Halo 2 blood decals for the flood (extract_halo_gore.py), used by hce_gore.zsc in the core pack
+Fader HCEGoreFade
+{
+	DecayStart 60.0
+	DecayTime 20.0
+}
+
+Decal HCEG_flood_h2_flood_splat_0
+{
+	Pic "graphics/hcegore/h2_flood_splat_0.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_flood_h2_flood_splat_1
+{
+	Pic "graphics/hcegore/h2_flood_splat_1.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_flood_h2_flood_splat_2
+{
+	Pic "graphics/hcegore/h2_flood_splat_2.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_flood_h2_flood_splat_3
+{
+	Pic "graphics/hcegore/h2_flood_splat_3.png"
+	Translucent 0.95
+	X-Scale 0.80
+	Y-Scale 0.80
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_flood_h2_flood_splat_large_0
+{
+	Pic "graphics/hcegore/h2_flood_splat_large_0.png"
+	Translucent 0.95
+	X-Scale 0.70
+	Y-Scale 0.70
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+DecalGroup HCEGore_Flood
+{
+	HCEG_flood_h2_flood_splat_0 1
+	HCEG_flood_h2_flood_splat_1 1
+	HCEG_flood_h2_flood_splat_2 1
+	HCEG_flood_h2_flood_splat_3 1
+}
+
+DecalGroup HCEGore_FloodBig
+{
+	HCEG_flood_h2_flood_splat_large_0 1
+	HCEG_flood_h2_flood_splat_0 1
+	HCEG_flood_h2_flood_splat_1 1
+	HCEG_flood_h2_flood_splat_2 1
+	HCEG_flood_h2_flood_splat_3 1
+}

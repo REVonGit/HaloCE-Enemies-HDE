@@ -136,6 +136,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	override int DamageMobJ(Actor inflictor, Actor source, int dmg, Name mod, int flags, double angle)
 	{
+		if(hce_enabled && health <= 0 && hce_corpseInit) return HCE_CorpseHit(inflictor, source, dmg, mod, flags);
 		Actor keepTarget = target;
 		if(hce_enabled)
 		{
@@ -2992,6 +2993,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_gibbed) HCE_ResumeAnim();
 		vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
 		vector3 rel = (fw * center.x * sc + lf * center.y * sc, center.z * sc * 1.2);
+		if(hce_corpseInit) rel.z = min(rel.z, height * 0.6);               // a body lying down
 		hce_stumpAt[limb] = rel;
 		hce_stumpTics = 35 * 4;
 		let g = HCE_LimbGib(Spawn("HCE_LimbGib", Vec3Offset(rel.x, rel.y, rel.z), ALLOW_REPLACE));
@@ -3212,8 +3214,62 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_StartSound("HCE/BodyLand", CHAN_BODY, CHANF_OVERLAP, 0.6);
 	}
 
+	// ---- corpses ----
+	// A body stays shootable once it's down (not solid: you walk over it; not auto-aimed), low to the floor once
+	// it has fallen. Shots bleed it, the dismembering weapons take its head and arms off, the gibbing weapons and big
+	// blasts tear it apart, and grenades can take a limb (HCE_WeaponKind, as for the living).
+	bool hce_corpseInit;
+	double hce_corpseDmg;
+	void HCE_SetUpCorpse()
+	{
+		hce_corpseInit = true;
+		if(hce_gibbed || bInvisible) return;
+		bSHOOTABLE = true;
+		bNOTAUTOAIMED = true;
+		bSOLID = false;
+		A_SetSize(-1, max(12, height * 0.3));
+	}
+	int HCE_CorpseHit(Actor inflictor, Actor source, int dmg, Name mod, int flags)
+	{
+		if(hce_gibbed || bInvisible || dmg <= 0 || !HCE_GoreOn()) return 0;
+		hce_killKind = HCE_WeaponKind(inflictor, source, mod, dmg);
+		hce_corpseDmg += dmg;
+		bool blast = (flags & DMG_EXPLOSION) || mod == 'Explosive';
+		// it bleeds where it was hit
+		if(!default.bNOBLOOD)
+		{
+			vector3 at = (inflictor && inflictor != source && Distance3D(inflictor) < radius * 3 + 48) ? level.Vec3Diff(pos, inflictor.pos) : (0, 0, height * 0.6);
+			for(int i = 0; i < min(6, 1 + dmg / 15); i++)
+				A_SpawnItemEx("Blood", at.x, at.y, at.z, frandom(-2, 2), frandom(-2, 2), frandom(1, 4), 0,
+					SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
+			hce_bloodDmg += dmg / double(max(1, SpawnHealth()));
+			int st = hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : 1;
+			if(st > hce_bloodStage) { hce_bloodStage = st; HCE_BloodModel(st); HCE_BloodHideClass(); for(int l = 0; l < 3; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l); HCE_ResumeAnim(); }
+		}
+		if(default.bNOBLOOD || bHCE_Explodes) return dmg;
+		if(hce_killKind == HCE_WK_GIB || (blast && hce_corpseDmg >= SpawnHealth() * 3))
+		{
+			if(blast && inflictor) { hce_blastHit = true; hce_blastFrom = inflictor.pos; hce_blastDmg = dmg; }
+			HCE_GibBody();
+			bSHOOTABLE = false;
+			return dmg;
+		}
+		Array<int> opts;
+		for(int l = 0; l < 3; l++)
+		{
+			vector3 lo = HCE_LimbOffset(l);
+			if(!(hce_severed & (1 << l)) && lo.z > -999) opts.Push(l);
+		}
+		if(!opts.Size()) return dmg;
+		int pick = opts[random[HCEGore](0, opts.Size() - 1)];
+		if(hce_killKind == HCE_WK_DISMEMBER && dmg >= 8 && frandom[HCEGore](0, 1) < 0.4) HCE_SeverLimb(pick);
+		else if(hce_killKind == HCE_WK_GRENADE && frandom[HCEGore](0, 1) < 0.5) HCE_SeverLimb(pick);
+		return dmg;
+	}
+
 	void HCE_CorpseTick()
 	{
+		if(!hce_corpseInit) HCE_SetUpCorpse();
 		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
 		HCE_AirTick();
 		HCE_StumpTick();
@@ -3225,6 +3281,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!bHCE_Resurrects || !bCORPSE) return;
 		if(!RaiseActor(self, RF_NOCHECKPOSITION)) return;
 		hce_resurrected = true;
+		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED;
 		hce_action = HCE_ACT_FIGHT;
 		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
 		if(HCE_HasAnim(k)) HCE_PlayLocked(k);

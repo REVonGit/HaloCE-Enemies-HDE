@@ -62,6 +62,37 @@ H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (
 H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
+# Slug Man ranks: health and aim (error-angle multiplier) and the armour tint baked into the skin (None: as Digsite made it)
+SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=None),
+              'major': dict(health=1.35, accuracy=0.9, tint=(0.58, 0.17, 0.15)),
+              'ultra': dict(health=1.8, accuracy=0.75, tint=(0.86, 0.88, 0.95))}
+SLUG_WEAPONS = {'plasma pistol': (r'weapons\plasma pistol\plasma pistol', 'pistol'), 'needler': (r'weapons\needler\needler', 'pistol'),
+                'plasma rifle': (r'weapons\plasma rifle\plasma rifle', 'pistol'), 'particle beam': (r'digsite\weapons\particle beam', 'rifle'),
+                'plasma carbine': (r'digsite\weapons\plasma carbine', 'rifle'), 'pulse carbine': (r'digsite\weapons\pulse carbine', 'rifle')}
+SLUG_RANK_WEAPONS = {'minor': ['needler', 'plasma rifle', 'plasma carbine'],
+                     'major': ['plasma pistol', 'needler', 'plasma rifle', 'particle beam', 'plasma carbine', 'pulse carbine'],
+                     'ultra': ['plasma rifle', 'particle beam', 'plasma carbine']}
+
+def slug_skin(cls, v, si, mat, meta, skin_dir):
+    """Slug Man ranks: the grey-violet armour plates (low saturation, mid brightness) tinted, the shading kept"""
+    rank = v.get('_slug_rank')
+    if not rank or not mat.startswith('SlugMan_') or not SLUG_RANKS[rank]['tint']: return None
+    fn = f'slugman_{rank}_{mat[:-4].lower()}.png'
+    dst = f'{skin_dir}/{fn}'
+    if os.path.exists(dst): return fn
+    os.makedirs(skin_dir, exist_ok=True)
+    a = np.asarray(Image.open(f'{bp.OUT}/models/SlugMan/{mat}').convert('RGB')).astype(float) / 255.0
+    mx, mn = a.max(2), a.min(2)
+    sat = (mx - mn) / np.maximum(mx, 1e-3)
+    m = np.clip((0.32 - sat) / 0.12, 0, 1) * np.clip((mx - 0.12) / 0.08, 0, 1) * np.clip((0.85 - mx) / 0.1, 0, 1)
+    from scipy import ndimage
+    m = ndimage.gaussian_filter(m, 1.0)[..., None]
+    lum = a.mean(2, keepdims=True)
+    tint = np.array(SLUG_RANKS[rank]['tint'])[None, None] * (0.3 + 1.35 * lum)
+    out = a * (1 - m) + np.clip(tint, 0, 1) * m
+    Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
+    return fn
+
 CHIEFTAIN_BERSERK = {
     'IDLE': ['berserk hammer idle'], 'ALERT': ['berserk hammer idle'], 'MOVE_F': ['berserk hammer move-front'],
     'MOVE_B': ['berserk hammer move-front'], 'MOVE_L': ['berserk hammer move-front'], 'MOVE_R': ['berserk hammer move-front'],
@@ -88,6 +119,25 @@ def load_ai():
             b['change_colors_list'] = []
             bipeds[ur] = b
         variants[vp] = v
+    # Slug Man ranks (added after the first add-on release): Minor / Major / Ultra in the pistol stance (plasma
+    # pistol, needler, plasma rifle) and the rifle stance (particle beam, plasma carbine, pulse carbine), each rank's
+    # armour plates re-tinted (slug_skin); the two original Slug Men stay as they were
+    pp, pb = variants[r'digsite\characters\slug_man\slug_man plasma pistol'], variants[r'digsite\characters\slug_man\slug_man particle beam']
+    for rank, weps in SLUG_RANK_WEAPONS.items():
+        hp, err = SLUG_RANKS[rank]['health'], SLUG_RANKS[rank]['accuracy']
+        for key in weps:
+            ref, src = SLUG_WEAPONS[key]
+            sv = copy.deepcopy(pp if src == 'pistol' else pb)
+            sv['ranged_combat']['reference'] = ref
+            sv['unit'] = dict(sv['unit'], maximum_body_vitality=(sv['unit']['maximum_body_vitality'] or 60) * hp)
+            sv['ranged_combat']['projectile_error_angle'] = sv['ranged_combat']['projectile_error_angle'] * err
+            if key in ('plasma carbine', 'pulse carbine'):
+                rc = sv['ranged_combat']
+                rc['combat_range_lower_bound'] = max(rc['combat_range_lower_bound'], 3.0)
+                rc['combat_range_upper_bound'] = max(rc['combat_range_upper_bound'], 12.0)
+            sv['_slug_rank'] = rank
+            sv['_late'] = True
+            variants[rf'digsite\characters\slug_man\slug_man {rank} {key}'] = sv
     # Elites with the plasma carbine: the CE plasma-rifle ranks re-armed (longer reach, same colours)
     A = bp.AI
     for src in [r'characters\elite\elite minor\elite minor plasma rifle', r'characters\elite\elite major\elite major plasma rifle',
@@ -1077,6 +1127,7 @@ def configure():
     bp.WEAPON_IDS[HAMMER] = 'gravity_hammer'
     bp.FIRE_CODE['spiker'] = 'sk'
     bp.SKIN_HOOK['Brute'] = brute_skin
+    bp.SKIN_HOOK['SlugMan'] = slug_skin
     bp.BERSERK_ANIMS['Brute'] = {
         'IDLE': ['berserk idle'], 'ALERT': ['berserk idle'], 'MOVE_F': ['berserk move-front'], 'MOVE_B': ['berserk move-front'],
         'MOVE_L': ['berserk move-front'], 'MOVE_R': ['berserk move-front'], 'FLEE': ['berserk move-front'],
@@ -1110,7 +1161,8 @@ def configure():
         'Drinol': dict(stance='unarmed', health=320, scale=0.62, radius=34, melee=(44, 60),
                        flags=['HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps'],
                        leap=(140, 420, 0.6, 13.0), anims={'LEAP_START': ['charging_jump']}),
-        'SlugMan': dict(stance={'particle beam': 'rifle', 'plasma pistol': 'pistol'}, melee=(24, 20),
+        'SlugMan': dict(stance={'particle beam': 'rifle', 'plasma pistol': 'pistol', 'needler': 'pistol', 'plasma rifle': 'pistol',
+                                'plasma carbine': 'rifle', 'pulse carbine': 'rifle'}, melee=(24, 20),
                         flags=['HCE_Surprise', 'HCE_Panics', 'HCE_SeeksCover', 'HCE_Evades'],
                         anims_by_weapon={'plasma pistol': {'FIRE': ['stand pistol pp fire-1 baked']}}),
         'EliteRifle': dict(stance='rifle'),

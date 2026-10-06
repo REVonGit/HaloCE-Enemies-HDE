@@ -14,7 +14,6 @@ alpha masks, shaded with the victim's blood colour at run time.
 DECALDEF: one decal per cut-out, grouped per species (HCEGore_<Species>, HCEGore_<Species>Big for deaths).
 """
 import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, struct, zlib, json
 import numpy as np
 from PIL import Image
@@ -37,11 +36,15 @@ SPLATS = {
     'Drone':    [('h2', H2_DEC + 'blood_splat_bugger', 0.6), ('h2', H2_DEC + 'blood_splat_bugger2', 0.6)],
     'Engineer': [('ce', CE_DEC + 'blood splat engineer', 0.7)],
     'Beast':    [('ce', CE_DEC + 'blood splat', 0.9), ('h2', H2_DEC + 'blood_splat', 0.9)],
+    'Flood':    [('h2', H2_DEC + 'flood_splat', 0.8)],
+    'Human':    [('ce', CE_DEC + 'blood splat', 0.8), ('h2', H2_DEC + 'blood_splat', 0.8)],
 }
 BIG = {
     'Elite':  [('ce', CE_DEC + 'blood smear elite lg', 0.7), ('ce', CE_DEC + 'blood smear elite med', 0.7)],
     'Grunt':  [('ce', CE_DEC + 'blood smear grunt lg', 0.6), ('ce', CE_DEC + 'blood smear grunt med', 0.6)],
     'Beast':  [('h2', 'scenarios\\decorators\\combat\\bitmaps\\bloodsplat_drippy', 0.6)],
+    'Flood':  [('h2', H2_DEC + 'flood_splat_large', 0.7)],
+    'Human':  [('h2', 'scenarios\\decorators\\combat\\bitmaps\\bloodsplat_drippy', 0.6)],
 }
 PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\solids\\blood_generic_burst')]
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]

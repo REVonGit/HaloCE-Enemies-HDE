@@ -171,7 +171,10 @@ BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
 }
 VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy',
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
-          'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter'}
+          'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
+          # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
+          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_Tough,Marine_SgtCautious,Marine_SgtGruff',
+          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_Tough,Marine_SgtCautious,Marine_SgtGruff'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
@@ -535,6 +538,32 @@ def gore_code(char, meta, mdir, sc):
     return ''.join(out)
 
 
+def marine_code(meta, mdir):
+    """a random face per Marine from Halo CE's head permutations (extract_chars.MULTI_PERMS); Sergeant Johnson's face
+    (the dark-skinned one) brings his full-sleeved arms and always his own voice, the others a random Marine's"""
+    names = meta.get('mesh_names') or []
+    heads = sorted({n.split('.', 1)[1] for n in names if n.startswith('head.') and n != 'head.shared'})
+    if len(heads) < 2: return ''
+    def sis(pred): return [i for i, n in enumerate(names) if pred(n)]
+    cases = []
+    for k, h in enumerate(heads):
+        johnson = 'johnson' in h
+        helmet = 'cap' not in h and not johnson
+        hide = sis(lambda n: n.startswith('head.') and n != 'head.shared' and n != f'head.{h}')
+        if not helmet: hide += sis(lambda n: n == 'head.shared')
+        hide += sis(lambda n: n.startswith('arms.') and (('johnson' in n or 'sleeve-100' in n) != johnson))
+        cases.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, sorted(hide)))} }}; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]);'
+                     + (" hce_voice = 'Marine_Johnson';" if johnson else '') + ' break; }\n')
+    hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
+    return ('\t// a random face per Marine (Halo CE\'s head permutations); Sergeant Johnson\'s always speaks with Johnson\'s voice\n'
+            '\tArray<int> hce_hideSurf;\n\tint hce_face;\n'
+            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n\t\tHCE_DressMarine();\n\t}\n'
+            '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
+            f'\t\thce_face = random(0, {len(heads) - 1});\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
+            f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n'
+            f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
+
+
 BLOOD_IDX = 7     # model attachment index of the blood overlay (the Brutes' armour kit uses 1-6)
 
 def blood_code(char, meta, mdir):
@@ -615,7 +644,8 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + '}\n')
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir)
+                  + (marine_code(meta, mdir) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue

@@ -79,9 +79,21 @@ DoomEdNums
 	30438 = HCE_DroneNeedler
 	30439 = HCE_DronePlasmaRifle
 	30440 = HCE_DroneSpiker
+	30441 = HCE_SlugManMajorNeedler
+	30442 = HCE_SlugManMajorParticleBeam
+	30443 = HCE_SlugManMajorPlasmaCarbine
+	30444 = HCE_SlugManMajorPlasmaPistol
+	30445 = HCE_SlugManMajorPlasmaRifle
+	30446 = HCE_SlugManMajorPulseCarbine
+	30447 = HCE_SlugManMinorNeedler
+	30448 = HCE_SlugManMinorPlasmaCarbine
+	30449 = HCE_SlugManMinorPlasmaRifle
+	30450 = HCE_SlugManUltraParticleBeam
+	30451 = HCE_SlugManUltraPlasmaCarbine
+	30452 = HCE_SlugManUltraPlasmaRifle
 }
 
 GameInfo
 {
-	AddEventHandlers = "HCE_HaloGoreHandler", "HCE_DigsiteHandler"
+	AddEventHandlers = "HCE_DigsiteHandler"
 }

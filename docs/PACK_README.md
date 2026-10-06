@@ -361,11 +361,17 @@ The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/H
 
 The fork's Acid Breath lines aren't used.
 
+**Marines:** they speak with Halo CE's and Halo 2's own combat dialogue (1,092 lines in 12 voices, `extract_marine_voices.py`).
+* **Faces:** every Marine wears one of Halo CE's faces at random. Unarmoured Marines have eight (bare-headed, boonie hats, bandanas, Johnson's cap) and Armored Marines all eight of theirs (helmets, the cap, Johnson's).
+* **Sergeant Johnson:** a Marine who rolls Johnson's face (the dark-skinned one, with his full-sleeved arms) always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
+* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald, Mendoza and the second sergeant. From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, Tough, and the cautious and gruff sergeants. Halo 2's female Marine is left out, as the models are men.
+* **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts.
+
 **Loudness:** every voice line is levelled at build time (`louden_voices.py`).
 * **Method:** its EBU R128 loudness is measured, and it is raised toward -11 LUFS with a peak limiter. Lines are only ever raised, by at most 18 dB.
 * **Crazy Grunt fill-in:** Crazy was short of Whiley and Whimpy in most events and had no kamikaze lines at all, so 53 lines of its own voice were added from Halo 2's `grunt_crazy` dialogue (`08a_deltacliffs.map`), skipping any it already had (matched by waveform): 7 kamikaze (threats), 6 kill-player (gloats), 6 taunts, 8 leader-dead, 6 regroup, 4 deaths, 6 hard deaths (it had none of its own), 2 alerts, 3 grenade throws, 1 enemy-grenade warning, 2 stuck, 1 heavy pain and 1 on-fire. It now has at least as many lines as the other two personalities in every event. Halo CE has only one generic Grunt voice, a different voice from Crazy's, so none of its lines were mixed in.
 * **Loose Elite voice:** the Loose set is rebuilt from Halo CE's own Elite dialogue (its taunts, kill gloats, sightings, regroup calls, berserk roars, melee shouts, grenade calls, and all of its pain, death and burning screams) plus Halo 2's Loose Elite lines played backwards. CE's Elites speak recorded English run in reverse, so the reversed Halo 2 lines sound like the same alien tongue. Each reversed line fades out over its last few hundredths of a second so it doesn't stop on a click. 229 lines, against 52 before; the Dogmatic set is unchanged. CE reuses some screams across its pain and death sounds, so the same scream can come up as either, but never twice within one event.
-* **Scope:** this covers the 443 lines above and the Digsite voices (Brutes, Drones, Engineer, Slug Men, Thorn Beast).
+* **Scope:** this covers the 443 lines above and the Digsite voices (Brutes, Drones, Engineer, Slug Men, Thorn Beast) and the Marines.
 * **Before:** the sets were uneven. Whimpy Grunts averaged -26 LUFS, Jackals -19.5, Elites about -16, against the Blind Wolf's -5.
 * **Range:** voices also carry further, at attenuation 0.6 instead of Doom's normal 1.0.
 
@@ -432,6 +438,7 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | `HCE_BlindWolf` | SPV3's Blind Wolf, extracted from its a30 map (model, texture, 18 animations, stats). It's a Pinky-style melee charger, health 90: it runs you down, bites for about 22, and pounces from up to 300 units using its leap-start, leap-airborne and leap-melee animations. It uses the new Blind Wolf sounds (alert, howl, bite, pain, death, idle) from your HaloDoomEnemies fork. |
 | `HCE_SlugManParticleBeam` | Slug Man sniper with Digsite's own Particle Beam Rifle (the 99_mac model and texture the Slug Man's `particle beam` variant was built around; its NPC projectile flies at 350 WU/s, so it is effectively hitscan here too). Every shot is telegraphed by a one-second purple aiming laser and the beam-rifle charge sound, then one hitscan beam drawn with HDE's beam rifle laser (90 × the variant's 0.5 damage modifier = 45). Keeps 400–3200 units away and crouches to fire. |
 | `HCE_SlugManPlasmaPistol` | Slug Man with a plasma pistol. |
+| `HCE_SlugMan{Minor,Major,Ultra}…` | **Slug Man ranks:** more Slug Men in the pistol stance (plasma pistol, needler, plasma rifle) and the rifle stance (particle beam, Covenant carbine, blue pulse carbine), all held in the left hand.<br>• **Minor** (Digsite's colours, 1× health): needler, plasma rifle, carbine.<br>• **Major** (crimson armour plates, 1.35× health, 10% tighter aim): plasma pistol, needler, plasma rifle, particle beam, carbine, pulse carbine.<br>• **Ultra** (silver-white plates, 1.8× health, 25% tighter aim): plasma rifle, particle beam, carbine.<br>The carbines draw HDE's green laser trail; the particle beams keep the aiming laser and glint. DoomEdNums 30441–30452 (`HCE_SlugManMajorNeedler` … `HCE_SlugManUltraPlasmaRifle`, alphabetical); `HCE_RandomSlugMan` (30409) now picks from all of them. |
 | `HCE_Elite{Minor,Major,Specops,Commander}PlasmaCarbine` | Elites with **CMT's Covenant carbine** (model and textures from the CMT tags: purple carapace, glowing status lights and ammo read-out) in a real two-handed **rifle stance**. Semi-auto pairs and triples of HDE's green carbine rounds (15 base damage), each with **HDE's green carbine laser trail** from the muzzle to where it lands, with longer combat ranges than the plasma-rifle Elites. They drop HDE's Carbine. |
 
 * **Rifle stance.** The animations come from the CE-rig Elite graph you supplied (`elite.model_animations`): stand/crouch/alert idles, moves and turns, dives, evades, berserk, both rifle melees, surprise, signal and land. Its uncompressed frames decode directly. CMT's carbine sits on the `right hand elite` marker, and the support hand lands where the set already places it. A two-bone IK step keeps the support hand on the fore-grip during strides. The graph has no rifle fire overlay, so firing uses a short synthetic recoil kick. Actions the graph lacks (airborne, hard landing, throw, warn, alert move) use the Elite's pistol body, with the support hand solved onto the carbine. The same graph also has cannon (fuel rod) and flamethrower sets that aren't used yet.
@@ -538,7 +545,7 @@ Don't load these together with the regular HDE packs: they define the same enemi
 
 ## Gore (Nash's Gore Mod)
 
-The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (NashGore). Load `nashgore.pk3` last, after the HDE or standalone packs. Without it, Doom's normal blood is used, in the same colours.
+[Nash's Gore Mod](https://github.com/poperigby/nashgore) (NashGore, by Nash Muhandes, BSD licence) is **built into the core pack**, so every faction has it with nothing extra to load. **Don't load `nashgore.pk3` as well**: the two copies would clash. Its options are in its own menu, as usual.
 
 **Blood colours** follow each species' blood from Halopedia's "Blood" article (Halo CE colours where the games differ). They are set as each enemy's `BloodColor`, so NashGore's sprays, floor splats, wall decals, corpse pools, footprints and gibs all take the race's colour:
 
@@ -562,11 +569,10 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * **Energy shields keep the blood in:** an enemy with its shield up doesn't bleed (no blood sprays, Halo splats or blood on its body). It starts bleeding once the shield pops, and stops again if the shield recharges.
 
 **Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
-* **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
-* **Without NashGore:** a large blood burst.
+* **The burst:** NashGore's full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
-**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
+**Halo CE and Halo 2 gore:** on top of NashGore's own effects, every faction bleeds the way it does in Halo. The code is in the core; each faction pack carries its own species' Halo decals.
 * **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it, picked at random from Halo CE's and Halo 2's splats:
 
   | Species | Halo decals |
@@ -578,6 +584,8 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
   | Drones | Halo 2's khaki "bugger" splats |
   | Engineers | Halo CE's pink Engineer splat |
   | Drinol, Blind Wolf, Thorn Beast | red Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
+  | Flood | Halo 2's Flood splats (and its large Flood splat on death) |
+  | Marines | red human Halo CE and Halo 2 splats, Halo 2's drippy combat splat |
 
 * **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour (Halo CE's and Halo 2's blood-burst sheets), with a few blood streaks flung away from the shot (Halo 2's blood trails).
 * **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears.
@@ -589,7 +597,9 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 
 ## Dismemberment
 
-Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
+Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them.
+
+**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (40% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 
 **Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
 * **Headshot kills:** usually take the head off.
@@ -664,7 +674,7 @@ How brutally an Elite or Brute dies decides how long the squad it led takes to p
 
 ## Not included / known limits
 
-* Marines, Flood and Sentinels have no dialogue (HaloDoomEnemies has no lines for them).
+* The Flood and Sentinels have no dialogue (HaloDoomEnemies has no lines for them).
 * No vehicles, turrets, dropships or scripted AI (encounters, squads, firing points). Units pick positions with local steering instead of Halo's firing-point graph.
 * Only the 14 combat characters are included: no Keyes, Cortana, 343 Guilty Spark or crew.
 

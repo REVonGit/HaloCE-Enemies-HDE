@@ -840,6 +840,26 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// the energy-shield flare: a copy of the model that glows when the shield takes a hit (pack code)
 	Actor hce_shellActor;
+	// sniper glint: a purple star flashing at the rifle while the enemy takes aim (beam rifles), so the player
+	// sees the shot coming. rel = the muzzle relative to the actor; t = tics into the aim.
+	void HCE_SniperGlint(vector3 rel, int t)
+	{
+		double pulse = 0.75 + 0.25 * sin(t * 40.0);
+		A_SpawnParticle("B040FF", SPF_FULLBRIGHT, 2, 16 * pulse, 0, rel.x, rel.y, rel.z, 0, 0, 0, 0, 0, 0, 0.75);
+		A_SpawnParticle("FFE0FF", SPF_FULLBRIGHT, 2, 6 * pulse, 0, rel.x, rel.y, rel.z);
+		// the streaks of the star, across the line of sight
+		vector2 side = AngleToVector(angle + 90, 1);
+		for(int i = 1; i <= 3; i++)
+		{
+			double o = i * 5 * pulse;
+			A_SpawnParticle("D070FF", SPF_FULLBRIGHT, 2, 4 - i, 0, rel.x + side.x * o, rel.y + side.y * o, rel.z, 0, 0, 0, 0, 0, 0, 0.8);
+			A_SpawnParticle("D070FF", SPF_FULLBRIGHT, 2, 4 - i, 0, rel.x - side.x * o, rel.y - side.y * o, rel.z, 0, 0, 0, 0, 0, 0, 0.8);
+			A_SpawnParticle("D070FF", SPF_FULLBRIGHT, 2, 4 - i, 0, rel.x, rel.y, rel.z + o, 0, 0, 0, 0, 0, 0, 0.8);
+			A_SpawnParticle("D070FF", SPF_FULLBRIGHT, 2, 4 - i, 0, rel.x, rel.y, rel.z - o, 0, 0, 0, 0, 0, 0, 0.8);
+		}
+	}
+	// energy-shield colour for hit flashes (Elites blue; packs override: Brutes gold...)
+	virtual color HCE_ShieldColor() { return Color(255, 127, 178, 255); }
 	// the Jackal arm shield (pack code): the node it rides, the gun hand that pokes past it, the surface it's drawn on
 	virtual Name HCE_ShieldBone() { return 'frame shield'; }
 	virtual Name HCE_GunHandBone() { return 'bip01 r hand'; }
@@ -2780,6 +2800,18 @@ class HCE_Shield : ShieldProcessor
 		prevShields = shields;
 		bInvisible = true;
 	}
+	// a projectile (or a hitscan round) striking the shield: a flash and sparks where it hit, in the shield's colour
+	override double OnShieldDamage(double dmg, Name mod, Actor inflictor, Actor source)
+	{
+		if(Owner && dmg > 0)
+		{
+			let e = HaloDoom_EnemyBase(Owner);
+			color c = e ? e.HCE_ShieldColor() : Color(255, 127, 178, 255);
+			if(shields - dmg <= maxshields * 0.25) c = Color(255, 255, 80, 64);       // nearly down: the red warning flash
+			HCE_ShieldImpact.Burst(Owner, inflictor, source, c, clamp(dmg / 20.0, 0.5, 2.0));
+		}
+		return dmg;
+	}
 	override void OnShieldBreak()
 	{
 		if(!Owner) return;
@@ -2790,6 +2822,66 @@ class HCE_Shield : ShieldProcessor
 		for(int i = 0; i < 30; i++)
 			Owner.A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 18, frandom(3, 6), 0, 0, 0, Owner.height * 0.6,
 				frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
+	}
+}
+
+// Energy-shield impact (Halo's shield hit): a short flash of light and a spray of sparks off the shield's surface
+// at the point the shot struck, thrown back toward the shooter. Burst() finds the point: the projectile itself, or
+// for hitscan the side of the target facing the shooter, at a random height.
+class HCE_ShieldImpact : Actor
+{
+	color hce_col;
+	double hce_power;
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		RenderStyle "None";
+	}
+	static void Burst(Actor target, Actor inflictor, Actor source, color c, double power = 1.0, vector3 at = (0, 0, 0), bool haveAt = false)
+	{
+		if(!target) return;
+		Actor from = source ? source : inflictor;
+		if(!haveAt)
+		{
+			if(inflictor && inflictor != source && target.Distance3D(inflictor) < target.radius * 3 + 48) at = inflictor.pos;
+			else
+			{
+				double a = from ? target.AngleTo(from) : target.angle;
+				at = target.Vec3Angle(target.radius * 0.9, a + frandom[HCEShield](-30, 30), target.height * frandom[HCEShield](0.35, 0.9));
+			}
+		}
+		let fx = HCE_ShieldImpact(Spawn("HCE_ShieldImpact", at, NO_REPLACE));
+		if(!fx) return;
+		fx.hce_col = c; fx.hce_power = power;
+		// outward: from the target's middle through the hit point, leaning back toward the shooter
+		vector3 mid = target.pos + (0, 0, target.height * 0.55);
+		vector3 outward = level.Vec3Diff(mid, at);
+		if(from) outward += level.Vec3Diff(at, from.pos + (0, 0, from.height * 0.5)).Unit() * outward.Length();
+		fx.angle = atan2(outward.y, outward.x);
+		fx.pitch = -atan2(outward.z, outward.xy.Length());
+	}
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_AttachLight('hce_shieldhit', DynamicLight.PointLight, hce_col, int(48 * hce_power), 0);
+		vector3 dir = (AngleToVector(angle, cos(pitch)), -sin(pitch));
+		int n = int(10 + 8 * hce_power);
+		for(int i = 0; i < n; i++)
+		{
+			vector3 v = dir * frandom[HCEShield](1.5, 5.0) + (frandom[HCEShield](-2.2, 2.2), frandom[HCEShield](-2.2, 2.2), frandom[HCEShield](-1.5, 2.5));
+			A_SpawnParticle(hce_col, SPF_FULLBRIGHT, random[HCEShield](6, 12), frandom[HCEShield](1.5, 3.5), 0, 0, 0, 0,
+				v.x, v.y, v.z, 0, 0, -0.18, 1.0, -1, -0.15);
+		}
+		// the bright core of the strike, and a white-hot centre
+		A_SpawnParticle(hce_col, SPF_FULLBRIGHT, 6, 14 * hce_power, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, -1, -2.0 * hce_power);
+		A_SpawnParticle("FFFFFF", SPF_FULLBRIGHT, 4, 6 * hce_power, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.0, -1, -1.2 * hce_power);
+	}
+	States
+	{
+	Spawn:
+		TNT1 A 6;
+		Stop;
 	}
 }
 

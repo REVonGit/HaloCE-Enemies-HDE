@@ -110,6 +110,39 @@ def extract_sounds(m, od):
     return out
 
 
+# Halo CE's Jackal helmet (the armored_head permutation; ce_jackal_helmet.py) on the Halo 2 head: the two rigs share
+# the head bone's axes; the Halo 2 head is a little larger and its snout sits further forward
+HELMET_SCALE, HELMET_OFFSET = 1.12, (0.012, 0.032, 0.0)
+from hce_paths import MAPS_DIR as CE_MAPS
+
+
+def add_ce_helmet(meshes, nodes, od, pid):
+    try:
+        import ce_jackal_helmet as cj
+        h = cj.helmet(CE_MAPS)
+    except Exception as e:
+        print('  no CE Jackal helmet:', e); return
+    from preview import qmat
+    W = []
+    for n in nodes:
+        t = np.array(n['t']); q = np.array(n['q'])
+        if n['parent'] < 0: W.append((t, q))
+        else:
+            pt, pq = W[n['parent']]; W.append((pt + qrot(pq, t), qmul(pq, q)))
+    hi = next(i for i, n in enumerate(nodes) if n['name'] == 'head')
+    t, q = W[hi]; R = qmat(q)
+    pos = (h['pos'] * HELMET_SCALE + np.array(HELMET_OFFSET)) @ R.T + t
+    n = len(pos)
+    bidx = np.zeros((n, 4), np.uint8); bidx[:, 0] = hi
+    bw = np.zeros((n, 4), np.uint8); bw[:, 0] = 255
+    h['base'].convert('RGB').save(f'{od}/{pid}_jackal_helmet.png')
+    if h['multi'] is not None:                     # the multipurpose map's red marks the helmet plate: rank colour
+        r = h['multi'].convert('RGBA').split()[0]
+        Image.merge('RGB', (r, Image.new('L', r.size, 0), Image.new('L', r.size, 0))).save(f'{od}/{pid}_jackal_helmet_mask.png')
+    meshes.append(dict(name='helmet.jackal_helmet', material=f'{pid}_jackal_helmet.png', pos=pos, nrm=h['nrm'] @ R.T,
+                       uv=h['uv'], bidx=bidx, bw=bw, tris=h['tris']))
+
+
 def extract_jackal(pid='H2Jackal'):
     m = H2Map(MAP08A, CACHE08A)
     M = render_model(m, JACKAL)
@@ -138,6 +171,7 @@ def extract_jackal(pid='H2Jackal'):
             x['tris'] = np.concatenate([x['tris'], tris + n0]); continue
         meshes.append(dict(name=nm, material=f'{pid}_{sh}.png', pos=mm['pos'], nrm=mm['nrm'], uv=mm['uv'],
                            bidx=bidx, bw=bw, tris=tris))
+    add_ce_helmet(meshes, nodes, od, pid)
     mesh_weapon = [None] * len(meshes)
     # world bind pose, markers
     W = []

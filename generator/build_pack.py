@@ -476,7 +476,8 @@ def build(cfg=None):
                   f'\tRaise:\n\t\tHCEM A 1;\n\t\tGoto See;\n\tPain.PlasmaStuck:\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
-                  + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '') + '}\n')
+                  + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
+                  + BASE_CODE.get(char, '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue
@@ -689,13 +690,29 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_Shield {shield:.0f}, {min(5.0, coll.get('shield_stun_time') or 3):.1f}, {min(6.0, coll.get('shield_recharge_time') or 4):.1f};
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
-            extra = TYPE_CODE.get(char, '') + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
+            extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
             if ov.get('weapon_toss'):
                 # hide the held weapon's surfaces at runtime (a Brute throwing its gun away to go berserk)
                 ws = [si for si, wv in enumerate(mesh_weapon) if wv]
                 extra += '\tvoid HCE_HideWeaponSurfaces()\n\t{\n' + ''.join(
                     f'\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for si in ws) + '\t}\n'
+            blade = 'HCE_ActiveCamo' in flags and weapon == 'energy sword'
+            if blade:
+                # the energy sword's blade isn't cloaked (Halo shows it): a second copy of the model, only the blade
+                # surface drawn, at full brightness, playing the Elite's animations
+                extra += (f'\tActor hce_bladeActor;\n\toverride void PostBeginPlay()\n\t{{\n'
+                          f'\t\thce_bladeActor = Spawn("{cls}Blade", pos, NO_REPLACE);\n'
+                          f'\t\tif(hce_bladeActor) hce_bladeActor.master = self;\n\t\tsuper.PostBeginPlay();\n\t}}\n'
+                          f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tsuper.HCE_ApplyAnim(n, blend, loop);\n'
+                          f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n')
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))}\n{extra}}}\n')
+            if blade:
+                zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')
+                bl = [f'\tSurfaceSkin 0 {si} "hce_hidden.png"' for si in range(len(meta['meshes']))]
+                for si, mat in enumerate(meta['meshes']):
+                    if si < len(mesh_weapon) and mesh_weapon[si] == 'energy_sword' and 'glow' in mat: bl[si] = f'\tSurfaceSkin 0 {si} "{mat}"'
+                md.append(f'Model {cls}Blade\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n\tPath "models/{mdir}/weapons"\n' + '\n'.join(bl) +
+                          f'\n\tScale {S * msc:.0f} {S * msc:.0f} {S * msc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
             if char in SHELL_TINT and shield > 0 and char not in shells:
                 shells.add(char)
                 zs.append(f'// energy-shield flare for the {char}s: the same model, every surface the glowing shield texture\n'
@@ -796,6 +813,7 @@ def build(cfg=None):
     print('classes', len(ednums), 'projectiles', len(done))
 
 # per-character extra ZScript (Flood corpse feeding, carrier pop, infection pop)
+BASE_CODE = {}       # char -> ZScript put in its abstract base class once (shared by all its variants)
 TYPE_CODE = {
     'FloodInfection': '''
 	// infection forms hunt for dead humans / elites and reanimate them
@@ -876,7 +894,7 @@ TYPE_CODE = {
 # bursts (one trace a tic) with a cool-down between them; HDE's laser sounds; drops HDE's beam rifle.
 H2BEAM = H2BEAM_REF
 WEAPONS['beam rifle'] = ('HCE_H2BeamShot', 'HCE_BeamPuff', None, 30.0)
-PATTERNS['beam rifle'] = (30, 45, 1, 2.4, 3.4, 0, False, 1.0, 1.0)
+PATTERNS['beam rifle'] = (60, 75, 1, 2.4, 3.4, 0, False, 1.0, 1.0)     # 30 tics of aiming (glint + laser), then 30-45 of beam
 FIRE_SOUNDS['beam rifle'] = (W + 'BeamRifle/Laser/Loop', '', W + 'BeamRifle/Laser/LoopEnd', W + 'BeamRifle/Laser/Fire', True)
 FIRE_CODE['beam rifle'] = 'csr'
 DROP_WEAPON['beam rifle'] = 'Halo_BeamRifle'
@@ -886,8 +904,11 @@ BEAMRIFLE_CODE = '''
 	// is ~1 s of beam (one trace a tic); the damage climbs while it holds the same target (to 3x in half a second)
 	// and resets when it slips off. Between bursts the rifle cools down. The aim is the API's slow-tracking aim
 	// point, so strafing drags the beam off you.
+	// Each burst opens with ~0.9 s of aiming: a purple sniper glint flashes at the rifle and a thin, harmless
+	// targeting laser runs to where it's aiming; then the beam fires.
 	Actor hce_beamVictim;
 	double hce_beamRamp;
+	const HCE_BEAM_AIM = 30;
 	override void HCE_FireShot(bool special)
 	{
 		if(!target) return;
@@ -902,6 +923,25 @@ BEAMRIFLE_CODE = '''
 		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
 		vector3 d = level.Vec3Diff(from, to);
 		double len = d.Length();
+		if(hce_burstShot < HCE_BEAM_AIM)
+		{
+			if(hce_burstShot == 0) A_StopSound(CHAN_WEAPON);               // the beam's hum starts with the beam
+			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
+			if(len >= 1 && (hce_burstShot & 1))
+			{
+				vector3 rel = level.Vec3Diff(pos, from);
+				int n = min(200, int(len / 18));
+				for(int i = 1; i < n; i++)
+				{
+					vector3 p = rel + d * (i / double(n));
+					A_SpawnParticle("C040FF", SPF_FULLBRIGHT, 3, 1.4, 0, p.x, p.y, p.z, 0, 0, 0, 0, 0, 0, 0.55);
+				}
+				A_SpawnParticle("E080FF", SPF_FULLBRIGHT, 3, 3, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, 0, 0, 0, 0, 0, 0, 0.8);
+			}
+			if(hce_burstShot == HCE_BEAM_AIM - 1 && hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_LOOPING, 0.8);
+			hce_burstShot++;
+			return;
+		}
 		if(len >= 1)
 		{
 			vector3 rel = level.Vec3Diff(pos, from);

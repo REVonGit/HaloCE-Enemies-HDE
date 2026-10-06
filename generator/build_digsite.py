@@ -133,6 +133,11 @@ def load_ai():
         jv['change_colors_list'] = []
         jv['_late'] = True
         variants[DRONE + ' plasma pistol'] = jv
+        # the other one-handed Covenant guns the Drone model carries (extract_h2.DRONE_WEAPONS)
+        for wref, key in ((r'weapons\needler\needler', 'needler'), (CE_PR, 'plasma rifle'), (SPIKER, 'spiker')):
+            dv = copy.deepcopy(jv)
+            dv['ranged_combat']['reference'] = wref
+            variants[DRONE + ' ' + key] = dv
         actors[DRONE] = copy.deepcopy(A['actors'][r'characters\jackal\jackal minor'])
         jb = copy.deepcopy(A['bipeds'][r'characters\jackal\jackal'])
         jb.update(collision_height_standing=0.55, collision_radius=0.27, flying_velocity=2.6)
@@ -371,7 +376,7 @@ DRONE_CODE = '''
 		let it = BlockThingsIterator.Create(self, 400);
 		while(it.Next())
 		{
-			let d = HCE_DronePlasmaPistol(it.thing);
+			let d = HCE_DroneBase(it.thing);
 			if(!d || d == self || d.health <= 0) continue;
 			if(d.hce_perch) d.HCE_LeavePerch();
 			d.hce_scatterTics = random(30, 80);
@@ -541,11 +546,15 @@ THORN_CODE = '''
 '''
 
 BEAM_CODE = '''
-	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser, then one hitscan beam
+	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan beam
 	override void HCE_UpdateFiring(double dist)
 	{
 		super.HCE_UpdateFiring(dist);
-		if(hce_chargeTics > 0 && target && (hce_chargeTics & 1)) HCE_BeamTrace(false);
+		if(hce_chargeTics > 0 && target)
+		{
+			if(hce_chargeTics & 1) HCE_BeamTrace(false);
+			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
+		}
 	}
 	override void HCE_FireShot(bool special)
 	{
@@ -973,6 +982,7 @@ def brute_code():
 		}
 		HCE_Say('PainHeavy', 1.0, 0, true);
 	}
+	override color HCE_ShieldColor() { return Color(255, 255, 200, 90); }       // the Chieftain's gold overshield
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
@@ -1079,7 +1089,7 @@ def configure():
     # (the beam rifle itself is set up in build_pack.py: the Spec Ops Elite carries it too)
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
-    bp.TYPE_CODE['Drone'] = DRONE_CODE
+    bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
     bp.WEAPON_CODE['particle beam'] = BEAM_CODE
     bp.CHAR_OVERRIDES.update({
         # a war beast twice a Hunter's height: shrunk to fit Doom maps; charges, swats, pounces
@@ -1129,7 +1139,8 @@ def build():
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
-                           'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
+                           'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     src = HERE + '/digsite_src'

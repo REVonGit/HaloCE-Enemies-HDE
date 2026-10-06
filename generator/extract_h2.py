@@ -2,8 +2,6 @@
 Currently: the Drone ("bugger") from 01b_spacestation.map. Animations are renamed onto the CE-style names
 build_pack.py looks for; overlays (fire, soft flinches) are baked onto the flight idle like the CE ones.
 Textures come from MCC's textures.dat when HCE_H2_TEXTURES points at it, otherwise placeholder skins."""
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, os, json, pickle, struct
 import numpy as np
 from PIL import Image
@@ -84,6 +82,9 @@ def placeholder(kind, size=256):
     rgb = np.stack([(base[c] + var[c] * (noise - 0.5)) * seg for c in range(3)], -1)
     return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB')
 
+DRONE_WEAPONS = ['plasma_pistol', 'needler', 'plasma_rifle', 'spiker']   # out/weapons/<id>/<id>.pkl (CE weapon space)
+
+
 def extract_drone(pid='Drone'):
     m = H2Map(MAP, os.environ.get('HCE_H2_CACHE') or None)
     M = render_model(m, DRONE)
@@ -127,7 +128,7 @@ def extract_drone(pid='Drone'):
         if n['parent'] < 0: W.append((t, q))
         else:
             pt, pq = W[n['parent']]; W.append((pt + qrot(pq, t), qmul(pq, q)))
-    # plasma pistol in the right hand (marker right_hand), like Halo 2 drones carry
+    # guns in the right hand (marker right_hand)
     a = m.tag('mode', DRONE)['addr']
     markers = {}
     for g in m.block(a + 0x58, 0xC):
@@ -135,13 +136,14 @@ def extract_drone(pid='Drone'):
         for mk in m.block(g + 4, 0x24):
             markers.setdefault(nm.replace('_', ' '), []).append(dict(node=m.b[m.o(mk) + 2], t=list(m.u('3f', mk + 4)), q=list(m.u('4f', mk + 0x10))))
     mesh_weapon = [None] * len(meshes)
-    wid = 'plasma_pistol'
     mk = markers['right hand'][0]
     wt, wq = W[mk['node']]; mt = np.array(mk['t']); mq = np.array(mk['q'])
     tq = qmul(wq, mq); tq /= np.linalg.norm(tq)
-    wd = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
     import shutil
-    for k, wm in enumerate(wd['meshes']):
+    # one-handed Covenant guns, one shown per class: the plasma pistol (Halo 2's default), the needler, the CE
+    # plasma rifle and the Spiker
+    for wid, wm, k in [(w, x, k) for w in DRONE_WEAPONS
+                       for k, x in enumerate(pickle.load(open(f'{OUT}/weapons/{w}/{w}.pkl', 'rb'))['meshes'])]:
         pos = np.array([wt + qrot(wq, mt + qrot(mq, v)) for v in wm['pos']])
         nrm = np.array([qrot(tq, v) for v in wm['nrm']])
         bidx = np.zeros((len(pos), 4), np.uint8); bw = np.zeros((len(pos), 4), np.uint8)
@@ -216,7 +218,7 @@ def extract_drone_sounds(pid='Drone'):
             if src not in files: missing.add(base); continue
             f = files[src]; pk = []
             for o, cs, fl, us, ri in ch:                 # every chunk is its own length-prefixed packet chain
-                f.seek(o); pk += h2opus.packets(f.read(cs & 0x7FFF), strict=True)
+                f.seek(o); pk += h2opus.packets(f.read(cs & 0xFFFF), strict=True)
             fn = f'{base}_{pi:02d}.ogg'
             open(f'{od}/{fn}', 'wb').write(h2opus.to_ogg(pk, channels=2 if codec[1] == 1 else 1))
             idx.setdefault(base, []).append(fn)

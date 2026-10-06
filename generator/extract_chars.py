@@ -1,6 +1,4 @@
 """Extract Halo CE campaign enemies (+ marines) to IQM + PNG skins + JSON stats."""
-import os as _os, sys as _sys
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, re, shutil
 import numpy as np
 from PIL import Image
@@ -28,6 +26,15 @@ CHARS = {  # biped tag name -> pack id
     r'characters\marine_armored\marine_armored': 'MarineArmored',
 }
 from hce_paths import OUT, MAPS_DIR
+# Halo CE armour permutations per pack id (the base looks otherwise). The Spec Ops Elites wear the regular Elite
+# model's crescent-masked (curved) helmet with the armoured arms and legs instead of the elite_special body; the
+# Spec Ops Grunts the "shellback" (shrimp-back) tank; Major Jackals the armoured head.
+PERMS = {
+    'EliteSpecial': {'head': 'crescent_masked_head', 'arms': 'blunt_armored_arms', 'legs': 'double_pointed_armored_legs'},
+    'GruntSpecOps': {'perm head and back': 'shellback'},
+    'JackalMajor': {'head': 'armored_head'},
+}
+MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
 
 def sanitize(n):
     return re.sub(r'[^a-z0-9_]+', '_', n.lower()).strip('_')
@@ -116,14 +123,19 @@ def merge_meshes(meshes, mesh_weapon):
 def extract(name, pid, sources, maps):
     os.makedirs(f'{OUT}/models/{pid}', exist_ok=True)
     m = maps[sources[0]]
-    bt = [t for t in m.find('bipd') if t['name'] == name][0]
+    geo_from = MODEL_FROM.get(pid, name)
+    if geo_from != name:          # a map that carries both bipeds, so the model comes from the same cache
+        m = next(maps[n] for n in sources if any(t['name'] == geo_from for t in maps[n].find('bipd')))
+    bt = [t for t in m.find('bipd') if t['name'] == geo_from][0]
     B = tag(m, bt, 'biped_definition')
     model = hm.Model(m, B['model'])
     NJ = len(model.nodes)
-    # choose permutation per region: 'base'-like first permutation; highest-detail geometry
+    # choose permutation per region: PERMS, else the 'base'-like first permutation; highest-detail geometry
+    want = PERMS.get(pid, {})
     parts_all = []
     for r in model.regions:
-        perm = next((p for p in r['perms'] if p['name'].startswith('base')), r['perms'][0])
+        perm = next((p for p in r['perms'] if p['name'] == want.get(r['name'])), None) \
+            or next((p for p in r['perms'] if p['name'].startswith('base')), r['perms'][0])
         best = None
         for gi in sorted(set(perm['geoms'])):
             g = model.geometry(gi)

@@ -99,16 +99,14 @@ class HCE_JackalShield : Actor
 		vector3 at = inflictor && inflictor != source ? inflictor.pos : pos + (0, 0, height * 0.5);
 		if(m <= 0)
 		{
-			// glances off: a spark at the shield face
-			for(int i = 0; i < 3; i++)
-				A_SpawnParticle("9FD0FF", SPF_FULLBRIGHT, 8, 3, 0, at.x - pos.x, at.y - pos.y, at.z - pos.z, frandom(-2, 2), frandom(-2, 2), frandom(0, 2));
+			// glances off: a small flash at the shield face
+			HCE_ShieldImpact.Burst(self, inflictor, source, ShieldColor(j), 0.4, at, true);
 			regenWait = max(regenWait, 35);
 			return 0;
 		}
 		hp -= damage * m;
 		regenWait = 35 * 4;
-		for(int i = 0; i < 5; i++)
-			A_SpawnParticle("60A0FF", SPF_FULLBRIGHT, 10, 4, 0, frandom(-radius, radius), frandom(-radius, radius), frandom(0, height), frandom(-2, 2), frandom(-2, 2), frandom(-1, 2));
+		HCE_ShieldImpact.Burst(self, inflictor, source, hp < maxhp * 0.25 ? Color(255, 255, 80, 64) : ShieldColor(j), clamp(damage * m / 20.0, 0.5, 2.0), at, true);
 		if(mod == 'Melee' && hp > 0 && j.hce_animLock <= 0)
 		{
 			int k = j.HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R);
@@ -166,6 +164,17 @@ class HCE_JackalShield : Actor
 		if(along < 0) return false;
 		double miss = (rel - d * along).Length();
 		return miss < 6 + (inflictor.bMISSILE ? inflictor.radius : 0);
+	}
+
+	// the gauntlet's energy colour by rank (matches the baked shield skins)
+	static color ShieldColor(Actor j)
+	{
+		String n = "";
+		if(j) n = j.GetClassName();
+		if(n.IndexOf("Zealot") >= 0) return Color(255, 255, 214, 80);
+		if(n.IndexOf("Ultra") >= 0) return Color(255, 255, 140, 30);
+		if(n.IndexOf("Major") >= 0) return Color(255, 255, 80, 215);
+		return Color(255, 80, 120, 255);
 	}
 
 	void BreakShield(HaloDoom_EnemyBase j)
@@ -246,6 +255,39 @@ class HCE_JackalShield : Actor
 // shield pops, softer while it recharges) and fades in a fraction of a second. The enemy API sets the alpha;
 // the shell follows its wearer and mirrors its animation (the generated code drives both).
 // ---------------------------------------------------------------------------
+// the energy sword's blade on a cloaked Elite: the Elite's own model with only the blade drawn, glowing at full
+// strength while the body is all but invisible (build_pack.py gives each such class a <class>Blade model)
+class HCE_BladeShell : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+DECOUPLEDANIMATIONS
+		+NOTONAUTOMAP
+		RenderStyle "Add";
+		Alpha 1.0;
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
+	}
+
+	override void Tick()
+	{
+		let e = HaloDoom_EnemyBase(master);
+		if(!e || e.health <= 0) { Destroy(); return; }
+		if(isFrozen()) return;
+		SetOrigin(e.pos, true);
+		angle = e.angle; pitch = e.pitch; roll = e.roll;
+		scale = e.scale;
+		bInvisible = e.bInvisible || e.alpha >= 0.95;     // once the camo is down the Elite draws its own sword
+	}
+}
+
 class HCE_ShieldShell : Actor
 {
 	Default

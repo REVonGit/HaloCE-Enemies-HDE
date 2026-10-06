@@ -47,6 +47,8 @@ def main():
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
             m = re.fullmatch(r'HCE_(\w+)ShieldShell', cls)
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
+            m = re.fullmatch(r'(HCE_\w+)Blade', cls)              # a cloaked sword Elite's blade copy: its Elite's pack
+            if m and m.group(1) in char_of: char_of[cls] = char_of[m.group(1)]
     fac_of = {c: FACTION[TEAM[ch]] for c, ch in char_of.items()}
     missing = [c for c, _, _ in parts if c not in fac_of]
     assert not missing, missing

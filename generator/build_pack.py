@@ -191,8 +191,8 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
           'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
           # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
-          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
+          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
+          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
@@ -839,6 +839,35 @@ HUNTER_ARM_WEAPON = {'hunter fuel rod': 'Halo_FuelRod', 'fuel rod': 'Halo_FuelRo
                      'flamethrower': 'Halo_Flamethrower'}
 
 
+# Sergeant Stacker's face: Halo CE's white face under the sergeant's cap (his and nobody else's, like Johnson's)
+STACKER_HEAD = 'head_marcus_cap-101'
+
+# Lip-sync: Halo CE moved the Marines' jaw ('bip01 ponytail1') with their dialogue; the animations hold it shut
+# (extract_chars.py). While a Marine's voice channel plays, the jaw flaps open and shut in a speech rhythm, opening
+# about its local -z axis as Halo CE's own open pose does (9 degrees in its idles; up to 14 here), added on top of
+# the animation (SetNamedBoneRotation, SB_ADD: animation * this)
+LIP_CODE = """
+	int hce_lipPhase;
+	double hce_lipOpen;
+	override void Tick()
+	{
+		super.Tick();
+		if((level.maptime + hce_lipPhase) % 3) return;
+		double want = 0;
+		if(health > 0 && IsActorPlayingSound(CHAN_VOICE))
+		{
+			// syllables: two out-of-step waves, so the mouth opens irregularly, never wide for long
+			double t = (level.maptime + hce_lipPhase) * 9.0;
+			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
+		}
+		if(want == 0 && hce_lipOpen == 0) return;
+		hce_lipOpen = want;
+		double a = want * 14.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+	}
+"""
+
+
 def marine_code(meta, mdir):
     """Halo CE's Marine cosmetics, rolled per Marine (extract_chars.MULTI_PERMS): a random face (bare heads, boonie
     hats, bandanas, caps, helmets), sleeves rolled down on some, the battle-damaged vest on some Armored Marines.
@@ -853,10 +882,11 @@ def marine_code(meta, mdir):
     cases = []
     for k, h in enumerate(heads):
         johnson = 'johnson' in h
+        sergeant = johnson or h == STACKER_HEAD           # the sergeants wear the full-sleeved arms
         helmet = 'cap' not in h and not johnson
         hide = sis(lambda n: n.startswith('head.') and n != 'head.shared' and n != f'head.{h}')
         if not helmet: hide += sis(lambda n: n == 'head.shared')
-        if johnson: hide += sis(lambda n: n.startswith('arms.') and not jarms(n))
+        if sergeant: hide += sis(lambda n: n.startswith('arms.') and not jarms(n))
         else: hide += sis(jarms)
         cases.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, sorted(hide)))} }}; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]);'
                      + (" hce_voice = 'Marine_Johnson';" if johnson else '') + ' break; }\n')
@@ -875,15 +905,16 @@ def marine_code(meta, mdir):
                  f'\t\telse {{ static const int T[] = {{ {", ".join(map(str, hd))} }}; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }}\n')
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
     jk = next((k for k, h in enumerate(heads) if 'johnson' in h), -1)
-    others = [k for k in range(len(heads)) if k != jk]
-    return ('\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
+    sk = next((k for k, h in enumerate(heads) if h == STACKER_HEAD), -1)
+    others = [k for k in range(len(heads)) if k not in (jk, sk)]
+    return (LIP_CODE + '\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
             '\t// Johnson\'s face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it\n'
-            f'\tconst HCE_JOHNSON_FACE = {jk};\n'
+            f'\tconst HCE_JOHNSON_FACE = {jk};\n\tconst HCE_STACKER_FACE = {sk};\n'
             '\tArray<int> hce_hideSurf;\n\tint hce_face;\n\tbool hce_johnsonArms;\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n\t\tHCE_DressMarine();\n\t}\n'
             f'\tvirtual int HCE_PickFace() {{ static const int F[] = {{ {", ".join(map(str, others))} }}; return F[random(0, {len(others) - 1})]; }}\n'
             '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
-            f'\t\thce_face = HCE_PickFace();\n\t\thce_johnsonArms = hce_face == HCE_JOHNSON_FACE;\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
+            f'\t\thce_face = HCE_PickFace();\n\t\thce_johnsonArms = hce_face == HCE_JOHNSON_FACE || hce_face == HCE_STACKER_FACE;\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
             + roll +
             f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n'
             '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started\n\t}\n'
@@ -1663,6 +1694,17 @@ STANCHION_CODE = """
 """
 WEAPON_CODE['stanchion'] = STANCHION_CODE
 
+STACKER_CODE = """
+	// Sergeant Stacker: always his own face (the white face under the sergeant's cap) and voice
+	override int HCE_PickFace() { return HCE_STACKER_FACE; }
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		hce_voice = 'Marine_Sarge';
+	}
+"""
+
+
 def add_marine_arsenal(variants):
     import copy
     for body in ('marine', 'marine_armored'):
@@ -1686,6 +1728,17 @@ def add_marine_arsenal(variants):
         v['_late'] = True
         v['_ov'] = dict(overlay='stanchion', stance='rifle', spread=0.2, unique=True, johnson=True, melee=(40, 90), health=75, skin_as='HCE_MarineAssaultRifle')
         variants['characters\\marine\\sgt johnson'] = v
+    # Sergeant Stacker: the white sergeant (Halo CE's second sergeant's voice, 'sarge2', recorded by Pete Stacker),
+    # the sergeant's cap, full sleeves and the Battle Rifle he carries in Halo 2
+    if base and 'characters\\marine\\sgt stacker' not in variants:
+        v = copy.deepcopy(base)
+        ovl, stance, lo, hi, mx, pellets, spread, _drop = MARINE_ARSENAL['battle rifle']
+        v['ranged_combat']['reference'] = ARSENAL_REF.get('battle rifle', 'hde\\battle rifle')
+        v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
+        v['_late'] = True
+        v['_ov'] = dict(overlay=ovl, stance=stance, pellets=pellets, spread=spread, unique=True, melee=(40, 75), health=60,
+                        skin_as='HCE_MarineAssaultRifle', code=STACKER_CODE)
+        variants['characters\\marine\\sgt stacker'] = v
 
 add_marine_arsenal(AI['variants'])
 

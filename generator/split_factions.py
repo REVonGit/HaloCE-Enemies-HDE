@@ -79,7 +79,11 @@ def main():
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine\n'
-                                          'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n')
+                                          'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
+                                          '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)\n'
+                                          'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
+                                          'addkeysection "Halo CE Squad" hce_squad\n'
+                                          'addmenukey "Squad: follow me" hce_follow\naddmenukey "Squad: hold here" hce_hold\naddmenukey "Squad: regroup on me" hce_regroup\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}

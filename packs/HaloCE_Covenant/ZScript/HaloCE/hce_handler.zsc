@@ -281,8 +281,28 @@ class HCE_ReplaceHandler : EventHandler
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
 {
+	// "netevent hce_squad <order>" (the Halo CE Squad keys): 0 follow me, 1 hold here, 2 regroup on me -- every
+	// Marine following the player within 1536 units
+	void SquadOrder(ConsoleEvent e)
+	{
+		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
+		let pl = players[e.Player].mo;
+		int o = clamp(e.Args[0], 0, 2);
+		static const String said[] = { "Squad: follow me", "Squad: hold here", "Squad: regroup on me" };
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase m;
+		int n = 0;
+		while(m = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(!m.hce_enabled || m.health <= 0 || !m.HCE_InSquad() || m.hce_betrayed || m.Distance3D(pl) > 1536) continue;
+			m.HCE_Order(o); n++;
+		}
+		pl.A_Print(n > 0 ? said[o] : "Squad: no Marines in range");
+	}
+
 	override void NetworkProcess(ConsoleEvent e)
 	{
+		if(e.Name == "hce_squad") { SquadOrder(e); return; }
 		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines") return;
 		bool marines = e.Name == "hce_spawnmarines";
 		String cmd = marines ? "leatherneck" : "punkassbitches";

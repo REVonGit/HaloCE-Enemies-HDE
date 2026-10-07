@@ -40,10 +40,19 @@ HCE/Blind_Wolf/PainMed/0 "sounds/hce_voice/blind_wolf/pain_24.ogg"
 HCE/Blind_Wolf/PainMed/1 "sounds/hce_voice/blind_wolf/pain_26.ogg"
 HCE/Blind_Wolf/PainMed/2 "sounds/hce_voice/blind_wolf/pain_28.ogg"
 $random HCE/Blind_Wolf/PainMed { HCE/Blind_Wolf/PainMed/0 HCE/Blind_Wolf/PainMed/1 HCE/Blind_Wolf/PainMed/2 }
+$alias HCE/Blind_Wolf/KillPlayer HCE/Blind_Wolf/Howl
 $alias HCE/Blind_Wolf/PainHeavy HCE/Blind_Wolf/PainMed
 $alias HCE/Blind_Wolf/Regroup HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/OnFire HCE/Blind_Wolf/PainMed
 $alias HCE/Blind_Wolf/Taunt HCE/Blind_Wolf/Howl
 $alias HCE/Blind_Wolf/DeathHard HCE/Blind_Wolf/Death
+$alias HCE/Blind_Wolf/Scold HCE/Blind_Wolf/PainMed
+$alias HCE/Blind_Wolf/AllyKilled HCE/Blind_Wolf/PainMed
+$alias HCE/Blind_Wolf/Betrayal HCE/Blind_Wolf/Howl
+$alias HCE/Blind_Wolf/Acknowledge HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Thanks HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Wounded HCE/Blind_Wolf/PainMed
+$alias HCE/Blind_Wolf/Forgive HCE/Blind_Wolf/Alert
 
 // ---- Drinol
 HCE/Drinol/Alert/0 "sounds/hce_voice/drinol/alert_00.ogg"
@@ -86,6 +95,12 @@ $random HCE/Drinol/Roar { HCE/Drinol/Roar/0 HCE/Drinol/Roar/1 HCE/Drinol/Roar/2 
 $alias HCE/Drinol/Regroup HCE/Drinol/Alert
 $alias HCE/Drinol/OnFire HCE/Drinol/PainHeavy
 $alias HCE/Drinol/Pain HCE/Drinol/PainMed
+$alias HCE/Drinol/Scold HCE/Drinol/PainMed
+$alias HCE/Drinol/AllyKilled HCE/Drinol/PainMed
+$alias HCE/Drinol/Acknowledge HCE/Drinol/Alert
+$alias HCE/Drinol/Thanks HCE/Drinol/Alert
+$alias HCE/Drinol/Wounded HCE/Drinol/PainHeavy
+$alias HCE/Drinol/Forgive HCE/Drinol/Alert
 
 // ---- Elite_Dogmatic
 HCE/Elite_Dogmatic/Alert/0 "sounds/hce_voice/elite_dogmatic/alert_00.ogg"
@@ -141,6 +156,13 @@ HCE/Elite_Dogmatic/Taunt/4 "sounds/hce_voice/elite_dogmatic/taunt_38.ogg"
 $random HCE/Elite_Dogmatic/Taunt { HCE/Elite_Dogmatic/Taunt/0 HCE/Elite_Dogmatic/Taunt/1 HCE/Elite_Dogmatic/Taunt/2 HCE/Elite_Dogmatic/Taunt/3 HCE/Elite_Dogmatic/Taunt/4 }
 $alias HCE/Elite_Dogmatic/Regroup HCE/Elite_Dogmatic/Alert
 $alias HCE/Elite_Dogmatic/DeathHard HCE/Elite_Dogmatic/Death
+$alias HCE/Elite_Dogmatic/Scold HCE/Elite_Dogmatic/PainMed
+$alias HCE/Elite_Dogmatic/AllyKilled HCE/Elite_Dogmatic/PainMed
+$alias HCE/Elite_Dogmatic/Betrayal HCE/Elite_Dogmatic/Taunt
+$alias HCE/Elite_Dogmatic/Acknowledge HCE/Elite_Dogmatic/Alert
+$alias HCE/Elite_Dogmatic/Thanks HCE/Elite_Dogmatic/Alert
+$alias HCE/Elite_Dogmatic/Wounded HCE/Elite_Dogmatic/PainHeavy
+$alias HCE/Elite_Dogmatic/Forgive HCE/Elite_Dogmatic/Alert
 
 // ---- Elite_Loose
 HCE/Elite_Loose/Alert/0 "sounds/hce_voice/elite_loose/alert_00.ogg"
@@ -391,6 +413,13 @@ HCE/Elite_Loose/Taunt/19 "sounds/hce_voice/elite_loose/taunt_227.ogg"
 HCE/Elite_Loose/Taunt/20 "sounds/hce_voice/elite_loose/taunt_228.ogg"
 $random HCE/Elite_Loose/Taunt { HCE/Elite_Loose/Taunt/0 HCE/Elite_Loose/Taunt/1 HCE/Elite_Loose/Taunt/2 HCE/Elite_Loose/Taunt/3 HCE/Elite_Loose/Taunt/4 HCE/Elite_Loose/Taunt/5 HCE/Elite_Loose/Taunt/6 HCE/Elite_Loose/Taunt/7 HCE/Elite_Loose/Taunt/8 HCE/Elite_Loose/Taunt/9 HCE/Elite_Loose/Taunt/10 HCE/Elite_Loose/Taunt/11 HCE/Elite_Loose/Taunt/12 HCE/Elite_Loose/Taunt/13 HCE/Elite_Loose/Taunt/14 HCE/Elite_Loose/Taunt/15 HCE/Elite_Loose/Taunt/16 HCE/Elite_Loose/Taunt/17 HCE/Elite_Loose/Taunt/18 HCE/Elite_Loose/Taunt/19 HCE/Elite_Loose/Taunt/20 }
 $alias HCE/Elite_Loose/Kamikaze HCE/Elite_Loose/Panic
+$alias HCE/Elite_Loose/Scold HCE/Elite_Loose/PainMed
+$alias HCE/Elite_Loose/AllyKilled HCE/Elite_Loose/PainMed
+$alias HCE/Elite_Loose/Betrayal HCE/Elite_Loose/Taunt
+$alias HCE/Elite_Loose/Acknowledge HCE/Elite_Loose/Regroup
+$alias HCE/Elite_Loose/Thanks HCE/Elite_Loose/Regroup
+$alias HCE/Elite_Loose/Wounded HCE/Elite_Loose/PainHeavy
+$alias HCE/Elite_Loose/Forgive HCE/Elite_Loose/Regroup
 
 // ---- Grunt_Crazy
 HCE/Grunt_Crazy/Alert/0 "sounds/hce_voice/grunt_crazy/alert_03.ogg"
@@ -547,6 +576,13 @@ HCE/Grunt_Crazy/Taunt/10 "sounds/hce_voice/grunt_crazy/taunt_134.ogg"
 HCE/Grunt_Crazy/Taunt/11 "sounds/hce_voice/grunt_crazy/taunt_135.ogg"
 $random HCE/Grunt_Crazy/Taunt { HCE/Grunt_Crazy/Taunt/0 HCE/Grunt_Crazy/Taunt/1 HCE/Grunt_Crazy/Taunt/2 HCE/Grunt_Crazy/Taunt/3 HCE/Grunt_Crazy/Taunt/4 HCE/Grunt_Crazy/Taunt/5 HCE/Grunt_Crazy/Taunt/6 HCE/Grunt_Crazy/Taunt/7 HCE/Grunt_Crazy/Taunt/8 HCE/Grunt_Crazy/Taunt/9 HCE/Grunt_Crazy/Taunt/10 HCE/Grunt_Crazy/Taunt/11 }
 $alias HCE/Grunt_Crazy/Berserk HCE/Grunt_Crazy/Taunt
+$alias HCE/Grunt_Crazy/Scold HCE/Grunt_Crazy/PainMed
+$alias HCE/Grunt_Crazy/AllyKilled HCE/Grunt_Crazy/PainMed
+$alias HCE/Grunt_Crazy/Betrayal HCE/Grunt_Crazy/Taunt
+$alias HCE/Grunt_Crazy/Acknowledge HCE/Grunt_Crazy/Regroup
+$alias HCE/Grunt_Crazy/Thanks HCE/Grunt_Crazy/Regroup
+$alias HCE/Grunt_Crazy/Wounded HCE/Grunt_Crazy/PainHeavy
+$alias HCE/Grunt_Crazy/Forgive HCE/Grunt_Crazy/Regroup
 
 // ---- Grunt_Whiley
 HCE/Grunt_Whiley/Alert/0 "sounds/hce_voice/grunt_whiley/alert_04.ogg"
@@ -667,6 +703,13 @@ HCE/Grunt_Whiley/Taunt/10 "sounds/hce_voice/grunt_whiley/taunt_99.ogg"
 $random HCE/Grunt_Whiley/Taunt { HCE/Grunt_Whiley/Taunt/0 HCE/Grunt_Whiley/Taunt/1 HCE/Grunt_Whiley/Taunt/2 HCE/Grunt_Whiley/Taunt/3 HCE/Grunt_Whiley/Taunt/4 HCE/Grunt_Whiley/Taunt/5 HCE/Grunt_Whiley/Taunt/6 HCE/Grunt_Whiley/Taunt/7 HCE/Grunt_Whiley/Taunt/8 HCE/Grunt_Whiley/Taunt/9 HCE/Grunt_Whiley/Taunt/10 }
 $alias HCE/Grunt_Whiley/Berserk HCE/Grunt_Whiley/Taunt
 $alias HCE/Grunt_Whiley/DeathHard HCE/Grunt_Whiley/Death
+$alias HCE/Grunt_Whiley/Scold HCE/Grunt_Whiley/PainMed
+$alias HCE/Grunt_Whiley/AllyKilled HCE/Grunt_Whiley/PainMed
+$alias HCE/Grunt_Whiley/Betrayal HCE/Grunt_Whiley/Taunt
+$alias HCE/Grunt_Whiley/Acknowledge HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/Thanks HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/Wounded HCE/Grunt_Whiley/PainHeavy
+$alias HCE/Grunt_Whiley/Forgive HCE/Grunt_Whiley/Regroup
 
 // ---- Grunt_Whimpy
 HCE/Grunt_Whimpy/Alert/0 "sounds/hce_voice/grunt_whimpy/alert_04.ogg"
@@ -787,6 +830,13 @@ HCE/Grunt_Whimpy/Taunt/9 "sounds/hce_voice/grunt_whimpy/taunt_99.ogg"
 $random HCE/Grunt_Whimpy/Taunt { HCE/Grunt_Whimpy/Taunt/0 HCE/Grunt_Whimpy/Taunt/1 HCE/Grunt_Whimpy/Taunt/2 HCE/Grunt_Whimpy/Taunt/3 HCE/Grunt_Whimpy/Taunt/4 HCE/Grunt_Whimpy/Taunt/5 HCE/Grunt_Whimpy/Taunt/6 HCE/Grunt_Whimpy/Taunt/7 HCE/Grunt_Whimpy/Taunt/8 HCE/Grunt_Whimpy/Taunt/9 }
 $alias HCE/Grunt_Whimpy/Berserk HCE/Grunt_Whimpy/Taunt
 $alias HCE/Grunt_Whimpy/DeathHard HCE/Grunt_Whimpy/Death
+$alias HCE/Grunt_Whimpy/Scold HCE/Grunt_Whimpy/PainMed
+$alias HCE/Grunt_Whimpy/AllyKilled HCE/Grunt_Whimpy/PainMed
+$alias HCE/Grunt_Whimpy/Betrayal HCE/Grunt_Whimpy/Taunt
+$alias HCE/Grunt_Whimpy/Acknowledge HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/Thanks HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/Wounded HCE/Grunt_Whimpy/PainHeavy
+$alias HCE/Grunt_Whimpy/Forgive HCE/Grunt_Whimpy/Regroup
 
 // ---- Hunter
 HCE/Hunter/Berserk/0 "sounds/hce_voice/hunter/berserk_00.ogg"
@@ -858,4 +908,11 @@ $alias HCE/Jackal/Stuck HCE/Jackal/Panic
 $alias HCE/Jackal/LeaderDead HCE/Jackal/Panic
 $alias HCE/Jackal/Berserk HCE/Jackal/Taunt
 $alias HCE/Jackal/DeathHard HCE/Jackal/Death
+$alias HCE/Jackal/Scold HCE/Jackal/PainMed
+$alias HCE/Jackal/AllyKilled HCE/Jackal/PainMed
+$alias HCE/Jackal/Betrayal HCE/Jackal/Taunt
+$alias HCE/Jackal/Acknowledge HCE/Jackal/Alert
+$alias HCE/Jackal/Thanks HCE/Jackal/Alert
+$alias HCE/Jackal/Wounded HCE/Jackal/PainHeavy
+$alias HCE/Jackal/Forgive HCE/Jackal/Alert
 

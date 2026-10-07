@@ -1,9 +1,6 @@
 # Halo CE Enemy Pack for UZDoom / HaloDoom Evolved
 
 > **In this repository** there are four packs. `HaloCE_Covenant.pk3` is the main one: it carries Core, the enemy API, the Covenant (the Digsite add-on included) and the enemy dialogue, so load it right after HDE. `HaloCE_Flood.pk3`, `HaloCE_Sentinels.pk3` and `HaloCE_Marines.pk3` (with the Marine dialogue) go after it, or load `HaloCE_Merged.pk3` for everything. Where this manual mentions `HaloCE_Core.pk3`, `HCE_EnemyAPI_LocalDEV.pk3`, `HaloCE_Enemies_Voices.pk3` or `HaloCE_Enemies_Digsite.pk3`, that content is in the Covenant pack (the Marine voices in the Marines pack); the enemies and settings are the same.
-
-Halo: Combat Evolved's campaign enemies (plus Marines) are extracted from the ten Xbox campaign `.map` files. Each one is an **IQM model with its full Halo animation set**, and its AI is translated from the Halo CE decomp into **ZScript** on top of an extended `enemies_base.zsc`.
-
 | | |
 |---|---|
 | Characters | 14: Grunt, Grunt Spec-Ops, Jackal, Jackal Major/Ultra, Elite, Elite Special (Spec-Ops/Stealth/Commander), Hunter, Flood Infection, Flood Carrier, Flood Combat Elite, Flood Combat Human, Sentinel, Marine, Armored Marine |
@@ -106,7 +103,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 * **Place in maps:** use DoomEdNums **30200–30281** (table below), or the `HCE_Random*` spawners for a random variant of a character.
 * **Summon:** e.g. `summon HCE_EliteMajorPlasmaRifle`.
 * **Spawn everything:** the console command `punkassbitches` spawns one of every enemy class that's loaded (every pack and add-on), side by side in lines in front of you and facing you: 640 units of enemies per line, a line every 128 units. They don't patrol or walk to squad stations while idle, so they hold their place in the line until they see something to fight (flyers still hover). Spots blocked by walls are retried further ahead, then behind you, then anywhere free within 1024 units. Marines come out as allies. It's a console alias (`KEYCONF`) for `netevent hce_spawnall`, so it works in multiplayer too.
-* **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks) and Sergeant Johnson, as allies, in the same lines. It's an alias for `netevent hce_spawnmarines`.
+* **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks) and Sergeants Johnson and Stacker, as allies, in the same lines. It's an alias for `netevent hce_spawnmarines`.
 * **Doom monsters are replaced automatically.** See the next section for what replaces what. To keep Doom's monsters, set `hce_keepdoommonsters 1`.
 
 | CVar | Default | Effect |
@@ -118,6 +115,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_nerf_shields` | 0.5 | Enemy energy shields and Jackal shield-gauntlet strength |
 | `hce_enemydamage` | 1.0 | An extra multiplier on enemy projectile damage, on top of `hce_nerf_projectiles` |
 | `hce_dropweapons` | true | Enemies drop the weapon they carried (and sometimes grenades), like in Halo |
+| `hce_betrayal` | true | Marines turn on a player who keeps shooting them (see [Your squad](#your-squad)) |
 | `hce_bodyblood` | false | Blood on the body: splatter overlays that build up as an enemy is hurt (see [Blood on the body](#blood-on-the-body)); also under Options > Halo CE Gore |
 | `hce_dismember` | true | Weapon-based dismemberment and gibbing, and gun arms shot off (see [Dismemberment](#dismemberment)) |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
@@ -211,6 +209,8 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Flamethrower` | Halo CE's flamethrower | Halo CE flames, close in | `Halo_Flamethrower` |
 
 **Sergeant Johnson** (`HCE_SgtJohnson`) carries the **Stanchion** (the Macworld 1999 sniper rifle from Digsite). Each shot takes about 0.7 s of aiming: a glint and a targeting laser show it coming, with the Stanchion's charge sound. Then one rail shot (150) is drawn as a red-orange beam, and it tears apart what it kills. When an enemy gets within about 6 m he switches to his **Magnum** in Halo 2's pistol stance, and goes back to the Stanchion once it's past about 9 m. He is the only Marine with Johnson's face and voice, and he has more health (75) and a harder punch (90). He isn't in the random Marine pool; place him with his DoomEdNum or summon him.
+
+**Sergeant Stacker** (`HCE_SgtStacker`, DoomEdNum 30454) is the white sergeant: Halo CE's sergeant's cap face with the full-sleeved arms, the **Battle Rifle** he carries in Halo 2, and Halo CE's second sergeant voice (the lines Pete Stacker recorded), which no other Marine uses. He has 60 health and a harder punch (75). Halo CE and Halo 2 have no model of their own for Stacker, so he is built from these parts. Like Johnson, he isn't in the random pool.
 
 **SMG, battle rifle and Bulldog in Halo 2's rifle stance, hands on the grips.** These three Marines use Halo 2's Marine rifle animations (idle, warn, moves, turns, dives, evades, airborne and landings, melee, grenade throw, berserk, signal, celebrate, crouch and fire), re-posed per gun so both hands hold it properly: the right hand on the pistol grip and the left hand on the gun's foregrip (the SMG's vertical grip, the battle rifle's fore-end, the Bulldog's pump grip). The Bulldog has its own version of the set in which the gun is also pulled back so its stock sits in the shoulder. Grenade throws and hand signals still free the left hand. The other rifles keep Halo CE's rifle stance.
 
@@ -402,10 +402,10 @@ The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/H
 The fork's Acid Breath lines aren't used.
 
 **Marines:** they speak with Halo CE's and Halo 2's own combat dialogue (1,005 lines in 11 voices, `extract_marine_voices.py`).
-* **Faces and kit:** every Marine rolls Halo CE's own cosmetics when it spawns: one of eleven faces and headgear on unarmoured Marines (bare-headed, boonie hats, bandanas, the cap) and seven on Armored Marines (helmets, the cap); sleeves rolled down on about a third of unarmoured Marines. Armored Marines always wear the intact vest (Halo CE's battle-damaged one is left out). The heads keep Halo CE's articulated jaw, held shut in every animation: Halo CE drove it from dialogue, and its animations left it parked anywhere from shut to hanging open, so mouths gaped and snapped open and shut between animations.
+* **Faces and kit:** every Marine rolls Halo CE's own cosmetics when it spawns: one of eleven faces and headgear on unarmoured Marines (bare-headed, boonie hats, bandanas, the cap) and seven on Armored Marines (helmets, the cap); sleeves rolled down on about a third of unarmoured Marines. Armored Marines always wear the intact vest (Halo CE's battle-damaged one is left out). The heads keep Halo CE's articulated jaw, held shut in every animation: Halo CE drove it from dialogue, and its animations left it parked anywhere from shut to hanging open, so mouths gaped and snapped open and shut between animations. Instead the jaw now moves with the voice: while a Marine speaks, its mouth opens and closes irregularly in syllable-like beats (at most 14°), and it shuts when the line ends.
 * **Sergeant Johnson:** Johnson's face (the dark-skinned one, with his full-sleeved arms) is his alone. Only `HCE_SgtJohnson` wears it (see [The Marine arsenal](#the-marine-arsenal)), and he always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
-* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald, Mendoza and the second sergeant. From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, and the cautious and gruff sergeants. Halo 2's female Marine voices (Sassy and Tough, the two its female Marine uses) are left out, as Halo CE's Marines are all men.
-* **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts.
+* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald and Mendoza (the second sergeant is Stacker's alone). From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, and the cautious and gruff sergeants. Halo 2's female Marine voices (Sassy and Tough, the two its female Marine uses) are left out, as Halo CE's Marines are all men.
+* **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts. For the squad features they also have Halo's lines for scolding the player's friendly fire, turning on the player, a Marine the player killed, acknowledging orders, forgiving, and being badly wounded (Halo 2's voices have their own acknowledgements; the Halo CE voices use their nearest lines).
 
 **Loudness:** every voice line is levelled at build time (`louden_voices.py`).
 * **Method:** its EBU R128 loudness is measured, and it is raised toward -11 LUFS with a peak limiter. Lines are only ever raised, by at most 18 dB.
@@ -699,6 +699,23 @@ Shot enemies show blood on their bodies, in their race's colour. Once the shield
 * **How it's drawn:** it's an overlay that rides the body's own skeleton. Severed limbs and armour a variant doesn't wear stay clean.
 * **Who bleeds:** every enemy that bleeds, Flood and Marines included, but not Sentinels.
 
+## Your squad
+
+Marines following you (every Marine is an ally) take orders and react to how you treat them.
+
+* **Orders:** bind them under **Options > Customize Controls > Halo CE Squad**, or use the console aliases.
+  * `hce_follow`: follow me (the default).
+  * `hce_hold`: hold here. Each Marine keeps to the spot where it stood, fighting from within 192 units of it, and walks back to it when the fight is over.
+  * `hce_regroup`: regroup on me. They break off the fight and run back to you, then follow again (they give up after 8 seconds).
+
+  Orders go to every following Marine within 1536 units. One of them acknowledges, and the order shows on screen. The aliases are for `netevent hce_squad 0/1/2`.
+* **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
+  * Killing a Marine: the others who saw it call it out, and each of them counts it as two hits against you.
+  * Turn betrayal off with `hce_betrayal 0`; they still scold you.
+* **Wounded:** under a third of its health a Marine limps (moves at about half speed) and now and then calls for help.
+* **Last man standing:** a Marine with no other Marine within 640 units and you more than 768 units away ducks into cover and panics for a few seconds instead of fighting. It can do this again every 12 seconds.
+* **Sergeant Johnson:** Marines within 640 units of him aim about 30% tighter and never cower. He nearly always has a quip when he kills something, and when he falls, the Marines who see it call out their leader's death.
+
 ## Brutality and squad morale
 
 How brutally an Elite or Brute dies decides how long the squad it led takes to pull itself together, if it was the last leader standing nearby. If another Elite or Brute is still alive within reach, the squad falls in with it as before.
@@ -858,3 +875,4 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30315 | `HCE_MarineStickyDetonator` |
 | 30316 | `HCE_SgtJohnson` |
 | 30317 | `HCE_EliteSpecopsPlasmaCaster` |
+| 30454 | `HCE_SgtStacker` |

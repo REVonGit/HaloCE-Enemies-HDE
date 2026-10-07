@@ -63,9 +63,29 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood3.iqm'); break;
 		}
 	}
+
+	int hce_lipPhase;
+	double hce_lipOpen;
+	override void Tick()
+	{
+		super.Tick();
+		if((level.maptime + hce_lipPhase) % 3) return;
+		double want = 0;
+		if(health > 0 && IsActorPlayingSound(CHAN_VOICE))
+		{
+			// syllables: two out-of-step waves, so the mouth opens irregularly, never wide for long
+			double t = (level.maptime + hce_lipPhase) * 9.0;
+			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
+		}
+		if(want == 0 && hce_lipOpen == 0) return;
+		hce_lipOpen = want;
+		double a = want * 14.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
 	const HCE_JOHNSON_FACE = 11;
+	const HCE_STACKER_FACE = 5;
 	Array<int> hce_hideSurf;
 	int hce_face;
 	bool hce_johnsonArms;
@@ -74,12 +94,12 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		super.PostBeginPlay();
 		HCE_DressMarine();
 	}
-	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; return F[random(0, 10)]; }
+	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 3, 4, 6, 7, 8, 9, 10 }; return F[random(0, 9)]; }
 	void HCE_DressMarine()
 	{
 		hce_hideSurf.Clear();
 		hce_face = HCE_PickFace();
-		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE;
+		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE || hce_face == HCE_STACKER_FACE;
 		switch(hce_face)
 		{
 		case 0: { static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
@@ -87,7 +107,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 2: { static const int H[] = { 1, 3, 4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 3: { static const int H[] = { 1, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 4: { static const int H[] = { 1, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 5: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 5: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 7: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 8: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 21, 22, 22 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
@@ -140,7 +160,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 7, 3, 1.00, 1.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/MA5B/Fire", "Halo/Weapons/MA5B/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_MA5B", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -284,7 +304,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 7, 3, 1.00, 1.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/MA5B/Fire", "Halo/Weapons/MA5B/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_MA5B", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -428,7 +448,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 2, 0.75, 1.38, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BattleRifle/Fire", "Halo/Weapons/BattleRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_BattleRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -571,7 +591,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 9, 1.50, 2.25, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Bulldog/Fire", "Halo/Weapons/Bulldog/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Bulldog", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -714,7 +734,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 6, 4, 0.88, 1.62, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Commando/Fire", "Halo/Weapons/Commando/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Commando", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -858,7 +878,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 3, 11, 1.25, 2.00, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/DMR/Fire", "Halo/Weapons/DMR/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_DMR", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1002,7 +1022,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.00, 2.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SuperShotgun/Fire", "Halo/Weapons/SuperShotgun/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_DBLShotgun", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1147,7 +1167,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FirePattern 14, 22, 2, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Flamer/Fire/Loop", "", "Halo/Weapons/Flamer/Fire/End", "Halo/Weapons/Flamer/Fire/Start";
 		HaloDoom_EnemyBase.HCE_FireLoop true;
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Flamethrower", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1291,7 +1311,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 8, 15, 3, 1.25, 2.00, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/GPMG/Fire", "Halo/Weapons/GPMG/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_GPMG", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1435,7 +1455,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 2, 20, 2.75, 3.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/GrenadeLauncher/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_GrenadeLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1580,7 +1600,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 4, 5, 3.50, 4.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Hydra/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Hydra", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1724,7 +1744,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 8, 3, 1.00, 1.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Rifle/Fire", "Halo/Weapons/Rifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_AssaultRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -1868,7 +1888,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 3, 9, 1.12, 1.88, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Mag_MD6/Fire", "Halo/Weapons/Mag_MD6/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Magnum", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2013,7 +2033,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 2.00, 3.25, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2155,7 +2175,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 4, 1.17, 2.08, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2299,7 +2319,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.40, 3.15, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2443,7 +2463,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.05, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Shotgun/Fire", "Halo/Weapons/Shotgun/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Shotgun", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2587,7 +2607,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 1.12, 1.88, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sidekick/Fire", "Halo/Weapons/Sidekick/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Sidekick", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2732,7 +2752,7 @@ class HCE_MarineSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 10, 2, 1.00, 1.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SMG/Fire", "Halo/Weapons/SMG/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SMG", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -2875,7 +2895,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 3.25, 4.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sniper/Fire", "Halo/Weapons/Sniper/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SniperRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -3019,7 +3039,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 3.25, 4.25, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/StickyDet/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_StickyDetonator", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -3199,7 +3219,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 25, 25, 1, 3.50, 4.75, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Stanchion/Fire", "Halo/Weapons/Stanchion/Fire/Bass", "", "Halo/Weapons/Stanchion/Charge/PreFire";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Stanchion", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -3506,6 +3526,157 @@ class HCE_SgtJohnson : HCE_MarineBase
 	}
 }
 
+// characters\marine\sgt stacker
+class HCE_SgtStacker : HCE_MarineBase
+{
+	Default
+	{
+		Health 60;
+		+FRIENDLY
+		Speed 6.4;
+		HaloDoom_EnemyBase.HCE_Type 7;
+		HaloDoom_EnemyBase.HCE_Variant "sgt stacker";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
+		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_BattleRifleARBullet", 1, 10.00, 1.00, 3600;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1213.3;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
+		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 40, 75;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 2, 0.25, 1.0, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.30, 0.00, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.10, 0.35, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.75, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 24, 5.0, 1.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 2, 0.75, 1.38, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BattleRifle/Fire", "Halo/Weapons/BattleRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_BattleRifle", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_FollowPlayer
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2br idle';
+		case HCE_A_ALERT: return 'stand h2br idle';
+		case HCE_A_MOVE_F: return 'stand h2br move-front';
+		case HCE_A_MOVE_B: return 'stand h2br move-back';
+		case HCE_A_MOVE_L: return 'stand h2br move-left';
+		case HCE_A_MOVE_R: return 'stand h2br move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2br idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2br move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2br fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2br melee';
+		case HCE_A_THROW: return 'stand h2br throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2br dive-left';
+		case HCE_A_DIVE_R: return 'stand h2br dive-right';
+		case HCE_A_DIVE_F: return 'stand h2br dive-front';
+		case HCE_A_EVADE_L: return 'stand h2br evade-left';
+		case HCE_A_EVADE_R: return 'stand h2br evade-right';
+		case HCE_A_BERSERK: return 'stand h2br berserk';
+		case HCE_A_WARN: return 'stand h2br warn';
+		case HCE_A_SIGNAL: return 'stand h2br signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2br airborne';
+		case HCE_A_LAND: return 'stand h2br land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2br celebrate';
+		case HCE_A_TURN_L: return 'stand h2br turn-left';
+		case HCE_A_TURN_R: return 'stand h2br turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return 70;
+		case 'crouch h2br move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
+		case 'flee rifle move-front': return 20;
+		case 'h-kill back gut': return 47;
+		case 'h-kill front gut': return 52;
+		case 'h-kill front head': return 70;
+		case 'h-ping back chest': return 37;
+		case 'h-ping back gut': return 48;
+		case 'h-ping front chest': return 26;
+		case 'h-ping front gut': return 22;
+		case 'h-ping front l-arm': return 38;
+		case 'h-ping front l-leg': return 57;
+		case 's-kill back gut': return 47;
+		case 's-kill front chest': return 51;
+		case 's-kill front gut': return 79;
+		case 's-kill left gut': return 70;
+		case 's-kill right gut': return 54;
+		case 's-ping front gut%0 baked': return 12;
+		case 's-ping front gut%1 baked': return 12;
+		case 'stand airborne-dead': return 43;
+		case 'stand h2br airborne': return 55;
+		case 'stand h2br berserk': return 51;
+		case 'stand h2br celebrate': return 72;
+		case 'stand h2br dive-front': return 90;
+		case 'stand h2br dive-left': return 90;
+		case 'stand h2br dive-right': return 90;
+		case 'stand h2br evade-left': return 35;
+		case 'stand h2br evade-right': return 35;
+		case 'stand h2br fire-1 baked': return 13;
+		case 'stand h2br idle': return 105;
+		case 'stand h2br land-soft': return 46;
+		case 'stand h2br melee': return 23;
+		case 'stand h2br move-back': return 23;
+		case 'stand h2br move-front': return 23;
+		case 'stand h2br move-left': return 23;
+		case 'stand h2br move-right': return 23;
+		case 'stand h2br signal-attack': return 55;
+		case 'stand h2br throw-grenade': return 66;
+		case 'stand h2br turn-left': return 16;
+		case 'stand h2br turn-right': return 16;
+		case 'stand h2br warn': return 51;
+		case 'stand landing-dead': return 43;
+		case 'stand landing-dead%2': return 66;
+		}
+		return 30;
+	}
+
+	// Sergeant Stacker: always his own face (the white face under the sergeant's cap) and voice
+	override int HCE_PickFace() { return HCE_STACKER_FACE; }
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		hce_voice = 'Marine_Sarge';
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_battle_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
+}
+
 class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -3571,9 +3742,29 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood3.iqm'); break;
 		}
 	}
+
+	int hce_lipPhase;
+	double hce_lipOpen;
+	override void Tick()
+	{
+		super.Tick();
+		if((level.maptime + hce_lipPhase) % 3) return;
+		double want = 0;
+		if(health > 0 && IsActorPlayingSound(CHAN_VOICE))
+		{
+			// syllables: two out-of-step waves, so the mouth opens irregularly, never wide for long
+			double t = (level.maptime + hce_lipPhase) * 9.0;
+			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
+		}
+		if(want == 0 && hce_lipOpen == 0) return;
+		hce_lipOpen = want;
+		double a = want * 14.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
 	const HCE_JOHNSON_FACE = 7;
+	const HCE_STACKER_FACE = 3;
 	Array<int> hce_hideSurf;
 	int hce_face;
 	bool hce_johnsonArms;
@@ -3582,18 +3773,18 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		super.PostBeginPlay();
 		HCE_DressMarine();
 	}
-	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 3, 4, 5, 6 }; return F[random(0, 6)]; }
+	virtual int HCE_PickFace() { static const int F[] = { 0, 1, 2, 4, 5, 6 }; return F[random(0, 5)]; }
 	void HCE_DressMarine()
 	{
 		hce_hideSurf.Clear();
 		hce_face = HCE_PickFace();
-		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE;
+		hce_johnsonArms = hce_face == HCE_JOHNSON_FACE || hce_face == HCE_STACKER_FACE;
 		switch(hce_face)
 		{
 		case 0: { static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 1: { static const int H[] = { 1, 3, 5, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 2: { static const int H[] = { 1, 3, 4, 6, 7, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
-		case 3: { static const int H[] = { 1, 2, 3, 4, 5, 8, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
+		case 3: { static const int H[] = { 0, 2, 3, 4, 5, 8, 9, 10, 11, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 4: { static const int H[] = { 1, 3, 4, 5, 6, 7, 9, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 5: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 10, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
@@ -3638,7 +3829,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 7, 3, 0.88, 1.54, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/MA5B/Fire", "Halo/Weapons/MA5B/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_MA5B", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -3782,7 +3973,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 7, 3, 0.88, 1.54, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/MA5B/Fire", "Halo/Weapons/MA5B/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_MA5B", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -3926,7 +4117,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 2, 0.66, 1.21, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BattleRifle/Fire", "Halo/Weapons/BattleRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_BattleRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4069,7 +4260,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 9, 1.32, 1.98, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Bulldog/Fire", "Halo/Weapons/Bulldog/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Bulldog", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4212,7 +4403,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 6, 4, 0.77, 1.43, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Commando/Fire", "Halo/Weapons/Commando/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Commando", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4356,7 +4547,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 3, 11, 1.10, 1.76, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/DMR/Fire", "Halo/Weapons/DMR/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_DMR", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4500,7 +4691,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.76, 2.42, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SuperShotgun/Fire", "Halo/Weapons/SuperShotgun/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_DBLShotgun", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4645,7 +4836,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FirePattern 14, 22, 2, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Flamer/Fire/Loop", "", "Halo/Weapons/Flamer/Fire/End", "Halo/Weapons/Flamer/Fire/Start";
 		HaloDoom_EnemyBase.HCE_FireLoop true;
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Flamethrower", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4789,7 +4980,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 8, 15, 3, 1.10, 1.76, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/GPMG/Fire", "Halo/Weapons/GPMG/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_GPMG", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -4933,7 +5124,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 2, 20, 2.42, 3.30, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/GrenadeLauncher/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_GrenadeLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5078,7 +5269,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 4, 5, 3.08, 3.96, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Hydra/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Hydra", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5222,7 +5413,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 4, 8, 3, 0.88, 1.54, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Rifle/Fire", "Halo/Weapons/Rifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_AssaultRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5366,7 +5557,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 3, 9, 0.99, 1.65, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Mag_MD6/Fire", "Halo/Weapons/Mag_MD6/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Magnum", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5511,7 +5702,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.76, 2.86, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5653,7 +5844,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 4, 1.10, 1.96, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5797,7 +5988,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 4, 1.10, 1.96, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -5941,7 +6132,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.40, 3.15, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -6085,7 +6276,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.05, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Shotgun/Fire", "Halo/Weapons/Shotgun/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Shotgun", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -6229,7 +6420,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.99, 1.65, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sidekick/Fire", "Halo/Weapons/Sidekick/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Sidekick", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -6374,7 +6565,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 10, 2, 0.88, 1.54, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SMG/Fire", "Halo/Weapons/SMG/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SMG", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -6517,7 +6708,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.86, 3.96, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sniper/Fire", "Halo/Weapons/Sniper/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SniperRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -6661,7 +6852,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.86, 3.74, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/StickyDet/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_StickyDetonator", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer

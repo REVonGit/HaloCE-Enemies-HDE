@@ -21,11 +21,17 @@ CAT = {
     # creatures (Drinol, Blind Wolf)
     'death xtr': ['DeathHard'], 'grave injury': ['PainHeavy', 'PainMed'], 'sonic roar': ['Roar', 'Berserk'],
     'howl': ['Howl', 'Alert', 'Berserk'], 'idle': ['Idle'], 'bite': ['Melee'],
+    # Marines and the player's squad
+    'scold': ['Scold'], 'betrayal': ['Betrayal'], 'ally killed': ['AllyKilled'], 'acknowledge': ['Acknowledge'],
+    'thanks': ['Thanks'], 'wounded': ['Wounded'], 'forgive': ['Forgive'],
 }
 # events a voice lacks borrow another of its own events
 FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 'Pain', 'PainHeavy': 'PainMed',
             'Regroup': 'Alert', 'OnFire': 'PainHeavy', 'Kamikaze': 'Panic', 'Stuck': 'Panic', 'LeaderDead': 'Panic', 'Berserk': 'Taunt',
-            'Taunt': 'Howl', 'Pain': 'PainMed', 'Death': 'DeathHard', 'DeathHard': 'Death'}
+            'Taunt': 'Howl', 'Pain': 'PainMed', 'Death': 'DeathHard', 'DeathHard': 'Death',
+            # the squad's lines (Halo 2 has most; the CE-only voices borrow the nearest they have)
+            'Scold': 'PainMed', 'AllyKilled': 'Scold', 'Betrayal': 'Taunt', 'Acknowledge': 'Regroup',
+            'Thanks': 'Acknowledge', 'Wounded': 'PainHeavy', 'Forgive': 'Acknowledge'}
 
 def main():
     if os.path.exists(OUT): shutil.rmtree(OUT)
@@ -59,9 +65,11 @@ def main():
                 sid = f'HCE/{vname}/{ev}/{i}'
                 lines.append(f'{sid} "{path}"'); ids.append(sid)
             lines.append(f'$random HCE/{vname}/{ev} {{ {" ".join(ids)} }}')
-        for ev, fb in FALLBACK.items():
-            if ev not in events and fb in events:
-                lines.append(f'$alias HCE/{vname}/{ev} HCE/{vname}/{fb}')
+        for ev in FALLBACK:
+            if ev in events: continue
+            fb, k = FALLBACK.get(ev), 0
+            while fb and fb not in events and k < 5: fb, k = FALLBACK.get(fb), k + 1   # a chain: Thanks -> Acknowledge -> Regroup
+            if fb in events: lines.append(f'$alias HCE/{vname}/{ev} HCE/{vname}/{fb}')
         lines.append('')
     open(os.path.join(OUT, 'sndinfo.voices'), 'w').write('\n'.join(lines))
     print(total, 'files')

@@ -61,6 +61,15 @@ PLAN = {
     'Leader Dead':   (['friendsdying\\frienddied', 'friendsdying\\friendkilledbycovenant', 'friendsdying\\friendkilledbyenemy'], ['lmnt', 'lmnt_deadally']),
     'Berserk':       (['exclamations\\berserk', 'actions\\shootingberserk'], ['brsrk', 'charge']),
     'Melee':         ([], ['melee']),
+    # the player's squad: scolded for friendly fire, turning on him, a Marine he killed, orders acknowledged, a
+    # better weapon handed over, badly hurt, and forgiving him (squad commands, betrayal, wounded, weapon trades)
+    'Scold':         (['beinghurt\\hurtfriendplayer', 'beinghurt\\hurtfriend'], ['scld_plr_hrtme', 'scld_plr', 'scld']),
+    'Betrayal':      (['shouting\\alliancebroken'], ['betray', 'crs_betrayingplr']),
+    'Ally Killed':   (['friendsdying\\friendkilledbyfriendlyplayer', 'friendsdying\\friendbetrayed'], ['scld_plr_kllally']),
+    'Acknowledge':   ([], ['ok_sir', 'ok', 'ok_plr', 'newordr_fllwplr']),
+    'Thanks':        ([], ['thnk_plr_btrwpn', 'ok_plr_trdwpn', 'thnk_plr', 'thnk']),
+    'Wounded':       (['postcombatchatter\\seriouslywounded'], ['whn', 'whn_hrtbrn', 'hlpme']),
+    'Forgive':       ([], ['forgive']),
 }
 
 

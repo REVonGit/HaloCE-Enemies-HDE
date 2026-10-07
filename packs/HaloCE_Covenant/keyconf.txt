@@ -2,3 +2,12 @@
 // "leatherneck" one of every loaded Marine
 alias punkassbitches "netevent hce_spawnall"
 alias leatherneck "netevent hce_spawnmarines"
+
+// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)
+alias hce_follow "netevent hce_squad 0"
+alias hce_hold "netevent hce_squad 1"
+alias hce_regroup "netevent hce_squad 2"
+addkeysection "Halo CE Squad" hce_squad
+addmenukey "Squad: follow me" hce_follow
+addmenukey "Squad: hold here" hce_hold
+addmenukey "Squad: regroup on me" hce_regroup

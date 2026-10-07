@@ -162,6 +162,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
 		if(hce_enabled) dmg = HCE_FireDeathCheck(inflictor, dmg, mod, flags);
 		if(hce_enabled) hce_lastMod = mod;      // read by HCE_Die, which runs inside the call below
+		if(hce_enabled && source && source != self) hce_lastHurter = source;     // HCE_SquadDeath: who killed a Marine
 		int dealt = super.DamageMobJ(inflictor, source, dmg, mod, flags, angle);
 		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
 		if(hce_enabled && target != keepTarget && target && !HCE_IsEnemy(target)) target = keepTarget;
@@ -896,6 +897,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual bool HCE_IsEnemy(Actor other)
 	{
 		if(!other || other == self || other.health <= 0 || !other.bSHOOTABLE) return false;
+		if(hce_betrayed && other == hce_betrayed) return true;
 		int t = HCE_TeamOf(other);
 		if(t == HCE_TEAM_NEUTRAL)
 		{
@@ -1036,6 +1038,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
+		HCE_SquadTick();
 		if(bHCE_FrontShield) HCE_UpdateFrontShield();
 		if(bHCE_ActiveCamo && alpha < 0.12) A_SetRenderStyle(min(0.12, alpha + 0.01), STYLE_Translucent);
 		else if(bHCE_ActiveCamo && alpha > 0.12) A_SetRenderStyle(max(0.12, alpha - 0.02), STYLE_Translucent);
@@ -1056,7 +1059,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 		if(target && (target.health <= 0 || !HCE_IsEnemy(target)))
 		{
-			if(target.health <= 0) HCE_Say(target.player ? 'KillPlayer' : 'Taunt', target.player ? 0.9 : 0.35, 35 * 2);
+			if(target.health <= 0) HCE_Say(target.player ? 'KillPlayer' : 'Taunt', target.player || HCE_IsJohnson() ? 0.9 : 0.35, 35 * 2);
 			HCE_StopFireLoop();
 			target = null;
 			HCE_ScanTargets();   // next enemy in view, any direction
@@ -1076,6 +1079,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			return;
 		}
 
+		if(hce_squadOrder == HCE_ORDER_REGROUP && HCE_InSquad() && HCE_RegroupTick()) return;
 		hce_combatUntil = level.maptime + 35 * 10;
 		hce_canSee = HCE_SightOf(target, 360);
 		if(hce_canSee) { hce_lastSeen = level.maptime; hce_lastKnown = target.pos; }
@@ -1453,12 +1457,20 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_moveAngle = ang;
 		hce_moveSpeed = spd;
 		if(spd <= 0) { HCE_Brake(); return false; }
+		if(hce_wounded) spd = min(spd, max(hce_walkSpeed * 0.6, hce_runSpeed * 0.45));   // a wounded Marine limps
+		bool leash = hce_squadOrder == HCE_ORDER_HOLD && HCE_InSquad();
+		double held = leash ? (pos.xy - hce_holdPos.xy).Length() : 0;
 		static const double fan[] = { 0, 30, -30, 60, -60, 90, -90, 135, -135 };
 		for(int i = 0; i < fan.Size(); i++)
 		{
 			double a = ang + fan[i];
 			vector2 step = AngleToVector(a, spd);
 			vector2 np = pos.xy + step;
+			if(leash)                                    // holding a spot: no further than 192 units from it
+			{
+				double nd = (np - hce_holdPos.xy).Length();
+				if(nd > 192 && nd > held) continue;
+			}
 			if(TryMove(np, 0))
 			{
 				hce_moveAngle = a;
@@ -1557,13 +1569,159 @@ class HaloDoom_EnemyBase : Actor abstract
 		vel.z = clamp((want - pos.z) * 0.08, -3, 3) + sin(level.maptime * 6) * 0.15;
 	}
 
+	// ------------------------------------------------------------------
+	// The player's squad: Marines following the player take orders (follow / hold here / regroup on me, from the
+	// "Halo CE Squad" keys), scold friendly fire and turn on a player who keeps shooting them (hce_betrayal),
+	// forgiving them 30 s after the last hit; badly hurt they limp and call for help; the last Marine standing
+	// with the player far off cowers; and Sergeant Johnson steadies the Marines around him.
+	// ------------------------------------------------------------------
+	const HCE_ORDER_FOLLOW = 0;
+	const HCE_ORDER_HOLD = 1;
+	const HCE_ORDER_REGROUP = 2;
+	int hce_squadOrder;
+	vector3 hce_holdPos;
+	int hce_regroupUntil;
+	Actor hce_betrayed;                  // the player this Marine turned on
+	int hce_betrayUntil;
+	int hce_ffHits, hce_ffUntil;
+	double hce_ffDamage;
+	Actor hce_lastHurter;
+	bool hce_wounded, hce_inspired, hce_squadDeathDone;
+	int hce_squadScanTics, hce_cowerCooldown;
+
+	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
+	bool HCE_IsJohnson() { return hce_voice == 'Marine_Johnson'; }
+
+	void HCE_Order(int o)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		hce_squadOrder = o;
+		if(o == HCE_ORDER_HOLD) hce_holdPos = pos;
+		if(o == HCE_ORDER_REGROUP) hce_regroupUntil = level.maptime + 35 * 8;
+		HCE_Say('Acknowledge', 1.0, 35);        // the first to answer hushes the rest for a second
+	}
+
+	// regroup: run back to the player, even mid-fight, until close (or 8 s pass), then follow again
+	bool HCE_RegroupTick()
+	{
+		let p = players[consoleplayer].mo;
+		if(!p || p.health <= 0 || Distance2D(p) < 160 || level.maptime > hce_regroupUntil) { hce_squadOrder = HCE_ORDER_FOLLOW; return false; }
+		HCE_StopFireLoop();
+		HCE_Move(AngleTo(p), hce_runSpeed);
+		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
+	virtual void HCE_SquadTick()
+	{
+		if(!HCE_InSquad() && !hce_betrayed) return;
+		if(hce_betrayed && (hce_betrayed.health <= 0 || level.maptime > hce_betrayUntil)) HCE_Forgive();
+		if(++hce_squadScanTics < 35) return;
+		hce_squadScanTics = 0;
+		// wounded: under a third of its health a Marine limps and calls for help now and then
+		hce_wounded = health < SpawnHealth() * 0.35;
+		if(hce_wounded && !hce_betrayed) HCE_Say('Wounded', 0.25, 35 * 6);
+		// Sergeant Johnson within earshot: steadier aim, and no cowering
+		hce_inspired = false;
+		Actor pl = players[consoleplayer].mo;
+		int friends = 0;
+		let it = BlockThingsIterator.Create(self, 640);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.hce_enabled || e.health <= 0 || e.hce_team != HCE_TEAM_HUMAN || e.hce_betrayed || Distance2D(e) > 640) continue;
+			friends++;
+			if(e.HCE_IsJohnson()) hce_inspired = true;
+		}
+		// the last Marine standing, the player far off: it ducks into cover and panics instead of fighting
+		if(target && !hce_betrayed && !hce_inspired && !HCE_IsJohnson() && friends == 0 && hce_action == HCE_ACT_FIGHT
+			&& level.maptime > hce_cowerCooldown && (!pl || pl.health <= 0 || Distance2D(pl) > 768))
+		{
+			hce_action = HCE_ACT_COVER;
+			hce_coverTics = 35 * 5;
+			hce_cowerCooldown = level.maptime + 35 * 12;
+			HCE_Say('Panic', 1.0, 35 * 3);
+		}
+	}
+
+	// the player shot this Marine: a scolding, and after repeated hits (4 within 12 s, or 60% of its health)
+	// it turns on them
+	virtual void HCE_FriendlyFire(Actor pl, int dealt)
+	{
+		if(hce_betrayed) { if(pl == hce_betrayed) hce_betrayUntil = level.maptime + 35 * 30; return; }
+		if(level.maptime > hce_ffUntil) { hce_ffHits = 0; hce_ffDamage = 0; }
+		hce_ffUntil = level.maptime + 35 * 12;
+		hce_ffHits++;
+		hce_ffDamage += dealt / double(max(1, SpawnHealth()));
+		if(HCE_CVarF('hce_betrayal', 1) > 0 && (hce_ffHits >= 4 || hce_ffDamage >= 0.6)) { HCE_Betray(pl); return; }
+		HCE_Say('Scold', 1.0, 35 * 2, true);
+	}
+
+	void HCE_Betray(Actor pl)
+	{
+		hce_betrayed = pl;
+		hce_betrayUntil = level.maptime + 35 * 30;
+		bFRIENDLY = false;
+		hce_squadOrder = HCE_ORDER_FOLLOW;
+		target = pl; hce_lastKnown = pl.pos;
+		hce_action = HCE_ACT_FIGHT;
+		HCE_Say('Betrayal', 1.0, 35 * 3, true);
+		if(health > 0 && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	void HCE_Forgive()
+	{
+		hce_betrayed = null;
+		bFRIENDLY = true;
+		hce_ffHits = 0; hce_ffDamage = 0;
+		if(target && target.player) { HCE_StopFireLoop(); target = null; }
+		if(health > 0) HCE_Say('Forgive', 1.0, 35 * 2, true);
+	}
+
+	// a squad Marine down: the player killed it (the others call it out, and it counts as two hits against the
+	// player for each of them), or it was Johnson
+	void HCE_SquadDeath()
+	{
+		if(hce_squadDeathDone || hce_team != HCE_TEAM_HUMAN || !bHCE_FollowPlayer) return;
+		hce_squadDeathDone = true;
+		bool byPlayer = hce_lastHurter && hce_lastHurter.player && !hce_betrayed;
+		bool sarge = HCE_IsJohnson();
+		if(!byPlayer && !sarge) return;
+		bool said = false;
+		let it = BlockThingsIterator.Create(self, 768);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.hce_enabled || e.health <= 0 || !e.HCE_InSquad() || e.hce_betrayed || !e.CheckSight(self)) continue;
+			if(!said) { e.HCE_Say(byPlayer ? 'AllyKilled' : 'LeaderDead', 1.0, 35 * 3, true); said = true; }
+			if(byPlayer)
+			{
+				e.hce_ffHits += 2; e.hce_ffUntil = level.maptime + 35 * 12;
+				if(HCE_CVarF('hce_betrayal', 1) > 0 && e.hce_ffHits >= 4) e.HCE_Betray(hce_lastHurter);
+			}
+		}
+	}
+
 	virtual void HCE_Follow()
 	{
 		let p = players[consoleplayer].mo;
-		if(!p) { HCE_Brake(); HCE_Play(HCE_A_IDLE); return; }
-		double d = Distance2D(p);
-		if(d > 220) { HCE_Move(AngleTo(p), d > 500 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
-		else HCE_Brake();
+		if(hce_squadOrder == HCE_ORDER_HOLD)
+		{
+			// hold here: back to the spot it was told to hold
+			vector2 dv = hce_holdPos.xy - pos.xy;
+			double hd = dv.Length();
+			if(hd > 40) { HCE_Move(atan2(dv.y, dv.x), hd > 300 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
+			else HCE_Brake();
+		}
+		else if(!p) { HCE_Brake(); HCE_Play(HCE_A_IDLE); return; }
+		else
+		{
+			if(hce_squadOrder == HCE_ORDER_REGROUP && HCE_RegroupTick()) return;
+			double d = Distance2D(p);
+			if(d > 220) { HCE_Move(AngleTo(p), d > 500 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
+			else HCE_Brake();
+		}
 		HCE_PickMoveAnim();
 		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) { hce_action = HCE_ACT_FIGHT; HCE_OnAcquire(); } }
 	}
@@ -1779,7 +1937,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	double HCE_ShotError()
 	{
 		double err = hce_errorAngle;
-		if(bFRIENDLY) return err;
+		if(bFRIENDLY) return hce_inspired ? err * 0.7 : err;     // Johnson nearby: steadier hands
 		bool isAuto = hce_patShotsMax >= 4 || hce_burstMax > 0.5;
 		err = max(err, isAuto ? 2.5 : 1.2) * HCE_SpreadScale();             // automatics: no laser-accurate tags
 		if(isAuto) err *= min(2.0, 1.0 + 0.12 * hce_burstShot);            // automatic bloom
@@ -2508,6 +2666,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_sleeping && health > 0) HCE_Wake(true);
 		Actor from = inflictor ? inflictor : source;
 		if(from && from != self) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));   // shield hits too: the stun faces it
+		// the player shooting a squad Marine (shield hits count too)
+		bool ff = health > 0 && source && source.player && (HCE_InSquad() || hce_betrayed);
+		if(ff) HCE_FriendlyFire(source, max(0, dealt));
 		if(dealt <= 0) return;
 		HCE_BloodHit(dealt);
 		HCE_ArmCheck(dealt);
@@ -2523,7 +2684,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(fresh) HCE_OnAcquire();
 		}
 		if(bHCE_ActiveCamo) A_SetRenderStyle(0.7, STYLE_Translucent);
-		if(health > 0)
+		if(health > 0 && !ff)
 		{
 			if(mod == 'Fire') HCE_Say('OnFire', 0.8, 35 * 2);
 			else if(frac > 0.35) HCE_Say('PainHeavy', 0.9, 35);
@@ -2615,6 +2776,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_Die()
 	{
 		hce_burnDying = false; hce_bleedOut = 0;
+		HCE_SquadDeath();
 		bNOBLOOD = default.bNOBLOOD;                          // dead: the shield no longer keeps the blood in
 		if(HCE_GibAllowed()) HCE_GibBody();
 		else

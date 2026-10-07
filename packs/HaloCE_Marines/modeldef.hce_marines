@@ -905,6 +905,51 @@ Model HCE_SgtJohnson
 	FrameIndex HCEM A 6 0
 }
 
+Model HCE_SgtStacker
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	SurfaceSkin 0 0 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 1 "skins/marineassaultrifle_marine_1.png"
+	SurfaceSkin 0 2 "skins/marineassaultrifle_marine_0.png"
+	SurfaceSkin 0 3 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 4 "skins/marineassaultrifle_marine_3.png"
+	SurfaceSkin 0 5 "skins/marineassaultrifle_marine_4.png"
+	SurfaceSkin 0 6 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 7 "skins/marineassaultrifle_marine_6.png"
+	SurfaceSkin 0 8 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 9 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 10 "skins/marineassaultrifle_marine_2.png"
+	SurfaceSkin 0 11 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 12 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 13 "skins/marineassaultrifle_marine_7.png"
+	SurfaceSkin 0 14 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 15 "skins/marineassaultrifle_marine_8.png"
+	SurfaceSkin 0 16 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 17 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 18 "skins/marineassaultrifle_marine_9.png"
+	SurfaceSkin 0 19 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 20 "skins/marineassaultrifle_marine_10.png"
+	SurfaceSkin 0 21 "skins/marineassaultrifle_marine_5.png"
+	SurfaceSkin 0 22 "skins/marineassaultrifle_marine_11.png"
+	SurfaceSkin 0 23 "skins/marineassaultrifle_marine_0.png"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_battle_rifle.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_battle_rifle_0.png"
+	SurfaceSkin 6 1 "w_m_battle_rifle_1.png"
+	SurfaceSkin 6 2 "w_m_battle_rifle_2.png"
+	SurfaceSkin 6 3 "w_m_battle_rifle_3.png"
+	SurfaceSkin 6 4 "w_m_battle_rifle_4.png"
+	SurfaceSkin 6 5 "w_m_battle_rifle_5.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineArmoredAssaultRifle
 {
 	Path "models/hce/MarineArmored"

@@ -366,6 +366,7 @@ class HCE_EliteCommanderPlasmaRifle : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -416,6 +417,7 @@ class HCE_EliteCommanderPlasmaRifle : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -511,6 +513,7 @@ class HCE_EliteMajorFuelRod : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand missle turn-left';
 		case HCE_A_TURN_R: return 'stand missle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand missle reload-1';
 		}
 		return 'None';
 	}
@@ -561,6 +564,7 @@ class HCE_EliteMajorFuelRod : HCE_EliteBase
 		case 'stand missle move-front': return 23;
 		case 'stand missle move-left': return 23;
 		case 'stand missle move-right': return 23;
+		case 'stand missle reload-1': return 104;
 		case 'stand missle signal-attack': return 64;
 		case 'stand missle surprise-back': return 30;
 		case 'stand missle surprise-front': return 24;
@@ -655,6 +659,8 @@ class HCE_EliteMajorNeedler : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -705,7 +711,9 @@ class HCE_EliteMajorNeedler : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
@@ -800,6 +808,7 @@ class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -850,6 +859,7 @@ class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -945,6 +955,8 @@ class HCE_EliteMinorNeedler : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -995,7 +1007,9 @@ class HCE_EliteMinorNeedler : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
@@ -1090,6 +1104,7 @@ class HCE_EliteMinorPlasmaRifle : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -1140,6 +1155,7 @@ class HCE_EliteMinorPlasmaRifle : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1235,6 +1251,7 @@ class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -1285,6 +1302,7 @@ class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1521,6 +1539,8 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1571,6 +1591,8 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 30;
 		case 'stand rifle surprise-front': return 24;
@@ -1721,6 +1743,8 @@ class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -1771,7 +1795,9 @@ class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
@@ -1869,6 +1895,8 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1919,6 +1947,8 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 30;
 		case 'stand rifle surprise-front': return 24;
@@ -2020,6 +2050,7 @@ class HCE_EliteSpecopsPlasmaRifle : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2070,6 +2101,7 @@ class HCE_EliteSpecopsPlasmaRifle : HCE_EliteSpecialBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -2327,6 +2359,7 @@ class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2377,6 +2410,7 @@ class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -2472,6 +2506,7 @@ class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2522,6 +2557,7 @@ class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -2818,6 +2854,8 @@ class HCE_GruntFleeMajorNeedler : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2865,6 +2903,8 @@ class HCE_GruntFleeMajorNeedler : HCE_GruntBase
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
 		case 'stand pistol ne fire-1 baked': return 9;
+		case 'stand pistol overheat': return 132;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -2952,6 +2992,8 @@ class HCE_GruntFleeMajorPlasmaPistol : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2998,7 +3040,9 @@ class HCE_GruntFleeMajorPlasmaPistol : HCE_GruntBase
 		case 'stand pistol move-front%0': return 19;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 132;
 		case 'stand pistol pp fire-1 baked': return 10;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3086,6 +3130,8 @@ class HCE_GruntFleeMinorNeedler : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3133,6 +3179,8 @@ class HCE_GruntFleeMinorNeedler : HCE_GruntBase
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
 		case 'stand pistol ne fire-1 baked': return 9;
+		case 'stand pistol overheat': return 132;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3220,6 +3268,8 @@ class HCE_GruntFleeMinorPlasmaPistol : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3266,7 +3316,9 @@ class HCE_GruntFleeMinorPlasmaPistol : HCE_GruntBase
 		case 'stand pistol move-front%0': return 19;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 132;
 		case 'stand pistol pp fire-1 baked': return 10;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3354,6 +3406,8 @@ class HCE_GruntMajorNeedler : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3401,6 +3455,8 @@ class HCE_GruntMajorNeedler : HCE_GruntBase
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
 		case 'stand pistol ne fire-1 baked': return 9;
+		case 'stand pistol overheat': return 132;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3488,6 +3544,8 @@ class HCE_GruntMajorPlasmaPistol : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3534,7 +3592,9 @@ class HCE_GruntMajorPlasmaPistol : HCE_GruntBase
 		case 'stand pistol move-front%0': return 19;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 132;
 		case 'stand pistol pp fire-1 baked': return 10;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3622,6 +3682,8 @@ class HCE_GruntMinorNeedler : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3669,6 +3731,8 @@ class HCE_GruntMinorNeedler : HCE_GruntBase
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
 		case 'stand pistol ne fire-1 baked': return 9;
+		case 'stand pistol overheat': return 132;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -3756,6 +3820,8 @@ class HCE_GruntMinorPlasmaPistol : HCE_GruntBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3802,7 +3868,9 @@ class HCE_GruntMinorPlasmaPistol : HCE_GruntBase
 		case 'stand pistol move-front%0': return 19;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 132;
 		case 'stand pistol pp fire-1 baked': return 10;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -4342,6 +4410,8 @@ class HCE_GruntSpecopsNeedler : HCE_GruntSpecOpsBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -4389,6 +4459,8 @@ class HCE_GruntSpecopsNeedler : HCE_GruntSpecOpsBase
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
 		case 'stand pistol ne fire-1 baked': return 9;
+		case 'stand pistol overheat': return 132;
+		case 'stand pistol reload-1': return 132;
 		case 'stand pistol surprise-back': return 24;
 		case 'stand pistol surprise-front': return 32;
 		case 'stand pistol throw-grenade': return 66;
@@ -5166,6 +5238,8 @@ class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
 		case HCE_A_FLAME_MOVE: return 'flaming pistol move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -5210,7 +5284,9 @@ class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 		case 'stand pistol move-front': return 28;
 		case 'stand pistol move-left': return 28;
 		case 'stand pistol move-right': return 28;
+		case 'stand pistol overheat': return 71;
 		case 'stand pistol pr fire-1 baked': return 7;
+		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 47;
 		case 'stand pistol surprise-front': return 64;
@@ -5438,6 +5514,8 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
 		case HCE_A_FLAME_MOVE: return 'flaming pistol move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -5482,7 +5560,9 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 		case 'stand pistol move-front': return 28;
 		case 'stand pistol move-left': return 28;
 		case 'stand pistol move-right': return 28;
+		case 'stand pistol overheat': return 71;
 		case 'stand pistol pr fire-1 baked': return 7;
+		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 47;
 		case 'stand pistol surprise-front': return 64;

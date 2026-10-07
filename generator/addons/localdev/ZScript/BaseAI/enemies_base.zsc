@@ -60,6 +60,7 @@ enum HCE_AnimKinds
 	HCE_A_HPING_F, HCE_A_HPING_B,
 	HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_AIR, HCE_A_DIE_LAND,
 	HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_FEED, HCE_A_CELEBRATE, HCE_A_SLEEP, HCE_A_TURN_L, HCE_A_TURN_R, HCE_A_FLAME_IDLE, HCE_A_FLAME_MOVE,
+	HCE_A_RELOAD, HCE_A_VENT,
 	HCE_A_COUNT
 };
 
@@ -1039,6 +1040,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
 		HCE_SquadTick();
+		if(hce_heat > 0 && hce_shotsLeft <= 0) hce_heat = max(0, hce_heat - 0.003);     // plasma cools between bursts (a full gun in ~10 s)
 		if(bHCE_FrontShield) HCE_UpdateFrontShield();
 		if(bHCE_ActiveCamo && alpha < 0.12) A_SetRenderStyle(min(0.12, alpha + 0.01), STYLE_Translucent);
 		else if(bHCE_ActiveCamo && alpha > 0.12) A_SetRenderStyle(max(0.12, alpha - 0.02), STYLE_Translucent);
@@ -1072,6 +1074,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);   // lost the target mid-run: the grenades go off where it stands
 			if(hce_action == HCE_ACT_FEED) { HCE_Feed(); return; }
 			if(HCE_SeekCorpse()) return;
+			if(HCE_IdleReload()) return;
 			if(bHCE_FollowPlayer) { HCE_Follow(); return; }
 			hce_action = HCE_ACT_IDLE;
 			HCE_Brake();
@@ -1742,16 +1745,106 @@ class HaloDoom_EnemyBase : Actor abstract
 			{
 				hce_shotTics = max(1, int(35.0 / max(0.25, hce_rateOfFire)));
 				HCE_FireShot();
+				if(HCE_SpendRound()) hce_burstTics = 1;
 			}
 			if(hce_burstTics == 0) hce_sepTics = int(35 * frandom(hce_sepMin, hce_sepMax));
 			return;
 		}
 		if(--hce_sepTics <= 0)
 		{
+			if(HCE_AmmoCheck()) return;
 			hce_burstTics = max(1, int(35 * frandom(hce_burstMin, hce_burstMax)));
 			hce_shotTics = 0;
 			hce_burstShot = 0;
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// Magazines and heat. Halo 2's AI reloads and its plasma weapons overheat: a gun with a magazine fires that
+	// many rounds and then reloads (Halo 2's reload animation where the body has one: reload_anims.py; otherwise
+	// a pause while it holds fire); a plasma weapon heats with each shot, cools while it rests, and vents when it
+	// overheats. Set up from the projectile, so a weapon swap (Johnson's Magnum) gets its own. Idle with a part-
+	// spent magazine, it tops it up.
+	// ------------------------------------------------------------------
+	int hce_magSize, hce_mag, hce_reloadTics;
+	double hce_heatPerShot, hce_heat;
+	String hce_reloadSound, hce_ventSound;
+	Name hce_ammoFor;
+
+	virtual void HCE_SetupAmmo()
+	{
+		hce_ammoFor = hce_projectile;
+		hce_magSize = 0; hce_heatPerShot = 0; hce_reloadTics = 50; hce_reloadSound = ""; hce_ventSound = "";
+		if(bHCE_FrontArmor || hce_projectile == 'None' || hce_team == HCE_TEAM_FLOOD) return;   // Hunters' cannons, melee, the Flood
+		String p = String.Format("%s", hce_projectile);
+		p = p.MakeLower();
+		// projectile name part, rounds, reload tics (no animation), HDE reload sound -- first match wins
+		static const String key[] = { "battlerifle", "commando", "ma37", "dmr", "smground", "arbullet", "sidekick", "pistolbullet",
+			"bulldog", "dblshotgun", "shotgunpellet", "sniper", "stanchion", "hydra", "rocket", "40mmgrenade", "stickydet",
+			"gpmg", "flame", "needle", "fuelrod", "plasmacaster" };
+		static const int rounds[] = { 36, 20, 32, 15, 60, 60, 12, 12, 6, 2, 12, 4, 4, 4, 2, 1, 3, 100, 150, 20, 5, 5 };
+		static const int tics[] = { 60, 55, 55, 55, 50, 60, 45, 45, 70, 60, 90, 80, 80, 80, 90, 50, 60, 100, 70, 55, 80, 70 };
+		static const String snd[] = { "Halo/Weapons/BattleRifle/Reload/Empty", "Halo/Weapons/Commando/Reload/Empty", "Halo/Weapons/Rifle/Reload/Empty",
+			"Halo/Weapons/DMR/Reload/Empty", "Halo/Weapons/SMG/Reload/Empty", "Halo/Weapons/MA5B/Reload/Empty", "Halo/Weapons/Sidekick/Reload/Empty",
+			"Halo/Weapons/Mag_MD6/Reload/Empty", "Halo/Weapons/Bulldog/ReloadPump", "Halo/Weapons/SuperShotgun/Reload", "Halo/Weapons/Shotgun/Reload",
+			"Halo/Weapons/Sniper/Reload/Empty", "Halo/Weapons/Stanchion/Reload/Empty", "Halo/Weapons/RocketLauncher/Reload",
+			"Halo/Weapons/RocketLauncher/Reload", "", "", "Halo/Weapons/GPMG/Reload/Empty", "", "Halo/Weapons/Needler/Reload/Empty", "",
+			"Halo/Weapons/PlasmaCaster/Reload" };
+		for(int i = 0; i < key.Size(); i++)
+		{
+			if(p.IndexOf(key[i]) < 0) continue;
+			if(key[i] == "rocket" && p.IndexOf("hydra") >= 0) continue;
+			hce_magSize = rounds[i]; hce_reloadTics = tics[i]; hce_reloadSound = snd[i];
+			break;
+		}
+		if(p.IndexOf("plasmapistol") >= 0) { hce_heatPerShot = 0.12; hce_ventSound = "Halo/Weapons/PlasmaPistol/Overheat"; }
+		else if(p.IndexOf("plasmarifle") >= 0) { hce_heatPerShot = 0.07; hce_ventSound = "Halo/Weapons/PlasmaRifle/Overheat"; }
+		hce_mag = hce_magSize; hce_heat = 0;
+	}
+
+	// a round fired (an overcharge heats the plasma pistol four times over); true when the gun is now empty or overheated
+	bool HCE_SpendRound(bool special = false)
+	{
+		if(hce_ammoFor != hce_projectile) HCE_SetupAmmo();
+		if(hce_magSize > 0) hce_mag--;
+		if(hce_heatPerShot > 0) hce_heat += hce_heatPerShot * (special ? 4 : 1);
+		return (hce_magSize > 0 && hce_mag <= 0) || (hce_heatPerShot > 0 && hce_heat >= 1);
+	}
+
+	// before a burst: empty -> reload, overheated -> vent (true: not firing now)
+	bool HCE_AmmoCheck()
+	{
+		if(hce_ammoFor != hce_projectile) HCE_SetupAmmo();
+		if(hce_heatPerShot > 0 && hce_heat >= 1) { HCE_StartReload(true); return true; }
+		if(hce_magSize > 0 && hce_mag <= 0) { HCE_StartReload(false); return true; }
+		return false;
+	}
+
+	void HCE_StartReload(bool vent)
+	{
+		HCE_StopFireLoop();
+		hce_shotsLeft = 0;
+		if(hce_chargeTics > 0) { hce_chargeTics = 0; A_StopSound(CHAN_7); }
+		int t = vent ? 40 : hce_reloadTics;
+		if(health > 0 && hce_leapState == 0 && hce_jumpState == 0)
+		{
+			int k = vent ? HCE_A_VENT : HCE_A_RELOAD;
+			if(HCE_HasAnim(k)) t = HCE_PlayLocked(k);
+		}
+		hce_sepTics = max(hce_sepTics, t + random(2, 10));
+		String snd = vent ? hce_ventSound : hce_reloadSound;
+		if(snd.Length() > 0) A_StartSound(snd, CHAN_AUTO, CHANF_OVERLAP, 0.7);
+		if(vent) hce_heat = 0;
+		else hce_mag = hce_magSize;
+	}
+
+	// out of combat: a part-spent magazine is topped up (true: reloading now)
+	bool HCE_IdleReload()
+	{
+		if(hce_ammoFor != hce_projectile) HCE_SetupAmmo();
+		if(hce_magSize <= 0 || hce_mag >= hce_magSize || hce_animLock > 0 || level.maptime < hce_combatUntil - 35 * 8 || random(0, 20)) return false;
+		HCE_StartReload(false);
+		return true;
 	}
 
 	// Pattern fire: N rounds at a fixed spacing, then a real pause. Plasma
@@ -1771,6 +1864,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			{
 				A_StopSound(CHAN_7);
 				HCE_FireShot(true);
+				HCE_SpendRound(true);
 				hce_sepTics = int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * 1.6 * HCE_PauseScale());
 			}
 			return;
@@ -1781,11 +1875,13 @@ class HaloDoom_EnemyBase : Actor abstract
 			{
 				HCE_FireShot();
 				hce_shotTics = max(1, hce_patInterval);
-				if(--hce_shotsLeft <= 0) HCE_EndBurst(1.0);
+				if(HCE_SpendRound()) { HCE_EndBurst(0.2); hce_sepTics = 1; }    // empty / overheated: reload next tic
+				else if(--hce_shotsLeft <= 0) HCE_EndBurst(1.0);
 			}
 			return;
 		}
 		if(--hce_sepTics > 0) return;
+		if(HCE_AmmoCheck()) return;
 		if(hce_specialFire > 0 && hce_patChargeTics > 0 && frandom(0, 1) < hce_specialChance
 			&& !(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)))
 		{

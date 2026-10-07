@@ -2,6 +2,7 @@
 
 > **In this repository** there are four packs. `HaloCE_Covenant.pk3` is the main one: it carries Core, the enemy API, the Covenant (the Digsite add-on included) and the enemy dialogue, so load it right after HDE. `HaloCE_Flood.pk3`, `HaloCE_Sentinels.pk3` and `HaloCE_Marines.pk3` (with the Marine dialogue) go after it, or load `HaloCE_Merged.pk3` for everything. Where this manual mentions `HaloCE_Core.pk3`, `HCE_EnemyAPI_LocalDEV.pk3`, `HaloCE_Enemies_Voices.pk3` or `HaloCE_Enemies_Digsite.pk3`, that content is in the Covenant pack (the Marine voices in the Marines pack); the enemies and settings are the same.
 | | |
+| | |
 |---|---|
 | Characters | 14: Grunt, Grunt Spec-Ops, Jackal, Jackal Major/Ultra, Elite, Elite Special (Spec-Ops/Stealth/Commander), Hunter, Flood Infection, Flood Carrier, Flood Combat Elite, Flood Combat Human, Sentinel, Marine, Armored Marine |
 | Spawnable classes | 82: 68 actor variants (65 from Halo CE plus the new needler Jackal and White/Red Hunters) plus 14 `HCE_Random<Character>` spawners |
@@ -361,6 +362,15 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Strength:** the throw scales with the damage dealt and the body's mass, so lighter enemies fly further. In testing, a frag grenade threw a Grunt about 100 units up and over 150 units back. A Jackal went about 80 up, and an Elite about 60.
   * **Exceptions:** Hunters are too heavy to throw and fall in place. Infection forms and Carriers burst instead, and blasts too weak to throw a body just drop it.
   * **Mid-air deaths:** anything that dies in mid-air (a leaping Flood form, a Sentinel) also plays `landing-dead` when it lands.
+
+## Reloading and overheating
+
+Halo CE's AI never runs dry, but Halo 2's reloads and lets its plasma overheat, and so does everyone here with a gun (the Flood, Hunters and Sentinels excepted). It's worked out from the weapon, so a weapon swap (Johnson's Magnum) gets its own.
+
+* **Magazines:** a gun fires its magazine and then reloads, stopping a burst short if it runs dry. Sizes: assault rifle 60, MA37 32, battle rifle 36, Commando 20, DMR 15, SMG 60, Magnum and Sidekick 12, shotgun 12, Bulldog 6, double barrel 2, sniper rifle and Stanchion 4, rocket launcher 2, Hydra 4, grenade launcher 1, sticky detonator 3, GPMG 100, flamethrower 150 bursts' worth of fuel, needler 20, fuel rod 5, Plasma Caster 5. Out of a fight, a Marine or Covenant with a part-spent magazine tops it up.
+* **Heat:** the plasma pistol and plasma rifle heat with each shot (an overcharged bolt four times over) and cool between bursts. At full heat they vent, holding fire for a moment.
+* **Animations:** Halo 2's own, moved onto the Halo CE bodies like the Halo 2 stances (`reload_anims.py`): the Marines' rifle, shotgun (shell by shell), pistol and rocket reloads and their plasma vents; the Elites' needler and fuel-rod reloads and plasma vents; the Grunts' and Jackals' plasma-pistol vents and reloads. They stand still for it. Where Halo 2 has no animation (the Spec Ops Grunts' fuel rods) they just hold fire for as long as a reload takes.
+* **Sounds:** HaloDoom Evolved's reload and overheat sounds for the weapon (the standalone packs carry copies).
 
 ## Fire patterns
 

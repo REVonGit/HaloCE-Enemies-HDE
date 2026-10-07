@@ -208,6 +208,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -258,6 +260,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -352,6 +356,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -402,6 +408,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -497,6 +505,8 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2br turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -550,6 +560,8 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case 'stand h2br warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		}
 		return 30;
 	}
@@ -640,6 +652,8 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -693,6 +707,8 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case 'stand h2bulldog warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		}
 		return 30;
 	}
@@ -782,6 +798,8 @@ class HCE_MarineCommando : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -832,6 +850,8 @@ class HCE_MarineCommando : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -926,6 +946,8 @@ class HCE_MarineDmr : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -976,6 +998,8 @@ class HCE_MarineDmr : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1070,6 +1094,8 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1120,6 +1146,8 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1215,6 +1243,8 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1265,6 +1295,8 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1359,6 +1391,8 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1409,6 +1443,8 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1504,6 +1540,8 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1554,6 +1592,8 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1648,6 +1688,8 @@ class HCE_MarineHydra : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1698,6 +1740,8 @@ class HCE_MarineHydra : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1792,6 +1836,8 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -1842,6 +1888,8 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -1937,6 +1985,8 @@ class HCE_MarineMagnum : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -1986,6 +2036,8 @@ class HCE_MarineMagnum : HCE_MarineBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -2080,6 +2132,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2121,6 +2175,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
 		case 'stand pistol warn': return 51;
@@ -2223,6 +2279,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -2273,6 +2331,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -2367,6 +2427,8 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -2417,6 +2479,8 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -2511,6 +2575,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -2560,6 +2626,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		case 'stand rifle sg fire-1 baked': return 16;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
@@ -2656,6 +2724,8 @@ class HCE_MarineSidekick : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -2705,6 +2775,8 @@ class HCE_MarineSidekick : HCE_MarineBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -2801,6 +2873,8 @@ class HCE_MarineSmg : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2smg turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -2854,6 +2928,8 @@ class HCE_MarineSmg : HCE_MarineBase
 		case 'stand h2smg warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		}
 		return 30;
 	}
@@ -2943,6 +3019,8 @@ class HCE_MarineSniper : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -2993,6 +3071,8 @@ class HCE_MarineSniper : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -3088,6 +3168,8 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3137,6 +3219,8 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -3267,6 +3351,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -3317,6 +3403,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -3367,6 +3455,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -3416,6 +3506,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -3605,6 +3697,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case HCE_A_TURN_R: return 'stand h2br turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -3658,6 +3752,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case 'stand h2br warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		}
 		return 30;
 	}
@@ -3877,6 +3973,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -3927,6 +4025,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -4021,6 +4121,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4071,6 +4173,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -4166,6 +4270,8 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2br turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4219,6 +4325,8 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case 'stand h2br warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		}
 		return 30;
 	}
@@ -4309,6 +4417,8 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4362,6 +4472,8 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case 'stand h2bulldog warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		}
 		return 30;
 	}
@@ -4451,6 +4563,8 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4501,6 +4615,8 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -4595,6 +4711,8 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4645,6 +4763,8 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -4739,6 +4859,8 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4789,6 +4911,8 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -4884,6 +5008,8 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -4934,6 +5060,8 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -5028,6 +5156,8 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5078,6 +5208,8 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -5173,6 +5305,8 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5223,6 +5357,8 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -5317,6 +5453,8 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5367,6 +5505,8 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -5461,6 +5601,8 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5511,6 +5653,8 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -5606,6 +5750,8 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -5655,6 +5801,8 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -5749,6 +5897,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -5790,6 +5940,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
 		case 'stand pistol warn': return 51;
@@ -5892,6 +6044,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5942,6 +6096,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -6036,6 +6192,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6086,6 +6244,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -6180,6 +6340,8 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6230,6 +6392,8 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -6324,6 +6488,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6373,6 +6539,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-sg': return 150;
 		case 'stand rifle sg fire-1 baked': return 16;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
@@ -6469,6 +6637,8 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -6518,6 +6688,8 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;
@@ -6614,6 +6786,8 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2smg turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6667,6 +6841,8 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case 'stand h2smg warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		}
 		return 30;
 	}
@@ -6756,6 +6932,8 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6806,6 +6984,8 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
 		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 55;
 		case 'stand rifle throw-grenade': return 72;
 		case 'stand rifle turn-left': return 16;
@@ -6901,6 +7081,8 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -6950,6 +7132,8 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		case 'stand h2pistol warn': return 51;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
 		case 'stand rifle berserk%3': return 51;
 		case 'stand rifle celebrate%1': return 72;
 		case 'stand rifle celebrate%2': return 80;

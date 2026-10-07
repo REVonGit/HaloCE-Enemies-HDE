@@ -292,13 +292,19 @@ def anim_table(A, w, weapon):
     # Halo CE's burning animations (Elites, Grunts and Jackals flail in place; Jackals, Marines and Slug Men also run)
     m['FLAME_IDLE'] = f(f'flaming {w} idle', 'flaming pistol idle', 'flaming rifle idle', 'flaming unarmed idle')
     m['FLAME_MOVE'] = f(f'flaming {w} move-front', 'flaming pistol move-front', 'flaming rifle move-front', 'flaming unarmed move-front')
+    # Halo 2's reloads and plasma vents (reload_anims.py): the gun's own (the needler's, the shotguns' shells), else the stance's
+    fam = 'pistol' if 'pistol' in w else 'rifle' if w.startswith('h2') else w
+    rc = {'needler': 'ne', 'shotgun': 'sg', 'bulldog': 'sg', 'double barrel': 'sg'}.get(weapon or '', '1')
+    m['RELOAD'] = f(f'stand {w} reload-{rc}', f'stand {fam} reload-{rc}', f'stand {w} reload-1', f'stand {fam} reload-1')
+    m['VENT'] = f(f'stand {w} overheat', f'stand {fam} overheat')
     return m
 
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
          'THROW', 'DIVE_L', 'DIVE_R', 'DIVE_F', 'EVADE_L', 'EVADE_R', 'SURPRISE_F', 'SURPRISE_B', 'BERSERK', 'WARN',
          'SIGNAL', 'AIRBORNE', 'LAND', 'LEAP_START', 'LEAP_AIR', 'LEAP_MELEE', 'PING_F', 'PING_B', 'PING_L', 'PING_R',
          'HPING_F', 'HPING_B', 'DIE_F', 'DIE_B', 'DIE_L', 'DIE_R', 'DIE_HARD_F', 'DIE_HARD_B', 'DIE_AIR', 'DIE_LAND',
-         'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE']
+         'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE',
+         'RELOAD', 'VENT']
 
 def zs_anim_funcs(A, table, bers=None):
     lines = ['\toverride Name HCE_AnimName(int kind)', '\t{']

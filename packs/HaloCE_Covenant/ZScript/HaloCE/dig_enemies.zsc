@@ -5738,6 +5738,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5789,6 +5791,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -5890,6 +5894,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -5941,6 +5947,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6034,6 +6042,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6085,6 +6095,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6186,6 +6198,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6237,6 +6251,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6330,6 +6346,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6381,6 +6399,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6482,6 +6502,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6533,6 +6555,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6627,6 +6651,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6678,6 +6704,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -6780,6 +6808,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
 		}
 		return 'None';
 	}
@@ -6831,6 +6861,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle move-front': return 30;
 		case 'stand rifle move-left': return 30;
 		case 'stand rifle move-right': return 30;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
 		case 'stand rifle signal-attack': return 64;
 		case 'stand rifle surprise-back': return 29;
 		case 'stand rifle surprise-front': return 24;
@@ -7824,6 +7856,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -7866,6 +7900,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 71;
+		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 28;
 		case 'stand pistol surprise-front': return 33;
@@ -7962,6 +7998,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
 		}
 		return 'None';
 	}
@@ -8004,6 +8042,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 71;
+		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 28;
 		case 'stand pistol surprise-front': return 33;

@@ -23,6 +23,7 @@ except Exception:
     OUT = os.path.join(HERE, 'out')
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
 CHARS = ('Elite', 'EliteSpecial', 'EliteRifle')
+CHARS = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot')
 TEETH = ('elite teeth',)
 
 
@@ -100,4 +101,4 @@ def mask_blood(char):
 
 if __name__ == '__main__':
     main(sys.argv[1:] or CHARS)
-    for c in (sys.argv[1:] or CHARS) + ('Drone',): mask_blood(c)
+    for c in tuple(sys.argv[1:] or CHARS) + ('Drone',): mask_blood(c)

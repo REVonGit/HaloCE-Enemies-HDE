@@ -1,4 +1,6 @@
 // meshtool simplify <in> <out> <target_tris> <max_error>   |   meshtool unwrap <in> <out> <resolution>
+// meshtool simplifyuv <in> <out> <target_tris> <max_error>: as simplify, keeping the mesh's own UVs (input and output
+// carry float uv[nv*2] after the indices; UV seams stay seams)
 // binary: uint32 nv, uint32 nt, float pos[nv*3], uint32 idx[nt*3]; unwrap output adds float uv[nv*2] and uint32 xref[nv]
 #include "meshoptimizer.h"
 #include "xatlas.h"
@@ -14,7 +16,37 @@ static void rd(const char* p, std::vector<float>& P, std::vector<unsigned>& I) {
 int main(int argc, char** argv) {
   std::string cmd = argv[1]; std::vector<float> P; std::vector<unsigned> I; rd(argv[2], P, I);
   size_t nv = P.size() / 3;
-  if (cmd == "simplify") {
+  if (cmd == "simplifyuv") {
+    std::vector<float> U(nv * 2);
+    { FILE* f = fopen(argv[2], "rb"); fseek(f, 8 + nv * 12 + I.size() * 4, SEEK_SET); fread(U.data(), 4, nv * 2, f); fclose(f); }
+    std::vector<float> V(nv * 5);
+    for (size_t i = 0; i < nv; i++) { memcpy(&V[i * 5], &P[i * 3], 12); memcpy(&V[i * 5 + 3], &U[i * 2], 8); }
+    std::vector<unsigned> remap(nv);
+    size_t un0 = meshopt_generateVertexRemap(remap.data(), I.data(), I.size(), V.data(), nv, 20);
+    std::vector<float> V2(un0 * 5); std::vector<unsigned> I2(I.size());
+    meshopt_remapVertexBuffer(V2.data(), V.data(), nv, 20, remap.data());
+    meshopt_remapIndexBuffer(I2.data(), I.data(), I.size(), remap.data());
+    size_t target = atoi(argv[4]) * 3; float err = atof(argv[5]);
+    std::vector<unsigned> out(I2.size()); float le = 0; float w[2] = { 0.5f, 0.5f };
+    size_t n = meshopt_simplifyWithAttributes(out.data(), I2.data(), I2.size(), V2.data(), un0, 20, V2.data() + 3, 20, w, 2, NULL, target, err, 0, &le);
+    for (int it = 0; it < 6 && n > target * 1.3; it++) { err *= 3; n = meshopt_simplifyWithAttributes(out.data(), I2.data(), I2.size(), V2.data(), un0, 20, V2.data() + 3, 20, w, 2, NULL, target, err, 0, &le); }
+    // a fragmented UV layout stalls on its seams: let collapses cross them (the seam vertices move along with UV
+    // error counted), lowest error first
+    if (n > target * 1.3) {
+      float e2 = atof(argv[5]);
+      for (int it = 0; it < 8 && (it == 0 || n > target * 1.3); it++, e2 *= 2)
+        n = meshopt_simplifyWithAttributes(out.data(), I2.data(), I2.size(), V2.data(), un0, 20, V2.data() + 3, 20, w, 2, NULL, target, e2, meshopt_SimplifyPermissive, &le);
+    }
+    out.resize(n);
+    std::vector<unsigned> r2(un0); size_t un = meshopt_optimizeVertexFetchRemap(r2.data(), out.data(), out.size(), un0);
+    std::vector<float> V3(un * 5); meshopt_remapVertexBuffer(V3.data(), V2.data(), un0, 20, r2.data()); meshopt_remapIndexBuffer(out.data(), out.data(), out.size(), r2.data());
+    FILE* f = fopen(argv[3], "wb"); unsigned a = un, b = out.size() / 3; fwrite(&a, 4, 1, f); fwrite(&b, 4, 1, f);
+    for (size_t i = 0; i < un; i++) fwrite(&V3[i * 5], 4, 3, f);
+    fwrite(out.data(), 4, out.size(), f);
+    for (size_t i = 0; i < un; i++) fwrite(&V3[i * 5 + 3], 4, 2, f);
+    for (size_t i = 0; i < un; i++) { unsigned z = 0; fwrite(&z, 4, 1, f); }
+    fclose(f); fprintf(stderr, "simplifyuv %zu -> %u tris, error %g\n", I.size() / 3, b, le);
+  } else if (cmd == "simplify") {
     size_t target = atoi(argv[4]) * 3; float err = atof(argv[5]);
     std::vector<unsigned> remap(nv);
     size_t uv = meshopt_generateVertexRemap(remap.data(), I.data(), I.size(), P.data(), nv, 12);

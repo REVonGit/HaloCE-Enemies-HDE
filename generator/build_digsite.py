@@ -53,6 +53,9 @@ BRUTE_RANKS = {
                             ('sensors', 'default'), ('sh_armor', 'skull'), ('hg_arm', 'honor_off'), ('hg_legs', 'honor_off')}),
 }
 ELITE_RIFLE = r'characters\elite\elite rifle'
+ULTRA_ZEALOT = r'characters\elite\elite ultra zealot'
+ZEALOT_RED = (0.55, 0.06, 0.14)          # Reach's Field Marshal maroon, deeper and richer
+ZEALOT_BLUE = (0.22, 0.55, 1.00)         # its shield, as its lights
 KIT_DIR = f'{bp.OUT}/models/BruteKit'
 KIT_JSON = f'{KIT_DIR}/BruteKit.json'
 KIT_RANKS = ['minor', 'major', 'captain', 'chieftain']
@@ -285,6 +288,18 @@ def load_ai():
             mk['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=40.0)
             mk['items']['grenades_lower_bound'] = 0; mk['items']['grenades_upper_bound'] = 0
             variants[H2JACKAL + f'\\jackal marksman {key}'] = mk
+    # The Ultra Zealot (Shigure's Zealot Elite, extract_ultra_zealot.py): the gold Elite's sword build made tougher,
+    # a diamond energy shield on its left arm; armour in a Field Marshal crimson-maroon with blue lights
+    zs = A['variants'].get(r'characters\elite\elite commander\elite commander energy sword')
+    if zs and os.path.exists(f'{bp.OUT}/models/EliteZealot/EliteZealot.json'):
+        v = copy.deepcopy(zs)
+        v['unit_reference'] = ULTRA_ZEALOT
+        v['unit'] = dict(v['unit'], maximum_body_vitality=130.0, maximum_shield_vitality=400.0)
+        v['change_colors_list'] = [dict(color_lower_bound=list(ZEALOT_RED), color_upper_bound=list(ZEALOT_RED))]
+        v['_rank'] = 'field marshal'; v['_late'] = True
+        variants[ULTRA_ZEALOT + '\\elite ultra zealot energy sword'] = v
+        actors[v['actor_reference']] = A['actors'][v['actor_reference']]
+        bipeds[ULTRA_ZEALOT] = copy.deepcopy(A['bipeds'][r'characters\elite\elite'])
     return dict(variants=variants, actors=actors, bipeds=bipeds, collisions=colls,
                 weapons={k: A['weapons'][k] for k in (CE_PR, CE_AR, CE_SG)})     # shotgun pellets per shot etc.
 
@@ -1132,6 +1147,32 @@ def bp_fallback():
     from build_voices import FALLBACK
     return FALLBACK
 
+def zealot_skin(cls, v, si, mat, meta, skin_dir):
+    """Ultra Zealot armour: the gold Elite's vivid bake (shading, edge highlights, the rank cube's sheen, dark gauntlets,
+    teal undersuit) in crimson-maroon, then held to that hue with the sheen's pink pulled out (rich, not candy); its
+    inset lights are already Reach blue (extract_ultra_zealot.py) and drawn bright"""
+    if not mat.startswith('EliteZealot_'): return None
+    os.makedirs(skin_dir, exist_ok=True)
+    matn = mat[:-4]
+    fn = f'{cls[4:].lower()}_{matn.lower()}.png'
+    dst = f'{skin_dir}/{fn}'
+    if os.path.exists(dst): return fn
+    C = 'EliteZealot'
+    mp = f'{bp.OUT}/models/{C}/{matn}_multi.png'
+    if not os.path.exists(mp):
+        shutil.copy(f'{bp.OUT}/models/{C}/{mat}', dst)
+        return fn
+    bp.bake_vivid(C, matn, ZEALOT_RED, dst)
+    im = Image.open(dst).convert('RGB'); rgb = np.asarray(im).astype(np.float32) / 255
+    msk = np.asarray(Image.open(mp).convert('RGBA').resize(im.size)).astype(np.float32)[..., 2] / 255
+    msk = msk * (1 - bp.hand_mask(C, matn, im.size))
+    o = bp.hue_lock(rgb, msk / 0.8, ZEALOT_RED)
+    hsv = np.asarray(Image.fromarray((np.clip(o, 0, 1) * 255).astype(np.uint8)).convert('HSV')).astype(np.float32)
+    hsv[..., 1] = hsv[..., 1] * (1 - msk) + np.maximum(hsv[..., 1], 0.85 * 255) * msk
+    hsv[..., 2] = hsv[..., 2] * (1 - msk * 0.32)
+    Image.fromarray(hsv.astype(np.uint8), 'HSV').convert('RGB').save(dst)
+    return fn
+
 def configure():
     W = bp.W
     bp.WEAPONS['plasma carbine'] = ('HCE_CarbineRound', 'HaloCarbine_Bullet', 15, 6.0)   # HDE's green carbine round
@@ -1184,6 +1225,14 @@ def configure():
         bp.SHIELD_MAT['H2Jackal'] = 'H2Jackal_jackal_shield'
         bp.VOICES['H2Jackal'] = 'Jackal'
     # (the beam rifle itself is set up in build_pack.py: the Spec Ops Elite carries it too)
+    if os.path.exists(f'{bp.OUT}/models/EliteZealot/EliteZealot.json'):
+        zm = json.load(open(f'{bp.OUT}/models/EliteZealot/EliteZealot.json'))
+        bp.SKIN_HOOK['EliteZealot'] = zealot_skin
+        bp.SHIELD_MAT['EliteZealot'] = zm['shield']
+        bp.SHIELD_TINT['field marshal'] = ZEALOT_BLUE
+        bp.SHINE['EliteZealot'] = 1.0; bp.SHINE_CUBE['EliteZealot'] = 'elite'
+        bp.SHELL_TINT['EliteZealot'] = bp.SHELL_TINT['Elite']
+        bp.VOICES['EliteZealot'] = 'Elite_Dogmatic,Elite_Loose'
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
@@ -1229,8 +1278,8 @@ def build():
     cou = {r'digsite\characters\drinol\00_mac\drinol': 'Drinol', r'digsite\characters\slug_man\slug_man': 'SlugMan',
            ELITE_RIFLE: 'EliteRifle', r'characters\blind_wolf\blind_wolf': 'BlindWolf',
            r'characters\thorn_beast\thorn_beast': 'ThornBeast', r'characters\engineer\engineer': 'Engineer',
-           DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal'}
-    team = {'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT'}
+           DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal', ULTRA_ZEALOT: 'EliteZealot'}
+    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT'}
     cfg = dict(char_of_unit=cou, team=team, ai=ai, pack=PACK, mdir='hce_dig', tag='dig', ed0=30400, main=False,
                handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal'],
                late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf', 'HCE_ThornBeast', 'HCE_RandomThornBeast',
@@ -1239,10 +1288,18 @@ def build():
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
                            'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
-                           'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster',
+                           'HCE_EliteUltraZealotEnergySword'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     src = HERE + '/digsite_src'
+    zj = f'{bp.OUT}/models/EliteZealot/EliteZealot.json'
+    if os.path.exists(zj):                       # the Ultra Zealot's inset lights glow
+        gl = []
+        for g in json.load(open(zj)).get('glow', []):
+            for f in sorted(glob.glob(f'{PACK}/models/hce_dig/EliteZealot/skins/*_{g.lower()}.png')):
+                gl.append(f'brightmap texture "{f[len(PACK) + 1:]}"\n{{\n\tmap "models/hce_dig/brightmap_full.png"\n}}')
+        if gl: open(f'{PACK}/gldefs.dig', 'a').write('\n'.join(gl) + '\n')
     for f in ('dig_handler.zsc', 'dig_boss.zsc', 'dig_pulse.zsc', 'dig_brute.zsc'):
         shutil.copy(f'{src}/{f}', f'{PACK}/ZScript/HaloCE/{f}')
     for f in ('zscript.txt', 'cvarinfo.txt', 'CREDITS.txt'):

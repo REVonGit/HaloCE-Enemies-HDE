@@ -926,6 +926,77 @@ Model HCE_EliteSpecopsPulseCarbine
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_EliteZealotShieldShell
+{
+	Path "models/hce_dig/EliteZealot"
+	Model 0 "EliteZealot.iqm"
+	SurfaceSkin 0 0 "skins/shieldshell.png"
+	SurfaceSkin 0 1 "skins/shieldshell.png"
+	SurfaceSkin 0 2 "skins/shieldshell.png"
+	SurfaceSkin 0 3 "skins/shieldshell.png"
+	SurfaceSkin 0 4 "skins/shieldshell.png"
+	SurfaceSkin 0 5 "skins/shieldshell.png"
+	SurfaceSkin 0 6 "skins/shieldshell.png"
+	SurfaceSkin 0 7 "skins/shieldshell.png"
+	SurfaceSkin 0 8 "skins/shieldshell.png"
+	SurfaceSkin 0 9 "skins/shieldshell.png"
+	SurfaceSkin 0 12 "skins/shieldshell.png"
+	SurfaceSkin 0 13 "skins/shieldshell.png"
+	SurfaceSkin 0 14 "skins/shieldshell.png"
+	SurfaceSkin 0 15 "skins/shieldshell.png"
+	SurfaceSkin 0 16 "skins/shieldshell.png"
+	SurfaceSkin 0 17 "skins/shieldshell.png"
+	SurfaceSkin 0 18 "skins/shieldshell.png"
+	SurfaceSkin 0 19 "skins/shieldshell.png"
+	SurfaceSkin 0 20 "skins/shieldshell.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	Scale 82.8 82.8 99.4
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteUltraZealotEnergySword
+{
+	Path "models/hce_dig/EliteZealot"
+	Model 0 "EliteZealot.iqm"
+	SurfaceSkin 0 0 "skins/eliteultrazealotenergysword_elitezealot_0.png"
+	SurfaceSkin 0 1 "skins/eliteultrazealotenergysword_elitezealot_1.png"
+	SurfaceSkin 0 2 "skins/eliteultrazealotenergysword_elitezealot_2.png"
+	SurfaceSkin 0 3 "skins/eliteultrazealotenergysword_elitezealot_3.png"
+	SurfaceSkin 0 4 "skins/eliteultrazealotenergysword_elitezealot_4.png"
+	SurfaceSkin 0 5 "skins/eliteultrazealotenergysword_elitezealot_5.png"
+	SurfaceSkin 0 6 "skins/eliteultrazealotenergysword_elitezealot_6.png"
+	SurfaceSkin 0 7 "skins/eliteultrazealotenergysword_elitezealot_7.png"
+	SurfaceSkin 0 8 "skins/eliteultrazealotenergysword_elitezealot_8.png"
+	SurfaceSkin 0 9 "skins/eliteultrazealotenergysword_shield.png"
+	SurfaceSkin 0 12 "skins/eliteultrazealotenergysword_elitezealot_2.png"
+	SurfaceSkin 0 13 "skins/eliteultrazealotenergysword_elitezealot_2.png"
+	SurfaceSkin 0 14 "skins/eliteultrazealotenergysword_elitezealot_2.png"
+	SurfaceSkin 0 15 "skins/eliteultrazealotenergysword_elitezealot_3.png"
+	SurfaceSkin 0 16 "skins/eliteultrazealotenergysword_elitezealot_3.png"
+	SurfaceSkin 0 17 "skins/eliteultrazealotenergysword_elitezealot_3.png"
+	SurfaceSkin 0 18 "skins/eliteultrazealotenergysword_elitezealot_4.png"
+	SurfaceSkin 0 19 "skins/eliteultrazealotenergysword_elitezealot_4.png"
+	SurfaceSkin 0 20 "skins/eliteultrazealotenergysword_elitezealot_6.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 10 "w_energy_sword_0.png"
+	SurfaceSkin 0 11 "w_energy_sword_glow.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_Engineer
 {
 	Path "models/hce_dig/Engineer"

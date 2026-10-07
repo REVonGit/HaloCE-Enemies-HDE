@@ -23,6 +23,10 @@ brightmap texture "models/hce_dig/weapons/w_cmt_carbine_meter.png"
 {
 	map "models/hce_dig/brightmap_full.png"
 }
+brightmap texture "models/hce_dig/weapons/w_energy_sword_glow.png"
+{
+	map "models/hce_dig/brightmap_full.png"
+}
 brightmap texture "models/hce_dig/weapons/w_needler_glow.png"
 {
 	map "models/hce_dig/brightmap_full.png"
@@ -30,6 +34,12 @@ brightmap texture "models/hce_dig/weapons/w_needler_glow.png"
 brightmap texture "models/hce_dig/weapons/w_spiker_heat.png"
 {
 	map "models/hce_dig/brightmap_full.png"
+}
+material texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_shield.png"
+{
+	shader "shaders/hce_shield.fp"
+	speed 1.0
+	brightmap "models/hce_dig/brightmap_full.png"
 }
 material texture "models/hce_dig/H2Jackal/skins/jackalultraplasmarifle_shield.png"
 {
@@ -42,4 +52,12 @@ material texture "models/hce_dig/H2Jackal/skins/jackalzealotspiker_shield.png"
 	shader "shaders/hce_shield.fp"
 	speed 1.0
 	brightmap "models/hce_dig/brightmap_full.png"
+}
+brightmap texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_elitezealot_0.png"
+{
+	map "models/hce_dig/brightmap_full.png"
+}
+brightmap texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_elitezealot_5.png"
+{
+	map "models/hce_dig/brightmap_full.png"
 }

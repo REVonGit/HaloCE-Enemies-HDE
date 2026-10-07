@@ -43,6 +43,9 @@ class HCE_PlasmaGrenade : PlasmaGrenade_Proj
 {
 	override void DoExplode()
 	{
+		// stuck to the player, a Covenant plasma grenade kills, as in Halo
+		if(hitactor && hitactor.player && hitactor.health > 0 && !(target && target.player))
+			hitactor.DamageMobj(self, target, max(1000, hitactor.health * 10), 'Explosive', DMG_NO_ARMOR | DMG_THRUSTLESS);
 		let e = PlasmaGrenadeExplosion(Spawn("PlasmaGrenadeExplosion", pos));
 		if(e) { e.target = target; e.explosionDmg *= DamageMultiply; }
 	}

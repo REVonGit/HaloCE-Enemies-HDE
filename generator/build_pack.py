@@ -234,7 +234,7 @@ ACTOR_TYPES = {0: 'elite', 1: 'jackal', 2: 'grunt', 3: 'hunter', 4: 'engineer', 
 # Blood by species (Halopedia, "Blood"; Halo CE colours where the games differ). NashGore and Doom's own
 # blood both use BloodColor, so gore mods paint each race correctly. Sentinels are machines: no blood.
 BLOOD = {
-    'Elite': '3A1E8C', 'EliteSpecial': '3A1E8C', 'EliteRifle': '3A1E8C',   # Sangheili: dark blue/purple (CE)
+    'Elite': '3A1E8C', 'EliteSpecial': '3A1E8C', 'EliteRifle': '3A1E8C', 'EliteZealot': '3A1E8C',   # Sangheili: dark blue/purple (CE)
     'Jackal': '4A2A9A', 'JackalMajor': '4A2A9A', 'H2Jackal': '4A2A9A',    # Kig-Yar: dark blue/purple (CE)
     'Grunt': '40C8D0', 'GruntSpecOps': '40C8D0',                          # Unggoy: light blue / teal
     'Hunter': 'FF8C1A',                                                   # Mgalekgolo: bright orange
@@ -282,7 +282,9 @@ def anim_table(A, w, weapon):
     st = ['stand', 'alert']
     def f(*pats): return A.find(*pats)
     m['IDLE'] = f(f'stand {w} idle', f'alert {w} idle', 'stand unarmed idle', 'stand pistol idle', 'stand rifle idle', 'stand fixed overlay baked', 'stand fixed idle')
-    m['ALERT'] = f(f'alert {w} idle', f'stand {w} idle') or m['IDLE']
+    # Halo CE's Marines: 'stand' is weapon up, 'alert' is their low ready (used out of combat: LOW_IDLE / LOW_MOVE)
+    marine = any(n.startswith('stand h2missile') for n in A.names)
+    m['ALERT'] = (f(f'stand {w} idle') if marine else []) or f(f'alert {w} idle', f'stand {w} idle') or m['IDLE']
     for k, n in [('MOVE_F', 'move-front'), ('MOVE_B', 'move-back'), ('MOVE_L', 'move-left'), ('MOVE_R', 'move-right')]:
         m[k] = f(f'stand {w} {n}', f'alert {w} {n}', f'stand unarmed {n}', f'stand pistol {n}')
     if not m['MOVE_F']: m['MOVE_F'] = m['IDLE']
@@ -328,9 +330,9 @@ def anim_table(A, w, weapon):
     rc = {'needler': 'ne', 'shotgun': 'sg', 'bulldog': 'sg', 'double barrel': 'sg'}.get(weapon or '', '1')
     m['RELOAD'] = f(f'stand {w} reload-{rc}', f'stand {fam} reload-{rc}', f'stand {w} reload-1', f'stand {fam} reload-1')
     m['VENT'] = f(f'stand {w} overheat', f'stand {fam} overheat')
-    # Halo 2's low-ready idle and walk (low_ready_anims.py), out of combat
-    m['LOW_IDLE'] = f(f'stand {w} low-idle')
-    m['LOW_MOVE'] = f(f'stand {w} low-move')
+    # the low-ready idle and walk, out of combat: Halo CE's own for its Marines, else Halo 2's (low_ready_anims.py)
+    m['LOW_IDLE'] = (f(f'alert {w} idle') if marine else []) or f(f'stand {w} low-idle')
+    m['LOW_MOVE'] = (f(f'alert {w} move-front') if marine else []) or f(f'stand {w} low-move')
     return m
 
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
@@ -938,32 +940,42 @@ LIP_CODE = """
 
 
 MARINE_KIT = f'{OUT}/models/MarineKit'
-KIT_SLOT_ORDER = ('head', 'face', 'chest', 'back', 'shoulders', 'arms')
+KIT_SLOT_ORDER = ('head', 'face', 'chest', 'back', 'shoulders', 'arms', 'legs', 'wrists', 'waist')
 
 
 def marine_kit_code(char, names, mdir, sis):
     """Elefant's Marine kit (extract_marine_kit.py): per Marine, a roll per slot for a kit piece drawn as a model
-    attachment on the Marine's skeleton. Headgear either replaces the whole head or (a helmet shell) only Halo CE's
-    helmet; gloves replace the arms. Returns (fields and functions, the call made while dressing)"""
+    attachment on the Marine's skeleton, or (now and then) a whole outfit (the ODST). Headgear either replaces the
+    whole head or (a helmet shell) only Halo CE's helmet; gloves replace the arms. A rocket launcher's Marine always
+    wears the launcher tube on his back, a flamethrower's the fuel tanks. Returns (fields and functions, the call
+    made while dressing)"""
     kj = f'{MARINE_KIT}/MarineKit.json'
     if not os.path.exists(kj): return '', ''
     kit = json.load(open(kj))
     pools = kit['pools'].get(char)
     if not pools: return '', ''
     P = kit['pieces']
+    NS = len(KIT_SLOT_ORDER)
     out = ['\t// ---- Elefant\'s Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,\n'
-           '\t// packs, shoulder pads and gloves, each a model attachment riding the Marine\'s skeleton, rolled per Marine\n']
+           '\t// packs, shoulder pads, gloves and the ODST\'s armour, each a model attachment riding the Marine\'s skeleton\n']
+    def weighted(fn, picks, chance=None):
+        tot = sum(w for _, w in picks)
+        b = [f'\tString {fn}()\n\t{{\n']
+        if chance is not None: b.append(f'\t\tif(frandom[HCEKit](0, 1) >= {chance:.2f}) return "";\n')
+        b.append(f'\t\tint x = random[HCEKit](0, {tot - 1});\n')
+        acc = 0
+        for pid, w in picks:
+            acc += w
+            b.append(f'\t\tif(x < {acc}) return "{pid}";\n')
+        b.append('\t\treturn "";\n\t}\n')
+        return b
     for slot in KIT_SLOT_ORDER:
         pool = pools.get(slot)
-        if not pool or not pool['picks']: continue
-        tot = sum(w for _, w in pool['picks'])
-        out.append(f'\tString HCE_Kit_{slot}()\n\t{{\n\t\tif(frandom[HCEKit](0, 1) >= {pool["chance"]:.2f}) return "";\n'
-                   f'\t\tint x = random[HCEKit](0, {tot - 1});\n')
-        acc = 0
-        for pid, w in pool['picks']:
-            acc += w
-            out.append(f'\t\tif(x < {acc}) return "{pid}";\n')
-        out.append('\t\treturn "";\n\t}\n')
+        if pool and pool['picks']: out += weighted(f'HCE_Kit_{slot}', pool['picks'], pool['chance'])
+    outfits = kit.get('outfits', {}).get(char, [])
+    for k, o in enumerate(outfits):
+        for slot, picks in o['slots'].items():
+            if picks: out += weighted(f'HCE_KitOutfit{k}_{slot}', picks)
     def flag(fn, key):
         ids = [pid for pid, d in P.items() if d.get(key)]
         return f'\tstatic bool {fn}(String p) {{ ' + ('return ' + ' || '.join(f'p == "{i}"' for i in ids) + ';' if ids else 'return false;') + ' }\n'
@@ -971,35 +983,43 @@ def marine_kit_code(char, names, mdir, sis):
     heads = sis(lambda n: n.startswith('head.'))
     shared = sis(lambda n: n == 'head.shared')
     arms = sis(lambda n: n.startswith('arms.'))
-    def has(slot): return slot in pools and pools[slot]['picks']
     def ints(v): return ', '.join(map(str, v or [-1]))
-    d = ['\tString hce_kit[6];\n', '\tvoid HCE_DressKit(bool helmetFace)\n\t{\n', '\t\tfor(int i = 0; i < 6; i++) hce_kit[i] = "";\n']
-    if has('head'):
-        d.append('\t\tString h = HCE_Kit_head();\n'
-                 '\t\tif(h.Length() && HCE_KitShell(h) && !helmetFace) h = "";        // a helmet shell only where Halo CE\'s helmet was\n'
-                 '\t\thce_kit[0] = h;\n'
-                 '\t\tif(h.Length())\n\t\t{\n'
-                 f'\t\t\tstatic const int HS[] = {{ {ints(shared)} }};\n'
-                 f'\t\t\tstatic const int HA[] = {{ {ints(heads)} }};\n'
-                 '\t\t\tif(HCE_KitShell(h)) { for(int i = 0; i < HS.Size(); i++) if(HS[i] >= 0) hce_hideSurf.Push(HS[i]); }\n'
-                 '\t\t\telse { for(int i = 0; i < HA.Size(); i++) if(HA[i] >= 0 && hce_hideSurf.Find(HA[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(HA[i]); }\n'
-                 '\t\t}\n')
-    if has('face'):
-        d.append('\t\tString f = HCE_Kit_face();\n'
-                 '\t\tif(HCE_KitEnclosed(hce_kit[0])) f = "";                      // no face showing\n'
-                 '\t\tif(f.Length() && HCE_KitNeedsHelmet(f) && (!helmetFace || hce_kit[0].Length())) f = "";\n'
-                 '\t\thce_kit[1] = f;\n')
-    for k, slot in ((2, 'chest'), (3, 'back'), (4, 'shoulders')):
-        if has(slot): d.append(f'\t\thce_kit[{k}] = HCE_Kit_{slot}();\n')
-    if has('arms'):
-        d.append('\t\thce_kit[5] = HCE_Kit_arms();\n'
-                 '\t\tif(hce_kit[5].Length())\n\t\t{\n'
-                 f'\t\t\tstatic const int AR[] = {{ {ints(arms)} }};\n'
-                 '\t\t\tfor(int i = 0; i < AR.Size(); i++) if(AR[i] >= 0 && hce_hideSurf.Find(AR[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(AR[i]);\n'
-                 '\t\t}\n')
+    SI = {sl: k for k, sl in enumerate(KIT_SLOT_ORDER)}
+    d = [f'\tString hce_kit[{NS}];\n', '\tvoid HCE_DressKit(bool helmetFace)\n\t{\n',
+         f'\t\tfor(int i = 0; i < {NS}; i++) hce_kit[i] = "";\n', '\t\tbool outfit = false;\n']
+    for k, o in enumerate(outfits):
+        d.append(f'\t\tif(!outfit && frandom[HCEKit](0, 1) < {o["chance"]:.2f})\n\t\t{{\n\t\t\toutfit = true;\n')
+        for slot, picks in o['slots'].items():
+            if picks: d.append(f'\t\t\thce_kit[{SI[slot]}] = HCE_KitOutfit{k}_{slot}();\n')
+        d.append('\t\t}\n')
+    d.append('\t\tif(!outfit)\n\t\t{\n')
+    for slot in KIT_SLOT_ORDER:
+        if pools.get(slot) and pools[slot]['picks']: d.append(f'\t\t\thce_kit[{SI[slot]}] = HCE_Kit_{slot}();\n')
+    d.append('\t\t}\n')
+    wb = kit.get('weapon_backs', {})
+    if wb:
+        d.append('\t\tName w = default.hce_dropWeapon;          // a weapon\'s own back piece, always\n')
+        for wn, pid in wb.items():
+            d.append(f'\t\tif(w == \'{wn}\') hce_kit[{SI["back"]}] = "{pid}";\n')
+    d.append('\t\tString h = hce_kit[0];\n'
+             '\t\tif(h.Length() && HCE_KitShell(h) && !helmetFace) { h = ""; hce_kit[0] = ""; }     // a helmet shell only where Halo CE\'s helmet was\n'
+             '\t\tif(h.Length())\n\t\t{\n'
+             f'\t\t\tstatic const int HS[] = {{ {ints(shared)} }};\n'
+             f'\t\t\tstatic const int HA[] = {{ {ints(heads)} }};\n'
+             '\t\t\tif(HCE_KitShell(h)) { for(int i = 0; i < HS.Size(); i++) if(HS[i] >= 0) hce_hideSurf.Push(HS[i]); }\n'
+             '\t\t\telse { for(int i = 0; i < HA.Size(); i++) if(HA[i] >= 0 && hce_hideSurf.Find(HA[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(HA[i]); }\n'
+             '\t\t}\n'
+             '\t\tString f = hce_kit[1];\n'
+             '\t\tif(HCE_KitEnclosed(h)) f = "";                      // no face showing\n'
+             '\t\tif(f.Length() && HCE_KitNeedsHelmet(f) && (!helmetFace || h.Length())) f = "";\n'
+             '\t\thce_kit[1] = f;\n'
+             f'\t\tif(hce_kit[{SI["arms"]}].Length())\n\t\t{{\n'
+             f'\t\t\tstatic const int AR[] = {{ {ints(arms)} }};\n'
+             '\t\t\tfor(int i = 0; i < AR.Size(); i++) if(AR[i] >= 0 && hce_hideSurf.Find(AR[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(AR[i]);\n'
+             '\t\t}\n')
     slots = [kit['slots'][sl] for sl in KIT_SLOT_ORDER]
     d.append(f'\t\tstatic const int SL[] = {{ {", ".join(map(str, slots))} }};\n'
-             '\t\tfor(int i = 0; i < 6; i++)\n'
+             f'\t\tfor(int i = 0; i < {NS}; i++)\n'
              f'\t\t\tif(hce_kit[i].Length()) A_ChangeModel(\'None\', SL[i], "models/{mdir}/MarineKit", hce_kit[i] .. ".iqm", SL[i], "", \'None\');\n'
              '\t}\n')
     return ''.join(out + d), '\t\tif(!hce_johnsonArms) HCE_DressKit(HCE_HELMET_FACE[hce_face] != 0);\n'
@@ -1776,7 +1796,7 @@ MARINE_ARSENAL = {
     'double barrel':    ('double_barrel', 'rifle', 1, 4, 10, 14, 7.0, 'Halo_DBLShotgun'),
     'sniper rifle':     ('sniper', 'rifle', 8, 35, 70, None, 0.25, 'Halo_SniperRifle'),
     'rocket launcher':  ('rocket_launcher', 'h2missile', 7, 25, 45, None, 0.5, 'Halo_RocketLauncher'),   # Halo 2's launcher stance (marine_stances.py)
-    'hydra':            ('hydra', 'h2missile', 6, 24, 45, None, 1.5, 'Halo_Hydra'),
+    'hydra':            ('hydra', 'rifle', 6, 24, 45, None, 1.5, 'Halo_Hydra'),         # held like a rifle
     'grenade launcher': ('grenade_launcher', 'rifle', 5, 18, 30, None, 1.0, 'Halo_GrenadeLauncher'),
     'sticky detonator': ('sticky_detonator', 'h2pistol', 4, 14, 25, None, 1.0, 'Halo_StickyDetonator'),   # a pistol-sized launcher
     'gpmg':             ('gpmg', 'rifle', 3, 18, 35, None, None, 'Halo_GPMG'),

@@ -48,6 +48,7 @@ GORE = {
     'Elite':        dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'EliteSpecial': dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'EliteRifle':   dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
+    'EliteZealot':  dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'Grunt':        dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'},
                          regions={'back': ('backpack', 'bip01 spine1')}),
     'GruntSpecOps': dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'},
@@ -68,6 +69,7 @@ BONE = ((0.231, 0.199), 0.124)
 FLESH = (0.66, 0.68)                  # a stretch of flesh well clear of the bone, for the boneless races' caps
 # char -> (SPV3 gore texture, recolour to the race's blood?, cap centred on the bone?)
 GORE_TEX = {'Elite': ('jackal gore', False, True), 'EliteSpecial': ('jackal gore', False, True), 'EliteRifle': ('jackal gore', False, True),
+            'EliteZealot': ('jackal gore', False, True),
             'Grunt': ('grunt_gore', False, True), 'GruntSpecOps': ('grunt_gore', False, True),
             'Jackal': ('jackal gore', False, True), 'JackalMajor': ('jackal gore', False, True), 'H2Jackal': ('jackal gore', False, True),
             'Brute': ('jackal gore', True, True), 'Hunter': ('grunt_gore', True, False), 'SlugMan': ('grunt_gore', True, False),

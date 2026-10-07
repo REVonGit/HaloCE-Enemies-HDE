@@ -895,6 +895,9 @@ class HCES_PlasmaGrenade : HCES_Grenade
 	}
 	virtual void DoExplode()
 	{
+		// stuck to the player, an enemy plasma grenade kills, as in Halo (not the Plasma Caster's shots)
+		if(GetClass() == 'HCES_PlasmaGrenade' && hitactor && hitactor.player && hitactor.health > 0 && !(target && target.player))
+			hitactor.DamageMobj(self, target, max(1000, hitactor.health * 10), 'Explosive', DMG_NO_ARMOR | DMG_THRUSTLESS);
 		HCES_Boom.Make(self, target, int(boomDmg * DamageMultiply), boomRadius, 'PlasmaExplosion', "18B4ED", boomScale);
 	}
 	States

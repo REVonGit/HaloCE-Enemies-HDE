@@ -102,6 +102,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 			if(a == 1) { static const int A1[] = { 0 }; for(int i = 0; i < A1.Size(); i++) hce_hideSurf.Push(A1[i]); }
 		}
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started
 	}
 	override void HCE_BloodHideClass()
 	{
@@ -3599,6 +3600,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 7: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); hce_voice = 'Marine_Johnson'; break; }
 		}
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started
 	}
 	override void HCE_BloodHideClass()
 	{

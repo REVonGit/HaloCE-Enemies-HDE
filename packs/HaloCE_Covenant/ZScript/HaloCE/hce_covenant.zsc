@@ -2734,6 +2734,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		case 1: { static const int H[] = { 1, 2, 3, 12, 13, 14, 15 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
 		}
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_BloodHideClass()
 	{
@@ -4012,6 +4013,7 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		case 1: { static const int H[] = { 1, 2, 3, 12, 13, 14, 15 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
 		}
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_BloodHideClass()
 	{

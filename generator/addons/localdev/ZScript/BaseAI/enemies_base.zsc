@@ -2648,6 +2648,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_kamiNades.Size() > 0) HCE_KamikazeFling();
 		HCE_DropLoot();
 		HCE_ShowGun(false);      // the gun leaves the hand (it dropped as a pickup, or its arm is gone)
+		HCE_ResumeAnim();        // (an actor's first A_ChangeModel resets its animation: the death animation goes on)
 		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
 		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
 		if(bHCE_Resurrects && !hard && frandom(0, 1) < max(0.25, hce_feignChance)) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
@@ -2973,6 +2974,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_brutality += 2;
 		HCE_DropLoot();                                       // the gun falls with the hand
 		HCE_ShowGun(false);
+		HCE_ResumeAnim();
 		hce_dropWeapon = 'None'; hce_grenades = 0;
 		hce_projectile = 'None';
 		HCE_StopFireLoop();
@@ -3373,7 +3375,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_resurrected = true;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED;
 		int gl = HCE_GunLimb();
-		if(gl < 0 || !(hce_severed & (1 << gl))) HCE_ShowGun(true);       // back up with its gun (if its arm is on)
+		if(gl < 0 || !(hce_severed & (1 << gl))) { HCE_ShowGun(true); HCE_ResumeAnim(); }     // back up with its gun (if its arm is on)
 		hce_action = HCE_ACT_FIGHT;
 		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
 		if(HCE_HasAnim(k)) HCE_PlayLocked(k);

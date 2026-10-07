@@ -808,7 +808,8 @@ def perm_code(meta, mdir):
             '\tint hce_perm;\n\tArray<int> hce_permHide;\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
             f'\t\thce_perm = random[HCEPerm](0, {len(perms) - 1});\n\t\thce_permHide.Clear();\n\t\tswitch(hce_perm)\n\t\t{{\n' + ''.join(sets) + '\t\t}\n'
-            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n\t}}\n'
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n'
+            '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)\n\t}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tsuper.HCE_BloodHideClass();\n'
             f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
 
@@ -884,7 +885,8 @@ def marine_code(meta, mdir):
             '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
             f'\t\thce_face = HCE_PickFace();\n\t\thce_johnsonArms = hce_face == HCE_JOHNSON_FACE;\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
             + roll +
-            f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n'
+            f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n'
+            '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started\n\t}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
 
 

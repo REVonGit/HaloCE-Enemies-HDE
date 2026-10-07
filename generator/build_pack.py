@@ -908,8 +908,8 @@ STACKER_HEAD = 'head_marcus_cap-101'
 
 # Lip-sync: Halo CE moved the Marines' jaw ('bip01 ponytail1') with their dialogue; the animations hold it shut
 # (extract_chars.py). While a Marine's voice channel plays, the jaw flaps open and shut in a speech rhythm, opening
-# about its local -z axis as Halo CE's own open pose does (9 degrees in its idles; up to 14 here), added on top of
-# the animation (SetNamedBoneRotation, SB_ADD: animation * this)
+# about its local +z axis (the chin down; up to 10 degrees), added on top of the animation (SetNamedBoneRotation,
+# SB_ADD: animation * this). jaw_weights.py gives the jaw a clean hinge, so only the lower lip and chin move
 LIP_CODE = """
 	int hce_lipPhase;
 	double hce_lipOpen;
@@ -926,8 +926,8 @@ LIP_CODE = """
 		}
 		if(want == 0 && hce_lipOpen == 0) return;
 		hce_lipOpen = want;
-		double a = want * 14.0;
-		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+		double a = want * 10.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}
 """
 

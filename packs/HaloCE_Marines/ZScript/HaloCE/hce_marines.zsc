@@ -79,8 +79,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		}
 		if(want == 0 && hce_lipOpen == 0) return;
 		hce_lipOpen = want;
-		double a = want * 14.0;
-		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+		double a = want * 10.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
@@ -6362,8 +6362,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		}
 		if(want == 0 && hce_lipOpen == 0) return;
 		hce_lipOpen = want;
-		double a = want * 14.0;
-		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, -sin(a / 2), cos(a / 2)), SB_ADD, 3);
+		double a = want * 10.0;
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it

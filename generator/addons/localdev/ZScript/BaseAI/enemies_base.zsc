@@ -1537,6 +1537,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				return true;
 			}
 			if(i == 0 && HCE_TryJump(a, true)) { hce_moveAngle = a; return true; }
+			if(i == 0 && HCE_TryDrop(a, spd)) { hce_moveAngle = a; return true; }
 		}
 		HCE_Brake();
 		return false;
@@ -1582,6 +1583,39 @@ class HaloDoom_EnemyBase : Actor abstract
 		double vh = clamp((reach + radius + (overThing ? bm.radius * 2 : 8)) / t, 2.5, max(4, hce_runSpeed * 1.3));
 		hce_jumpVel = dir * vh;
 		vel = (hce_jumpVel, vz);
+		hce_jumpState = 1; hce_jumpTics = 0; hce_jumpCooldown = level.maptime + 20;
+		HCE_StopFireLoop();
+		int k = HCE_HasAnim(HCE_A_AIRBORNE) ? HCE_A_AIRBORNE : HCE_HasAnim(HCE_A_LEAP_AIR) ? HCE_A_LEAP_AIR : HCE_A_MOVE_F;
+		HCE_Play(k, true, true, 3, true);
+		return true;
+	}
+
+	// Dropping off a ledge: Marines and the Covenant step off a drop that is too deep to walk down when where they're
+	// going (their target, the spot they last saw it, or the player they follow) is down there, as long as the drop
+	// is safe for them (up to two and a half times their height) and doesn't land in a damaging floor. Halo's AI does
+	// the same with its 'safe to jump down' hint. They fall in the airborne animation and land in the landing one.
+	double HCE_SafeDrop() { return height * 2.5; }
+
+	bool HCE_TryDrop(double ang, double spd)
+	{
+		if(bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0 || pos.z > floorz + 2 || waterlevel >= 2) return false;
+		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
+		double goalZ;
+		if(target && hce_canSee) goalZ = target.pos.z;
+		else if(target) goalZ = hce_lastKnown.z;
+		else if(HCE_InSquad() && players[consoleplayer].mo) goalZ = players[consoleplayer].mo.pos.z;
+		else return false;
+		if(goalZ > pos.z - MaxStepHeight) return false;                      // nothing to go down for
+		vector2 dir = AngleToVector(ang, 1);
+		vector2 p = pos.xy + dir * (radius + max(spd, 4) + 4);
+		double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		double drop = pos.z - fz;
+		if(drop <= MaxStepHeight || drop > HCE_SafeDrop()) return false;
+		let sec = level.PointInSector(p);
+		if(sec && sec.damageamount > 0) return false;                        // lava, slime
+		if(!TryMove(pos.xy + dir * max(spd, 4), 1)) return false;
+		hce_jumpVel = dir * clamp(spd, 2.5, max(4, hce_runSpeed));
+		vel = (hce_jumpVel, 0);
 		hce_jumpState = 1; hce_jumpTics = 0; hce_jumpCooldown = level.maptime + 20;
 		HCE_StopFireLoop();
 		int k = HCE_HasAnim(HCE_A_AIRBORNE) ? HCE_A_AIRBORNE : HCE_HasAnim(HCE_A_LEAP_AIR) ? HCE_A_LEAP_AIR : HCE_A_MOVE_F;
@@ -1942,6 +1976,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	HCE_Formation hce_formation;
+	vector2 hce_formSpot;
+	double hce_formFace;
+	int hce_formTics;
 	virtual void HCE_Follow()
 	{
 		let p = players[consoleplayer].mo;
@@ -1957,9 +1995,24 @@ class HaloDoom_EnemyBase : Actor abstract
 		else
 		{
 			if(hce_squadOrder == HCE_ORDER_REGROUP && HCE_RegroupTick()) return;
-			double d = Distance2D(p);
-			if(d > 220) { HCE_Move(AngleTo(p), d > 500 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
-			else HCE_Brake();
+			// a place in the squad's formation (HCE_Formation): a wedge behind the player in the open, a file down
+			// his own path where it's tight
+			if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
+			if(level.maptime >= hce_formTics) { hce_formation.Spot(self, hce_formSpot, hce_formFace); hce_formTics = level.maptime + 6; }
+			vector2 dv = hce_formSpot - pos.xy;
+			double gd = dv.Length(), d = Distance2D(p);
+			if(gd > 40 && d > 72)
+			{
+				bool hurry = gd > 160 || d > 500 || p.vel.xy.Length() > hce_walkSpeed * 1.2;
+				HCE_Move(atan2(dv.y, dv.x), hurry ? hce_runSpeed : (gd < 96 ? hce_walkSpeed * 0.75 : hce_walkSpeed));
+				A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+			}
+			else
+			{
+				HCE_Brake();
+				double dd = DeltaAngle(angle, hce_formFace);              // in place: watch its sector
+				if(abs(dd) > 2) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.5, hce_turnRate * 0.5), SPF_INTERPOLATE);
+			}
 		}
 		HCE_PickMoveAnim();
 		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) { hce_action = HCE_ACT_FIGHT; HCE_OnAcquire(); } }
@@ -4185,6 +4238,128 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_action = HCE_ACT_FIGHT;
 		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
 		if(HCE_HasAnim(k)) HCE_PlayLocked(k);
+	}
+}
+
+// ----------------------------------------------------------------------
+// Squad formation for the Marines following the player. From US Army infantry doctrine (FM 3-21.8, FM 7-92):
+// the fire team / squad **wedge**, the leader at the point and the men stepped back to either side of him, each
+// watching his own sector (the left arm left, the right arm right, the last man the rear), its interval opening in
+// the open and closing up where it's tight; and the **file**, one behind another on the leader's own path, where the
+// ground won't take a wedge (corridors, doorways, stairs). UN contingents patrol in their own armies' formations, the
+// same file and wedge (arrowhead). Doom scale: 32 units to the metre; the doctrinal 10 m interval would spread a
+// squad over a whole room, so the open interval is ~3.5 m and the file's ~2.5 m. The player is the leader.
+// ----------------------------------------------------------------------
+class HCE_Formation : Thinker
+{
+	const INTERVAL = 112;        // between neighbours on a wedge arm (diagonal)
+	const FILE_GAP = 80;         // between men in file
+	const ARM = 4;               // men per arm before the rest fall in down the middle
+	Actor leader;
+	Array<double> tx, ty;        // the leader's path, newest first, a point every 16 units
+	double heading;
+	bool tight;
+	Array<HaloDoom_EnemyBase> roster;
+
+	static HCE_Formation Get(Actor leader)
+	{
+		let it = ThinkerIterator.Create("HCE_Formation", STAT_USER);
+		HCE_Formation f;
+		while(f = HCE_Formation(it.Next())) if(f.leader == leader) return f;
+		f = new("HCE_Formation");
+		f.ChangeStatNum(STAT_USER);
+		f.leader = leader; f.heading = leader.angle;
+		return f;
+	}
+
+	override void Tick()
+	{
+		if(!leader) { Destroy(); return; }
+		for(int i = roster.Size() - 1; i >= 0; i--)
+		{
+			let m = roster[i];
+			if(!m || m.health <= 0 || !m.HCE_InSquad() || m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD) roster.Delete(i);
+		}
+		vector2 v = leader.vel.xy;
+		if(v.Length() > 1.5) heading += Actor.DeltaAngle(heading, atan2(v.y, v.x)) * 0.12;   // the way he's going
+		if(!tx.Size() || (leader.pos.xy - (tx[0], ty[0])).Length() >= 16)
+		{
+			tx.Insert(0, leader.pos.x); ty.Insert(0, leader.pos.y);
+			if(tx.Size() > 160) { tx.Pop(); ty.Pop(); }
+		}
+		if(level.maptime % 10 == 0)
+		{
+			// room either side of the leader: a wedge needs ~9 m across, it goes back to file under ~7
+			double w = Room(heading + 90) + Room(heading - 90);
+			if(tight && w > 300) tight = false;
+			else if(!tight && w < 224) tight = true;
+		}
+	}
+
+	double Room(double ang)
+	{
+		FLineTraceData tr;
+		if(leader.LineTrace(ang, 192, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, leader.height * 0.5, data: tr)) return tr.Distance;
+		return 192;
+	}
+
+	// the point 'dist' units back along the leader's path (straight back past its end)
+	vector2 TrailPoint(double dist)
+	{
+		vector2 a = leader.pos.xy;
+		for(int i = 0; i < tx.Size(); i++)
+		{
+			vector2 b = (tx[i], ty[i]);
+			double l = (b - a).Length();
+			if(l >= dist && l > 0) return a + (b - a) * (dist / l);
+			dist -= l; a = b;
+		}
+		return a - Actor.AngleToVector(heading, dist);
+	}
+
+	// reachable from the leader on his level: no wall between, no big step up or down
+	bool Open(vector2 p)
+	{
+		vector2 d = p - leader.pos.xy;
+		double l = d.Length();
+		if(l < 1) return true;
+		FLineTraceData tr;
+		if(leader.LineTrace(atan2(d.y, d.x), l + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, leader.height * 0.5, data: tr)) return false;
+		double fz = leader.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		return abs(fz - leader.floorz) <= 32;
+	}
+
+	void Spot(HaloDoom_EnemyBase m, out vector2 spot, out double face)
+	{
+		int k = roster.Find(m);
+		if(k == roster.Size()) { roster.Push(m); k = roster.Size() - 1; }
+		int n = roster.Size();
+		bool last = k == n - 1 && n > 2;
+		if(tight)
+		{
+			double back = FILE_GAP * (k + 1) + 16;
+			spot = TrailPoint(back);
+			vector2 ahead = TrailPoint(max(0, back - 32));
+			face = last ? atan2(spot.y - ahead.y, spot.x - ahead.x) : atan2(ahead.y - spot.y, ahead.x - spot.x);
+			return;
+		}
+		double back, lat;
+		if(k < ARM * 2)
+		{
+			int r = k / 2 + 1;
+			double side = (k % 2 == 0) ? 1 : -1;        // left arm first, then right
+			back = r * INTERVAL * 0.72; lat = r * INTERVAL * 0.70 * side;
+			face = heading + 40 * side;
+		}
+		else
+		{
+			back = (ARM - 1 + (k - ARM * 2)) * INTERVAL * 0.72 + INTERVAL * 0.5; lat = 0;
+			face = heading;
+		}
+		if(last) face = heading + 180;
+		vector2 fw = Actor.AngleToVector(heading, 1), lf = Actor.AngleToVector(heading + 90, 1);
+		spot = leader.pos.xy - fw * back + lf * lat + leader.vel.xy * 10;    // keeping pace: where he'll be shortly
+		if(!Open(spot)) spot = TrailPoint(back + abs(lat) * 0.5);   // his slot is in a wall: on the path instead
 	}
 }
 

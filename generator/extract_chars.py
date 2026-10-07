@@ -291,6 +291,9 @@ def extract(name, pid, sources, maps):
                         next=a.next, dx=[float(a.dx[:, 0].sum()), float(a.dx[:, 1].sum())])
         alist.append(dict(name=nm, fps=30.0, loop=True,
                           frames=[[(t, q, sc) for (t, q, sc) in fr] for fr in a.frames]))
+    if pid in ('Marine', 'MarineArmored'):
+        import jaw_weights                    # a clean hinge for the jaw: the lower lip and chin only (lip-sync)
+        jaw_weights.fix(joints, meshes, [mm.get('name', '') for mm in meshes])
     path = f'{OUT}/models/{pid}/{pid}.iqm'
     size = write_iqm(path, joints, meshes, alist)
     # bounds in bind pose

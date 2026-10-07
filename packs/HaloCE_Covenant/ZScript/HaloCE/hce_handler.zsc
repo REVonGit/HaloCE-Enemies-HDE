@@ -287,23 +287,64 @@ class HCE_ReplaceHandler : EventHandler
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
 {
-	// "netevent hce_squad <order>" (the Halo CE Squad keys): 0 follow me, 1 hold here, 2 regroup on me -- every
-	// Marine following the player within 1536 units
+	// "netevent hce_squad <order>" (the Halo CE Squad keys) to the Marines following the player within 1536 units:
+	//   0 follow me, 1 hold here, 2 regroup on me, 3 hold fire, 4 open fire, 5 focus fire on the enemy in the
+	//   crosshair, 6 suppress (it, or whatever they're fighting), 7 medic (the nearest one patches the player up),
+	//   8 weapon (the nearest one that can use it fetches the gun in the crosshair)
+	// The Master Chief says the order (HCE/Chief/*: the Marines pack's sounds); nothing is printed.
+	int medicUntil[MAXPLAYERS];
+
 	void SquadOrder(ConsoleEvent e)
 	{
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
-		int o = clamp(e.Args[0], 0, 2);
-		static const String said[] = { "Squad: follow me", "Squad: hold here", "Squad: regroup on me" };
+		int o = clamp(e.Args[0], 0, 8);
+		static const String line[] = { "HCE/Chief/FollowMe", "", "HCE/Chief/FollowMe", "HCE/Chief/HoldFire", "HCE/Chief/OpenFire",
+			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon" };
+		if(o == 7 && level.maptime < medicUntil[e.Player]) return;
+		Array<HaloDoom_EnemyBase> squad;
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
 		HaloDoom_EnemyBase m;
-		int n = 0;
 		while(m = HaloDoom_EnemyBase(it.Next()))
+			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
+		if(line[o].Length() > 0) pl.A_StartSound(line[o], CHAN_VOICE, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		if(o <= 2) { for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o); return; }
+		if(o <= 6)
 		{
-			if(!m.hce_enabled || m.health <= 0 || !m.HCE_InSquad() || m.hce_betrayed || m.Distance3D(pl) > 1536) continue;
-			m.HCE_Order(o); n++;
+			Actor aimed = pl.AimTarget();
+			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_FireOrder(o, aimed);
+			return;
 		}
-		pl.A_Print(n > 0 ? said[o] : "Squad: no Marines in range");
+		// the one closest to the player (the medic) or to the gun (the weapon)
+		if(o == 7)
+		{
+			HaloDoom_EnemyBase best = null;
+			for(int i = 0; i < squad.Size(); i++) if(!best || squad[i].Distance3D(pl) < best.Distance3D(pl)) best = squad[i];
+			if(best) { best.HCE_MedicOrder(pl); medicUntil[e.Player] = level.maptime + 35 * 20; }
+			return;
+		}
+		if(squad.Size() == 0) return;
+		FLineTraceData d;
+		pl.LineTrace(pl.angle, 1536, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
+		vector3 at = d.HitLocation;
+		Actor gun = null; double gd = 72;
+		let bi = BlockThingsIterator.CreateFromPos(at.x, at.y, at.z, 0, 72, false);
+		while(bi.Next())
+		{
+			let t = bi.thing;
+			if(!t || squad[0].HCE_GroundWeaponClass(t) == 'None') continue;
+			double dd = (t.pos.xy - at.xy).Length();
+			if(dd < gd) { gd = dd; gun = t; }
+		}
+		if(!gun) return;
+		// nearest first
+		for(int i = 1; i < squad.Size(); i++)
+		{
+			let k = squad[i]; int j = i - 1;
+			while(j >= 0 && squad[j].Distance3D(gun) > k.Distance3D(gun)) { squad[j + 1] = squad[j]; j--; }
+			squad[j + 1] = k;
+		}
+		for(int i = 0; i < squad.Size(); i++) if(squad[i].HCE_WeaponOrder(gun)) return;
 	}
 
 	override void NetworkProcess(ConsoleEvent e)

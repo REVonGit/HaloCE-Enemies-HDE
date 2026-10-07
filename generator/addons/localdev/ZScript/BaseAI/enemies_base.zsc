@@ -933,6 +933,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	void HCE_ScanTargets()
 	{
+		if(hce_focusTarget && (hce_focusTarget.health <= 0 || !HCE_IsEnemy(hce_focusTarget))) hce_focusTarget = null;
+		if(hce_focusTarget) { if(target != hce_focusTarget) { bool fresh = !target; target = hce_focusTarget; hce_lastKnown = target.pos; if(fresh) HCE_OnAcquire(); } return; }
 		Actor best = null; double bestScore = 1e9;
 		if(target && target.health > 0 && HCE_IsEnemy(target))
 		{
@@ -1063,6 +1065,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
 		if(!hce_bondLooked) HCE_BondLink();
+		if(hce_medicFor && HCE_MedicTick()) return;
 		if(hce_scavItem && HCE_ScavengeTick()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
 		if((level.maptime + hce_scavOff) % 35 == 0) HCE_ScavengeScan();
@@ -1641,7 +1644,72 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_wounded, hce_inspired, hce_squadDeathDone;
 	int hce_squadScanTics, hce_cowerCooldown;
 
+	bool hce_holdFire;                   // "hold fire": no shots or grenades until "open fire"
+	Actor hce_focusTarget;               // "focus": the enemy the player pointed out
+	int hce_suppressUntil;               // "suppress": long bursts, short pauses until then
+	Actor hce_medicFor;                  // "medic": the player this Marine is running to patch up
+	int hce_medicTics, hce_medicPhase;
+
 	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
+
+	// the fire orders (the squad keys; the Chief's own lines play from the handler)
+	void HCE_FireOrder(int o, Actor aimed)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		bool enemy = aimed && aimed.health > 0 && HCE_IsEnemy(aimed);
+		switch(o)
+		{
+		case 3: hce_holdFire = true; hce_suppressUntil = 0; HCE_StopFireLoop(); hce_shotsLeft = 0; break;
+		case 4: hce_holdFire = false; break;
+		case 5: if(enemy) { hce_holdFire = false; hce_focusTarget = aimed; target = aimed; hce_lastKnown = aimed.pos; hce_action = HCE_ACT_FIGHT; } break;
+		case 6:
+			hce_holdFire = false; hce_suppressUntil = level.maptime + 35 * 8;
+			if(enemy) { target = aimed; hce_lastKnown = aimed.pos; hce_action = HCE_ACT_FIGHT; }
+			break;
+		}
+		if(target && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+		HCE_Say('Acknowledge', 1.0, 35);
+	}
+
+	// "medic": run to the player, crouch beside them and patch them up (true: busy with it this tic)
+	void HCE_MedicOrder(Actor pl)
+	{
+		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
+		hce_scavItem = null;
+		HCE_Say('Acknowledge', 1.0, 35, true);
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	bool HCE_MedicTick()
+	{
+		let pl = hce_medicFor;
+		if(!pl || pl.health <= 0 || health <= 0 || --hce_medicTics <= 0) { hce_medicFor = null; return false; }
+		double d = Distance2D(pl);
+		if(hce_medicPhase == 0)
+		{
+			if(d > radius + pl.radius + 20)
+			{
+				HCE_StopFireLoop(); hce_shotsLeft = 0;
+				HCE_Move(AngleTo(pl), hce_runSpeed);
+				A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+				HCE_PickMoveAnim();
+				return true;
+			}
+			HCE_Brake();
+			A_SetAngle(AngleTo(pl), SPF_INTERPOLATE);
+			hce_medicPhase = 1; hce_medicTics = 35;
+			HCE_Play(HCE_HasAnim(HCE_A_CROUCH_IDLE) ? HCE_A_CROUCH_IDLE : HCE_A_IDLE, true, true);
+			return true;
+		}
+		HCE_Brake();
+		if(hce_medicTics > 2) return true;
+		pl.GiveBody(40);                                   // a field dressing: up to 40 health, never past the maximum
+		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
+		hce_medicFor = null;
+		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
 	bool HCE_IsJohnson() { return hce_voice == 'Marine_Johnson'; }
 
 	void HCE_Order(int o)
@@ -1784,6 +1852,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_UpdateFiring(double dist)
 	{
 		if(hce_projectile == 'None' && !bHCE_Beam) return;
+		if(hce_holdFire) { if(hce_shotsLeft > 0) HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0; return; }   // "hold fire"
 		if(hce_patShotsMax > 0) { HCE_UpdatePattern(dist); return; }
 		// legacy: Halo burst duration / separation
 		if(!hce_canSee || dist > hce_maxRange) { hce_burstTics = 0; return; }
@@ -1941,6 +2010,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// lobbed weapons hold fire under a ceiling too low for the arc
 		if(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)) { hce_sepTics = 35; return; }
 		hce_shotsLeft = random(hce_patShotsMin, max(hce_patShotsMin, hce_patShotsMax));
+		if(level.maptime < hce_suppressUntil) hce_shotsLeft *= 2;          // suppressing: long bursts
 		hce_shotTics = 0;
 		hce_burstShot = 0;
 		if(hce_fireLoop)
@@ -1955,6 +2025,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_shotsLeft = 0;
 		HCE_StopFireLoop();
 		hce_sepTics = max(1, int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * pauseScale * HCE_PauseScale()));
+		if(level.maptime < hce_suppressUntil) hce_sepTics = max(1, hce_sepTics / 3);          // and short pauses
 	}
 
 	void HCE_StopFireLoop()
@@ -2247,7 +2318,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	virtual bool HCE_TryGrenade(double dist)
 	{
-		if(hce_grenadeType <= 0 || hce_grenades <= 0 || !hce_canSee) return false;
+		if(hce_grenadeType <= 0 || hce_grenades <= 0 || !hce_canSee || hce_holdFire) return false;
 		if(--hce_grenadeTics > 0) return false;
 		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group
 		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale());
@@ -3563,6 +3634,18 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_TakeWeapon(o);
 		hce_scavItem = null; hce_scavCooldown = level.maptime + 35 * 3;
 		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
+	// "weapon": the player pointed at a gun on the ground: go and get it, whatever it scores
+	bool HCE_WeaponOrder(Actor item)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed || hce_projectile == 'None' || !HCE_HasLoadouts()) return false;
+		Name w = HCE_GroundWeaponClass(item);
+		if(w == 'None' || HCE_LoadoutIndex(w) < 0 || w == hce_dropWeapon) return false;
+		hce_scavItem = item; hce_scavPhase = 0; hce_scavTics = 35 * 8;
+		HCE_Say('Acknowledge', 1.0, 35, true);
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 		return true;
 	}
 

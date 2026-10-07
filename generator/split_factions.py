@@ -31,6 +31,11 @@ def chunks(text):
         out.append((m.group(1), m.group(2), body))
     return out
 
+# the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
+CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
+CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
+               'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon'}
+
 def main():
     if os.path.exists(OUTDIR): shutil.rmtree(OUTDIR)
     zs = open(f'{PACK}/ZScript/HaloCE/hce_enemies.zsc').read()
@@ -82,8 +87,13 @@ def main():
                                           'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)\n'
                                           'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
+                                          'alias hce_holdfire "netevent hce_squad 3"\nalias hce_openfire "netevent hce_squad 4"\nalias hce_focus "netevent hce_squad 5"\n'
+                                          'alias hce_suppress "netevent hce_squad 6"\nalias hce_medic "netevent hce_squad 7"\nalias hce_weapon "netevent hce_squad 8"\n'
                                           'addkeysection "Halo CE Squad" hce_squad\n'
-                                          'addmenukey "Squad: follow me" hce_follow\naddmenukey "Squad: hold here" hce_hold\naddmenukey "Squad: regroup on me" hce_regroup\n')
+                                          'addmenukey "Squad: follow me" hce_follow\naddmenukey "Squad: hold here" hce_hold\naddmenukey "Squad: regroup on me" hce_regroup\n'
+                                          'addmenukey "Squad: hold fire" hce_holdfire\naddmenukey "Squad: open fire" hce_openfire\n'
+                                          'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
+                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: get that weapon" hce_weapon\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}
@@ -148,6 +158,23 @@ def main():
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'
+        if fac == 'marines' and os.path.isdir(CHIEF):
+            # the Master Chief's squad orders (HCE_SpawnAllHandler.SquadOrder plays them on the player)
+            os.makedirs(f'{d}/sounds/hce_chief', exist_ok=True)
+            groups = {}
+            for fn in sorted(os.listdir(CHIEF)):
+                m = re.fullmatch(r'(.+?) (\d+)\.(mp3|ogg|wav|flac)', fn, re.I)
+                if not m or m.group(1).lower() not in CHIEF_LINES: continue
+                key = CHIEF_LINES[m.group(1).lower()]
+                dst = f'sounds/hce_chief/{key.lower()}_{int(m.group(2))}.{m.group(3).lower()}'
+                shutil.copy(f'{CHIEF}/{fn}', f'{d}/{dst}')
+                groups.setdefault(key, []).append(dst)
+            out = ['// the Master Chief\'s squad orders (the Halo CE Squad keys)']
+            for key, files in sorted(groups.items()):
+                ids = [f'HCE/Chief/{key}/{i}' for i in range(len(files))]
+                out += [f'{sid} "{f}"' for sid, f in zip(ids, files)]
+                out.append(f'$random HCE/Chief/{key} {{ {" ".join(ids)} }}')
+            open(f'{d}/sndinfo.chief', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{GORE}/decaldef.hcegore'):
             # NashGore patch: Halo CE / Halo 2 blood decals and bursts (extract_halo_gore.py, hce_gore.zsc)
             shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{d}/ZScript/HaloCE/hce_gore.zsc')

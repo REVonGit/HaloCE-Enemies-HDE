@@ -7,7 +7,19 @@ alias leatherneck "netevent hce_spawnmarines"
 alias hce_follow "netevent hce_squad 0"
 alias hce_hold "netevent hce_squad 1"
 alias hce_regroup "netevent hce_squad 2"
+alias hce_holdfire "netevent hce_squad 3"
+alias hce_openfire "netevent hce_squad 4"
+alias hce_focus "netevent hce_squad 5"
+alias hce_suppress "netevent hce_squad 6"
+alias hce_medic "netevent hce_squad 7"
+alias hce_weapon "netevent hce_squad 8"
 addkeysection "Halo CE Squad" hce_squad
 addmenukey "Squad: follow me" hce_follow
 addmenukey "Squad: hold here" hce_hold
 addmenukey "Squad: regroup on me" hce_regroup
+addmenukey "Squad: hold fire" hce_holdfire
+addmenukey "Squad: open fire" hce_openfire
+addmenukey "Squad: focus on my target" hce_focus
+addmenukey "Squad: suppress" hce_suppress
+addmenukey "Squad: medic" hce_medic
+addmenukey "Squad: get that weapon" hce_weapon

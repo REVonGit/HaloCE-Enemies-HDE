@@ -731,12 +731,18 @@ Shot enemies show blood on their bodies, in their race's colour. Once the shield
 
 Marines following you (every Marine is an ally) take orders and react to how you treat them.
 
-* **Orders:** bind them under **Options > Customize Controls > Halo CE Squad**, or use the console aliases.
+* **Orders:** bind them under **Options > Customize Controls > Halo CE Squad**, or use the console aliases. The Master Chief says the order out loud (his own lines, in the Marines pack); nothing is printed on screen. Orders go to every following Marine within 1536 units, and one of them acknowledges.
   * `hce_follow`: follow me (the default).
   * `hce_hold`: hold here. Each Marine keeps to the spot where it stood, fighting from within 192 units of it, and walks back to it when the fight is over.
   * `hce_regroup`: regroup on me. They break off the fight and run back to you, then follow again (they give up after 8 seconds).
+  * `hce_holdfire`: hold fire. No shots and no grenades until told otherwise.
+  * `hce_openfire`: open fire.
+  * `hce_focus`: focus on the enemy in your crosshair. Every Marine targets it until it's dead (and opens fire, if holding).
+  * `hce_suppress`: suppress. For 8 seconds they fire twice as long and pause a third as long, at the enemy in your crosshair if there is one.
+  * `hce_medic`: medic. The nearest Marine runs to you, crouches beside you and patches you up (up to 40 health, never past your maximum). Once every 20 seconds.
+  * `hce_weapon`: get that weapon. Point at a gun on the ground; the nearest Marine that can use it goes and picks it up, crouching beside it as usual and leaving his own, whether or not he'd have wanted it.
 
-  Orders go to every following Marine within 1536 units. One of them acknowledges, and the order shows on screen. The aliases are for `netevent hce_squad 0/1/2`.
+  The aliases are for `netevent hce_squad 0`–`8` (in that order).
 * **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
   * Killing a Marine: the others who saw it call it out, and each of them counts it as two hits against you.
   * Turn betrayal off with `hce_betrayal 0`; they still scold you.

@@ -377,9 +377,30 @@ Marines and the Covenant swap their gun for a better one they see lying nearby (
 * **When:** out of a fight, or with the enemy out of sight or more than 640 units off; it gives up after 6 seconds if it can't get there. Never with its gun arm shot off.
 * **What it picks up:** whatever the gun the dead dropped, a weapon placed in the map, or one you dropped (Marines take guns you drop for them).
   * The **Covenant only ever use Covenant weapons**, and only ones their body is modelled with: Elites the plasma rifle, needler and fuel rod; Spec Ops Elites the plasma rifle and needler; Grunts the plasma pistol and needler; Spec Ops and Heavy Grunts the needler and fuel rod. They only trade up (fuel rod over needler and plasma rifle, those over the plasma pistol).
-  * **Marines** take anything they have a grip for: every gun in [the Marine arsenal](#the-marine-arsenal) and Halo CE's (assault rifle, shotgun, sniper rifle, rocket launcher, Magnum, flamethrower) plus the needler and plasma rifle. Like Halo Infinite's, each Marine has a liking for close, mid or long range: power weapons first, then the guns that suit its range, then the rest.
-* **What changes:** the gun on the model, its stance and animations, and its firing, sounds, range, magazine or heat are those of the pack's own class that carries that gun.
-* Not picked up: the energy sword, the Plasma Caster, the beam rifle, the sticky detonator and the Stanchion (their classes are built around them). Sergeants Johnson and Stacker keep their guns.
+  * **Marines** can carry **every human and Covenant gun HaloDoom Evolved has** except the melee weapons (energy sword, gravity hammer) and the BFG-class ones (the Unmaker and the Stanchion); Forerunner guns aren't human or Covenant, so not those either. That's 28 guns: the whole [Marine arsenal](#the-marine-arsenal) and Halo CE's guns, plus the plasma pistol, plasma rifle, needler, fuel rod, beam rifle, Plasma Caster, carbine, Spiker, Pulse Carbine and Needle Ballista. Every Marine, Johnson and Stacker included, can pick any of them up or be traded one.
+  * **The Covenant guns on a Marine:** each is the model the Covenant carry (the plasma pistol, fuel rod, needler and plasma rifle Halo CE's; the beam rifle, carbine and Spiker Halo 2's; the Plasma Caster this pack's), the Pulse Carbine is the carbine in blue, and the Needle Ballista (a 2D gun in HDE, with no model) is Halo CE's needler drawn out half as long again. Pistol-sized ones (plasma pistol, Spiker) go in Halo 2's pistol stance, the fuel rod on the shoulder, the rest in the rifle stance. The beam rifle fires HDE's held beam, the Pulse Carbine's bolts home on the Marine's target, and the sticky detonator's charges go off 1.5 s after they land, whoever carries them.
+  * **Launchers on the shoulder:** the rocket launcher, Hydra and fuel rod use Halo 2's Marine launcher stance (`marine_stances.py`, from `01b_spacestation.map`: idle, moves, turns, evades, jumps and landings, grenade throw, cheer, point, crouch, the launcher's melee and reload).
+* **Weapon biases:** every gun has a base worth (power weapons highest, sidearms lowest) and a kind (close quarters, mid range, long range, heavy, sidearm). Each Marine adds his liking for some kinds, and picks up (or welcomes in a trade) whatever scores highest:
+
+  | Marine | Liking |
+  |---|---|
+  | Marine | one of close quarters, mid range or long range, rolled when he spawns (+15) |
+  | Armored Marine | heavy and power weapons (+15), mid range (+5) |
+  | Corpsman | sidearms (+15), close quarters (+10) |
+  | Sergeant Johnson | long range (+20), heavy weapons (+10) |
+  | Sergeant Stacker | mid range (+20), long range (+5) |
+
+  | Kind | Guns (base worth) |
+  |---|---|
+  | Heavy | Rocket launcher 45, Hydra 42, Needle Ballista 42, fuel rod 40, GPMG 38, Plasma Caster 36, grenade launcher 34, sticky detonator 30 |
+  | Long range | Stanchion 50, sniper rifle 40, beam rifle 40, battle rifle 30, DMR 30, carbine 28 |
+  | Mid range | Commando 26, needler 25, plasma rifle 25, Pulse Carbine 24, MA5B 22, MA37 20 |
+  | Close quarters | flamethrower 34, shotgun 30, Bulldog 30, double barrel 28, SMG 20, Spiker 18 |
+  | Sidearm | Magnum 12, Sidekick 10, plasma pistol 10 |
+
+  The Covenant have no liking: they trade up by base worth alone.
+* **What changes:** the gun on the model, its stance and animations, and its firing, sounds, range, magazine or heat are those of the pack's own class that carries that gun (for the Covenant guns, a Marine profile made for each).
+* Not picked up by the Covenant: the energy sword and the Plasma Caster (their classes are built around them), and any human gun (the Brutes' assault rifle and shotgun stay with the Brutes that carry them).
 
 ## Reloading and overheating
 
@@ -733,7 +754,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
 
 * **Orders:** bind them under **Options > Customize Controls > Halo CE Squad**, or use the console aliases. The Master Chief says the order out loud (his own lines, in the Marines pack); nothing is printed on screen. Orders go to every following Marine within 1536 units, and one of them acknowledges.
   * `hce_follow`: follow me (the default).
-  * `hce_hold`: hold here. Each Marine keeps to the spot where it stood, fighting from within 192 units of it, and walks back to it when the fight is over.
+  * `hce_hold`: hold position. Each Marine keeps to the spot where it stood, fighting from within 192 units of it, and walks back to it when the fight is over.
   * `hce_regroup`: regroup on me. They break off the fight and run back to you, then follow again (they give up after 8 seconds).
   * `hce_holdfire`: hold fire. No shots and no grenades until told otherwise.
   * `hce_openfire`: open fire.
@@ -742,8 +763,10 @@ Marines following you (every Marine is an ally) take orders and react to how you
   * `hce_medic`: medic. Put a Marine in your crosshair: the nearest corpsman (`HCE_MarineMedic`) runs to him, crouches beside him and patches him up (60% of his health back, never past his maximum).
   * `hce_weapon`: get that weapon. Point at a gun on the ground; the nearest Marine that can use it goes and picks it up, crouching beside it as usual and leaving his own, whether or not he'd have wanted it.
 
-  The aliases are for `netevent hce_squad 0`–`8` (in that order).
-* **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (it's one his body has a grip for), you swap: you get his gun and he takes yours. A gun he likes at least as well as his own (his close / mid / long liking) gets thanks; a worse one gets scorn (Halo 2's "worse weapon" lines; the Halo CE voices, which have none, tell you off instead). If he can't carry it at all, he tells you off and keeps his. (HaloDoom Evolved packs only.)
+  * `hce_button`: press that button. Point at a switch (a wall line you'd use); the nearest Marine goes to it and uses it.
+
+  The aliases are for `netevent hce_squad 0`–`9` (in that order). One Marine answers each order, a random one (or the one given the job), and only once the Chief has finished his line (1.6–2.3 s later). The Chief's lines are OGG files, in `sounds/hce_chief`.
+* **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (any human or Covenant gun but the melee and BFG-class ones), you swap: you get his gun and he takes yours. A gun he likes at least as well as his own (his close / mid / long liking) gets thanks; a worse one gets scorn (Halo 2's "worse weapon" lines; the Halo CE voices, which have none, tell you off instead). If he can't carry it at all, he tells you off and keeps his. (HaloDoom Evolved packs only.)
 * **Names:** every Marine has a rank and a name, rolled when he spawns: Privates, Privates First Class and Lance Corporals among the regulars, Lance Corporals to Sergeants among the Armored Marines, Corporals and Staff Sergeants for the Majors, Hospital Corpsman Third Class (`HM3.`) for the corpsmen. First names, middle initials and surnames are drawn from long lists, e.g. `PVT. George A. Romero`. Sergeant Johnson is always `SGT. Avery J. Johnson` and Stacker `MSG. Marcus P. Stacker`.
 * **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.
 * **Corpsman (new, `HCE_MarineMedic`, 30321):** a Marine with the Sidekick who answers the medic order. He's in the random Marine pool.

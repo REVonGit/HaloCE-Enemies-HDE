@@ -151,31 +151,53 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_ApplyLoadout0(); return;
+		case 1: HCE_ApplyLoadout1(); return;
+		case 2: HCE_ApplyLoadout2(); return;
+		}
+	}
+	void HCE_ApplyLoadout0()
+	{
+		{
 			hce_projectile = 'HCE_FuelRodBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 3.00; hce_maxRange = 1120; hce_projSpeed = 43.9;
 			hce_rangeMin = 480; hce_rangeMax = 640; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 3.12; hce_patPauseMax = 4.08; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/FuelRod/Fire"; hce_fireSoundBass = "Halo/Weapons/FuelRod/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
-		case 1:
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout1()
+	{
+		{
 			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 3.00; hce_errorAngle = 4.00; hce_maxRange = 880; hce_projSpeed = 12.1;
 			hce_rangeMin = 400; hce_rangeMax = 560; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 1.60; hce_patPauseMax = 2.60; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
-		case 2:
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout2()
+	{
+		{
 			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.75; hce_maxRange = 1120; hce_projSpeed = 155.9;
 			hce_rangeMin = 400; hce_rangeMax = 560; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 6; hce_patShotsMax = 11; hce_patInterval = 4; hce_patPauseMin = 0.68; hce_patPauseMax = 1.20; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
+			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
 	override void HCE_LoadoutVisual(int lo)
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_LoadoutVisual0(); return;
+		case 1: HCE_LoadoutVisual1(); return;
+		case 2: HCE_LoadoutVisual2(); return;
+		}
+	}
+	void HCE_LoadoutVisual0()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
@@ -185,8 +207,11 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
-		case 1:
+		}
+	}
+	void HCE_LoadoutVisual1()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -196,8 +221,11 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
-		case 2:
+		}
+	}
+	void HCE_LoadoutVisual2()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -207,7 +235,6 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
 		}
 	}
 	override Name HCE_LoadoutAnim(int lo, int kind)
@@ -1783,14 +1810,15 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		static const int W[] = { 6, 7, 8, 9, 10, 11 };
 		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
 	}
-	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_Needler, Halo_PlasmaRifle
+	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_BeamRifle, Halo_Needler, Halo_PlasmaRifle
 	override bool HCE_HasLoadouts() { return true; }
 	override int HCE_LoadoutIndex(Name w)
 	{
 		switch(w)
 		{
-		case 'Halo_Needler': return 0;
-		case 'Halo_PlasmaRifle': return 1;
+		case 'Halo_BeamRifle': return 0;
+		case 'Halo_Needler': return 1;
+		case 'Halo_PlasmaRifle': return 2;
 		}
 		return -1;
 	}
@@ -1798,25 +1826,67 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_ApplyLoadout0(); return;
+		case 1: HCE_ApplyLoadout1(); return;
+		case 2: HCE_ApplyLoadout2(); return;
+		}
+	}
+	void HCE_ApplyLoadout0()
+	{
+		{
+			hce_projectile = 'HCE_H2BeamShot'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.75; hce_maxRange = 3600; hce_projSpeed = 2800.0;
+			hce_rangeMin = 480; hce_rangeMax = 1760; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 60; hce_patShotsMax = 75; hce_patInterval = 1; hce_patPauseMin = 1.80; hce_patPauseMax = 2.55; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/BeamRifle/Laser/Loop"; hce_fireSoundBass = ""; hce_specialSound = "Halo/Weapons/BeamRifle/Laser/LoopEnd"; hce_chargeSound = "Halo/Weapons/BeamRifle/Laser/Fire"; hce_fireLoop = true;
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout1()
+	{
+		{
 			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 3.00; hce_errorAngle = 4.00; hce_maxRange = 880; hce_projSpeed = 12.1;
 			hce_rangeMin = 400; hce_rangeMax = 560; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 1.60; hce_patPauseMax = 2.60; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
-		case 1:
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout2()
+	{
+		{
 			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.75; hce_maxRange = 1120; hce_projSpeed = 155.9;
 			hce_rangeMin = 480; hce_rangeMax = 720; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 4; hce_patShotsMax = 7; hce_patInterval = 4; hce_patPauseMin = 0.68; hce_patPauseMax = 1.20; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
+			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
 	override void HCE_LoadoutVisual(int lo)
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_LoadoutVisual0(); return;
+		case 1: HCE_LoadoutVisual1(); return;
+		case 2: HCE_LoadoutVisual2(); return;
+		}
+	}
+	void HCE_LoadoutVisual0()
+	{
+		{
+			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+	}
+	void HCE_LoadoutVisual1()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -1826,8 +1896,11 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
-		case 1:
+		}
+	}
+	void HCE_LoadoutVisual2()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -1837,7 +1910,6 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
 		}
 	}
 	override Name HCE_LoadoutAnim(int lo, int kind)
@@ -1846,10 +1918,60 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		{
 		case 0: return HCE_LoadoutAnim0(kind);
 		case 1: return HCE_LoadoutAnim1(kind);
+		case 2: return HCE_LoadoutAnim2(kind);
 		}
 		return 'None';
 	}
 	Name HCE_LoadoutAnim0(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'stand rifle idle';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle fire-1 csr baked';
+		case HCE_A_MELEE: return 'stand rifle melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand pistol evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand rifle surprise-back';
+		case HCE_A_BERSERK: return 'stand rifle berserk';
+		case HCE_A_WARN: return 'stand rifle warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut baked', 's-ping front gut%1 baked', 's-ping front head baked' }; return o[random(0, 2)]; }
+		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_L: { static const Name o[] = { 's-ping left gut%0 baked', 's-ping left gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim1(int kind)
 	{
 		switch(kind)
 		{
@@ -1898,7 +2020,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		}
 		return 'None';
 	}
-	Name HCE_LoadoutAnim1(int kind)
+	Name HCE_LoadoutAnim2(int kind)
 	{
 		switch(kind)
 		{
@@ -1953,6 +2075,8 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		case 'alert pistol idle': return 70;
 		case 'crouch pistol idle': return 70;
 		case 'crouch pistol move-front': return 35;
+		case 'crouch rifle idle': return 70;
+		case 'crouch rifle move-front': return 35;
 		case 'flaming pistol idle': return 37;
 		case 'h-kill back gut': return 63;
 		case 'h-kill front gut': return 51;
@@ -2002,6 +2126,25 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
 		case 'stand pistol warn': return 33;
+		case 'stand rifle airborne': return 65;
+		case 'stand rifle berserk': return 52;
+		case 'stand rifle fire-1 csr baked': return 13;
+		case 'stand rifle idle': return 70;
+		case 'stand rifle land-soft': return 43;
+		case 'stand rifle melee': return 47;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 36;
+		case 'stand rifle reload-1': return 51;
+		case 'stand rifle signal-attack': return 64;
+		case 'stand rifle surprise-back': return 30;
+		case 'stand rifle surprise-front': return 24;
+		case 'stand rifle throw-grenade': return 64;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn': return 40;
 		}
 		return 0;
 	}
@@ -2157,59 +2300,6 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 		}
 		return 30;
 	}
-
-	// Halo 2's beam rifle, the way HaloDoom's behaves: a held purple beam that cooks whatever it stays on. Each burst
-	// is ~1 s of beam (one trace a tic); the damage climbs while it holds the same target (to 3x in half a second)
-	// and resets when it slips off. Between bursts the rifle cools down. The aim is the API's slow-tracking aim
-	// point, so strafing drags the beam off you.
-	// Each burst opens with ~0.9 s of aiming: a purple sniper glint flashes at the rifle and a thin, harmless
-	// targeting laser runs to where it's aiming; then the beam fires, drawn with HaloDoom Evolved's own beam rifle
-	// laser (the purple beam with its pink core, fading and spreading when it stops).
-	Actor hce_beamVictim;
-	double hce_beamRamp;
-	const HCE_BEAM_AIM = 30;
-	override void HCE_FireShot(bool special)
-	{
-		if(!target) return;
-		vector3 ap = HCE_AimPoint();
-		double gz = height * 0.5 + hce_gunOffset.z;
-		vector3 from = Vec3Angle(hce_gunOffset.x, angle, gz);
-		vector3 diff = level.Vec3Diff(from, ap);
-		double ang = atan2(diff.y, diff.x);
-		double pit = -atan2(diff.z, diff.xy.Length());
-		FLineTraceData lt;
-		LineTrace(ang, hce_maxRange, pit, TRF_THRUSPECIES, gz, hce_gunOffset.x, 0, lt);
-		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
-		vector3 d = level.Vec3Diff(from, to);
-		double len = d.Length();
-		if(hce_burstShot < HCE_BEAM_AIM)
-		{
-			if(hce_burstShot == 0) A_StopSound(CHAN_WEAPON);               // the beam's hum starts with the beam
-			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
-			if(len >= 1) HCE_AimLaser(from, to);                          // the targeting laser
-			if(hce_burstShot == HCE_BEAM_AIM - 1 && hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_LOOPING, 0.8);
-			hce_burstShot++;
-			return;
-		}
-		if(len >= 1)
-		{
-			HCE_HeldBeam(from, to);                                         // HDE's beam rifle laser: purple beam, pink core
-			if(level.maptime % 3 == 0)
-				A_SpawnParticle("D080FF", SPF_FULLBRIGHT, 10, 6, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-0.5, 0.5), frandom(-0.5, 0.5), frandom(0.3, 1.0), 0, 0, 0, 0.8, -0.06);
-		}
-		Actor hit = lt.HitActor;
-		if(hit && hit != self && hit.bSHOOTABLE && hit.health > 0)
-		{
-			hce_beamRamp = hit == hce_beamVictim ? min(3.0, hce_beamRamp + 2.0 / 17) : 1.0;
-			hce_beamVictim = hit;
-			int dmg = max(1, int(round(3.0 * hce_beamRamp * HCE_DamageScale())));
-			hit.DamageMobj(self, self, dmg, 'Fire');
-		}
-		else { hce_beamVictim = null; hce_beamRamp = 1.0; }
-		if(hce_moveSpeed <= 0.1 && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
-		hce_burstShot++;
-	}
-	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 }
 
 // energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
@@ -2518,7 +2608,6 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 		}
 		return 30;
 	}
-	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -3361,25 +3450,41 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_ApplyLoadout0(); return;
+		case 1: HCE_ApplyLoadout1(); return;
+		}
+	}
+	void HCE_ApplyLoadout0()
+	{
+		{
 			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 8.00; hce_errorAngle = 4.00; hce_maxRange = 800; hce_projSpeed = 12.1;
 			hce_rangeMin = 120; hce_rangeMax = 320; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 1.60; hce_patPauseMax = 2.60; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
-		case 1:
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout1()
+	{
+		{
 			hce_projectile = 'HCE_PlasmaPistolBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 6.00; hce_errorAngle = 1.00; hce_maxRange = 960; hce_projSpeed = 77.5;
 			hce_rangeMin = 240; hce_rangeMax = 440; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 2; hce_patShotsMax = 4; hce_patInterval = 7; hce_patPauseMin = 0.85; hce_patPauseMax = 1.46; hce_patChargeTics = 28;
 			hce_fireSound = "Halo/Weapons/PlasmaPistol/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaPistol/Fire/Bass"; hce_specialSound = "Halo/Weapons/PlasmaPistol/Fire/Charged"; hce_chargeSound = "Halo/Weapons/PlasmaPistol/Charge/Start"; hce_fireLoop = false;
-			break;
+			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
 	override void HCE_LoadoutVisual(int lo)
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_LoadoutVisual0(); return;
+		case 1: HCE_LoadoutVisual1(); return;
+		}
+	}
+	void HCE_LoadoutVisual0()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -3391,8 +3496,11 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 25, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 26, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
-		case 1:
+		}
+	}
+	void HCE_LoadoutVisual1()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
@@ -3404,7 +3512,6 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 25, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 26, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
 		}
 	}
 	override Name HCE_LoadoutAnim(int lo, int kind)
@@ -5181,25 +5288,41 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_ApplyLoadout0(); return;
+		case 1: HCE_ApplyLoadout1(); return;
+		}
+	}
+	void HCE_ApplyLoadout0()
+	{
+		{
 			hce_projectile = 'HCE_FuelRodBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 3.00; hce_maxRange = 1120; hce_projSpeed = 43.9;
 			hce_rangeMin = 480; hce_rangeMax = 640; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 3.12; hce_patPauseMax = 4.08; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/FuelRod/Fire"; hce_fireSoundBass = "Halo/Weapons/FuelRod/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
-		case 1:
+			hce_specialProj = 'None'; hce_specialCount = 0;
+		}
+	}
+	void HCE_ApplyLoadout1()
+	{
+		{
 			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 8.00; hce_errorAngle = 4.00; hce_maxRange = 800; hce_projSpeed = 12.1;
 			hce_rangeMin = 320; hce_rangeMax = 640; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 1.60; hce_patPauseMax = 2.60; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
-			break;
+			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
 	override void HCE_LoadoutVisual(int lo)
 	{
 		switch(lo)
 		{
-		case 0:
+		case 0: HCE_LoadoutVisual0(); return;
+		case 1: HCE_LoadoutVisual1(); return;
+		}
+	}
+	void HCE_LoadoutVisual0()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -5211,8 +5334,11 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 25, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 26, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
-		case 1:
+		}
+	}
+	void HCE_LoadoutVisual1()
+	{
+		{
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
@@ -5224,7 +5350,6 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 25, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 26, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			break;
 		}
 	}
 	override Name HCE_LoadoutAnim(int lo, int kind)
@@ -6453,7 +6578,6 @@ class HCE_HunterWhite : HCE_HunterBase
 		}
 		return 30;
 	}
-	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_PlasmaCaster"; }
 }
 

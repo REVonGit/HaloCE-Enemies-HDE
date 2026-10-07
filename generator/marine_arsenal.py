@@ -246,13 +246,53 @@ def hand_frame(char, ref='assault_rifle'):
 
 # Halo CE's own Marine guns not in the arsenal table: overlays too (the bodies carry no baked guns)
 BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle',
-                 'sticky_detonator_fired': 'm_sticky_detonator_fired'}     # the sticky detonator with its charge gone
+                 'sticky_detonator_fired': 'm_sticky_detonator_fired',     # the sticky detonator with its charge gone
+                 # the Covenant guns, so a Marine can carry any of them (picked up, traded): the models the Covenant
+                 # bodies already carry, plus the two below
+                 'plasma_pistol': 'plasma_pistol', 'fuel_rod': 'm_fuel_rod', 'beam_rifle': 'h2_beam_rifle',
+                 'plasma_caster': 'plasma_caster', 'carbine': 'cmt_carbine', 'spiker': 'spiker',
+                 'pulse_carbine': 'm_pulse_carbine', 'needle_ballista': 'm_needle_ballista'}
+
+def build_cov_extras():
+    """HDE's Pulse Carbine: the Covenant carbine in the Digsite add-on's blue (its Slug Men's pulse carbine);
+    HDE's Needle Ballista (a 2D weapon in HDE, no model): Halo CE's needler drawn out half as long again, a long gun"""
+    import shutil
+    src = pickle.load(open(f'{OUT}/weapons/cmt_carbine/cmt_carbine.pkl', 'rb'))
+    d = f'{OUT}/weapons/m_pulse_carbine'; os.makedirs(d, exist_ok=True)
+    for mm in src['meshes']:
+        blue = mm['material'].replace('w_cmt_carbine_', 'w_cmt_carbine_blue_')
+        pick = blue if os.path.exists(f'{OUT}/weapons/cmt_carbine/{blue}') else mm['material']
+        new = pick.replace('w_cmt_carbine_', 'w_m_pulse_carbine_')
+        shutil.copy(f'{OUT}/weapons/cmt_carbine/{pick}', f'{d}/{new}'); mm['material'] = new
+    save_pkl('m_pulse_carbine', src['meshes'], 'cmt_carbine (blue)')
+    src = pickle.load(open(f'{OUT}/weapons/needler/needler.pkl', 'rb'))
+    d = f'{OUT}/weapons/m_needle_ballista'; os.makedirs(d, exist_ok=True)
+    for mm in src['meshes']:
+        new = mm['material'].replace('w_needler_', 'w_m_needle_ballista_')
+        shutil.copy(f'{OUT}/weapons/needler/{mm["material"]}', f'{d}/{new}'); mm['material'] = new
+        mm['pos'] = mm['pos'] * np.array([1.6, 1.15, 1.15])
+    save_pkl('m_needle_ballista', src['meshes'], 'needler (drawn out)')
+    # the fuel rod gun on the shoulder: Halo CE's model sits nose-up in a Marine's launcher grip; level its length
+    src = pickle.load(open(f'{OUT}/weapons/fuel_rod/fuel_rod.pkl', 'rb'))
+    d = f'{OUT}/weapons/m_fuel_rod'; os.makedirs(d, exist_ok=True)
+    for mm in src['meshes']:
+        new = mm['material'].replace('w_fuel_rod_', 'w_m_fuel_rod_')
+        shutil.copy(f'{OUT}/weapons/fuel_rod/{mm["material"]}', f'{d}/{new}'); mm['material'] = new
+    P = np.concatenate([m['pos'] for m in src['meshes']])
+    c = P.mean(0); ax = np.linalg.svd(P - c)[2][0]
+    if ax[0] < 0: ax = -ax                                              # forward (+x)
+    a = np.arctan2(ax[2], ax[0])
+    ms = _rot(src['meshes'], [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]])
+    P = np.concatenate([m['pos'] for m in ms])                      # a touch smaller, centred on the grip like the rocket launcher
+    ms = _rot(ms, np.eye(3) * 0.85, (0, -P[:, 1].mean() * 0.85, 0.052 - P[:, 2].mean() * 0.85))
+    save_pkl('m_fuel_rod', ms, 'fuel_rod (levelled)')
 
 def overlays():
     """one overlay model per Marine body per weapon: the weapon on the gun hand's bone, on the body's own skeleton
     (build_pack.py attaches it as model 6, where it moves with the body like the blood overlays)"""
     from iqm import write_iqm
     import shutil
+    build_cov_extras()
     made = {}
     for char in MARINES:
         R, t, jn, joints = hand_frame(char)

@@ -39,7 +39,7 @@ CLASS_MAP = {
     'HaloNeedler_Proj': 'HCES_Needle', 'FuelrodPlasma': 'HCES_FuelRod', 'HaloRocketProj': 'HCES_Rocket',
     'HaloFlames': 'HCES_Flame', 'PlasmaCasterProj': 'HCES_PlasmaCasterProj',
     'PlasmaCasterClusterProj': 'HCES_PlasmaCasterCluster', 'HaloCarbine_Bullet': 'HCES_CarbineBullet',
-    'HaloPulseCarbine_Proj': 'HCES_PulseCarbineProj', 'HaloSpiker_Bullet': 'HCES_SpikerSpike',
+    'HaloPulseCarbine_Proj': 'HCES_PulseCarbineProj', 'HaloSpiker_Bullet': 'HCES_SpikerSpike', 'HaloNeedlerJavelin_Proj': 'HCES_Needle',
     'GravityHammerExplosion': 'HCES_HammerBlast', 'HaloNeedleProjectile': 'HCES_Needle',
     # the Marine arsenal's HDE rounds (build_pack.py MARINE_ARSENAL)
     'HaloRifle_Bullet': 'HCES_ARBullet', 'HaloCommando_Bullet': 'HCES_ARBullet', 'HaloBattleRifle_Bullet': 'HCES_ARBullet',

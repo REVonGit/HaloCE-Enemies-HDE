@@ -35,7 +35,8 @@ HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_health
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
-               'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon'}
+               'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'hold position': 'HoldPosition',
+               'pressbutton': 'PressButton'}
 
 def main():
     if os.path.exists(OUTDIR): shutil.rmtree(OUTDIR)
@@ -94,7 +95,8 @@ def main():
                                           'addmenukey "Squad: follow me" hce_follow\naddmenukey "Squad: hold here" hce_hold\naddmenukey "Squad: regroup on me" hce_regroup\n'
                                           'addmenukey "Squad: hold fire" hce_holdfire\naddmenukey "Squad: open fire" hce_openfire\n'
                                           'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
-                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: get that weapon" hce_weapon\n')
+                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: get that weapon" hce_weapon\n'
+                                          'alias hce_button "netevent hce_squad 9"\naddmenukey "Squad: press that button" hce_button\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}

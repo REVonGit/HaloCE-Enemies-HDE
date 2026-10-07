@@ -97,8 +97,24 @@ H2RIFLE = {
 }
 H2RIFLE_FIRE = ('combat:rifle:fire_1', 'combat:rifle:idle:var0', 'stand h2rifle fire-1 baked')
 STANCES['h2rifle'] = (H2RIFLE, H2RIFLE_FIRE)
+# Halo 2's Marine launcher stance (the rocket launcher on the shoulder), 'h2missile': the rocket launcher, Hydra and
+# fuel rod Marines (added to the IQMs by marine_stances.py, which also lays its melee and reload -- Halo 2 replacement
+# animations -- over the idle)
+H2MISSILE = {
+    'combat:missile:idle': 'stand h2missile idle', 'combat:missile:move_front': 'stand h2missile move-front',
+    'combat:missile:move_back': 'stand h2missile move-back', 'combat:missile:move_left': 'stand h2missile move-left',
+    'combat:missile:move_right': 'stand h2missile move-right', 'combat:missile:turn_left': 'stand h2missile turn-left',
+    'combat:missile:turn_right': 'stand h2missile turn-right', 'combat:missile:evade_left': 'stand h2missile evade-left',
+    'combat:missile:evade_right': 'stand h2missile evade-right', 'combat:missile:airborne': 'stand h2missile airborne',
+    'combat:missile:land_soft': 'stand h2missile land-soft', 'combat:missile:land_hard': 'stand h2missile land-hard',
+    'combat:missile:throw_grenade': 'stand h2missile throw-grenade',
+    'combat:missile:cheer': 'stand h2missile celebrate', 'combat:missile:point': 'stand h2missile signal-attack',
+    'crouch:missile:idle': 'crouch h2missile idle', 'crouch:missile:move_front': 'crouch h2missile move-front',
+}
+H2MISSILE_FIRE = ('combat:missile:fire_1', 'combat:missile:idle', 'stand h2missile fire-1 baked')
+STANCES['h2missile'] = (H2MISSILE, H2MISSILE_FIRE)
 STANCE_SOURCE = {'missile': (ELITE, MAP08A, CACHE08A), 'rifle': (ELITE, MAP08A, CACHE08A), 'h2pistol': (MARINE, MAP01B, CACHE01B),
-                 'h2rifle': (MARINE, MAP01B, CACHE01B)}
+                 'h2rifle': (MARINE, MAP01B, CACHE01B), 'h2missile': (MARINE, MAP01B, CACHE01B)}
 
 
 def _qmul(a, b):

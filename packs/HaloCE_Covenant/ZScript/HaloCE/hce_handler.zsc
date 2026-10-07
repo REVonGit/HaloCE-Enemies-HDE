@@ -291,7 +291,10 @@ class HCE_SpawnAllHandler : EventHandler
 	//   0 follow me, 1 hold here, 2 regroup on me, 3 hold fire, 4 open fire, 5 focus fire on the enemy in the
 	//   crosshair, 6 suppress (it, or whatever they're fighting), 7 medic (the nearest corpsman patches up the Marine
 	//   in the crosshair),
-	//   8 weapon (the nearest one that can use it fetches the gun in the crosshair)
+	//   8 weapon (the nearest one that can use it fetches the gun in the crosshair), 9 press that button (the nearest
+	//   one goes and uses the switch in the crosshair)
+	// One of the Marines answers, a moment later (HaloDoom_EnemyBase.HCE_AckLater): whoever was given the job, or one
+	// picked at random.
 	// The Master Chief says the order (HCE/Chief/*: the Marines pack's sounds); nothing is printed.
 	// the Marine each player has in the crosshair (the name / health overlay; the medic order), and when they last did
 	HaloDoom_EnemyBase looked[MAXPLAYERS];
@@ -356,20 +359,32 @@ class HCE_SpawnAllHandler : EventHandler
 	{
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
-		int o = clamp(e.Args[0], 0, 8);
-		static const String line[] = { "HCE/Chief/FollowMe", "", "HCE/Chief/FollowMe", "HCE/Chief/HoldFire", "HCE/Chief/OpenFire",
-			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon" };
+		int o = clamp(e.Args[0], 0, 9);
+		static const String line[] = { "HCE/Chief/FollowMe", "HCE/Chief/HoldPosition", "HCE/Chief/FollowMe", "HCE/Chief/HoldFire", "HCE/Chief/OpenFire",
+			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon", "HCE/Chief/PressButton" };
 		Array<HaloDoom_EnemyBase> squad;
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
 		HaloDoom_EnemyBase m;
 		while(m = HaloDoom_EnemyBase(it.Next()))
 			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
 		if(line[o].Length() > 0) pl.A_StartSound(line[o], CHAN_VOICE, CHANF_DEFAULT, 1.0, ATTN_NONE);
-		if(o <= 2) { for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o); return; }
+		if(o <= 2) { for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o); AckRandom(squad); return; }
 		if(o <= 6)
 		{
 			Actor aimed = pl.AimTarget();
 			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_FireOrder(o, aimed);
+			AckRandom(squad);
+			return;
+		}
+		if(o == 9)
+		{
+			// the switch in the crosshair: a line with a use special
+			FLineTraceData d;
+			pl.LineTrace(pl.angle, 1024, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
+			if(d.HitType != TRACE_HitWall || !d.HitLine || !d.HitLine.special || !(d.HitLine.activation & (SPAC_Use | SPAC_UseThrough))) return;
+			HaloDoom_EnemyBase best = null;
+			for(int i = 0; i < squad.Size(); i++) if(!best || squad[i].Distance2D(pl) < best.Distance2D(pl)) best = squad[i];
+			if(best) best.HCE_ButtonOrder(d.HitLine, d.LineSide, d.HitLocation);
 			return;
 		}
 		// the one closest to the player (the medic) or to the gun (the weapon)
@@ -405,6 +420,13 @@ class HCE_SpawnAllHandler : EventHandler
 			squad[j + 1] = k;
 		}
 		for(int i = 0; i < squad.Size(); i++) if(squad[i].HCE_WeaponOrder(gun)) return;
+	}
+
+	// one Marine of the squad, picked at random, answers the order after a moment
+	static void AckRandom(Array<HaloDoom_EnemyBase> squad)
+	{
+		if(squad.Size() == 0) return;
+		squad[random(0, squad.Size() - 1)].HCE_AckLater();
 	}
 
 	override void NetworkProcess(ConsoleEvent e)

@@ -90,6 +90,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			damageInfo.processing = false;
 
 		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
+		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
+		if(hce_enabled && hce_ackAt > 0 && level.maptime >= hce_ackAt) { hce_ackAt = 0; if(health > 0) HCE_Say('Acknowledge', 1.0, 35, true); }
 		if(!hce_enabled) vel.xy *= moveFriction;
 		else if(health > 0 && !bHCE_Flying && !bNOGRAVITY && !isFrozen()) HCE_SlideOffTick();
 
@@ -597,8 +599,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		Super.PostBeginPlay();
 		if(!hce_enabled) return;
-		static const int prefs[] = { 0, 1, 3 };
-		hce_weaponPref = prefs[random(0, 2)];             // a Marine's liking: close, mid or long range
+		static const int prefs[] = { HCE_WK_CLOSE, HCE_WK_MID, HCE_WK_LONG };
+		hce_weaponPref = prefs[random(0, 2)];             // a regular Marine's liking: close, mid or long range
 		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0) HCE_RollName();
 		curChaseAngle = angle;
 		hce_strafeDir = random(0, 1) ? 1 : -1;
@@ -1066,6 +1068,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
 		if(!hce_bondLooked) HCE_BondLink();
+		if(hce_button && HCE_ButtonTick()) return;
 		if(hce_medicFor && HCE_MedicTick()) return;
 		if(hce_scavItem && HCE_ScavengeTick()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
@@ -1653,6 +1656,41 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
 
+	// answering an order: "Yes sir" once the Chief has said it (1.6 to 2.3 s later), not on top of his line
+	int hce_ackAt;
+	void HCE_AckLater() { hce_ackAt = level.maptime + random(55, 80); }
+
+	// "press that button": walk to the switch the player pointed at and use it
+	Line hce_button; int hce_buttonSide, hce_buttonTics; vector3 hce_buttonAt;
+	void HCE_ButtonOrder(Line l, int side, vector3 at)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		hce_button = l; hce_buttonSide = side; hce_buttonAt = at; hce_buttonTics = 35 * 10;
+		hce_scavItem = null; hce_medicFor = null;
+		HCE_AckLater();
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	bool HCE_ButtonTick()
+	{
+		if(!hce_button || health <= 0 || --hce_buttonTics <= 0) { hce_button = null; return false; }
+		vector2 dv = hce_buttonAt.xy - pos.xy;
+		if(dv.Length() > radius + 24)
+		{
+			HCE_StopFireLoop(); hce_shotsLeft = 0;
+			HCE_Move(atan2(dv.y, dv.x), hce_runSpeed);
+			A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+			HCE_PickMoveAnim();
+			return true;
+		}
+		HCE_Brake();
+		A_SetAngle(atan2(dv.y, dv.x), SPF_INTERPOLATE);
+		hce_button.Activate(self, hce_buttonSide, SPAC_Use);
+		hce_button = null;
+		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
 	// ------------------------------------------------------------------
 	// A Marine's rank and name, shown over him while the player has him in the crosshair (HCE_SpawnAllHandler's
 	// overlay, with Halo CE's health bar). Rolled at spawn from the lists below; Johnson and Stacker have their own.
@@ -1755,7 +1793,6 @@ class HaloDoom_EnemyBase : Actor abstract
 			break;
 		}
 		if(target && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
-		HCE_Say('Acknowledge', 1.0, 35);
 	}
 
 	// "medic": a corpsman (hce_isMedic) runs to the Marine the player has in the crosshair, crouches beside him and
@@ -1765,7 +1802,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
 		hce_scavItem = null;
-		HCE_Say('Acknowledge', 1.0, 35, true);
+		HCE_AckLater();
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
@@ -1809,7 +1846,6 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_squadOrder = o;
 		if(o == HCE_ORDER_HOLD) hce_holdPos = pos;
 		if(o == HCE_ORDER_REGROUP) hce_regroupUntil = level.maptime + 35 * 8;
-		HCE_Say('Acknowledge', 1.0, 35);        // the first to answer hushes the rest for a second
 	}
 
 	// regroup: run back to the player, even mid-fight, until close (or 8 s pass), then follow again
@@ -1990,15 +2026,16 @@ class HaloDoom_EnemyBase : Actor abstract
 		// projectile name part, rounds, reload tics (no animation), HDE reload sound -- first match wins
 		static const String key[] = { "battlerifle", "commando", "ma37", "dmr", "smground", "arbullet", "sidekick", "pistolbullet",
 			"bulldog", "dblshotgun", "shotgunpellet", "sniper", "stanchion", "hydra", "rocket", "40mmgrenade", "stickydet",
-			"gpmg", "flame", "needle", "fuelrod", "plasmacaster" };
-		static const int rounds[] = { 36, 20, 32, 15, 60, 60, 12, 12, 6, 2, 12, 4, 4, 4, 2, 1, 3, 100, 150, 20, 5, 5 };
-		static const int tics[] = { 60, 55, 55, 55, 50, 60, 45, 45, 70, 60, 90, 80, 80, 80, 90, 50, 60, 100, 70, 55, 80, 70 };
+			"gpmg", "flame", "ballista", "needle", "fuelrod", "plasmacaster", "carbineround", "spiker" };
+		static const int rounds[] = { 36, 20, 32, 15, 60, 60, 12, 12, 6, 2, 12, 4, 4, 4, 2, 1, 3, 100, 150, 5, 20, 5, 5, 18, 40 };
+		static const int tics[] = { 60, 55, 55, 55, 50, 60, 45, 45, 70, 60, 90, 80, 80, 80, 90, 50, 60, 100, 70, 70, 55, 80, 70, 55, 55 };
 		static const String snd[] = { "Halo/Weapons/BattleRifle/Reload/Empty", "Halo/Weapons/Commando/Reload/Empty", "Halo/Weapons/Rifle/Reload/Empty",
 			"Halo/Weapons/DMR/Reload/Empty", "Halo/Weapons/SMG/Reload/Empty", "Halo/Weapons/MA5B/Reload/Empty", "Halo/Weapons/Sidekick/Reload/Empty",
 			"Halo/Weapons/Mag_MD6/Reload/Empty", "Halo/Weapons/Bulldog/ReloadPump", "Halo/Weapons/SuperShotgun/Reload", "Halo/Weapons/Shotgun/Reload",
 			"Halo/Weapons/Sniper/Reload/Empty", "Halo/Weapons/Stanchion/Reload/Empty", "Halo/Weapons/RocketLauncher/Reload",
-			"Halo/Weapons/RocketLauncher/Reload", "", "", "Halo/Weapons/GPMG/Reload/Empty", "", "Halo/Weapons/Needler/Reload/Empty", "",
-			"Halo/Weapons/PlasmaCaster/Reload" };
+			"Halo/Weapons/RocketLauncher/Reload", "", "", "Halo/Weapons/GPMG/Reload/Empty", "", "Halo/Weapons/Needler/Reload/Empty",
+			"Halo/Weapons/Needler/Reload/Empty", "", "Halo/Weapons/PlasmaCaster/Reload", "Halo/Weapons/Carbine/Reload/Empty",
+			"Halo/Weapons/Spiker/Reload/Empty" };
 		for(int i = 0; i < key.Size(); i++)
 		{
 			if(p.IndexOf(key[i]) < 0) continue;
@@ -2008,6 +2045,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		if(p.IndexOf("plasmapistol") >= 0) { hce_heatPerShot = 0.12; hce_ventSound = "Halo/Weapons/PlasmaPistol/Overheat"; }
 		else if(p.IndexOf("plasmarifle") >= 0) { hce_heatPerShot = 0.07; hce_ventSound = "Halo/Weapons/PlasmaRifle/Overheat"; }
+		else if(p.IndexOf("pulse") >= 0) { hce_heatPerShot = 0.08; hce_ventSound = "Halo/Weapons/PulseCarbine/Vent"; }
+		else if(p.IndexOf("h2beamshot") >= 0) { hce_heatPerShot = 0.006; hce_ventSound = "Halo/Weapons/BeamRifle/Overheat/Start"; }   // the beam fires every tic
 		hce_mag = hce_magSize; hce_heat = 0;
 	}
 
@@ -2134,10 +2173,81 @@ class HaloDoom_EnemyBase : Actor abstract
 		return cv ? max(0.25, cv.GetFloat()) : 1.0;
 	}
 
+	// ------------------------------------------------------------------
+	// Halo 2's beam rifle (HCE_H2BeamShot), for whoever carries it
+	// ------------------------------------------------------------------
+
+	// Halo 2's beam rifle, the way HaloDoom's behaves: a held purple beam that cooks whatever it stays on. Each burst
+	// is ~1 s of beam (one trace a tic); the damage climbs while it holds the same target (to 3x in half a second)
+	// and resets when it slips off. Between bursts the rifle cools down. The aim is the API's slow-tracking aim
+	// point, so strafing drags the beam off you.
+	// Each burst opens with ~0.9 s of aiming: a purple sniper glint flashes at the rifle and a thin, harmless
+	// targeting laser runs to where it's aiming; then the beam fires, drawn with HaloDoom Evolved's own beam rifle
+	// laser (the purple beam with its pink core, fading and spreading when it stops).
+	Actor hce_beamVictim;
+	double hce_beamRamp;
+	const HCE_BEAM_AIM = 30;
+	void HCE_FireBeamRifle()
+	{
+		if(!target) return;
+		vector3 ap = HCE_AimPoint();
+		double gz = height * 0.5 + hce_gunOffset.z;
+		vector3 from = Vec3Angle(hce_gunOffset.x, angle, gz);
+		vector3 diff = level.Vec3Diff(from, ap);
+		double ang = atan2(diff.y, diff.x);
+		double pit = -atan2(diff.z, diff.xy.Length());
+		FLineTraceData lt;
+		LineTrace(ang, hce_maxRange, pit, TRF_THRUSPECIES, gz, hce_gunOffset.x, 0, lt);
+		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
+		vector3 d = level.Vec3Diff(from, to);
+		double len = d.Length();
+		if(hce_burstShot < HCE_BEAM_AIM)
+		{
+			if(hce_burstShot == 0) A_StopSound(CHAN_WEAPON);               // the beam's hum starts with the beam
+			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
+			if(len >= 1) HCE_AimLaser(from, to);                          // the targeting laser
+			if(hce_burstShot == HCE_BEAM_AIM - 1 && hce_fireSound.Length() > 0) A_StartSound(hce_fireSound, CHAN_WEAPON, CHANF_LOOPING, 0.8);
+			hce_burstShot++;
+			return;
+		}
+		if(len >= 1)
+		{
+			HCE_HeldBeam(from, to);                                         // HDE's beam rifle laser: purple beam, pink core
+			if(level.maptime % 3 == 0)
+				A_SpawnParticle("D080FF", SPF_FULLBRIGHT, 10, 6, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-0.5, 0.5), frandom(-0.5, 0.5), frandom(0.3, 1.0), 0, 0, 0, 0.8, -0.06);
+		}
+		Actor hit = lt.HitActor;
+		if(hit && hit != self && hit.bSHOOTABLE && hit.health > 0)
+		{
+			hce_beamRamp = hit == hce_beamVictim ? min(3.0, hce_beamRamp + 2.0 / 17) : 1.0;
+			hce_beamVictim = hit;
+			int dmg = max(1, int(round(3.0 * hce_beamRamp * HCE_DamageScale())));
+			hit.DamageMobj(self, self, dmg, 'Fire');
+		}
+		else { hce_beamVictim = null; hce_beamRamp = 1.0; }
+		if(hce_moveSpeed <= 0.1 && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		hce_burstShot++;
+	}
+
+	// the sticky detonator (HCE_StickyDetCharge): each charge is set off a second and a half after it's fired
+	Array<Actor> hce_stickies;
+	Array<int> hce_stickyAt;
+	void HCE_StickyTick()
+	{
+		for(int i = hce_stickies.Size() - 1; i >= 0; i--)
+		{
+			Actor c = hce_stickies[i];
+			if(c && level.maptime < hce_stickyAt[i]) continue;
+			if(c) { State st = c.FindState("ExplodeAndDie"); if(st) c.SetState(st); }
+			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
+		}
+	}
+
 	virtual void HCE_FireShot(bool special = false)
 	{
 		if(!target) return;
 		if(bHCE_Beam) { HCE_FireBeam(); return; }
+		if(hce_projectile == 'HCE_H2BeamShot') { HCE_FireBeamRifle(); return; }
 		class<Actor> pc = (class<Actor>)(hce_projectile);
 		if(!pc) return;
 		// legacy mode rolls the overcharge per shot
@@ -2176,7 +2286,13 @@ class HaloDoom_EnemyBase : Actor abstract
 				let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
 					DeltaAngle(angle, aAng) + frandom(-err, err), DeltaAngle(pitch, aPit) + frandom(-err, err));
 				HCE_ScaleShot(shot);
-				if(shot) HCE_OnShot(shot);
+				if(shot)
+				{
+					String sn = shot.GetClassName();
+					if(sn.IndexOf("Pulse") >= 0) shot.tracer = target;               // a pulse bolt homes on our target, never a friend
+					if(shot.GetClassName() == 'HCE_StickyDetCharge') { hce_stickies.Push(shot); hce_stickyAt.Push(level.maptime + 52); }
+					HCE_OnShot(shot);
+				}
 			}
 		}
 		HCE_PlayFireSound(special);
@@ -3642,23 +3758,49 @@ class HaloDoom_EnemyBase : Actor abstract
 		return hce_resolver ? hce_resolver.WeaponOf(a) : 'None';
 	}
 
-	// how much it wants a weapon (HDE class names)
-	virtual int HCE_WeaponScore(Name w)
+	// How much it wants a weapon (HDE class names): a base score for the gun, plus its own bias for the gun's kind.
+	// Kinds: 0 close quarters, 1 mid range, 2 heavy / power weapons, 3 long range, 4 sidearms.
+	const HCE_WK_CLOSE = 0; const HCE_WK_MID = 1; const HCE_WK_HEAVY = 2; const HCE_WK_LONG = 3; const HCE_WK_SIDEARM = 4;
+	static int HCE_WeaponKindOf(Name w, out int base)
 	{
 		static const Name wn[] = { 'Halo_FuelRod', 'Halo_Needler', 'Halo_PlasmaRifle', 'Halo_PlasmaPistol',
 			'Halo_RocketLauncher', 'Halo_Hydra', 'Halo_SniperRifle', 'Halo_GPMG', 'Halo_GrenadeLauncher', 'Halo_Flamethrower',
 			'Halo_Shotgun', 'Halo_Bulldog', 'Halo_DBLShotgun', 'Halo_BattleRifle', 'Halo_DMR', 'Halo_Commando',
-			'Halo_MA5B', 'Halo_AssaultRifle', 'Halo_SMG', 'Halo_Magnum', 'Halo_Sidekick' };
-		static const int score[] = { 40, 25, 25, 10,   45, 42, 40, 38, 34, 34,   30, 30, 28, 30, 30, 26,   22, 20, 20, 10, 8 };
-		static const int range[] = { 2, 1, 1, 1,   2, 2, 3, 1, 2, 0,   0, 0, 0, 2, 3, 1,   1, 1, 0, 1, 1 };    // 0 close, 1 mid, 3 long, 2 suits any
-		for(int i = 0; i < wn.Size(); i++)
-		{
-			if(wn[i] != w) continue;
-			int sc = score[i];
-			if(hce_team == HCE_TEAM_HUMAN && (range[i] == hce_weaponPref || range[i] == 2)) sc += 15;
-			return sc;
-		}
-		return 0;
+			'Halo_MA5B', 'Halo_AssaultRifle', 'Halo_SMG', 'Halo_Magnum', 'Halo_Sidekick',
+			'Halo_BeamRifle', 'Halo_PlasmaCaster', 'Halo_Carbine', 'Halo_Spiker', 'Halo_PulseCarbine', 'Halo_NeedlerJavelin',
+			'Halo_StickyDetonator', 'Halo_Stanchion' };
+		static const int score[] = { 40, 25, 25, 10,   45, 42, 40, 38, 34, 34,   30, 30, 28, 30, 30, 26,   22, 20, 20, 12, 10,
+			40, 36, 28, 18, 24, 42,   30, 50 };
+		static const int kind[] = { 2, 1, 1, 4,   2, 2, 3, 2, 2, 0,   0, 0, 0, 3, 3, 1,   1, 1, 0, 4, 4,
+			3, 2, 3, 0, 1, 2,   2, 3 };
+		for(int i = 0; i < wn.Size(); i++) if(wn[i] == w) { base = score[i]; return kind[i]; }
+		base = 0;
+		return -1;
+	}
+
+	// Each Marine's liking (HCE_WeaponBias), by type:
+	//   Marine (regular)    one of close / mid / long, rolled when he spawns (+15)
+	//   Armored Marine      heavy and power weapons (+15), mid range (+5)
+	//   Corpsman            sidearms (+15) and close quarters (+10): light, one-handed kit
+	//   Sergeant Johnson    long range (+20) and heavy weapons (+10)
+	//   Sergeant Stacker    mid range (+20) and long range (+5)
+	// The Covenant have no liking: they trade up by the base score alone (their bodies only take Covenant guns).
+	virtual int HCE_WeaponBias(int k)
+	{
+		if(hce_team != HCE_TEAM_HUMAN || k < 0) return 0;
+		if(HCE_IsJohnson()) return k == HCE_WK_LONG ? 20 : k == HCE_WK_HEAVY ? 10 : 0;
+		if(hce_voice == 'Marine_Sarge') return k == HCE_WK_MID ? 20 : k == HCE_WK_LONG ? 5 : 0;      // Stacker
+		if(hce_isMedic) return k == HCE_WK_SIDEARM ? 15 : k == HCE_WK_CLOSE ? 10 : 0;
+		String cn = GetClassName();
+		if(cn.IndexOf("Armored") >= 0) return k == HCE_WK_HEAVY ? 15 : k == HCE_WK_MID ? 5 : 0;
+		return k == hce_weaponPref ? 15 : 0;
+	}
+
+	virtual int HCE_WeaponScore(Name w)
+	{
+		int base;
+		int k = HCE_WeaponKindOf(w, base);
+		return base + HCE_WeaponBias(k);
 	}
 
 	// once a second: a better gun in sight nearby?
@@ -3735,7 +3877,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		Name w = HCE_GroundWeaponClass(item);
 		if(w == 'None' || HCE_LoadoutIndex(w) < 0 || w == hce_dropWeapon) return false;
 		hce_scavItem = item; hce_scavPhase = 0; hce_scavTics = 35 * 8;
-		HCE_Say('Acknowledge', 1.0, 35, true);
+		HCE_AckLater();
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 		return true;
 	}

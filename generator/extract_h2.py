@@ -118,7 +118,11 @@ def drone_texture(m, kind):
     src = {'wings': 'bugger_wings'}.get(kind, 'bugger')
     im = mcc_bitmap(m, r'objects\characters\bugger\bitmaps' + '\\' + src, TEXTURES)
     if src == 'bugger':                  # alpha is a specular mask there: bake the shader's look into the colour
+        raw = im
         im = bake_bugger(im, mcc_bitmap(m, r'objects\characters\bugger\bitmaps\bugger_bump', TEXTURES))
+        if kind == 'antennae':           # ...except on the antennae's card, where the shader cuts the feathery antenna
+            a = np.asarray(raw.convert('RGBA'))[..., 3]   # out of it with that alpha (alpha-tested in UZDoom)
+            im = Image.fromarray(np.dstack([np.asarray(im.convert('RGB')), np.where(a >= 128, 255, 0).astype(np.uint8)]), 'RGBA')
     return im
 
 def drone_textures(pid='Drone'):

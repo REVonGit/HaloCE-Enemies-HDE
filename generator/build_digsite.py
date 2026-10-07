@@ -65,10 +65,10 @@ H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (
 H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
-# Slug Man ranks: health and aim (error-angle multiplier) and the armour tint baked into the skin (None: as Digsite made it)
-SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=None),
+# Slug Man ranks: health and aim (error-angle multiplier) and the armour colour repainted over the skin (slug_skin)
+SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=(0.42, 0.40, 0.50)),
               'major': dict(health=1.35, accuracy=0.9, tint=(0.58, 0.17, 0.15)),
-              'ultra': dict(health=1.8, accuracy=0.75, tint=(0.86, 0.88, 0.95))}
+              'ultra': dict(health=1.8, accuracy=0.75, tint=(0.80, 0.82, 0.88))}
 SLUG_WEAPONS = {'plasma pistol': (r'weapons\plasma pistol\plasma pistol', 'pistol'), 'needler': (r'weapons\needler\needler', 'pistol'),
                 'plasma rifle': (r'weapons\plasma rifle\plasma rifle', 'pistol'), 'particle beam': (r'digsite\weapons\particle beam', 'rifle'),
                 'plasma carbine': (r'digsite\weapons\plasma carbine', 'rifle'), 'pulse carbine': (r'digsite\weapons\pulse carbine', 'rifle')}
@@ -77,22 +77,33 @@ SLUG_RANK_WEAPONS = {'minor': ['needler', 'plasma rifle', 'plasma carbine'],
                      'ultra': ['plasma rifle', 'particle beam', 'plasma carbine']}
 
 def slug_skin(cls, v, si, mat, meta, skin_dir):
-    """Slug Man ranks: the grey-violet armour plates (low saturation, mid brightness) tinted, the shading kept"""
-    rank = v.get('_slug_rank')
-    if not rank or not mat.startswith('SlugMan_') or not SLUG_RANKS[rank]['tint']: return None
+    """Slug Man armour, repainted clean. Digsite's armour texture is grainy and scuffed; the plates (where the
+    multipurpose map's specular mask says metal, the flesh it marks green left alone) are repainted in the rank's
+    colour over smooth shading: the base map's light and shade with the grain taken out (a median filter, then a
+    light blur) blended with the multipurpose map's own smooth shading, and a soft highlight on the raised parts.
+    Every Slug Man gets it; the original two (no rank) are Minors."""
+    rank = v.get('_slug_rank') or 'minor'
+    if not mat.startswith('SlugMan_'): return None
+    multi = f'{bp.OUT}/models/SlugMan/{mat[:-4]}_multi.png'
+    if not os.path.exists(multi): return None
     fn = f'slugman_{rank}_{mat[:-4].lower()}.png'
     dst = f'{skin_dir}/{fn}'
     if os.path.exists(dst): return fn
     os.makedirs(skin_dir, exist_ok=True)
-    a = np.asarray(Image.open(f'{bp.OUT}/models/SlugMan/{mat}').convert('RGB')).astype(float) / 255.0
-    mx, mn = a.max(2), a.min(2)
-    sat = (mx - mn) / np.maximum(mx, 1e-3)
-    m = np.clip((0.32 - sat) / 0.12, 0, 1) * np.clip((mx - 0.12) / 0.08, 0, 1) * np.clip((0.85 - mx) / 0.1, 0, 1)
     from scipy import ndimage
-    m = ndimage.gaussian_filter(m, 1.0)[..., None]
-    lum = a.mean(2, keepdims=True)
-    tint = np.array(SLUG_RANKS[rank]['tint'])[None, None] * (0.3 + 1.35 * lum)
-    out = a * (1 - m) + np.clip(tint, 0, 1) * m
+    a = np.asarray(Image.open(f'{bp.OUT}/models/SlugMan/{mat}').convert('RGB')).astype(float) / 255.0
+    mu = np.asarray(Image.open(multi).convert('RGBA').resize(a.shape[1::-1])).astype(float) / 255.0
+    r, g = mu[..., 0], mu[..., 1]
+    m = np.clip((r - 0.06) / 0.1, 0, 1) * np.clip(1 - (g - r * 0.6) / 0.15, 0, 1)
+    m = ndimage.gaussian_filter(m, 0.8)
+    def norm(x):
+        w = m > 0.5
+        lo, hi = np.percentile(x[w], 3), np.percentile(x[w], 97)
+        return np.clip((x - lo) / max(hi - lo, 1e-3), 0, 1)
+    sm = ndimage.gaussian_filter(ndimage.median_filter(a.mean(2), 5), 1.2)
+    shade = (0.55 * norm(sm) + 0.45 * norm(ndimage.gaussian_filter(r, 0.8)))[..., None]
+    c = np.array(SLUG_RANKS[rank]['tint'])[None, None] * (0.35 + 0.85 * shade) + shade ** 4 * 0.18
+    out = a * (1 - m[..., None]) + np.clip(c, 0, 1) * m[..., None]
     Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
     return fn
 
@@ -124,7 +135,7 @@ def load_ai():
         variants[vp] = v
     # Slug Man ranks (added after the first add-on release): Minor / Major / Ultra in the pistol stance (plasma
     # pistol, needler, plasma rifle) and the rifle stance (particle beam, plasma carbine, pulse carbine), each rank's
-    # armour plates re-tinted (slug_skin); the two original Slug Men stay as they were
+    # armour repainted in its colour (slug_skin); the two original Slug Men are painted as Minors
     pp, pb = variants[r'digsite\characters\slug_man\slug_man plasma pistol'], variants[r'digsite\characters\slug_man\slug_man particle beam']
     for rank, weps in SLUG_RANK_WEAPONS.items():
         hp, err = SLUG_RANKS[rank]['health'], SLUG_RANKS[rank]['accuracy']

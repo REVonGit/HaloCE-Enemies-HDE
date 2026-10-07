@@ -34,6 +34,16 @@ PERMS = {
     'GruntSpecOps': {'perm head and back': 'shellback'},
     'JackalMajor': {'head': 'armored_head'},
 }
+PERM_BITMAPS = ('Grunt', 'GruntSpecOps')      # bodies whose permutations pick their bitmap's image (see below)
+
+
+def bitmap_count(m, tid):
+    """how many images a bitmap tag holds"""
+    t = m.byid.get(tid)
+    if not t or t['cls'] != 'bitm': return 0
+    return m.reflexive(t['data'] + 0x60)[0]
+
+
 MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
 # Regions kept with several permutations, each on surfaces of its own (named region.perm), for the packs to pick one per
 # enemy at run time: all twelve of the Marines' faces and headgear (Sgt Johnson's among them), their sleeves (Johnson's
@@ -43,6 +53,8 @@ MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry
 MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: faces, hats, sleeves)
     'Marine': {'head': None, 'arms': None},
     'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},
+    # the Grunts' two backs: Halo CE's regular methane tank and the rounded 'shellback' one, rolled per Grunt
+    'Grunt': {'perm head and back': None}, 'GruntSpecOps': {'perm head and back': None},
 }
 # bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
 # model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)
@@ -165,6 +177,7 @@ def extract(name, pid, sources, maps):
             for p in best[1]:
                 p['region'] = r['name']
                 p['perm'] = perm['name'] if r['name'] in mperms else None
+                p['perm_index'] = r['perms'].index(perm)
             parts_all += best[1]
     # materials
     mats = {}
@@ -175,11 +188,15 @@ def extract(name, pid, sources, maps):
         if sh and sh['cls'] in ('spla', 'sgla', 'schi', 'scex', 'swat', 'smet'):
             continue  # transparent effect shells (sentinel shield etc.)
         base, multi, (us, vs) = shader_maps(m, sh) if sh else (None, None, (1, 1))
-        key = (base, multi)
+        # Halo CE picks the image of a several-image bitmap by the region's permutation number: the Grunts' 'shellback'
+        # back (permutation 1) wears image 1 of their bitmaps, its own shell plates and mask
+        bi = p.get('perm_index', 0) if pid in PERM_BITMAPS else 0
+        if bi and not (bitmap_count(m, base) > bi): bi = 0
+        key = (base, multi, bi)
         if key not in mats:
             mn = f'{pid}_{len(mats)}'
-            im = bitmap_image(m, base) if base else None
-            mim = bitmap_image(m, multi) if multi else None
+            im = bitmap_image(m, base, bi) if base else None
+            mim = bitmap_image(m, multi, bi if bitmap_count(m, multi) > bi else 0) if multi else None
             if im is None: im = Image.new('RGBA', (16, 16), (128, 128, 128, 255))
             im.convert('RGB').save(f'{OUT}/models/{pid}/{mn}.png')
             if mim is not None: mim.save(f'{OUT}/models/{pid}/{mn}_multi.png')

@@ -2549,7 +2549,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_COVENANT;
 		Height 48;
 		Radius 16;
-		Mass 94;
+		Mass 98;
 		PainChance 0;
 		Tag "Grunt";
 		BloodColor "40 C8 D0";
@@ -2590,33 +2590,70 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(0, (0.0845, -0.0000, 0.4259), 80.00, "models/hce/Grunt", 'Grunt_gib_head.iqm', 13, 'gore_Grunt.png', 0.0525);
+			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 20, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(0, (0.0845, -0.0000, 0.4259), 80.00, "models/hce/Grunt", 'Grunt_gib_head_base00.iqm', 20, 'gore_Grunt.png', 0.0525);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 21, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(0, (0.0794, 0.0000, 0.4375), 80.00, "models/hce/Grunt", 'Grunt_gib_head_shellback.iqm', 21, 'gore_Grunt.png', 0.0504);
+			}
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/Grunt", 'Grunt_gib_larm.iqm', 14, 'gore_Grunt.png', 0.0412);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 22, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/Grunt", 'Grunt_gib_larm_base00.iqm', 22, 'gore_Grunt.png', 0.0412);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 23, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/Grunt", 'Grunt_gib_larm_shellback.iqm', 23, 'gore_Grunt.png', 0.0412);
+			}
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(2, (0.0386, -0.1955, 0.2514), 80.00, "models/hce/Grunt", 'Grunt_gib_rarm.iqm', 15, 'gore_Grunt.png', 0.0495);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 24, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(2, (0.0386, -0.1955, 0.2514), 80.00, "models/hce/Grunt", 'Grunt_gib_rarm_base00.iqm', 24, 'gore_Grunt.png', 0.0495);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 25, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(2, (0.0379, -0.1930, 0.2544), 80.00, "models/hce/Grunt", 'Grunt_gib_rarm_shellback.iqm', 25, 'gore_Grunt.png', 0.0429);
+			}
 			HCE_OnSever(2, true);
 			return true;
 		case 3:
 			A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(3, (-0.1500, 0.0004, 0.4938), 80.00, "models/hce/Grunt", 'Grunt_gib_back.iqm', 16, 'gore_Grunt.png', 0.0849);
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 26, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(3, (-0.1500, 0.0004, 0.4938), 80.00, "models/hce/Grunt", 'Grunt_gib_back_base00.iqm', 26, 'gore_Grunt.png', 0.0849);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 27, "models/hce/Grunt", 'gore_Grunt.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(3, (-0.0759, -0.0005, 0.4545), 80.00, "models/hce/Grunt", 'Grunt_gib_back_shellback.iqm', 27, 'gore_Grunt.png', 0.0938);
+			}
 			HCE_OnSever(3, false);
 			return true;
 		}
@@ -2655,19 +2692,24 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 7, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 1:
-			A_ChangeModel('None', 7, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 2:
-			A_ChangeModel('None', 7, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 3:
 			A_ChangeModel('None', 7, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
 	}
@@ -2675,8 +2717,28 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_ShowGun(show);
 		Name sk = show ? 'None' : 'hce_hidden.png';
-		static const int W[] = { 4, 5, 6 };
+		static const int W[] = { 7, 8, 9 };
 		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
+	// Halo CE's two Grunt backs (base00, shellback), one rolled per Grunt
+	int hce_perm;
+	Array<int> hce_permHide;
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		hce_perm = random[HCEPerm](0, 1);
+		hce_permHide.Clear();
+		switch(hce_perm)
+		{
+		case 0: { static const int H[] = { 4, 5, 6, 16, 17, 18, 19 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
+		case 1: { static const int H[] = { 1, 2, 3, 12, 13, 14, 15 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
+		}
+		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_BloodHideClass()
+	{
+		super.HCE_BloodHideClass();
+		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -3806,33 +3868,70 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(0, (0.0794, 0.0000, 0.4375), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_head.iqm', 13, 'gore_GruntSpecOps.png', 0.0504);
+			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 20, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(0, (0.0845, -0.0000, 0.4259), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_head_base00.iqm', 20, 'gore_GruntSpecOps.png', 0.0525);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 21, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(0, (0.0794, 0.0000, 0.4375), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_head_shellback.iqm', 21, 'gore_GruntSpecOps.png', 0.0504);
+			}
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_larm.iqm', 14, 'gore_GruntSpecOps.png', 0.0412);
+			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 22, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_larm_base00.iqm', 22, 'gore_GruntSpecOps.png', 0.0412);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 23, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(1, (0.0386, 0.1982, 0.2480), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_larm_shellback.iqm', 23, 'gore_GruntSpecOps.png', 0.0412);
+			}
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(2, (0.0379, -0.1930, 0.2544), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_rarm.iqm', 15, 'gore_GruntSpecOps.png', 0.0429);
+			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 24, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(2, (0.0386, -0.1955, 0.2514), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_rarm_base00.iqm', 24, 'gore_GruntSpecOps.png', 0.0495);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 25, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(2, (0.0379, -0.1930, 0.2544), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_rarm_shellback.iqm', 25, 'gore_GruntSpecOps.png', 0.0429);
+			}
 			HCE_OnSever(2, true);
 			return true;
 		case 3:
 			A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(3, (-0.0710, 0.0005, 0.4356), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_back.iqm', 16, 'gore_GruntSpecOps.png', 0.0814);
+			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_perm == 0)
+			{
+				A_ChangeModel('None', 0, "", 'None', 26, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(3, (-0.1500, 0.0004, 0.4938), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_back_base00.iqm', 26, 'gore_GruntSpecOps.png', 0.0849);
+			}
+			else if(hce_perm == 1)
+			{
+				A_ChangeModel('None', 0, "", 'None', 27, "models/hce/GruntSpecOps", 'gore_GruntSpecOps.png', CMDL_USESURFACESKIN);
+				HCE_SpawnLimb(3, (-0.0759, -0.0005, 0.4545), 80.00, "models/hce/GruntSpecOps", 'GruntSpecOps_gib_back_shellback.iqm', 27, 'gore_GruntSpecOps.png', 0.0938);
+			}
 			HCE_OnSever(3, false);
 			return true;
 		}
@@ -3842,10 +3941,10 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	{
 		switch(limb)
 		{
-		case 0: return (6.4, 0.0, 42.0);
+		case 0: return (6.8, -0.0, 40.9);
 		case 1: return (3.1, 15.9, 23.8);
-		case 2: return (3.0, -15.4, 24.4);
-		case 3: return (-5.7, 0.0, 41.8);
+		case 2: return (3.1, -15.6, 24.1);
+		case 3: return (-12.0, 0.0, 47.4);
 		}
 		return (0, 0, -1000);
 	}
@@ -3871,19 +3970,24 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 7, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 1:
-			A_ChangeModel('None', 7, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 2:
-			A_ChangeModel('None', 7, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 3:
 			A_ChangeModel('None', 7, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
 	}
@@ -3891,8 +3995,28 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_ShowGun(show);
 		Name sk = show ? 'None' : 'hce_hidden.png';
-		static const int W[] = { 4, 5, 6 };
+		static const int W[] = { 7, 8, 9 };
 		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
+	// Halo CE's two Grunt backs (base00, shellback), one rolled per Grunt
+	int hce_perm;
+	Array<int> hce_permHide;
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		hce_perm = random[HCEPerm](0, 1);
+		hce_permHide.Clear();
+		switch(hce_perm)
+		{
+		case 0: { static const int H[] = { 4, 5, 6, 16, 17, 18, 19 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
+		case 1: { static const int H[] = { 1, 2, 3, 12, 13, 14, 15 }; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }
+		}
+		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_BloodHideClass()
+	{
+		super.HCE_BloodHideClass();
+		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 

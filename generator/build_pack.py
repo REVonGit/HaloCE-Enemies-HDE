@@ -493,7 +493,7 @@ def grunt_purple(char, mat, path):
     shade = np.clip(0.12 + 0.95 * v, 0, 1)[..., None]
     col = base * shade * (1 - hi[..., None]) + pale * hi[..., None] * np.clip(v, 0, 1)[..., None]
     out = rgb * (1 - m[..., None]) + col * m[..., None]
-    purple(Image.fromarray(np.clip(out * 255, 0, 255).astype(np.uint8))).save(path)   # blue glints off the armour too
+    Image.fromarray(np.clip(out * 255, 0, 255).astype(np.uint8)).save(path)
 
 
 def purple(im):
@@ -544,6 +544,12 @@ def add_shine(char, mat, rgb, color=None):
     fres = 0.75 + 0.5 * (1 - np.abs(n @ view)) ** 2                               # brighter towards grazing angles
     env = np.clip(env * 1.15, 0, 1) ** 1.35 * 1.7                                   # Halo adds it bright: its swirls read as liquid metal
     s = env * (spec * k * fres)[..., None]
+    if char in HUE_LOCK:
+        # the Grunts: the Elites' rank cube only on the painted armour (Halo's colour-change mask); their bare metal,
+        # masks and hoses keep Halo CE's own dull grey reflection, as before
+        cm = np.asarray(Image.open(mp).convert('RGBA').resize((W_, H_))).astype(np.float32)[..., 2] / 255.0
+        grey = np.clip(sample_cube(cube_faces('dark_gray', 0), r) * 1.15, 0, 1) ** 1.35 * 1.7
+        s = env * (spec * k * fres * cm)[..., None] + grey * (spec * 0.85 * fres * (1 - cm))[..., None]
     return np.clip(rgb * (1 - 0.3 * spec[..., None]) + s, 0, 1)                    # the metal darkens a little under its reflection
 
 
@@ -748,14 +754,25 @@ def gore_code(char, meta, mdir, sc):
     if not g: return ''
     mw = meta.get('mesh_weapon') or []
     out = ['\toverride bool HCE_SeverLimb(int limb)\n\t{\n\t\tif(hce_severed & (1 << limb)) return false;\n\t\tswitch(limb)\n\t\t{\n']
+    perms = body_perms(meta)
+    def stub_and_gib(x, ind):
+        c = x['center']
+        return (f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {x["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n'
+                f'{ind}HCE_SpawnLimb({{L}}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{x["gib"]}\', {x["stub"]}, \'{g["tex"]}\', {x.get("rest", 0):.4f});\n')
     for L, d in g['limbs'].items():
         gun = any(si < len(mw) and mw[si] for si in d['surfaces'])
-        c = d['center']
         out.append(f'\t\tcase {GORE_LIMBS[L]}:\n')
         for si in d['surfaces']:
             out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
-        out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {d["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n')
-        out.append(f'\t\t\tHCE_SpawnLimb({GORE_LIMBS[L]}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{d["gib"]}\', {d["stub"]}, \'{g["tex"]}\', {d.get("rest", 0):.4f});\n')
+        vs = d.get('variants')
+        if vs and perms:
+            # one stump and gib per permutation (the Grunts' two backs): the one this enemy wears
+            for k, q in enumerate(perms):
+                if q not in vs: continue
+                out.append(f'\t\t\t{"if" if k == 0 else "else if"}(hce_perm == {k})\n\t\t\t{{\n'
+                           + stub_and_gib(vs[q], '\t\t\t\t').replace('{L}', str(GORE_LIMBS[L])) + '\t\t\t}\n')
+        else:
+            out.append(stub_and_gib(d, '\t\t\t').replace('{L}', str(GORE_LIMBS[L])))
         out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
     out.append('\t\t}\n\t\treturn false;\n\t}\n')
     # limb centres in map units (hit location: which limb a shot struck) and the arm holding the gun
@@ -767,6 +784,33 @@ def gore_code(char, meta, mdir, sc):
     guns = [GORE_LIMBS[L] for L, d in g['limbs'].items() if L != 'head' and any(si < len(mw) and mw[si] for si in d['surfaces'])]
     if guns: out.append(f'\toverride int HCE_GunLimb() {{ return {guns[0]}; }}\n')
     return ''.join(out)
+
+
+def body_perms(meta):
+    """the permutations of a body region rolled per enemy at run time, other than the Marines' cosmetics (the Grunts'
+    regular and 'shellback' backs: mesh_names 'perm head and back.<perm>'), in a fixed order"""
+    names = meta.get('mesh_names') or []
+    return sorted({n.split('.', 1)[1] for n in names if n.startswith('perm head and back.')})
+
+
+def perm_code(meta, mdir):
+    """each Grunt wears one of Halo CE's two backs, the regular methane tank or the rounded 'shellback', rolled when
+    it spawns: the other back's surfaces (and its blood overlay) are hidden"""
+    perms = body_perms(meta)
+    if len(perms) < 2: return ''
+    names = meta['mesh_names']
+    hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
+    sets = []
+    for k, q in enumerate(perms):
+        other = [i for i, n in enumerate(names) if n.startswith('perm head and back.') and not n.endswith('.' + q)]
+        sets.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, other))} }}; for(int i = 0; i < H.Size(); i++) hce_permHide.Push(H[i]); break; }}\n')
+    return ('\t// Halo CE\'s two Grunt backs (' + ', '.join(perms) + '), one rolled per Grunt\n'
+            '\tint hce_perm;\n\tArray<int> hce_permHide;\n'
+            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
+            f'\t\thce_perm = random[HCEPerm](0, {len(perms) - 1});\n\t\thce_permHide.Clear();\n\t\tswitch(hce_perm)\n\t\t{{\n' + ''.join(sets) + '\t\t}\n'
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n\t}}\n'
+            f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tsuper.HCE_BloodHideClass();\n'
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
 
 
 def gun_code(meta, mdir):
@@ -934,7 +978,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir)
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
@@ -1095,6 +1139,7 @@ def build(cfg=None):
                 if hit: ov = dict(ov, overlay=hit[0][1])
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
             stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
+            stubs |= {x['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() for x in d.get('variants', {}).values()}
             blood_hidden = []
             for si, mat in enumerate(meta['meshes']):
                 matn = mat[:-4]

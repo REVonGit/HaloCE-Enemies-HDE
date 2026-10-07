@@ -91,6 +91,7 @@ def main():
     gl = open(f'{PACK}/gldefs.hce').read()
     bms = re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "[^"]+"\n\}', gl)
     camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
+    shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -130,15 +131,20 @@ def main():
             shutil.copy(f'{PACK}/{f}', f'{d}/{f}')
         mybms = [t for t in bms if t in need]
         mycamo = [t for t in camo if t in need]
-        if mybms or mycamo:
+        myshields = [t for t in shields if t in need]
+        if mybms or mycamo or myshields:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
-            if mybms:
+            if mybms or myshields:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
                 out += [f'brightmap texture "{t}"\n{{\n\tmap "models/hce/brightmap_full.png"\n}}' for t in mybms]
             if mycamo:
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_camo.fp', f'{d}/shaders/hce_camo.fp')
                 out += [f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}' for t in mycamo]
+            if myshields:                      # the Jackals' animated energy shields
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_shield.fp', f'{d}/shaders/hce_shield.fp')
+                out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myshields]
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'

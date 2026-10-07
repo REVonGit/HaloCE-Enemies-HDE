@@ -244,7 +244,13 @@ class HCE_ReplaceHandler : EventHandler
 		{
 			vector3 p = h.Vec3Angle(h.radius * 3, h.angle + 90 + a);
 			let b = Actor.Spawn(h.GetClass(), p, NO_REPLACE);
-			if(b && b.TestMobjLocation()) { b.angle = h.angle; return; }
+			if(b && b.TestMobjLocation())
+			{
+				b.angle = h.angle;
+				let hb = HaloDoom_EnemyBase(b);                    // bonded brothers (bond rage)
+				if(hb) { hb.hce_bondMate = h; h.hce_bondMate = hb; hb.hce_bondLooked = true; h.hce_bondLooked = true; }
+				return;
+			}
 			if(b) b.Destroy();
 		}
 	}

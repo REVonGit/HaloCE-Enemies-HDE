@@ -1004,6 +1004,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!HCE_IdleMove()) HCE_Play(HCE_A_IDLE);
 		if(bHCE_Flying) HCE_Hover();
 		if(HCE_SeekCorpse()) { SetStateLabel("See"); return; }
+		if(!hce_bondLooked) HCE_BondLink();
 		if(HCE_IdleReload()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
 		if((level.maptime + hce_scavOff) % 35 == 0) { HCE_ScavengeScan(); if(hce_scavItem) { SetStateLabel("See"); return; } }
@@ -1061,6 +1062,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_jumpState > 0) { HCE_JumpTick(); return; }
 		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
+		if(!hce_bondLooked) HCE_BondLink();
 		if(hce_scavItem && HCE_ScavengeTick()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
 		if((level.maptime + hce_scavOff) % 35 == 0) HCE_ScavengeScan();
@@ -1149,6 +1151,45 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(roar && HCE_HasAnim(HCE_A_BERSERK)) HCE_PlayLocked(HCE_A_BERSERK);
 	}
 
+	// ------------------------------------------------------------------
+	// Hunter bond rage. Hunters fight in bonded pairs (the brother spawned with it, or the nearest unpaired Hunter
+	// once they meet). When one dies the other, wherever it is, roars and goes into a rage for the rest of its
+	// life: berserk (it charges, never takes cover or backs off), a third faster, its cannon pauses cut to 60%, its
+	// shield-arm smashes half as hard again, and it goes after whoever killed its brother.
+	// ------------------------------------------------------------------
+	Actor hce_bondMate;
+	bool hce_raging, hce_bondLooked;
+
+	void HCE_BondLink()
+	{
+		hce_bondLooked = true;
+		if(!bHCE_PairBond || hce_bondMate) return;
+		HaloDoom_EnemyBase best = null; double bd = 512;
+		let it = BlockThingsIterator.Create(self, 512);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.bHCE_PairBond || e.hce_bondMate || e.health <= 0 || e.hce_team != hce_team || e.bFRIENDLY != bFRIENDLY) continue;
+			double d = Distance3D(e);
+			if(d < bd) { bd = d; best = e; }
+		}
+		if(best) { hce_bondMate = best; best.hce_bondMate = self; best.hce_bondLooked = true; }
+	}
+
+	void HCE_BondRage(HaloDoom_EnemyBase fallen)
+	{
+		if(hce_raging || health <= 0) return;
+		hce_raging = true;
+		Actor killer = fallen ? fallen.hce_lastHurter : null;
+		if(killer && killer.health > 0 && HCE_IsEnemy(killer)) { target = killer; hce_lastKnown = killer.pos; }
+		hce_runSpeed *= 1.33; hce_walkSpeed *= 1.33;
+		hce_patPauseMin *= 0.6; hce_patPauseMax *= 0.6;
+		hce_meleeDamage *= 1.5;
+		hce_berserk = false;                                  // always the roar
+		HCE_GoBerserk(true);
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
 	void HCE_StartPanic()
 	{
 		if(hce_action == HCE_ACT_KAMIKAZE) return;
@@ -1194,7 +1235,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				e.HCE_StartPanic();
 				if(regroup > 0) e.hce_panicTics = max(e.hce_panicTics, min(regroup, 35 * 12));
 			}
-			if(e.bHCE_PairBond && e.GetClass() == leader.GetClass()) e.HCE_GoBerserk(true);
+			if(e.bHCE_PairBond && !e.hce_bondMate && e.GetClass() == leader.GetClass()) e.HCE_BondRage(L);   // an unpaired brother nearby
 		}
 	}
 
@@ -2881,6 +2922,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		hce_burnDying = false; hce_bleedOut = 0;
 		HCE_SquadDeath();
+		let mate = HaloDoom_EnemyBase(hce_bondMate);
+		if(bHCE_PairBond && mate && mate.health > 0) mate.HCE_BondRage(self);
 		bNOBLOOD = default.bNOBLOOD;                          // dead: the shield no longer keeps the blood in
 		if(HCE_GibAllowed()) HCE_GibBody();
 		else

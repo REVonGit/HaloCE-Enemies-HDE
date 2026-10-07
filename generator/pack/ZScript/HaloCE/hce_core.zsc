@@ -13,14 +13,15 @@
 //   melee                      2.5x, and the Jackal staggers
 //   plasma                     4x (an overcharged plasma bolt 10x)
 // Hits that miss the shield hit the Jackal itself; so do shots from its side or back that clip the shield's
-// hitbox, and a shot whose line passes the gun hand poking out past the shield makes the Jackal reel (hard ping). When it is drained it flickers out and the
-// Jackal reels (hard ping); it comes back on its own after a few seconds out of harm.
+// hitbox, and a shot whose line passes the gun hand poking out past the shield makes the Jackal reel (hard ping). Drained, it
+// breaks for good: the field bursts into shards, the Jackal reels (hard ping) and often panics, and it fights on without it
+// (the body keeps the broken gauntlet bare).
 // ---------------------------------------------------------------------------
 class HCE_JackalShield : Actor
 {
 	double hp, maxhp;
 	int regenWait, bone, handBone;
-	bool down, skinHidden;
+	bool down, skinHidden, broken;
 
 	Default
 	{
@@ -179,14 +180,22 @@ class HCE_JackalShield : Actor
 
 	void BreakShield(HaloDoom_EnemyBase j)
 	{
-		down = true;
+		down = true; broken = true;
 		hp = 0;
 		bSHOOTABLE = false;
-		regenWait = 35 * 6;
 		A_StartSound("HCE/Jackal/ShieldPop", CHAN_AUTO, CHANF_OVERLAP);     // Halo 2's Jackal shield popping
-		for(int i = 0; i < 24; i++)
-			A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 16, frandom(3, 6), 0, 0, 0, height * 0.5, frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
+		A_StartSound("Shield/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.8);
+		// it shatters: a flash, then shards of the field tumbling down in the shield's colour
+		color sc = ShieldColor(j);
+		HCE_ShieldImpact.Burst(self, null, null, sc, 2.0, pos + (0, 0, height * 0.5), true);
+		for(int i = 0; i < 40; i++)            // relative to the shield's facing: out in front and to the sides
+			A_SpawnParticle(sc, SPF_FULLBRIGHT | SPF_RELATIVE, random(18, 34), frandom(2, 7), 0,
+				frandom(-4, 4), frandom(-height * 0.4, height * 0.4), height * 0.5 + frandom(-height * 0.4, height * 0.4),
+				frandom(0.5, 3), frandom(-2.5, 2.5), frandom(-1, 4), 0, 0, -0.35, frandom(0.8, 1.0), -1, -0.1);
+		for(int i = 0; i < 16; i++)
+			A_SpawnParticle("FFFFFF", SPF_FULLBRIGHT, 8, frandom(2, 4), 0, 0, 0, height * 0.5, frandom(-6, 6), frandom(-6, 6), frandom(-3, 5));
 		SetShieldVisible(j, false);
+		if(j.health > 0 && j.bHCE_Panics && frandom(0, 1) < 0.6) j.HCE_StartPanic();     // naked behind a broken gauntlet
 		// the Jackal reels from it
 		if(j.health > 0 && j.hce_leapState == 0 && j.hce_jumpState == 0)
 		{
@@ -212,7 +221,7 @@ class HCE_JackalShield : Actor
 	override void Tick()
 	{
 		let j = HaloDoom_EnemyBase(master);
-		if(!j || j.health <= 0) { if(j && skinHidden) SetShieldVisible(j, true); Destroy(); return; }
+		if(!j || j.health <= 0) { if(j && skinHidden && !broken) SetShieldVisible(j, true); Destroy(); return; }
 		if(isFrozen()) return;
 		// ride the arm's 'frame shield' node (the model's bone positions are on for the Jackal)
 		if(bone == -2)
@@ -234,7 +243,7 @@ class HCE_JackalShield : Actor
 		angle = j.angle;
 		// recharge out of harm
 		if(regenWait > 0) regenWait--;
-		else if(hp < maxhp)
+		else if(hp < maxhp && !broken)
 		{
 			hp = min(maxhp, hp + maxhp / 70.0);
 			if(down && hp >= maxhp * 0.5)

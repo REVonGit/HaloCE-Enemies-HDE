@@ -300,8 +300,9 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Explosions:** full damage.
   * **Melee:** 2.5×, and the Jackal staggers.
   * **Plasma:** 4×, and an overcharged plasma bolt 10×.
-  * **Drained:** it flickers out (the shield vanishes from the model) and the Jackal reels in a hard ping. It recharges after about 6 s out of harm.
-  * The shield's colour shows the rank, and it glows (brightmap in `gldefs.hce`):
+  * **Drained, it breaks for good:** the field bursts into a flash and a spray of shards in its colour, the shield is gone from the model, and the Jackal reels in a hard ping and often (60%) panics. It fights on without it; a broken shield never comes back.
+  * **Animated:** the field is drawn by a shader (`shaders/hce_shield.fp`, fullbright): it drifts and folds over itself, a hex lattice shows through with its cells flickering, bands of light sweep across it, and it pulses.
+  * The shield's colour shows the rank:
 
   | Rank | Shield | Weapon | Body / shield HP | Class |
   |---|---|---|---|---|
@@ -327,7 +328,8 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Hunters:** front armour reduces damage by 92% within 70°, so flank them. Their weak spots are where Halo's are:
   * **Back:** the exposed orange flesh takes **3×** from behind (more than 110° off their facing). In testing, 20 to the back did 60.
   * **Belly:** the gap at the stomach takes 1.5× even from the front, within 30° of dead ahead and at 30–55% of their height.
-  * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs. Killing one sends its brother berserk.
+  * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
+  * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
 * **Hunter colours:**
 
   | Hunter | Weapon | Class (DoomEdNum) |
@@ -344,6 +346,10 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Armour shine:** Halo CE draws Elite and Grunt armour with a cube-map reflection under its specular mask: the swirling liquid-metal sheen. Doom has no cube maps, so it is baked into the skins. The blue Minor and red Major Elites wear hand-painted skins with that chrome sheen painted in. The Spec Ops Elites, black in Halo CE, wear the same painted skins turned a vibrant dark purple (sheen and highlights included) so they stand apart from the dark undersuit. Every other Elite gets Halo's own cube maps baked in (blue, magenta, gold and silver by rank), reflected off each armour plate's shape, only where Halo's specular mask marks metal. The Grunts' painted armour wears the Elites' cube maps the same way (gold on the orange Minors, red on the Majors, the armour's hue held to its rank colour), so it reads like the Elites'. Their bare metal, masks and hoses keep Halo CE's own dull grey reflection. The Spec Ops Grunts are repainted in the Spec Ops Elites' violet, with smooth shading and soft highlights.
 * **Covenant weapon shine:** the Covenant guns the enemies carry get the same baked reflection on their coloured metal. The plasma pistol, plasma rifle and needler use Halo CE's own cube map and reflection mask for each gun. The fuel rod, sword hilt, Halo 2 and Digsite weapons and the Plasma Caster get a gentler one from the plasma rifle's cube map on their painted parts. Lights, glows and grey metal are left as they are.
 * **Elite Commander (gold):** the gold Elites wear the regular Elite body, the one the Minors and Majors wear, instead of the Elite Special's: its colour mask leaves the hands their dark gauntlet colour, where the Elite Special's turned the hands gold too. The armour is baked as a vibrant gold that keeps the plates' shading, with highlights on the raised edges. The Commanders keep their own stats, weapons (the regular Elite model now carries the energy sword) and DoomEdNums.
+* **More Grunt ranks (new):**
+  * **Ultra** (Halo 2's `grunt_ultra`): white armour, a third more health than a Major (100 with the needler, 80 with the plasma pistol); it fights like a Major. `HCE_GruntUltraNeedler` (30319), `HCE_GruntUltraPlasmaPistol` (30320).
+  * **Heavy** (Halo 2's `grunt_heavy`, in Halo 3's green): the fuel rod on the Spec Ops body; it fights like the Spec Ops fuel-rod Grunt. `HCE_GruntHeavyFuelRod` (30318).
+  * They get the same baked armour shine as the other Grunts, and are in the `HCE_RandomGrunt` / `HCE_RandomGruntSpecOps` spawners; Doom's monsters aren't replaced by them.
 * **Fuel-rod Elite (new, `HCE_EliteMajorFuelRod`, 30282):** a Major Elite with the fuel rod gun, in **Halo 2's fuel-rod stance**. Halo CE's and Halo 2's Elites are the same 3ds Max biped: every CE bone has a Halo 2 twin with the same parent and the same offset in its parent's frame, so Halo 2's animations play on the CE Elite as they are (`h2_elite_anims.py`). It gets Halo 2's fuel-rod idle, moves, turns, dives, evades, grenade throw, berserk, melee and the firing overlay. Its firing data is the Spec Ops Grunt's fuel rod; it drops HDE's fuel rod.
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
@@ -370,7 +376,7 @@ Marines and the Covenant swap their gun for a better one they see lying nearby (
 * **How it looks:** it walks over, crouches down next to the weapon for a moment, stands up with it, and its old gun lies where the new one was.
 * **When:** out of a fight, or with the enemy out of sight or more than 640 units off; it gives up after 6 seconds if it can't get there. Never with its gun arm shot off.
 * **What it picks up:** whatever the gun the dead dropped, a weapon placed in the map, or one you dropped (Marines take guns you drop for them).
-  * The **Covenant only ever use Covenant weapons**, and only ones their body is modelled with: Elites the plasma rifle, needler and fuel rod; Spec Ops Elites the plasma rifle and needler; Grunts the plasma pistol and needler; Spec Ops Grunts the needler and fuel rod. They only trade up (fuel rod over needler and plasma rifle, those over the plasma pistol).
+  * The **Covenant only ever use Covenant weapons**, and only ones their body is modelled with: Elites the plasma rifle, needler and fuel rod; Spec Ops Elites the plasma rifle and needler; Grunts the plasma pistol and needler; Spec Ops and Heavy Grunts the needler and fuel rod. They only trade up (fuel rod over needler and plasma rifle, those over the plasma pistol).
   * **Marines** take anything they have a grip for: every gun in [the Marine arsenal](#the-marine-arsenal) and Halo CE's (assault rifle, shotgun, sniper rifle, rocket launcher, Magnum, flamethrower) plus the needler and plasma rifle. Like Halo Infinite's, each Marine has a liking for close, mid or long range: power weapons first, then the guns that suit its range, then the rest.
 * **What changes:** the gun on the model, its stance and animations, and its firing, sounds, range, magazine or heat are those of the pack's own class that carries that gun.
 * Not picked up: the energy sword, the Plasma Caster, the beam rifle, the sticky detonator and the Stanchion (their classes are built around them). Sergeants Johnson and Stacker keep their guns.
@@ -897,4 +903,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30315 | `HCE_MarineStickyDetonator` |
 | 30316 | `HCE_SgtJohnson` |
 | 30317 | `HCE_EliteSpecopsPlasmaCaster` |
+| 30318 | `HCE_GruntHeavyFuelRod` |
+| 30319 | `HCE_GruntUltraNeedler` |
+| 30320 | `HCE_GruntUltraPlasmaPistol` |
 | 30454 | `HCE_SgtStacker` |

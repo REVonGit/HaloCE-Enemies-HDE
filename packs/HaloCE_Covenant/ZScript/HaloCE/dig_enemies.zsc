@@ -1717,7 +1717,11 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 8, "models/hce_dig/Brute", 'Brute_w_plasma_caster.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 8, "models/hce_dig/Brute", 'Brute_w_plasma_caster.iqm');
+			A_ChangeModel('None', 8, "", 'None', 0, "models/hce_dig/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 	void HCE_HideWeaponSurfaces()

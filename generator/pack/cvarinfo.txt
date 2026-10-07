@@ -19,3 +19,4 @@ server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (
 server bool hce_dismember = true;      // hard kills can take heads and arms off (headshots, explosions, heavy melee)
 server bool hce_bodyblood = false;     // blood on the body: splatter overlays that build up as an enemy is hurt (Options > Halo CE Gore)
 server bool hce_betrayal = true;      // Marines turn on a player who keeps shooting them (and forgive them 30 s after the last hit)
+server bool hce_tactics = true;        // squad tactics: Marines in fire teams (bounding overwatch, flanking, break contact, 360 perimeter on hold); Covenant lances in echelons (barrage, shield wall, feigned retreat, encircling wings, breakthrough charge)

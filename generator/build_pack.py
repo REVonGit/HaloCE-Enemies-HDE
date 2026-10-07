@@ -889,12 +889,14 @@ def gun_code(meta, mdir, slot=None):
                if slot is not None else '') + '\t}\n')
 
 
-def overlay_gun_code(char, meta, mdir, ov):
-    """HCE_ShowGun for a variant whose gun is an overlay model (the Marine arsenal, the Plasma Casters)"""
+def overlay_gun_code(char, meta, mdir, ov, pack=None):
+    """HCE_ShowGun for a variant whose gun is an overlay model (the Marine arsenal, the Plasma Casters). Showing it
+    again puts back its own skins too: a gun traded or picked up in the meantime left its own on the slot's
+    surfaces, and the class's gun would wear them"""
     oi = ov.get('overlay_idx', ARSENAL_IDX)
-    a = meta['arsenal'][ov['overlay']]
+    own = ''.join('\t' + l for l in overlay_swap(char, meta, mdir, ov['overlay'], oi, pack).splitlines(True))
     return ('\toverride void HCE_ShowGun(bool show)\n\t{\n\t\tsuper.HCE_ShowGun(show);\n'
-            f'\t\tif(show) A_ChangeModel(\'None\', {oi}, "models/{mdir}/{char}", \'{a["model"]}\');\n'
+            f'\t\tif(show)\n\t\t{{\n{own}\t\t}}\n'
             f'\t\telse A_ChangeModel(\'None\', {oi}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);\n\t}}\n')
 
 
@@ -1461,7 +1463,7 @@ def build(cfg=None):
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
             if not char.startswith('Marine') and (ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
-            if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov)
+            if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov, pack)
             if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon):
                 extra += f'\toverride Name HCE_LimbReplacement(int limb) {{ if(limb != HCE_LIMB_RARM) return \'None\'; return "{HUNTER_ARM_WEAPON[weapon]}"; }}\n'
             if '%STICKY_LOADED%' in extra:

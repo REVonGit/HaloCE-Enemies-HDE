@@ -2615,7 +2615,11 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/EliteSpecial", 'EliteSpecial_w_plasma_caster.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/EliteSpecial", 'EliteSpecial_w_plasma_caster.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }

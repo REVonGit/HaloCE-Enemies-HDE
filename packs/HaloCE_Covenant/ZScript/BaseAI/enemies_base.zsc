@@ -691,15 +691,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		while(it.Next())
 		{
 			let e = HaloDoom_EnemyBase(it.thing);
-			if(!e || !e.hce_enabled || !e.bHCE_Leader || e.health <= 0 || e.hce_team != hce_team || e.bFRIENDLY || e.hce_squadCount >= 6) continue;
+			if(!e || !e.hce_enabled || !e.bHCE_Leader || e.health <= 0 || e.hce_team != hce_team || e.bFRIENDLY || e.hce_squadCount >= 9) continue;
 			double d = Distance3D(e);
 			if(d < bd && CheckSight(e, SF_IGNOREVISIBILITY)) { bd = d; best = e; }
 		}
 		if(!best) return null;
 		hce_squadLead = best;
-		static const double SA[] = { 150, -150, 115, -115, 175, -175 };
-		static const double SD[] = { 72, 72, 104, 104, 130, 130 };
-		int n = best.hce_squadCount++ % 6;
+		static const double SA[] = { 150, -150, 115, -115, 175, -175, 135, -135, 160 };
+		static const double SD[] = { 72, 72, 104, 104, 130, 130, 160, 160, 185 };
+		int n = best.hce_squadCount++ % 9;          // a leader and up to nine: the Mongol arban of ten
 		hce_slotAng = SA[n]; hce_slotDist = SD[n] + best.radius;
 		return best;
 	}
@@ -1309,9 +1309,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(dl > 420) { moveA = AngleTo(L); spd = hce_runSpeed; }
 			else if(dl > 280 && spd > 0 && abs(DeltaAngle(moveA, AngleTo(L))) > 90) moveA = AngleTo(L) + 60 * (hce_strafeDir != 0 ? hce_strafeDir : 1);
 		}
+		bool fire = true;
+		HCE_Doctrine(d, toT, moveA, spd, fire);       // squad tactics (UNSC fire teams, Covenant lance)
 		if(spd > 0) moveA = HCE_PickHeading(moveA, toT);
 		HCE_Move(moveA, spd);
-		HCE_UpdateFiring(d);
+		if(fire) HCE_UpdateFiring(d);
 		if(hce_kamiChance > 0 && level.maptime % 35 == 0 && frandom(0, 1) < hce_kamiChance * (health < SpawnHealth() / 2 ? 3 : 1)
 			&& HCE_StartKamikaze()) return;
 		if(bHCE_ThrowsGrenades) HCE_TryGrenade(d);
@@ -1871,6 +1873,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
 		hce_squadOrder = o;
+		hce_onPerimeter = false;
 		if(o == HCE_ORDER_HOLD) hce_holdPos = pos;
 		if(o == HCE_ORDER_REGROUP) hce_regroupUntil = level.maptime + 35 * 8;
 	}
@@ -1977,6 +1980,213 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+
+	// ------------------------------------------------------------------
+	// Tactics. Marines (HCE_DoctrineUNSC) fight as US Army / UN infantry: two fire teams, a base of fire and a
+	// maneuver element, moving in 3-5 second rushes under the other team's suppressive fire (bounding overwatch),
+	// with the react-to-contact (battle drill 1) and break-contact (battle drill 2) drills; held in place they form
+	// an all-round (360 degree) defence. The Covenant (HCE_DoctrineCovenant, HCE_Lance) fight on Soviet Deep Battle
+	// and Mongol steppe lines: preparatory fire, a first echelon that fixes the enemy (a Jackal shield wall with the
+	// Grunts behind it), a second echelon of Elites / Brutes that passes through to break it, feigned retreats into
+	// an ambush, encircling wings, and skirmishers that harass and fall back. hce_tactics 0 turns it all off.
+	// ------------------------------------------------------------------
+	HCE_Lance hce_lance;                 // a Covenant leader's battle plan
+	int hce_feintSeen;
+	double hce_holdFace;
+	bool hce_onPerimeter;
+
+	bool HCE_TacticsOn() { return HCE_CVarF('hce_tactics', 1) > 0; }
+
+	virtual bool HCE_Doctrine(double d, double toT, out double moveA, out double spd, out bool fire)
+	{
+		if(!target || hce_berserk || !HCE_TacticsOn()) return false;
+		if(HCE_InSquad()) return HCE_DoctrineUNSC(d, toT, moveA, spd, fire);
+		if(hce_team == HCE_TEAM_COVENANT && !bFRIENDLY) return HCE_DoctrineCovenant(d, toT, moveA, spd, fire);
+		return false;
+	}
+
+	// head for a spot: false (and no move) once there
+	bool HCE_Toward(vector2 spot, out double moveA, out double spd, double runAt = 200)
+	{
+		vector2 dv = spot - pos.xy;
+		double l = dv.Length();
+		if(l < 40) { spd = 0; return false; }
+		moveA = atan2(dv.y, dv.x);
+		spd = l > runAt ? hce_runSpeed : hce_walkSpeed;
+		return true;
+	}
+
+	bool HCE_DoctrineUNSC(double d, double toT, out double moveA, out double spd, out bool fire)
+	{
+		if(hce_squadOrder != HCE_ORDER_FOLLOW || hce_medicFor) return false;
+		let p = players[consoleplayer].mo;
+		if(!p || p.health <= 0) return false;
+		if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
+		let f = hce_formation;
+		int k = f.roster.Find(self);
+		if(k == f.roster.Size()) { f.roster.Push(self); k = f.roster.Size() - 1; }
+		if(f.drill == 0) return false;
+		int team = k % 2;                       // Alpha (even), Bravo (odd)
+		bool moving = f.bounding == team;
+		vector2 goal;
+		double away = target.AngleTo(p);
+		if(f.drill == 2)
+		{
+			// break contact: bound back past the player, a team either side
+			goal = p.pos.xy + AngleToVector(away, 192) + AngleToVector(away + 90, team ? 72 : -72);
+		}
+		else if(team == 1)
+		{
+			// the maneuver element works round the enemy's flank, never too far from the player
+			double r = clamp((hce_rangeMin + hce_rangeMax) * 0.5, 192, 448);
+			goal = target.pos.xy + AngleToVector(away + f.flank * 75, r);
+			vector2 off = goal - p.pos.xy;
+			if(off.Length() > 640) goal = p.pos.xy + off.Unit() * 640;
+		}
+		else
+		{
+			f.Spot(self, hce_formSpot, hce_formFace);      // the base of fire: its place in the formation by the player
+			goal = hce_formSpot;
+		}
+		if(moving && HCE_Toward(goal, moveA, spd, 96))
+		{
+			spd = hce_runSpeed;                 // the rush: up, run, down -- no shooting on the move
+			fire = false;
+			return true;
+		}
+		spd = 0;                                // overwatch: down, and suppressing whatever it can see
+		fire = true;
+		if(hce_canSee) hce_suppressUntil = max(hce_suppressUntil, level.maptime + 8);
+		return true;
+	}
+
+	// hold: the squad spreads into a ring round where it stands, each facing out over his sector
+	static void HCE_Perimeter(Array<HaloDoom_EnemyBase> s)
+	{
+		int n = s.Size();
+		if(n < 2) return;
+		vector2 c = (0, 0);
+		for(int i = 0; i < n; i++) c += s[i].pos.xy;
+		c /= n;
+		double r = clamp(n * 40 / 3.14159, 72, 224);
+		for(int i = 0; i < n; i++)
+		{
+			let m = s[i];
+			double a = i * 360.0 / n;
+			vector2 spot = c + Actor.AngleToVector(a, r);
+			vector2 dv = spot - m.pos.xy;
+			FLineTraceData tr;
+			if(dv.Length() > 1 && m.LineTrace(atan2(dv.y, dv.x), dv.Length() + m.radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, m.height * 0.5, data: tr))
+				spot = m.pos.xy;              // no clear way there: hold where it is, still facing out
+			m.hce_holdPos = (spot, m.pos.z);
+			m.hce_holdFace = a;
+			m.hce_onPerimeter = true;
+		}
+	}
+
+	// ---- the Covenant: roles by race and weapon
+	const HCE_ROLE_SHOCK = 0;    // Elites, Brutes: the second echelon, heavy cavalry
+	const HCE_ROLE_SHIELD = 1;   // Jackals with shields: the front rank
+	const HCE_ROLE_LINE = 2;     // Grunts and shieldless Jackals: the second rank, the mass
+	const HCE_ROLE_HEAVY = 3;    // fuel rods and other heavy weapons: the artillery
+	const HCE_ROLE_SKIRMISH = 4; // Jackal marksmen and snipers, Drones: the horse archers
+
+	int HCE_Role()
+	{
+		if(bHCE_Leader || hce_type == 0) return HCE_ROLE_SHOCK;
+		if(bHCE_Flying) return HCE_ROLE_SKIRMISH;
+		if(bHCE_FrontShield && hce_frontShieldHP > 0) return HCE_ROLE_SHIELD;
+		int b;
+		int k = HCE_WeaponKindOf(hce_dropWeapon, b);
+		if(k == HCE_WK_HEAVY) return HCE_ROLE_HEAVY;
+		if(k == HCE_WK_LONG && hce_type == 1) return HCE_ROLE_SKIRMISH;
+		return HCE_ROLE_LINE;
+	}
+
+	bool HCE_DoctrineCovenant(double d, double toT, out double moveA, out double spd, out bool fire)
+	{
+		if(bHCE_Flying && !bHCE_Leader)
+		{
+			// Drones as horse archers: in to their range, a firing pass along the flank, and out again when pressed
+			if(d < max(hce_rangeMin * 1.5, 160)) { moveA = toT + 180 + 30 * (hce_strafeDir != 0 ? hce_strafeDir : 1); spd = hce_runSpeed; return true; }
+			if(d > hce_rangeMax * 0.9) return false;
+			moveA = toT + 80 * (hce_strafeDir != 0 ? hce_strafeDir : 1); spd = hce_runSpeed * 0.8;
+			return true;
+		}
+		if(bHCE_Leader && !hce_lance && HCE_TacticsOn()) HCE_Lance.Get(self);
+		HaloDoom_EnemyBase L = bHCE_Leader ? self : HCE_SquadLeader();
+		if(!L || L.health <= 0) return false;
+		let ln = L.hce_lance;
+		if(!ln || ln.phase == HCE_Lance.PH_NONE || !ln.target) return false;
+		double ang = L.AngleTo(ln.target);
+		vector2 fw = AngleToVector(ang, 1), side = AngleToVector(ang + 90, 1);
+		double mid = (hce_rangeMin + hce_rangeMax) * 0.5;
+		if(L == self)
+		{
+			switch(ln.phase)
+			{
+			case HCE_Lance.PH_PREP:             // the barrage: hold and fire
+				spd = 0; return true;
+			case HCE_Lance.PH_FEINT:            // waiting in ambush behind the feigned rout: still and silent
+				spd = 0; fire = false; return true;
+			case HCE_Lance.PH_EXPLOIT:          // the breakthrough: through its own front rank and into them
+				if(d > 96) { moveA = toT; spd = hce_runSpeed * 1.1; }
+				return true;
+			default:                            // second echelon: behind the first, at its own range
+				vector2 spot = ln.target.pos.xy - fw * (max(mid, 256) + 96) + side * (hce_strafeDir * 48);
+				HCE_Toward(spot, moveA, spd, 320);
+				return true;
+			}
+		}
+		int role = HCE_Role();
+		int i, n;
+		[i, n] = ln.Rank(self, role);
+		vector2 spot;
+		switch(role)
+		{
+		case HCE_ROLE_SKIRMISH:
+			// horse archers: shoot from long range off the flanks, and fall back shooting when pressed
+			if(d < max(hce_rangeMin * 1.5, 160)) { moveA = toT + 180 + (i % 2 ? 35 : -35); spd = hce_runSpeed; return true; }
+			spot = ln.target.pos.xy + AngleToVector(ln.target.AngleTo(L) + (i % 2 ? 40 : -40), hce_rangeMax * 0.85);
+			HCE_Toward(spot, moveA, spd, 256);
+			return true;
+		case HCE_ROLE_HEAVY:
+			// the artillery: behind the leader, firing hardest while the barrage lasts
+			spot = L.pos.xy - fw * 70 + side * ((i - (n - 1) * 0.5) * 72);
+			if(ln.phase == HCE_Lance.PH_PREP && hce_canSee) hce_suppressUntil = max(hce_suppressUntil, level.maptime + 8);
+			if(!HCE_Toward(spot, moveA, spd, 256)) spd = 0;
+			return true;
+		case HCE_ROLE_SHIELD:
+			// the shield wall, shoulder to shoulder ahead of the leader, toward the enemy
+			spot = L.pos.xy + fw * 110 + side * ((i - (n - 1) * 0.5) * 46);
+			break;
+		default:
+			if(ln.phase == HCE_Lance.PH_FEINT && hce_type == 2)
+			{
+				// the feigned rout: the Grunts break and run back past the leader, to draw the enemy on
+				if(hce_feintSeen != ln.feintAt) { hce_feintSeen = ln.feintAt; HCE_Say('Flee', 0.6, 35 * 2); }
+				spot = L.pos.xy - fw * 200 + side * ((i - (n - 1) * 0.5) * 64);
+				HCE_Toward(spot, moveA, spd, 0);
+				spd = hce_runSpeed; fire = false;
+				return true;
+			}
+			if(n >= 3 && i >= n - 2 && ln.members.Size() >= 5 && ln.phase >= HCE_Lance.PH_ASSAULT)
+			{
+				// the wings: the outermost two of the line sweep round both flanks to close the ring
+				double r = clamp(mid, 192, 512);
+				spot = ln.target.pos.xy + AngleToVector(ln.target.AngleTo(L) + (i == n - 1 ? 75 : -75), r);
+				HCE_Toward(spot, moveA, spd, 192);
+				return true;
+			}
+			// the second rank: behind the shields (or the front rank, with no Jackals)
+			spot = L.pos.xy + fw * (ln.shields > 0 ? 64 : 100) + side * ((i - (n - 1) * 0.5) * 60);
+			break;
+		}
+		if(ln.phase == HCE_Lance.PH_PREP && (spot - pos.xy).Length() < 300) { spd = 0; return true; }   // forming up under the barrage
+		if(!HCE_Toward(spot, moveA, spd, 192)) spd = 0;
+		return true;
+	}
+
 	HCE_Formation hce_formation;
 	vector2 hce_formSpot;
 	double hce_formFace;
@@ -1990,7 +2200,15 @@ class HaloDoom_EnemyBase : Actor abstract
 			vector2 dv = hce_holdPos.xy - pos.xy;
 			double hd = dv.Length();
 			if(hd > 40) { HCE_Move(atan2(dv.y, dv.x), hd > 300 ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
-			else HCE_Brake();
+			else
+			{
+				HCE_Brake();
+				if(hce_onPerimeter)                       // all-round defence: each man faces out over his own sector
+				{
+					double dd = DeltaAngle(angle, hce_holdFace);
+					if(abs(dd) > 2) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.5, hce_turnRate * 0.5), SPF_INTERPOLATE);
+				}
+			}
 		}
 		else if(!p) { HCE_Brake(); HCE_Play(HCE_A_IDLE); return; }
 		else
@@ -4251,6 +4469,114 @@ class HaloDoom_EnemyBase : Actor abstract
 // same file and wedge (arrowhead). Doom scale: 32 units to the metre; the doctrinal 10 m interval would spread a
 // squad over a whole room, so the open interval is ~3.5 m and the file's ~2.5 m. The player is the leader.
 // ----------------------------------------------------------------------
+// A Covenant lance's battle plan (one per Elite / Brute leader in a fight), after Soviet Deep Battle and Mongol
+// steppe warfare. Phases:
+//   PREP     the first moments of contact: a preparatory barrage (heavy weapons in long bursts) while the lance
+//            forms its ranks -- the Jackals' shield wall ahead of the leader, the Grunts behind it.
+//   ASSAULT  the first echelon fixes the enemy from its ranks; the outer Grunts sweep round both flanks (the
+//            encircling wings); skirmishers harass from range; the leader holds back as the second echelon.
+//   FEINT    now and then, when the enemy pushes in, the Grunts break and run back past the leader (a feigned
+//            rout) while it waits, silent, in ambush; an enemy that follows them in springs it.
+//   EXPLOIT  once the first echelon has bled (40% down), the ambush is sprung, or the fight has gone on, the
+//            leader passes through its own ranks and charges: the breakthrough.
+// The lance also masses its fire: members take the leader's target (concentration at the point of attack).
+// ----------------------------------------------------------------------
+class HCE_Lance : Thinker
+{
+	const PH_NONE = 0; const PH_PREP = 1; const PH_ASSAULT = 2; const PH_FEINT = 3; const PH_EXPLOIT = 4;
+	HaloDoom_EnemyBase leader;
+	Actor target;
+	Array<HaloDoom_EnemyBase> members;
+	int phase, phaseAt, startCount, feintAt, feintNext, shields;
+	double lastTD;
+
+	static HCE_Lance Get(HaloDoom_EnemyBase leader)
+	{
+		if(leader.hce_lance) return leader.hce_lance;
+		let l = new("HCE_Lance");
+		l.ChangeStatNum(STAT_USER);
+		l.leader = leader;
+		leader.hce_lance = l;
+		return l;
+	}
+
+	// its index among the members of a role, and how many there are
+	int, int Rank(HaloDoom_EnemyBase m, int role)
+	{
+		int i = 0, n = 0;
+		for(int k = 0; k < members.Size(); k++)
+		{
+			let e = members[k];
+			if(!e || e.HCE_Role() != role) continue;
+			if(e == m) i = n;
+			n++;
+		}
+		return i, max(n, 1);
+	}
+
+	override void Tick()
+	{
+		if(!leader || leader.health <= 0) { Destroy(); return; }
+		int t = level.maptime;
+		if(t % 17 == 0)
+		{
+			for(int k = members.Size() - 1; k >= 0; k--)
+				if(!members[k] || members[k].health <= 0 || members[k].hce_squadLead != leader) members.Delete(k);
+			let it = BlockThingsIterator.Create(leader, 1024);
+			while(it.Next())
+			{
+				let e = HaloDoom_EnemyBase(it.thing);
+				if(e && e != leader && e.health > 0 && e.hce_squadLead == leader && members.Find(e) == members.Size()) members.Push(e);
+			}
+			shields = 0;
+			for(int k = 0; k < members.Size(); k++) if(members[k].HCE_Role() == HaloDoom_EnemyBase.HCE_ROLE_SHIELD) shields++;
+		}
+		target = leader.target;
+		if(!target || target.health <= 0 || !members.Size())
+		{
+			if(phase != PH_NONE && (!target || t - leader.hce_lastSeen > 35 * 8)) phase = PH_NONE;
+			if(!target) return;
+		}
+		if(phase == PH_NONE)
+		{
+			if(!members.Size() || t - leader.hce_lastSeen > 35) return;
+			phase = PH_PREP; phaseAt = t; startCount = members.Size(); feintNext = t + 35 * 6; lastTD = leader.Distance2D(target);
+			return;
+		}
+		// mass the fire: members on the leader's target
+		if(t % 35 == 0)
+			for(int k = 0; k < members.Size(); k++)
+			{
+				let e = members[k];
+				if(e.target != target && e.Distance3D(target) < 1536) { e.target = target; e.hce_lastKnown = target.pos; }
+			}
+		double td = leader.Distance2D(target);
+		bool closing = td < lastTD - 2;
+		if(t % 18 == 0) lastTD = td;
+		switch(phase)
+		{
+		case PH_PREP:
+			if(t - phaseAt > 35 * 3) { phase = PH_ASSAULT; phaseAt = t; }
+			break;
+		case PH_ASSAULT:
+		{
+			int grunts = 0;
+			for(int k = 0; k < members.Size(); k++) if(members[k].hce_type == 2) grunts++;
+			if(members.Size() <= startCount * 0.6 || t - phaseAt > 35 * 16) { phase = PH_EXPLOIT; phaseAt = t; }
+			else if(grunts >= 2 && closing && td < 700 && t >= feintNext && random(0, 2) == 0)
+			{ phase = PH_FEINT; phaseAt = t; feintAt = t; feintNext = t + 35 * 15; }
+			else if(t % 70 == 0) feintNext = max(feintNext, t + 35);
+			break;
+		}
+		case PH_FEINT:
+			if(td < 320) { phase = PH_EXPLOIT; phaseAt = t; }                 // they took the bait: spring it
+			else if(t - phaseAt > 35 * 4) { phase = PH_ASSAULT; phaseAt = t; } // the rout turns and fights again
+			break;
+		}
+	}
+}
+
+// ----------------------------------------------------------------------
 class HCE_Formation : Thinker
 {
 	const INTERVAL = 112;        // between neighbours on a wedge arm (diagonal)
@@ -4261,6 +4587,10 @@ class HCE_Formation : Thinker
 	double heading;
 	bool tight;
 	Array<HaloDoom_EnemyBase> roster;
+	// in a fight (HaloDoom_EnemyBase.HCE_DoctrineUNSC): the drill (1 attack, 2 break contact), which fire team is
+	// rushing (-1 neither: reacting to contact), when it swaps, the side the maneuver element flanks on
+	int drill, bounding, boundAt, flank, lastEngaged;
+	double maxStrength;
 
 	static HCE_Formation Get(Actor leader)
 	{
@@ -4281,6 +4611,7 @@ class HCE_Formation : Thinker
 			let m = roster[i];
 			if(!m || m.health <= 0 || !m.HCE_InSquad() || m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD) roster.Delete(i);
 		}
+		FightTick();
 		vector2 v = leader.vel.xy;
 		if(v.Length() > 1.5) heading += Actor.DeltaAngle(heading, atan2(v.y, v.x)) * 0.12;   // the way he's going
 		if(!tx.Size() || (leader.pos.xy - (tx[0], ty[0])).Length() >= 16)
@@ -4294,6 +4625,46 @@ class HCE_Formation : Thinker
 			double w = Room(heading + 90) + Room(heading - 90);
 			if(tight && w > 300) tight = false;
 			else if(!tight && w < 224) tight = true;
+		}
+	}
+
+	void FightTick()
+	{
+		bool engaged = false;
+		double str = 0;
+		for(int i = 0; i < roster.Size(); i++)
+		{
+			let m = roster[i];
+			str += m.health / double(max(1, m.SpawnHealth()));
+			if(m.target && m.target.health > 0 && level.maptime - m.hce_lastSeen < 35 * 8) engaged = true;
+		}
+		if(engaged) lastEngaged = level.maptime;
+		else
+		{
+			if(level.maptime - lastEngaged > 35 * 4) drill = 0;                    // contact broken off
+			if(level.maptime - lastEngaged > 35 * 15) maxStrength = 0;             // a new fight, fresh
+			return;
+		}
+		// contact for one is contact for all: the rest of the squad turns on what the first man engaged
+		Actor foe = null;
+		for(int i = 0; i < roster.Size() && !foe; i++) if(roster[i].target && roster[i].target.health > 0) foe = roster[i].target;
+		if(foe && level.maptime % 17 == 0)
+			for(int i = 0; i < roster.Size(); i++)
+			{
+				let m = roster[i];
+				if(!m.target && m.Distance3D(foe) < 1536) { m.target = foe; m.hce_lastKnown = foe.pos; m.HCE_OnAcquire(); }
+			}
+		if(drill == 0)
+		{
+			// react to contact: everyone down and returning fire for two seconds, then the drill
+			drill = 1; bounding = -1; boundAt = level.maptime + 70; flank = random(0, 1) ? 1 : -1;
+		}
+		maxStrength = max(maxStrength, str);
+		if(drill == 1 && roster.Size() >= 2 && str < maxStrength * 0.45) { drill = 2; bounding = 0; boundAt = level.maptime + 35 * 3; }
+		if(level.maptime >= boundAt)
+		{
+			bounding = bounding == 0 ? 1 : 0;                        // the other team's rush
+			boundAt = level.maptime + random(35 * 3, 35 * 5);
 		}
 	}
 

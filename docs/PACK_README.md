@@ -128,6 +128,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_hearing` | 1024 | How far gunfire wakes idle enemies (deaf/ambush enemies only wake on sight, as in Doom) |
 | `hce_maxpursuers` | 4 | At most this many enemies of a team hunt one target they can't see at a time; the rest hold position (0 = no limit) |
 | `hce_squads` | true | Grunts and Jackals form squads around the nearest Elite or Brute and follow its lead |
+| `hce_tactics` | true | Squad tactics: Marine fire teams and battle drills, Covenant lances in echelons (see [Squad tactics](#squad-tactics)) |
 | `hce_patrols` | true | Idle enemies walk short patrols around where they were placed (or along a map's PatrolPoint route) |
 | `hce_sleepinggrunts` | 0.3 | Chance that a Grunt placed in a map starts asleep (Grunts placed as deaf/ambush always do; 0 = never) |
 
@@ -229,7 +230,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Hearing:** gunfire wakes idle enemies only within `hce_hearing` (1024 units).
   * **Deaf monsters:** monsters a mapper placed as deaf ("ambush") wake only on sight, as in Doom.
   * **Hunting:** at most `hce_maxpursuers` (4) enemies of a team hunt one target they can't see at a time. The rest hold their ground, facing where you were last seen, until you show up.
-* **Squad leaders:** Grunts and Jackals pick the nearest Elite or Brute in sight within 768 units as their leader (up to six per leader).
+* **Squad leaders:** Grunts and Jackals pick the nearest Elite or Brute in sight within 768 units as their leader (up to nine per leader).
   * When the leader spots you, the whole squad is alerted and shares the target. Sleeping squadmates wake a moment later.
   * Idle squadmates keep station in a loose ring around the leader and follow it on patrol.
   * In a fight they stay within about 420 units of the leader. With you out of sight, they hold near it instead of hunting you on their own.
@@ -792,6 +793,28 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Wounded:** under a third of its health a Marine limps (moves at about half speed) and now and then calls for help.
 * **Last man standing:** a Marine with no other Marine within 640 units and you more than 768 units away ducks into cover and panics for a few seconds instead of fighting. It can do this again every 12 seconds.
 * **Sergeant Johnson:** Marines within 640 units of him aim about 30% tighter and never cower. He nearly always has a quip when he kills something, and when he falls, the Marines who see it call out their leader's death.
+
+## Squad tactics
+
+Both sides fight to real doctrine (`hce_tactics`, on by default; `hce_tactics 0` turns it off).
+
+**The UNSC** fights as US Army and UN infantry do (FM 3-21.8 / FM 7-92 fire-team drills; the UN infantry battalion manual uses the same national drills):
+* **Fire teams:** the squad following you splits into two teams, Alpha (the base of fire) and Bravo (the maneuver element).
+* **React to contact (battle drill 1):** when anyone makes contact, the whole squad turns on that enemy and goes down returning fire for two seconds.
+* **Bounding overwatch:** then the teams take turns. One team rushes for 3 to 5 seconds without shooting ("I'm up, he sees me, I'm down"), while the other holds and lays down suppressive fire (long bursts, short pauses). Alpha moves up by your side; Bravo works round the enemy's flank at its own range, never more than about 20 m from you.
+* **Break contact (battle drill 2):** once the squad has lost more than half its strength, the teams bound back past you, one covering the other.
+* **All-round defence:** told to hold, the squad spreads into a ring around where it stands, each Marine facing out over his own sector.
+
+**The Covenant** fights on Soviet Deep Battle and Mongol steppe lines. Each Elite or Brute leader runs a battle plan for its lance (up to nine followers, the Mongol arban of ten):
+* **Preparatory fire:** the first three seconds of contact are a barrage. Fuel rods and other heavy weapons fire in long bursts while the lance forms its ranks.
+* **First echelon:** the Jackals with shields form a shield wall ahead of the leader, shoulder to shoulder, toward the enemy. The Grunts stand in the rank behind them, or in front with no Jackals. Heavy weapons stay behind the leader.
+* **Encirclement:** with five or more in the lance, the two outermost Grunts sweep round both flanks to close the ring (the Mongol tulughma).
+* **Horse archers:** Jackal marksmen and snipers shoot from long range off the flanks and fall back, still shooting, when pressed. Drones make firing passes along the flank and pull out when you close in.
+* **Feigned retreat:** when you push in on a lance, its Grunts sometimes break and run back past their leader, who waits silent in ambush. Follow them within about 10 m of it and the ambush is sprung; otherwise the "rout" turns and fights again after a few seconds.
+* **Second echelon and breakthrough:** the leader holds back behind its first echelon. Once that echelon has lost 40%, the ambush is sprung, or the fight has gone on about 16 seconds, the leader passes through its own ranks and charges.
+* **Massed fire:** the lance takes its leader's target, concentrating at the point of attack.
+
+Sources: [FM 7-92, squad wedge and file](https://www.globalsecurity.org/military/library/policy/army/fm/7-92_2001/fm792_4.htm), [individual movement techniques and fire and movement](https://en.wikipedia.org/wiki/Individual_movement_techniques), [UN Infantry Battalion Manual](https://pksoi.armywarcollege.edu/wp-content/uploads/2021/05/2020.01-UNIBAM-Infantry-Battalion-Manual_JAN-2020.pdf), [deep operation](https://military-history.fandom.com/wiki/Deep_operation), [Mongol military strategy](https://blogs.iu.edu/firewalls/2025/02/23/the-engine-of-the-khan-empire-why-military-strategy-was-the-key-to-mongol-success).
 
 ## Brutality and squad morale
 

@@ -368,7 +368,12 @@ class HCE_SpawnAllHandler : EventHandler
 		while(m = HaloDoom_EnemyBase(it.Next()))
 			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
 		if(line[o].Length() > 0) pl.A_StartSound(line[o], CHAN_VOICE, CHANF_DEFAULT, 1.0, ATTN_NONE);
-		if(o <= 2) { for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o); AckRandom(squad); return; }
+		if(o <= 2)
+		{
+			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o);
+			if(o == 1) HaloDoom_EnemyBase.HCE_Perimeter(squad);       // hold: an all-round defence
+			AckRandom(squad); return;
+		}
 		if(o <= 6)
 		{
 			Actor aimed = pl.AimTarget();

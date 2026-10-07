@@ -2518,7 +2518,13 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -2668,7 +2674,13 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -2817,7 +2829,16 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_battle_rifle.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_battle_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_battle_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_battle_rifle_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_battle_rifle_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_battle_rifle_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_battle_rifle_4.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 5, "models/hce/weapons", 'w_m_battle_rifle_5.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -2966,7 +2987,11 @@ class HCE_MarineBulldog : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_bulldog.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_bulldog.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_bulldog_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3116,7 +3141,11 @@ class HCE_MarineCommando : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_commando.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_commando.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_commando_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3266,7 +3295,11 @@ class HCE_MarineDmr : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_dmr.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_dmr.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_dmr_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3416,7 +3449,11 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3568,7 +3605,13 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_flamethrower.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_flamethrower.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_flamethrower_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3718,7 +3761,11 @@ class HCE_MarineGpmg : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_gpmg.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_gpmg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_gpmg_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -3869,7 +3916,11 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_grenade_launcher.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_grenade_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_grenade_launcher_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4016,7 +4067,11 @@ class HCE_MarineHydra : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_hydra.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_hydra.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_hydra_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4166,7 +4221,11 @@ class HCE_MarineMa37 : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4317,7 +4376,12 @@ class HCE_MarineMagnum : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_magnum.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_magnum.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4475,7 +4539,11 @@ class HCE_MarineMedic : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4623,7 +4691,13 @@ class HCE_MarineNeedler : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_needler.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_needler.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4773,7 +4847,14 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_plasma_rifle.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_plasma_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -4920,7 +5001,15 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_rocket_launcher.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_rocket_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_rocket_launcher_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_rocket_launcher_4.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5070,7 +5159,13 @@ class HCE_MarineShotgun : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_pump_shotgun.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_pump_shotgun.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5221,7 +5316,11 @@ class HCE_MarineSidekick : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5370,7 +5469,12 @@ class HCE_MarineSmg : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_smg.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_smg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_smg_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_smg_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5520,7 +5624,13 @@ class HCE_MarineSniper : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sniper.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sniper.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5698,7 +5808,12 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sticky_detonator.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sticky_detonator.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sticky_detonator_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_sticky_bomb_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -5995,7 +6110,11 @@ class HCE_SgtJohnson : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_stanchion.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_stanchion.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_stanchion_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 
@@ -6306,7 +6425,11 @@ class HCE_SgtStacker : HCE_MarineBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 
@@ -8886,7 +9009,13 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9036,7 +9165,13 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9185,7 +9320,16 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_battle_rifle.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_battle_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_battle_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_battle_rifle_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_battle_rifle_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_battle_rifle_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_battle_rifle_4.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 5, "models/hce/weapons", 'w_m_battle_rifle_5.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9334,7 +9478,11 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_bulldog.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_bulldog.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_bulldog_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9484,7 +9632,11 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_commando.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_commando.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_commando_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9634,7 +9786,11 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_dmr.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_dmr.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_dmr_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9784,7 +9940,11 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -9936,7 +10096,13 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_flamethrower.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_flamethrower.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_flamethrower_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10086,7 +10252,11 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_gpmg.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_gpmg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_gpmg_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10237,7 +10407,11 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_grenade_launcher.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_grenade_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_grenade_launcher_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10384,7 +10558,11 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_hydra.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_hydra.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_hydra_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10534,7 +10712,11 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10685,7 +10867,12 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_magnum.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_magnum.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10833,7 +11020,13 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_needler.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_needler.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -10983,7 +11176,14 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11133,7 +11333,14 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11280,7 +11487,15 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_rocket_launcher.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_rocket_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_rocket_launcher_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_rocket_launcher_4.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11430,7 +11645,13 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_pump_shotgun.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_pump_shotgun.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11581,7 +11802,11 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sidekick.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sidekick.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11730,7 +11955,12 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_smg.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_smg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_smg_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_smg_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -11880,7 +12110,13 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sniper.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sniper.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
@@ -12058,7 +12294,12 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sticky_detonator.iqm');
+		if(show)
+		{
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sticky_detonator.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sticky_detonator_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_sticky_bomb_0.png', CMDL_USESURFACESKIN);
+		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }

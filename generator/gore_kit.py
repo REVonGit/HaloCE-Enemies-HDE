@@ -296,15 +296,14 @@ def cap_mesh(loops, joint_pos, outward, bone, material, dome=0.25):
 
 
 def spv3_region(spv, region):
-    """SPV3's model region (its first permutation) as points: a limb that is no bone subtree (the Grunt's methane pack,
+    """SPV3's model region (its first permutation) as points, and the rest of the model's: a limb that is no bone subtree (the Grunt's methane pack,
     rigged to the spine like the torso) is the body's triangles lying on it -- SPV3's grunt_new is Halo CE's Grunt
     with its pack split off as a severable region (bind poses identical)"""
     m, hm = spv3()
     t = next(t for t in m.tags if t['cls'] == 'mod2' and t['name'] == SPV3_MODEL[spv])
     M = hm.Model(m, t)
-    r = next(r for r in M.regions if r['name'] == region)
-    g = M.geometry(r['perms'][0]['geoms'][0])
-    return np.concatenate([x['pos'] for x in g])
+    pts = {r['name']: np.concatenate([x['pos'] for x in M.geometry(r['perms'][0]['geoms'][0])]) for r in M.regions}
+    return pts[region], np.concatenate([v for k, v in pts.items() if k != region])
 
 
 def spv3_stumps(spv, joints, limb_roots, points=None):
@@ -371,8 +370,8 @@ def process(char):
     if cfg.get('regions'):
         from scipy.spatial import cKDTree
         for L, (rg, bone) in cfg['regions'].items():
-            pts = spv3_region(cfg['spv3'], rg)
-            regions[L] = (cKDTree(pts), pts.mean(0), bone)
+            pts, rest = spv3_region(cfg['spv3'], rg)
+            regions[L] = (cKDTree(pts), pts.mean(0), bone, cKDTree(rest))
     W = world_bind(joints)
     jidx = {j[0].lower(): i for i, j in enumerate(joints)}
     gore = {L: dict(surfaces=[], parts=[]) for L in list(limbs) + list(regions)}
@@ -383,10 +382,11 @@ def process(char):
         for L, bones in limbs.items():
             inl = np.isin(dom, list(bones))
             lab[inl[m['tris']].sum(1) >= 2] = L
-        for L, (kd, _, _) in regions.items():          # every corner of the triangle on the region's surface
-            if not len(m['tris']): continue
-            d, _ = kd.query(m['pos'][m['tris']].reshape(-1, 3))
-            on = (d.reshape(-1, 3) < 0.004).all(1) & (lab == '')
+        for L, (kd, _, _, kr) in regions.items():      # every corner of the triangle on the region's surface (or a
+            if not len(m['tris']): continue             # hair off it, the breather tubes' tips, and nearer it than the rest)
+            P = m['pos'][m['tris']].reshape(-1, 3)
+            d = kd.query(P)[0].reshape(-1, 3); dr = kr.query(P)[0].reshape(-1, 3)
+            on = ((d < 0.004).all(1) | ((d < 0.012) & (d < dr)).all(1)) & (lab == '')
             lab[on] = L
         is_weapon = bool(mesh_weapon[si]) or 'shield' in names[si] or 'shield' in m['material'].lower()
         if is_weapon:
@@ -442,6 +442,12 @@ def process(char):
         out_dir /= max(np.linalg.norm(out_dir), 1e-6)
         parts = [meshes[i] for i in gore[L]['parts']]
         loops = boundary_loops(parts)
+        if L in regions and loops:            # a region limb (the Grunts' pack): only the cut where it meets the body,
+            from scipy.spatial import cKDTree # not the open rims of its own parts (its inset lights) floating once gone
+            keepP = np.concatenate([m['pos'] for i, m in enumerate(meshes) if not mesh_weapon[i] and len(m['pos'])
+                                    and not any(i in gore[o]['parts'] for o in gore)])
+            kk = cKDTree(keepP)
+            loops = [lp for lp in loops if np.mean(kk.query(np.asarray(lp))[0] < 0.01) > 0.5]
         if L in stumps and len(stumps[L]['tris']) >= 6:
             st = stumps[L]; st['material'] = tex
             if gim is None:                               # SPV3's UVs only fit SPV3's texture
@@ -465,17 +471,30 @@ def process(char):
             st = cap_mesh([ring], jp_, out_dir, par if par >= 0 else root, tex)
             gcap = gcap or cap_mesh([ring], jp_, -out_dir, root, tex)
         if gim is not None:
-            if not st.pop('spv3', False): st['uv'] = cap_uv_to_spv3(st['uv'], on_bone)
-            if gcap is not None: gcap['uv'] = cap_uv_to_spv3(gcap['uv'], on_bone)
+            boned = on_bone and L not in regions          # a region limb (the Grunts' pack) has no bone in its cut
+            if st.pop('spv3', False):
+                if not boned:                             # SPV3's own cap UVs fan round the bone end: onto flesh
+                    st['uv'] = st['uv'] - (st['uv'].min(0) + st['uv'].max(0)) / 2 + np.array(FLESH)
+            else: st['uv'] = cap_uv_to_spv3(st['uv'], boned)
+            if gcap is not None: gcap['uv'] = cap_uv_to_spv3(gcap['uv'], boned)
         st.pop('spv3', None)
         st['name'] = f'gore.{L}'
         meshes.append(st); names.append(f'gore.{L}'); mesh_weapon.append(None)
         gore[L]['stub'] = len(meshes) - 1
         gibs_cap[L] = gcap
-    # gibs: the body's surface list, only this limb's parts (centred) and its cap on the stump index
+    # gibs: the body's surface list, only this limb's parts and its cap on the stump index, turned to lie flat (its
+    # thinnest axis up, its longest along x) and centred on its bounds; 'rest' is its half thickness, the height
+    # its centre sits above the floor once it has landed
     for L in gore:
         P = np.concatenate([meshes[i]['pos'] for i in gore[L]['parts']]) if gore[L]['parts'] else np.zeros((1, 3))
         ctr = P.mean(0)
+        Pa = np.concatenate([P] + ([gibs_cap[L]['pos']] if gibs_cap[L] is not None else []))
+        ev, evec = np.linalg.eigh(np.cov((Pa - ctr).T) if len(Pa) > 3 else np.eye(3))
+        R = evec[:, ::-1].T                                  # rows: longest, middle, thinnest
+        if np.linalg.det(R) < 0: R[1] *= -1
+        Q = (Pa - ctr) @ R.T
+        mid = (Q.min(0) + Q.max(0)) / 2
+        rest = float((Q[:, 2].max() - Q[:, 2].min()) / 2)
         gm = []
         for si, m in enumerate(meshes):
             if si in gore[L]['parts']: src = m
@@ -486,12 +505,12 @@ def process(char):
                 continue
             n = len(src['pos'])
             bidx = np.zeros((n, 4), np.uint8); bw = np.zeros((n, 4), np.uint8); bw[:, 0] = 255
-            gm.append(dict(name=names[si], material=src['material'], pos=src['pos'] - ctr, nrm=src['nrm'], uv=src['uv'],
+            gm.append(dict(name=names[si], material=src['material'], pos=(src['pos'] - ctr) @ R.T - mid, nrm=src['nrm'] @ R.T, uv=src['uv'],
                            bidx=bidx, bw=bw, tris=src['tris']))
         bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
         gfile = f'{char}_gib_{L}.iqm'
         write_iqm(f'{od}/{gfile}', joints, gm, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
-        gore[L]['gib'] = gfile; gore[L]['center'] = [float(x) for x in ctr]
+        gore[L]['gib'] = gfile; gore[L]['center'] = [float(x) for x in ctr]; gore[L]['rest'] = rest
         del gore[L]['parts']
     assert len(meshes) <= 32, f'{char}: {len(meshes)} surfaces (UZDoom draws at most 32)'
     info = meta.get('anims', {})

@@ -659,7 +659,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 * **Anything else:** dies on the spot.
 
 **Severed limbs:**
-* **The severed piece:** it pops off away from the blow (a blast flings it further), tumbling and trailing blood. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
+* **The severed piece:** it pops off away from the blow (a blast flings it further), tumbling and trailing blood. It moves like HaloDoom Evolved's spent casings: it spins, kicks off at a new angle each time it bounces, then eases over and lies flat on the floor. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
 * **The body:** the cut is closed with a gore stump that keeps bleeding for a few seconds as the body falls.
 * **Held items:** a gun or shield gauntlet in a severed hand goes with the arm (the gun still drops as a pickup). A stealth Elite that loses its sword arm loses the blade too, and a Brute's armour-kit helmet comes off with the head.
 

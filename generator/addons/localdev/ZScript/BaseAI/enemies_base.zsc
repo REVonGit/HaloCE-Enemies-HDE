@@ -3002,7 +3002,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// the severed piece: 'center' is the limb's middle in model units (Halo units, model x forward, y left, z up),
 	// 'sc' the MODELDEF scale; the piece flies off away from the killing blow, trailing blood
-	void HCE_SpawnLimb(int limb, vector3 center, double sc, String path, Name model, int stub, Name tex)
+	void HCE_SpawnLimb(int limb, vector3 center, double sc, String path, Name model, int stub, Name tex, double rest = 0)
 	{
 		hce_severed |= 1 << limb;
 		if(hce_bloodStage > 0) HCE_BloodHideLimb(limb);
@@ -3015,6 +3015,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		let g = HCE_LimbGib(Spawn("HCE_LimbGib", Vec3Offset(rel.x, rel.y, rel.z), ALLOW_REPLACE));
 		if(!g) return;
 		g.hce_def = GetClassName(); g.hce_path = path; g.hce_model = model; g.hce_stub = stub; g.hce_tex = tex;
+		g.hce_rest = rest > 0 ? rest * sc * 1.2 : 2;          // its half thickness lying flat, map units
 		g.master = self;                   // its blood is the victim's (spawned through it)
 		g.angle = angle; g.pitch = pitch;
 		vector3 from = hce_blastHit ? hce_blastFrom : (target ? target.pos : pos - (fw * 64, 0));
@@ -3024,7 +3025,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (limb == HCE_LIMB_BACK ? -fw : (0, 0)));
 		g.vel = (AngleToVector(away + frandom[HCEGore](-25, 25), push * frandom[HCEGore](0.6, 1.1)) + sideV * frandom[HCEGore](1, 3),
 		         frandom[HCEGore](2.5, 5) + (limb == HCE_LIMB_HEAD ? 1.5 : 0)) + vel * 0.5;
-		g.hce_spin = (frandom[HCEGore](-25, 25), frandom[HCEGore](-30, 30));
+		g.HCE_Launch(angle, pitch);          // tumbling off from the pose it had on the body
 		// the cut sprays
 		if(!bNOBLOOD)
 			for(int i = 0; i < 8; i++)
@@ -3514,31 +3515,90 @@ class HCE_MissileTracker : EventHandler
 	}
 }
 
-// a severed head or arm (HCE_SpawnLimb): the dead enemy's own MODELDEF (its rank skins) with the limb's gib model
-// swapped in and the gore cap on its cut end; it tumbles, bounces, trails blood, and fades after a while
+// a severed head, arm or pack (HCE_SpawnLimb): the dead enemy's own MODELDEF (its rank skins) with the limb's gib
+// model swapped in and the gore cap on its cut end. Its physics are HaloDoom Evolved's casings' (weapondebris.zsc's
+// BulletCasing): a quaternion facing turned by a decaying angular velocity, eased into angle/pitch/roll; each bounce
+// kicks it sideways and re-spins it; once down it stays on the floor and eases over onto its resting angles.
+// gore_kit.py stores every gib lying flat (thinnest axis up) and centred on its bounds, so resting is pitch and roll
+// 0 at hce_rest (its half thickness) above the floor. It trails blood while flying and fades after 30 seconds
 class HCE_LimbGib : Actor
 {
 	Default
 	{
-		Radius 5;
-		Height 6;
+		Radius 4;
+		Height 4;
 		Gravity 0.85;
+		Projectile;
 		BounceType "Doom";
-		BounceFactor 0.35;
+		BounceCount 3;
+		BounceFactor 0.45;
 		WallBounceFactor 0.4;
-		BounceCount 5;
-		+MISSILE
-		+NOBLOCKMAP
+		+USEBOUNCESTATE
+		-NOGRAVITY
 		+DROPOFF
 		+MOVEWITHSECTOR
 		+THRUACTORS
 		+NOTELEPORT
+		+NOBLOCKMAP
 	}
 	Name hce_def, hce_model, hce_tex;
 	String hce_path;
 	int hce_stub, life;
-	vector2 hce_spin;
-	bool hce_set;
+	double hce_rest;
+	bool hce_set, isStatic;
+	vector3 angVel;
+	Quat facingDir, rotDir;
+
+	// HaloDoom Evolved's HaloMath.GetEuler (the standalone packs run without it): angle, pitch, roll of q
+	static vector3 HCE_Euler(Quat q)
+	{
+		double roll = atan2(2 * (q.w * q.x + q.y * q.z), 1 - 2 * (q.x * q.x + q.y * q.y));
+		double sinP = 2 * (q.w * q.y - q.z * q.x);
+		double pitch = abs(sinP) >= 1 ? 90 * (sinP < 0 ? -1 : 1) : asin(sinP);
+		double yaw = atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z));
+		return (yaw, pitch, roll);
+	}
+
+	void RandomizeAngles(bool randomAngle = false, double spin = 3)
+	{
+		facingDir *= Quat.FromAngles(frandom[HCEGore](-180, 180) * randomAngle, frandom[HCEGore](-180, 180), frandom[HCEGore](-180, 180));
+		angVel += (frandom[HCEGore](-spin, spin) * randomAngle, frandom[HCEGore](-spin, spin), frandom[HCEGore](-spin, spin));
+	}
+
+	void RandomizeVelocity(double spd)
+	{
+		vel += (frandom[HCEGore](-1, 1) * spd, frandom[HCEGore](-1, 1) * spd, 0);
+	}
+
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		facingDir = Quat.FromAngles(angle, pitch, roll);
+		rotDir = Quat.FromAngles(0, 0, 0);
+	}
+
+	void HCE_Launch(double a, double p)
+	{
+		angle = a; pitch = p;
+		facingDir = Quat.FromAngles(a, p, 0);
+		RandomizeAngles(spin: 8);              // a severed piece leaves spinning harder than a casing
+	}
+
+	// true once the drawn angles have reached the wanted ones
+	bool InterpolateAngles(double spd = 0.4)
+	{
+		if(isStatic) spd *= 1.5;
+		Quat r = Quat.SLerp(Quat.FromAngles(angle, pitch, roll), facingDir * rotDir, clamp(spd, 0.01, 1.0));
+		vector3 diff = level.Vec3Diff(HCE_Euler(facingDir), (angle, pitch, roll));
+		if(!(diff ~== (0, 0, 0)) && diff.Length() > 1)
+		{
+			vector3 a = HCE_Euler(r);
+			A_SetAngle(a.x, SPF_INTERPOLATE); A_SetPitch(a.y, SPF_INTERPOLATE); A_SetRoll(a.z, SPF_INTERPOLATE);
+			return false;
+		}
+		return true;
+	}
+
 	override void Tick()
 	{
 		if(!hce_set && hce_def != 'None')
@@ -3550,31 +3610,61 @@ class HCE_LimbGib : Actor
 			A_ChangeModel(hce_def, 0, hce_path, hce_model);
 			A_ChangeModel(hce_def, 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
 		}
-		super.Tick();
-	}
-	States
-	{
-	Spawn:
-		HCEM A 1
+		bool there = InterpolateAngles();
+		if(isStatic)
 		{
-			angle += hce_spin.x; pitch += hce_spin.y;
-			life++;
-			if(life < 50 && !(life % 2) && master)
+			vel = (0, 0, 0);
+			SetOrigin((pos.xy, floorz + hce_rest), true);        // on the floor, a moving one too
+			rotDir = Quat.FromAngles(0, 0, 0);
+			angVel = (0, 0, 0);
+			if(!there && GetAge() >= life + 35 * 5)
+			{
+				vector3 a = HCE_Euler(facingDir);
+				A_SetAngle(a.x, SPF_INTERPOLATE); A_SetPitch(a.y, SPF_INTERPOLATE); A_SetRoll(a.z, SPF_INTERPOLATE);
+			}
+		}
+		else
+		{
+			Quat add = Quat.FromAngles(angVel.x, angVel.y, angVel.z);
+			rotDir = rotDir.Length() <= 0.01 ? add : rotDir * add;
+			angVel *= 0.995;
+			// the cut trails blood (through the victim, so it's its blood colour)
+			if(GetAge() < 50 && !(GetAge() % 2) && master)
 			{
 				vector3 d = master.Vec3To(self);
 				master.A_SpawnItemEx("Blood", d.x, d.y, d.z + 2, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0, 1),
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 			}
 		}
+		super.Tick();
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A 1;
 		Loop;
-	Death:
+	Bounce:
 		HCEM A 1
 		{
-			hce_spin *= 0;
-			if(pitch > 45 || pitch < -45) pitch *= 0.85;
-			if(++life > 35 * 30) A_FadeOut(0.02);
+			RandomizeVelocity(1);
+			RandomizeAngles(true);
+			return ResolveState("Spawn");
 		}
-		Loop;
+		Wait;
+	XDeath:
+	Death:
+	Crash:
+		HCEM A 1
+		{
+			isStatic = true;
+			life = GetAge();
+			// lying flat: keep the heading, level out (pitch and roll 0 is its broad side down)
+			facingDir = Quat.FromAngles(angle, 0, 0);
+		}
+	Rest:
+		HCEM A 1 { if(GetAge() > life + 35 * 30) A_FadeOut(0.02); }
+		Wait;
 	}
 }
 

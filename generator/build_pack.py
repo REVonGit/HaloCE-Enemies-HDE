@@ -625,7 +625,7 @@ def gore_code(char, meta, mdir, sc):
         for si in d['surfaces']:
             out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
         out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {d["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n')
-        out.append(f'\t\t\tHCE_SpawnLimb({GORE_LIMBS[L]}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{d["gib"]}\', {d["stub"]}, \'{g["tex"]}\');\n')
+        out.append(f'\t\t\tHCE_SpawnLimb({GORE_LIMBS[L]}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{d["gib"]}\', {d["stub"]}, \'{g["tex"]}\', {d.get("rest", 0):.4f});\n')
         out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
     out.append('\t\t}\n\t\treturn false;\n\t}\n')
     # limb centres in map units (hit location: which limb a shot struck) and the arm holding the gun
@@ -1072,7 +1072,7 @@ def build(cfg=None):
                 frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
-                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n{frames}\n}}\n')
+                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
             if not ov.get('unique'): spawners.setdefault(char, []).append(cls)

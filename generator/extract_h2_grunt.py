@@ -12,6 +12,7 @@ HCE_VOICE_SRC/Grunt_Crazy) are skipped. build_voices.py reads voice_extra/ after
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import glob, json, os, subprocess, sys
+import glob, json, os, re, shutil, subprocess, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -38,6 +39,41 @@ PLAN = {
     'Pain Xtr':      [('pain_mjr', 1), ('dth_slw', 1)],
     'On Fire':       [('dth_slw', 1)],                                          # drawn-out agonised screams
 }
+# the grenade death screams (the same voice actor in both games, though Halo CE doesn't label its Grunt voices): the
+# kamikaze run and a stuck grenade. Halo 2: grunt_crazy's panic screams; Halo CE: combat2 grenade_danger_self
+CE_PLAN = {'Kamikaze': [('shouting\\grenade_danger_self', 5)], 'Stuck': [('shouting\\grenade_danger_self', 5)]}
+CE_PREFIX = 'sound\\dialog\\grunt\\conditional\\combat2\\'
+from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
+
+
+def ce_grunt_lines(tmp):
+    """{combat2 <group>\\<name>: [wav paths]} from the first Halo CE map with each tag"""
+    from tags import HMap, tag
+    from halosound import xbox_adpcm, to_wav
+    wanted = {leaf for v in CE_PLAN.values() for leaf, _ in v}
+    out = {}
+    for mp in ('a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40'):
+        path = os.path.join(CE_MAPS, mp + '.map')
+        if not os.path.exists(path): continue
+        m = HMap(path)
+        for t in m.tags:
+            if t['cls'] != 'snd!' or not t['name'].startswith(CE_PREFIX): continue
+            leaf = t['name'][len(CE_PREFIX):]
+            if leaf not in wanted or leaf in out: continue
+            S = tag(m, t, 'sound_definition')
+            ch = 2 if S['encoding'] == 1 else 1
+            rate = 44100 if S['sample_rate'] == 1 else 22050
+            wavs = []
+            for pr in S.block('pitch_ranges', 'sound_pitch_range'):
+                for pm in pr.block('permutations', 'sound_permutation'):
+                    sz, fl, fo = m.u('iii', pm.addr + 64)
+                    if pm['compression'] != 1 or sz <= 0: continue
+                    w = os.path.join(tmp, f'ce_{len(os.listdir(tmp))}.wav')
+                    to_wav(xbox_adpcm(m.d[fo:fo + sz], ch), rate, ch, w)
+                    wavs.append(w)
+            out[leaf] = wavs
+        if len(out) == len(wanted): break
+    return out
 
 
 def envelope(path):
@@ -65,14 +101,15 @@ def main():
     files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
              if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
     have = [envelope(p) for p in sorted(glob.glob(os.path.join(SRC, 'Grunt_Crazy', '*.ogg')))]
+    base_have = list(have)
     od = os.path.join(OUT, 'Grunt_Crazy')
     os.makedirs(od, exist_ok=True)
     for f in glob.glob(os.path.join(od, '*.ogg')): os.remove(f)
     full = {t['name'].split('\\')[-1]: t['name'] for t in m.tags if t['cls'] == 'snd!' and t['name'].startswith(PREFIX)}
     tmp = os.path.join(od, '.probe.ogg')
     report = {}
-    for cat, picks in PLAN.items():
-        n = 0
+    for cat, picks in list(PLAN.items()) + list(H2_EXTRA.items()):
+        n = len(glob.glob(os.path.join(od, f'{cat} *.ogg')))
         for leaf, want in picks:
             oggs = tag_oggs(m, full[leaf], files) or [] if leaf in full else []
             took = 0
@@ -86,6 +123,24 @@ def main():
                 have.append(e)                                                   # and no repeats among the extras
             report.setdefault(cat, []).append(f'{leaf}:{took}')
     if os.path.exists(tmp): os.remove(tmp)
+    # Halo CE's grenade screams: each line once, under every category that wants it (the voice set's own files)
+    import tempfile
+    from extract_elite_loose import ogg_from_wav
+    counts = {}
+    for f in glob.glob(os.path.join(od, '*.ogg')):
+        c = re.sub(r'\s*\d+$', '', os.path.basename(f)[:-4]); counts[c] = counts.get(c, 0) + 1
+    with tempfile.TemporaryDirectory() as td:
+        ce = ce_grunt_lines(td)
+        for cat, picks in CE_PLAN.items():
+            for leaf, want in picks:
+                took = 0
+                for w in ce.get(leaf, [])[:want]:
+                    probe = os.path.join(td, 'probe.ogg'); ogg_from_wav(w, probe)
+                    e = envelope(probe)
+                    if any(same_line(e, h) > 0.93 for h in have[:len(base_have)]): continue   # in the main set already
+                    counts[cat] = counts.get(cat, 0) + 1; took += 1
+                    shutil.copy(probe, os.path.join(od, f'{cat} {counts[cat]}.ogg'))
+                report.setdefault(cat, []).append(f'ce:{leaf}:{took}')
     json.dump(report, open(os.path.join(od, 'sources.json'), 'w'), indent=1)
     for cat, v in report.items(): print(f'{cat:14s}', ', '.join(v))
 

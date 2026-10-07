@@ -282,6 +282,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * The old pacing rolled every 2–3 s at 100% for Grunts.
 * **Kamikaze Grunts (Halo 3):** Grunts carrying plasma grenades sometimes make a suicide run:
   * They play the jumping alert animation as the pull-out, with two live plasma grenades in their hands, and scream a kamikaze line.
+  * The Crazy Grunt voice screams Halo CE's and Halo 2's grenade death screams on the run (the same voice actor in both games: Halo CE's grenade-at-his-feet screams and Halo 2's panic screams), and the same screams when it's stuck by a plasma grenade.
   * They sprint at you in the panic run. On contact, or after 6 s, both grenades go off; that's lethal at point-blank.
   * Kill one mid-run and it pitches forward out of the sprint (a falling-forward death, the body sliding on), and the two grenades fly out of its hands: they keep the run's momentum, scatter to either side and pop up, stick wherever they land (or to whoever they hit), and go off on their normal 2 s fuse. In testing they landed 120–160 units ahead of where it fell.
   * Chance per second in combat: 0.4% Minor, 0.8% Major, 1.2% Spec-Ops, tripled below half health, and a 30% roll when their Elite leader dies.

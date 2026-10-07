@@ -1208,7 +1208,9 @@ def build(cfg=None):
             os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
             if not os.path.exists(f'{pack}/models/{mdir}/weapons/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/weapons/hce_hidden.png')
         if meta.get('gore'):                       # dismemberment (gore_kit.py): the gibs and the stump texture
-            for d in meta['gore']['limbs'].values(): shutil.copy(f'{OUT}/models/{char}/{d["gib"]}', f'{pack}/models/{mdir}/{char}/{d["gib"]}')
+            for d in meta['gore']['limbs'].values():       # the limb's gib, and one per back permutation (the Grunts' shellback)
+                for gib in {d['gib']} | {v['gib'] for v in (d.get('variants') or {}).values()}:
+                    shutil.copy(f'{OUT}/models/{char}/{gib}', f'{pack}/models/{mdir}/{char}/{gib}')
             shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["tex"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["tex"]}')
         if meta.get('blood'):                      # blood on the body (blood_kit.py): overlay models and textures
             for f in meta['blood']['models'] + meta['blood']['textures']: shutil.copy(f'{OUT}/models/{char}/{f}', f'{pack}/models/{mdir}/{char}/{f}')

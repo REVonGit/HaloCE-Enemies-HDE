@@ -118,6 +118,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_nerf_shields` | 0.5 | Enemy energy shields and Jackal shield-gauntlet strength |
 | `hce_enemydamage` | 1.0 | An extra multiplier on enemy projectile damage, on top of `hce_nerf_projectiles` |
 | `hce_dropweapons` | true | Enemies drop the weapon they carried (and sometimes grenades), like in Halo |
+| `hce_bodyblood` | false | Blood on the body: splatter overlays that build up as an enemy is hurt (see [Blood on the body](#blood-on-the-body)); also under Options > Halo CE Gore |
 | `hce_dismember` | true | Weapon-based dismemberment and gibbing, and gun arms shot off (see [Dismemberment](#dismemberment)) |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
 | `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
@@ -690,6 +691,7 @@ A burn death counts as brutal for the squad (below). Any other kill during the f
 ## Blood on the body
 
 Shot enemies show blood on their bodies, in their race's colour. Once the shield is down, every hit that draws blood adds to it.
+* **Off by default:** turn it on under **Options > Halo CE Gore > Blood on bodies** (or `hce_bodyblood 1`). The damage is counted while it's off, so an enemy hurt before you turn it on shows the right amount from its next hit.
 * **Stages:** a few splatters at 8% of the enemy's health lost, more at 35%, and soaked at 70%. A corpse always shows at least the first stage.
 * **Where it lands:** each splatter was placed on the 3D body and painted across its textures. A spray crosses seams and armour edges like real blood, with a dark wet core and drips running down from it.
 * **How it's drawn:** it's an overlay that rides the body's own skeleton. Severed limbs and armour a variant doesn't wear stay clean.

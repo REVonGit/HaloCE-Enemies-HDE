@@ -2867,7 +2867,20 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_bloodDmg += dealt / double(max(1, SpawnHealth()));
 		int st = hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : hce_bloodDmg >= 0.08 ? 1 : 0;
 		if(health <= 0) st = max(st, 1);
-		if(st <= hce_bloodStage) return;
+		HCE_BloodShow(st);
+	}
+
+	// the overlay is optional (Options > Halo CE Gore: hce_bodyblood, off by default); the damage still adds up while
+	// it's off, so turning it on shows the right stage from the next hit
+	static bool HCE_BodyBloodOn()
+	{
+		CVar cv = CVar.FindCVar("hce_bodyblood");
+		return cv && cv.GetBool();
+	}
+
+	void HCE_BloodShow(int st)
+	{
+		if(st <= hce_bloodStage || !HCE_BodyBloodOn()) return;
 		hce_bloodStage = st;
 		HCE_BloodModel(st);
 		HCE_BloodHideClass();
@@ -3260,8 +3273,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				A_SpawnItemEx("Blood", at.x, at.y, at.z, frandom(-2, 2), frandom(-2, 2), frandom(1, 4), 0,
 					SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 			hce_bloodDmg += dmg / double(max(1, SpawnHealth()));
-			int st = hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : 1;
-			if(st > hce_bloodStage) { hce_bloodStage = st; HCE_BloodModel(st); HCE_BloodHideClass(); for(int l = 0; l < HCE_LIMBS; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l); HCE_ResumeAnim(); }
+			HCE_BloodShow(hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : 1);
 		}
 		if(default.bNOBLOOD || bHCE_Explodes) return dmg;
 		if(hce_killKind == HCE_WK_GIB || (blast && hce_corpseDmg >= SpawnHealth() * 3))

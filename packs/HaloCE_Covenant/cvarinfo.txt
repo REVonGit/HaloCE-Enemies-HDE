@@ -18,6 +18,7 @@ server bool hce_squads = true;         // Grunts and Jackals form squads around 
 server bool hce_patrols = true;        // idle leaders and loners walk short patrols (or a map's PatrolPoint route)
 server float hce_sleepinggrunts = 0.3; // chance a Grunt starts the map asleep (deaf / ambush Grunts always do)
 server bool hce_dismember = true;      // hard kills can take heads and arms off (headshots, explosions, heavy melee)
+server bool hce_bodyblood = false;     // blood on the body: splatter overlays that build up as an enemy is hurt (Options > Halo CE Gore)
 
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3

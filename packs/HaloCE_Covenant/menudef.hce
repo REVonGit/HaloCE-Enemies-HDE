@@ -1,0 +1,12 @@
+AddOptionMenu "OptionsMenu"
+{
+	Submenu "Halo CE Gore", "HCE_GoreOptions"
+}
+
+OptionMenu "HCE_GoreOptions"
+{
+	Title "Halo CE Gore"
+	Option "Blood on bodies", "hce_bodyblood", "OnOff"
+	StaticText ""
+	StaticText "Enemies get bloodier as they are hurt.", 1
+}

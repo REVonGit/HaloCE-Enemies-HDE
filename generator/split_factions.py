@@ -69,6 +69,13 @@ def main():
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
+    # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
+    open(f'{core}/menudef.hce', 'w').write(
+        'AddOptionMenu "OptionsMenu"\n{\n\tSubmenu "Halo CE Gore", "HCE_GoreOptions"\n}\n\n'
+        'OptionMenu "HCE_GoreOptions"\n{\n\tTitle "Halo CE Gore"\n'
+        '\tOption "Blood on bodies", "hce_bodyblood", "OnOff"\n'
+        '\tStaticText ""\n'
+        '\tStaticText "Enemies get bloodier as they are hurt.", 1\n}\n')
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine\n'

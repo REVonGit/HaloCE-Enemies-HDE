@@ -24,6 +24,7 @@ CE_ORDER = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40'
 H2_MAP = os.environ.get('HCE_H2_MAP', '01b_spacestation.map')   # MCC halo2\\h2_maps_win64_dx11
 H2_CACHE = os.environ.get('HCE_H2_CACHE') or None
 PER_SOURCE = 6                        # lines at most per category from each game
+PER_CAT = {'Thanks': 24, 'Trade Ok': 24, 'Worse Weapon': 24, 'Refuse': 24}     # the trade lines: every take, for variety
 
 # voice set -> (Halo CE tag prefix or None, Halo 2 voice or None)
 VOICES = {
@@ -67,10 +68,13 @@ PLAN = {
     'Betrayal':      (['shouting\\alliancebroken'], ['betray', 'crs_betrayingplr']),
     'Ally Killed':   (['friendsdying\\friendkilledbyfriendlyplayer', 'friendsdying\\friendbetrayed'], ['scld_plr_kllally']),
     'Acknowledge':   ([], ['ok_sir', 'ok', 'ok_plr', 'newordr_fllwplr']),
-    'Thanks':        ([], ['thnk_plr_btrwpn', 'ok_plr_trdwpn', 'thnk_plr', 'thnk']),
+    # weapon trades: a clearly better gun, a fair swap, a worse gun, one he can't use (HCE_TradeWith)
+    'Thanks':        ([], ['thnk_plr_btrwpn', 'thnk_plr', 'thnk', 'approve']),
+    'Trade Ok':      ([], ['ok_plr_trdwpn', 'ok_plr', 'ok_sir']),
     'Wounded':       (['postcombatchatter\\seriouslywounded'], ['whn', 'whn_hrtbrn', 'hlpme']),
     'Forgive':       ([], ['forgive']),
-    'Worse Weapon':  ([], ['scrn_plr_wrswpn']),          # scorn: the player traded him a worse gun
+    'Worse Weapon':  ([], ['scrn_plr_wrswpn', 'scrn_plr']),   # scorn: the player traded him a worse gun
+    'Refuse':        ([], ['scrn_plr', 'scld_plr']),            # a gun he can't carry at all
 }
 
 
@@ -145,7 +149,7 @@ def main():
             took = 0
             for suf in ce_tags:
                 for w in ce.get((voice, suf), []):
-                    if took >= PER_SOURCE: break
+                    if took >= PER_CAT.get(cat, PER_SOURCE): break
                     key = hashlib.sha1(open(w, 'rb').read()).hexdigest()
                     if key in seen: continue
                     seen.add(key); n += 1; took += 1
@@ -153,7 +157,7 @@ def main():
             took = 0
             for leaf in h2_leaves:
                 for p in h2.get((voice, leaf), []):
-                    if took >= PER_SOURCE: break
+                    if took >= PER_CAT.get(cat, PER_SOURCE): break
                     if duration(p) < 0.15: continue
                     n += 1; took += 1
                     ogg_from_wav(p, os.path.join(od, f'{cat} {n}.ogg'))

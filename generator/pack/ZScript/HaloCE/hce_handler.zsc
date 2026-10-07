@@ -328,7 +328,7 @@ class HCE_SpawnAllHandler : EventHandler
 		if(!m || m.health <= 0 || automapactive) return;
 		double fade = clamp(1.0 - (level.maptime - lookedTic[consoleplayer] - 4) / 8.0, 0, 1);
 		if(fade <= 0) return;
-		vector3 head = m.pos + (0, 0, m.height + 10);
+		vector3 head = m.pos + (0, 0, m.height + 2);      // just over the head
 		vector3 d = level.Vec3Diff(e.ViewPos, head);
 		double ca = cos(e.ViewAngle), sa = sin(e.ViewAngle), cp = cos(e.ViewPitch), sp = sin(e.ViewPitch);
 		double fwd = d.x * ca + d.y * sa, left = -d.x * sa + d.y * ca;

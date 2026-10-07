@@ -139,6 +139,9 @@ def main():
         for b in mblocks:
             for pth in set(re.findall(r'Path "(models/[^/"]+)/', b)):
                 if os.path.exists(f'{PACK}/{pth}/weapons/hce_hidden.png'): need.add(f'{pth}/weapons/hce_hidden.png')
+        # Elefant's Marine kit: attachments the Marines pick from at run time (build_pack.marine_kit_code)
+        for dn in re.findall(r'A_ChangeModel\([^;]*?"(models/[^"]+/MarineKit)"', ztxt)[:1]:
+            for fn in os.listdir(f'{PACK}/{dn}'): need.add(f'{dn}/{fn}')
         for f in sorted(need):
             os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True)
             shutil.copy(f'{PACK}/{f}', f'{d}/{f}')

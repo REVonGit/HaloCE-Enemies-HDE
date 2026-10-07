@@ -1791,15 +1791,16 @@ class HaloDoom_EnemyBase : Actor abstract
 		Name pc = pw.GetClassName();
 		if(pc == hce_dropWeapon) return false;
 		class<Weapon> mc = (class<Weapon>)(hce_dropWeapon);
-		if(!HCE_CanCarry(pc) || !mc) { HCE_Say('Scold', 0.5, 35 * 2); return true; }      // not a gun he can use
-		bool better = HCE_WeaponScore(pc) >= HCE_WeaponScore(hce_dropWeapon);
+		if(!HCE_CanCarry(pc) || !mc) { HCE_Say('Refuse', 1.0, 35 * 2, true); return true; }      // not a gun he can use
+		int gain = HCE_WeaponScore(pc) - HCE_WeaponScore(hce_dropWeapon);
 		user.TakeInventory(pc, 1);
 		user.GiveInventory(mc, 1);
 		let nw = Weapon(user.FindInventory(mc));
 		if(nw) user.player.PendingWeapon = nw;
 		HCE_EquipGun(pc);
-		// grateful for a better gun, scornful of a worse one (his own liking: HCE_WeaponScore)
-		HCE_Say(better ? 'Thanks' : 'WorseWeapon', 1.0, 35, true);
+		// grateful for a clearly better gun, fine with a fair swap, scornful of a worse one (his own liking:
+		// HCE_WeaponScore); each from its own set of Halo 2 lines, every take of them (extract_marine_voices.py)
+		HCE_Say(gain >= 6 ? 'Thanks' : gain >= -3 ? 'TradeOk' : 'WorseWeapon', 1.0, 35, true);
 		return true;
 	}
 

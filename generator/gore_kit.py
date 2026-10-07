@@ -14,7 +14,7 @@ so no surface index the packs already use moves). Then:
   their skeletons and bind poses are identical to Halo CE's, so they drop straight in, re-boned by name). Everyone
   else gets kitbashed caps: the limb's cut edge, found from the boundary of its triangles, closed with a domed fan
   (a closed limb mesh with no open edge gets a disc across the limb at the joint).
-* texture - gore_<Char>.png: SPV3's own gore (wet, ropy flesh with a bone end), read from SPV3's bitmaps.map
+* texture - gore_<Char>.png: SPV3's gore, made by Tropical Thunder 98 for the XAM Campaign Overhaul (wet, ropy flesh with a bone end), read from SPV3's bitmaps.map
   (HCE_SPV3_BITMAPS: the file, or the stem of its split pieces bitmaps.map.001, .002 ...; the level map holds only
   the header). The Kig-Yar's purple for Elites and Jackals, the Unggoy's teal for Grunts, and recoloured to the race's
   blood for the rest (Brute navy, Mgalekgolo / Slug Man orange, Yanme'e pale ichor). SPV3's stumps keep SPV3's UVs;

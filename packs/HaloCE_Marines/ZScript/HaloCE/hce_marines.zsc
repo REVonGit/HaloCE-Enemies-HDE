@@ -86,6 +86,95 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
 	const HCE_JOHNSON_FACE = 11;
 	const HCE_STACKER_FACE = 5;
+	static const int HCE_HELMET_FACE[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	// ---- Elefant's Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,
+	// packs, shoulder pads and gloves, each a model attachment riding the Marine's skeleton, rolled per Marine
+	String HCE_Kit_face()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.35) return "";
+		int x = random[HCEKit](0, 15);
+		if(x < 2) return "headset_mic";
+		if(x < 4) return "headset_mic_b";
+		if(x < 6) return "headset_boom";
+		if(x < 8) return "goggles";
+		if(x < 9) return "pilot_goggles";
+		if(x < 10) return "sniper_goggles";
+		if(x < 12) return "glasses";
+		if(x < 13) return "cigar";
+		if(x < 14) return "gas_mask";
+		if(x < 16) return "face_wrap";
+		return "";
+	}
+	String HCE_Kit_chest()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.45) return "";
+		int x = random[HCEKit](0, 20);
+		if(x < 3) return "pouches";
+		if(x < 6) return "pouches_a";
+		if(x < 8) return "pouches_grenades";
+		if(x < 10) return "pouches_grenades_b";
+		if(x < 12) return "pouches_grenades_c";
+		if(x < 14) return "pouch";
+		if(x < 16) return "chest_rig";
+		if(x < 18) return "first_aid";
+		if(x < 20) return "grenade_belt";
+		if(x < 21) return "scarf";
+		return "";
+	}
+	String HCE_Kit_back()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.40) return "";
+		int x = random[HCEKit](0, 13);
+		if(x < 2) return "radio_pack";
+		if(x < 5) return "backpack";
+		if(x < 8) return "bedroll";
+		if(x < 11) return "bedroll_b";
+		if(x < 13) return "ammo_pack";
+		if(x < 14) return "launcher_tube";
+		return "";
+	}
+	String HCE_Kit_shoulders()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.25) return "";
+		int x = random[HCEKit](0, 5);
+		if(x < 3) return "pads_small";
+		if(x < 5) return "pads_medium";
+		if(x < 6) return "pads_long";
+		return "";
+	}
+	String HCE_Kit_arms()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.20) return "";
+		int x = random[HCEKit](0, 5);
+		if(x < 3) return "arms_gloves";
+		if(x < 4) return "arms_gauntlets";
+		if(x < 6) return "arms_gauntlets_gloves";
+		return "";
+	}
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped"; }
+	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed"; }
+	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
+	String hce_kit[6];
+	void HCE_DressKit(bool helmetFace)
+	{
+		for(int i = 0; i < 6; i++) hce_kit[i] = "";
+		String f = HCE_Kit_face();
+		if(HCE_KitEnclosed(hce_kit[0])) f = "";                      // no face showing
+		if(f.Length() && HCE_KitNeedsHelmet(f) && (!helmetFace || hce_kit[0].Length())) f = "";
+		hce_kit[1] = f;
+		hce_kit[2] = HCE_Kit_chest();
+		hce_kit[3] = HCE_Kit_back();
+		hce_kit[4] = HCE_Kit_shoulders();
+		hce_kit[5] = HCE_Kit_arms();
+		if(hce_kit[5].Length())
+		{
+			static const int AR[] = { 0, 1, 2 };
+			for(int i = 0; i < AR.Size(); i++) if(AR[i] >= 0 && hce_hideSurf.Find(AR[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(AR[i]);
+		}
+		static const int SL[] = { 1, 2, 3, 4, 5, 8 };
+		for(int i = 0; i < 6; i++)
+			if(hce_kit[i].Length()) A_ChangeModel('None', SL[i], "models/hce/MarineKit", hce_kit[i] .. ".iqm", SL[i], "", 'None');
+	}
 	Array<int> hce_hideSurf;
 	int hce_face;
 	bool hce_johnsonArms;
@@ -121,6 +210,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 			if(a == 0) { static const int A0[] = { 2 }; for(int i = 0; i < A0.Size(); i++) hce_hideSurf.Push(A0[i]); }
 			if(a == 1) { static const int A1[] = { 0 }; for(int i = 0; i < A1.Size(); i++) hce_hideSurf.Push(A1[i]); }
 		}
+		if(!hce_johnsonArms) HCE_DressKit(HCE_HELMET_FACE[hce_face] != 0);
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started
 	}
@@ -6369,6 +6459,100 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	// Johnson's face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it
 	const HCE_JOHNSON_FACE = 7;
 	const HCE_STACKER_FACE = 3;
+	static const int HCE_HELMET_FACE[] = { 1, 1, 1, 0, 1, 1, 1, 0 };
+	// ---- Elefant's Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,
+	// packs, shoulder pads and gloves, each a model attachment riding the Marine's skeleton, rolled per Marine
+	String HCE_Kit_head()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.35) return "";
+		int x = random[HCEKit](0, 12);
+		if(x < 2) return "helmet_tilted";
+		if(x < 5) return "helmet_strapped";
+		if(x < 8) return "helmet_fred";
+		if(x < 11) return "helmet_marcus";
+		if(x < 12) return "helmet_closed";
+		if(x < 13) return "helmet_enclosed";
+		return "";
+	}
+	String HCE_Kit_face()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.40) return "";
+		int x = random[HCEKit](0, 19);
+		if(x < 3) return "headset_mic";
+		if(x < 6) return "headset_mic_b";
+		if(x < 8) return "headset_boom";
+		if(x < 11) return "hud_eyepiece";
+		if(x < 13) return "hud_eyepiece_tilted";
+		if(x < 16) return "helmet_strap_goggles";
+		if(x < 17) return "goggles";
+		if(x < 18) return "sniper_goggles";
+		if(x < 19) return "glasses";
+		if(x < 20) return "gas_mask";
+		return "";
+	}
+	String HCE_Kit_chest()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.45) return "";
+		int x = random[HCEKit](0, 16);
+		if(x < 3) return "pouches";
+		if(x < 6) return "pouches_a";
+		if(x < 8) return "pouches_grenades";
+		if(x < 10) return "pouches_grenades_b";
+		if(x < 12) return "pouches_grenades_c";
+		if(x < 13) return "chest_rig";
+		if(x < 15) return "first_aid";
+		if(x < 17) return "grenade_belt";
+		return "";
+	}
+	String HCE_Kit_back()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.40) return "";
+		int x = random[HCEKit](0, 12);
+		if(x < 3) return "radio_pack";
+		if(x < 6) return "backpack";
+		if(x < 8) return "bedroll";
+		if(x < 10) return "bedroll_b";
+		if(x < 12) return "ammo_pack";
+		if(x < 13) return "launcher_tube";
+		return "";
+	}
+	String HCE_Kit_shoulders()
+	{
+		if(frandom[HCEKit](0, 1) >= 0.20) return "";
+		int x = random[HCEKit](0, 5);
+		if(x < 2) return "pads_small";
+		if(x < 4) return "pads_medium";
+		if(x < 6) return "pads_long";
+		return "";
+	}
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped"; }
+	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed"; }
+	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
+	String hce_kit[6];
+	void HCE_DressKit(bool helmetFace)
+	{
+		for(int i = 0; i < 6; i++) hce_kit[i] = "";
+		String h = HCE_Kit_head();
+		if(h.Length() && HCE_KitShell(h) && !helmetFace) h = "";        // a helmet shell only where Halo CE's helmet was
+		hce_kit[0] = h;
+		if(h.Length())
+		{
+			static const int HS[] = { 2 };
+			static const int HA[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			if(HCE_KitShell(h)) { for(int i = 0; i < HS.Size(); i++) if(HS[i] >= 0) hce_hideSurf.Push(HS[i]); }
+			else { for(int i = 0; i < HA.Size(); i++) if(HA[i] >= 0 && hce_hideSurf.Find(HA[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(HA[i]); }
+		}
+		String f = HCE_Kit_face();
+		if(HCE_KitEnclosed(hce_kit[0])) f = "";                      // no face showing
+		if(f.Length() && HCE_KitNeedsHelmet(f) && (!helmetFace || hce_kit[0].Length())) f = "";
+		hce_kit[1] = f;
+		hce_kit[2] = HCE_Kit_chest();
+		hce_kit[3] = HCE_Kit_back();
+		hce_kit[4] = HCE_Kit_shoulders();
+		static const int SL[] = { 1, 2, 3, 4, 5, 8 };
+		for(int i = 0; i < 6; i++)
+			if(hce_kit[i].Length()) A_ChangeModel('None', SL[i], "models/hce/MarineKit", hce_kit[i] .. ".iqm", SL[i], "", 'None');
+	}
 	Array<int> hce_hideSurf;
 	int hce_face;
 	bool hce_johnsonArms;
@@ -6394,6 +6578,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 6: { static const int H[] = { 1, 3, 4, 5, 6, 7, 8, 9, 11, 11, 12, 12 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); break; }
 		case 7: { static const int H[] = { 0, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]); hce_voice = 'Marine_Johnson'; break; }
 		}
+		if(!hce_johnsonArms) HCE_DressKit(HCE_HELMET_FACE[hce_face] != 0);
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 0, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started
 	}

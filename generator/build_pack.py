@@ -932,7 +932,75 @@ LIP_CODE = """
 """
 
 
-def marine_code(meta, mdir):
+MARINE_KIT = f'{OUT}/models/MarineKit'
+KIT_SLOT_ORDER = ('head', 'face', 'chest', 'back', 'shoulders', 'arms')
+
+
+def marine_kit_code(char, names, mdir, sis):
+    """Elefant's Marine kit (extract_marine_kit.py): per Marine, a roll per slot for a kit piece drawn as a model
+    attachment on the Marine's skeleton. Headgear either replaces the whole head or (a helmet shell) only Halo CE's
+    helmet; gloves replace the arms. Returns (fields and functions, the call made while dressing)"""
+    kj = f'{MARINE_KIT}/MarineKit.json'
+    if not os.path.exists(kj): return '', ''
+    kit = json.load(open(kj))
+    pools = kit['pools'].get(char)
+    if not pools: return '', ''
+    P = kit['pieces']
+    out = ['\t// ---- Elefant\'s Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,\n'
+           '\t// packs, shoulder pads and gloves, each a model attachment riding the Marine\'s skeleton, rolled per Marine\n']
+    for slot in KIT_SLOT_ORDER:
+        pool = pools.get(slot)
+        if not pool or not pool['picks']: continue
+        tot = sum(w for _, w in pool['picks'])
+        out.append(f'\tString HCE_Kit_{slot}()\n\t{{\n\t\tif(frandom[HCEKit](0, 1) >= {pool["chance"]:.2f}) return "";\n'
+                   f'\t\tint x = random[HCEKit](0, {tot - 1});\n')
+        acc = 0
+        for pid, w in pool['picks']:
+            acc += w
+            out.append(f'\t\tif(x < {acc}) return "{pid}";\n')
+        out.append('\t\treturn "";\n\t}\n')
+    def flag(fn, key):
+        ids = [pid for pid, d in P.items() if d.get(key)]
+        return f'\tstatic bool {fn}(String p) {{ ' + ('return ' + ' || '.join(f'p == "{i}"' for i in ids) + ';' if ids else 'return false;') + ' }\n'
+    out += [flag('HCE_KitShell', 'shell'), flag('HCE_KitEnclosed', 'enclosed'), flag('HCE_KitNeedsHelmet', 'needs_helmet')]
+    heads = sis(lambda n: n.startswith('head.'))
+    shared = sis(lambda n: n == 'head.shared')
+    arms = sis(lambda n: n.startswith('arms.'))
+    def has(slot): return slot in pools and pools[slot]['picks']
+    def ints(v): return ', '.join(map(str, v or [-1]))
+    d = ['\tString hce_kit[6];\n', '\tvoid HCE_DressKit(bool helmetFace)\n\t{\n', '\t\tfor(int i = 0; i < 6; i++) hce_kit[i] = "";\n']
+    if has('head'):
+        d.append('\t\tString h = HCE_Kit_head();\n'
+                 '\t\tif(h.Length() && HCE_KitShell(h) && !helmetFace) h = "";        // a helmet shell only where Halo CE\'s helmet was\n'
+                 '\t\thce_kit[0] = h;\n'
+                 '\t\tif(h.Length())\n\t\t{\n'
+                 f'\t\t\tstatic const int HS[] = {{ {ints(shared)} }};\n'
+                 f'\t\t\tstatic const int HA[] = {{ {ints(heads)} }};\n'
+                 '\t\t\tif(HCE_KitShell(h)) { for(int i = 0; i < HS.Size(); i++) if(HS[i] >= 0) hce_hideSurf.Push(HS[i]); }\n'
+                 '\t\t\telse { for(int i = 0; i < HA.Size(); i++) if(HA[i] >= 0 && hce_hideSurf.Find(HA[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(HA[i]); }\n'
+                 '\t\t}\n')
+    if has('face'):
+        d.append('\t\tString f = HCE_Kit_face();\n'
+                 '\t\tif(HCE_KitEnclosed(hce_kit[0])) f = "";                      // no face showing\n'
+                 '\t\tif(f.Length() && HCE_KitNeedsHelmet(f) && (!helmetFace || hce_kit[0].Length())) f = "";\n'
+                 '\t\thce_kit[1] = f;\n')
+    for k, slot in ((2, 'chest'), (3, 'back'), (4, 'shoulders')):
+        if has(slot): d.append(f'\t\thce_kit[{k}] = HCE_Kit_{slot}();\n')
+    if has('arms'):
+        d.append('\t\thce_kit[5] = HCE_Kit_arms();\n'
+                 '\t\tif(hce_kit[5].Length())\n\t\t{\n'
+                 f'\t\t\tstatic const int AR[] = {{ {ints(arms)} }};\n'
+                 '\t\t\tfor(int i = 0; i < AR.Size(); i++) if(AR[i] >= 0 && hce_hideSurf.Find(AR[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(AR[i]);\n'
+                 '\t\t}\n')
+    slots = [kit['slots'][sl] for sl in KIT_SLOT_ORDER]
+    d.append(f'\t\tstatic const int SL[] = {{ {", ".join(map(str, slots))} }};\n'
+             '\t\tfor(int i = 0; i < 6; i++)\n'
+             f'\t\t\tif(hce_kit[i].Length()) A_ChangeModel(\'None\', SL[i], "models/{mdir}/MarineKit", hce_kit[i] .. ".iqm", SL[i], "", \'None\');\n'
+             '\t}\n')
+    return ''.join(out + d), '\t\tif(!hce_johnsonArms) HCE_DressKit(HCE_HELMET_FACE[hce_face] != 0);\n'
+
+
+def marine_code(meta, mdir, char='Marine'):
     """Halo CE's Marine cosmetics, rolled per Marine (extract_chars.MULTI_PERMS): a random face (bare heads, boonie
     hats, bandanas, caps, helmets), sleeves rolled down on some, the battle-damaged vest on some Armored Marines.
     Sergeant Johnson's face (the dark-skinned one) brings his full-sleeved arms and always his own voice"""
@@ -968,18 +1036,21 @@ def marine_code(meta, mdir):
         roll += (f'\t\tif(!hce_johnsonArms && random(0, 4) == 0) {{ static const int T[] = {{ {", ".join(map(str, hb))} }}; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }}\n'
                  f'\t\telse {{ static const int T[] = {{ {", ".join(map(str, hd))} }}; for(int i = 0; i < T.Size(); i++) hce_hideSurf.Push(T[i]); }}\n')
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
+    kit_fns, kit_call = marine_kit_code(char, names, mdir, sis)
+    helmet_face = ['1' if ('cap' not in h and 'johnson' not in h and 'head.shared' in names) else '0' for h in heads]
     jk = next((k for k, h in enumerate(heads) if 'johnson' in h), -1)
     sk = next((k for k, h in enumerate(heads) if h == STACKER_HEAD), -1)
     others = [k for k in range(len(heads)) if k not in (jk, sk)]
     return (LIP_CODE + '\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
             '\t// Johnson\'s face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it\n'
             f'\tconst HCE_JOHNSON_FACE = {jk};\n\tconst HCE_STACKER_FACE = {sk};\n'
+            f'\tstatic const int HCE_HELMET_FACE[] = {{ {", ".join(helmet_face)} }};\n' + kit_fns +
             '\tArray<int> hce_hideSurf;\n\tint hce_face;\n\tbool hce_johnsonArms;\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n\t\tHCE_DressMarine();\n\t}\n'
             f'\tvirtual int HCE_PickFace() {{ static const int F[] = {{ {", ".join(map(str, others))} }}; return F[random(0, {len(others) - 1})]; }}\n'
             '\tvoid HCE_DressMarine()\n\t{\n\t\thce_hideSurf.Clear();\n'
             f'\t\thce_face = HCE_PickFace();\n\t\thce_johnsonArms = hce_face == HCE_JOHNSON_FACE || hce_face == HCE_STACKER_FACE;\n\t\tswitch(hce_face)\n\t\t{{\n' + ''.join(cases) + '\t\t}\n'
-            + roll +
+            + roll + kit_call +
             f'\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_hideSurf[i], {hid});\n'
             '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started\n\t}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tfor(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_hideSurf[i], {hid});\n\t}}\n')
@@ -1104,6 +1175,10 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
+        if char.startswith('Marine') and os.path.exists(f'{MARINE_KIT}/MarineKit.json'):    # Elefant's Marine kit
+            os.makedirs(f'{pack}/models/{mdir}/MarineKit', exist_ok=True)
+            for f in os.listdir(MARINE_KIT):
+                if f.endswith(('.iqm', '.png')): shutil.copy(f'{MARINE_KIT}/{f}', f'{pack}/models/{mdir}/MarineKit/{f}')
         if meta.get('gore') or meta.get('blood'):
             os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
             if not os.path.exists(f'{pack}/models/{mdir}/weapons/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/weapons/hce_hidden.png')
@@ -1146,7 +1221,7 @@ def build(cfg=None):
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
-                  + (marine_code(meta, mdir) if char.startswith('Marine') else '') + '}\n')
+                  + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if v['unit_reference'] != unit: continue

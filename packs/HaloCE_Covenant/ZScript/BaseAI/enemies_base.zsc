@@ -60,7 +60,7 @@ enum HCE_AnimKinds
 	HCE_A_HPING_F, HCE_A_HPING_B,
 	HCE_A_DIE_F, HCE_A_DIE_B, HCE_A_DIE_L, HCE_A_DIE_R, HCE_A_DIE_HARD_F, HCE_A_DIE_HARD_B, HCE_A_DIE_AIR, HCE_A_DIE_LAND,
 	HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_FEED, HCE_A_CELEBRATE, HCE_A_SLEEP, HCE_A_TURN_L, HCE_A_TURN_R, HCE_A_FLAME_IDLE, HCE_A_FLAME_MOVE,
-	HCE_A_RELOAD, HCE_A_VENT,
+	HCE_A_RELOAD, HCE_A_VENT, HCE_A_LOW_IDLE, HCE_A_LOW_MOVE,
 	HCE_A_COUNT
 };
 
@@ -428,6 +428,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	double hce_damageMod;
 	int    hce_projectilesPerShot;
 	double hce_rateOfFire, hce_errorAngle, hce_maxRange, hce_rangeMin, hce_rangeMax;
+	double hce_lowWalkSpeed;             // the low-ready walk's pace (0: the body has none)
 	double hce_burstMin, hce_burstMax, hce_sepMin, hce_sepMax, hce_firstBurstDelay, hce_leadFraction;
 	vector3 hce_gunOffset;
 	int    hce_specialFire;           // 1 = plasma pistol overcharge
@@ -498,6 +499,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	Property HCE_Movement : hce_walkSpeed, hce_runSpeed, hce_turnRate;
 	Property HCE_Weapon : hce_projectile, hce_projectilesPerShot, hce_rateOfFire, hce_errorAngle, hce_maxRange;
 	Property HCE_CombatRange : hce_rangeMin, hce_rangeMax;
+	Property HCE_LowWalk : hce_lowWalkSpeed;
 	Property HCE_Burst : hce_burstMin, hce_burstMax, hce_sepMin, hce_sepMax, hce_firstBurstDelay, hce_leadFraction;
 	Property HCE_GunOffset : hce_gunOffset;
 	Property HCE_ProjectileSpeed : hce_projSpeed;
@@ -552,9 +554,17 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool HCE_HasAnim(int kind) { return HCE_AnimName(kind) != 'None'; }
 
 	// force: only locked one-shots (throw, dive, flinch...) and deaths may replace a locked animation
+	// out of a fight (no target, ten seconds after the last): Halo 2's low ready (low_ready_anims.py)
+	bool HCE_Relaxed() { return !target && level.maptime > hce_combatUntil && !hce_berserk && hce_lowWalkSpeed > 0; }
+
 	void HCE_Play(int kind, bool loop = true, bool restart = false, int blend = 4, bool force = false)
 	{
 		if(!bDECOUPLEDANIMATIONS) return;
+		if((kind == HCE_A_IDLE || (kind == HCE_A_MOVE_F && hce_moveSpeed <= hce_lowWalkSpeed * 1.05)) && HCE_Relaxed())
+		{
+			int low = kind == HCE_A_IDLE ? HCE_A_LOW_IDLE : HCE_A_LOW_MOVE;
+			if(HCE_AnimName(low) != 'None') kind = low;
+		}
 		if(hce_animLock > 0 && !force) return;
 		if(!restart && loop && kind == hce_curAnimKind && hce_curAnim != 'None') return;
 		Name n = HCE_AnimName(kind);
@@ -1513,6 +1523,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// steering: try the wanted heading, then fan out
 	bool HCE_Move(double ang, double spd)
 	{
+		if(spd > 0 && spd <= hce_walkSpeed * 1.01 && HCE_Relaxed()) spd = hce_lowWalkSpeed;     // an unhurried low-ready walk
 		HCE_StuckCheck(spd);
 		if(hce_unstickTics > 0) ang = hce_unstickAngle;
 		hce_moveAngle = ang;

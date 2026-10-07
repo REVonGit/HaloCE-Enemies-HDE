@@ -76,6 +76,7 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcarrier";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 2.07, 3.18, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -257,6 +258,7 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 6.00, 3.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -381,6 +383,7 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite flame thrower";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Flame", 1, 15.00, 2.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 30.8;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -506,6 +509,7 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 6.00, 4.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -630,6 +634,7 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PistolBullet", 1, 4.00, 3.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -754,6 +759,7 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite plasma pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaPistolBolt", 1, 4.00, 3.00, 880;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 77.5;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -878,6 +884,7 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 3.00, 4.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -1002,6 +1009,7 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite rocket launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Rocket", 1, 0.25, 3.00, 1440;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 37.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -1126,6 +1134,7 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 1.00, 10.00, 560;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.15;
@@ -1250,6 +1259,7 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite sniper rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.80, 5.84, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SniperBullet", 1, 0.80, 0.50, 880;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 3108.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -1374,6 +1384,7 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite stealth unarmed";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 1.10, 1.69, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 1.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -1496,6 +1507,7 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat elite unarmed";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 1.10, 1.69, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 1.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -1691,6 +1703,7 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 6.00, 3.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -1798,6 +1811,7 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human flame thrower";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Flame", 1, 15.00, 2.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 30.8;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -1906,6 +1920,7 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 6.00, 4.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2013,6 +2028,7 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PistolBullet", 1, 6.00, 3.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2120,6 +2136,7 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human plasma pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaPistolBolt", 1, 3.00, 4.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 77.5;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2227,6 +2244,7 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 3.00, 4.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2334,6 +2352,7 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human rocket launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Rocket", 1, 0.80, 3.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 37.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2441,6 +2460,7 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 6.00, 10.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.15;
@@ -2548,6 +2568,7 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Variant "floodcombat_human unarmed";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.73, 5.73, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 1.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -2717,6 +2738,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 		HaloDoom_EnemyBase.HCE_Variant "flood_infection";
 		HaloDoom_EnemyBase.HCE_Perception 960, 140, 1600, 160;
 		HaloDoom_EnemyBase.HCE_Movement 2.63, 4.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;

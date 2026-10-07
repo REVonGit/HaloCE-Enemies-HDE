@@ -794,6 +794,10 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Last man standing:** a Marine with no other Marine within 640 units and you more than 768 units away ducks into cover and panics for a few seconds instead of fighting. It can do this again every 12 seconds.
 * **Sergeant Johnson:** Marines within 640 units of him aim about 30% tighter and never cower. He nearly always has a quip when he kills something, and when he falls, the Marines who see it call out their leader's death.
 
+## Low ready
+
+Out of a fight (no target, and ten seconds after the last one), everyone with a gun stands and walks at low ready, Halo 2's 'patrol' animations (`low_ready_anims.py`): the weapon held low across the body, a relaxed idle and an unhurried walk at that animation's own pace. The Marines take Halo 2's Marine set (rifle, pistol and launcher stances), the Elites, Grunts and Jackals Halo 2's own (pistol, rifle, fuel rod and sword stances), and the Brutes theirs. The moment they have a target, they snap back to their combat stances. The Marines' flamethrower stance has no low ready.
+
 ## Squad tactics
 
 Both sides fight to real doctrine (`hce_tactics`, on by default; `hce_tactics 0` turns it off).

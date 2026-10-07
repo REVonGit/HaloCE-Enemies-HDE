@@ -67,6 +67,7 @@ class HCE_Sentinel : HCE_SentinelBase
 		HaloDoom_EnemyBase.HCE_Variant "sentinel";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -139,6 +140,7 @@ class HCE_SentinelMajor : HCE_SentinelBase
 		HaloDoom_EnemyBase.HCE_Variant "sentinel major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -211,6 +213,7 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 		HaloDoom_EnemyBase.HCE_Variant "sentinel_defensive";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -283,6 +286,7 @@ class HCE_SentinelShielded : HCE_SentinelBase
 		HaloDoom_EnemyBase.HCE_Variant "sentinel_shielded";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -355,6 +359,7 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 		HaloDoom_EnemyBase.HCE_Variant "sentinel_shielded major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;

@@ -921,6 +921,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -968,6 +970,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2br low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2br low-move';
 		}
 		return 'None';
 	}
@@ -1014,6 +1018,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1061,6 +1067,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2bulldog low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2bulldog low-move';
 		}
 		return 'None';
 	}
@@ -1107,6 +1115,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1153,6 +1163,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1199,6 +1211,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1245,6 +1259,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1338,6 +1354,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -1384,6 +1402,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1430,6 +1450,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1476,6 +1498,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -1522,6 +1546,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1569,6 +1595,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -1614,6 +1642,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -1660,6 +1690,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1706,6 +1738,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1753,6 +1787,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -1799,6 +1835,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1845,6 +1883,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1891,6 +1931,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -1938,6 +1980,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2smg low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2smg low-move';
 		}
 		return 'None';
 	}
@@ -1984,6 +2028,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -2031,6 +2077,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -2077,6 +2125,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -2124,6 +2174,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -2171,6 +2223,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -2226,6 +2280,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2br fire-1 baked': return 13;
 		case 'stand h2br idle': return 105;
 		case 'stand h2br land-soft': return 46;
+		case 'stand h2br low-idle': return 93;
+		case 'stand h2br low-move': return 36;
 		case 'stand h2br melee': return 23;
 		case 'stand h2br move-back': return 23;
 		case 'stand h2br move-front': return 23;
@@ -2247,6 +2303,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2bulldog fire-1 baked': return 13;
 		case 'stand h2bulldog idle': return 105;
 		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog low-idle': return 93;
+		case 'stand h2bulldog low-move': return 36;
 		case 'stand h2bulldog melee': return 23;
 		case 'stand h2bulldog move-back': return 23;
 		case 'stand h2bulldog move-front': return 23;
@@ -2264,6 +2322,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -2283,6 +2343,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -2302,6 +2364,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2smg fire-1 baked': return 13;
 		case 'stand h2smg idle': return 105;
 		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg low-idle': return 93;
+		case 'stand h2smg low-move': return 36;
 		case 'stand h2smg melee': return 23;
 		case 'stand h2smg move-back': return 23;
 		case 'stand h2smg move-front': return 23;
@@ -2319,6 +2383,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol hp fire-1 baked': return 14;
 		case 'stand pistol idle': return 54;
 		case 'stand pistol land-soft': return 35;
+		case 'stand pistol low-idle': return 69;
+		case 'stand pistol low-move': return 36;
 		case 'stand pistol move-back': return 23;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
@@ -2341,6 +2407,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -2385,6 +2453,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 10.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2454,6 +2523,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -2501,6 +2572,8 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -2541,6 +2614,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine assault rifle major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 10.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2610,6 +2684,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -2657,6 +2733,8 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -2697,6 +2775,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine battle rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BattleRifleARBullet", 1, 10.00, 1.00, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1213.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2767,6 +2846,8 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2br low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2br low-move';
 		}
 		return 'None';
 	}
@@ -2809,6 +2890,8 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		case 'stand h2br fire-1 baked': return 13;
 		case 'stand h2br idle': return 105;
 		case 'stand h2br land-soft': return 46;
+		case 'stand h2br low-idle': return 93;
+		case 'stand h2br low-move': return 36;
 		case 'stand h2br melee': return 23;
 		case 'stand h2br move-back': return 23;
 		case 'stand h2br move-front': return 23;
@@ -2855,6 +2938,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine bulldog";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BulldogBuckshot", 8, 10.00, 5.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -2925,6 +3009,8 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2bulldog low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2bulldog low-move';
 		}
 		return 'None';
 	}
@@ -2967,6 +3053,8 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case 'stand h2bulldog fire-1 baked': return 13;
 		case 'stand h2bulldog idle': return 105;
 		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog low-idle': return 93;
+		case 'stand h2bulldog low-move': return 36;
 		case 'stand h2bulldog melee': return 23;
 		case 'stand h2bulldog move-back': return 23;
 		case 'stand h2bulldog move-front': return 23;
@@ -3008,6 +3096,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine commando";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CommandoARBullet", 1, 10.00, 1.00, 2560;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1026.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3077,6 +3166,8 @@ class HCE_MarineCommando : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3124,6 +3215,8 @@ class HCE_MarineCommando : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -3162,6 +3255,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine dmr";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_DMRSniperBullet", 1, 10.00, 0.60, 4000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1493.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3231,6 +3325,8 @@ class HCE_MarineDmr : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3278,6 +3374,8 @@ class HCE_MarineDmr : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -3316,6 +3414,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine double barrel";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_DBLShotgunPellet", 14, 10.00, 7.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3385,6 +3484,8 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3432,6 +3533,8 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -3470,6 +3573,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine flamethrower";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.20, 6.47, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Flame", 1, 10.00, 2.00, 640;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 30.8;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3628,6 +3732,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine gpmg";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_GPMGBullet", 1, 10.00, 1.00, 2800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1120.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3697,6 +3802,8 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3744,6 +3851,8 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -3782,6 +3891,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine grenade launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_40mmGrenade", 1, 10.00, 1.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 46.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -3852,6 +3962,8 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3899,6 +4011,8 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -3937,6 +4051,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine hydra";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.84;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_HydraMissile", 1, 10.00, 1.50, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 56.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4006,6 +4121,8 @@ class HCE_MarineHydra : HCE_MarineBase
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -4044,6 +4161,8 @@ class HCE_MarineHydra : HCE_MarineBase
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -4088,6 +4207,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine ma37";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_MA37Round", 1, 10.00, 1.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4157,6 +4277,8 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -4204,6 +4326,8 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -4242,6 +4366,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine magnum";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PistolBullet", 1, 10.00, 1.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4312,6 +4437,8 @@ class HCE_MarineMagnum : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -4352,6 +4479,8 @@ class HCE_MarineMagnum : HCE_MarineBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -4398,6 +4527,7 @@ class HCE_MarineMedic : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine medic";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SidekickRound", 1, 10.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4468,6 +4598,8 @@ class HCE_MarineMedic : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -4508,6 +4640,8 @@ class HCE_MarineMedic : HCE_MarineBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -4560,6 +4694,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 10.00, 4.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4628,6 +4763,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -4666,6 +4803,8 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case 'stand pistol hp fire-1 baked': return 14;
 		case 'stand pistol idle': return 54;
 		case 'stand pistol land-soft': return 35;
+		case 'stand pistol low-idle': return 69;
+		case 'stand pistol low-move': return 36;
 		case 'stand pistol move-back': return 23;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
@@ -4714,6 +4853,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 7.00, 1.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -4783,6 +4923,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -4830,6 +4972,8 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -4871,6 +5015,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine rocket launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.84;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Rocket", 1, 0.80, 0.50, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 37.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -4940,6 +5085,8 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -4978,6 +5125,8 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -5026,6 +5175,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -5095,6 +5245,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -5141,6 +5293,8 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -5182,6 +5336,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine sidekick";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SidekickRound", 1, 10.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -5252,6 +5407,8 @@ class HCE_MarineSidekick : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -5292,6 +5449,8 @@ class HCE_MarineSidekick : HCE_MarineBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -5337,6 +5496,7 @@ class HCE_MarineSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine smg";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SMGRound", 1, 10.00, 1.00, 1760;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -5407,6 +5567,8 @@ class HCE_MarineSmg : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2smg low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2smg low-move';
 		}
 		return 'None';
 	}
@@ -5449,6 +5611,8 @@ class HCE_MarineSmg : HCE_MarineBase
 		case 'stand h2smg fire-1 baked': return 13;
 		case 'stand h2smg idle': return 105;
 		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg low-idle': return 93;
+		case 'stand h2smg low-move': return 36;
 		case 'stand h2smg melee': return 23;
 		case 'stand h2smg move-back': return 23;
 		case 'stand h2smg move-front': return 23;
@@ -5491,6 +5655,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine sniper";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SniperBullet", 1, 0.80, 0.25, 5600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 3108.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -5560,6 +5725,8 @@ class HCE_MarineSniper : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -5607,6 +5774,8 @@ class HCE_MarineSniper : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -5647,6 +5816,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "marine sticky detonator";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_StickyDetCharge", 1, 10.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 46.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -5717,6 +5887,8 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -5757,6 +5929,8 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -5830,6 +6004,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "sgt johnson";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_StanchionRail", 1, 10.00, 0.20, 5600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 3108.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -5899,6 +6074,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -5946,6 +6123,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -6005,6 +6184,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -6045,6 +6226,8 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -6185,6 +6368,7 @@ class HCE_SgtStacker : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Variant "sgt stacker";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_DBLShotgunPellet", 14, 10.00, 7.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
@@ -6254,6 +6438,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -6301,6 +6487,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -6360,6 +6548,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2smg low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2smg low-move';
 		}
 		return 'None';
 	}
@@ -6402,6 +6592,8 @@ class HCE_SgtStacker : HCE_MarineBase
 		case 'stand h2smg fire-1 baked': return 13;
 		case 'stand h2smg idle': return 105;
 		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg low-idle': return 93;
+		case 'stand h2smg low-move': return 36;
 		case 'stand h2smg melee': return 23;
 		case 'stand h2smg move-back': return 23;
 		case 'stand h2smg move-front': return 23;
@@ -7412,6 +7604,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7459,6 +7653,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2br low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2br low-move';
 		}
 		return 'None';
 	}
@@ -7505,6 +7701,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7552,6 +7750,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2bulldog low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2bulldog low-move';
 		}
 		return 'None';
 	}
@@ -7598,6 +7798,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7644,6 +7846,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7690,6 +7894,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7736,6 +7942,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7829,6 +8037,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -7875,6 +8085,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7921,6 +8133,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7967,6 +8181,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -8013,6 +8229,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8060,6 +8278,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -8105,6 +8325,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -8151,6 +8373,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8197,6 +8421,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8244,6 +8470,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -8290,6 +8518,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8336,6 +8566,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8382,6 +8614,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -8429,6 +8663,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2smg low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2smg low-move';
 		}
 		return 'None';
 	}
@@ -8475,6 +8711,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8522,6 +8760,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -8568,6 +8808,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8615,6 +8857,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -8662,6 +8906,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -8717,6 +8963,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2br fire-1 baked': return 13;
 		case 'stand h2br idle': return 105;
 		case 'stand h2br land-soft': return 46;
+		case 'stand h2br low-idle': return 93;
+		case 'stand h2br low-move': return 36;
 		case 'stand h2br melee': return 23;
 		case 'stand h2br move-back': return 23;
 		case 'stand h2br move-front': return 23;
@@ -8738,6 +8986,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2bulldog fire-1 baked': return 13;
 		case 'stand h2bulldog idle': return 105;
 		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog low-idle': return 93;
+		case 'stand h2bulldog low-move': return 36;
 		case 'stand h2bulldog melee': return 23;
 		case 'stand h2bulldog move-back': return 23;
 		case 'stand h2bulldog move-front': return 23;
@@ -8755,6 +9005,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -8774,6 +9026,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -8793,6 +9047,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2smg fire-1 baked': return 13;
 		case 'stand h2smg idle': return 105;
 		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg low-idle': return 93;
+		case 'stand h2smg low-move': return 36;
 		case 'stand h2smg melee': return 23;
 		case 'stand h2smg move-back': return 23;
 		case 'stand h2smg move-front': return 23;
@@ -8810,6 +9066,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol hp fire-1 baked': return 14;
 		case 'stand pistol idle': return 54;
 		case 'stand pistol land-soft': return 35;
+		case 'stand pistol low-idle': return 69;
+		case 'stand pistol low-move': return 36;
 		case 'stand pistol move-back': return 23;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
@@ -8832,6 +9090,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -8876,6 +9136,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 10.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -8945,6 +9206,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8992,6 +9255,8 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9032,6 +9297,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored assault rifle major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 10.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9101,6 +9367,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9148,6 +9416,8 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9188,6 +9458,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored battle rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BattleRifleARBullet", 1, 10.00, 1.00, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1213.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -9258,6 +9529,8 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2br low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2br low-move';
 		}
 		return 'None';
 	}
@@ -9300,6 +9573,8 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		case 'stand h2br fire-1 baked': return 13;
 		case 'stand h2br idle': return 105;
 		case 'stand h2br land-soft': return 46;
+		case 'stand h2br low-idle': return 93;
+		case 'stand h2br low-move': return 36;
 		case 'stand h2br melee': return 23;
 		case 'stand h2br move-back': return 23;
 		case 'stand h2br move-front': return 23;
@@ -9346,6 +9621,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored bulldog";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BulldogBuckshot", 8, 10.00, 5.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -9416,6 +9692,8 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2bulldog low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2bulldog low-move';
 		}
 		return 'None';
 	}
@@ -9458,6 +9736,8 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case 'stand h2bulldog fire-1 baked': return 13;
 		case 'stand h2bulldog idle': return 105;
 		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog low-idle': return 93;
+		case 'stand h2bulldog low-move': return 36;
 		case 'stand h2bulldog melee': return 23;
 		case 'stand h2bulldog move-back': return 23;
 		case 'stand h2bulldog move-front': return 23;
@@ -9499,6 +9779,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored commando";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CommandoARBullet", 1, 10.00, 2.00, 2560;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1026.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -9568,6 +9849,8 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9615,6 +9898,8 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9653,6 +9938,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored dmr";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_DMRSniperBullet", 1, 10.00, 0.60, 4000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1493.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -9722,6 +10008,8 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9769,6 +10057,8 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9807,6 +10097,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored double barrel";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_DBLShotgunPellet", 14, 10.00, 7.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -9876,6 +10167,8 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9923,6 +10216,8 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9961,6 +10256,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored flamethrower";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.20, 6.47, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Flame", 1, 10.00, 2.00, 640;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 30.8;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10119,6 +10415,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored gpmg";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_GPMGBullet", 1, 10.00, 2.00, 2800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1120.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10188,6 +10485,8 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -10235,6 +10534,8 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -10273,6 +10574,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored grenade launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_40mmGrenade", 1, 10.00, 1.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 46.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10343,6 +10645,8 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -10390,6 +10694,8 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -10428,6 +10734,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored hydra";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.84;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_HydraMissile", 1, 10.00, 1.50, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 56.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10497,6 +10804,8 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -10535,6 +10844,8 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -10579,6 +10890,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored ma37";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_MA37Round", 1, 10.00, 2.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10648,6 +10960,8 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -10695,6 +11009,8 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -10733,6 +11049,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored magnum";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PistolBullet", 1, 10.00, 2.00, 2400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10803,6 +11120,8 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -10843,6 +11162,8 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -10889,6 +11210,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 3.00, 4.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -10957,6 +11279,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -10995,6 +11319,8 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case 'stand pistol hp fire-1 baked': return 14;
 		case 'stand pistol idle': return 54;
 		case 'stand pistol land-soft': return 35;
+		case 'stand pistol low-idle': return 69;
+		case 'stand pistol low-move': return 36;
 		case 'stand pistol move-back': return 23;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
@@ -11043,6 +11369,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 5.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11112,6 +11439,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -11159,6 +11488,8 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -11200,6 +11531,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored plasma rifle major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 10.00, 2.00, 1040;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11269,6 +11601,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -11316,6 +11650,8 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -11357,6 +11693,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored rocket launcher";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.84;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Rocket", 1, 0.80, 0.50, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 37.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11426,6 +11763,8 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand h2missile reload-1';
+		case HCE_A_LOW_IDLE: return 'stand h2missile low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2missile low-move';
 		}
 		return 'None';
 	}
@@ -11464,6 +11803,8 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		case 'stand h2missile fire-1 baked': return 16;
 		case 'stand h2missile idle': return 105;
 		case 'stand h2missile land-soft': return 46;
+		case 'stand h2missile low-idle': return 80;
+		case 'stand h2missile low-move': return 34;
 		case 'stand h2missile melee': return 23;
 		case 'stand h2missile move-back': return 23;
 		case 'stand h2missile move-front': return 23;
@@ -11512,6 +11853,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored shotgun major";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11581,6 +11923,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-sg';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -11627,6 +11971,8 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -11668,6 +12014,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored sidekick";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SidekickRound", 1, 10.00, 2.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11738,6 +12085,8 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -11778,6 +12127,8 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;
@@ -11823,6 +12174,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored smg";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SMGRound", 1, 10.00, 2.00, 1760;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -11893,6 +12245,8 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2smg low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2smg low-move';
 		}
 		return 'None';
 	}
@@ -11935,6 +12289,8 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case 'stand h2smg fire-1 baked': return 13;
 		case 'stand h2smg idle': return 105;
 		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg low-idle': return 93;
+		case 'stand h2smg low-move': return 36;
 		case 'stand h2smg melee': return 23;
 		case 'stand h2smg move-back': return 23;
 		case 'stand h2smg move-front': return 23;
@@ -11977,6 +12333,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored sniper";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.25, 6.53, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SniperBullet", 1, 0.80, 0.25, 5600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 3108.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -12046,6 +12403,8 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -12093,6 +12452,8 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case 'stand rifle evade-right': return 46;
 		case 'stand rifle idle': return 57;
 		case 'stand rifle land-soft': return 46;
+		case 'stand rifle low-idle': return 93;
+		case 'stand rifle low-move': return 36;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -12133,6 +12494,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Variant "marine_armored sticky detonator";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.91;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_StickyDetCharge", 1, 10.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 46.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -12203,6 +12565,8 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		}
 		return 'None';
 	}
@@ -12243,6 +12607,8 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		case 'stand h2pistol fire-1 baked': return 13;
 		case 'stand h2pistol idle': return 69;
 		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol low-idle': return 69;
+		case 'stand h2pistol low-move': return 36;
 		case 'stand h2pistol melee': return 28;
 		case 'stand h2pistol move-back': return 23;
 		case 'stand h2pistol move-front': return 23;

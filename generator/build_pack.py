@@ -328,6 +328,9 @@ def anim_table(A, w, weapon):
     rc = {'needler': 'ne', 'shotgun': 'sg', 'bulldog': 'sg', 'double barrel': 'sg'}.get(weapon or '', '1')
     m['RELOAD'] = f(f'stand {w} reload-{rc}', f'stand {fam} reload-{rc}', f'stand {w} reload-1', f'stand {fam} reload-1')
     m['VENT'] = f(f'stand {w} overheat', f'stand {fam} overheat')
+    # Halo 2's low-ready idle and walk (low_ready_anims.py), out of combat
+    m['LOW_IDLE'] = f(f'stand {w} low-idle')
+    m['LOW_MOVE'] = f(f'stand {w} low-move')
     return m
 
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
@@ -335,7 +338,7 @@ KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE',
          'SIGNAL', 'AIRBORNE', 'LAND', 'LEAP_START', 'LEAP_AIR', 'LEAP_MELEE', 'PING_F', 'PING_B', 'PING_L', 'PING_R',
          'HPING_F', 'HPING_B', 'DIE_F', 'DIE_B', 'DIE_L', 'DIE_R', 'DIE_HARD_F', 'DIE_HARD_B', 'DIE_AIR', 'DIE_LAND',
          'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE',
-         'RELOAD', 'VENT']
+         'RELOAD', 'VENT', 'LOW_IDLE', 'LOW_MOVE']
 
 def zs_anim_funcs(A, table, bers=None):
     lines = ['\toverride Name HCE_AnimName(int kind)', '\t{',
@@ -1258,6 +1261,8 @@ def build(cfg=None):
             if char == 'Sentinel':
                 run = max(4.0, (b.get('flying_velocity') or 2.25) / 30 * S / TICK)
             walk = run * 0.65
+            lmv = (table.get('LOW_MOVE') or [None])[0]
+            low = min(walk, A.speed(lmv) * msc) if lmv else 0      # the low-ready walk's own pace
             body = un['maximum_body_vitality'] or coll.get('maximum_body_vitality') or 0
             shield = un['maximum_shield_vitality'] or coll.get('maximum_shield_vitality') or 0
             if 'shield' in ov: shield = ov['shield']
@@ -1443,6 +1448,7 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_Variant "{vname.split(chr(92))[-1]}";
 \t\tHaloDoom_EnemyBase.HCE_Perception {vision:.0f}, {fov:.0f}, {hearing:.0f}, {surprise:.0f};
 \t\tHaloDoom_EnemyBase.HCE_Movement {walk:.2f}, {run:.2f}, {12 if char != 'Hunter' else 7};
+\t\tHaloDoom_EnemyBase.HCE_LowWalk {low:.2f};
 \t\tHaloDoom_EnemyBase.HCE_Weapon "{proj}", {pps}, {rof:.2f}, {err:.2f}, {maxrange:.0f};
 \t\tHaloDoom_EnemyBase.HCE_ProjectileSpeed {projspeed:.1f};
 \t\tHaloDoom_EnemyBase.HCE_DamageModifier {dmgmod:.2f};

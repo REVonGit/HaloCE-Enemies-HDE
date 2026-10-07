@@ -76,6 +76,7 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 		HaloDoom_EnemyBase.HCE_Variant "blind_wolf";
 		HaloDoom_EnemyBase.HCE_Perception 4800, 140, 2000, 160;
 		HaloDoom_EnemyBase.HCE_Movement 6.16, 9.48, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 1.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -720,6 +721,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -763,6 +766,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -806,6 +811,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -849,6 +856,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand support celebrate';
 		case HCE_A_TURN_L: return 'stand support turn-left';
 		case HCE_A_TURN_R: return 'stand support turn-right';
+		case HCE_A_LOW_IDLE: return 'stand support low-idle';
+		case HCE_A_LOW_MOVE: return 'stand support low-move';
 		}
 		return 'None';
 	}
@@ -892,6 +901,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand support celebrate';
 		case HCE_A_TURN_L: return 'stand support turn-left';
 		case HCE_A_TURN_R: return 'stand support turn-right';
+		case HCE_A_LOW_IDLE: return 'stand support low-idle';
+		case HCE_A_LOW_MOVE: return 'stand support low-move';
 		}
 		return 'None';
 	}
@@ -935,6 +946,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -978,6 +991,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1021,6 +1036,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1064,6 +1081,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1107,6 +1126,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1150,6 +1171,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1193,6 +1216,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1236,6 +1261,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1271,6 +1298,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -1291,6 +1320,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand support fire-1 baked': return 28;
 		case 'stand support idle': return 104;
 		case 'stand support land-soft': return 29;
+		case 'stand support low-idle': return 140;
+		case 'stand support low-move': return 60;
 		case 'stand support melee': return 57;
 		case 'stand support move-back': return 29;
 		case 'stand support move-front': return 29;
@@ -1316,6 +1347,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute captain plasma caster";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaCasterGrenade", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 26.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1398,6 +1430,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1443,6 +1477,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -1767,6 +1803,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute captain plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1847,6 +1884,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -1892,6 +1931,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -2206,6 +2247,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute captain shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 7.00, 10.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -2286,6 +2328,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -2331,6 +2375,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -2645,6 +2691,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute chieftain gravity hammer";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.90, 6.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -2725,6 +2772,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand melee turn-left';
 		case HCE_A_TURN_R: return 'stand melee turn-right';
+		case HCE_A_LOW_IDLE: return 'stand melee low-idle';
+		case HCE_A_LOW_MOVE: return 'stand melee low-move';
 		}
 		return 'None';
 	}
@@ -2758,6 +2807,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand melee leap-airborne': return 19;
 		case 'stand melee leap-melee': return 28;
 		case 'stand melee leap-start': return 26;
+		case 'stand melee low-idle': return 140;
+		case 'stand melee low-move': return 60;
 		case 'stand melee melee%1': return 43;
 		case 'stand melee melee%2': return 58;
 		case 'stand melee melee%3': return 43;
@@ -3082,6 +3133,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute honor guard assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 7.00, 2.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -3162,6 +3214,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3207,6 +3261,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -3517,6 +3573,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute honor guard plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -3597,6 +3654,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -3642,6 +3701,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -3952,6 +4013,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute major shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 7.00, 10.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -4032,6 +4094,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -4077,6 +4141,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -4392,6 +4458,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute major spiker";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SpikerSpike", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 186.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -4472,6 +4539,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -4517,6 +4586,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -4832,6 +4903,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute minor assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 7.00, 2.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -4912,6 +4984,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -4957,6 +5031,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -5272,6 +5348,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute minor plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 7.00, 1.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -5352,6 +5429,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -5397,6 +5476,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
+		case 'stand rifle low-idle': return 140;
+		case 'stand rifle low-move': return 60;
 		case 'stand rifle melee': return 57;
 		case 'stand rifle move-back': return 29;
 		case 'stand rifle move-front': return 29;
@@ -5779,6 +5860,7 @@ class HCE_Drinol : HCE_DrinolBase
 		HaloDoom_EnemyBase.HCE_Variant "drinol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 800;
 		HaloDoom_EnemyBase.HCE_Movement 5.52, 8.49, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -6508,6 +6590,7 @@ class HCE_DroneNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Variant "drone needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 6.17, 9.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 6.00, 0.50, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -6605,6 +6688,7 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Variant "drone plasma pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 6.17, 9.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaPistolBolt", 1, 6.00, 0.50, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 77.5;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -6702,6 +6786,7 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Variant "drone plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 6.17, 9.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 6.00, 0.50, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -6799,6 +6884,7 @@ class HCE_DroneSpiker : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Variant "drone spiker";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 320;
 		HaloDoom_EnemyBase.HCE_Movement 6.17, 9.50, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SpikerSpike", 1, 6.00, 0.50, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 186.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -7033,6 +7119,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite commander plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 10.00, 0.75, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -7106,6 +7193,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7152,6 +7241,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7192,6 +7283,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite commander pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 10.00, 0.75, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -7265,6 +7357,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7311,6 +7405,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7342,6 +7438,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite major plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 7.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -7415,6 +7512,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7461,6 +7560,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7501,6 +7602,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite major pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 7.00, 1.00, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -7574,6 +7676,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7620,6 +7724,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7651,6 +7757,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite minor plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 5.00, 1.50, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -7724,6 +7831,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7770,6 +7879,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7810,6 +7921,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite minor pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 5.00, 1.50, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -7883,6 +7995,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -7929,6 +8043,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -7960,6 +8076,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite specops plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 4000, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 10.00, 0.75, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -8034,6 +8151,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8080,6 +8199,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -8120,6 +8241,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Variant "elite specops pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 4000, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.24;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 10.00, 0.75, 2000;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -8194,6 +8316,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_RELOAD: return 'stand rifle reload-1';
 		case HCE_A_VENT: return 'stand rifle overheat';
+		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8240,6 +8364,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle evade-right': return 35;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
+		case 'stand rifle low-idle': return 70;
+		case 'stand rifle low-move': return 48;
 		case 'stand rifle melee%0': return 41;
 		case 'stand rifle melee%1': return 47;
 		case 'stand rifle move-back': return 30;
@@ -8338,6 +8464,7 @@ class HCE_Engineer : HCE_EngineerBase
 		HaloDoom_EnemyBase.HCE_Variant "engineer";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2000, 800;
 		HaloDoom_EnemyBase.HCE_Movement 4.21, 6.48, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 6.00, 1.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -8888,6 +9015,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -8936,6 +9064,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -8982,6 +9112,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9030,6 +9161,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -9068,6 +9201,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol fire-1 pr baked': return 7;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
@@ -9091,6 +9226,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle fire-1 csr baked': return 12;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
+		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9117,6 +9253,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal marksman plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 6.00, 0.50, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9186,6 +9323,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9225,6 +9363,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case 'stand rifle fire-1 csr baked': return 12;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
+		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9265,6 +9404,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal marksman pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 6.00, 0.50, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9334,6 +9474,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9373,6 +9514,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case 'stand rifle fire-1 csr baked': return 12;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
+		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9404,6 +9546,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal sniper beam rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_H2BeamShot", 1, 6.00, 0.50, 3840;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9474,6 +9617,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		}
 		return 'None';
 	}
@@ -9513,6 +9657,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case 'stand rifle fire-1 csr baked': return 12;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
+		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -9544,6 +9689,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal ultra plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 5.00, 0.25, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9616,6 +9762,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -9654,6 +9802,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case 'stand pistol fire-1 pr baked': return 7;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
@@ -9688,6 +9838,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal zealot spiker";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SpikerSpike", 1, 5.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 186.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9760,6 +9911,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		}
 		return 'None';
 	}
@@ -9798,6 +9951,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case 'stand pistol fire-1 pr baked': return 7;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
@@ -10428,6 +10583,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 6.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -10577,6 +10733,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major particle beam";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -10774,6 +10931,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -10931,6 +11089,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major plasma pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaPistolBolt", 1, 6.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 77.5;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11080,6 +11239,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 6.00, 0.25, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11229,6 +11389,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man major pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11377,6 +11538,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man minor needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 6.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11526,6 +11688,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man minor plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.10, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11683,6 +11846,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man minor plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 6.00, 0.25, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -11832,6 +11996,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man particle beam";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.10, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12029,6 +12194,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man plasma pistol";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaPistolBolt", 1, 6.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 77.5;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12178,6 +12344,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man ultra particle beam";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.07, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12375,6 +12542,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man ultra plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.07, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12532,6 +12700,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Variant "slug_man ultra plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.61, 8.63, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 6.00, 0.25, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12748,6 +12917,7 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 		HaloDoom_EnemyBase.HCE_Variant "thorn_beast";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 240, 5600, 160;
 		HaloDoom_EnemyBase.HCE_Movement 3.90, 6.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 1.00, 0.00, 320;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;

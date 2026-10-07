@@ -307,7 +307,8 @@ KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE',
          'RELOAD', 'VENT']
 
 def zs_anim_funcs(A, table, bers=None):
-    lines = ['\toverride Name HCE_AnimName(int kind)', '\t{']
+    lines = ['\toverride Name HCE_AnimName(int kind)', '\t{',
+             "\t\tif(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up"]
     if bers:
         lines += ['\t\tif(hce_berserk) switch(kind)', '\t\t{']
         for k in KINDS:
@@ -326,7 +327,8 @@ def zs_anim_funcs(A, table, bers=None):
             lines.append(f"\t\tcase HCE_A_{k}: {{ static const Name o[] = {{ {', '.join(repr(x).replace(chr(34), '') for x in opts)} }}; return o[random(0, {len(opts) - 1})]; }}")
     lines += ['\t\t}', "\t\treturn 'None';", '\t}', '']
     used = sorted({n for k in KINDS for n in (table.get(k) or [])} | {n for k in KINDS for n in ((bers or {}).get(k) or []) if n in A.names})
-    lines += ['\toverride int HCE_AnimTics(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
+    lines += ['\toverride int HCE_AnimTics(Name anim)', '\t{',
+              '\t\tif(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }', '\t\tswitch(anim)', '\t\t{']
     for n in used:
         lines.append(f"\t\tcase '{n}': return {A.tics(n)};")
     lines += ['\t\t}', '\t\treturn 30;', '\t}']
@@ -960,6 +962,65 @@ def blood_hide(si, mdir):
     return f'\t\t\tA_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n'
 
 
+# ---------------------------------------------------------------- weapons off the ground
+# Every gun a body can be seen with (its own model surfaces for the Covenant, the arsenal overlays for the Marines)
+# becomes a loadout the body's base class can switch to at run time when it picks that HDE weapon up
+# (HaloDoom_EnemyBase.HCE_ScavengeScan): the firing data, sounds and animations of the pack's own class that carries
+# it. Guns with their own extra code (beam rifle, sticky detonator, Stanchion), the energy sword and the Plasma Caster
+# stay with the classes that are built around them.
+PICKUP_TEAMS = ('HUMAN', 'COVENANT')
+PICKUP_SKIP = {'energy sword', 'plasma caster', 'hunter fuel rod'}
+
+
+def loadout_code(char, prof, A):
+    los = sorted(prof)
+    out = [f'\t// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): {", ".join(los)}',
+           '\toverride bool HCE_HasLoadouts() { return true; }',
+           '\toverride int HCE_LoadoutIndex(Name w)', '\t{', '\t\tswitch(w)', '\t\t{']
+    out += [f"\t\tcase '{w}': return {i};" for i, w in enumerate(los)]
+    out += ['\t\t}', '\t\treturn -1;', '\t}', '\toverride void HCE_ApplyLoadout(int lo)', '\t{', '\t\tswitch(lo)', '\t\t{']
+    for i, w in enumerate(los):
+        p = prof[w]
+        out.append(f'\t\tcase {i}:')
+        out.append(f"\t\t\thce_projectile = '{p['proj']}'; hce_projectilesPerShot = {p['pps']}; hce_rateOfFire = {p['rof']:.2f}; "
+                   f"hce_errorAngle = {p['err']:.2f}; hce_maxRange = {p['maxrange']:.0f}; hce_projSpeed = {p['projspeed']:.1f};")
+        out.append(f"\t\t\thce_rangeMin = {p['rlo']:.0f}; hce_rangeMax = {p['rhi']:.0f}; hce_damageMod = {p['dmgmod']:.2f}; "
+                   f"hce_specialFire = {p['sf']}; hce_specialChance = {p['sc']}; bHCE_Lobbed = {'true' if p['lobbed'] else 'false'};")
+        if p['pattern']:
+            v = [x.strip() for x in p['pattern'].split(',')]
+            out.append(f"\t\t\thce_patShotsMin = {v[0]}; hce_patShotsMax = {v[1]}; hce_patInterval = {v[2]}; "
+                       f"hce_patPauseMin = {v[3]}; hce_patPauseMax = {v[4]}; hce_patChargeTics = {v[5]};")
+        else:
+            out.append('\t\t\thce_patShotsMax = 0;')
+        snd = p['sounds'] or ('', '', '', '')
+        out.append(f'\t\t\thce_fireSound = "{snd[0]}"; hce_fireSoundBass = "{snd[1]}"; hce_specialSound = "{snd[2]}"; '
+                   f'hce_chargeSound = "{snd[3]}"; hce_fireLoop = {"true" if p["loop"] else "false"};')
+        out.append('\t\t\tbreak;')
+    out += ['\t\t}', '\t}', '\toverride void HCE_LoadoutVisual(int lo)', '\t{', '\t\tswitch(lo)', '\t\t{']
+    for i, w in enumerate(los):
+        out.append(f'\t\tcase {i}:')
+        out.append(prof[w]['visual'].rstrip('\n'))
+        out.append('\t\t\tbreak;')
+    out += ['\t\t}', '\t}', '\toverride Name HCE_LoadoutAnim(int lo, int kind)', '\t{', '\t\tswitch(lo)', '\t\t{']
+    out += [f'\t\tcase {i}: return HCE_LoadoutAnim{i}(kind);' for i in range(len(los))]
+    out += ['\t\t}', "\t\treturn 'None';", '\t}']
+    names = set()
+    for i, w in enumerate(los):                 # one function per loadout (one big one runs out of VM registers)
+        t = prof[w]['table']
+        out += [f'\tName HCE_LoadoutAnim{i}(int kind)', '\t{', '\t\tswitch(kind)', '\t\t{']
+        for k in KINDS:
+            opts = [o for o in (t.get(k) or []) if o in A.names]
+            if not opts: continue
+            names |= set(opts)
+            if len(opts) == 1: out.append(f"\t\tcase HCE_A_{k}: return '{opts[0]}';")
+            else: out.append(f"\t\tcase HCE_A_{k}: {{ static const Name o[] = {{ {', '.join(repr(x).replace(chr(34), '') for x in opts)} }}; return o[random(0, {len(opts) - 1})]; }}")
+        out += ['\t\t}', "\t\treturn 'None';", '\t}']
+    out += ['\toverride int HCE_LoadoutAnimTics(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
+    out += [f"\t\tcase '{n}': return {A.tics(n)};" for n in sorted(names)]
+    out += ['\t\t}', '\t\treturn 0;', '\t}', '']
+    return '\n'.join(out)
+
+
 def build(cfg=None):
     cfg = cfg or MAIN
     char_of_unit, team, ai, pack, mdir = cfg['char_of_unit'], cfg['team'], cfg['ai'], cfg['pack'], cfg['mdir']
@@ -1001,6 +1062,7 @@ def build(cfg=None):
         if ov.get('radius_fixed'): radius = ov['radius_fixed']
         if ov.get('height_fixed'): height = ov['height_fixed']
         height = max(height, HEAD_CLEAR.get(char, 0))
+        base_idx = len(zs); prof = {}
         zs.append(f'class HCE_{char}Base : HaloDoom_EnemyBase abstract\n{{\n\tDefault\n\t{{\n'
                   f'\t\tMonster;\n\t\t+DECOUPLEDANIMATIONS\n\t\t+FLOORCLIP\n\t\t+DONTHARMSPECIES\n\t\t+NOINFIGHTSPECIES\n'
                   f'\t\tSpecies "HCE_{team[char]}";\n\t\tHaloDoom_EnemyBase.HCE_Enabled true;\n'
@@ -1256,6 +1318,8 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
+            if ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP:
+                extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
             if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov)
             if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon):
                 extra += f'\toverride Name HCE_LimbReplacement(int limb) {{ if(limb != HCE_LIMB_RARM) return \'None\'; return "{HUNTER_ARM_WEAPON[weapon]}"; }}\n'
@@ -1318,9 +1382,26 @@ def build(cfg=None):
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
+            # a loadout other bodies of this kind can switch to (loadout_code)
+            if team[char] in PICKUP_TEAMS and dw and weapon and weapon not in PICKUP_SKIP and weapon not in WEAPON_CODE and \
+                    not ov.get('unique') and dw not in prof and proj != 'None':
+                pm = re.search(r'HCE_FirePattern ([^;]+);', pat)
+                sf = 1 if overcharge or weapon == 'plasma caster' or weapon in SPECIAL_FIRE else 0
+                if ov.get('overlay'): vis = overlay_swap(char, meta, mdir, ov['overlay']).replace('\t\t', '\t\t\t', 1).replace('\n\t\t', '\n\t\t\t')
+                else:
+                    shown = {int(m.group(1)): m.group(2) for m in (re.match(r'\tSurfaceSkin 0 (\d+) "(.*)"', l) for l in weapon_lines) if m}
+                    vis = ''.join(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'{tx}\', CMDL_USESURFACESKIN);\n'
+                                  for si, tx in sorted(shown.items()))
+                if vis:
+                    prof[dw] = dict(proj=proj, pps=pps, rof=rof, err=err, maxrange=maxrange, projspeed=projspeed, rlo=rlo, rhi=rhi,
+                                    dmgmod=dmgmod, sf=sf, sc=0.2 if overcharge else SPECIAL_FIRE.get(weapon, 0), lobbed=weapon in LOBBED,
+                                    pattern=pm.group(1) if pm else None, sounds=FIRE_SOUNDS.get(pkey), loop=bool(FIRE_SOUNDS.get(pkey, [0] * 5)[4]),
+                                    table=table, visual=vis)
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
             if not ov.get('unique'): spawners.setdefault(char, []).append(cls)
+        if len(prof) > 1:              # more than its own gun to choose from
+            zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
     pz = ['// Enemy projectiles: HDE visuals, Halo CE impact damage']
     done = set()

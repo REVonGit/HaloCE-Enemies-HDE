@@ -276,10 +276,13 @@ def build():
             zt = zt.replace('// Needs HCES_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.',
                             '// Standalone: carries the enemy API and the HDE-derived projectiles/effects; needs no other pk3.')
             zt = zt.replace('#include "ZScript/HaloCE/hce_explosives.zsc"\n', '')   # HDE-only; hces_lib has its own
+            zt = zt.replace('#include "ZScript/HaloCE/hce_hde.zsc"\n', '')          # HDE-only: reads HDE's dropped guns
             lm = os.path.join(dst, 'modeldef.hce_lasers')            # HDE's paths: the standalone entry comes from MODEL_OF
             if os.path.exists(lm): os.remove(lm)
             ex = os.path.join(zs_dir, 'hce_explosives.zsc')
             if os.path.exists(ex): os.remove(ex)
+            hx = os.path.join(zs_dir, 'hce_hde.zsc')
+            if os.path.exists(hx): os.remove(hx)
             zt = re.sub(r'(#include "ZScript/HaloCE/hce_projectiles.zsc")',
                         '#include "ZScript/HaloCE/hces_api.zsc"\n#include "ZScript/HaloCE/hces_lib.zsc"\n#include "ZScript/HaloCE/hces_loot.zsc"\n\\1', zt)
             open(os.path.join(dst, 'zscript.txt'), 'w').write(zt)

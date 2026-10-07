@@ -128,6 +128,1326 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	{
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_AssaultRifle, Halo_BattleRifle, Halo_Bulldog, Halo_Commando, Halo_DBLShotgun, Halo_DMR, Halo_Flamethrower, Halo_GPMG, Halo_GrenadeLauncher, Halo_Hydra, Halo_MA5B, Halo_Magnum, Halo_Needler, Halo_PlasmaRifle, Halo_RocketLauncher, Halo_SMG, Halo_Shotgun, Halo_Sidekick, Halo_SniperRifle
+	override bool HCE_HasLoadouts() { return true; }
+	override int HCE_LoadoutIndex(Name w)
+	{
+		switch(w)
+		{
+		case 'Halo_AssaultRifle': return 0;
+		case 'Halo_BattleRifle': return 1;
+		case 'Halo_Bulldog': return 2;
+		case 'Halo_Commando': return 3;
+		case 'Halo_DBLShotgun': return 4;
+		case 'Halo_DMR': return 5;
+		case 'Halo_Flamethrower': return 6;
+		case 'Halo_GPMG': return 7;
+		case 'Halo_GrenadeLauncher': return 8;
+		case 'Halo_Hydra': return 9;
+		case 'Halo_MA5B': return 10;
+		case 'Halo_Magnum': return 11;
+		case 'Halo_Needler': return 12;
+		case 'Halo_PlasmaRifle': return 13;
+		case 'Halo_RocketLauncher': return 14;
+		case 'Halo_SMG': return 15;
+		case 'Halo_Shotgun': return 16;
+		case 'Halo_Sidekick': return 17;
+		case 'Halo_SniperRifle': return 18;
+		}
+		return -1;
+	}
+	override void HCE_ApplyLoadout(int lo)
+	{
+		switch(lo)
+		{
+		case 0:
+			hce_projectile = 'HCE_MA37Round'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2400; hce_projSpeed = 1008.0;
+			hce_rangeMin = 240; hce_rangeMax = 1200; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 8; hce_patInterval = 3; hce_patPauseMin = 1.00; hce_patPauseMax = 1.75; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Rifle/Fire"; hce_fireSoundBass = "Halo/Weapons/Rifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 1:
+			hce_projectile = 'HCE_BattleRifleARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 3600; hce_projSpeed = 1213.3;
+			hce_rangeMin = 400; hce_rangeMax = 1760; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 2; hce_patPauseMin = 0.75; hce_patPauseMax = 1.38; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/BattleRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/BattleRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 2:
+			hce_projectile = 'HCE_BulldogBuckshot'; hce_projectilesPerShot = 8; hce_rateOfFire = 10.00; hce_errorAngle = 5.00; hce_maxRange = 1120; hce_projSpeed = 435.9;
+			hce_rangeMin = 80; hce_rangeMax = 480; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 4; hce_patInterval = 9; hce_patPauseMin = 1.50; hce_patPauseMax = 2.25; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Bulldog/Fire"; hce_fireSoundBass = "Halo/Weapons/Bulldog/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 3:
+			hce_projectile = 'HCE_CommandoARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2560; hce_projSpeed = 1026.7;
+			hce_rangeMin = 240; hce_rangeMax = 1280; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 6; hce_patInterval = 4; hce_patPauseMin = 0.88; hce_patPauseMax = 1.62; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Commando/Fire"; hce_fireSoundBass = "Halo/Weapons/Commando/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 4:
+			hce_projectile = 'HCE_DBLShotgunPellet'; hce_projectilesPerShot = 14; hce_rateOfFire = 10.00; hce_errorAngle = 7.00; hce_maxRange = 800; hce_projSpeed = 435.9;
+			hce_rangeMin = 80; hce_rangeMax = 320; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.00; hce_patPauseMax = 2.75; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/SuperShotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/SuperShotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 5:
+			hce_projectile = 'HCE_DMRSniperBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.60; hce_maxRange = 4000; hce_projSpeed = 1493.3;
+			hce_rangeMin = 480; hce_rangeMax = 2080; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 3; hce_patInterval = 11; hce_patPauseMin = 1.25; hce_patPauseMax = 2.00; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/DMR/Fire"; hce_fireSoundBass = "Halo/Weapons/DMR/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 6:
+			hce_projectile = 'HCE_Flame'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 640; hce_projSpeed = 30.8;
+			hce_rangeMin = 80; hce_rangeMax = 400; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 14; hce_patShotsMax = 22; hce_patInterval = 2; hce_patPauseMin = 0.90; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Flamer/Fire/Loop"; hce_fireSoundBass = ""; hce_specialSound = "Halo/Weapons/Flamer/Fire/End"; hce_chargeSound = "Halo/Weapons/Flamer/Fire/Start"; hce_fireLoop = true;
+			break;
+		case 7:
+			hce_projectile = 'HCE_GPMGBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2800; hce_projSpeed = 1120.0;
+			hce_rangeMin = 240; hce_rangeMax = 1440; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 8; hce_patShotsMax = 15; hce_patInterval = 3; hce_patPauseMin = 1.25; hce_patPauseMax = 2.00; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/GPMG/Fire"; hce_fireSoundBass = "Halo/Weapons/GPMG/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 8:
+			hce_projectile = 'HCE_40mmGrenade'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2400; hce_projSpeed = 46.7;
+			hce_rangeMin = 400; hce_rangeMax = 1440; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = true;
+			hce_patShotsMin = 1; hce_patShotsMax = 2; hce_patInterval = 20; hce_patPauseMin = 2.75; hce_patPauseMax = 3.75; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/GrenadeLauncher/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 9:
+			hce_projectile = 'HCE_HydraMissile'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.50; hce_maxRange = 3600; hce_projSpeed = 56.0;
+			hce_rangeMin = 480; hce_rangeMax = 1920; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 4; hce_patInterval = 5; hce_patPauseMin = 3.50; hce_patPauseMax = 4.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Hydra/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 10:
+			hce_projectile = 'HCE_ARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 1040; hce_projSpeed = 1008.0;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 7; hce_patInterval = 3; hce_patPauseMin = 1.00; hce_patPauseMax = 1.75; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/MA5B/Fire"; hce_fireSoundBass = "Halo/Weapons/MA5B/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 11:
+			hce_projectile = 'HCE_PistolBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2400; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 960; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 3; hce_patInterval = 9; hce_patPauseMin = 1.12; hce_patPauseMax = 1.88; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Mag_MD6/Fire"; hce_fireSoundBass = "Halo/Weapons/Mag_MD6/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 12:
+			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 4.00; hce_maxRange = 1040; hce_projSpeed = 12.1;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 2.00; hce_patPauseMax = 3.25; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 13:
+			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 7.00; hce_errorAngle = 1.00; hce_maxRange = 1040; hce_projSpeed = 155.9;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 5; hce_patInterval = 4; hce_patPauseMin = 1.17; hce_patPauseMax = 2.08; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 14:
+			hce_projectile = 'HCE_Rocket'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.50; hce_maxRange = 3600; hce_projSpeed = 37.3;
+			hce_rangeMin = 560; hce_rangeMax = 2000; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.40; hce_patPauseMax = 3.15; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = "Halo/Weapons/RocketLauncher/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 15:
+			hce_projectile = 'HCE_SMGRound'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 1760; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 800; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 6; hce_patShotsMax = 10; hce_patInterval = 2; hce_patPauseMin = 1.00; hce_patPauseMax = 1.75; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/SMG/Fire"; hce_fireSoundBass = "Halo/Weapons/SMG/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 16:
+			hce_projectile = 'HCE_ShotgunPellet'; hce_projectilesPerShot = 15; hce_rateOfFire = 0.40; hce_errorAngle = 10.00; hce_maxRange = 400; hce_projSpeed = 435.9;
+			hce_rangeMin = 320; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.05; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Shotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 17:
+			hce_projectile = 'HCE_SidekickRound'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2000; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 800; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 4; hce_patInterval = 7; hce_patPauseMin = 1.12; hce_patPauseMax = 1.88; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Sidekick/Fire"; hce_fireSoundBass = "Halo/Weapons/Sidekick/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 18:
+			hce_projectile = 'HCE_SniperBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.25; hce_maxRange = 5600; hce_projSpeed = 3108.0;
+			hce_rangeMin = 640; hce_rangeMax = 2800; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 3.25; hce_patPauseMax = 4.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Sniper/Fire"; hce_fireSoundBass = "Halo/Weapons/Sniper/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		}
+	}
+	override void HCE_LoadoutVisual(int lo)
+	{
+		switch(lo)
+		{
+		case 0:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 1:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_battle_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_battle_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_battle_rifle_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_battle_rifle_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_battle_rifle_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_battle_rifle_4.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 5, "models/hce/weapons", 'w_m_battle_rifle_5.png', CMDL_USESURFACESKIN);
+			break;
+		case 2:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_bulldog.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_bulldog_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 3:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_commando.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_commando_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 4:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 5:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_dmr.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_dmr_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 6:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_flamethrower.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_flamethrower_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 7:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_gpmg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_gpmg_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 8:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_grenade_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_grenade_launcher_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 9:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_hydra.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_hydra_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 10:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 11:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_magnum.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 12:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_needler.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 13:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_plasma_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 14:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_rocket_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_rocket_launcher_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_rocket_launcher_4.png', CMDL_USESURFACESKIN);
+			break;
+		case 15:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_smg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_smg_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_smg_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 16:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_pump_shotgun.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 17:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 18:
+			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sniper.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+			break;
+		}
+	}
+	override Name HCE_LoadoutAnim(int lo, int kind)
+	{
+		switch(lo)
+		{
+		case 0: return HCE_LoadoutAnim0(kind);
+		case 1: return HCE_LoadoutAnim1(kind);
+		case 2: return HCE_LoadoutAnim2(kind);
+		case 3: return HCE_LoadoutAnim3(kind);
+		case 4: return HCE_LoadoutAnim4(kind);
+		case 5: return HCE_LoadoutAnim5(kind);
+		case 6: return HCE_LoadoutAnim6(kind);
+		case 7: return HCE_LoadoutAnim7(kind);
+		case 8: return HCE_LoadoutAnim8(kind);
+		case 9: return HCE_LoadoutAnim9(kind);
+		case 10: return HCE_LoadoutAnim10(kind);
+		case 11: return HCE_LoadoutAnim11(kind);
+		case 12: return HCE_LoadoutAnim12(kind);
+		case 13: return HCE_LoadoutAnim13(kind);
+		case 14: return HCE_LoadoutAnim14(kind);
+		case 15: return HCE_LoadoutAnim15(kind);
+		case 16: return HCE_LoadoutAnim16(kind);
+		case 17: return HCE_LoadoutAnim17(kind);
+		case 18: return HCE_LoadoutAnim18(kind);
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim0(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim1(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2br idle';
+		case HCE_A_ALERT: return 'stand h2br idle';
+		case HCE_A_MOVE_F: return 'stand h2br move-front';
+		case HCE_A_MOVE_B: return 'stand h2br move-back';
+		case HCE_A_MOVE_L: return 'stand h2br move-left';
+		case HCE_A_MOVE_R: return 'stand h2br move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2br idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2br move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2br fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2br melee';
+		case HCE_A_THROW: return 'stand h2br throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2br dive-left';
+		case HCE_A_DIVE_R: return 'stand h2br dive-right';
+		case HCE_A_DIVE_F: return 'stand h2br dive-front';
+		case HCE_A_EVADE_L: return 'stand h2br evade-left';
+		case HCE_A_EVADE_R: return 'stand h2br evade-right';
+		case HCE_A_BERSERK: return 'stand h2br berserk';
+		case HCE_A_WARN: return 'stand h2br warn';
+		case HCE_A_SIGNAL: return 'stand h2br signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2br airborne';
+		case HCE_A_LAND: return 'stand h2br land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2br celebrate';
+		case HCE_A_TURN_L: return 'stand h2br turn-left';
+		case HCE_A_TURN_R: return 'stand h2br turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim2(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2bulldog idle';
+		case HCE_A_ALERT: return 'stand h2bulldog idle';
+		case HCE_A_MOVE_F: return 'stand h2bulldog move-front';
+		case HCE_A_MOVE_B: return 'stand h2bulldog move-back';
+		case HCE_A_MOVE_L: return 'stand h2bulldog move-left';
+		case HCE_A_MOVE_R: return 'stand h2bulldog move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2bulldog idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2bulldog move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2bulldog fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2bulldog melee';
+		case HCE_A_THROW: return 'stand h2bulldog throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2bulldog dive-left';
+		case HCE_A_DIVE_R: return 'stand h2bulldog dive-right';
+		case HCE_A_DIVE_F: return 'stand h2bulldog dive-front';
+		case HCE_A_EVADE_L: return 'stand h2bulldog evade-left';
+		case HCE_A_EVADE_R: return 'stand h2bulldog evade-right';
+		case HCE_A_BERSERK: return 'stand h2bulldog berserk';
+		case HCE_A_WARN: return 'stand h2bulldog warn';
+		case HCE_A_SIGNAL: return 'stand h2bulldog signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2bulldog airborne';
+		case HCE_A_LAND: return 'stand h2bulldog land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2bulldog celebrate';
+		case HCE_A_TURN_L: return 'stand h2bulldog turn-left';
+		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim3(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim4(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim5(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim6(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim7(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim8(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim9(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim10(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim11(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand h2pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim12(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle';
+		case HCE_A_ALERT: return 'alert pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim13(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim14(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim15(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2smg idle';
+		case HCE_A_ALERT: return 'stand h2smg idle';
+		case HCE_A_MOVE_F: return 'stand h2smg move-front';
+		case HCE_A_MOVE_B: return 'stand h2smg move-back';
+		case HCE_A_MOVE_L: return 'stand h2smg move-left';
+		case HCE_A_MOVE_R: return 'stand h2smg move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2smg idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2smg move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2smg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2smg melee';
+		case HCE_A_THROW: return 'stand h2smg throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2smg dive-left';
+		case HCE_A_DIVE_R: return 'stand h2smg dive-right';
+		case HCE_A_DIVE_F: return 'stand h2smg dive-front';
+		case HCE_A_EVADE_L: return 'stand h2smg evade-left';
+		case HCE_A_EVADE_R: return 'stand h2smg evade-right';
+		case HCE_A_BERSERK: return 'stand h2smg berserk';
+		case HCE_A_WARN: return 'stand h2smg warn';
+		case HCE_A_SIGNAL: return 'stand h2smg signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2smg airborne';
+		case HCE_A_LAND: return 'stand h2smg land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2smg celebrate';
+		case HCE_A_TURN_L: return 'stand h2smg turn-left';
+		case HCE_A_TURN_R: return 'stand h2smg turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim16(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim17(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand h2pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim18(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	override int HCE_LoadoutAnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert pistol idle': return 93;
+		case 'alert rifle idle%0': return 93;
+		case 'crouch h2br idle': return 70;
+		case 'crouch h2br move-front': return 28;
+		case 'crouch h2bulldog idle': return 70;
+		case 'crouch h2bulldog move-front': return 28;
+		case 'crouch h2pistol idle': return 69;
+		case 'crouch h2pistol move-front': return 28;
+		case 'crouch h2smg idle': return 70;
+		case 'crouch h2smg move-front': return 28;
+		case 'crouch pistol idle': return 47;
+		case 'crouch rifle idle': return 70;
+		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
+		case 'flee rifle move-front': return 20;
+		case 'h-kill back gut': return 47;
+		case 'h-kill front gut': return 52;
+		case 'h-kill front head': return 70;
+		case 'h-ping back chest': return 37;
+		case 'h-ping back gut': return 48;
+		case 'h-ping front chest': return 26;
+		case 'h-ping front gut': return 22;
+		case 'h-ping front l-arm': return 38;
+		case 'h-ping front l-leg': return 57;
+		case 's-kill back gut': return 47;
+		case 's-kill front chest': return 51;
+		case 's-kill front gut': return 79;
+		case 's-kill left gut': return 70;
+		case 's-kill right gut': return 54;
+		case 's-ping front gut%0 baked': return 12;
+		case 's-ping front gut%1 baked': return 12;
+		case 'stand airborne-dead': return 43;
+		case 'stand h2br airborne': return 55;
+		case 'stand h2br berserk': return 51;
+		case 'stand h2br celebrate': return 72;
+		case 'stand h2br dive-front': return 90;
+		case 'stand h2br dive-left': return 90;
+		case 'stand h2br dive-right': return 90;
+		case 'stand h2br evade-left': return 35;
+		case 'stand h2br evade-right': return 35;
+		case 'stand h2br fire-1 baked': return 13;
+		case 'stand h2br idle': return 105;
+		case 'stand h2br land-soft': return 46;
+		case 'stand h2br melee': return 23;
+		case 'stand h2br move-back': return 23;
+		case 'stand h2br move-front': return 23;
+		case 'stand h2br move-left': return 23;
+		case 'stand h2br move-right': return 23;
+		case 'stand h2br signal-attack': return 55;
+		case 'stand h2br throw-grenade': return 66;
+		case 'stand h2br turn-left': return 16;
+		case 'stand h2br turn-right': return 16;
+		case 'stand h2br warn': return 51;
+		case 'stand h2bulldog airborne': return 55;
+		case 'stand h2bulldog berserk': return 51;
+		case 'stand h2bulldog celebrate': return 72;
+		case 'stand h2bulldog dive-front': return 90;
+		case 'stand h2bulldog dive-left': return 90;
+		case 'stand h2bulldog dive-right': return 90;
+		case 'stand h2bulldog evade-left': return 35;
+		case 'stand h2bulldog evade-right': return 35;
+		case 'stand h2bulldog fire-1 baked': return 13;
+		case 'stand h2bulldog idle': return 105;
+		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog melee': return 23;
+		case 'stand h2bulldog move-back': return 23;
+		case 'stand h2bulldog move-front': return 23;
+		case 'stand h2bulldog move-left': return 23;
+		case 'stand h2bulldog move-right': return 23;
+		case 'stand h2bulldog signal-attack': return 55;
+		case 'stand h2bulldog throw-grenade': return 66;
+		case 'stand h2bulldog turn-left': return 16;
+		case 'stand h2bulldog turn-right': return 16;
+		case 'stand h2bulldog warn': return 51;
+		case 'stand h2pistol airborne': return 92;
+		case 'stand h2pistol dive-front': return 90;
+		case 'stand h2pistol dive-left': return 90;
+		case 'stand h2pistol dive-right': return 90;
+		case 'stand h2pistol evade-left': return 35;
+		case 'stand h2pistol evade-right': return 35;
+		case 'stand h2pistol fire-1 baked': return 13;
+		case 'stand h2pistol idle': return 69;
+		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol melee': return 28;
+		case 'stand h2pistol move-back': return 23;
+		case 'stand h2pistol move-front': return 23;
+		case 'stand h2pistol move-left': return 23;
+		case 'stand h2pistol move-right': return 23;
+		case 'stand h2pistol turn-left': return 16;
+		case 'stand h2pistol turn-right': return 16;
+		case 'stand h2pistol warn': return 51;
+		case 'stand h2smg airborne': return 55;
+		case 'stand h2smg berserk': return 51;
+		case 'stand h2smg celebrate': return 72;
+		case 'stand h2smg dive-front': return 90;
+		case 'stand h2smg dive-left': return 90;
+		case 'stand h2smg dive-right': return 90;
+		case 'stand h2smg evade-left': return 35;
+		case 'stand h2smg evade-right': return 35;
+		case 'stand h2smg fire-1 baked': return 13;
+		case 'stand h2smg idle': return 105;
+		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg melee': return 23;
+		case 'stand h2smg move-back': return 23;
+		case 'stand h2smg move-front': return 23;
+		case 'stand h2smg move-left': return 23;
+		case 'stand h2smg move-right': return 23;
+		case 'stand h2smg signal-attack': return 55;
+		case 'stand h2smg throw-grenade': return 66;
+		case 'stand h2smg turn-left': return 16;
+		case 'stand h2smg turn-right': return 16;
+		case 'stand h2smg warn': return 51;
+		case 'stand landing-dead': return 43;
+		case 'stand landing-dead%2': return 66;
+		case 'stand pistol airborne': return 93;
+		case 'stand pistol dive-front': return 91;
+		case 'stand pistol hp fire-1 baked': return 14;
+		case 'stand pistol idle': return 54;
+		case 'stand pistol land-soft': return 35;
+		case 'stand pistol move-back': return 23;
+		case 'stand pistol move-front': return 23;
+		case 'stand pistol move-left': return 23;
+		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol warn': return 51;
+		case 'stand rifle airborne': return 92;
+		case 'stand rifle ar fire-1 baked': return 5;
+		case 'stand rifle berserk%3': return 51;
+		case 'stand rifle celebrate%1': return 72;
+		case 'stand rifle celebrate%2': return 80;
+		case 'stand rifle celebrate%3': return 64;
+		case 'stand rifle dive-front': return 90;
+		case 'stand rifle dive-left': return 90;
+		case 'stand rifle dive-right': return 90;
+		case 'stand rifle evade-left': return 46;
+		case 'stand rifle evade-right': return 46;
+		case 'stand rifle idle': return 57;
+		case 'stand rifle land-soft': return 46;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
+		case 'stand rifle reload-sg': return 150;
+		case 'stand rifle sg fire-1 baked': return 16;
+		case 'stand rifle signal-attack': return 55;
+		case 'stand rifle throw-grenade': return 72;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn%1': return 51;
+		}
+		return 0;
+	}
 }
 
 // characters\marine\marine assault rifle
@@ -169,6 +1489,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -216,6 +1537,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -317,6 +1639,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -364,6 +1687,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -465,6 +1789,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2br idle';
@@ -513,6 +1838,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2br idle': return 70;
@@ -612,6 +1938,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2bulldog idle';
@@ -660,6 +1987,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2bulldog idle': return 70;
@@ -759,6 +2087,7 @@ class HCE_MarineCommando : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -806,6 +2135,7 @@ class HCE_MarineCommando : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -907,6 +2237,7 @@ class HCE_MarineDmr : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -954,6 +2285,7 @@ class HCE_MarineDmr : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1055,6 +2387,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1102,6 +2435,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1204,6 +2538,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1251,6 +2586,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1352,6 +2688,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1399,6 +2736,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1501,6 +2839,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1548,6 +2887,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1649,6 +2989,7 @@ class HCE_MarineHydra : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1696,6 +3037,7 @@ class HCE_MarineHydra : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1797,6 +3139,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -1844,6 +3187,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -1945,6 +3289,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -1993,6 +3338,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -2094,6 +3440,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -2140,6 +3487,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert pistol idle': return 93;
@@ -2240,6 +3588,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -2287,6 +3636,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -2388,6 +3738,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -2435,6 +3786,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -2536,6 +3888,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -2583,6 +3936,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -2684,6 +4038,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -2732,6 +4087,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -2833,6 +4189,7 @@ class HCE_MarineSmg : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2smg idle';
@@ -2881,6 +4238,7 @@ class HCE_MarineSmg : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2smg idle': return 70;
@@ -2980,6 +4338,7 @@ class HCE_MarineSniper : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -3027,6 +4386,7 @@ class HCE_MarineSniper : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -3128,6 +4488,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -3176,6 +4537,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -3265,6 +4627,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
 		}
 	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -3312,6 +4675,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 	}
 	Name HCE_AnimNameLong(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -3359,6 +4723,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 
 	int HCE_AnimTicsLong(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -3415,6 +4780,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 	}
 	Name HCE_AnimNameCQC(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -3463,6 +4829,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 
 	int HCE_AnimTicsCQC(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -3558,6 +4925,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		if(hce_cqc) { super.HCE_FireShot(special); return; }
 		HCE_FireRail();
 	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -3657,6 +5025,7 @@ class HCE_SgtStacker : HCE_MarineBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2br idle';
@@ -3705,6 +5074,7 @@ class HCE_SgtStacker : HCE_MarineBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2br idle': return 70;
@@ -3765,6 +5135,7 @@ class HCE_SgtStacker : HCE_MarineBase
 		super.PostBeginPlay();
 		hce_voice = 'Marine_Sarge';
 	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -3893,6 +5264,1326 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		for(int i = 0; i < hce_hideSurf.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_hideSurf[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_AssaultRifle, Halo_BattleRifle, Halo_Bulldog, Halo_Commando, Halo_DBLShotgun, Halo_DMR, Halo_Flamethrower, Halo_GPMG, Halo_GrenadeLauncher, Halo_Hydra, Halo_MA5B, Halo_Magnum, Halo_Needler, Halo_PlasmaRifle, Halo_RocketLauncher, Halo_SMG, Halo_Shotgun, Halo_Sidekick, Halo_SniperRifle
+	override bool HCE_HasLoadouts() { return true; }
+	override int HCE_LoadoutIndex(Name w)
+	{
+		switch(w)
+		{
+		case 'Halo_AssaultRifle': return 0;
+		case 'Halo_BattleRifle': return 1;
+		case 'Halo_Bulldog': return 2;
+		case 'Halo_Commando': return 3;
+		case 'Halo_DBLShotgun': return 4;
+		case 'Halo_DMR': return 5;
+		case 'Halo_Flamethrower': return 6;
+		case 'Halo_GPMG': return 7;
+		case 'Halo_GrenadeLauncher': return 8;
+		case 'Halo_Hydra': return 9;
+		case 'Halo_MA5B': return 10;
+		case 'Halo_Magnum': return 11;
+		case 'Halo_Needler': return 12;
+		case 'Halo_PlasmaRifle': return 13;
+		case 'Halo_RocketLauncher': return 14;
+		case 'Halo_SMG': return 15;
+		case 'Halo_Shotgun': return 16;
+		case 'Halo_Sidekick': return 17;
+		case 'Halo_SniperRifle': return 18;
+		}
+		return -1;
+	}
+	override void HCE_ApplyLoadout(int lo)
+	{
+		switch(lo)
+		{
+		case 0:
+			hce_projectile = 'HCE_MA37Round'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 2400; hce_projSpeed = 1008.0;
+			hce_rangeMin = 240; hce_rangeMax = 1200; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 8; hce_patInterval = 3; hce_patPauseMin = 0.88; hce_patPauseMax = 1.54; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Rifle/Fire"; hce_fireSoundBass = "Halo/Weapons/Rifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 1:
+			hce_projectile = 'HCE_BattleRifleARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 3600; hce_projSpeed = 1213.3;
+			hce_rangeMin = 400; hce_rangeMax = 1760; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 2; hce_patPauseMin = 0.66; hce_patPauseMax = 1.21; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/BattleRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/BattleRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 2:
+			hce_projectile = 'HCE_BulldogBuckshot'; hce_projectilesPerShot = 8; hce_rateOfFire = 10.00; hce_errorAngle = 5.00; hce_maxRange = 1120; hce_projSpeed = 435.9;
+			hce_rangeMin = 80; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 4; hce_patInterval = 9; hce_patPauseMin = 1.32; hce_patPauseMax = 1.98; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Bulldog/Fire"; hce_fireSoundBass = "Halo/Weapons/Bulldog/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 3:
+			hce_projectile = 'HCE_CommandoARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 2560; hce_projSpeed = 1026.7;
+			hce_rangeMin = 240; hce_rangeMax = 1280; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 6; hce_patInterval = 4; hce_patPauseMin = 0.77; hce_patPauseMax = 1.43; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Commando/Fire"; hce_fireSoundBass = "Halo/Weapons/Commando/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 4:
+			hce_projectile = 'HCE_DBLShotgunPellet'; hce_projectilesPerShot = 14; hce_rateOfFire = 10.00; hce_errorAngle = 7.00; hce_maxRange = 800; hce_projSpeed = 435.9;
+			hce_rangeMin = 80; hce_rangeMax = 320; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.76; hce_patPauseMax = 2.42; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/SuperShotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/SuperShotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 5:
+			hce_projectile = 'HCE_DMRSniperBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.60; hce_maxRange = 4000; hce_projSpeed = 1493.3;
+			hce_rangeMin = 480; hce_rangeMax = 2080; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 3; hce_patInterval = 11; hce_patPauseMin = 1.10; hce_patPauseMax = 1.76; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/DMR/Fire"; hce_fireSoundBass = "Halo/Weapons/DMR/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 6:
+			hce_projectile = 'HCE_Flame'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 640; hce_projSpeed = 30.8;
+			hce_rangeMin = 80; hce_rangeMax = 400; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 14; hce_patShotsMax = 22; hce_patInterval = 2; hce_patPauseMin = 0.90; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Flamer/Fire/Loop"; hce_fireSoundBass = ""; hce_specialSound = "Halo/Weapons/Flamer/Fire/End"; hce_chargeSound = "Halo/Weapons/Flamer/Fire/Start"; hce_fireLoop = true;
+			break;
+		case 7:
+			hce_projectile = 'HCE_GPMGBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 2800; hce_projSpeed = 1120.0;
+			hce_rangeMin = 240; hce_rangeMax = 1440; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 8; hce_patShotsMax = 15; hce_patInterval = 3; hce_patPauseMin = 1.10; hce_patPauseMax = 1.76; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/GPMG/Fire"; hce_fireSoundBass = "Halo/Weapons/GPMG/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 8:
+			hce_projectile = 'HCE_40mmGrenade'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 2400; hce_projSpeed = 46.7;
+			hce_rangeMin = 400; hce_rangeMax = 1440; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = true;
+			hce_patShotsMin = 1; hce_patShotsMax = 2; hce_patInterval = 20; hce_patPauseMin = 2.42; hce_patPauseMax = 3.30; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/GrenadeLauncher/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 9:
+			hce_projectile = 'HCE_HydraMissile'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.50; hce_maxRange = 3600; hce_projSpeed = 56.0;
+			hce_rangeMin = 480; hce_rangeMax = 1920; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 4; hce_patInterval = 5; hce_patPauseMin = 3.08; hce_patPauseMax = 3.96; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Hydra/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 10:
+			hce_projectile = 'HCE_ARBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 1040; hce_projSpeed = 1008.0;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 4; hce_patShotsMax = 7; hce_patInterval = 3; hce_patPauseMin = 0.88; hce_patPauseMax = 1.54; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/MA5B/Fire"; hce_fireSoundBass = "Halo/Weapons/MA5B/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 11:
+			hce_projectile = 'HCE_PistolBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 2400; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 960; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 3; hce_patInterval = 9; hce_patPauseMin = 0.99; hce_patPauseMax = 1.65; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Mag_MD6/Fire"; hce_fireSoundBass = "Halo/Weapons/Mag_MD6/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 12:
+			hce_projectile = 'HCE_Needle'; hce_projectilesPerShot = 1; hce_rateOfFire = 3.00; hce_errorAngle = 4.00; hce_maxRange = 1040; hce_projSpeed = 12.1;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 3; hce_patInterval = 12; hce_patPauseMin = 1.76; hce_patPauseMax = 2.86; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Needler/Fire"; hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 13:
+			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 5.00; hce_errorAngle = 2.00; hce_maxRange = 1040; hce_projSpeed = 155.9;
+			hce_rangeMin = 240; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 3; hce_patShotsMax = 5; hce_patInterval = 4; hce_patPauseMin = 1.10; hce_patPauseMax = 1.96; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 14:
+			hce_projectile = 'HCE_Rocket'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.50; hce_maxRange = 3600; hce_projSpeed = 37.3;
+			hce_rangeMin = 560; hce_rangeMax = 2000; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.40; hce_patPauseMax = 3.15; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = "Halo/Weapons/RocketLauncher/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 15:
+			hce_projectile = 'HCE_SMGRound'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 1760; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 800; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 6; hce_patShotsMax = 10; hce_patInterval = 2; hce_patPauseMin = 0.88; hce_patPauseMax = 1.54; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/SMG/Fire"; hce_fireSoundBass = "Halo/Weapons/SMG/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 16:
+			hce_projectile = 'HCE_ShotgunPellet'; hce_projectilesPerShot = 15; hce_rateOfFire = 0.40; hce_errorAngle = 10.00; hce_maxRange = 400; hce_projSpeed = 435.9;
+			hce_rangeMin = 320; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.05; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Shotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 17:
+			hce_projectile = 'HCE_SidekickRound'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 2.00; hce_maxRange = 2000; hce_projSpeed = 933.3;
+			hce_rangeMin = 160; hce_rangeMax = 800; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 2; hce_patShotsMax = 4; hce_patInterval = 7; hce_patPauseMin = 0.99; hce_patPauseMax = 1.65; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Sidekick/Fire"; hce_fireSoundBass = "Halo/Weapons/Sidekick/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		case 18:
+			hce_projectile = 'HCE_SniperBullet'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.25; hce_maxRange = 5600; hce_projSpeed = 3108.0;
+			hce_rangeMin = 640; hce_rangeMax = 2800; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.86; hce_patPauseMax = 3.96; hce_patChargeTics = 0;
+			hce_fireSound = "Halo/Weapons/Sniper/Fire"; hce_fireSoundBass = "Halo/Weapons/Sniper/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			break;
+		}
+	}
+	override void HCE_LoadoutVisual(int lo)
+	{
+		switch(lo)
+		{
+		case 0:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 1:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_battle_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_battle_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_battle_rifle_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_battle_rifle_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_battle_rifle_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_battle_rifle_4.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 5, "models/hce/weapons", 'w_m_battle_rifle_5.png', CMDL_USESURFACESKIN);
+			break;
+		case 2:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_bulldog.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_bulldog_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 3:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_commando.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_commando_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 4:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 5:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_dmr.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_dmr_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 6:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_flamethrower.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_flamethrower_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 7:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_gpmg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_gpmg_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 8:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_grenade_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_grenade_launcher_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 9:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_hydra.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_hydra_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 10:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 11:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_magnum.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 12:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_needler.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 13:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 14:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_rocket_launcher.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_rocket_launcher_3.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_rocket_launcher_4.png', CMDL_USESURFACESKIN);
+			break;
+		case 15:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_smg.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_smg_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_smg_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 16:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_pump_shotgun.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			break;
+		case 17:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sidekick.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+			break;
+		case 18:
+			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sniper.iqm');
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+			break;
+		}
+	}
+	override Name HCE_LoadoutAnim(int lo, int kind)
+	{
+		switch(lo)
+		{
+		case 0: return HCE_LoadoutAnim0(kind);
+		case 1: return HCE_LoadoutAnim1(kind);
+		case 2: return HCE_LoadoutAnim2(kind);
+		case 3: return HCE_LoadoutAnim3(kind);
+		case 4: return HCE_LoadoutAnim4(kind);
+		case 5: return HCE_LoadoutAnim5(kind);
+		case 6: return HCE_LoadoutAnim6(kind);
+		case 7: return HCE_LoadoutAnim7(kind);
+		case 8: return HCE_LoadoutAnim8(kind);
+		case 9: return HCE_LoadoutAnim9(kind);
+		case 10: return HCE_LoadoutAnim10(kind);
+		case 11: return HCE_LoadoutAnim11(kind);
+		case 12: return HCE_LoadoutAnim12(kind);
+		case 13: return HCE_LoadoutAnim13(kind);
+		case 14: return HCE_LoadoutAnim14(kind);
+		case 15: return HCE_LoadoutAnim15(kind);
+		case 16: return HCE_LoadoutAnim16(kind);
+		case 17: return HCE_LoadoutAnim17(kind);
+		case 18: return HCE_LoadoutAnim18(kind);
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim0(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim1(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2br idle';
+		case HCE_A_ALERT: return 'stand h2br idle';
+		case HCE_A_MOVE_F: return 'stand h2br move-front';
+		case HCE_A_MOVE_B: return 'stand h2br move-back';
+		case HCE_A_MOVE_L: return 'stand h2br move-left';
+		case HCE_A_MOVE_R: return 'stand h2br move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2br idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2br move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2br fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2br melee';
+		case HCE_A_THROW: return 'stand h2br throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2br dive-left';
+		case HCE_A_DIVE_R: return 'stand h2br dive-right';
+		case HCE_A_DIVE_F: return 'stand h2br dive-front';
+		case HCE_A_EVADE_L: return 'stand h2br evade-left';
+		case HCE_A_EVADE_R: return 'stand h2br evade-right';
+		case HCE_A_BERSERK: return 'stand h2br berserk';
+		case HCE_A_WARN: return 'stand h2br warn';
+		case HCE_A_SIGNAL: return 'stand h2br signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2br airborne';
+		case HCE_A_LAND: return 'stand h2br land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2br celebrate';
+		case HCE_A_TURN_L: return 'stand h2br turn-left';
+		case HCE_A_TURN_R: return 'stand h2br turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim2(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2bulldog idle';
+		case HCE_A_ALERT: return 'stand h2bulldog idle';
+		case HCE_A_MOVE_F: return 'stand h2bulldog move-front';
+		case HCE_A_MOVE_B: return 'stand h2bulldog move-back';
+		case HCE_A_MOVE_L: return 'stand h2bulldog move-left';
+		case HCE_A_MOVE_R: return 'stand h2bulldog move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2bulldog idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2bulldog move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2bulldog fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2bulldog melee';
+		case HCE_A_THROW: return 'stand h2bulldog throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2bulldog dive-left';
+		case HCE_A_DIVE_R: return 'stand h2bulldog dive-right';
+		case HCE_A_DIVE_F: return 'stand h2bulldog dive-front';
+		case HCE_A_EVADE_L: return 'stand h2bulldog evade-left';
+		case HCE_A_EVADE_R: return 'stand h2bulldog evade-right';
+		case HCE_A_BERSERK: return 'stand h2bulldog berserk';
+		case HCE_A_WARN: return 'stand h2bulldog warn';
+		case HCE_A_SIGNAL: return 'stand h2bulldog signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2bulldog airborne';
+		case HCE_A_LAND: return 'stand h2bulldog land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2bulldog celebrate';
+		case HCE_A_TURN_L: return 'stand h2bulldog turn-left';
+		case HCE_A_TURN_R: return 'stand h2bulldog turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim3(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim4(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim5(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim6(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim7(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim8(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim9(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim10(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim11(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand h2pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim12(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle';
+		case HCE_A_ALERT: return 'alert pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim13(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim14(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim15(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2smg idle';
+		case HCE_A_ALERT: return 'stand h2smg idle';
+		case HCE_A_MOVE_F: return 'stand h2smg move-front';
+		case HCE_A_MOVE_B: return 'stand h2smg move-back';
+		case HCE_A_MOVE_L: return 'stand h2smg move-left';
+		case HCE_A_MOVE_R: return 'stand h2smg move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2smg idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2smg move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2smg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2smg melee';
+		case HCE_A_THROW: return 'stand h2smg throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2smg dive-left';
+		case HCE_A_DIVE_R: return 'stand h2smg dive-right';
+		case HCE_A_DIVE_F: return 'stand h2smg dive-front';
+		case HCE_A_EVADE_L: return 'stand h2smg evade-left';
+		case HCE_A_EVADE_R: return 'stand h2smg evade-right';
+		case HCE_A_BERSERK: return 'stand h2smg berserk';
+		case HCE_A_WARN: return 'stand h2smg warn';
+		case HCE_A_SIGNAL: return 'stand h2smg signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2smg airborne';
+		case HCE_A_LAND: return 'stand h2smg land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: return 'stand h2smg celebrate';
+		case HCE_A_TURN_L: return 'stand h2smg turn-left';
+		case HCE_A_TURN_R: return 'stand h2smg turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim16(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-sg';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim17(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand h2pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+	Name HCE_LoadoutAnim18(int kind)
+	{
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'alert rifle idle%0';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand rifle warn%1';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand rifle reload-1';
+		case HCE_A_VENT: return 'stand rifle overheat';
+		}
+		return 'None';
+	}
+	override int HCE_LoadoutAnimTics(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert pistol idle': return 93;
+		case 'alert rifle idle%0': return 93;
+		case 'crouch h2br idle': return 70;
+		case 'crouch h2br move-front': return 28;
+		case 'crouch h2bulldog idle': return 70;
+		case 'crouch h2bulldog move-front': return 28;
+		case 'crouch h2pistol idle': return 69;
+		case 'crouch h2pistol move-front': return 28;
+		case 'crouch h2smg idle': return 70;
+		case 'crouch h2smg move-front': return 28;
+		case 'crouch pistol idle': return 47;
+		case 'crouch rifle idle': return 70;
+		case 'crouch rifle move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
+		case 'flee rifle move-front': return 20;
+		case 'h-kill back gut': return 47;
+		case 'h-kill front gut': return 52;
+		case 'h-kill front head': return 70;
+		case 'h-ping back chest': return 37;
+		case 'h-ping back gut': return 48;
+		case 'h-ping front chest': return 26;
+		case 'h-ping front gut': return 22;
+		case 'h-ping front l-arm': return 38;
+		case 'h-ping front l-leg': return 57;
+		case 's-kill back gut': return 47;
+		case 's-kill front chest': return 51;
+		case 's-kill front gut': return 79;
+		case 's-kill left gut': return 70;
+		case 's-kill right gut': return 54;
+		case 's-ping front gut%0 baked': return 12;
+		case 's-ping front gut%1 baked': return 12;
+		case 'stand airborne-dead': return 43;
+		case 'stand h2br airborne': return 55;
+		case 'stand h2br berserk': return 51;
+		case 'stand h2br celebrate': return 72;
+		case 'stand h2br dive-front': return 90;
+		case 'stand h2br dive-left': return 90;
+		case 'stand h2br dive-right': return 90;
+		case 'stand h2br evade-left': return 35;
+		case 'stand h2br evade-right': return 35;
+		case 'stand h2br fire-1 baked': return 13;
+		case 'stand h2br idle': return 105;
+		case 'stand h2br land-soft': return 46;
+		case 'stand h2br melee': return 23;
+		case 'stand h2br move-back': return 23;
+		case 'stand h2br move-front': return 23;
+		case 'stand h2br move-left': return 23;
+		case 'stand h2br move-right': return 23;
+		case 'stand h2br signal-attack': return 55;
+		case 'stand h2br throw-grenade': return 66;
+		case 'stand h2br turn-left': return 16;
+		case 'stand h2br turn-right': return 16;
+		case 'stand h2br warn': return 51;
+		case 'stand h2bulldog airborne': return 55;
+		case 'stand h2bulldog berserk': return 51;
+		case 'stand h2bulldog celebrate': return 72;
+		case 'stand h2bulldog dive-front': return 90;
+		case 'stand h2bulldog dive-left': return 90;
+		case 'stand h2bulldog dive-right': return 90;
+		case 'stand h2bulldog evade-left': return 35;
+		case 'stand h2bulldog evade-right': return 35;
+		case 'stand h2bulldog fire-1 baked': return 13;
+		case 'stand h2bulldog idle': return 105;
+		case 'stand h2bulldog land-soft': return 46;
+		case 'stand h2bulldog melee': return 23;
+		case 'stand h2bulldog move-back': return 23;
+		case 'stand h2bulldog move-front': return 23;
+		case 'stand h2bulldog move-left': return 23;
+		case 'stand h2bulldog move-right': return 23;
+		case 'stand h2bulldog signal-attack': return 55;
+		case 'stand h2bulldog throw-grenade': return 66;
+		case 'stand h2bulldog turn-left': return 16;
+		case 'stand h2bulldog turn-right': return 16;
+		case 'stand h2bulldog warn': return 51;
+		case 'stand h2pistol airborne': return 92;
+		case 'stand h2pistol dive-front': return 90;
+		case 'stand h2pistol dive-left': return 90;
+		case 'stand h2pistol dive-right': return 90;
+		case 'stand h2pistol evade-left': return 35;
+		case 'stand h2pistol evade-right': return 35;
+		case 'stand h2pistol fire-1 baked': return 13;
+		case 'stand h2pistol idle': return 69;
+		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol melee': return 28;
+		case 'stand h2pistol move-back': return 23;
+		case 'stand h2pistol move-front': return 23;
+		case 'stand h2pistol move-left': return 23;
+		case 'stand h2pistol move-right': return 23;
+		case 'stand h2pistol turn-left': return 16;
+		case 'stand h2pistol turn-right': return 16;
+		case 'stand h2pistol warn': return 51;
+		case 'stand h2smg airborne': return 55;
+		case 'stand h2smg berserk': return 51;
+		case 'stand h2smg celebrate': return 72;
+		case 'stand h2smg dive-front': return 90;
+		case 'stand h2smg dive-left': return 90;
+		case 'stand h2smg dive-right': return 90;
+		case 'stand h2smg evade-left': return 35;
+		case 'stand h2smg evade-right': return 35;
+		case 'stand h2smg fire-1 baked': return 13;
+		case 'stand h2smg idle': return 105;
+		case 'stand h2smg land-soft': return 46;
+		case 'stand h2smg melee': return 23;
+		case 'stand h2smg move-back': return 23;
+		case 'stand h2smg move-front': return 23;
+		case 'stand h2smg move-left': return 23;
+		case 'stand h2smg move-right': return 23;
+		case 'stand h2smg signal-attack': return 55;
+		case 'stand h2smg throw-grenade': return 66;
+		case 'stand h2smg turn-left': return 16;
+		case 'stand h2smg turn-right': return 16;
+		case 'stand h2smg warn': return 51;
+		case 'stand landing-dead': return 43;
+		case 'stand landing-dead%2': return 66;
+		case 'stand pistol airborne': return 93;
+		case 'stand pistol dive-front': return 91;
+		case 'stand pistol hp fire-1 baked': return 14;
+		case 'stand pistol idle': return 54;
+		case 'stand pistol land-soft': return 35;
+		case 'stand pistol move-back': return 23;
+		case 'stand pistol move-front': return 23;
+		case 'stand pistol move-left': return 23;
+		case 'stand pistol move-right': return 23;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol warn': return 51;
+		case 'stand rifle airborne': return 92;
+		case 'stand rifle ar fire-1 baked': return 5;
+		case 'stand rifle berserk%3': return 51;
+		case 'stand rifle celebrate%1': return 72;
+		case 'stand rifle celebrate%2': return 80;
+		case 'stand rifle celebrate%3': return 64;
+		case 'stand rifle dive-front': return 90;
+		case 'stand rifle dive-left': return 90;
+		case 'stand rifle dive-right': return 90;
+		case 'stand rifle evade-left': return 46;
+		case 'stand rifle evade-right': return 46;
+		case 'stand rifle idle': return 57;
+		case 'stand rifle land-soft': return 46;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle overheat': return 69;
+		case 'stand rifle reload-1': return 51;
+		case 'stand rifle reload-sg': return 150;
+		case 'stand rifle sg fire-1 baked': return 16;
+		case 'stand rifle signal-attack': return 55;
+		case 'stand rifle throw-grenade': return 72;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn%1': return 51;
+		}
+		return 0;
+	}
 }
 
 // characters\marine_armored\marine_armored assault rifle
@@ -3934,6 +6625,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -3981,6 +6673,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -4082,6 +6775,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -4129,6 +6823,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -4230,6 +6925,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2br idle';
@@ -4278,6 +6974,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2br idle': return 70;
@@ -4377,6 +7074,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2bulldog idle';
@@ -4425,6 +7123,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2bulldog idle': return 70;
@@ -4524,6 +7223,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -4571,6 +7271,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -4672,6 +7373,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -4719,6 +7421,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -4820,6 +7523,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -4867,6 +7571,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -4969,6 +7674,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -5016,6 +7722,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -5117,6 +7824,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -5164,6 +7872,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -5266,6 +7975,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -5313,6 +8023,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -5414,6 +8125,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -5461,6 +8173,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -5562,6 +8275,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -5609,6 +8323,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -5710,6 +8425,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -5758,6 +8474,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -5859,6 +8576,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -5905,6 +8623,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert pistol idle': return 93;
@@ -6005,6 +8724,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -6052,6 +8772,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -6153,6 +8874,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -6200,6 +8922,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -6301,6 +9024,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -6348,6 +9072,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -6449,6 +9174,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -6496,6 +9222,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -6597,6 +9324,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -6645,6 +9373,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -6746,6 +9475,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2smg idle';
@@ -6794,6 +9524,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2smg idle': return 70;
@@ -6893,6 +9624,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand rifle idle';
@@ -6940,6 +9672,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert rifle idle%0': return 93;
@@ -7041,6 +9774,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand h2pistol idle';
@@ -7089,6 +9823,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch h2pistol idle': return 69;
@@ -7178,6 +9913,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
 		}
 	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);

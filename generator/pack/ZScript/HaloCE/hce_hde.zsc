@@ -1,0 +1,12 @@
+// HaloDoom Evolved only (the standalone packs leave this file out): the weapon a dropped HDE gun gives. HDE turns
+// a dropped weapon into a WeaponPickupProxy that carries the weapon class; enemies and Marines that pick guns up
+// off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan) read it through this.
+class HCE_HDEPickupResolver : HCE_PickupResolver
+{
+	override Name WeaponOf(Actor a)
+	{
+		let p = WeaponPickupProxy(a);
+		if(!p || !p.trueitem) return 'None';
+		return p.trueitem.GetClassName();
+	}
+}

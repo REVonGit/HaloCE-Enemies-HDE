@@ -597,6 +597,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		Super.PostBeginPlay();
 		if(!hce_enabled) return;
+		static const int prefs[] = { 0, 1, 3 };
+		hce_weaponPref = prefs[random(0, 2)];             // a Marine's liking: close, mid or long range
 		curChaseAngle = angle;
 		hce_strafeDir = random(0, 1) ? 1 : -1;
 		hce_grenadeTics = int(hce_grenadeDelay * 35 * frandom(0.5, 1.0));
@@ -1002,6 +1004,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!HCE_IdleMove()) HCE_Play(HCE_A_IDLE);
 		if(bHCE_Flying) HCE_Hover();
 		if(HCE_SeekCorpse()) { SetStateLabel("See"); return; }
+		if(HCE_IdleReload()) return;
+		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
+		if((level.maptime + hce_scavOff) % 35 == 0) { HCE_ScavengeScan(); if(hce_scavItem) { SetStateLabel("See"); return; } }
 		if(++hce_scanTimer < 8) return;
 		hce_scanTimer = 0;
 		HCE_ScanTargets();
@@ -1056,6 +1061,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_jumpState > 0) { HCE_JumpTick(); return; }
 		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
+		if(hce_scavItem && HCE_ScavengeTick()) return;
+		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
+		if((level.maptime + hce_scavOff) % 35 == 0) HCE_ScavengeScan();
 
 		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); }
 
@@ -3390,6 +3398,153 @@ class HaloDoom_EnemyBase : Actor abstract
 	// packs: show or hide the gun the enemy holds (its weapon surfaces on the body, an overlay gun model)
 	virtual void HCE_ShowGun(bool show) {}
 
+	// ------------------------------------------------------------------
+	// Weapons off the ground. A body the packs give "loadouts" (the guns it has a model and animations for) picks
+	// up a better one it sees lying nearby: it walks over, crouches beside it for a moment, takes it and leaves
+	// its own gun in its place. The Covenant only ever carry Covenant weapons (their bodies have no others) and
+	// trade up (fuel rod > needler, plasma rifle > plasma pistol); Marines take whatever they have a grip for,
+	// each with a liking for close, mid or long range, like Halo Infinite's. Out of a fight, or with the enemy
+	// out of sight; never when the gun is off with its arm. HaloDoom Evolved's dropped guns (WeaponPickupProxy)
+	// are read through HCE_PickupResolver (hce_hde.zsc), which only the HDE packs carry.
+	// ------------------------------------------------------------------
+	bool hce_hasLoadout;                 // false: the class's own weapon; true: the pack's loadout hce_loadout
+	int hce_loadout, hce_scavOff;
+	Actor hce_scavItem;
+	int hce_scavPhase, hce_scavTics, hce_scavCooldown, hce_weaponPref;
+	HCE_PickupResolver hce_resolver;
+	bool hce_resolverTried;
+
+	virtual bool HCE_HasLoadouts() { return false; }
+	virtual int HCE_LoadoutIndex(Name weaponClass) { return -1; }
+	virtual void HCE_ApplyLoadout(int lo) {}
+	virtual void HCE_LoadoutVisual(int lo) {}
+	virtual Name HCE_LoadoutAnim(int lo, int kind) { return 'None'; }
+	virtual int HCE_LoadoutAnimTics(Name anim) { return 0; }
+
+	// the weapon class an actor on the ground gives (a weapon lying in the map, an HDE drop), or 'None'
+	Name HCE_GroundWeaponClass(Actor a)
+	{
+		if(!a) return 'None';
+		let w = Weapon(a);
+		if(w) return w.Owner ? 'None' : a.GetClassName();
+		if(!hce_resolverTried)
+		{
+			hce_resolverTried = true;
+			String rn = "HCE_HDEPickupResolver";              // looked up at run time: only the HDE packs have it
+			class<HCE_PickupResolver> rc = rn;
+			if(rc) hce_resolver = HCE_PickupResolver(new(rc));
+		}
+		return hce_resolver ? hce_resolver.WeaponOf(a) : 'None';
+	}
+
+	// how much it wants a weapon (HDE class names)
+	virtual int HCE_WeaponScore(Name w)
+	{
+		static const Name wn[] = { 'Halo_FuelRod', 'Halo_Needler', 'Halo_PlasmaRifle', 'Halo_PlasmaPistol',
+			'Halo_RocketLauncher', 'Halo_Hydra', 'Halo_SniperRifle', 'Halo_GPMG', 'Halo_GrenadeLauncher', 'Halo_Flamethrower',
+			'Halo_Shotgun', 'Halo_Bulldog', 'Halo_DBLShotgun', 'Halo_BattleRifle', 'Halo_DMR', 'Halo_Commando',
+			'Halo_MA5B', 'Halo_AssaultRifle', 'Halo_SMG', 'Halo_Magnum', 'Halo_Sidekick' };
+		static const int score[] = { 40, 25, 25, 10,   45, 42, 40, 38, 34, 34,   30, 30, 28, 30, 30, 26,   22, 20, 20, 10, 8 };
+		static const int range[] = { 2, 1, 1, 1,   2, 2, 3, 1, 2, 0,   0, 0, 0, 2, 3, 1,   1, 1, 0, 1, 1 };    // 0 close, 1 mid, 3 long, 2 suits any
+		for(int i = 0; i < wn.Size(); i++)
+		{
+			if(wn[i] != w) continue;
+			int sc = score[i];
+			if(hce_team == HCE_TEAM_HUMAN && (range[i] == hce_weaponPref || range[i] == 2)) sc += 15;
+			return sc;
+		}
+		return 0;
+	}
+
+	// once a second: a better gun in sight nearby?
+	void HCE_ScavengeScan()
+	{
+		if(!HCE_HasLoadouts() || level.maptime < hce_scavCooldown || hce_projectile == 'None' || hce_dropWeapon == 'None'
+			|| hce_berserk || hce_sleeping || bHCE_Flying || bFRIENDLY != (hce_team == HCE_TEAM_HUMAN) || hce_betrayed) return;
+		if(hce_action != HCE_ACT_IDLE && hce_action != HCE_ACT_FOLLOW && hce_action != HCE_ACT_FIGHT && hce_action != HCE_ACT_SEARCH) return;
+		if(target && hce_canSee && Distance3D(target) < 640) return;          // not with an enemy in its face
+		int have = HCE_WeaponScore(hce_dropWeapon) + (hce_team == HCE_TEAM_HUMAN ? 5 : 0);
+		Actor best = null; int bestScore = have; double bestD = 1e9;
+		let it = BlockThingsIterator.Create(self, 384);
+		while(it.Next())
+		{
+			let o = it.thing;
+			Name w = HCE_GroundWeaponClass(o);
+			if(w == 'None' || HCE_LoadoutIndex(w) < 0) continue;
+			int sc = HCE_WeaponScore(w);
+			double d = Distance3D(o);
+			if(sc <= bestScore && !(sc == bestScore && best && d < bestD)) continue;
+			if(d > 384 || abs(o.pos.z - pos.z) > 32 || !CheckSight(o, SF_IGNOREVISIBILITY)) continue;
+			// somebody else already on its way to it
+			bool taken = false;
+			let it2 = BlockThingsIterator.Create(o, 64);
+			while(it2.Next()) { let e = HaloDoom_EnemyBase(it2.thing); if(e && e != self && e.hce_scavItem == o) { taken = true; break; } }
+			if(!taken) { let ti = ThinkerIterator.Create("HaloDoom_EnemyBase"); HaloDoom_EnemyBase e; while(e = HaloDoom_EnemyBase(ti.Next())) if(e != self && e.hce_scavItem == o) { taken = true; break; } }
+			if(taken) continue;
+			best = o; bestScore = sc; bestD = d;
+		}
+		if(!best) return;
+		hce_scavItem = best; hce_scavPhase = 0; hce_scavTics = 35 * 6;
+	}
+
+	// walking over, crouching beside it, taking it (true: busy with it this tic)
+	bool HCE_ScavengeTick()
+	{
+		let o = hce_scavItem;
+		if(!o || health <= 0 || --hce_scavTics <= 0 || HCE_GroundWeaponClass(o) == 'None' || hce_projectile == 'None'
+			|| (target && hce_canSee && Distance3D(target) < 256))
+		{
+			hce_scavItem = null; hce_scavCooldown = level.maptime + 35 * 4;
+			return false;
+		}
+		double d = Distance2D(o);
+		if(hce_scavPhase == 0)
+		{
+			if(d > radius + 18)
+			{
+				HCE_Move(AngleTo(o), d > 128 ? hce_runSpeed : hce_walkSpeed);
+				A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+				HCE_PickMoveAnim();
+				return true;
+			}
+			// there: crouch down next to it
+			HCE_Brake();
+			A_SetAngle(AngleTo(o), SPF_INTERPOLATE);
+			hce_scavPhase = 1; hce_scavTics = 22;
+			HCE_StopFireLoop(); hce_shotsLeft = 0;
+			HCE_Play(HCE_HasAnim(HCE_A_CROUCH_IDLE) ? HCE_A_CROUCH_IDLE : HCE_A_IDLE, true, true);
+			return true;
+		}
+		HCE_Brake();
+		if(hce_scavTics > 2) return true;
+		HCE_TakeWeapon(o);
+		hce_scavItem = null; hce_scavCooldown = level.maptime + 35 * 3;
+		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
+	void HCE_TakeWeapon(Actor o)
+	{
+		Name w = HCE_GroundWeaponClass(o);
+		int lo = HCE_LoadoutIndex(w);
+		if(lo < 0) return;
+		CVar cv = CVar.FindCVar("hce_dropweapons");
+		if((!cv || cv.GetBool()) && hce_dropWeapon != 'None')
+		{
+			class<Actor> oc = (class<Actor>)(hce_dropWeapon);
+			if(oc) HCE_Toss(oc, true);                  // its own gun goes down where the new one lay
+		}
+		o.Destroy();
+		HCE_StopFireLoop();
+		hce_loadout = lo; hce_hasLoadout = true;
+		HCE_ApplyLoadout(lo);
+		HCE_LoadoutVisual(lo);
+		hce_dropWeapon = w;
+		HCE_SetupAmmo();
+		hce_burstShot = 0; hce_shotsLeft = 0; hce_chargeTics = 0; hce_sepTics = max(hce_sepTics, 15);
+		hce_curAnimKind = -1;
+	}
+
 	void HCE_DropLoot()
 	{
 		if(hce_resurrected) return;            // a revived Flood form already dropped its gun
@@ -3633,7 +3788,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_resurrected = true;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED;
 		int gl = HCE_GunLimb();
-		if(gl < 0 || !(hce_severed & (1 << gl))) { HCE_ShowGun(true); HCE_ResumeAnim(); }     // back up with its gun (if its arm is on)
+		if(gl < 0 || !(hce_severed & (1 << gl))) { HCE_ShowGun(true); if(hce_hasLoadout) HCE_LoadoutVisual(hce_loadout); HCE_ResumeAnim(); }     // back up with its gun (if its arm is on)
 		hce_action = HCE_ACT_FIGHT;
 		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
 		if(HCE_HasAnim(k)) HCE_PlayLocked(k);
@@ -4074,4 +4229,12 @@ class HCE_EnemyLaser : Actor
 		HCEM A -1 Bright;
 		Stop;
 	}
+}
+
+// Reads the weapon class off a dropped-weapon actor that isn't a plain Weapon (HaloDoom Evolved's WeaponPickupProxy).
+// The base reads nothing; the HDE packs' hce_hde.zsc derives HCE_HDEPickupResolver, which HCE_GroundWeaponClass
+// finds by name, so the API itself never names an HDE class.
+class HCE_PickupResolver play
+{
+	virtual Name WeaponOf(Actor a) { return 'None'; }
 }

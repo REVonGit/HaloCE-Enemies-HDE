@@ -94,6 +94,7 @@ class HCE_Sentinel : HCE_SentinelBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand fixed idle%0';
@@ -110,6 +111,7 @@ class HCE_Sentinel : HCE_SentinelBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert fixed idle%0': return 35;
@@ -164,6 +166,7 @@ class HCE_SentinelMajor : HCE_SentinelBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand fixed idle%0';
@@ -180,6 +183,7 @@ class HCE_SentinelMajor : HCE_SentinelBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert fixed idle%0': return 35;
@@ -234,6 +238,7 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand fixed idle%0';
@@ -250,6 +255,7 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert fixed idle%0': return 35;
@@ -304,6 +310,7 @@ class HCE_SentinelShielded : HCE_SentinelBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand fixed idle%0';
@@ -320,6 +327,7 @@ class HCE_SentinelShielded : HCE_SentinelBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert fixed idle%0': return 35;
@@ -374,6 +382,7 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand fixed idle%0';
@@ -390,6 +399,7 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert fixed idle%0': return 35;

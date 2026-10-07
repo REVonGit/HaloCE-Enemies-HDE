@@ -363,6 +363,18 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Exceptions:** Hunters are too heavy to throw and fall in place. Infection forms and Carriers burst instead, and blasts too weak to throw a body just drop it.
   * **Mid-air deaths:** anything that dies in mid-air (a leaping Flood form, a Sentinel) also plays `landing-dead` when it lands.
 
+## Picking up weapons
+
+Marines and the Covenant swap their gun for a better one they see lying nearby (HaloDoom Evolved packs only; the standalone packs have no Halo weapons to find).
+
+* **How it looks:** it walks over, crouches down next to the weapon for a moment, stands up with it, and its old gun lies where the new one was.
+* **When:** out of a fight, or with the enemy out of sight or more than 640 units off; it gives up after 6 seconds if it can't get there. Never with its gun arm shot off.
+* **What it picks up:** whatever the gun the dead dropped, a weapon placed in the map, or one you dropped (Marines take guns you drop for them).
+  * The **Covenant only ever use Covenant weapons**, and only ones their body is modelled with: Elites the plasma rifle, needler and fuel rod; Spec Ops Elites the plasma rifle and needler; Grunts the plasma pistol and needler; Spec Ops Grunts the needler and fuel rod. They only trade up (fuel rod over needler and plasma rifle, those over the plasma pistol).
+  * **Marines** take anything they have a grip for: every gun in [the Marine arsenal](#the-marine-arsenal) and Halo CE's (assault rifle, shotgun, sniper rifle, rocket launcher, Magnum, flamethrower) plus the needler and plasma rifle. Like Halo Infinite's, each Marine has a liking for close, mid or long range: power weapons first, then the guns that suit its range, then the rest.
+* **What changes:** the gun on the model, its stance and animations, and its firing, sounds, range, magazine or heat are those of the pack's own class that carries that gun.
+* Not picked up: the energy sword, the Plasma Caster, the beam rifle, the sticky detonator and the Stanchion (their classes are built around them). Sergeants Johnson and Stacker keep their guns.
+
 ## Reloading and overheating
 
 Halo CE's AI never runs dry, but Halo 2's reloads and lets its plasma overheat, and so does everyone here with a gun (the Flood, Hunters and Sentinels excepted). It's worked out from the weapon, so a weapon swap (Johnson's Magnum) gets its own.

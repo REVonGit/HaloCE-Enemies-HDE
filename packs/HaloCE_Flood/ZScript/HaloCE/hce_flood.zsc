@@ -99,6 +99,7 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand unarmed idle';
@@ -125,6 +126,7 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert unarmed idle': return 82;
@@ -281,6 +283,7 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -320,6 +323,7 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -404,6 +408,7 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -443,6 +448,7 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -526,6 +532,7 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -565,6 +572,7 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -648,6 +656,7 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -687,6 +696,7 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -770,6 +780,7 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -809,6 +820,7 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -892,6 +904,7 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -931,6 +944,7 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -1014,6 +1028,7 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -1053,6 +1068,7 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -1136,6 +1152,7 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -1175,6 +1192,7 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -1258,6 +1276,7 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand pistol idle';
@@ -1297,6 +1316,7 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 42;
@@ -1378,6 +1398,7 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand unarmed idle%0', 'stand unarmed idle%1' }; return o[random(0, 1)]; }
@@ -1416,6 +1437,7 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert unarmed idle%0': return 70;
@@ -1497,6 +1519,7 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand unarmed idle%0', 'stand unarmed idle%1' }; return o[random(0, 1)]; }
@@ -1535,6 +1558,7 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'alert unarmed idle%0': return 70;
@@ -1693,6 +1717,7 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -1726,6 +1751,7 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -1799,6 +1825,7 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -1832,6 +1859,7 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -1904,6 +1932,7 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -1937,6 +1966,7 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2009,6 +2039,7 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -2042,6 +2073,7 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2114,6 +2146,7 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -2147,6 +2180,7 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2219,6 +2253,7 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -2252,6 +2287,7 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2324,6 +2360,7 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -2357,6 +2394,7 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2429,6 +2467,7 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand pistol idle%0', 'stand pistol idle%1', 'stand pistol idle%2' }; return o[random(0, 2)]; }
@@ -2462,6 +2501,7 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch pistol move-front': return 76;
@@ -2531,6 +2571,7 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: { static const Name o[] = { 'stand unarmed idle%0', 'stand unarmed idle%1', 'stand unarmed idle%2' }; return o[random(0, 2)]; }
@@ -2563,6 +2604,7 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'flee pistol move-front': return 23;
@@ -2697,6 +2739,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 	}
 	override Name HCE_AnimName(int kind)
 	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
 		switch(kind)
 		{
 		case HCE_A_IDLE: return 'stand unarmed idle';
@@ -2720,6 +2763,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 
 	override int HCE_AnimTics(Name anim)
 	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
 		case 'crouch unarmed move-front': return 33;

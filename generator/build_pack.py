@@ -191,8 +191,8 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
           'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
           # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
-          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_Tough,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_Tough,Marine_SgtCautious,Marine_SgtGruff'}
+          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
+          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Sarge,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)

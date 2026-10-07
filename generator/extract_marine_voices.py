@@ -6,8 +6,8 @@
   sound\\dialog\\sargeant\\* (Sergeant Johnson) / sound\\dialog\\sarge2\\* (the second sergeant) from the Xbox
   campaign maps (HCE_MAPS), Xbox ADPCM -> Vorbis.
 * Halo 2: sound\\dialog\\combat\\marine_* and sgt_* from 01b_spacestation.map + sounds_en.dat (HCE_H2_MAP /
-  HCE_H2_SOUNDS): aussie, cross, perez, timid, tough, the cautious and gruff sergeants and Johnson. (marine_sassy,
-  a woman's voice, is left out: the Marine models are men.)
+  HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson. (marine_sassy and
+  marine_tough, the women's voices -- Halo 2's marine_female biped uses those two -- are left out: Halo CE's Marines are men.)
 Halo CE's and Halo 2's Aussie and Johnson are the same men, so each pair becomes one set. The categories are
 build_voices.py's (Alert, Taunt, Pain Nrml ...); a set without one borrows a related event there (FALLBACK).
 """
@@ -36,7 +36,6 @@ VOICES = {
     'Marine_Cross':       (None, 'marine_cross'),
     'Marine_Perez':       (None, 'marine_perez'),
     'Marine_Timid':       (None, 'marine_timid'),
-    'Marine_Tough':       (None, 'marine_tough'),
     'Marine_SgtCautious': (None, 'sgt_cautious'),
     'Marine_SgtGruff':    (None, 'sgt_gruff'),
 }

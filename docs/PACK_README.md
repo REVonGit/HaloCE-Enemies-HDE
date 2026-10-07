@@ -399,10 +399,10 @@ The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/H
 
 The fork's Acid Breath lines aren't used.
 
-**Marines:** they speak with Halo CE's and Halo 2's own combat dialogue (1,092 lines in 12 voices, `extract_marine_voices.py`).
-* **Faces and kit:** every Marine rolls Halo CE's own cosmetics when it spawns: one of eleven faces and headgear on unarmoured Marines (bare-headed, boonie hats, bandanas, the cap) and seven on Armored Marines (helmets, the cap); sleeves rolled down on about a third of unarmoured Marines; the battle-damaged vest on about one Armored Marine in five. The heads keep Halo CE's articulated jaw, held shut in every stance (Halo 2's animations, which don't drive it, used to leave it hanging open).
+**Marines:** they speak with Halo CE's and Halo 2's own combat dialogue (1,005 lines in 11 voices, `extract_marine_voices.py`).
+* **Faces and kit:** every Marine rolls Halo CE's own cosmetics when it spawns: one of eleven faces and headgear on unarmoured Marines (bare-headed, boonie hats, bandanas, the cap) and seven on Armored Marines (helmets, the cap); sleeves rolled down on about a third of unarmoured Marines. Armored Marines always wear the intact vest (Halo CE's battle-damaged one is left out). The heads keep Halo CE's articulated jaw, held shut in every animation: Halo CE drove it from dialogue, and its animations left it parked anywhere from shut to hanging open, so mouths gaped and snapped open and shut between animations.
 * **Sergeant Johnson:** Johnson's face (the dark-skinned one, with his full-sleeved arms) is his alone. Only `HCE_SgtJohnson` wears it (see [The Marine arsenal](#the-marine-arsenal)), and he always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
-* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald, Mendoza and the second sergeant. From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, Tough, and the cautious and gruff sergeants. Halo 2's female Marine is left out, as the models are men.
+* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald, Mendoza and the second sergeant. From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, and the cautious and gruff sergeants. Halo 2's female Marine voices (Sassy and Tough, the two its female Marine uses) are left out, as Halo CE's Marines are all men.
 * **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts.
 
 **Loudness:** every voice line is levelled at build time (`louden_voices.py`).

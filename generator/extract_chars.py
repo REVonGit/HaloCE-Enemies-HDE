@@ -37,12 +37,12 @@ PERMS = {
 MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
 # Regions kept with several permutations, each on surfaces of its own (named region.perm), for the packs to pick one per
 # enemy at run time: all twelve of the Marines' faces and headgear (Sgt Johnson's among them), their sleeves (Johnson's
-# full sleeves, the rolled-down ones) and the Armored Marines' battle-damaged vest. The armoured Marines' helmet and HUD
+# full sleeves, the rolled-down ones); the Armored Marines' battle-damaged vest is left out (base vest only). The armoured Marines' helmet and HUD
 # visor are the same mesh on every helmeted face: one shared surface (region.shared). The faces keep Halo CE's
 # open-mouth textures: the heads have an articulated jaw (bip01 ponytail1) that closes over them.
-MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: faces, hats, sleeves, the damaged vest)
+MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: faces, hats, sleeves)
     'Marine': {'head': None, 'arms': None},
-    'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100'], 'torso': None},
+    'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},
 }
 # bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
 # model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)
@@ -256,13 +256,13 @@ def extract(name, pid, sources, maps):
             anims.setdefault(a.name, a)
     if pid in ('Marine', 'MarineArmored'):
         # Halo CE's Marine heads have an articulated jaw (rigged to 'bip01 ponytail1'; the face textures paint the open
-        # mouth behind it). Halo 2's stances don't drive that bone, which leaves it at the bind pose, jaw dropped:
-        # hold it where Halo CE's own animations keep it, mouth shut
+        # mouth behind it). Halo CE drove it from dialogue at run time; its animations only park it somewhere between
+        # shut (the bind pose) and 11 degrees open -- most of them 9, mouth hanging open -- so it gaped and snapped
+        # open and shut from one animation to the next, and Halo 2's stances don't drive it at all. Every animation
+        # holds it at the bind pose: mouth closed
         jn = [n['name'] for n in model.nodes].index('bip01 ponytail1')
-        ref = anims.get('stand rifle idle') or next(a for k, a in anims.items() if ' idle' in k and 'h2' not in k)
-        jt, jq, js = ref.frames[0][jn]
+        jt, jq, js = joints[jn][2], joints[jn][3], joints[jn][4]
         for k, a in anims.items():
-            if ' h2' not in k: continue
             a.frames = [list(fr) for fr in a.frames]
             for fr in a.frames: fr[jn] = (jt, jq, js)
     alist = []

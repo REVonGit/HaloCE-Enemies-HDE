@@ -640,12 +640,12 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 
 **Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
 * **Headshot kills:** always take the head off.
-* **Other kills:** a kill landing on an arm takes it off nearly every time (85%). Body shots leave the limbs on.
-* **Where a hit lands:** the top of the enemy (the headshot zone) is the head; the outer sides at arm height are the arms, the middle is the body. The Elites', Grunts', Jackals' and Marines' hit boxes reach the tops of their heads, so a shot at the head connects.
+* **Other kills:** a kill landing on an arm, or on a Grunt's methane pack, takes it off nearly every time (85%). Body shots leave the limbs on.
+* **Where a hit lands:** the top of the enemy (the headshot zone) is the head; the outer sides at arm height are the arms, the middle of a Grunt's back is its methane pack, the rest is the body. The Elites', Grunts', Jackals' and Marines' hit boxes reach the tops of their heads, so a shot at the head connects.
 
 **Weapons that gib:** the Rocket Launcher, Hydra, Scattershot alt fire, Light Rifle alt fire, Binary Rifle, Unmaker, Stanchion, Gravity Hammer, GPMG (autocannon), Double Barrel, Fuel Rod, Needler supercombine, Needle Javelin, Plasma Caster, Sentinel Beam supercombine and Sticky Detonator. A body killed by one bursts apart: the head and arms fly off as pieces in a spray of blood, the rest is gone, and NashGore (when loaded) adds its meat chunks and splats.
 
-**Grenades:** they never gib. Half the time a grenade kill takes off one or two limbs.
+**Grenades:** they never gib. Half the time a grenade kill takes off one or two limbs (a Grunt's pack among them).
 
 **Anything else** (plasma rifles, needles that don't supercombine, ordinary melee, fire) leaves the body whole.
 
@@ -665,7 +665,8 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 
 | Race | What comes off | Stump |
 |---|---|---|
-| Elites, Grunts, Jackals (Halo CE) | head, either arm | SPV3's own stump models |
+| Elites, Jackals (Halo CE) | head, either arm | SPV3's own stump models |
+| Grunts (Halo CE) | head, either arm, the methane pack (as in SPV3) | SPV3's own stump models |
 | Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
 | Brutes | head | kitbashed cap |
 

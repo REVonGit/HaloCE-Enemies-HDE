@@ -609,7 +609,7 @@ vec4 ProcessTexel()
 '''
 
 # ---------------------------------------------------------------- generation
-GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2}
+GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2, 'back': 3}
 
 def gore_code(char, meta, mdir, sc):
     """HCE_SeverLimb for a character with gore_kit.py's dismemberment data: hide the limb's surfaces (and what it

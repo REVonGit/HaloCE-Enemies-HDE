@@ -2661,9 +2661,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	const HCE_LIMB_HEAD = 0;
 	const HCE_LIMB_LARM = 1;
 	const HCE_LIMB_RARM = 2;
+	const HCE_LIMB_BACK = 3;               // the Grunts' methane pack (SPV3 makes it severable)
+	const HCE_LIMBS = 4;
 	int hce_severed;                       // bit per limb
 	int hce_stumpTics;
-	vector3 hce_stumpAt[3];                // stump positions relative to the actor (bind pose, actor angle at death)
+	vector3 hce_stumpAt[4];                // stump positions relative to the actor (bind pose, actor angle at death)
 	virtual bool HCE_SeverLimb(int limb) { return false; }
 	virtual void HCE_OnSever(int limb, bool gunArm) {}
 
@@ -2769,9 +2771,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		double z = hce_hitRel.z / max(1, height);
 		vector2 lf = AngleToVector(angle + 90);
 		double side = (hce_hitRel.x * lf.x + hce_hitRel.y * lf.y) / max(1, radius);     // + left, - right
-		bool has[3];
-		for(int l = 0; l < 3; l++) { vector3 o = HCE_LimbOffset(l); has[l] = o.z > -999 && !(hce_severed & (1 << l)); }
+		bool has[HCE_LIMBS];
+		for(int l = 0; l < HCE_LIMBS; l++) { vector3 o = HCE_LimbOffset(l); has[l] = o.z > -999 && !(hce_severed & (1 << l)); }
 		if(z >= 0.78 && has[HCE_LIMB_HEAD]) return HCE_LIMB_HEAD;
+		vector2 fw = AngleToVector(angle);
+		double behind = -(hce_hitRel.x * fw.x + hce_hitRel.y * fw.y) / max(1, radius);    // + behind the body
+		if(has[HCE_LIMB_BACK] && z >= 0.3 && z < 0.85 && behind >= 0.3 && abs(side) < 0.75) return HCE_LIMB_BACK;
 		if(z >= 0.35 && z < 0.82 && abs(side) >= 0.4)
 		{
 			int l = side > 0 ? HCE_LIMB_LARM : HCE_LIMB_RARM;
@@ -2789,9 +2794,10 @@ class HaloDoom_EnemyBase : Actor abstract
 			// a grenade never gibs: half the time it takes one or two limbs
 			if(frandom[HCEGore](0, 1) < 0.5)
 			{
-				int n = random[HCEGore](1, 2), first = random[HCEGore](0, 2);
-				HCE_SeverLimb(first);
-				if(n == 2) HCE_SeverLimb((first + random[HCEGore](1, 2)) % 3);
+				Array<int> opts;
+				for(int l = 0; l < HCE_LIMBS; l++) { vector3 o = HCE_LimbOffset(l); if(o.z > -999) opts.Push(l); }
+				int n = min(opts.Size(), random[HCEGore](1, 2));
+				for(int i = 0; i < n; i++) { int k = random[HCEGore](0, opts.Size() - 1); HCE_SeverLimb(opts[k]); opts.Delete(k); }
 			}
 		}
 		else if(hce_killKind == HCE_WK_DISMEMBER)
@@ -2819,7 +2825,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_gibbed = true;
 		hce_reviveTics = 0;
 		hce_brutality += 6;
-		for(int l = 0; l < 3; l++) HCE_SeverLimb(l);
+		for(int l = 0; l < HCE_LIMBS; l++) HCE_SeverLimb(l);
 		hce_stumpTics = 0;
 		HCE_GibBurst(30, 18);
 	}
@@ -2865,7 +2871,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_bloodStage = st;
 		HCE_BloodModel(st);
 		HCE_BloodHideClass();
-		for(int l = 0; l < 3; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l);
+		for(int l = 0; l < HCE_LIMBS; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l);
 		HCE_ResumeAnim();
 	}
 
@@ -3015,7 +3021,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		double away = atan2(pos.y - from.y, pos.x - from.x);
 		double push = hce_blastHit ? clamp(hce_blastDmg / 20.0, 4, 12) : 2.2;          // a shot pops it off; a blast flings it
 		if(hce_gibbed) push = max(push, 8) * frandom[HCEGore](0.8, 1.3);
-		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (0, 0));
+		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (limb == HCE_LIMB_BACK ? -fw : (0, 0)));
 		g.vel = (AngleToVector(away + frandom[HCEGore](-25, 25), push * frandom[HCEGore](0.6, 1.1)) + sideV * frandom[HCEGore](1, 3),
 		         frandom[HCEGore](2.5, 5) + (limb == HCE_LIMB_HEAD ? 1.5 : 0)) + vel * 0.5;
 		g.hce_spin = (frandom[HCEGore](-25, 25), frandom[HCEGore](-30, 30));
@@ -3034,7 +3040,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_stumpTics % 3) return;
 		double fall = clamp((35 * 4 - hce_stumpTics) / 30.0, 0, 1);
 		color c = BloodColor; if(c == 0) c = Color(255, 120, 0, 0);
-		for(int l = 0; l < 3; l++)
+		for(int l = 0; l < HCE_LIMBS; l++)
 		{
 			if(!(hce_severed & (1 << l))) continue;
 			vector3 r = hce_stumpAt[l];
@@ -3254,7 +3260,7 @@ class HaloDoom_EnemyBase : Actor abstract
 					SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 			hce_bloodDmg += dmg / double(max(1, SpawnHealth()));
 			int st = hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : 1;
-			if(st > hce_bloodStage) { hce_bloodStage = st; HCE_BloodModel(st); HCE_BloodHideClass(); for(int l = 0; l < 3; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l); HCE_ResumeAnim(); }
+			if(st > hce_bloodStage) { hce_bloodStage = st; HCE_BloodModel(st); HCE_BloodHideClass(); for(int l = 0; l < HCE_LIMBS; l++) if(hce_severed & (1 << l)) HCE_BloodHideLimb(l); HCE_ResumeAnim(); }
 		}
 		if(default.bNOBLOOD || bHCE_Explodes) return dmg;
 		if(hce_killKind == HCE_WK_GIB || (blast && hce_corpseDmg >= SpawnHealth() * 3))
@@ -3265,7 +3271,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			return dmg;
 		}
 		Array<int> opts;
-		for(int l = 0; l < 3; l++)
+		for(int l = 0; l < HCE_LIMBS; l++)
 		{
 			vector3 lo = HCE_LimbOffset(l);
 			if(!(hce_severed & (1 << l)) && lo.z > -999) opts.Push(l);
@@ -3538,8 +3544,11 @@ class HCE_LimbGib : Actor
 		if(!hce_set && hce_def != 'None')
 		{
 			hce_set = true;
+			// every A_ChangeModel call sets the MODELDEF it draws with (UZDoom: modelData->modelDef = the first
+			// argument, 'None' clearing it), so both calls name the dead enemy's: with 'None' on the second the gib
+			// lost its MODELDEF and drew nothing
 			A_ChangeModel(hce_def, 0, hce_path, hce_model);
-			A_ChangeModel('None', 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
+			A_ChangeModel(hce_def, 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
 		}
 		super.Tick();
 	}

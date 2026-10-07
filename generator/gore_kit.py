@@ -42,13 +42,16 @@ from hce_paths import OUT
 SPV3_B40 = os.environ.get('HCE_SPV3_B40', 'b40_1.map')      # SPV3's b40_1.map (PC/MCC cache): the Elite/Grunt/Jackal stump caps
 SPV3_BITMAPS = os.environ.get('HCE_SPV3_BITMAPS', 'bitmaps.map')   # SPV3's bitmaps.map (or the stem of its .001, .002 ... pieces)
 
+
 # char -> blood colour and texture style, spv3 model (or none: kitbashed caps), limbs {name: root bone (subtree)}
 GORE = {
     'Elite':        dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'EliteSpecial': dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'EliteRifle':   dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
-    'Grunt':        dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
-    'GruntSpecOps': dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
+    'Grunt':        dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'},
+                         regions={'back': ('backpack', 'bip01 spine1')}),
+    'GruntSpecOps': dict(blood='40C8D0', style='bone', spv3='grunt_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'},
+                         regions={'back': ('backpack', 'bip01 spine1')}),
     'Jackal':       dict(blood='4A2A9A', style='bone', spv3='jackal_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l clavicle', 'rarm': 'bip01 r clavicle'}),
     'JackalMajor':  dict(blood='4A2A9A', style='bone', spv3='jackal_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l clavicle', 'rarm': 'bip01 r clavicle'}),
     # kitbashed
@@ -292,7 +295,19 @@ def cap_mesh(loops, joint_pos, outward, bone, material, dome=0.25):
     return dict(name='', material=material, pos=P, nrm=np.array(N), uv=np.array(UV), bidx=bidx, bw=bw, tris=T)
 
 
-def spv3_stumps(spv, joints, limb_roots):
+def spv3_region(spv, region):
+    """SPV3's model region (its first permutation) as points: a limb that is no bone subtree (the Grunt's methane pack,
+    rigged to the spine like the torso) is the body's triangles lying on it -- SPV3's grunt_new is Halo CE's Grunt
+    with its pack split off as a severable region (bind poses identical)"""
+    m, hm = spv3()
+    t = next(t for t in m.tags if t['cls'] == 'mod2' and t['name'] == SPV3_MODEL[spv])
+    M = hm.Model(m, t)
+    r = next(r for r in M.regions if r['name'] == region)
+    g = M.geometry(r['perms'][0]['geoms'][0])
+    return np.concatenate([x['pos'] for x in g])
+
+
+def spv3_stumps(spv, joints, limb_roots, points=None):
     """SPV3's torso stump caps, split per limb by the nearest limb root, re-boned onto our skeleton"""
     m, hm = spv3()
     t = next(t for t in m.tags if t['cls'] == 'mod2' and t['name'] == SPV3_MODEL[spv])
@@ -301,14 +316,15 @@ def spv3_stumps(spv, joints, limb_roots):
     ours = {j[0].lower(): i for i, j in enumerate(joints)}
     W = world_bind(joints)
     roots = {L: np.array(W[ours[r.lower()]][0]) for L, r in limb_roots.items()}
-    out = {L: [] for L in limb_roots}
+    roots.update(points or {})                      # region limbs: their own centre
+    out = {L: [] for L in roots}
     bms = M.base_map_scale
     for r in M.regions:
         perm = r['perms'][0]
         g = M.geometry(perm['geoms'][0])
         for x in g:
             if x['shader'] >= len(M.shaders) or 'gore' not in M.shaders[x['shader']]['name']: continue
-            if r['name'] in limb_roots or r['name'].replace(' ', '') in ('leftarm', 'rightarm', 'head'): continue
+            if r['name'] in limb_roots or r['name'].replace(' ', '') in ('leftarm', 'rightarm', 'head', 'backpack'): continue
             for tri in x['tris']:
                 c = x['pos'][tri].mean(0)
                 L = min(roots, key=lambda k: np.linalg.norm(roots[k] - c))
@@ -351,9 +367,15 @@ def process(char):
         assert meta.get('shield_surface') is None or meta['shield_surface'] == keep.index(meta['shield_surface'])
         meshes = [meshes[i] for i in keep]; names = [names[i] for i in keep]; mesh_weapon = [mesh_weapon[i] for i in keep]
     limbs = {L: subtree(joints, r) for L, r in cfg['limbs'].items()}
+    regions = {}                                   # region limbs: points of SPV3's region, KD-searched
+    if cfg.get('regions'):
+        from scipy.spatial import cKDTree
+        for L, (rg, bone) in cfg['regions'].items():
+            pts = spv3_region(cfg['spv3'], rg)
+            regions[L] = (cKDTree(pts), pts.mean(0), bone)
     W = world_bind(joints)
     jidx = {j[0].lower(): i for i, j in enumerate(joints)}
-    gore = {L: dict(surfaces=[], parts=[]) for L in limbs}
+    gore = {L: dict(surfaces=[], parts=[]) for L in list(limbs) + list(regions)}
     new = []
     for si, m in enumerate(meshes):
         dom = dominant(m)
@@ -361,15 +383,20 @@ def process(char):
         for L, bones in limbs.items():
             inl = np.isin(dom, list(bones))
             lab[inl[m['tris']].sum(1) >= 2] = L
+        for L, (kd, _, _) in regions.items():          # every corner of the triangle on the region's surface
+            if not len(m['tris']): continue
+            d, _ = kd.query(m['pos'][m['tris']].reshape(-1, 3))
+            on = (d.reshape(-1, 3) < 0.004).all(1) & (lab == '')
+            lab[on] = L
         is_weapon = bool(mesh_weapon[si]) or 'shield' in names[si] or 'shield' in m['material'].lower()
         if is_weapon:
             # guns and shields aren't cut: they go (hidden) with the limb that holds them
-            for L in limbs:
+            for L in gore:
                 if (lab == L).sum() > len(lab) * 0.5: gore[L]['surfaces'].append(si)
             continue
-        for L in limbs:                            # a stray triangle or two isn't worth a surface: it stays put
+        for L in gore:                             # a stray triangle or two isn't worth a surface: it stays put
             if 0 < (lab == L).sum() < 4: lab[lab == L] = ''
-        Ls = [L for L in limbs if (lab == L).any()]
+        Ls = [L for L in gore if (lab == L).any()]
         if not Ls: continue
         if all(lab == Ls[0]):                      # wholly inside one limb: tag it
             gore[Ls[0]]['surfaces'].append(si); gore[Ls[0]]['parts'].append(si); continue
@@ -392,18 +419,26 @@ def process(char):
     else:                                                 # no bitmaps.map: our own drawing
         print(char, 'SPV3 bitmaps.map not found: drawing the gore texture')
         gore_texture(cfg['blood'], cfg['style']).save(f'{od}/{tex}')
-    stumps = spv3_stumps(cfg['spv3'], joints, cfg['limbs']) if cfg.get('spv3') else {}
+    stumps = spv3_stumps(cfg['spv3'], joints, cfg['limbs'], {L: r[1] for L, r in regions.items()}) if cfg.get('spv3') else {}
     gibs_cap = {}
-    for L, bones in limbs.items():
-        root = jidx[cfg['limbs'][L].lower()]
-        jp_ = np.array(W[root][0]); par = joints[root][1]
-        pp = np.array(W[par][0]) if par >= 0 else jp_ - np.array([0, 0, 0.1])
-        kids = [i for i, j in enumerate(joints) if j[1] == root]
-        if kids:                                  # along the limb: towards its first bone's end
-            out_dir = np.mean([np.array(W[k][0]) for k in kids], 0) - jp_
+    for L in gore:
+        if L in regions:                          # a region limb: from its bone out to the region's centre
+            root = jidx[regions[L][2].lower()]; par = root
+            bone = np.array(W[root][0]); ctr_ = regions[L][1]
+            out_dir = ctr_ - bone
+            Pp = np.concatenate([meshes[i]['pos'] for i in gore[L]['parts']]) if gore[L]['parts'] else ctr_[None]
+            jp_ = Pp[np.argmin((Pp - bone) @ (out_dir / max(np.linalg.norm(out_dir), 1e-6)))]   # where it meets the body
+            pp = bone
         else:
-            out_dir = jp_ - pp                    # from the body into the limb
-        if np.linalg.norm(out_dir) < 1e-5: out_dir = jp_ - pp
+            root = jidx[cfg['limbs'][L].lower()]
+            jp_ = np.array(W[root][0]); par = joints[root][1]
+            pp = np.array(W[par][0]) if par >= 0 else jp_ - np.array([0, 0, 0.1])
+            kids = [i for i, j in enumerate(joints) if j[1] == root]
+            if kids:                                  # along the limb: towards its first bone's end
+                out_dir = np.mean([np.array(W[k][0]) for k in kids], 0) - jp_
+            else:
+                out_dir = jp_ - pp                    # from the body into the limb
+            if np.linalg.norm(out_dir) < 1e-5: out_dir = jp_ - pp
         out_dir /= max(np.linalg.norm(out_dir), 1e-6)
         parts = [meshes[i] for i in gore[L]['parts']]
         loops = boundary_loops(parts)
@@ -438,7 +473,7 @@ def process(char):
         gore[L]['stub'] = len(meshes) - 1
         gibs_cap[L] = gcap
     # gibs: the body's surface list, only this limb's parts (centred) and its cap on the stump index
-    for L in limbs:
+    for L in gore:
         P = np.concatenate([meshes[i]['pos'] for i in gore[L]['parts']]) if gore[L]['parts'] else np.zeros((1, 3))
         ctr = P.mean(0)
         gm = []

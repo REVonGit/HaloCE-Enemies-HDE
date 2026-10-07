@@ -128,6 +128,13 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 6, 7, 8, 9, 10, 11 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\elite\elite commander\elite commander energy sword
@@ -1421,6 +1428,13 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 6, 7, 8, 9, 10, 11 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\elite\elite specops\elite specops beam rifle
@@ -1914,6 +1928,12 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 		case 'stand rifle warn': return 40;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/EliteSpecial", 'EliteSpecial_w_plasma_caster.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -2650,6 +2670,13 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 4, 5, 6 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 
@@ -3860,6 +3887,13 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 4, 5, 6 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\grunt\grunt specops fuel rod
@@ -4464,6 +4498,7 @@ class HCE_Hunter : HCE_HunterBase
 		}
 		return 30;
 	}
+	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_FuelRod"; }
 }
 
 // characters\hunter\hunter major
@@ -4570,6 +4605,7 @@ class HCE_HunterMajor : HCE_HunterBase
 		}
 		return 30;
 	}
+	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_FuelRod"; }
 }
 
 // characters\hunter\hunter red
@@ -4678,6 +4714,7 @@ class HCE_HunterRed : HCE_HunterBase
 		}
 		return 30;
 	}
+	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_Flamethrower"; }
 }
 
 // characters\hunter\hunter white
@@ -4786,6 +4823,7 @@ class HCE_HunterWhite : HCE_HunterBase
 		}
 		return 30;
 	}
+	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_PlasmaCaster"; }
 }
 
 class HCE_JackalBase : HaloDoom_EnemyBase abstract
@@ -4914,6 +4952,13 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 6 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 
@@ -5179,6 +5224,13 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 6, 7, 8 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 

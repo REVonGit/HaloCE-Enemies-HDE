@@ -2647,6 +2647,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Leader || bHCE_PairBond) HCE_LeaderDied(self);
 		if(hce_kamiNades.Size() > 0) HCE_KamikazeFling();
 		HCE_DropLoot();
+		HCE_ShowGun(false);      // the gun leaves the hand (it dropped as a pickup, or its arm is gone)
 		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
 		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
 		if(bHCE_Resurrects && !hard && frandom(0, 1) < max(0.25, hce_feignChance)) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
@@ -2971,6 +2972,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!HCE_SeverLimb(gl)) return;
 		hce_brutality += 2;
 		HCE_DropLoot();                                       // the gun falls with the hand
+		HCE_ShowGun(false);
 		hce_dropWeapon = 'None'; hce_grenades = 0;
 		hce_projectile = 'None';
 		HCE_StopFireLoop();
@@ -3014,7 +3016,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// the severed piece: 'center' is the limb's middle in model units (Halo units, model x forward, y left, z up),
-	// 'sc' the MODELDEF scale; the piece flies off away from the killing blow, trailing blood
+	// 'sc' the MODELDEF scale. A shot pops it off outward from the body (an arm to its side, the pack backwards, the
+	// head up and to one side, a little away from the shooter) to come to rest 2-3 feet (16-24 map units) out from
+	// the body's edge; a blast throws it by the explosion's impulse, out from the blast's centre through the piece,
+	// harder the bigger and nearer the blast. A class may hand over something else to throw (HCE_LimbReplacement)
 	void HCE_SpawnLimb(int limb, vector3 center, double sc, String path, Name model, int stub, Name tex, double rest = 0)
 	{
 		hce_severed |= 1 << limb;
@@ -3025,26 +3030,79 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_corpseInit) rel.z = min(rel.z, height * 0.6);               // a body lying down
 		hce_stumpAt[limb] = rel;
 		hce_stumpTics = 35 * 4;
-		let g = HCE_LimbGib(Spawn("HCE_LimbGib", Vec3Offset(rel.x, rel.y, rel.z), ALLOW_REPLACE));
-		if(!g) return;
-		g.hce_def = GetClassName(); g.hce_path = path; g.hce_model = model; g.hce_stub = stub; g.hce_tex = tex;
-		g.hce_rest = rest > 0 ? rest * sc * 1.2 : 2;          // its half thickness lying flat, map units
-		g.master = self;                   // its blood is the victim's (spawned through it)
-		g.angle = angle; g.pitch = pitch;
-		vector3 from = hce_blastHit ? hce_blastFrom : (target ? target.pos : pos - (fw * 64, 0));
-		double away = atan2(pos.y - from.y, pos.x - from.x);
-		double push = hce_blastHit ? clamp(hce_blastDmg / 20.0, 4, 12) : 2.2;          // a shot pops it off; a blast flings it
-		if(hce_gibbed) push = max(push, 8) * frandom[HCEGore](0.8, 1.3);
-		vector2 sideV = (limb == HCE_LIMB_LARM) ? lf : (limb == HCE_LIMB_RARM ? -lf : (limb == HCE_LIMB_BACK ? -fw : (0, 0)));
-		g.vel = (AngleToVector(away + frandom[HCEGore](-25, 25), push * frandom[HCEGore](0.6, 1.1)) + sideV * frandom[HCEGore](1, 3),
-		         frandom[HCEGore](2.5, 5) + (limb == HCE_LIMB_HEAD ? 1.5 : 0)) + vel * 0.5;
-		g.HCE_Launch(angle, pitch);          // tumbling off from the pose it had on the body
+		vector3 at = Vec3Offset(rel.x, rel.y, rel.z);
+		vector3 v = HCE_LimbLaunch(limb, rel, at);
 		// the cut sprays
 		if(!bNOBLOOD)
 			for(int i = 0; i < 8; i++)
 				A_SpawnItemEx("Blood", rel.x, rel.y, rel.z, frandom[HCEGore](-3, 3), frandom[HCEGore](-3, 3), frandom[HCEGore](1, 5),
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
+		// something else comes off instead (a Hunter's cannon arm: HaloDoom's own weapon), when weapons drop at all
+		Name rn = HCE_LimbReplacement(limb);
+		class<Weapon> rc = rn != 'None' ? (class<Weapon>)(rn) : null;
+		CVar dw = CVar.FindCVar("hce_dropweapons");
+		if(rc && !(dw && !dw.GetBool()))
+		{
+			let it = Spawn(rc, at, ALLOW_REPLACE);
+			if(it)
+			{
+				it.bDROPPED = true; it.vel = v; it.angle = angle;
+				if(hce_dropWeapon == rn) hce_dropWeapon = 'None';       // it came off with the arm: no second one
+				return;
+			}
+		}
+		let g = HCE_LimbGib(Spawn("HCE_LimbGib", at, ALLOW_REPLACE));
+		if(!g) return;
+		g.hce_def = GetClassName(); g.hce_path = path; g.hce_model = model; g.hce_stub = stub; g.hce_tex = tex;
+		g.hce_rest = rest > 0 ? rest * sc * 1.2 : 2;          // its half thickness lying flat, map units
+		g.master = self;                   // its blood is the victim's (spawned through it)
+		g.vel = v;
+		g.HCE_Launch(angle, pitch);          // tumbling off from the pose it had on the body
 	}
+
+	// packs: a weapon class thrown in place of a severed limb (the Hunters' cannon arm); 'None' = the limb itself
+	virtual Name HCE_LimbReplacement(int limb) { return 'None'; }
+
+	// the severed piece's launch velocity (see HCE_SpawnLimb)
+	vector3 HCE_LimbLaunch(int limb, vector3 rel, vector3 at)
+	{
+		vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
+		double g = max(0.05, GetGravity() * 0.85);         // the gib's gravity (Gravity 0.85)
+		if(hce_blastHit)
+		{
+			// the explosion's impulse: ov from its centre through the piece; a grenade's ~100-200 at point blank
+			// throws it 15-20 map units a tic, falling off with distance
+			vector3 d = level.Vec3Diff(hce_blastFrom, at);
+			double dist = d.Length();
+			vector3 dir = dist > 1 ? d / dist : (0, 0, 1);
+			double spd = clamp(hce_blastDmg * 0.1, 5, 18) * clamp(72.0 / (dist + 24.0), 0.4, 1.6);
+			if(hce_gibbed) spd = max(spd, 7);
+			vector3 v = dir * spd + (frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), 0);
+			v.z = max(v.z, 2.5) + frandom[HCEGore](1, 3);     // blasts lift what they throw
+			return v + vel * 0.5;
+		}
+		// popped off by a shot: outward from the body, a little away from the shooter
+		vector2 ov;
+		if(limb == HCE_LIMB_LARM) ov = lf;
+		else if(limb == HCE_LIMB_RARM) ov = -lf;
+		else if(limb == HCE_LIMB_BACK) ov = -fw;
+		else ov = lf * (random[HCEGore](0, 1) ? 1 : -1) - fw * 0.4;
+		vector3 from = target ? target.pos : pos - (fw * 64, 0);
+		vector2 away = (pos.xy - from.xy).Length() > 1 ? (pos.xy - from.xy).Unit() : -fw;
+		ov = (ov.Unit() + away * 0.35).Unit();
+		ov = Actor.RotateVector(ov, frandom[HCEGore](-15, 15));
+		if(hce_gibbed) { double gs = frandom[HCEGore](6, 9); return (ov * gs, frandom[HCEGore](3, 6)) + vel * 0.5; }
+		// how far it has to go: from the cut to the body's edge along 'ov', then 2-3 feet; the flight from its
+		// height takes it most of the way, the bounces (HCE_LimbGib) the rest
+		double edge = max(0, radius - (rel.xy dot ov));
+		double want = edge + frandom[HCEGore](16, 24);
+		double vz = frandom[HCEGore](3, 4) + (limb == HCE_LIMB_HEAD ? 1 : 0);
+		double h = max(0, at.z - floorz);
+		double t = (vz + sqrt(vz * vz + 2 * g * h)) / g;
+		double hs = want * HCE_GIB_AIRSHARE / max(1, t);
+		return (ov * hs, vz) + vel * 0.3;
+	}
+	const HCE_GIB_AIRSHARE = 0.55;         // the share of a popped-off piece's travel done in the air (tuned in a test map)
 
 	// stumps keep pumping for a few seconds, sinking as the body falls
 	void HCE_StumpTick()
@@ -3068,6 +3126,9 @@ class HaloDoom_EnemyBase : Actor abstract
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 		}
 	}
+
+	// packs: show or hide the gun the enemy holds (its weapon surfaces on the body, an overlay gun model)
+	virtual void HCE_ShowGun(bool show) {}
 
 	void HCE_DropLoot()
 	{
@@ -3311,6 +3372,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!RaiseActor(self, RF_NOCHECKPOSITION)) return;
 		hce_resurrected = true;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED;
+		int gl = HCE_GunLimb();
+		if(gl < 0 || !(hce_severed & (1 << gl))) HCE_ShowGun(true);       // back up with its gun (if its arm is on)
 		hce_action = HCE_ACT_FIGHT;
 		int k = HCE_DirKind(HCE_A_RESURRECT_F, HCE_A_RESURRECT_B, HCE_A_RESURRECT_F, HCE_A_RESURRECT_B);
 		if(HCE_HasAnim(k)) HCE_PlayLocked(k);
@@ -3659,7 +3722,7 @@ class HCE_LimbGib : Actor
 	Bounce:
 		HCEM A 1
 		{
-			RandomizeVelocity(1);
+			RandomizeVelocity(0.5);
 			RandomizeAngles(true);
 			return ResolveState("Spawn");
 		}

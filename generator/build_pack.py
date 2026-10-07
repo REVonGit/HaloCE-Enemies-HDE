@@ -373,9 +373,11 @@ def bake_hunter(char, mat, mode, outpath):
 # maps, so the reflection is baked into the skin with Halo's own cube maps (extract_cubemaps.py): every armour texel
 # gets the model's surface normal there (the triangles rasterised into texture space, bind pose), nudged by the paint's
 # own relief, and reflects a view from the front into the cube map; the result is added under the specular mask. The
-# Elites' cube map follows their rank colour (blue, magenta, gold, silver), the Grunts' is Halo's dark grey one.
-SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 0.85, 'GruntSpecOps': 0.85}
-SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'dark_gray', 'GruntSpecOps': 'dark_gray'}
+# Elites' cube map follows their rank colour (blue, magenta, gold, silver); the Grunts wear the same ones (below).
+SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 1.0, 'GruntSpecOps': 1.0}
+# the Grunts wear the Elites' rank cube maps (gold for the orange Minors, red for the Majors, silver for Spec Ops) so their
+# armour reads like the Elites' painted skins; Halo CE gave them its dull 'cubemap dark gray'
+SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'elite', 'GruntSpecOps': 'elite'}
 _normal_maps = {}
 
 def normal_map(char, mat, size):
@@ -384,11 +386,19 @@ def normal_map(char, mat, size):
     if key in _normal_maps: return _normal_maps[key]
     from iqm import read_iqm
     from scipy import ndimage
+    _, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
+    N = raster_normals(meshes, mat + '.png', size)
+    _normal_maps[key] = N
+    return N
+
+
+def raster_normals(meshes, matfile, size):
+    """(H, W, 3) normals per texel of the meshes using 'matfile' (gaps filled from the nearest covered texel)"""
+    from scipy import ndimage
     W_, H_ = size
     N = np.zeros((H_, W_, 3), np.float32); hit = np.zeros((H_, W_), bool)
-    _, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
     for m in meshes:
-        if m['material'] != mat + '.png' or not len(m['tris']): continue
+        if m['material'] != matfile or not len(m['tris']): continue
         uv = m['uv'] % 1.0 * np.array([W_ - 1, H_ - 1]); nr = m['nrm']
         for t in m['tris']:
             p = uv[t]; n = nr[t]
@@ -408,7 +418,6 @@ def normal_map(char, mat, size):
         _, (iy, ix) = ndimage.distance_transform_edt(~hit, return_indices=True)
         N = N[iy, ix]
     N /= np.maximum(np.linalg.norm(N, axis=2, keepdims=True), 1e-6)
-    _normal_maps[key] = N
     return N
 
 _cubes = {}
@@ -462,6 +471,31 @@ def elite_skin(char, mat, color, outpath, specops=False):
     im.save(outpath)
     return True
 
+def grunt_purple(char, mat, path):
+    """the Spec Ops Grunts' armour in the Spec Ops Elites' violet. Their CE textures are grimy and blotchy (the painted
+    Elite skins aren't), so rather than shifting hues (purple() misses the greyed patches) the whole armour, by the
+    colour-change mask, is repainted: one violet, its shading from the softened brightness, only the reflection's
+    highlights going pale"""
+    from scipy import ndimage
+    mp = f'{OUT}/models/{char}/{mat}_multi.png'
+    if not os.path.exists(mp): return
+    im = Image.open(path).convert('RGB')
+    rgb = np.asarray(im).astype(np.float32) / 255.0
+    H_, W_ = rgb.shape[:2]
+    m = np.asarray(Image.open(mp).convert('RGBA').resize((W_, H_))).astype(np.float32)[..., 2] / 255.0
+    m = ndimage.gaussian_filter(m, 0.7)
+    v = rgb.max(2)
+    v = ndimage.median_filter(v, 5)                                        # the grime's speckle
+    v = ndimage.gaussian_filter(v, 1.6) * 0.75 + v * 0.25                  # broad, smooth shading like the painted skins
+    hi = np.clip((ndimage.gaussian_filter(v, 2.5) - 0.78) / 0.2, 0, 1) * 0.7  # soft reflection highlights
+    base = np.array([0.43, 0.10, 0.78], np.float32)                        # the Spec Ops Elites' violet (hue ~282)
+    pale = np.array([0.86, 0.72, 1.00], np.float32)
+    shade = np.clip(0.12 + 0.95 * v, 0, 1)[..., None]
+    col = base * shade * (1 - hi[..., None]) + pale * hi[..., None] * np.clip(v, 0, 1)[..., None]
+    out = rgb * (1 - m[..., None]) + col * m[..., None]
+    purple(Image.fromarray(np.clip(out * 255, 0, 255).astype(np.uint8))).save(path)   # blue glints off the armour too
+
+
 def purple(im):
     """the blue Minor skin turned vibrant dark purple: the armour's blues and cyans coloured violet (their shading and
     shine kept), a little darker and richer"""
@@ -513,6 +547,86 @@ def add_shine(char, mat, rgb, color=None):
     return np.clip(rgb * (1 - 0.3 * spec[..., None]) + s, 0, 1)                    # the metal darkens a little under its reflection
 
 
+# ---------------------------------------------------------------- Covenant weapon shine
+# Halo CE's Covenant weapons reflect a cube map on their painted metal (shader_model: the multipurpose map's red is the
+# reflection mask; extract_weapon_shine.py). It's baked into the colourful parts of their textures: CE's own cube map
+# and mask where the weapon has one (plasma pistol, plasma rifle, needler), the plasma rifle's cube map and the paint's
+# saturation for the rest (fuel rod, sword hilt, the Halo 2 and Digsite weapons, the Plasma Caster). Lights, glows and
+# grey metal stay as they are.
+COVENANT_WEAPONS = ('plasma_pistol', 'plasma_rifle', 'needler', 'fuel_rod', 'energy_sword', 'h2_beam_rifle', 'beam_rifle',
+                    'cmt_carbine', 'plasma_caster', 'brute_plasma_rifle', 'brute_shot', 'spiker', 'plasma_carbine',
+                    'particle_beam_dig', 'gravity_hammer')
+NO_SHINE = ('glow', 'lights', 'icon', 'meter', 'heat')
+_shine_mats = None
+
+def shine_materials():
+    """weapon texture file -> (weapon id, the material its normals come from)"""
+    global _shine_mats
+    if _shine_mats is None:
+        import pickle
+        _shine_mats = {}
+        for wid in COVENANT_WEAPONS:
+            pk = f'{OUT}/weapons/{wid}/{wid}.pkl'
+            if not os.path.exists(pk): continue
+            for m in pickle.load(open(pk, 'rb'))['meshes']:
+                if not any(k in m['material'] for k in NO_SHINE): _shine_mats[m['material']] = (wid, m['material'])
+        for skins in WEAPON_SKIN.values():                   # re-coloured variants: the original's normals
+            for orig, new in skins.items():
+                if orig in _shine_mats: _shine_mats[new] = _shine_mats[orig]
+    return _shine_mats
+
+
+def weapon_shine(name, im):
+    """a Covenant weapon texture (PIL) -> with Halo's reflection baked into its colourful parts (others unchanged)"""
+    hit = shine_materials().get(name)
+    if not hit: return im
+    import pickle
+    wid, mat = hit
+    spec = json.load(open(f'{OUT}/weapons/{wid}/shine.json')).get(mat) if os.path.exists(f'{OUT}/weapons/{wid}/shine.json') else None
+    alpha = im.getchannel('A') if im.mode == 'RGBA' else None
+    rgb = np.asarray(im.convert('RGB')).astype(np.float32) / 255.0
+    H_, W_ = rgb.shape[:2]
+    mx, mn = rgb.max(2), rgb.min(2)
+    sat = (mx - mn) / np.maximum(mx, 1e-3)
+    colourful = np.clip((sat - 0.28) / 0.22, 0, 1) * np.clip((mx - 0.08) / 0.15, 0, 1)
+    colourful *= 1 - np.clip((mx - 0.68) / 0.12, 0, 1) * np.clip((sat - 0.4) / 0.15, 0, 1)    # bright saturated: a light
+    if spec:
+        mu = np.asarray(Image.open(f'{OUT}/weapons/{wid}/{spec["multi"]}').convert('RGBA').resize((W_, H_))).astype(np.float32) / 255.0
+        mask = mu[..., 0] * colourful * (1 - np.clip(mu[..., 1] * 3, 0, 1))      # CE's reflection mask, not the lights
+        cube, perp, par = spec['cube'], spec['perpendicular'], spec['parallel']
+    else:
+        mask = colourful
+        cube, perp, par = 'w_plasma_rifle', 0.22, 0.45          # no mask of Halo's: kept gentler
+    if mask.max() < 0.05: return im
+    faces = cube_faces(cube, 0)
+    meshes = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))['meshes']
+    n = raster_normals(meshes, mat, (W_, H_))
+    from scipy import ndimage
+    lum = ndimage.gaussian_filter(rgb.mean(axis=2), 1.0)                  # the paint's relief bends the reflection
+    gy, gx = np.gradient(lum)
+    t1 = np.cross(n, np.array([0, 0, 1.0], np.float32)); t1 /= np.maximum(np.linalg.norm(t1, axis=2, keepdims=True), 1e-3)
+    t2 = np.cross(n, t1)
+    n = n + (gx[..., None] * t1 + gy[..., None] * t2) * 5.0
+    n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
+    view = np.array([-0.7, -0.55, -0.35], np.float32); view /= np.linalg.norm(view)   # seen from the front and side
+    r = view - 2 * (n @ view)[..., None] * n
+    env = sample_cube(faces, r)
+    fres = (1 - np.abs(n @ view)) ** 2
+    bright = perp + (par - perp) * fres                                    # Halo: perpendicular -> parallel brightness
+    env = np.clip(env * 1.1, 0, 1) ** 1.3 * 1.5
+    out = np.clip(rgb * (1 - 0.2 * mask[..., None]) + env * (mask * bright)[..., None], 0, 1)
+    res = Image.fromarray((out * 255).astype(np.uint8))
+    if alpha is not None: res.putalpha(alpha)
+    return res
+
+
+def copy_weapon_tex(src, dst):
+    """a weapon texture into the pack (the Covenant ones with their reflection baked in)"""
+    name = os.path.basename(dst)
+    if name not in shine_materials(): shutil.copy(src, dst); return
+    weapon_shine(name, Image.open(src)).save(dst)
+
+
 def bake_skin(char, mat, color, outpath):
     src = Image.open(f'{OUT}/models/{char}/{mat}.png')
     if src.mode == 'RGBA' and np.asarray(src)[..., 3].min() < 128 and not os.path.exists(f'{OUT}/models/{char}/{mat}_multi.png'):
@@ -527,7 +641,23 @@ def bake_skin(char, mat, color, outpath):
     msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0   # Xbox: blue = colour change
     col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
     o = add_shine(char, mat, b * (1 - msk) + b * col * msk, color)
+    if char in HUE_LOCK: o = hue_lock(o, msk[..., 0], color)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
+# the Grunts' armour keeps its rank colour's hue under the Elites' cube maps (the gold one would turn the orange
+# Minors yellow): the hue of the painted parts is pulled back to the rank colour, the reflection's brightness kept
+HUE_LOCK = ('Grunt', 'GruntSpecOps')
+
+def hue_lock(rgb, mask, color):
+    import colorsys
+    h0, l0, s0 = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
+    if s0 < 0.25: return rgb                                              # black / grey ranks: nothing to hold
+    hsv = np.asarray(Image.fromarray(np.clip(rgb * 255, 0, 255).astype(np.uint8)).convert('HSV')).astype(np.float32)
+    w = np.clip(mask, 0, 1) * 0.8
+    hh = hsv[..., 0]; t = h0 * 255
+    d = (t - hh + 128) % 256 - 128                                        # shortest way round the hue circle
+    hsv[..., 0] = (hh + d * w) % 256
+    return np.asarray(Image.fromarray(hsv.astype(np.uint8), 'HSV').convert('RGB')).astype(np.float32) / 255.0
 
 # Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
 # armour, came out a muddy olive. Halo draws it with a bright specular sheen we can't, so the armour is re-baked as
@@ -637,6 +767,31 @@ def gore_code(char, meta, mdir, sc):
     guns = [GORE_LIMBS[L] for L, d in g['limbs'].items() if L != 'head' and any(si < len(mw) and mw[si] for si in d['surfaces'])]
     if guns: out.append(f'\toverride int HCE_GunLimb() {{ return {guns[0]}; }}\n')
     return ''.join(out)
+
+
+def gun_code(meta, mdir):
+    """HCE_ShowGun: the gun surfaces baked into the body (mesh_weapon), hidden when it dies or loses its gun arm,
+    back to the MODELDEF's skins ('None') when a Flood form gets up again"""
+    ws = [i for i, w in enumerate(meta.get('mesh_weapon') or []) if w]
+    if not ws: return ''
+    return ('\toverride void HCE_ShowGun(bool show)\n\t{\n\t\tsuper.HCE_ShowGun(show);\n'
+            "\t\tName sk = show ? 'None' : 'hce_hidden.png';\n"
+            f'\t\tstatic const int W[] = {{ {", ".join(map(str, ws))} }};\n'
+            f'\t\tfor(int i = 0; i < W.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "models/{mdir}/weapons", sk, CMDL_USESURFACESKIN);\n\t}}\n')
+
+
+def overlay_gun_code(char, meta, mdir, ov):
+    """HCE_ShowGun for a variant whose gun is an overlay model (the Marine arsenal, the Plasma Casters)"""
+    oi = ov.get('overlay_idx', ARSENAL_IDX)
+    a = meta['arsenal'][ov['overlay']]
+    return ('\toverride void HCE_ShowGun(bool show)\n\t{\n\t\tsuper.HCE_ShowGun(show);\n'
+            f'\t\tif(show) A_ChangeModel(\'None\', {oi}, "models/{mdir}/{char}", \'{a["model"]}\');\n'
+            f'\t\telse A_ChangeModel(\'None\', {oi}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);\n\t}}\n')
+
+
+# a Hunter's severed cannon arm comes off as HaloDoom's own weapon (the right arm, limb 2)
+HUNTER_ARM_WEAPON = {'hunter fuel rod': 'Halo_FuelRod', 'fuel rod': 'Halo_FuelRod', 'plasma caster': 'Halo_PlasmaCaster',
+                     'flamethrower': 'Halo_Flamethrower'}
 
 
 def marine_code(meta, mdir):
@@ -779,7 +934,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir)
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir)
                   + (marine_code(meta, mdir) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
@@ -954,7 +1109,7 @@ def build(cfg=None):
                         dst = f'{pack}/models/{mdir}/weapons/{wmat}'
                         src = f'{OUT}/models/{char}/{wmat}'
                         if not os.path.exists(src): src = f'{OUT}/weapons/{wid_equipped}/{wmat}'
-                        if not os.path.exists(dst): shutil.copy(src, dst)
+                        if not os.path.exists(dst): copy_weapon_tex(src, dst)
                         weapon_lines.append(f'\tSurfaceSkin 0 {si} "{wmat}"')
                     else:
                         hid = f'{pack}/models/{mdir}/weapons/hce_hidden.png'
@@ -983,10 +1138,13 @@ def build(cfg=None):
                     if v.get('_hunter_color'): bake_hunter(char, matn, v['_hunter_color'], dst)
                     elif vivid: bake_vivid(char, matn, vivid, dst)
                     elif elite_skin(char, matn, color, dst, specops='specops' in vname): pass
-                    elif 'specops' in vname and char.startswith('Elite'):
+                    elif 'specops' in vname and (char.startswith('Elite') or (char == 'GruntSpecOps' and max(color or (1,)) < 0.2)):
                         # the Spec Ops body's own textures: baked as a blue Minor (the blue cube-map sheen the painted
-                        # skins have), then turned purple the same way as the painted skins
-                        bake_skin(char, matn, MINOR_BLUE, dst); purple(Image.open(dst).convert('RGB')).save(dst)
+                        # skins have), then turned purple the same way as the painted skins. The black Spec Ops Grunts
+                        # get the same purple (the red anti-air ones keep their red)
+                        bake_skin(char, matn, MINOR_BLUE, dst)
+                        if char == 'GruntSpecOps': grunt_purple(char, matn, dst)
+                        else: purple(Image.open(dst).convert('RGB')).save(dst)
                     else: bake_skin(char, matn, color, dst)
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''
@@ -1014,6 +1172,9 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
+            if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov)
+            if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon):
+                extra += f'\toverride Name HCE_LimbReplacement(int limb) {{ if(limb != HCE_LIMB_RARM) return \'None\'; return "{HUNTER_ARM_WEAPON[weapon]}"; }}\n'
             if '%STICKY_LOADED%' in extra:
                 extra = (extra.replace('%STICKY_LOADED%', overlay_swap(char, meta, mdir, 'sticky_detonator'))
                               .replace('%STICKY_FIRED%', overlay_swap(char, meta, mdir, 'sticky_detonator_fired')))
@@ -1490,7 +1651,7 @@ def arsenal_lines(char, name, meta, pack, mdir, idx=None):
     if not os.path.exists(dst): shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dst)
     for m in a['materials']:
         d = f'{pack}/models/{mdir}/weapons/{m}'
-        if not os.path.exists(d): shutil.copy(f'{OUT}/models/{char}/{m}', d)
+        if not os.path.exists(d): copy_weapon_tex(f'{OUT}/models/{char}/{m}', d)
     idx = ARSENAL_IDX if idx is None else idx
     return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {idx} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
             + [f'\tSurfaceSkin {idx} {k} "{m}"' for k, m in enumerate(a['materials'])])
@@ -1500,7 +1661,7 @@ def overlay_swap(char, meta, mdir, name):
     a = meta['arsenal'][name]
     for m in a['materials']:
         dd = f'{PACK}/models/{mdir}/weapons/{m}'
-        if not os.path.exists(dd): os.makedirs(os.path.dirname(dd), exist_ok=True); shutil.copy(f'{OUT}/models/{char}/{m}', dd)
+        if not os.path.exists(dd): os.makedirs(os.path.dirname(dd), exist_ok=True); copy_weapon_tex(f'{OUT}/models/{char}/{m}', dd)
     dd = f'{PACK}/models/{mdir}/{char}/{a["model"]}'
     if not os.path.exists(dd): shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dd)
     out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']

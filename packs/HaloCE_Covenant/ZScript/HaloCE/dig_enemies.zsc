@@ -258,6 +258,13 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 20, 21, 22, 23, 24, 25, 26, 27 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce_dig/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\brute\brute captain plasma caster
@@ -666,6 +673,12 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 8, "models/hce_dig/Brute", 'Brute_w_plasma_caster.iqm');
+		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -5118,6 +5131,13 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 5, 6, 7, 8, 9, 10, 11 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce_dig/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\drone\drone needler
@@ -5627,6 +5647,13 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 6, 7, 8, 9, 10 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce_dig/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 
@@ -7236,6 +7263,13 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 			break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce_dig/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\jackal\jackal\jackal marksman plasma carbine
@@ -8118,6 +8152,13 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce_dig/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 

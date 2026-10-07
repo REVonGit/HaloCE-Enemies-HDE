@@ -12,6 +12,7 @@ export HCE_MAPS=/path/to/maps        # folder holding a10.map ... d40.map
 export HCE_OUT=./out HCE_PACK=./pack # pack/ already holds the hand-written ZScript/CVARINFO/SNDINFO
 python3 extract_ai.py      # actv/actr/bipd/coll/weap tags                          -> $HCE_OUT/ai_data.json
 python3 extract_weapons.py # third-person weapon models + textures                 -> $HCE_OUT/weapons
+python3 extract_weapon_shine.py  # Covenant weapons' reflection masks + cube maps  -> $HCE_OUT/weapons/<id>/shine.json, $HCE_OUT/cubemaps/w_<id>
 python3 extract_chars.py   # IQM models + animations + skins + held weapons         -> $HCE_OUT/models
 HCE_SPV3_B40=/path/to/b40_1.map HCE_SPV3_BITMAPS=/path/to/bitmaps.map python3 gore_kit.py   # dismemberment: limb surfaces, stumps, gibs (in place)
 python3 extract_cubemaps.py # Halo's Elite / Grunt reflection cube maps -> $HCE_OUT/cubemaps (the baked armour shine)
@@ -32,6 +33,7 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 | `lib/iqm.py` | IQM v2 writer |
 | `lib/bitmaps.py`, `lib/render.py` | Xbox bitmap decoding (DXT/swizzled) and shader lookup |
 | `extract_weapons.py` | Weapon `mod2` geometry; sword blade and needles get solid glow textures |
+| `extract_weapon_shine.py` | Halo CE's reflections for the Covenant weapons: each third-person shader's multipurpose map (red: reflection mask) and its own cube map, with its perpendicular/parallel brightness. `build_pack.py` (`weapon_shine`, `copy_weapon_tex`) bakes the reflection into the colourful parts of every Covenant weapon texture it copies (the plasma rifle's cube map and a saturation mask for the weapons without CE data) |
 | `extract_chars.py` | Character list, LOD/permutation pick, overlay baking, weapons bound to the hand marker (the Marines instead carry overlay guns and every Halo CE cosmetic permutation but the damaged vest: faces, headgear, sleeves; the Marine jaw held shut at its bind pose in every animation), surfaces merged per material (UZDoom max 32). Halo CE's Marine heads have an articulated jaw (`bip01 ponytail1`) over the open-mouth face textures; the Halo 2 stances don't drive it, so it is held where CE's own animations keep it (mouth shut) |
 | `extract_ai.py` | AI and stat dump |
 | `build_pack.py` | Pack generator: weapon table, animation mapping, per-type AI flags; bakes the variant skins, with a stylised armour shine on Elites and Grunts (`SHINE`: the model's normals rasterised into texture space, lit by a fixed sky and masked by the multipurpose map's specular channel, standing in for Halo CE's cube-map reflection) |

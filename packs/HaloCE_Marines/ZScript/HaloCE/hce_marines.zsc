@@ -245,6 +245,12 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine assault rifle major
@@ -383,6 +389,12 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma5b.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine battle rifle
@@ -520,6 +532,12 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_battle_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine bulldog
@@ -656,6 +674,12 @@ class HCE_MarineBulldog : HCE_MarineBase
 		case 'stand landing-dead%2': return 66;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_bulldog.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -795,6 +819,12 @@ class HCE_MarineCommando : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_commando.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine dmr
@@ -933,6 +963,12 @@ class HCE_MarineDmr : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_dmr.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine double barrel
@@ -1070,6 +1106,12 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -1210,6 +1252,12 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_flamethrower.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine gpmg
@@ -1347,6 +1395,12 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_gpmg.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -1487,6 +1541,12 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_grenade_launcher.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine hydra
@@ -1625,6 +1685,12 @@ class HCE_MarineHydra : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_hydra.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine ma37
@@ -1762,6 +1828,12 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -1902,6 +1974,12 @@ class HCE_MarineMagnum : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_magnum.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine needler
@@ -2037,6 +2115,12 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case 'stand rifle throw-grenade': return 72;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_needler.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -2176,6 +2260,12 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_plasma_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine rocket launcher
@@ -2314,6 +2404,12 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_rocket_launcher.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine shotgun
@@ -2451,6 +2547,12 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_pump_shotgun.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -2591,6 +2693,12 @@ class HCE_MarineSidekick : HCE_MarineBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine\marine smg
@@ -2727,6 +2835,12 @@ class HCE_MarineSmg : HCE_MarineBase
 		case 'stand landing-dead%2': return 66;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_smg.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -2865,6 +2979,12 @@ class HCE_MarineSniper : HCE_MarineBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sniper.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -3039,6 +3159,12 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 			if(c) { State st = c.FindState("ExplodeAndDie"); if(st) c.SetState(st); }
 			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sticky_detonator.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -3318,6 +3444,12 @@ class HCE_SgtJohnson : HCE_MarineBase
 	{
 		if(hce_cqc) { super.HCE_FireShot(special); return; }
 		HCE_FireRail();
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_stanchion.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 
 	// Sergeant Johnson: always his own face and voice. The Stanchion at range; when an enemy gets within ~6 m he
@@ -3610,6 +3742,12 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored assault rifle major
@@ -3748,6 +3886,12 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma5b.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored battle rifle
@@ -3885,6 +4029,12 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_battle_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored bulldog
@@ -4021,6 +4171,12 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		case 'stand landing-dead%2': return 66;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_bulldog.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -4160,6 +4316,12 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_commando.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored dmr
@@ -4298,6 +4460,12 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_dmr.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored double barrel
@@ -4435,6 +4603,12 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -4575,6 +4749,12 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_flamethrower.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored gpmg
@@ -4712,6 +4892,12 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_gpmg.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -4852,6 +5038,12 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_grenade_launcher.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored hydra
@@ -4990,6 +5182,12 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_hydra.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored ma37
@@ -5127,6 +5325,12 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -5267,6 +5471,12 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_magnum.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored needler
@@ -5402,6 +5612,12 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case 'stand rifle throw-grenade': return 72;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_needler.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -5541,6 +5757,12 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored plasma rifle major
@@ -5678,6 +5900,12 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_plasma_rifle.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -5817,6 +6045,12 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_rocket_launcher.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored shotgun major
@@ -5954,6 +6188,12 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_pump_shotgun.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -6094,6 +6334,12 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		}
 		return 30;
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sidekick.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
 }
 
 // characters\marine_armored\marine_armored smg
@@ -6230,6 +6476,12 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		case 'stand landing-dead%2': return 66;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_smg.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -6368,6 +6620,12 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case 'stand rifle warn%1': return 51;
 		}
 		return 30;
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sniper.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 
@@ -6542,6 +6800,12 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 			if(c) { State st = c.FindState("ExplodeAndDie"); if(st) c.SetState(st); }
 			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_sticky_detonator.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
 }
 

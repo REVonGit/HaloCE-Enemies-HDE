@@ -235,6 +235,13 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/FloodElite", 'FloodElite_blood3.iqm'); break;
 		}
 	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite assault rifle
@@ -1639,6 +1646,13 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 		case 2: A_ChangeModel('None', 7, "models/hce/FloodHuman", 'FloodHuman_blood2.iqm'); break;
 		case 3: A_ChangeModel('None', 7, "models/hce/FloodHuman", 'FloodHuman_blood3.iqm'); break;
 		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		Name sk = show ? 'None' : 'hce_hidden.png';
+		static const int W[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
 	}
 }
 

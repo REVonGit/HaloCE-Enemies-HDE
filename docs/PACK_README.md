@@ -638,7 +638,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 
 **Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 
-**Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Assault Rifle, SMG, Bulldog, Sidekick, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
+**Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
 * **Headshot kills:** always take the head off.
 * **Other kills:** a kill landing on an arm takes it off nearly every time (85%). Body shots leave the limbs on.
 * **Where a hit lands:** the top of the enemy (the headshot zone) is the head; the outer sides at arm height are the arms, the middle is the body. The Elites', Grunts', Jackals' and Marines' hit boxes reach the tops of their heads, so a shot at the head connects.

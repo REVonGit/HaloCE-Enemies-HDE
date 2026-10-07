@@ -2712,8 +2712,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(wpn == "halo_spiker") return mod == 'Melee' ? HCE_WK_DISMEMBER : HCE_WK_NONE;
 			static const String DISW[] = { "halo_magnum", "halo_battlerifle", "halo_dmr", "halo_sniperrifle", "halo_shotgun",
 				"halo_carbine", "halo_scattershot", "halo_energysword", "halo_lightrifle", "halo_ma5b", "halo_beamrifle",
-				"halo_boltshot", "halo_commando", "halo_assaultrifle", "halo_sidekick", "halo_smg", "halo_bulldog",
-				"pistol", "chaingun", "shotgun", "chainsaw" };
+				"halo_boltshot", "halo_commando", "pistol", "chaingun", "shotgun", "chainsaw" };
 			for(int i = 0; i < DISW.Size(); i++) if(wpn == DISW[i]) return HCE_WK_DISMEMBER;
 			return HCE_WK_NONE;
 		}

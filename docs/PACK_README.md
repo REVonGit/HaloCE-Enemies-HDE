@@ -739,10 +739,14 @@ Marines following you (every Marine is an ally) take orders and react to how you
   * `hce_openfire`: open fire.
   * `hce_focus`: focus on the enemy in your crosshair. Every Marine targets it until it's dead (and opens fire, if holding).
   * `hce_suppress`: suppress. For 8 seconds they fire twice as long and pause a third as long, at the enemy in your crosshair if there is one.
-  * `hce_medic`: medic. The nearest Marine runs to you, crouches beside you and patches you up (up to 40 health, never past your maximum). Once every 20 seconds.
+  * `hce_medic`: medic. Put a Marine in your crosshair: the nearest corpsman (`HCE_MarineMedic`) runs to him, crouches beside him and patches him up (60% of his health back, never past his maximum).
   * `hce_weapon`: get that weapon. Point at a gun on the ground; the nearest Marine that can use it goes and picks it up, crouching beside it as usual and leaving his own, whether or not he'd have wanted it.
 
   The aliases are for `netevent hce_squad 0`–`8` (in that order).
+* **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (it's one his body has a grip for), you swap: you get his gun and he takes yours, and thanks you. If he can't, he tells you off. (HaloDoom Evolved packs only.)
+* **Names:** every Marine has a rank and a name, rolled when he spawns: Privates, Privates First Class and Lance Corporals among the regulars, Lance Corporals to Sergeants among the Armored Marines, Corporals and Staff Sergeants for the Majors, Hospital Corpsman Third Class (`HM3.`) for the corpsmen. First names, middle initials and surnames are drawn from long lists, e.g. `PVT. George A. Romero`. Sergeant Johnson is always `SGT. Avery J. Johnson` and Stacker `MSG. Marcus P. Stacker`.
+* **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.
+* **Corpsman (new, `HCE_MarineMedic`, 30321):** a Marine with the Sidekick who answers the medic order. He's in the random Marine pool.
 * **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
   * Killing a Marine: the others who saw it call it out, and each of them counts it as two hits against you.
   * Turn betrayal off with `hce_betrayal 0`; they still scold you.
@@ -912,4 +916,5 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30318 | `HCE_GruntHeavyFuelRod` |
 | 30319 | `HCE_GruntUltraNeedler` |
 | 30320 | `HCE_GruntUltraPlasmaPistol` |
+| 30321 | `HCE_MarineMedic` |
 | 30454 | `HCE_SgtStacker` |

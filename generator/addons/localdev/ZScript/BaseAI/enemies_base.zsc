@@ -599,6 +599,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_enabled) return;
 		static const int prefs[] = { 0, 1, 3 };
 		hce_weaponPref = prefs[random(0, 2)];             // a Marine's liking: close, mid or long range
+		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0) HCE_RollName();
 		curChaseAngle = angle;
 		hce_strafeDir = random(0, 1) ? 1 : -1;
 		hce_grenadeTics = int(hce_grenadeDelay * 35 * frandom(0.5, 1.0));
@@ -1652,6 +1653,90 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
 
+	// ------------------------------------------------------------------
+	// A Marine's rank and name, shown over him while the player has him in the crosshair (HCE_SpawnAllHandler's
+	// overlay, with Halo CE's health bar). Rolled at spawn from the lists below; Johnson and Stacker have their own.
+	// ------------------------------------------------------------------
+	String hce_rankName;
+
+	virtual void HCE_RollName()
+	{
+		static const String first[] = { "George", "James", "Michael", "Robert", "David", "William", "Richard", "Joseph",
+			"Thomas", "Charles", "Daniel", "Matthew", "Anthony", "Mark", "Paul", "Steven", "Andrew", "Kenneth", "Joshua",
+			"Kevin", "Brian", "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan", "Jacob", "Gary", "Nicholas",
+			"Eric", "Jonathan", "Stephen", "Larry", "Justin", "Scott", "Brandon", "Benjamin", "Samuel", "Gregory",
+			"Frank", "Raymond", "Patrick", "Jack", "Dennis", "Jerry", "Tyler", "Aaron", "Jose", "Adam", "Henry",
+			"Nathan", "Douglas", "Zachary", "Peter", "Kyle", "Walter", "Ethan", "Jeremy", "Harold", "Carl", "Keith",
+			"Roger", "Gerald", "Christian", "Terry", "Sean", "Arthur", "Austin", "Noah", "Lawrence", "Jesse", "Dylan",
+			"Bryan", "Joe", "Jordan", "Billy", "Bruce", "Albert", "Willie", "Gabriel", "Logan", "Alan", "Juan", "Wayne",
+			"Roy", "Ralph", "Randy", "Eugene", "Vincent", "Russell", "Elijah", "Louis", "Bobby", "Philip", "Johnny",
+			"Marcus", "Luis", "Carlos", "Miguel", "Hector", "Rafael", "Diego", "Antonio", "Malik", "Andre", "Darnell",
+			"Terrence", "Jamal", "Isaiah", "Ivan", "Dmitri", "Viktor", "Anton", "Kenji", "Hiro", "Arjun", "Ravi",
+			"Liam", "Connor", "Declan", "Seamus", "Lars", "Sven", "Mateo", "Santiago", "Omar", "Tariq", "Kwame", "Kofi" };
+		static const String last[] = { "Romero", "Smith", "Johnston", "Williams", "Brown", "Jones", "Garcia", "Miller",
+			"Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Taylor", "Moore",
+			"Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis",
+			"Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+			"Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez",
+			"Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris",
+			"Morales", "Murphy", "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey",
+			"Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson", "Watson", "Brooks", "Chavez", "Wood",
+			"James", "Bennett", "Gray", "Mendoza", "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel",
+			"Myers", "Long", "Ross", "Foster", "Jimenez", "Powell", "Jenkins", "Perry", "Russell", "Sullivan", "Bell",
+			"Coleman", "Butler", "Henderson", "Barnes", "Gonzales", "Fisher", "Vasquez", "Simmons", "Romanov", "Petrov",
+			"Volkov", "Kowalski", "Novak", "Schmidt", "Muller", "Weber", "Fischer", "O'Brien", "Gallagher", "Brennan",
+			"Doyle", "Byrne", "Lindqvist", "Johansson", "Tanaka", "Suzuki", "Watanabe", "Sato", "Singh", "Kumar",
+			"Okafor", "Mensah", "Haddad", "Nasser", "Rossi", "Bianchi", "Esposito", "Moretti", "Dubois", "Lefevre",
+			"Silva", "Santos", "Oliveira", "Costa", "Kaminski", "Wozniak", "Horvath", "Nagy", "Popescu", "Ivanov" };
+		static const String grunt[] = { "PVT.", "PVT.", "PFC.", "PFC.", "LCPL." };
+		static const String armour[] = { "LCPL.", "CPL.", "CPL.", "SGT." };
+		String rank;
+		if(hce_isMedic) rank = "HM3.";                              // a Navy corpsman
+		else
+		{
+			String cn = GetClassName();
+			bool armoured = cn.IndexOf("Armored") >= 0;
+			rank = armoured ? armour[random(0, armour.Size() - 1)] : grunt[random(0, grunt.Size() - 1)];
+			if(cn.IndexOf("Major") >= 0) rank = armoured ? "SSGT." : "CPL.";
+		}
+		hce_rankName = String.Format("%s %s %c. %s", rank, first[random(0, first.Size() - 1)], random(65, 90), last[random(0, last.Size() - 1)]);
+	}
+
+	// ------------------------------------------------------------------
+	// Trading guns: the player presses use on a Marine following them. If the Marine can carry the player's gun
+	// (a loadout of his body), they swap: the player gets the Marine's gun and the Marine takes the player's.
+	// ------------------------------------------------------------------
+	override bool Used(Actor user)
+	{
+		if(!hce_enabled || !user || !user.player || health <= 0 || !HCE_InSquad() || hce_betrayed) return super.Used(user);
+		return HCE_TradeWith(user);
+	}
+
+	bool HCE_TradeWith(Actor user)
+	{
+		let pw = user.player.ReadyWeapon;
+		if(!pw || hce_dropWeapon == 'None' || hce_projectile == 'None') return false;
+		Name pc = pw.GetClassName();
+		if(pc == hce_dropWeapon) return false;
+		int lo = HCE_LoadoutIndex(pc);
+		class<Weapon> mc = (class<Weapon>)(hce_dropWeapon);
+		if(lo < 0 || !mc) { HCE_Say('Scold', 0.5, 35 * 2); return true; }      // not a gun he can use
+		user.TakeInventory(pc, 1);
+		user.GiveInventory(mc, 1);
+		let nw = Weapon(user.FindInventory(mc));
+		if(nw) user.player.PendingWeapon = nw;
+		HCE_StopFireLoop();
+		hce_loadout = lo; hce_hasLoadout = true;
+		HCE_ApplyLoadout(lo);
+		HCE_LoadoutVisual(lo);
+		hce_dropWeapon = pc;
+		HCE_SetupAmmo();
+		hce_burstShot = 0; hce_shotsLeft = 0; hce_chargeTics = 0; hce_sepTics = max(hce_sepTics, 15);
+		hce_curAnimKind = -1;
+		HCE_Say('Thanks', 1.0, 35, true);
+		return true;
+	}
+
 	// the fire orders (the squad keys; the Chief's own lines play from the handler)
 	void HCE_FireOrder(int o, Actor aimed)
 	{
@@ -1671,7 +1756,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('Acknowledge', 1.0, 35);
 	}
 
-	// "medic": run to the player, crouch beside them and patch them up (true: busy with it this tic)
+	// "medic": a corpsman (hce_isMedic) runs to the Marine the player has in the crosshair, crouches beside him and
+	// patches him up (true: busy with it this tic)
+	bool hce_isMedic;
 	void HCE_MedicOrder(Actor pl)
 	{
 		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
@@ -1703,8 +1790,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		HCE_Brake();
 		if(hce_medicTics > 2) return true;
-		pl.GiveBody(40);                                   // a field dressing: up to 40 health, never past the maximum
+		pl.GiveBody(int(max(20, pl.SpawnHealth() * 0.6)));   // a field dressing: 60% of his health, never past his maximum
 		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
+		let pm = HaloDoom_EnemyBase(pl);
+		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; pm.HCE_Say('Thanks', 0.8, 35); }
 		hce_medicFor = null;
 		HCE_Play(HCE_A_IDLE, true, true);
 		return true;

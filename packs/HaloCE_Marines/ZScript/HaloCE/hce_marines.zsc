@@ -3401,6 +3401,164 @@ class HCE_MarineMagnum : HCE_MarineBase
 	}
 }
 
+// characters\marine\marine medic
+class HCE_MarineMedic : HCE_MarineBase
+{
+	Default
+	{
+		Health 12;
+		+FRIENDLY
+		Speed 6.4;
+		HaloDoom_EnemyBase.HCE_Type 7;
+		HaloDoom_EnemyBase.HCE_Variant "marine medic";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 400;
+		HaloDoom_EnemyBase.HCE_Movement 4.16, 6.41, 12;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_SidekickRound", 1, 10.00, 1.00, 2000;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 933.3;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
+		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
+		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 1, 2, 0.25, 1.0, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.30, 0.00, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.10, 0.35, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.75, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 24, 5.0, 1.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 1.12, 1.88, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sidekick/Fire", "Halo/Weapons/Sidekick/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_Sidekick", "FragGrenades";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_FollowPlayer
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
+		case HCE_A_FLEE: return 'flee rifle move-front';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
+		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
+		case HCE_A_BERSERK: return 'stand rifle berserk%3';
+		case HCE_A_WARN: return 'stand h2pistol warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front chest', 's-kill front gut' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
+		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
+		case HCE_A_RELOAD: return 'stand pistol reload-1';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return 69;
+		case 'crouch h2pistol move-front': return 28;
+		case 'flaming rifle idle': return 62;
+		case 'flaming rifle move-front': return 40;
+		case 'flee rifle move-front': return 20;
+		case 'h-kill back gut': return 47;
+		case 'h-kill front gut': return 52;
+		case 'h-kill front head': return 70;
+		case 'h-ping back chest': return 37;
+		case 'h-ping back gut': return 48;
+		case 'h-ping front chest': return 26;
+		case 'h-ping front gut': return 22;
+		case 'h-ping front l-arm': return 38;
+		case 'h-ping front l-leg': return 57;
+		case 's-kill back gut': return 47;
+		case 's-kill front chest': return 51;
+		case 's-kill front gut': return 79;
+		case 's-kill left gut': return 70;
+		case 's-kill right gut': return 54;
+		case 's-ping front gut%0 baked': return 12;
+		case 's-ping front gut%1 baked': return 12;
+		case 'stand airborne-dead': return 43;
+		case 'stand h2pistol airborne': return 92;
+		case 'stand h2pistol dive-front': return 90;
+		case 'stand h2pistol dive-left': return 90;
+		case 'stand h2pistol dive-right': return 90;
+		case 'stand h2pistol evade-left': return 35;
+		case 'stand h2pistol evade-right': return 35;
+		case 'stand h2pistol fire-1 baked': return 13;
+		case 'stand h2pistol idle': return 69;
+		case 'stand h2pistol land-soft': return 35;
+		case 'stand h2pistol melee': return 28;
+		case 'stand h2pistol move-back': return 23;
+		case 'stand h2pistol move-front': return 23;
+		case 'stand h2pistol move-left': return 23;
+		case 'stand h2pistol move-right': return 23;
+		case 'stand h2pistol turn-left': return 16;
+		case 'stand h2pistol turn-right': return 16;
+		case 'stand h2pistol warn': return 51;
+		case 'stand landing-dead': return 43;
+		case 'stand landing-dead%2': return 66;
+		case 'stand pistol overheat': return 69;
+		case 'stand pistol reload-1': return 60;
+		case 'stand rifle berserk%3': return 51;
+		case 'stand rifle celebrate%1': return 72;
+		case 'stand rifle celebrate%2': return 80;
+		case 'stand rifle celebrate%3': return 64;
+		case 'stand rifle signal-attack': return 55;
+		case 'stand rifle throw-grenade': return 72;
+		}
+		return 30;
+	}
+
+	// the squad's corpsman: answers "medic" (HCE_SpawnAllHandler.SquadOrder -> HCE_MedicOrder)
+	override void PostBeginPlay()
+	{
+		hce_isMedic = true;
+		super.PostBeginPlay();
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		if(show) A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_sidekick.iqm');
+		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
+}
+
 // characters\marine\marine needler
 class HCE_MarineNeedler : HCE_MarineBase
 {
@@ -4944,6 +5102,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 	{
 		super.PostBeginPlay();
 		hce_voice = 'Marine_Johnson';
+		hce_rankName = "SGT. Avery J. Johnson";
 		hce_longProj = hce_projectile; hce_longErr = hce_errorAngle; hce_longSpeed = hce_projSpeed;
 		hce_longShots[0] = hce_patShotsMin; hce_longShots[1] = hce_patShotsMax; hce_longShots[2] = hce_patInterval;
 		hce_longPause[0] = hce_patPauseMin; hce_longPause[1] = hce_patPauseMax;
@@ -5134,6 +5293,7 @@ class HCE_SgtStacker : HCE_MarineBase
 	{
 		super.PostBeginPlay();
 		hce_voice = 'Marine_Sarge';
+		hce_rankName = "MSG. Marcus P. Stacker";
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 	override void HCE_ShowGun(bool show)
@@ -9939,6 +10099,7 @@ class HCE_RandomMarine : RandomSpawner
 		DropItem "HCE_MarineHydra", 255, 1;
 		DropItem "HCE_MarineMa37", 255, 1;
 		DropItem "HCE_MarineMagnum", 255, 1;
+		DropItem "HCE_MarineMedic", 255, 1;
 		DropItem "HCE_MarineNeedler", 255, 1;
 		DropItem "HCE_MarinePlasmaRifle", 255, 1;
 		DropItem "HCE_MarineRocketLauncher", 255, 1;

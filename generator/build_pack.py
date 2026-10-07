@@ -1849,6 +1849,18 @@ STACKER_CODE = """
 	{
 		super.PostBeginPlay();
 		hce_voice = 'Marine_Sarge';
+		hce_rankName = "MSG. Marcus P. Stacker";
+	}
+"""
+
+# Corpsman (new): a Marine with the Sidekick who answers the "medic" order (HCE_MedicOrder): he runs to the Marine
+# the player has in the crosshair, crouches beside him and patches him up. A Navy corpsman's rank (HM3)
+MEDIC_CODE = """
+	// the squad's corpsman: answers "medic" (HCE_SpawnAllHandler.SquadOrder -> HCE_MedicOrder)
+	override void PostBeginPlay()
+	{
+		hce_isMedic = true;
+		super.PostBeginPlay();
 	}
 """
 
@@ -1887,6 +1899,12 @@ def add_marine_arsenal(variants):
         v['_ov'] = dict(overlay=ovl, stance=stance, pellets=pellets, spread=spread, unique=True, melee=(40, 75), health=60,
                         skin_as='HCE_MarineAssaultRifle', code=STACKER_CODE)
         variants['characters\\marine\\sgt stacker'] = v
+    # the corpsman: the Sidekick Marine's kit, in the random pool
+    sk = variants.get('characters\\marine\\marine sidekick')
+    if sk and 'characters\\marine\\marine medic' not in variants:
+        v = copy.deepcopy(sk)
+        v['_ov'] = dict(v['_ov'], code=MEDIC_CODE)
+        variants['characters\\marine\\marine medic'] = v
 
 add_marine_arsenal(AI['variants'])
 
@@ -1943,6 +1961,7 @@ def johnson_code(A, animtxt, char, meta, mdir):
 	{{
 		super.PostBeginPlay();
 		hce_voice = 'Marine_Johnson';
+		hce_rankName = "SGT. Avery J. Johnson";
 		hce_longProj = hce_projectile; hce_longErr = hce_errorAngle; hce_longSpeed = hce_projSpeed;
 		hce_longShots[0] = hce_patShotsMin; hce_longShots[1] = hce_patShotsMax; hce_longShots[2] = hce_patInterval;
 		hce_longPause[0] = hce_patPauseMin; hce_longPause[1] = hce_patPauseMax;

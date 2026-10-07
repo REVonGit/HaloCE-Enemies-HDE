@@ -289,10 +289,68 @@ class HCE_SpawnAllHandler : EventHandler
 {
 	// "netevent hce_squad <order>" (the Halo CE Squad keys) to the Marines following the player within 1536 units:
 	//   0 follow me, 1 hold here, 2 regroup on me, 3 hold fire, 4 open fire, 5 focus fire on the enemy in the
-	//   crosshair, 6 suppress (it, or whatever they're fighting), 7 medic (the nearest one patches the player up),
+	//   crosshair, 6 suppress (it, or whatever they're fighting), 7 medic (the nearest corpsman patches up the Marine
+	//   in the crosshair),
 	//   8 weapon (the nearest one that can use it fetches the gun in the crosshair)
 	// The Master Chief says the order (HCE/Chief/*: the Marines pack's sounds); nothing is printed.
-	int medicUntil[MAXPLAYERS];
+	// the Marine each player has in the crosshair (the name / health overlay; the medic order), and when they last did
+	HaloDoom_EnemyBase looked[MAXPLAYERS];
+	int lookedTic[MAXPLAYERS];
+
+	static HaloDoom_EnemyBase LookedAtMarine(PlayerPawn pl)
+	{
+		if(!pl || !pl.player) return null;
+		FLineTraceData d;
+		pl.LineTrace(pl.angle, 2048, pl.pitch, 0, pl.player.viewheight, data: d);
+		let m = HaloDoom_EnemyBase(d.HitActor);
+		if(!m || !m.hce_enabled || m.health <= 0 || m.hce_team != HCE_TEAM_HUMAN || !m.bFRIENDLY) return null;
+		return m;
+	}
+
+	override void WorldTick()
+	{
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo) { looked[i] = null; continue; }
+			let m = LookedAtMarine(players[i].mo);
+			if(m) { looked[i] = m; lookedTic[i] = level.maptime; }
+			else if(looked[i] && (looked[i].health <= 0 || level.maptime - lookedTic[i] > 12)) looked[i] = null;
+		}
+	}
+
+	// over the Marine in the crosshair: his rank and name, and Halo CE's health bar (HaloDoom Evolved's CE HUD art)
+	override void RenderOverlay(RenderEvent e)
+	{
+		let m = looked[consoleplayer];
+		if(!m || m.health <= 0 || automapactive) return;
+		double fade = clamp(1.0 - (level.maptime - lookedTic[consoleplayer] - 4) / 8.0, 0, 1);
+		if(fade <= 0) return;
+		vector3 head = m.pos + (0, 0, m.height + 10);
+		vector3 d = level.Vec3Diff(e.ViewPos, head);
+		double ca = cos(e.ViewAngle), sa = sin(e.ViewAngle), cp = cos(e.ViewPitch), sp = sin(e.ViewPitch);
+		double fwd = d.x * ca + d.y * sa, left = -d.x * sa + d.y * ca;
+		double depth = fwd * cp - d.z * sp, up = fwd * sp + d.z * cp;
+		if(depth < 8) return;
+		int w = Screen.GetWidth(), h = Screen.GetHeight();
+		double fov = players[consoleplayer].FOV;
+		double focal = (h * 0.5) / (tan(fov * 0.5) * 0.75);     // the FOV is 4:3's horizontal one
+		double sx = w * 0.5 - left / depth * focal;
+		double sy = h * 0.5 - up / depth * focal * level.pixelstretch;
+		double sc = max(1.0, h / 540.0);
+		// the health bar: nine segments, red when low (CE_HB1..9)
+		double frac = clamp(m.health / double(max(1, m.SpawnHealth())), 0, 1);
+		int bars = clamp(int(ceil(frac * 9)), 1, 9);
+		TextureID tex = TexMan.CheckForTexture(String.Format("graphics/hce/healthbar/ce_hb%d.png", bars), TexMan.Type_Any);
+		double bw = 168 * 0.55 * sc, bh = 26 * 0.55 * sc;
+		if(tex.IsValid())
+			Screen.DrawTexture(tex, false, sx - bw * 0.5, sy - bh, DTA_DestWidthF, bw, DTA_DestHeightF, bh, DTA_Alpha, 0.9 * fade);
+		// the name above it
+		Font f = NewSmallFont;
+		String n = m.hce_rankName;
+		double ts = sc;
+		Screen.DrawText(f, Font.CR_LIGHTBLUE, sx - f.StringWidth(n) * ts * 0.5, sy - bh - f.GetHeight() * ts - 2 * sc, n,
+			DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, fade);
+	}
 
 	void SquadOrder(ConsoleEvent e)
 	{
@@ -301,7 +359,6 @@ class HCE_SpawnAllHandler : EventHandler
 		int o = clamp(e.Args[0], 0, 8);
 		static const String line[] = { "HCE/Chief/FollowMe", "", "HCE/Chief/FollowMe", "HCE/Chief/HoldFire", "HCE/Chief/OpenFire",
 			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon" };
-		if(o == 7 && level.maptime < medicUntil[e.Player]) return;
 		Array<HaloDoom_EnemyBase> squad;
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
 		HaloDoom_EnemyBase m;
@@ -318,9 +375,12 @@ class HCE_SpawnAllHandler : EventHandler
 		// the one closest to the player (the medic) or to the gun (the weapon)
 		if(o == 7)
 		{
+			let hurt = LookedAtMarine(pl);
+			if(!hurt) return;
 			HaloDoom_EnemyBase best = null;
-			for(int i = 0; i < squad.Size(); i++) if(!best || squad[i].Distance3D(pl) < best.Distance3D(pl)) best = squad[i];
-			if(best) { best.HCE_MedicOrder(pl); medicUntil[e.Player] = level.maptime + 35 * 20; }
+			for(int i = 0; i < squad.Size(); i++)
+				if(squad[i].hce_isMedic && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];
+			if(best) best.HCE_MedicOrder(hurt);
 			return;
 		}
 		if(squad.Size() == 0) return;

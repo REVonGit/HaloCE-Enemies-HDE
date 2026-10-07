@@ -31,6 +31,7 @@ def chunks(text):
         out.append((m.group(1), m.group(2), body))
     return out
 
+HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_healthbar')   # CE_HB1..9 from HDE
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
@@ -158,6 +159,10 @@ def main():
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'
+        if fac == 'marines' and os.path.isdir(HEALTHBAR):
+            # Halo CE's health bar (HaloDoom Evolved's CE HUD art) for the name / health overlay over a Marine
+            os.makedirs(f'{d}/graphics/hce/healthbar', exist_ok=True)
+            for fn in sorted(os.listdir(HEALTHBAR)): shutil.copy(f'{HEALTHBAR}/{fn}', f'{d}/graphics/hce/healthbar/{fn}')
         if fac == 'marines' and os.path.isdir(CHIEF):
             # the Master Chief's squad orders (HCE_SpawnAllHandler.SquadOrder plays them on the player)
             os.makedirs(f'{d}/sounds/hce_chief', exist_ok=True)

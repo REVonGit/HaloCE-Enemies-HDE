@@ -876,7 +876,7 @@ def perm_code(meta, mdir):
             f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
 
 
-def gun_code(meta, mdir):
+def gun_code(meta, mdir, slot=None):
     """HCE_ShowGun: the gun surfaces baked into the body (mesh_weapon), hidden when it dies or loses its gun arm,
     back to the MODELDEF's skins ('None') when a Flood form gets up again"""
     ws = [i for i, w in enumerate(meta.get('mesh_weapon') or []) if w]
@@ -884,7 +884,9 @@ def gun_code(meta, mdir):
     return ('\toverride void HCE_ShowGun(bool show)\n\t{\n\t\tsuper.HCE_ShowGun(show);\n'
             "\t\tName sk = show ? 'None' : 'hce_hidden.png';\n"
             f'\t\tstatic const int W[] = {{ {", ".join(map(str, ws))} }};\n'
-            f'\t\tfor(int i = 0; i < W.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "models/{mdir}/weapons", sk, CMDL_USESURFACESKIN);\n\t}}\n')
+            f'\t\tfor(int i = 0; i < W.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "models/{mdir}/weapons", sk, CMDL_USESURFACESKIN);\n'
+            + (f'\t\tif(!show && hce_hasLoadout) A_ChangeModel(\'None\', {slot}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);   // a picked-up overlay gun\n'
+               if slot is not None else '') + '\t}\n')
 
 
 def overlay_gun_code(char, meta, mdir, ov):
@@ -1023,7 +1025,11 @@ def blood_hide(si, mdir):
 # it. Guns with their own extra code (beam rifle, sticky detonator, Stanchion), the energy sword and the Plasma Caster
 # stay with the classes that are built around them.
 PICKUP_TEAMS = ('HUMAN', 'COVENANT')
-# the Covenant only ever pick up Covenant guns (the Brutes' bodies also model human ones, which their own classes keep)
+# bodies that carry some guns as overlay models: the slot (hidden when a baked-in gun is picked up), and the bodies
+# whose every class gets that slot in its MODELDEF (an empty gun until it picks one up)
+OVERLAY_SLOT = {'EliteSpecial': 6}
+OVERLAY_PLACEHOLDER = set()
+# the Covenant only ever pick up Covenant guns -- except the Brutes, the one Covenant race that uses human guns too
 COVENANT_GUNS = {'Halo_PlasmaPistol', 'Halo_PlasmaRifle', 'Halo_Needler', 'Halo_FuelRod', 'Halo_BeamRifle', 'Halo_Carbine',
                  'Halo_PlasmaCaster', 'Halo_Spiker', 'Halo_PulseCarbine', 'Halo_NeedlerJavelin'}
 PICKUP_SKIP = {'energy sword', 'hunter fuel rod', 'stanchion'}       # melee, the Hunters' arm, the BFG-class Stanchion
@@ -1139,7 +1145,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
-                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir) + perm_code(meta, mdir)
+                  + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
@@ -1405,6 +1411,7 @@ def build(cfg=None):
                           f'\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{{\n\t\tif(gunArm && hce_bladeActor) {{ hce_bladeActor.Destroy(); hce_bladeActor = null; }}\n\t}}\n')
             animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))
             if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx
+            if ov.get('stacker'): animtxt, jx = stacker_code(A, animtxt, char, meta, mdir); extra += jx
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
             if blade:
                 zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')
@@ -1439,20 +1446,35 @@ def build(cfg=None):
                 oi = ov.get('overlay_idx', ARSENAL_IDX)
                 skin_lines += arsenal_lines(char, ov['overlay'], meta, pack, mdir, oi)
                 frames += f'\n\tFrameIndex HCEM A {oi} 0'
+            elif char in OVERLAY_PLACEHOLDER and meta.get('arsenal'):
+                # its overlay slot, empty (every surface hidden) until it picks up a gun drawn as an overlay
+                oi = OVERLAY_SLOT[char]
+                first = sorted(meta['arsenal'])[0]
+                skin_lines += [re.sub(r'"[^"]*"$', '"hce_hidden.png"', l) if l.startswith(f'\tSurfaceSkin {oi} ') else l
+                               for l in arsenal_lines(char, first, meta, pack, mdir, oi)]
+                frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')
-            if team[char] in PICKUP_TEAMS and dw and weapon and weapon not in PICKUP_SKIP and (marine or weapon not in WEAPON_CODE and weapon != 'plasma caster' and dw in COVENANT_GUNS) and \
+            if team[char] in PICKUP_TEAMS and dw and weapon and weapon not in PICKUP_SKIP and (marine or weapon not in WEAPON_CODE and weapon != 'plasma caster' and (dw in COVENANT_GUNS or char == 'Brute')) and \
                     not ov.get('unique') and dw not in prof and proj != 'None':
                 pm = re.search(r'HCE_FirePattern ([^;]+);', pat)
                 sf = 1 if overcharge or weapon == 'plasma caster' or weapon in SPECIAL_FIRE else 0
-                if ov.get('overlay'): vis = overlay_swap(char, meta, mdir, ov['overlay']).replace('\t\t', '\t\t\t', 1).replace('\n\t\t', '\n\t\t\t')
+                if ov.get('overlay'):
+                    # an overlay gun: the gun surfaces baked into the body (if any) hidden, the overlay model on its slot
+                    oi = ov.get('overlay_idx', ARSENAL_IDX)
+                    vis = ''.join(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n'
+                                  for si, w_ in enumerate(meta.get('mesh_weapon') or []) if w_)
+                    vis += overlay_swap(char, meta, mdir, ov['overlay'], oi, pack).replace('\t\t', '\t\t\t', 1).replace('\n\t\t', '\n\t\t\t')
                 else:
+                    # a gun baked into the body: its surfaces shown, the others and any overlay gun hidden
                     shown = {int(m.group(1)): m.group(2) for m in (re.match(r'\tSurfaceSkin 0 (\d+) "(.*)"', l) for l in weapon_lines) if m}
                     vis = ''.join(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'{tx}\', CMDL_USESURFACESKIN);\n'
                                   for si, tx in sorted(shown.items()))
+                    if char in OVERLAY_SLOT and vis:
+                        vis += f'\t\t\tA_ChangeModel(\'None\', {OVERLAY_SLOT[char]}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);\n'
                 if vis:
                     prof[dw] = dict(proj=proj, pps=pps, rof=rof, err=err, maxrange=maxrange, projspeed=projspeed, rlo=rlo, rhi=rhi,
                                     dmgmod=dmgmod, sf=sf, sc=0.2 if overcharge else SPECIAL_FIRE.get(weapon, 0), lobbed=weapon in LOBBED,
@@ -1824,12 +1846,6 @@ WEAPON_CODE['stanchion'] = STANCHION_CODE
 STACKER_CODE = """
 	// Sergeant Stacker: always his own face (the white face under the sergeant's cap) and voice
 	override int HCE_PickFace() { return HCE_STACKER_FACE; }
-	override void PostBeginPlay()
-	{
-		super.PostBeginPlay();
-		hce_voice = 'Marine_Sarge';
-		hce_rankName = "MSG. Marcus P. Stacker";
-	}
 """
 
 # Corpsman (new): a Marine with the Sidekick who answers the "medic" order (HCE_MedicOrder): he runs to the Marine
@@ -1872,12 +1888,12 @@ def add_marine_arsenal(variants):
     # the sergeant's cap, full sleeves and the Battle Rifle he carries in Halo 2
     if base and 'characters\\marine\\sgt stacker' not in variants:
         v = copy.deepcopy(base)
-        ovl, stance, lo, hi, mx, pellets, spread, _drop = MARINE_ARSENAL['battle rifle']
-        v['ranged_combat']['reference'] = ARSENAL_REF.get('battle rifle', 'hde\\battle rifle')
+        ovl, stance, lo, hi, mx, pellets, spread, _drop = MARINE_ARSENAL['double barrel']
+        v['ranged_combat']['reference'] = ARSENAL_REF.get('double barrel', 'hde\\double barrel')
         v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
         v['_late'] = True
         v['_ov'] = dict(overlay=ovl, stance=stance, pellets=pellets, spread=spread, unique=True, melee=(40, 75), health=60,
-                        skin_as='HCE_MarineAssaultRifle', code=STACKER_CODE)
+                        skin_as='HCE_MarineAssaultRifle', code=STACKER_CODE, stacker=True)
         variants['characters\\marine\\sgt stacker'] = v
     # the corpsman: the Sidekick Marine's kit, in the random pool
     sk = variants.get('characters\\marine\\marine sidekick')
@@ -1902,16 +1918,17 @@ def arsenal_lines(char, name, meta, pack, mdir, idx=None):
     return ([f'\tPath "models/{mdir}/{char}"', f'\tModel {idx} "{a["model"]}"', f'\tPath "models/{mdir}/weapons"']
             + [f'\tSurfaceSkin {idx} {k} "{m}"' for k, m in enumerate(a['materials'])])
 
-def overlay_swap(char, meta, mdir, name):
+def overlay_swap(char, meta, mdir, name, idx=None, pack=None):
     """ZScript lines putting arsenal overlay 'name' on the gun model slot (and its files into the pack)"""
     a = meta['arsenal'][name]
+    idx = ARSENAL_IDX if idx is None else idx; pack = pack or PACK
     for m in a['materials']:
-        dd = f'{PACK}/models/{mdir}/weapons/{m}'
+        dd = f'{pack}/models/{mdir}/weapons/{m}'
         if not os.path.exists(dd): os.makedirs(os.path.dirname(dd), exist_ok=True); copy_weapon_tex(f'{OUT}/models/{char}/{m}', dd)
-    dd = f'{PACK}/models/{mdir}/{char}/{a["model"]}'
-    if not os.path.exists(dd): shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dd)
-    out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
-    out += [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "", \'None\', {k}, "models/{mdir}/weapons", \'{m}\', CMDL_USESURFACESKIN);\n'
+    dd = f'{pack}/models/{mdir}/{char}/{a["model"]}'
+    if not os.path.exists(dd): os.makedirs(os.path.dirname(dd), exist_ok=True); shutil.copy(f'{OUT}/models/{char}/{a["model"]}', dd)
+    out = [f'\t\tA_ChangeModel(\'None\', {idx}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
+    out += [f'\t\tA_ChangeModel(\'None\', {idx}, "", \'None\', {k}, "models/{mdir}/weapons", \'{m}\', CMDL_USESURFACESKIN);\n'
             for k, m in enumerate(a['materials'])]
     return ''.join(out)
 
@@ -1935,6 +1952,7 @@ def johnson_code(A, animtxt, char, meta, mdir):
 	override int HCE_PickFace() {{ return HCE_JOHNSON_FACE; }}
 	override Name HCE_AnimName(int kind) {{ return hce_cqc ? HCE_AnimNameCQC(kind) : HCE_AnimNameLong(kind); }}
 	override int HCE_AnimTics(Name anim) {{ int t = HCE_AnimTicsLong(anim); return t != 30 ? t : HCE_AnimTicsCQC(anim); }}
+	override void HCE_OwnGunBack() {{ hce_cqc = false; }}          // the Stanchion back in his hands (a trade)
 	Name hce_longProj; int hce_longShots[3]; double hce_longPause[2]; double hce_longErr, hce_longSpeed, hce_longRange[2];
 	String hce_longSound[3];
 	override void PostBeginPlay()
@@ -1979,6 +1997,74 @@ def johnson_code(A, animtxt, char, meta, mdir):
 	}}
 """
     return animtxt + '\n' + cqc, code
+def stacker_code(A, animtxt, char, meta, mdir):
+    """Sergeant Stacker: the double barrel, and the SMG (Halo 2's rifle stance, hand on its foregrip) as his backup
+    up close: when both barrels are spent with an enemy within ~11 m he draws the SMG instead of reloading, and goes
+    back to the (reloaded) double barrel once the enemy is past ~13 m or after 6 seconds"""
+    smg_table = zs_anim_funcs(A, anim_table(A, MARINE_ARSENAL['smg'][1], 'smg'))
+    animtxt = (animtxt.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameMain(int kind)')
+                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsMain(Name anim)'))
+    smg_table = (smg_table.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameSMG(int kind)')
+                          .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsSMG(Name anim)'))
+    sp = PATTERNS['smg']; ss = FIRE_SOUNDS['smg']; smg = WEAPONS['smg']
+    code = f"""
+	// Sergeant Stacker's double barrel, with the SMG as his close-range backup (stacker_code)
+	bool hce_onBackup; int hce_backupUntil;
+	override Name HCE_AnimName(int kind) {{ return hce_onBackup ? HCE_AnimNameSMG(kind) : HCE_AnimNameMain(kind); }}
+	override int HCE_AnimTics(Name anim) {{ int t = HCE_AnimTicsMain(anim); return t != 30 ? t : HCE_AnimTicsSMG(anim); }}
+	override void HCE_OwnGunBack() {{ hce_onBackup = false; }}       // the double barrel back in his hands (a trade)
+	Name hce_mainProj; int hce_mainShots[3], hce_mainPellets; double hce_mainPause[2]; double hce_mainErr, hce_mainSpeed, hce_mainRange[2];
+	String hce_mainSound[2];
+	override void PostBeginPlay()
+	{{
+		super.PostBeginPlay();
+		hce_voice = 'Marine_Sarge';
+		hce_rankName = "MSG. Marcus P. Stacker";
+		hce_mainProj = hce_projectile; hce_mainErr = hce_errorAngle; hce_mainSpeed = hce_projSpeed; hce_mainPellets = hce_projectilesPerShot;
+		hce_mainShots[0] = hce_patShotsMin; hce_mainShots[1] = hce_patShotsMax; hce_mainShots[2] = hce_patInterval;
+		hce_mainPause[0] = hce_patPauseMin; hce_mainPause[1] = hce_patPauseMax;
+		hce_mainRange[0] = hce_rangeMin; hce_mainRange[1] = hce_rangeMax;
+		hce_mainSound[0] = hce_fireSound; hce_mainSound[1] = hce_fireSoundBass;
+	}}
+	override bool HCE_OnEmpty()
+	{{
+		if(hce_onBackup || hce_hasLoadout || !target || Distance3D(target) > 384) return false;
+		HCE_Backup(true);
+		return true;
+	}}
+	override void Tick()
+	{{
+		super.Tick();
+		if(!hce_onBackup || health <= 0 || level.maptime % 6) return;
+		if(hce_hasLoadout || !target || Distance3D(target) > 448 || level.maptime > hce_backupUntil) HCE_Backup(false);
+	}}
+	void HCE_Backup(bool on)
+	{{
+		hce_onBackup = on;
+		hce_burstShot = 0; hce_shotsLeft = 0;
+		if(on)
+		{{
+			hce_backupUntil = level.maptime + 35 * 6;
+{overlay_swap(char, meta, mdir, 'smg')}			hce_projectile = '{smg[0]}'; hce_projectilesPerShot = 1; hce_errorAngle = 2.0; hce_projSpeed = {smg[3] * S / TICK:.1f};
+			hce_patShotsMin = {sp[0]}; hce_patShotsMax = {sp[1]}; hce_patInterval = {sp[2]}; hce_patPauseMin = {sp[3]}; hce_patPauseMax = {sp[4]};
+			hce_rangeMin = 0; hce_rangeMax = 320;
+			hce_fireSound = "{ss[0]}"; hce_fireSoundBass = "{ss[1]}";
+			hce_sepTics = 6;                      // the SMG comes up fast
+		}}
+		else if(!hce_hasLoadout)
+		{{
+{overlay_swap(char, meta, mdir, 'double_barrel')}			hce_projectile = hce_mainProj; hce_errorAngle = hce_mainErr; hce_projSpeed = hce_mainSpeed; hce_projectilesPerShot = hce_mainPellets;
+			hce_patShotsMin = hce_mainShots[0]; hce_patShotsMax = hce_mainShots[1]; hce_patInterval = hce_mainShots[2];
+			hce_patPauseMin = hce_mainPause[0]; hce_patPauseMax = hce_mainPause[1];
+			hce_rangeMin = hce_mainRange[0]; hce_rangeMax = hce_mainRange[1];
+			hce_fireSound = hce_mainSound[0]; hce_fireSoundBass = hce_mainSound[1];
+		}}
+		HCE_SetupAmmo();                          // a full SMG magazine; the double barrel comes back reloaded
+		HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
+	}}
+"""
+    return animtxt + '\n' + smg_table, code
+
 MAIN_WEAPONS |= set(WEAPONS)
 
 if __name__ == '__main__':

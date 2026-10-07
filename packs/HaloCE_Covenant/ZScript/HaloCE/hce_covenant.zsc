@@ -1809,6 +1809,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 6, 7, 8, 9, 10, 11 };
 		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		if(!show && hce_hasLoadout) A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);   // a picked-up overlay gun
 	}
 	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_BeamRifle, Halo_Needler, Halo_PlasmaRifle
 	override bool HCE_HasLoadouts() { return true; }
@@ -1882,6 +1883,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 		}
 	}
 	void HCE_LoadoutVisual1()
@@ -1896,6 +1898,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 		}
 	}
 	void HCE_LoadoutVisual2()
@@ -1910,6 +1913,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 		}
 	}
 	override Name HCE_LoadoutAnim(int lo, int kind)

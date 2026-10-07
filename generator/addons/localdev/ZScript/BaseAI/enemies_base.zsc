@@ -1756,22 +1756,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!pw || hce_dropWeapon == 'None' || hce_projectile == 'None') return false;
 		Name pc = pw.GetClassName();
 		if(pc == hce_dropWeapon) return false;
-		int lo = HCE_LoadoutIndex(pc);
 		class<Weapon> mc = (class<Weapon>)(hce_dropWeapon);
-		if(lo < 0 || !mc) { HCE_Say('Scold', 0.5, 35 * 2); return true; }      // not a gun he can use
+		if(!HCE_CanCarry(pc) || !mc) { HCE_Say('Scold', 0.5, 35 * 2); return true; }      // not a gun he can use
 		bool better = HCE_WeaponScore(pc) >= HCE_WeaponScore(hce_dropWeapon);
 		user.TakeInventory(pc, 1);
 		user.GiveInventory(mc, 1);
 		let nw = Weapon(user.FindInventory(mc));
 		if(nw) user.player.PendingWeapon = nw;
-		HCE_StopFireLoop();
-		hce_loadout = lo; hce_hasLoadout = true;
-		HCE_ApplyLoadout(lo);
-		HCE_LoadoutVisual(lo);
-		hce_dropWeapon = pc;
-		HCE_SetupAmmo();
-		hce_burstShot = 0; hce_shotsLeft = 0; hce_chargeTics = 0; hce_sepTics = max(hce_sepTics, 15);
-		hce_curAnimKind = -1;
+		HCE_EquipGun(pc);
 		// grateful for a better gun, scornful of a worse one (his own liking: HCE_WeaponScore)
 		HCE_Say(better ? 'Thanks' : 'WorseWeapon', 1.0, 35, true);
 		return true;
@@ -2064,9 +2056,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(hce_ammoFor != hce_projectile) HCE_SetupAmmo();
 		if(hce_heatPerShot > 0 && hce_heat >= 1) { HCE_StartReload(true); return true; }
-		if(hce_magSize > 0 && hce_mag <= 0) { HCE_StartReload(false); return true; }
+		if(hce_magSize > 0 && hce_mag <= 0) { if(!HCE_OnEmpty()) HCE_StartReload(false); return true; }
 		return false;
 	}
+
+	// out of rounds mid-fight: a pack class can go to a backup gun instead of reloading (true: handled)
+	virtual bool HCE_OnEmpty() { return false; }
 
 	void HCE_StartReload(bool vent)
 	{
@@ -3784,10 +3779,16 @@ class HaloDoom_EnemyBase : Actor abstract
 	//   Corpsman            sidearms (+15) and close quarters (+10): light, one-handed kit
 	//   Sergeant Johnson    long range (+20) and heavy weapons (+10)
 	//   Sergeant Stacker    mid range (+20) and long range (+5)
-	// The Covenant have no liking: they trade up by the base score alone (their bodies only take Covenant guns).
+	//   Brute               heavy and power weapons (+15), close quarters (+10)
+	// The other Covenant have no liking: they trade up by the base score alone (their bodies only take Covenant guns).
 	virtual int HCE_WeaponBias(int k)
 	{
-		if(hce_team != HCE_TEAM_HUMAN || k < 0) return 0;
+		if(k < 0) return 0;
+		if(hce_team != HCE_TEAM_HUMAN)
+		{
+			String bn = GetClassName();                   // Brutes like their guns big and up close
+			return bn.IndexOf("Brute") >= 0 ? (k == HCE_WK_HEAVY ? 15 : k == HCE_WK_CLOSE ? 10 : 0) : 0;
+		}
 		if(HCE_IsJohnson()) return k == HCE_WK_LONG ? 20 : k == HCE_WK_HEAVY ? 10 : 0;
 		if(hce_voice == 'Marine_Sarge') return k == HCE_WK_MID ? 20 : k == HCE_WK_LONG ? 5 : 0;      // Stacker
 		if(hce_isMedic) return k == HCE_WK_SIDEARM ? 15 : k == HCE_WK_CLOSE ? 10 : 0;
@@ -3817,7 +3818,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			let o = it.thing;
 			Name w = HCE_GroundWeaponClass(o);
-			if(w == 'None' || HCE_LoadoutIndex(w) < 0) continue;
+			if(!HCE_CanCarry(w)) continue;
 			int sc = HCE_WeaponScore(w);
 			double d = Distance3D(o);
 			if(sc <= bestScore && !(sc == bestScore && best && d < bestD)) continue;
@@ -3875,7 +3876,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(!HCE_InSquad() || health <= 0 || hce_betrayed || hce_projectile == 'None' || !HCE_HasLoadouts()) return false;
 		Name w = HCE_GroundWeaponClass(item);
-		if(w == 'None' || HCE_LoadoutIndex(w) < 0 || w == hce_dropWeapon) return false;
+		if(!HCE_CanCarry(w) || w == hce_dropWeapon) return false;
 		hce_scavItem = item; hce_scavPhase = 0; hce_scavTics = 35 * 8;
 		HCE_AckLater();
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
@@ -3885,8 +3886,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_TakeWeapon(Actor o)
 	{
 		Name w = HCE_GroundWeaponClass(o);
-		int lo = HCE_LoadoutIndex(w);
-		if(lo < 0) return;
+		if(!HCE_CanCarry(w)) return;
 		CVar cv = CVar.FindCVar("hce_dropweapons");
 		if((!cv || cv.GetBool()) && hce_dropWeapon != 'None')
 		{
@@ -3894,14 +3894,48 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(oc) HCE_Toss(oc, true);                  // its own gun goes down where the new one lay
 		}
 		o.Destroy();
+		HCE_EquipGun(w);
+	}
+
+	// a gun to carry: one of its loadouts, or its own gun back (the one its class is built around -- for Johnson
+	// the Stanchion, which no one else takes)
+	bool HCE_CanCarry(Name w) { return w != 'None' && (HCE_LoadoutIndex(w) >= 0 || (hce_hasLoadout && w == default.hce_dropWeapon)); }
+
+	virtual void HCE_OwnGunBack() {}       // pack classes with a second gun of their own reset it (Johnson's Magnum, Stacker's SMG)
+
+	void HCE_EquipGun(Name w)
+	{
 		HCE_StopFireLoop();
-		hce_loadout = lo; hce_hasLoadout = true;
-		HCE_ApplyLoadout(lo);
-		HCE_LoadoutVisual(lo);
+		int lo = HCE_LoadoutIndex(w);
+		if(w == default.hce_dropWeapon && (lo < 0 || hce_hasLoadout))
+		{
+			// its own gun again: the class's own firing data, animations and model
+			hce_hasLoadout = false;
+			hce_projectile = default.hce_projectile; hce_projectilesPerShot = default.hce_projectilesPerShot;
+			hce_rateOfFire = default.hce_rateOfFire; hce_errorAngle = default.hce_errorAngle; hce_maxRange = default.hce_maxRange;
+			hce_projSpeed = default.hce_projSpeed; hce_rangeMin = default.hce_rangeMin; hce_rangeMax = default.hce_rangeMax;
+			hce_damageMod = default.hce_damageMod; hce_specialFire = default.hce_specialFire; hce_specialChance = default.hce_specialChance;
+			bHCE_Lobbed = default.bHCE_Lobbed;
+			hce_patShotsMin = default.hce_patShotsMin; hce_patShotsMax = default.hce_patShotsMax; hce_patInterval = default.hce_patInterval;
+			hce_patPauseMin = default.hce_patPauseMin; hce_patPauseMax = default.hce_patPauseMax; hce_patChargeTics = default.hce_patChargeTics;
+			hce_fireSound = default.hce_fireSound; hce_fireSoundBass = default.hce_fireSoundBass; hce_specialSound = default.hce_specialSound;
+			hce_chargeSound = default.hce_chargeSound; hce_fireLoop = default.hce_fireLoop;
+			hce_specialProj = default.hce_specialProj; hce_specialCount = default.hce_specialCount;
+			HCE_OwnGunBack();
+			HCE_ShowGun(true);
+		}
+		else if(lo >= 0)
+		{
+			hce_loadout = lo; hce_hasLoadout = true;
+			HCE_ApplyLoadout(lo);
+			HCE_LoadoutVisual(lo);
+		}
+		else return;
 		hce_dropWeapon = w;
 		HCE_SetupAmmo();
 		hce_burstShot = 0; hce_shotsLeft = 0; hce_chargeTics = 0; hce_sepTics = max(hce_sepTics, 15);
 		hce_curAnimKind = -1;
+		HCE_ResumeAnim();
 	}
 
 	void HCE_DropLoot()

@@ -124,7 +124,14 @@ def fix_gpmg(meshes):
     Rz = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])                                   # turn around
     cp, sp = np.cos(pitch), np.sin(pitch)
     Ry = np.array([[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]])                                 # level the barrel
-    return _rot(meshes, Ry @ Rz)
+    meshes = _rot(meshes, Ry @ Rz)
+    # the turret gun sits upside down (its pistol grip and trigger guard over the receiver, the ammo box standing
+    # up): roll it over, and put the hand on that pistol grip, not the butt -- the origin near the grip's top, as
+    # Halo CE's assault rifle has it
+    meshes = _rot(meshes, [[1, 0, 0], [0, -1, 0], [0, 0, -1]])
+    P = np.concatenate([m['pos'] for m in meshes])
+    g = P[(P[:, 0] > 0.035) & (P[:, 0] < 0.11) & (P[:, 2] < -0.035)]
+    return _rot(meshes, np.eye(3), (-g[:, 0].mean(), 0, -(g[:, 2].min() + 0.025)))
 
 def fix_support(meshes):
     """Halo CE's flamethrower as Halo has it: its model stands on end, the way the cyborg's 'support' stance holds it at
@@ -132,7 +139,7 @@ def fix_support(meshes):
     return meshes
 
 def fix_upright(meshes):
-    """Halo CE's flamethrower model stands on end: lay it nozzle-forward (for a rifle stance; unused)"""
+    """Halo CE's flamethrower model stands on end: lay it nozzle-forward (for a rifle stance: the Brutes')"""
     meshes = _rot(meshes, [[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
     P = np.concatenate([m['pos'] for m in meshes])
     tip = P[P[:, 0] > P[:, 0].max() - 0.03].mean(0)          # nozzle end: level it with the grip
@@ -253,6 +260,55 @@ BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle',
                  'plasma_caster': 'plasma_caster', 'carbine': 'cmt_carbine', 'spiker': 'spiker',
                  'pulse_carbine': 'm_pulse_carbine', 'needle_ballista': 'm_needle_ballista'}
 
+# human guns the Brutes would take (Halo's Brutes are the one Covenant race that uses human guns): overlay models on
+# the Brute's skeleton at its gun hand (where it holds its baked plasma rifle), in its overlay slot (build_digsite.CASTER_IDX)
+BRUTE_GUNS = ['bulldog', 'double_barrel', 'gpmg', 'rocket_launcher', 'grenade_launcher', 'hydra', 'flamethrower', 'ma37', 'smg']
+BRUTE_SUPPORT = ('gpmg', 'flamethrower')      # the auto-cannon and the flamethrower: the Brute Shot stance
+
+def brute_overlays(char='Brute'):
+    from iqm import write_iqm
+    import shutil
+    if not os.path.exists(f'{OUT}/models/{char}/{char}.json'): return
+    R, t, jn, joints = hand_frame(char, 'plasma_rifle')
+    bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
+    od = f'{OUT}/models/{char}'
+    meta = json.load(open(f'{od}/{char}.json'))
+    # the heavy ones (BRUTE_SUPPORT) the Brutes hold in Halo 2's Brute Shot stance ('stand support', brute_stance.py),
+    # its gun hand turned the Brute Shot's way: turn each in the hand so that, in that stance's idle, it points where
+    # it would in the rifle stance's (the hand's world rotation there times the inverse of the support idle's). The
+    # rest go in the one-handed rifle stance as they are
+    from iqm import read_iqm
+    import preview as pv
+    _, _, an = read_iqm(f'{od}/{char}.iqm')
+    par = [j[1] for j in joints]
+    def hand_rot(anim):
+        W = pv.world(par, [(x[0], x[1]) for x in an[anim][0]])
+        return pv.qmat(W[jn][1])
+    Wb = pv.world(par, [(j[2], j[3]) for j in joints])
+    Rb, tb = pv.qmat(Wb[jn][1]), np.asarray(Wb[jn][0], float)
+    Rs, Rr = hand_rot('stand support idle'), hand_rot('stand rifle idle')
+    C = Rs.T @ Rr                                    # in the hand's own frame
+    for name in BRUTE_GUNS:
+        wid = wid_of(name)
+        d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
+        if name == 'flamethrower': d['meshes'] = fix_upright(d['meshes'])     # held like the others
+        ms = []
+        for k, m in enumerate(d['meshes']):
+            n = len(m['pos'])
+            bidx = np.zeros((n, 4), np.uint8); bw = np.zeros((n, 4), np.uint8); bidx[:, 0] = jn; bw[:, 0] = 255
+            p = m['pos'] @ R.T + t; nr = m['nrm'] @ R.T
+            if name in BRUTE_SUPPORT:
+                p = ((p - tb) @ Rb) @ C.T @ Rb.T + tb      # into the hand's frame, turned, back
+                nr = (nr @ Rb) @ C.T @ Rb.T
+            ms.append(dict(name=f'{wid}_{k}', material=m['material'], pos=p, nrm=nr,
+                           uv=m['uv'], bidx=bidx, bw=bw, tris=m['tris']))
+            shutil.copy(f'{OUT}/weapons/{wid}/{m["material"]}', f'{od}/{m["material"]}')
+        fn = f'{char}_w_{name}.iqm'
+        write_iqm(f'{od}/{fn}', joints, ms, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
+        meta.setdefault('arsenal', {})[name] = dict(model=fn, wid=wid, materials=[m['material'] for m in d['meshes']])
+    json.dump(meta, open(f'{od}/{char}.json', 'w'), indent=1)
+    print(char, 'human gun overlays', len(BRUTE_GUNS))
+
 def build_cov_extras():
     """HDE's Pulse Carbine: the Covenant carbine in the Digsite add-on's blue (its Slug Men's pulse carbine);
     HDE's Needle Ballista (a 2D weapon in HDE, no model): Halo CE's needler drawn out half as long again, a long gun"""
@@ -343,5 +399,5 @@ def main(only=None):
         print(f'{wid:20s}', *summary(wid))
 
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['overlays']: overlays()
+    if sys.argv[1:2] == ['overlays']: overlays(); brute_overlays()
     else: main(sys.argv[1:])

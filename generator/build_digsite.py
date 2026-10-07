@@ -28,6 +28,8 @@ CE_SG = r'weapons\shotgun\shotgun'
 SPIKER = r'h3\weapons\spiker'
 HAMMER = r'h2\weapons\gravity hammer'
 CASTER = r'hde\plasma caster'           # HDE's Plasma Caster as a Halo CE gun (plasma_caster_ce.py): an overlay model
+BRUTE_HUMAN_GUNS = ('bulldog', 'double_barrel', 'gpmg', 'rocket_launcher', 'grenade_launcher', 'hydra', 'flamethrower', 'ma37', 'smg')
+BRUTE_SUPPORT = ('gpmg', 'flamethrower')  # held in Halo 2's Brute Shot stance; the rest one-handed (the rifle stance)
 CASTER_IDX = 8                          # its model attachment (the armour kit uses 1-6, blood 7)
 # Halo 2 Brute ranks: body vitality from their char tags (08b: the honor guard inherits brute_major's); hlmt
 # variant -> region permutations they wear; fur colours come from the biped's per-variant change colours.
@@ -240,6 +242,18 @@ def load_ai():
                                     flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Leader'],
                                     berserk_anims=CHIEFTAIN_BERSERK)
                 variants[f'{BRUTE} {rank} {wref.split(chr(92))[-1]}'] = v
+        # human guns a Brute would take (the one Covenant race that uses them): loadouts only, no classes -- what a Brute
+        # can pick up off the ground, drawn as overlay models in its overlay slot (marine_arsenal.brute_overlays)
+        src = variants.get(f'{BRUTE} minor assault rifle')
+        for key, (ovl, *_r) in bp.MARINE_ARSENAL.items():
+            if not src or ovl not in BRUTE_HUMAN_GUNS or ovl not in (bmeta.get('arsenal') or {}): continue
+            lo, hi, mx = _r[1], _r[2], _r[3]
+            v = copy.deepcopy(src)
+            v['ranged_combat']['reference'] = bp.ARSENAL_REF.get(key, 'hde\\' + key)
+            v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
+            v['_ov'] = dict(overlay=ovl, overlay_idx=CASTER_IDX, loadout_only=True, pellets=_r[4], spread=_r[5],
+                            stance='support' if ovl in BRUTE_SUPPORT else 'rifle')
+            variants[f'{BRUTE} minor {key} loadout'] = v
     # Halo 2 Jackals: the Ultra keeps the CE Ultra's combat data (moved out of the main pack, build_pack.MOVED); the
     # Zealot is a tougher Ultra with the Spiker; the Sniper starts from the CE Minor and keeps its distance
     ultra = bp.MOVED.get(r'characters\jackal\jackal ultra plasma rifle')
@@ -1145,6 +1159,8 @@ def configure():
     bp.FIRE_CODE['spiker'] = 'sk'
     bp.SKIN_HOOK['Brute'] = brute_skin
     bp.SKIN_HOOK['SlugMan'] = slug_skin
+    bp.OVERLAY_SLOT['Brute'] = CASTER_IDX            # its Plasma Caster's slot, which the human guns it picks up use too
+    bp.OVERLAY_PLACEHOLDER.add('Brute')
     bp.BERSERK_ANIMS['Brute'] = {
         'IDLE': ['berserk idle'], 'ALERT': ['berserk idle'], 'MOVE_F': ['berserk move-front'], 'MOVE_B': ['berserk move-front'],
         'MOVE_L': ['berserk move-front'], 'MOVE_R': ['berserk move-front'], 'FLEE': ['berserk move-front'],

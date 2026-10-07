@@ -222,18 +222,25 @@ HCE/Marine_Aussie/Thanks/3 "sounds/hce_voice/marine_aussie/thanks_195.ogg"
 HCE/Marine_Aussie/Thanks/4 "sounds/hce_voice/marine_aussie/thanks_196.ogg"
 HCE/Marine_Aussie/Thanks/5 "sounds/hce_voice/marine_aussie/thanks_197.ogg"
 $random HCE/Marine_Aussie/Thanks { HCE/Marine_Aussie/Thanks/0 HCE/Marine_Aussie/Thanks/1 HCE/Marine_Aussie/Thanks/2 HCE/Marine_Aussie/Thanks/3 HCE/Marine_Aussie/Thanks/4 HCE/Marine_Aussie/Thanks/5 }
-HCE/Marine_Aussie/Wounded/0 "sounds/hce_voice/marine_aussie/wounded_198.ogg"
-HCE/Marine_Aussie/Wounded/1 "sounds/hce_voice/marine_aussie/wounded_199.ogg"
-HCE/Marine_Aussie/Wounded/2 "sounds/hce_voice/marine_aussie/wounded_200.ogg"
-HCE/Marine_Aussie/Wounded/3 "sounds/hce_voice/marine_aussie/wounded_201.ogg"
-HCE/Marine_Aussie/Wounded/4 "sounds/hce_voice/marine_aussie/wounded_202.ogg"
-HCE/Marine_Aussie/Wounded/5 "sounds/hce_voice/marine_aussie/wounded_203.ogg"
-HCE/Marine_Aussie/Wounded/6 "sounds/hce_voice/marine_aussie/wounded_204.ogg"
-HCE/Marine_Aussie/Wounded/7 "sounds/hce_voice/marine_aussie/wounded_205.ogg"
-HCE/Marine_Aussie/Wounded/8 "sounds/hce_voice/marine_aussie/wounded_206.ogg"
-HCE/Marine_Aussie/Wounded/9 "sounds/hce_voice/marine_aussie/wounded_207.ogg"
-HCE/Marine_Aussie/Wounded/10 "sounds/hce_voice/marine_aussie/wounded_208.ogg"
-HCE/Marine_Aussie/Wounded/11 "sounds/hce_voice/marine_aussie/wounded_209.ogg"
+HCE/Marine_Aussie/WorseWeapon/0 "sounds/hce_voice/marine_aussie/worseweapon_198.ogg"
+HCE/Marine_Aussie/WorseWeapon/1 "sounds/hce_voice/marine_aussie/worseweapon_199.ogg"
+HCE/Marine_Aussie/WorseWeapon/2 "sounds/hce_voice/marine_aussie/worseweapon_200.ogg"
+HCE/Marine_Aussie/WorseWeapon/3 "sounds/hce_voice/marine_aussie/worseweapon_201.ogg"
+HCE/Marine_Aussie/WorseWeapon/4 "sounds/hce_voice/marine_aussie/worseweapon_202.ogg"
+HCE/Marine_Aussie/WorseWeapon/5 "sounds/hce_voice/marine_aussie/worseweapon_203.ogg"
+$random HCE/Marine_Aussie/WorseWeapon { HCE/Marine_Aussie/WorseWeapon/0 HCE/Marine_Aussie/WorseWeapon/1 HCE/Marine_Aussie/WorseWeapon/2 HCE/Marine_Aussie/WorseWeapon/3 HCE/Marine_Aussie/WorseWeapon/4 HCE/Marine_Aussie/WorseWeapon/5 }
+HCE/Marine_Aussie/Wounded/0 "sounds/hce_voice/marine_aussie/wounded_204.ogg"
+HCE/Marine_Aussie/Wounded/1 "sounds/hce_voice/marine_aussie/wounded_205.ogg"
+HCE/Marine_Aussie/Wounded/2 "sounds/hce_voice/marine_aussie/wounded_206.ogg"
+HCE/Marine_Aussie/Wounded/3 "sounds/hce_voice/marine_aussie/wounded_207.ogg"
+HCE/Marine_Aussie/Wounded/4 "sounds/hce_voice/marine_aussie/wounded_208.ogg"
+HCE/Marine_Aussie/Wounded/5 "sounds/hce_voice/marine_aussie/wounded_209.ogg"
+HCE/Marine_Aussie/Wounded/6 "sounds/hce_voice/marine_aussie/wounded_210.ogg"
+HCE/Marine_Aussie/Wounded/7 "sounds/hce_voice/marine_aussie/wounded_211.ogg"
+HCE/Marine_Aussie/Wounded/8 "sounds/hce_voice/marine_aussie/wounded_212.ogg"
+HCE/Marine_Aussie/Wounded/9 "sounds/hce_voice/marine_aussie/wounded_213.ogg"
+HCE/Marine_Aussie/Wounded/10 "sounds/hce_voice/marine_aussie/wounded_214.ogg"
+HCE/Marine_Aussie/Wounded/11 "sounds/hce_voice/marine_aussie/wounded_215.ogg"
 $random HCE/Marine_Aussie/Wounded { HCE/Marine_Aussie/Wounded/0 HCE/Marine_Aussie/Wounded/1 HCE/Marine_Aussie/Wounded/2 HCE/Marine_Aussie/Wounded/3 HCE/Marine_Aussie/Wounded/4 HCE/Marine_Aussie/Wounded/5 HCE/Marine_Aussie/Wounded/6 HCE/Marine_Aussie/Wounded/7 HCE/Marine_Aussie/Wounded/8 HCE/Marine_Aussie/Wounded/9 HCE/Marine_Aussie/Wounded/10 HCE/Marine_Aussie/Wounded/11 }
 $alias HCE/Marine_Aussie/KillPlayer HCE/Marine_Aussie/Taunt
 $alias HCE/Marine_Aussie/Kamikaze HCE/Marine_Aussie/Panic
@@ -352,6 +359,7 @@ $alias HCE/Marine_Bisenti/Stuck HCE/Marine_Bisenti/Flee
 $alias HCE/Marine_Bisenti/Acknowledge HCE/Marine_Bisenti/Regroup
 $alias HCE/Marine_Bisenti/Thanks HCE/Marine_Bisenti/Regroup
 $alias HCE/Marine_Bisenti/Forgive HCE/Marine_Bisenti/Regroup
+$alias HCE/Marine_Bisenti/WorseWeapon HCE/Marine_Bisenti/Scold
 
 // ---- Marine_Cross
 HCE/Marine_Cross/Acknowledge/0 "sounds/hce_voice/marine_cross/acknowledge_00.ogg"
@@ -490,12 +498,19 @@ HCE/Marine_Cross/Thanks/3 "sounds/hce_voice/marine_cross/thanks_112.ogg"
 HCE/Marine_Cross/Thanks/4 "sounds/hce_voice/marine_cross/thanks_113.ogg"
 HCE/Marine_Cross/Thanks/5 "sounds/hce_voice/marine_cross/thanks_114.ogg"
 $random HCE/Marine_Cross/Thanks { HCE/Marine_Cross/Thanks/0 HCE/Marine_Cross/Thanks/1 HCE/Marine_Cross/Thanks/2 HCE/Marine_Cross/Thanks/3 HCE/Marine_Cross/Thanks/4 HCE/Marine_Cross/Thanks/5 }
-HCE/Marine_Cross/Wounded/0 "sounds/hce_voice/marine_cross/wounded_115.ogg"
-HCE/Marine_Cross/Wounded/1 "sounds/hce_voice/marine_cross/wounded_116.ogg"
-HCE/Marine_Cross/Wounded/2 "sounds/hce_voice/marine_cross/wounded_117.ogg"
-HCE/Marine_Cross/Wounded/3 "sounds/hce_voice/marine_cross/wounded_118.ogg"
-HCE/Marine_Cross/Wounded/4 "sounds/hce_voice/marine_cross/wounded_119.ogg"
-HCE/Marine_Cross/Wounded/5 "sounds/hce_voice/marine_cross/wounded_120.ogg"
+HCE/Marine_Cross/WorseWeapon/0 "sounds/hce_voice/marine_cross/worseweapon_115.ogg"
+HCE/Marine_Cross/WorseWeapon/1 "sounds/hce_voice/marine_cross/worseweapon_116.ogg"
+HCE/Marine_Cross/WorseWeapon/2 "sounds/hce_voice/marine_cross/worseweapon_117.ogg"
+HCE/Marine_Cross/WorseWeapon/3 "sounds/hce_voice/marine_cross/worseweapon_118.ogg"
+HCE/Marine_Cross/WorseWeapon/4 "sounds/hce_voice/marine_cross/worseweapon_119.ogg"
+HCE/Marine_Cross/WorseWeapon/5 "sounds/hce_voice/marine_cross/worseweapon_120.ogg"
+$random HCE/Marine_Cross/WorseWeapon { HCE/Marine_Cross/WorseWeapon/0 HCE/Marine_Cross/WorseWeapon/1 HCE/Marine_Cross/WorseWeapon/2 HCE/Marine_Cross/WorseWeapon/3 HCE/Marine_Cross/WorseWeapon/4 HCE/Marine_Cross/WorseWeapon/5 }
+HCE/Marine_Cross/Wounded/0 "sounds/hce_voice/marine_cross/wounded_121.ogg"
+HCE/Marine_Cross/Wounded/1 "sounds/hce_voice/marine_cross/wounded_122.ogg"
+HCE/Marine_Cross/Wounded/2 "sounds/hce_voice/marine_cross/wounded_123.ogg"
+HCE/Marine_Cross/Wounded/3 "sounds/hce_voice/marine_cross/wounded_124.ogg"
+HCE/Marine_Cross/Wounded/4 "sounds/hce_voice/marine_cross/wounded_125.ogg"
+HCE/Marine_Cross/Wounded/5 "sounds/hce_voice/marine_cross/wounded_126.ogg"
 $random HCE/Marine_Cross/Wounded { HCE/Marine_Cross/Wounded/0 HCE/Marine_Cross/Wounded/1 HCE/Marine_Cross/Wounded/2 HCE/Marine_Cross/Wounded/3 HCE/Marine_Cross/Wounded/4 HCE/Marine_Cross/Wounded/5 }
 $alias HCE/Marine_Cross/KillPlayer HCE/Marine_Cross/Taunt
 $alias HCE/Marine_Cross/Kamikaze HCE/Marine_Cross/Panic
@@ -618,6 +633,7 @@ $alias HCE/Marine_Fitzgerald/Stuck HCE/Marine_Fitzgerald/Flee
 $alias HCE/Marine_Fitzgerald/Acknowledge HCE/Marine_Fitzgerald/Regroup
 $alias HCE/Marine_Fitzgerald/Thanks HCE/Marine_Fitzgerald/Regroup
 $alias HCE/Marine_Fitzgerald/Forgive HCE/Marine_Fitzgerald/Regroup
+$alias HCE/Marine_Fitzgerald/WorseWeapon HCE/Marine_Fitzgerald/Scold
 
 // ---- Marine_Johnson
 HCE/Marine_Johnson/Acknowledge/0 "sounds/hce_voice/marine_johnson/acknowledge_00.ogg"
@@ -828,18 +844,24 @@ HCE/Marine_Johnson/Thanks/3 "sounds/hce_voice/marine_johnson/thanks_183.ogg"
 HCE/Marine_Johnson/Thanks/4 "sounds/hce_voice/marine_johnson/thanks_184.ogg"
 HCE/Marine_Johnson/Thanks/5 "sounds/hce_voice/marine_johnson/thanks_185.ogg"
 $random HCE/Marine_Johnson/Thanks { HCE/Marine_Johnson/Thanks/0 HCE/Marine_Johnson/Thanks/1 HCE/Marine_Johnson/Thanks/2 HCE/Marine_Johnson/Thanks/3 HCE/Marine_Johnson/Thanks/4 HCE/Marine_Johnson/Thanks/5 }
-HCE/Marine_Johnson/Wounded/0 "sounds/hce_voice/marine_johnson/wounded_186.ogg"
-HCE/Marine_Johnson/Wounded/1 "sounds/hce_voice/marine_johnson/wounded_187.ogg"
-HCE/Marine_Johnson/Wounded/2 "sounds/hce_voice/marine_johnson/wounded_188.ogg"
-HCE/Marine_Johnson/Wounded/3 "sounds/hce_voice/marine_johnson/wounded_189.ogg"
-HCE/Marine_Johnson/Wounded/4 "sounds/hce_voice/marine_johnson/wounded_190.ogg"
-HCE/Marine_Johnson/Wounded/5 "sounds/hce_voice/marine_johnson/wounded_191.ogg"
-HCE/Marine_Johnson/Wounded/6 "sounds/hce_voice/marine_johnson/wounded_192.ogg"
-HCE/Marine_Johnson/Wounded/7 "sounds/hce_voice/marine_johnson/wounded_193.ogg"
-HCE/Marine_Johnson/Wounded/8 "sounds/hce_voice/marine_johnson/wounded_194.ogg"
-HCE/Marine_Johnson/Wounded/9 "sounds/hce_voice/marine_johnson/wounded_195.ogg"
-HCE/Marine_Johnson/Wounded/10 "sounds/hce_voice/marine_johnson/wounded_196.ogg"
-HCE/Marine_Johnson/Wounded/11 "sounds/hce_voice/marine_johnson/wounded_197.ogg"
+HCE/Marine_Johnson/WorseWeapon/0 "sounds/hce_voice/marine_johnson/worseweapon_186.ogg"
+HCE/Marine_Johnson/WorseWeapon/1 "sounds/hce_voice/marine_johnson/worseweapon_187.ogg"
+HCE/Marine_Johnson/WorseWeapon/2 "sounds/hce_voice/marine_johnson/worseweapon_188.ogg"
+HCE/Marine_Johnson/WorseWeapon/3 "sounds/hce_voice/marine_johnson/worseweapon_189.ogg"
+HCE/Marine_Johnson/WorseWeapon/4 "sounds/hce_voice/marine_johnson/worseweapon_190.ogg"
+$random HCE/Marine_Johnson/WorseWeapon { HCE/Marine_Johnson/WorseWeapon/0 HCE/Marine_Johnson/WorseWeapon/1 HCE/Marine_Johnson/WorseWeapon/2 HCE/Marine_Johnson/WorseWeapon/3 HCE/Marine_Johnson/WorseWeapon/4 }
+HCE/Marine_Johnson/Wounded/0 "sounds/hce_voice/marine_johnson/wounded_191.ogg"
+HCE/Marine_Johnson/Wounded/1 "sounds/hce_voice/marine_johnson/wounded_192.ogg"
+HCE/Marine_Johnson/Wounded/2 "sounds/hce_voice/marine_johnson/wounded_193.ogg"
+HCE/Marine_Johnson/Wounded/3 "sounds/hce_voice/marine_johnson/wounded_194.ogg"
+HCE/Marine_Johnson/Wounded/4 "sounds/hce_voice/marine_johnson/wounded_195.ogg"
+HCE/Marine_Johnson/Wounded/5 "sounds/hce_voice/marine_johnson/wounded_196.ogg"
+HCE/Marine_Johnson/Wounded/6 "sounds/hce_voice/marine_johnson/wounded_197.ogg"
+HCE/Marine_Johnson/Wounded/7 "sounds/hce_voice/marine_johnson/wounded_198.ogg"
+HCE/Marine_Johnson/Wounded/8 "sounds/hce_voice/marine_johnson/wounded_199.ogg"
+HCE/Marine_Johnson/Wounded/9 "sounds/hce_voice/marine_johnson/wounded_200.ogg"
+HCE/Marine_Johnson/Wounded/10 "sounds/hce_voice/marine_johnson/wounded_201.ogg"
+HCE/Marine_Johnson/Wounded/11 "sounds/hce_voice/marine_johnson/wounded_202.ogg"
 $random HCE/Marine_Johnson/Wounded { HCE/Marine_Johnson/Wounded/0 HCE/Marine_Johnson/Wounded/1 HCE/Marine_Johnson/Wounded/2 HCE/Marine_Johnson/Wounded/3 HCE/Marine_Johnson/Wounded/4 HCE/Marine_Johnson/Wounded/5 HCE/Marine_Johnson/Wounded/6 HCE/Marine_Johnson/Wounded/7 HCE/Marine_Johnson/Wounded/8 HCE/Marine_Johnson/Wounded/9 HCE/Marine_Johnson/Wounded/10 HCE/Marine_Johnson/Wounded/11 }
 $alias HCE/Marine_Johnson/KillPlayer HCE/Marine_Johnson/Taunt
 $alias HCE/Marine_Johnson/Kamikaze HCE/Marine_Johnson/Panic
@@ -961,6 +983,7 @@ $alias HCE/Marine_Mendoza/Stuck HCE/Marine_Mendoza/Flee
 $alias HCE/Marine_Mendoza/Acknowledge HCE/Marine_Mendoza/Regroup
 $alias HCE/Marine_Mendoza/Thanks HCE/Marine_Mendoza/Regroup
 $alias HCE/Marine_Mendoza/Forgive HCE/Marine_Mendoza/Regroup
+$alias HCE/Marine_Mendoza/WorseWeapon HCE/Marine_Mendoza/Scold
 
 // ---- Marine_Perez
 HCE/Marine_Perez/Acknowledge/0 "sounds/hce_voice/marine_perez/acknowledge_00.ogg"
@@ -1105,12 +1128,19 @@ HCE/Marine_Perez/Thanks/3 "sounds/hce_voice/marine_perez/thanks_117.ogg"
 HCE/Marine_Perez/Thanks/4 "sounds/hce_voice/marine_perez/thanks_118.ogg"
 HCE/Marine_Perez/Thanks/5 "sounds/hce_voice/marine_perez/thanks_119.ogg"
 $random HCE/Marine_Perez/Thanks { HCE/Marine_Perez/Thanks/0 HCE/Marine_Perez/Thanks/1 HCE/Marine_Perez/Thanks/2 HCE/Marine_Perez/Thanks/3 HCE/Marine_Perez/Thanks/4 HCE/Marine_Perez/Thanks/5 }
-HCE/Marine_Perez/Wounded/0 "sounds/hce_voice/marine_perez/wounded_120.ogg"
-HCE/Marine_Perez/Wounded/1 "sounds/hce_voice/marine_perez/wounded_121.ogg"
-HCE/Marine_Perez/Wounded/2 "sounds/hce_voice/marine_perez/wounded_122.ogg"
-HCE/Marine_Perez/Wounded/3 "sounds/hce_voice/marine_perez/wounded_123.ogg"
-HCE/Marine_Perez/Wounded/4 "sounds/hce_voice/marine_perez/wounded_124.ogg"
-HCE/Marine_Perez/Wounded/5 "sounds/hce_voice/marine_perez/wounded_125.ogg"
+HCE/Marine_Perez/WorseWeapon/0 "sounds/hce_voice/marine_perez/worseweapon_120.ogg"
+HCE/Marine_Perez/WorseWeapon/1 "sounds/hce_voice/marine_perez/worseweapon_121.ogg"
+HCE/Marine_Perez/WorseWeapon/2 "sounds/hce_voice/marine_perez/worseweapon_122.ogg"
+HCE/Marine_Perez/WorseWeapon/3 "sounds/hce_voice/marine_perez/worseweapon_123.ogg"
+HCE/Marine_Perez/WorseWeapon/4 "sounds/hce_voice/marine_perez/worseweapon_124.ogg"
+HCE/Marine_Perez/WorseWeapon/5 "sounds/hce_voice/marine_perez/worseweapon_125.ogg"
+$random HCE/Marine_Perez/WorseWeapon { HCE/Marine_Perez/WorseWeapon/0 HCE/Marine_Perez/WorseWeapon/1 HCE/Marine_Perez/WorseWeapon/2 HCE/Marine_Perez/WorseWeapon/3 HCE/Marine_Perez/WorseWeapon/4 HCE/Marine_Perez/WorseWeapon/5 }
+HCE/Marine_Perez/Wounded/0 "sounds/hce_voice/marine_perez/wounded_126.ogg"
+HCE/Marine_Perez/Wounded/1 "sounds/hce_voice/marine_perez/wounded_127.ogg"
+HCE/Marine_Perez/Wounded/2 "sounds/hce_voice/marine_perez/wounded_128.ogg"
+HCE/Marine_Perez/Wounded/3 "sounds/hce_voice/marine_perez/wounded_129.ogg"
+HCE/Marine_Perez/Wounded/4 "sounds/hce_voice/marine_perez/wounded_130.ogg"
+HCE/Marine_Perez/Wounded/5 "sounds/hce_voice/marine_perez/wounded_131.ogg"
 $random HCE/Marine_Perez/Wounded { HCE/Marine_Perez/Wounded/0 HCE/Marine_Perez/Wounded/1 HCE/Marine_Perez/Wounded/2 HCE/Marine_Perez/Wounded/3 HCE/Marine_Perez/Wounded/4 HCE/Marine_Perez/Wounded/5 }
 $alias HCE/Marine_Perez/KillPlayer HCE/Marine_Perez/Taunt
 $alias HCE/Marine_Perez/Kamikaze HCE/Marine_Perez/Panic
@@ -1231,6 +1261,7 @@ $alias HCE/Marine_Sarge/Pain HCE/Marine_Sarge/PainMed
 $alias HCE/Marine_Sarge/Acknowledge HCE/Marine_Sarge/Regroup
 $alias HCE/Marine_Sarge/Thanks HCE/Marine_Sarge/Regroup
 $alias HCE/Marine_Sarge/Forgive HCE/Marine_Sarge/Regroup
+$alias HCE/Marine_Sarge/WorseWeapon HCE/Marine_Sarge/Scold
 
 // ---- Marine_SgtCautious
 HCE/Marine_SgtCautious/Acknowledge/0 "sounds/hce_voice/marine_sgtcautious/acknowledge_00.ogg"
@@ -1376,12 +1407,19 @@ HCE/Marine_SgtCautious/Thanks/3 "sounds/hce_voice/marine_sgtcautious/thanks_118.
 HCE/Marine_SgtCautious/Thanks/4 "sounds/hce_voice/marine_sgtcautious/thanks_119.ogg"
 HCE/Marine_SgtCautious/Thanks/5 "sounds/hce_voice/marine_sgtcautious/thanks_120.ogg"
 $random HCE/Marine_SgtCautious/Thanks { HCE/Marine_SgtCautious/Thanks/0 HCE/Marine_SgtCautious/Thanks/1 HCE/Marine_SgtCautious/Thanks/2 HCE/Marine_SgtCautious/Thanks/3 HCE/Marine_SgtCautious/Thanks/4 HCE/Marine_SgtCautious/Thanks/5 }
-HCE/Marine_SgtCautious/Wounded/0 "sounds/hce_voice/marine_sgtcautious/wounded_121.ogg"
-HCE/Marine_SgtCautious/Wounded/1 "sounds/hce_voice/marine_sgtcautious/wounded_122.ogg"
-HCE/Marine_SgtCautious/Wounded/2 "sounds/hce_voice/marine_sgtcautious/wounded_123.ogg"
-HCE/Marine_SgtCautious/Wounded/3 "sounds/hce_voice/marine_sgtcautious/wounded_124.ogg"
-HCE/Marine_SgtCautious/Wounded/4 "sounds/hce_voice/marine_sgtcautious/wounded_125.ogg"
-HCE/Marine_SgtCautious/Wounded/5 "sounds/hce_voice/marine_sgtcautious/wounded_126.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/0 "sounds/hce_voice/marine_sgtcautious/worseweapon_121.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/1 "sounds/hce_voice/marine_sgtcautious/worseweapon_122.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/2 "sounds/hce_voice/marine_sgtcautious/worseweapon_123.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/3 "sounds/hce_voice/marine_sgtcautious/worseweapon_124.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/4 "sounds/hce_voice/marine_sgtcautious/worseweapon_125.ogg"
+HCE/Marine_SgtCautious/WorseWeapon/5 "sounds/hce_voice/marine_sgtcautious/worseweapon_126.ogg"
+$random HCE/Marine_SgtCautious/WorseWeapon { HCE/Marine_SgtCautious/WorseWeapon/0 HCE/Marine_SgtCautious/WorseWeapon/1 HCE/Marine_SgtCautious/WorseWeapon/2 HCE/Marine_SgtCautious/WorseWeapon/3 HCE/Marine_SgtCautious/WorseWeapon/4 HCE/Marine_SgtCautious/WorseWeapon/5 }
+HCE/Marine_SgtCautious/Wounded/0 "sounds/hce_voice/marine_sgtcautious/wounded_127.ogg"
+HCE/Marine_SgtCautious/Wounded/1 "sounds/hce_voice/marine_sgtcautious/wounded_128.ogg"
+HCE/Marine_SgtCautious/Wounded/2 "sounds/hce_voice/marine_sgtcautious/wounded_129.ogg"
+HCE/Marine_SgtCautious/Wounded/3 "sounds/hce_voice/marine_sgtcautious/wounded_130.ogg"
+HCE/Marine_SgtCautious/Wounded/4 "sounds/hce_voice/marine_sgtcautious/wounded_131.ogg"
+HCE/Marine_SgtCautious/Wounded/5 "sounds/hce_voice/marine_sgtcautious/wounded_132.ogg"
 $random HCE/Marine_SgtCautious/Wounded { HCE/Marine_SgtCautious/Wounded/0 HCE/Marine_SgtCautious/Wounded/1 HCE/Marine_SgtCautious/Wounded/2 HCE/Marine_SgtCautious/Wounded/3 HCE/Marine_SgtCautious/Wounded/4 HCE/Marine_SgtCautious/Wounded/5 }
 $alias HCE/Marine_SgtCautious/KillPlayer HCE/Marine_SgtCautious/Taunt
 $alias HCE/Marine_SgtCautious/Kamikaze HCE/Marine_SgtCautious/Panic
@@ -1524,12 +1562,19 @@ HCE/Marine_SgtGruff/Thanks/3 "sounds/hce_voice/marine_sgtgruff/thanks_112.ogg"
 HCE/Marine_SgtGruff/Thanks/4 "sounds/hce_voice/marine_sgtgruff/thanks_113.ogg"
 HCE/Marine_SgtGruff/Thanks/5 "sounds/hce_voice/marine_sgtgruff/thanks_114.ogg"
 $random HCE/Marine_SgtGruff/Thanks { HCE/Marine_SgtGruff/Thanks/0 HCE/Marine_SgtGruff/Thanks/1 HCE/Marine_SgtGruff/Thanks/2 HCE/Marine_SgtGruff/Thanks/3 HCE/Marine_SgtGruff/Thanks/4 HCE/Marine_SgtGruff/Thanks/5 }
-HCE/Marine_SgtGruff/Wounded/0 "sounds/hce_voice/marine_sgtgruff/wounded_115.ogg"
-HCE/Marine_SgtGruff/Wounded/1 "sounds/hce_voice/marine_sgtgruff/wounded_116.ogg"
-HCE/Marine_SgtGruff/Wounded/2 "sounds/hce_voice/marine_sgtgruff/wounded_117.ogg"
-HCE/Marine_SgtGruff/Wounded/3 "sounds/hce_voice/marine_sgtgruff/wounded_118.ogg"
-HCE/Marine_SgtGruff/Wounded/4 "sounds/hce_voice/marine_sgtgruff/wounded_119.ogg"
-HCE/Marine_SgtGruff/Wounded/5 "sounds/hce_voice/marine_sgtgruff/wounded_120.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/0 "sounds/hce_voice/marine_sgtgruff/worseweapon_115.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/1 "sounds/hce_voice/marine_sgtgruff/worseweapon_116.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/2 "sounds/hce_voice/marine_sgtgruff/worseweapon_117.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/3 "sounds/hce_voice/marine_sgtgruff/worseweapon_118.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/4 "sounds/hce_voice/marine_sgtgruff/worseweapon_119.ogg"
+HCE/Marine_SgtGruff/WorseWeapon/5 "sounds/hce_voice/marine_sgtgruff/worseweapon_120.ogg"
+$random HCE/Marine_SgtGruff/WorseWeapon { HCE/Marine_SgtGruff/WorseWeapon/0 HCE/Marine_SgtGruff/WorseWeapon/1 HCE/Marine_SgtGruff/WorseWeapon/2 HCE/Marine_SgtGruff/WorseWeapon/3 HCE/Marine_SgtGruff/WorseWeapon/4 HCE/Marine_SgtGruff/WorseWeapon/5 }
+HCE/Marine_SgtGruff/Wounded/0 "sounds/hce_voice/marine_sgtgruff/wounded_121.ogg"
+HCE/Marine_SgtGruff/Wounded/1 "sounds/hce_voice/marine_sgtgruff/wounded_122.ogg"
+HCE/Marine_SgtGruff/Wounded/2 "sounds/hce_voice/marine_sgtgruff/wounded_123.ogg"
+HCE/Marine_SgtGruff/Wounded/3 "sounds/hce_voice/marine_sgtgruff/wounded_124.ogg"
+HCE/Marine_SgtGruff/Wounded/4 "sounds/hce_voice/marine_sgtgruff/wounded_125.ogg"
+HCE/Marine_SgtGruff/Wounded/5 "sounds/hce_voice/marine_sgtgruff/wounded_126.ogg"
 $random HCE/Marine_SgtGruff/Wounded { HCE/Marine_SgtGruff/Wounded/0 HCE/Marine_SgtGruff/Wounded/1 HCE/Marine_SgtGruff/Wounded/2 HCE/Marine_SgtGruff/Wounded/3 HCE/Marine_SgtGruff/Wounded/4 HCE/Marine_SgtGruff/Wounded/5 }
 $alias HCE/Marine_SgtGruff/KillPlayer HCE/Marine_SgtGruff/Taunt
 $alias HCE/Marine_SgtGruff/Kamikaze HCE/Marine_SgtGruff/Panic
@@ -1674,12 +1719,19 @@ HCE/Marine_Timid/Thanks/3 "sounds/hce_voice/marine_timid/thanks_112.ogg"
 HCE/Marine_Timid/Thanks/4 "sounds/hce_voice/marine_timid/thanks_113.ogg"
 HCE/Marine_Timid/Thanks/5 "sounds/hce_voice/marine_timid/thanks_114.ogg"
 $random HCE/Marine_Timid/Thanks { HCE/Marine_Timid/Thanks/0 HCE/Marine_Timid/Thanks/1 HCE/Marine_Timid/Thanks/2 HCE/Marine_Timid/Thanks/3 HCE/Marine_Timid/Thanks/4 HCE/Marine_Timid/Thanks/5 }
-HCE/Marine_Timid/Wounded/0 "sounds/hce_voice/marine_timid/wounded_115.ogg"
-HCE/Marine_Timid/Wounded/1 "sounds/hce_voice/marine_timid/wounded_116.ogg"
-HCE/Marine_Timid/Wounded/2 "sounds/hce_voice/marine_timid/wounded_117.ogg"
-HCE/Marine_Timid/Wounded/3 "sounds/hce_voice/marine_timid/wounded_118.ogg"
-HCE/Marine_Timid/Wounded/4 "sounds/hce_voice/marine_timid/wounded_119.ogg"
-HCE/Marine_Timid/Wounded/5 "sounds/hce_voice/marine_timid/wounded_120.ogg"
+HCE/Marine_Timid/WorseWeapon/0 "sounds/hce_voice/marine_timid/worseweapon_115.ogg"
+HCE/Marine_Timid/WorseWeapon/1 "sounds/hce_voice/marine_timid/worseweapon_116.ogg"
+HCE/Marine_Timid/WorseWeapon/2 "sounds/hce_voice/marine_timid/worseweapon_117.ogg"
+HCE/Marine_Timid/WorseWeapon/3 "sounds/hce_voice/marine_timid/worseweapon_118.ogg"
+HCE/Marine_Timid/WorseWeapon/4 "sounds/hce_voice/marine_timid/worseweapon_119.ogg"
+HCE/Marine_Timid/WorseWeapon/5 "sounds/hce_voice/marine_timid/worseweapon_120.ogg"
+$random HCE/Marine_Timid/WorseWeapon { HCE/Marine_Timid/WorseWeapon/0 HCE/Marine_Timid/WorseWeapon/1 HCE/Marine_Timid/WorseWeapon/2 HCE/Marine_Timid/WorseWeapon/3 HCE/Marine_Timid/WorseWeapon/4 HCE/Marine_Timid/WorseWeapon/5 }
+HCE/Marine_Timid/Wounded/0 "sounds/hce_voice/marine_timid/wounded_121.ogg"
+HCE/Marine_Timid/Wounded/1 "sounds/hce_voice/marine_timid/wounded_122.ogg"
+HCE/Marine_Timid/Wounded/2 "sounds/hce_voice/marine_timid/wounded_123.ogg"
+HCE/Marine_Timid/Wounded/3 "sounds/hce_voice/marine_timid/wounded_124.ogg"
+HCE/Marine_Timid/Wounded/4 "sounds/hce_voice/marine_timid/wounded_125.ogg"
+HCE/Marine_Timid/Wounded/5 "sounds/hce_voice/marine_timid/wounded_126.ogg"
 $random HCE/Marine_Timid/Wounded { HCE/Marine_Timid/Wounded/0 HCE/Marine_Timid/Wounded/1 HCE/Marine_Timid/Wounded/2 HCE/Marine_Timid/Wounded/3 HCE/Marine_Timid/Wounded/4 HCE/Marine_Timid/Wounded/5 }
 $alias HCE/Marine_Timid/KillPlayer HCE/Marine_Timid/Taunt
 $alias HCE/Marine_Timid/Kamikaze HCE/Marine_Timid/Panic

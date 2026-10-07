@@ -23,7 +23,7 @@ CAT = {
     'howl': ['Howl', 'Alert', 'Berserk'], 'idle': ['Idle'], 'bite': ['Melee'],
     # Marines and the player's squad
     'scold': ['Scold'], 'betrayal': ['Betrayal'], 'ally killed': ['AllyKilled'], 'acknowledge': ['Acknowledge'],
-    'thanks': ['Thanks'], 'wounded': ['Wounded'], 'forgive': ['Forgive'],
+    'thanks': ['Thanks'], 'wounded': ['Wounded'], 'forgive': ['Forgive'], 'worse weapon': ['WorseWeapon'],
 }
 # events a voice lacks borrow another of its own events
 FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 'Pain', 'PainHeavy': 'PainMed',
@@ -31,7 +31,7 @@ FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 
             'Taunt': 'Howl', 'Pain': 'PainMed', 'Death': 'DeathHard', 'DeathHard': 'Death',
             # the squad's lines (Halo 2 has most; the CE-only voices borrow the nearest they have)
             'Scold': 'PainMed', 'AllyKilled': 'Scold', 'Betrayal': 'Taunt', 'Acknowledge': 'Regroup',
-            'Thanks': 'Acknowledge', 'Wounded': 'PainHeavy', 'Forgive': 'Acknowledge'}
+            'Thanks': 'Acknowledge', 'Wounded': 'PainHeavy', 'Forgive': 'Acknowledge', 'WorseWeapon': 'Scold'}
 
 def main():
     if os.path.exists(OUT): shutil.rmtree(OUT)

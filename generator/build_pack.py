@@ -1716,7 +1716,7 @@ MARINE_ARSENAL = {
     'grenade launcher': ('grenade_launcher', 'rifle', 5, 18, 30, None, 1.0, 'Halo_GrenadeLauncher'),
     'sticky detonator': ('sticky_detonator', 'h2pistol', 4, 14, 25, None, 1.0, 'Halo_StickyDetonator'),   # a pistol-sized launcher
     'gpmg':             ('gpmg', 'rifle', 3, 18, 35, None, None, 'Halo_GPMG'),
-    'flamethrower':     ('flamethrower', 'rifle', 1, 5, 8, None, None, 'Halo_Flamethrower'),
+    'flamethrower':     ('flamethrower', 'support', 1, 5, 8, None, None, 'Halo_Flamethrower'),   # the cyborg's support stance (cyborg_flame_anims.py)
 }
 # Halo CE's own refs where CE has the weapon (its trigger data and projectile); new ones get an hde\ ref
 ARSENAL_REF = {'pistol': r'weapons\pistol\pistol', 'sniper rifle': r'weapons\sniper rifle\sniper rifle',

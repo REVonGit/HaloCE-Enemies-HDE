@@ -126,8 +126,13 @@ def fix_gpmg(meshes):
     Ry = np.array([[cp, 0, sp], [0, 1, 0], [-sp, 0, cp]])                                 # level the barrel
     return _rot(meshes, Ry @ Rz)
 
+def fix_support(meshes):
+    """Halo CE's flamethrower as Halo has it: its model stands on end, the way the cyborg's 'support' stance holds it at
+    the hip (the Marine's flamethrower stance is that one: cyborg_flame_anims.py), so it keeps its own orientation"""
+    return meshes
+
 def fix_upright(meshes):
-    """Halo CE's flamethrower model stands on end: lay it nozzle-forward"""
+    """Halo CE's flamethrower model stands on end: lay it nozzle-forward (for a rifle stance; unused)"""
     meshes = _rot(meshes, [[0, 0, 1], [0, 1, 0], [-1, 0, 0]])
     P = np.concatenate([m['pos'] for m in meshes])
     tip = P[P[:, 0] > P[:, 0].max() - 0.03].mean(0)          # nozzle end: level it with the grip
@@ -201,7 +206,7 @@ def fix_rocket_launcher(meshes):
         m['tris'] = np.concatenate([m['tris'], m['tris'][:, [0, 2, 1]]])
     return meshes
 
-FIX = {'rocket_launcher': fix_rocket_launcher, 'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_upright}
+FIX = {'rocket_launcher': fix_rocket_launcher, 'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_support}
 
 def summary(wid):
     d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))

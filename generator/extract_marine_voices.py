@@ -70,6 +70,7 @@ PLAN = {
     'Thanks':        ([], ['thnk_plr_btrwpn', 'ok_plr_trdwpn', 'thnk_plr', 'thnk']),
     'Wounded':       (['postcombatchatter\\seriouslywounded'], ['whn', 'whn_hrtbrn', 'hlpme']),
     'Forgive':       ([], ['forgive']),
+    'Worse Weapon':  ([], ['scrn_plr_wrswpn']),          # scorn: the player traded him a worse gun
 }
 
 

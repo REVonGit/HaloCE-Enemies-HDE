@@ -125,6 +125,9 @@ def wordmap(text, mapping):
 
 def convert_text(t):
     t = re.sub(r'\tmixin HCE_(Dig)?NerfMixin;\n', '', t)     # HDE-only hook; HCES projectiles keep their fire-time damage
+    t = re.sub(r'\tmixin HCE_(Dig)?Lite(Plasma|PlasmaSmoke|Arcs);\n', '', t)   # HDE's plasma effects thinned out; HCES bolts are light already
+    t = re.sub(r'(?s)\t\tHaloBullet\.PostBeginPlay\(\);[^\n]*\n.*?SetShade\(col\);\n', '\t\tsuper.PostBeginPlay();\n', t)
+    t = re.sub(r'(?s)// the core.s HCE_LitePlasma / HCE_LitePlasmaSmoke, repeated here.*?(?=// Pulse Carbine bolts for the Elites)', '', t)
     t = re.sub(r'(?s)// the core.s HCE_NerfMixin, repeated here.*?\nmixin class HCE_DigNerfMixin\n\{.*?\n\}\n', '', t)
     t = wordmap(t, CLASS_MAP)
     t = re.sub(r'"(' + '|'.join(DROP_MAP) + r')"', lambda m: '"None"' if DROP_TO_NONE else f'"{DROP_MAP[m.group(1)]}"', t)

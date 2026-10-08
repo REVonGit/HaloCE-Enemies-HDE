@@ -221,7 +221,7 @@ class HCE_JackalShield : Actor
 	override void Tick()
 	{
 		let j = HaloDoom_EnemyBase(master);
-		if(!j || j.health <= 0) { if(j && skinHidden && !broken) SetShieldVisible(j, true); Destroy(); return; }
+		if(!j || j.health <= 0) { if(j) SetShieldVisible(j, false); Destroy(); return; }   // the field dies with its Jackal
 		if(isFrozen()) return;
 		// ride the arm's 'frame shield' node (the model's bone positions are on for the Jackal)
 		if(bone == -2)

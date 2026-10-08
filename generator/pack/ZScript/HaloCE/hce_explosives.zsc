@@ -22,6 +22,54 @@ mixin class HCE_NerfMixin
 	}
 }
 
+// ---------------------------------------------------------------- plasma bolts, lighter
+// HDE's plasma bolts are made for the player's gun: each one carries a crackle of lightning (TESLightningEffect, a
+// particle actor every tic or two), throws four lightning arcs every four tics (each arc a chain of 20-70 small
+// actors) and four more when it hits, and trails a smoke actor every tic. A squad of Covenant opening fire at once
+// put two thousand effect actors in the level within a second, which is the hitch when many of them notice you.
+// The enemies' bolts keep HDE's look (the glowing cores, the shading, the particles, the smoke) with a fraction of
+// the actors: no attached crackle, one coarser arc in flight and two on impact, only near a player, smoke every
+// third tic.
+mixin class HCE_LitePlasma
+{
+	override void PostBeginPlay()
+	{
+		HaloBullet.PostBeginPlay();                  // HaloPlasma_Proj's, without the attached lightning crackle
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorOne, scaleMod: 1.0);
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorTwo, scaleMod: 0.70);
+		A_SetRoll(frandom[PlasmaRollRNG](-180, 180));
+		SetShade(col);
+	}
+	override void A_DoLightning(class<LightningBiri> type, double amt)
+	{
+		bool near = false;
+		for(int i = 0; i < MAXPLAYERS && !near; i++)
+			if(playeringame[i] && players[i].mo && Distance3D(players[i].mo) < 1200) near = true;
+		if(!near) return;
+		int n = amt > 4 ? 3 : bMISSILE ? 1 : 2;      // in flight, on impact, a charged shot's hit
+		for(int i = 0; i < n; i++)
+		{
+			vector2 view = (angle + frandom[PlasmaProjRNG](-60, 60) + 180, pitch + frandom[PlasmaProjRNG](-35, 35));
+			vector3 rp = (frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1)) * frandom[PlasmaProjRNG](-5, 5);
+			BiriBiri.DoLightning(level.Vec3Offset(pos, rp), view, type: type, dist: frandom[PlasmaProjRNG](10, 30), 1.5, 20.0, 10.0, 30, 0);
+		}
+	}
+}
+// the plain plasma pistol and plasma rifle bolts: smoke every third tic (the Pulse Carbine and the charged shot keep
+// their own Tick, which does more than smoke)
+mixin class HCE_LitePlasmaSmoke
+{
+	override void Tick()
+	{
+		HaloBullet.Tick();
+		if(!bDESTROYED && !(GetAge() % 3))
+		{
+			let smk = Spawn(smokeType, level.Vec3Offset(pos, vel));
+			if(smk) smk.vel = vel * 0.1;
+		}
+	}
+}
+
 // ---------------------------------------------------------------- grenades
 class HCE_FragGrenade : FragGrenade_Proj
 {

@@ -14,15 +14,80 @@ mixin class HCE_DigNerfMixin
 	}
 }
 
+// the core's HCE_LitePlasma / HCE_LitePlasmaSmoke, repeated here (mixins don't cross pk3s): HDE's plasma bolts with
+// far fewer effect actors (see hce_explosives.zsc)
+mixin class HCE_DigLitePlasma
+{
+	override void PostBeginPlay()
+	{
+		HaloBullet.PostBeginPlay();                  // HaloPlasma_Proj's, without the attached lightning crackle
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorOne, scaleMod: 1.0);
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorTwo, scaleMod: 0.70);
+		A_SetRoll(frandom[PlasmaRollRNG](-180, 180));
+		SetShade(col);
+	}
+	override void A_DoLightning(class<LightningBiri> type, double amt)
+	{
+		bool near = false;
+		for(int i = 0; i < MAXPLAYERS && !near; i++)
+			if(playeringame[i] && players[i].mo && Distance3D(players[i].mo) < 1200) near = true;
+		if(!near) return;
+		int n = amt > 4 ? 3 : bMISSILE ? 1 : 2;      // in flight, on impact, a charged shot's hit
+		for(int i = 0; i < n; i++)
+		{
+			vector2 view = (angle + frandom[PlasmaProjRNG](-60, 60) + 180, pitch + frandom[PlasmaProjRNG](-35, 35));
+			vector3 rp = (frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1)) * frandom[PlasmaProjRNG](-5, 5);
+			BiriBiri.DoLightning(level.Vec3Offset(pos, rp), view, type: type, dist: frandom[PlasmaProjRNG](10, 30), 1.5, 20.0, 10.0, 30, 0);
+		}
+	}
+}
+// the arcs alone, for a bolt with its own PostBeginPlay (the Pulse Carbine below)
+mixin class HCE_DigLiteArcs
+{
+	override void A_DoLightning(class<LightningBiri> type, double amt)
+	{
+		bool near = false;
+		for(int i = 0; i < MAXPLAYERS && !near; i++)
+			if(playeringame[i] && players[i].mo && Distance3D(players[i].mo) < 1200) near = true;
+		if(!near) return;
+		int n = amt > 4 ? 3 : bMISSILE ? 1 : 2;      // in flight, on impact, a charged shot's hit
+		for(int i = 0; i < n; i++)
+		{
+			vector2 view = (angle + frandom[PlasmaProjRNG](-60, 60) + 180, pitch + frandom[PlasmaProjRNG](-35, 35));
+			vector3 rp = (frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1)) * frandom[PlasmaProjRNG](-5, 5);
+			BiriBiri.DoLightning(level.Vec3Offset(pos, rp), view, type: type, dist: frandom[PlasmaProjRNG](10, 30), 1.5, 20.0, 10.0, 30, 0);
+		}
+	}
+}
+// the plain plasma pistol and plasma rifle bolts: smoke every third tic (the Pulse Carbine and the charged shot keep
+// their own Tick, which does more than smoke)
+mixin class HCE_DigLitePlasmaSmoke
+{
+	override void Tick()
+	{
+		HaloBullet.Tick();
+		if(!bDESTROYED && !(GetAge() % 3))
+		{
+			let smk = Spawn(smokeType, level.Vec3Offset(pos, vel));
+			if(smk) smk.vel = vel * 0.1;
+		}
+	}
+}
+
 // Pulse Carbine bolts for the Elites: HDE's Pulse Carbine projectile (slow launch, accelerating, homing),
 // locked onto the shooter's target. HDE's own homing grabs the nearest visible thing, which for a monster
 // would include its allies, so this one never picks a new target once its victim is gone.
 class HCE_PulseCarbineHoming : HaloPulseCarbine_Proj
 {
 	mixin HCE_DigNerfMixin;
+	mixin HCE_DigLiteArcs;
 	override void PostBeginPlay()
 	{
-		super.PostBeginPlay();
+		HaloBullet.PostBeginPlay();                  // HDE's, without the attached lightning crackle (HCE_DigLitePlasma)
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorOne, scaleMod: 1.0);
+		HaloPlasma_ProjCore.SpawnCore(self, coreColorTwo, scaleMod: 0.70);
+		A_SetRoll(frandom[PlasmaRollRNG](-180, 180));
+		SetShade(col);
 		if(target && !target.player && target.target) tracer = target.target;
 	}
 	override void Handle_Homing(double turnMax, bool ignoreCorpses)

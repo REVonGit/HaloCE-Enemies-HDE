@@ -814,6 +814,9 @@ vec4 ProcessTexel()
 # ---------------------------------------------------------------- generation
 GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2, 'back': 3}
 
+# HDE plasma bolt classes the enemies fire -> also thin out the smoke trail (their own Tick does only that)
+LITE_PLASMA = {'HaloPlasma_Proj': True, 'HaloPlasmaRifle_Proj': True, 'HaloPulseCarbine_Proj': False, 'HaloChargedPlasma_Proj': False}
+
 def gore_code(char, meta, mdir, sc):
     """HCE_SeverLimb for a character with gore_kit.py's dismemberment data: hide the limb's surfaces (and what it
     holds), show its gore stump, throw the gib"""
@@ -1606,8 +1609,11 @@ def build(cfg=None):
             body = f'\t\t{prop}.BaseDamage {dmg};\n'
         # HDE projectiles (not grenades / fuel rods / flames) re-apply the enemy damage nerf when they hit
         mix = f'\tmixin {cfg.get("nerf_mixin", "HCE_NerfMixin")};\n' if base_cls not in NO_NERF_MIXIN else ''
+        if base_cls in LITE_PLASMA:            # HDE's plasma bolts with far fewer effect actors (hce_explosives.zsc)
+            lite = cfg.get('lite_mixin', 'HCE_LitePlasma')
+            mix += f'\tmixin {lite};\n' + (f'\tmixin {lite}Smoke;\n' if LITE_PLASMA[base_cls] else '')
         pz.append(f'class {pc} : {base_cls}\n{{\n{mix}\tDefault\n\t{{\n{body}\t}}\n}}\n')
-    if main: pz.append('class HCE_ChargedPlasma : HaloChargedPlasma_Proj\n{\n\tmixin HCE_NerfMixin;\n\tDefault\n\t{\n\t\tHaloProjectile.BaseDamage 70;\n\t}\n}\n')
+    if main: pz.append('class HCE_ChargedPlasma : HaloChargedPlasma_Proj\n{\n\tmixin HCE_NerfMixin;\n\tmixin HCE_LitePlasma;\n\tDefault\n\t{\n\t\tHaloProjectile.BaseDamage 70;\n\t}\n}\n')
     # ---------------- random spawners per character
     late_chars = cfg.get('late_chars', [])      # characters added after a release: numbered after everything else
     def spawner(char, lst):

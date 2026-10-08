@@ -109,6 +109,7 @@ class HCE_MA37Round : HaloRifle_Bullet
 class HCE_MarinePulseBolt : HaloPulseCarbine_Proj
 {
 	mixin HCE_NerfMixin;
+	mixin HCE_LitePlasma;
 	Default
 	{
 		HaloProjectile.BaseDamage 8;
@@ -158,6 +159,8 @@ class HCE_PlasmaCasterGrenade : HCE_PlasmaCasterScaled
 class HCE_PlasmaPistolBolt : HaloPlasma_Proj
 {
 	mixin HCE_NerfMixin;
+	mixin HCE_LitePlasma;
+	mixin HCE_LitePlasmaSmoke;
 	Default
 	{
 		HaloProjectile.BaseDamage 18;
@@ -167,6 +170,8 @@ class HCE_PlasmaPistolBolt : HaloPlasma_Proj
 class HCE_PlasmaRifleBolt : HaloPlasmaRifle_Proj
 {
 	mixin HCE_NerfMixin;
+	mixin HCE_LitePlasma;
+	mixin HCE_LitePlasmaSmoke;
 	Default
 	{
 		HaloProjectile.BaseDamage 13;
@@ -244,6 +249,7 @@ class HCE_StickyDetCharge : HaloStickyDetProj
 class HCE_ChargedPlasma : HaloChargedPlasma_Proj
 {
 	mixin HCE_NerfMixin;
+	mixin HCE_LitePlasma;
 	Default
 	{
 		HaloProjectile.BaseDamage 70;

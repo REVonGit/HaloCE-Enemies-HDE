@@ -1805,6 +1805,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(pc == hce_dropWeapon) return false;
 		class<Weapon> mc = (class<Weapon>)(hce_dropWeapon);
 		if(!HCE_CanCarry(pc) || !mc) { HCE_Say('Refuse', 1.0, 35 * 2, true); return true; }      // not a gun he can use
+		// the player already carries the Marine's gun (as his other weapon): handing it over would only top up its ammo
+		// while the player's gun went to the Marine, so the player would end up a weapon short. He refuses.
+		if(user.FindInventory(mc, true)) { HCE_Say('Refuse', 1.0, 35 * 2, true); return true; }
 		int gain = HCE_WeaponScore(pc) - HCE_WeaponScore(hce_dropWeapon);
 		user.TakeInventory(pc, 1);
 		user.GiveInventory(mc, 1);
@@ -3921,6 +3924,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		let g = HCE_LimbGib(Spawn("HCE_LimbGib", at, ALLOW_REPLACE));
 		if(!g) return;
 		g.hce_def = GetClassName(); g.hce_path = path; g.hce_model = model; g.hce_stub = stub; g.hce_tex = tex;
+		g.hce_shieldSurf = bHCE_FrontShield ? HCE_ShieldSurface() + 1 : 0;   // a Jackal's arm: its energy shield is gone with it (+1: 0 is none)
 		g.hce_rest = rest > 0 ? rest * sc * 1.2 : 2;          // its half thickness lying flat, map units
 		g.master = self;                   // its blood is the victim's (spawned through it)
 		g.vel = v;
@@ -4984,7 +4988,7 @@ class HCE_LimbGib : Actor
 	}
 	Name hce_def, hce_model, hce_tex;
 	String hce_path;
-	int hce_stub, life;
+	int hce_stub, life, hce_shieldSurf;
 	double hce_rest;
 	bool hce_set, isStatic;
 	vector3 angVel;
@@ -5050,6 +5054,7 @@ class HCE_LimbGib : Actor
 			// lost its MODELDEF and drew nothing
 			A_ChangeModel(hce_def, 0, hce_path, hce_model);
 			A_ChangeModel(hce_def, 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
+			if(hce_shieldSurf > 0) A_ChangeModel(hce_def, 0, "", 'None', hce_shieldSurf - 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		bool there = InterpolateAngles();
 		if(isStatic)

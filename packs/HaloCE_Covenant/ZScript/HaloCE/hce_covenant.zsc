@@ -16,6 +16,7 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Elite";
 		BloodColor "3A 1E 8C";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -1741,6 +1742,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "EliteSpecial";
 		BloodColor "3A 1E 8C";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -3350,6 +3352,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Grunt";
 		BloodColor "40 C8 D0";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -5244,6 +5247,7 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "GruntSpecOps";
 		BloodColor "40 C8 D0";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -6224,6 +6228,7 @@ class HCE_HunterBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Hunter";
 		BloodColor "FF 8C 1A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -6790,6 +6795,7 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Jackal";
 		BloodColor "4A 2A 9A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -7071,6 +7077,7 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "JackalMajor";
 		BloodColor "4A 2A 9A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{

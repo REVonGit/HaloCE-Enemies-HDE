@@ -53,6 +53,8 @@ PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\soli
 PUFFS_COV = [('ce', CE_PART + 'blood elite impact burst'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 PUFFS_HUMAN = [('ce', CE_PART + 'blood h impact'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
+# floor splat sprite codes per species (HS<code> hits, HP<code> deaths)
+FLOOR = {'Elite': 'EL', 'Grunt': 'GR', 'Hunter': 'HU', 'Brute': 'BR', 'Drone': 'DR', 'Engineer': 'EN', 'Beast': 'BE', 'Human': 'HM'}
 
 
 def png_grab(path, im, ox, oy):
@@ -197,7 +199,21 @@ def main():
     ncov = sprites('HGBC', PUFFS_COV)
     nhum = sprites('HGBH', PUFFS_HUMAN)
     nstreak = sprites('HGBS', STREAKS)
-    json.dump(dict(groups={g: len(v) for g, v in groups.items()}, puffs=npuff, puffs_cov=ncov, puffs_human=nhum, streaks=nstreak),
+    # floor splats (Halo draws its blood decals on floors too; Doom's decals are walls only): each species' decals as
+    # flat sprites, HS<code> for hits, HP<code> for deaths (the pools, smears and large splats), frames A..
+    floor = {}
+    for sp, code in FLOOR.items():
+        for kind, gname in (('HS', f'HCEGore_{sp}'), ('HP', f'HCEGore_{sp}Big')):
+            n = 0
+            for dn in groups.get(gname, []):
+                if n >= 26 or 'glow' in dn: continue
+                im = Image.open(f'{gdir}/{dn[5:]}.png').convert('RGBA')
+                k = 128 / max(im.size)
+                if k < 1: im = im.resize((max(1, round(im.size[0] * k)), max(1, round(im.size[1] * k))), Image.LANCZOS)
+                png_grab(f'{sdir}/{kind}{code}{chr(65 + n)}0.png', im, im.size[0] // 2, im.size[1] // 2)
+                n += 1
+            floor[kind + code] = n
+    json.dump(dict(groups={g: len(v) for g, v in groups.items()}, puffs=npuff, puffs_cov=ncov, puffs_human=nhum, streaks=nstreak, floor=floor),
               open(f'{od}/gore.json', 'w'), indent=1)
     print({g: len(v) for g, v in groups.items()}, 'puffs', npuff, ncov, nhum, 'streaks', nstreak)
 

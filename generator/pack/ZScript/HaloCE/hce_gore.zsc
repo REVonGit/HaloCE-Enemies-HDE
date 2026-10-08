@@ -7,12 +7,59 @@
 //   red; the Marines Halo CE's human red, dying in its blood pool)
 // * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks: Halo CE's Covenant
 //   impact burst for the Covenant, its human impact for the Marines;
-// * kills leave bigger splats and the Elite / Grunt smears, and a larger burst.
+// * kills leave bigger splats and the Elite / Grunt smears, and a larger burst;
+// * the blood lands on the floor too, Halo's splats laid flat (Doom's decals go on walls only): now and then under a
+//   wounded enemy, and a pool of the large splats and smears (the Marines' Halo CE blood pool) under the dead.
+// NashGore's own blood is kept off these enemies: their blood type is the core's HCE_HaloBlood (NashGore only
+// replaces Doom's own), and NashGore's per-monster gore (corpse pools, spurts, its gibs) is turned off for them as they
+// spawn (it reads their no-blood flag once, then: set for that moment). The Flood and the Sentinels keep NashGore's.
 // Textures and decals: extract_halo_gore.py (graphics/hcegore, sprites/hcegore, decaldef.hcegore).
 class HCE_HaloGoreHandler : EventHandler
 {
 	bool hasNash, checked;
 	Array<Actor> recent; Array<int> recentUntil;      // a decal per victim at most every few tics
+	Array<Actor> unbled;                               // no-blood set only while NashGore looks at them (WorldThingSpawned)
+	Array<Actor> splats;                               // floor splats, oldest first
+	const MAX_SPLATS = 300;
+
+	override void OnRegister()
+	{
+		SetOrder(-1000);          // before NashGore's handler, so the no-blood flag is set when it reads it
+	}
+
+	override void WorldThingSpawned(WorldEvent e)
+	{
+		let v = e.Thing;
+		if(!v || !(v is "HaloDoom_EnemyBase") || v.bNOBLOOD || !Active() || Species(v) == "") return;
+		v.bNOBLOOD = true;
+		unbled.Push(v);
+	}
+
+	override void WorldTick()
+	{
+		for(int i = 0; i < unbled.Size(); i++)
+			if(unbled[i]) unbled[i].bNOBLOOD = unbled[i].default.bNOBLOOD;
+		unbled.Clear();
+	}
+
+	static String FloorCode(String group)
+	{
+		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human" };
+		static const String c[] = { "EL", "GR", "HU", "BR", "DR", "EN", "BE", "HM" };
+		for(int i = 0; i < g.Size(); i++) if(g[i] == group) return c[i];
+		return "BE";
+	}
+
+	// a Halo blood splat on the floor under the wound: hit (HS) or death pool (HP)
+	void FloorSplat(Actor v, String group, bool pool, double off, double size)
+	{
+		vector3 at = v.Vec3Angle(off, frandom[HCEGore](0, 360), 0);
+		let s = HCE_GoreFloorSplat(Actor.Spawn("HCE_GoreFloorSplat", (at.xy, v.floorz), ALLOW_REPLACE));
+		if(!s) return;
+		if(!s.Pick((pool ? "HP" : "HS") .. FloorCode(group), size)) { s.Destroy(); return; }
+		splats.Push(s);
+		while(splats.Size() > MAX_SPLATS) { if(splats[0]) splats[0].Destroy(); splats.Delete(0); }
+	}
 
 	bool Active()
 	{
@@ -98,7 +145,7 @@ class HCE_HaloGoreHandler : EventHandler
 	{
 		let v = e.Thing;
 		if(!v || e.Damage <= 0 || !(v is "HaloDoom_EnemyBase") || v.bNOBLOOD || !Active()) return;
-		if(e.DamageType == 'Fire' || e.DamageType == 'Ice' || e.DamageType == 'Drowning' || e.DamageType == 'Telefrag') return;
+		if(e.DamageType == 'Fire' || e.DamageType == 'Burn' || e.DamageType == 'Flame' || e.DamageType == 'Ice' || e.DamageType == 'Drowning' || e.DamageType == 'Telefrag') return;
 		String sp = Species(v);
 		if(sp == "") return;
 		Actor from = e.DamageSource ? e.DamageSource : e.Inflictor;
@@ -109,10 +156,16 @@ class HCE_HaloGoreHandler : EventHandler
 		{
 			Burst(v, sp, at, from, 6, 5, size * 1.3);
 			for(int i = 0; i < 3; i++) Spray(v, "HCEGore_" .. sp .. "Big", from, i == 0 ? 15 : 120, i == 0 ? 15 : 60);
+			FloorSplat(v, sp, true, frandom[HCEGore](0, v.radius * 0.4), clamp(v.radius / 20.0, 0.8, 1.6));
+			for(int i = random[HCEGore](1, 2); i > 0; i--) FloorSplat(v, sp, false, frandom[HCEGore](v.radius * 0.5, v.radius * 1.5), size * 0.7);
 			return;
 		}
 		Burst(v, sp, at, from, e.Damage >= 15 ? 3 : 2, e.Damage >= 15 ? 3 : 1, size);
-		if(!Throttled(v, 6)) Spray(v, "HCEGore_" .. sp, from, 20, 20);
+		if(!Throttled(v, 6))
+		{
+			Spray(v, "HCEGore_" .. sp, from, 20, 20);
+			if(frandom[HCEGore](0, 1) < 0.35 + e.Damage / 60.0) FloorSplat(v, sp, false, frandom[HCEGore](0, v.radius * 1.2), size * 0.6);
+		}
 	}
 }
 
@@ -210,5 +263,56 @@ class HCE_GoreStreak : Actor
 			A_FadeOut(0.045);
 		}
 		Loop;
+	}
+}
+
+// Halo's blood on the floor: a splat lying flat (Halo CE / Halo 2's blood decals as flat sprites, extract_halo_gore.py:
+// HS<species> hit splats, HP<species> death pools and smears), fading after a minute and a half
+class HCE_GoreFloorSplat : Actor
+{
+	int life;
+	Default
+	{
+		+FLATSPRITE
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+DONTSPLASH
+		+NOTONAUTOMAP
+		RenderStyle "Translucent";
+		Alpha 0.9;
+		Scale 0.5;
+	}
+	States
+	{
+	Precache:
+		HSEL A 0; HPEL A 0; HSGR A 0; HPGR A 0; HSHU A 0; HPHU A 0; HSBR A 0; HPBR A 0;
+		HSDR A 0; HPDR A 0; HSEN A 0; HPEN A 0; HSBE A 0; HPBE A 0; HSHM A 0; HPHM A 0;
+		Stop;
+	Spawn:
+		HSBE A -1;
+		Stop;
+	}
+	// its sprite and a random frame of it (the frames that exist: the sprite's own count)
+	bool Pick(String spr, double size)
+	{
+		int si = GetSpriteIndex(spr);
+		if(si < 0) return false;
+		int n = 0;
+		while(n < 26 && TexMan.CheckForTexture(String.Format("%s%c0", spr, 65 + n), TexMan.Type_Sprite).IsValid()) n++;
+		if(n == 0) return false;
+		sprite = si;
+		frame = random[HCEGore](0, n - 1);
+		scale *= size * frandom[HCEGore](0.8, 1.15);
+		angle = frandom[HCEGore](0, 360);
+		bXFLIP = random[HCEGore](0, 1) == 1;
+		SetZ(floorz + frandom[HCEGore](0.1, 0.4));    // a hair apart, so overlapping splats don't flicker
+		life = 35 * 90;
+		return true;
+	}
+	override void Tick()
+	{
+		if(isFrozen()) return;
+		if(--life < 35 * 10) { alpha -= 0.9 / (35 * 10); if(alpha <= 0 || life <= 0) { Destroy(); return; } }
+		if(pos.z > floorz + 1 || pos.z < floorz) SetZ(floorz + 0.2);   // a lift or a crusher moved the floor
 	}
 }

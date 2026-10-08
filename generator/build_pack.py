@@ -251,7 +251,10 @@ NO_BLOOD = {'Sentinel'}
 def blood_props(char):
     if char in NO_BLOOD: return '\t\t+NOBLOOD\n'
     c = BLOOD.get(char)
-    return f'\t\tBloodColor "{c[0:2]} {c[2:4]} {c[4:6]}";\n' if c else ''
+    if not c: return ''
+    # Halo blood with NashGore loaded (hce_core.zsc HCE_HaloBlood; the Flood keep NashGore's own)
+    bt = '' if char.startswith('Flood') else '\t\tBloodType "HCE_HaloBlood";\n'
+    return f'\t\tBloodColor "{c[0:2]} {c[2:4]} {c[4:6]}";\n' + bt
 
 def cname(s):
     s = s.split('\\')[-1]

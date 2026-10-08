@@ -16,6 +16,7 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "BlindWolf";
 		BloodColor "A0 10 10";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -170,6 +171,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Brute";
 		BloodColor "16 1C 40";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -5803,6 +5805,7 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Drinol";
 		BloodColor "8A 1A 10";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -5990,6 +5993,7 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Drone";
 		BloodColor "DD F0 D2";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -6992,6 +6996,7 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "EliteRifle";
 		BloodColor "3A 1E 8C";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -8407,6 +8412,7 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "EliteZealot";
 		BloodColor "3A 1E 8C";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -8708,6 +8714,7 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Engineer";
 		BloodColor "E0 60 7A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -8990,6 +8997,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "H2Jackal";
 		BloodColor "4A 2A 9A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -10298,6 +10306,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "SlugMan";
 		BloodColor "FF 8C 1A";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -13161,6 +13170,7 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "ThornBeast";
 		BloodColor "7A 1A 30";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{

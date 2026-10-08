@@ -328,3 +328,59 @@ class HCE_ShieldShell : Actor
 		if(alpha > 0) alpha = max(0, alpha - 0.045);
 	}
 }
+
+// ---------------------------------------------------------------------------
+// The Halo enemies' blood (their BloodType). Without Nash's Gore Mod it is Doom's own Blood. NashGore swaps Doom's
+// blood for its own sprays, splats and pools; with it loaded, the Halo gore patch (Covenant pack, hce_halogore on)
+// draws Halo's blood instead, so this one goes away. With the patch turned off, it hands over to NashGore's blood as
+// NashGore would have it (nashgore_bloodtype).
+// ---------------------------------------------------------------------------
+class HCE_HaloBlood : Blood
+{
+	bool hce_checked;
+	override void Tick()
+	{
+		if(!hce_checked)
+		{
+			hce_checked = true;
+			String nash = "NashGoreBlood";
+			class<Actor> nb = nash;
+			if(nb)
+			{
+				CVar hg = CVar.FindCVar("hce_halogore");
+				if(hg && hg.GetBool())
+				{
+					// the gore patch draws the hits; blood the enemy sheds itself (a stump, a corpse, a gib) becomes
+					// a puff of Halo's blood burst in its blood colour (hce_gore.zsc)
+					if(target)
+					{
+						String pn = target.GetClassName();
+						pn = pn.IndexOf("Marine") >= 0 || pn.IndexOf("Johnson") >= 0 ? "HCE_GorePuffHuman" : "HCE_GorePuffCov";
+						class<Actor> pc = pn;
+						let p = pc ? Spawn(pc, pos, NO_REPLACE) : null;
+						if(p)
+						{
+							color c = target.BloodColor;
+							p.SetShade(c != 0 ? c : Color(255, 120, 0, 0));
+							p.frame = random[HCEGore](0, 11);
+							p.scale *= frandom[HCEGore](0.5, 0.9);
+							p.vel = vel * 0.4;
+						}
+					}
+					Destroy(); return;
+				}
+				CVar bt = CVar.FindCVar("nashgore_bloodtype");
+				int k = bt ? bt.GetInt() : 0;
+				if(k != 2)                                   // 2: NashGore set to Doom's blood
+				{
+					String cn = k == 1 ? "NashGoreClassicBlood" : "NashGoreBlood";
+					class<Actor> c = cn;
+					let b = c ? Spawn(c, pos, NO_REPLACE) : null;
+					if(b) { b.vel = vel; b.angle = angle; b.Translation = Translation; b.target = target; }
+					Destroy(); return;
+				}
+			}
+		}
+		Super.Tick();
+	}
+}

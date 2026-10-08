@@ -16,6 +16,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "Marine";
 		BloodColor "A0 10 10";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{
@@ -6721,6 +6722,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		PainChance 0;
 		Tag "MarineArmored";
 		BloodColor "A0 10 10";
+		BloodType "HCE_HaloBlood";
 	}
 	States
 	{

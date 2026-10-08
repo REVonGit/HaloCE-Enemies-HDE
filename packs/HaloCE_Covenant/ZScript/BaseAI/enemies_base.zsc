@@ -90,6 +90,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			damageInfo.processing = false;
 
 		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
+		else if(hce_enabled && health <= 0 && hce_burnHit && !default.bNOBLOOD) bNOBLOOD = false;   // a corpse after a fire hit
+		hce_burnHit = false;
 		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
 		if(hce_enabled && hce_ackAt > 0 && level.maptime >= hce_ackAt) { hce_ackAt = 0; if(health > 0) HCE_Say('Acknowledge', 1.0, 35, true); }
 		if(!hce_enabled) vel.xy *= moveFriction;
@@ -139,7 +141,11 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	override int DamageMobJ(Actor inflictor, Actor source, int dmg, Name mod, int flags, double angle)
 	{
-		if(hce_enabled && health <= 0 && hce_corpseInit) return HCE_CorpseHit(inflictor, source, dmg, mod, flags);
+		if(hce_enabled && health <= 0 && hce_corpseInit)
+		{
+			if(HCE_IsBurn(mod) && !default.bNOBLOOD) { hce_burnHit = true; bNOBLOOD = true; }   // till its next tic
+			return HCE_CorpseHit(inflictor, source, dmg, mod, flags);
+		}
 		Actor keepTarget = target;
 		if(hce_enabled)
 		{
@@ -160,7 +166,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			hce_lastHeadshot = false;
 			HCE_NoteHit(inflictor, source, dmg, mod);
-			if(health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();    // an energy shield up: the hit doesn't bleed
+			// an energy shield up: the hit doesn't bleed; nor does fire (no blood spray, no blood on the body, no
+			// bleeding gore), alive or dead. The flag holds until its next tic (Doom sprays a projectile's blood
+			// right after the damage call).
+			hce_burnHit = HCE_IsBurn(mod);
+			if(!default.bNOBLOOD) bNOBLOOD = (health > 0 && HCE_ShieldUp()) || hce_burnHit;
 		}
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
 		if(hce_enabled) dmg = HCE_FireDeathCheck(inflictor, dmg, mod, flags);
@@ -3458,6 +3468,23 @@ class HaloDoom_EnemyBase : Actor abstract
 	int  hce_gibHideTics;
 	virtual void HCE_GibDeath() { HCE_Die(); }     // older generated classes' XDeath: a normal death now
 
+	// fire burns, it doesn't bleed
+	bool hce_burnHit;
+	static bool HCE_IsBurn(Name mod)
+	{
+		return mod == 'Fire' || mod == 'Burn' || mod == 'Flame' || mod == 'Flames' || mod == 'Napalm';
+	}
+
+	// a spurt of the enemy's own blood (its BloodType: hce_core.zsc's HCE_HaloBlood, which turns into Halo's blood
+	// burst with Nash's Gore Mod and the Halo gore patch loaded); it knows whose blood it is
+	static void HCE_BloodFx(Actor who, double x, double y, double z, double vx, double vy, double vz, double ang, int flags)
+	{
+		if(!who) return;
+		bool ok; Actor b;
+		[ok, b] = who.A_SpawnItemEx(who.GetBloodType(0), x, y, z, vx, vy, vz, ang, flags);
+		if(b) b.target = who;
+	}
+
 	void HCE_Gore()
 	{
 		if(hce_lastMod == 'IceBlock') { HCE_IceShatter(); return; }
@@ -3465,7 +3492,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(over) health = GetGibHealth();
 		if(bNOBLOOD || !(over || hce_hardKill)) return;
 		for(int i = 0; i < (over ? 14 : 6); i++)
-			A_SpawnItemEx("Blood", frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
+			HCE_BloodFx(self, frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
 				frandom(-3, 3), frandom(-3, 3), frandom(1, 5), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
 	}
 
@@ -3483,7 +3510,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_SquadDeath();
 		let mate = HaloDoom_EnemyBase(hce_bondMate);
 		if(bHCE_PairBond && mate && mate.health > 0) mate.HCE_BondRage(self);
-		bNOBLOOD = default.bNOBLOOD;                          // dead: the shield no longer keeps the blood in
+		bNOBLOOD = default.bNOBLOOD || hce_burnHit;           // dead: the shield no longer keeps the blood in (fire still does)
 		if(HCE_GibAllowed()) HCE_GibBody();
 		else
 		{
@@ -3708,7 +3735,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_SetRenderStyle(0, STYLE_None);
 		if(bNOBLOOD) return;
 		for(int i = 0; i < blood; i++)
-			A_SpawnItemEx("Blood", frandom(-radius, radius), frandom(-radius, radius), height * frandom(0.1, 0.9),
+			HCE_BloodFx(self, frandom(-radius, radius), frandom(-radius, radius), height * frandom(0.1, 0.9),
 				frandom(-6, 6), frandom(-6, 6), frandom(1, 9), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
 		Name ngm = 'NashGoreGibs';
 		class<Actor> gib = (class<Actor>)(ngm);
@@ -3905,7 +3932,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// the cut sprays
 		if(!bNOBLOOD)
 			for(int i = 0; i < 8; i++)
-				A_SpawnItemEx("Blood", rel.x, rel.y, rel.z, frandom[HCEGore](-3, 3), frandom[HCEGore](-3, 3), frandom[HCEGore](1, 5),
+				HCE_BloodFx(self, rel.x, rel.y, rel.z, frandom[HCEGore](-3, 3), frandom[HCEGore](-3, 3), frandom[HCEGore](1, 5),
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 		// something else comes off instead (a Hunter's cannon arm: HaloDoom's own weapon), when weapons drop at all
 		Name rn = HCE_LimbReplacement(limb);
@@ -3993,7 +4020,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				frandom[HCEGore](-1, 1) + r.x * 0.03 * s, frandom[HCEGore](-1, 1) + r.y * 0.03 * s, frandom[HCEGore](0.5, 2.5) * s,
 				0, 0, -0.35, 0.9, -1, 0);
 			if(hce_stumpTics % 12 == 0)
-				A_SpawnItemEx("Blood", r.x, r.y, r.z, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0.5, 2) * s,
+				HCE_BloodFx(self, r.x, r.y, r.z, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0.5, 2) * s,
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 		}
 	}
@@ -4412,6 +4439,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_gibbed || bInvisible) return;
 		bSHOOTABLE = true;
 		bNOTAUTOAIMED = true;
+		bISMONSTER = false;          // HaloDoom Evolved's reticle turns red on a shootable monster: a body isn't one
 		bSOLID = false;
 		A_SetSize(-1, max(12, height * 0.3));
 	}
@@ -4421,12 +4449,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_killKind = HCE_WeaponKind(inflictor, source, mod, dmg);
 		hce_corpseDmg += dmg;
 		bool blast = (flags & DMG_EXPLOSION) || mod == 'Explosive';
-		// it bleeds where it was hit
-		if(!default.bNOBLOOD)
+		// it bleeds where it was hit (fire only chars it)
+		if(!default.bNOBLOOD && !HCE_IsBurn(mod))
 		{
 			vector3 at = (inflictor && inflictor != source && Distance3D(inflictor) < radius * 3 + 48) ? level.Vec3Diff(pos, inflictor.pos) : (0, 0, height * 0.6);
 			for(int i = 0; i < min(6, 1 + dmg / 15); i++)
-				A_SpawnItemEx("Blood", at.x, at.y, at.z, frandom(-2, 2), frandom(-2, 2), frandom(1, 4), 0,
+				HCE_BloodFx(self, at.x, at.y, at.z, frandom(-2, 2), frandom(-2, 2), frandom(1, 4), 0,
 					SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 			hce_bloodDmg += dmg / double(max(1, SpawnHealth()));
 			HCE_BloodShow(hce_bloodDmg >= 0.7 ? 3 : hce_bloodDmg >= 0.35 ? 2 : 1);
@@ -4466,7 +4494,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!bHCE_Resurrects || !bCORPSE) return;
 		if(!RaiseActor(self, RF_NOCHECKPOSITION)) return;
 		hce_resurrected = true;
-		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED;
+		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED; bISMONSTER = default.bISMONSTER;
 		int gl = HCE_GunLimb();
 		if(gl < 0 || !(hce_severed & (1 << gl))) { HCE_ShowGun(true); if(hce_hasLoadout) HCE_LoadoutVisual(hce_loadout); HCE_ResumeAnim(); }     // back up with its gun (if its arm is on)
 		hce_action = HCE_ACT_FIGHT;
@@ -5078,7 +5106,7 @@ class HCE_LimbGib : Actor
 			if(GetAge() < 50 && !(GetAge() % 2) && master)
 			{
 				vector3 d = master.Vec3To(self);
-				master.A_SpawnItemEx("Blood", d.x, d.y, d.z + 2, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0, 1),
+				HaloDoom_EnemyBase.HCE_BloodFx(master, d.x, d.y, d.z + 2, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0, 1),
 					0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION | SXF_ABSOLUTEPOSITION | SXF_ABSOLUTEVELOCITY);
 			}
 		}

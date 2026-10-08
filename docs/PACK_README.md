@@ -654,7 +654,7 @@ Don't load these together with the regular HDE packs: they define the same enemi
 
 The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (NashGore). Load `nashgore.pk3` last, after the HDE or standalone packs. Without it, Doom's normal blood is used, in the same colours.
 
-**Blood colours** follow each species' blood from Halopedia's "Blood" article (Halo CE colours where the games differ). They are set as each enemy's `BloodColor`, so NashGore's sprays, floor splats, wall decals, corpse pools, footprints and gibs all take the race's colour:
+**Blood colours** follow each species' blood from Halopedia's "Blood" article (Halo CE colours where the games differ). They are set as each enemy's `BloodColor`, so Doom's blood, the Flood's NashGore blood and the Halo gore patch all take the race's colour:
 
 | Species | Blood |
 |---|---|
@@ -674,13 +674,14 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * **Bodies stay whole otherwise:** the classes have no `XDeath` state, and an overkill's health is held at the gib threshold, the two things NashGore gibs on.
 * **Overkills and hard kills:** these spray extra blood in the race's colour; NashGore turns it into its sprays, splats, decals and pools.
 * **Energy shields keep the blood in:** an enemy with its shield up doesn't bleed (no blood sprays, Halo splats or blood on its body). It starts bleeding once the shield pops, and stops again if the shield recharges.
+* **Fire doesn't draw blood:** a fire hit (the flamethrower, burning) never sprays blood, adds blood to the body or makes a corpse bleed, whatever is loaded.
 
 **Cryo Cannon:** the one exception. An enemy frozen solid by HDE's Cryo Cannon and shattered (the ice block's `IceBlock` kill) bursts into a huge splatter of blood and meat, and its body is gone.
 * **With NashGore:** its full gib burst, with meat, wall and ceiling splats, plus extra gibs and blood.
 * **Without NashGore:** a large blood burst.
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
-**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies and Marines also bleed the way they do in Halo, on top of NashGore's own effects. Without NashGore the patch does nothing.
+**Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies, Marines and the creatures bleed Halo's blood **instead of NashGore's**: no NashGore sprays, floor splats, wall blood, corpse pools, spurts or NashGore gibs on them (the pack's own dismemberment and gibbing still happen). The Flood keep NashGore's blood. Without NashGore the patch does nothing.
 * **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it, picked at random from Halo CE's and Halo 2's splats:
 
   | Species | Halo decals |
@@ -695,18 +696,21 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
   | Marines | Halo CE's red human splats (and Halo 2's); dying, Halo CE's blood pool and the drippy splat |
 
 * **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour, with a few blood streaks flung away from the shot (Halo 2's blood trails). The Covenant's are Halo CE's Covenant impact bursts, the Marines' its human impact bursts (with CE's blood bursts); the beasts use the generic Halo CE and Halo 2 bursts.
+* **Floor splats:** Halo draws its blood decals on floors as well as walls (Doom's decals only go on walls), so the same splats are laid flat on the floor: now and then under a wounded enemy (more often the harder the hit), and under the dead a pool of the large splats and smears (Halo CE's blood pool for the Marines) with a splat or two around it. At most 300 at a time; they fade after about a minute and a half.
 * **Kills:** bigger bursts and three larger splats around the body, including Halo CE's Elite and Grunt smears.
+* **Blood the body sheds itself** (a severed stump, a corpse being shot, a flying limb): Halo blood-burst puffs in its colour.
 * **Toggle:** `hce_halogore 0` turns the Halo gore off and leaves NashGore's own.
 * Splats fade after about a minute.
 * Fire, freezing, drowning and telefrags don't bleed.
+* **Toggled off** (`hce_halogore 0`), NashGore's blood comes back on them as NashGore would draw it (`nashgore_bloodtype`).
 
-**BLUDTYPE:** none is needed. The enemies, HDE's projectiles and the standalone projectiles all spawn Doom's standard `Blood`, which NashGore replaces on its own. If another mod gives these enemies a custom blood class, list it in a `BLUDTYPE.txt` as described in [nashgore_bludtype](https://github.com/nashmuhandes/nashgore_bludtype).
+**BLUDTYPE:** none is needed, and don't list `HCE_HaloBlood` in one. The enemies' blood is `HCE_HaloBlood`, which is Doom's own blood without NashGore and hands over to the Halo gore patch (or, with it off, to NashGore's blood) when NashGore is loaded. The Flood bleed Doom's standard `Blood`, which NashGore replaces on its own.
 
 ## Dismemberment
 
 Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
 
-**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it) and isn't auto-aimed, and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
+**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it), isn't auto-aimed, doesn't turn HaloDoom Evolved's reticle red (it no longer counts as a monster), and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 
 **Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
 * **Headshot kills:** always take the head off.

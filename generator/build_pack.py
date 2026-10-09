@@ -2174,7 +2174,23 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst raven orange':        ('marine_armored battle rifle', 'orange'),
     'marine odst raven blue':          ('marine_armored assault rifle', 'blue'),
     'marine odst raven purple':        ('marine_armored sniper', 'purple'),
+    # other sealed helmets on the ODST's body: Halo 2's ODST helmet (extract_h2_odst_helmet.py) and Elefant's two
+    # closed kit helmets, in place of Spiral's own (ODST_HELMET_CODE)
+    'marine odst halo2 helmet':        ('marine_armored assault rifle', None, 'h2_odst_helmet'),
+    'marine odst closed helmet':       ('marine_armored battle rifle', None, 'helmet_closed'),
+    'marine odst enclosed helmet':     ('marine_armored shotgun major', None, 'helmet_enclosed'),
 }
+ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
+
+def odst_helmet_code(piece, mdir='hce'):
+    hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
+    hide = ''.join(f"\t\tA_ChangeModel('None', {{idx}}, \"\", 'None', {k}, {hid});\n" for k in ODST_HELMET_SURFS)
+    return (f'\t// another sealed helmet in place of the ODST\'s own: {piece} (a Marine kit piece on the head bone)\n'
+            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
+            + hide.replace('{idx}', '0') +
+            f'\t\tA_ChangeModel(\'None\', 1, "models/{mdir}/MarineKit", "{piece}.iqm", 1, "", \'None\');\n'
+            '\t\tHCE_ResumeAnim();\n\t}\n'
+            '\toverride void HCE_BloodHideClass()\n\t{\n' + hide.replace('{idx}', str(BLOOD_IDX)) + '\t}\n')
 def add_odsts(ai):
     import copy
     if not os.path.exists(f'{OUT}/models/MarineODST/MarineODST.json'): return
@@ -2183,7 +2199,9 @@ def add_odsts(ai):
     b['change_colors_list'] = []
     ai['bipeds'][ODST_UNIT] = b
     minor = ai['variants'].get(r'characters\marine_armored\marine_armored assault rifle', {}).get('actor_reference')
-    for vn, (src, raven) in ODST.items():
+    for vn, spec in ODST.items():
+        src, raven = spec[0], spec[1]
+        helmet = spec[2] if len(spec) > 2 else None
         base = ai['variants'].get('characters\\marine_armored\\' + src)
         key = 'characters\\marine_odst\\' + vn
         if not base or key in ai['variants']: continue
@@ -2195,6 +2213,7 @@ def add_odsts(ai):
         ov = dict(v.get('_ov') or {})
         ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
         if raven: ov['raven'] = raven
+        if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet)
         v['_ov'] = ov
         ai['variants'][key] = v
 

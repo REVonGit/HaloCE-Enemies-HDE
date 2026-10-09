@@ -73,6 +73,28 @@ def add_grunt_ranks(variants):
 
 add_grunt_ranks(AI['variants'])
 
+# Elite Heavy (new): a green rank between the Major and the Commander, carrying heavier guns: the fuel rod (in Halo 2's
+# fuel-rod stance), the plasma rifle and the needler. 125 body and a 200-point shield (the Spec Ops Elite's), the
+# Major's combat data
+HEAVY_GREEN = (0.16, 0.36, 0.10)
+def add_elite_heavy(variants):
+    import copy
+    E = 'characters\\elite\\elite major\\elite major '
+    H = 'characters\\elite\\elite heavy\\elite heavy '
+    for w in ('fuel rod', 'plasma rifle', 'needler'):
+        base = variants.get(E + w)
+        if not base or (H + w) in variants: continue
+        v = copy.deepcopy(base)
+        v['unit']['maximum_body_vitality'] = 125.0
+        v['unit']['maximum_shield_vitality'] = 200.0
+        cl = copy.deepcopy(v.get('change_colors_list') or [{}])
+        cl[0].update(color_lower_bound=list(HEAVY_GREEN), color_upper_bound=list(HEAVY_GREEN))
+        v['change_colors_list'] = cl
+        v['_rank'] = 'heavy'; v['_late'] = True
+        variants[H + w] = v
+
+add_elite_heavy(AI['variants'])
+
 # Beam-rifle Spec Ops Elite (new): the Spec Ops plasma-rifle Elite's stats with Halo 2's beam rifle, in Halo 2's own
 # Elite rifle stance (h2_elite_anims.py), fighting from further back
 def add_beam_rifle_specops(variants):
@@ -523,8 +545,35 @@ def elite_skin(char, mat, color, outpath, specops=False):
     if not src or not os.path.exists(f'{ELITE_SKINS}/{src}/Elite_{k}.png'): return False
     im = Image.open(f'{ELITE_SKINS}/{src}/Elite_{k}.png').convert('RGB')
     if ci == 3: im = purple(im)
+    elif ci == 0 and is_green(color): im = heavy_green(im, char, mat)    # the Heavy: the blue skin's armour in green
     im.save(outpath)
     return True
+
+HEAVY_HUE = 104          # the Elite Heavy's green (Halo 3's Heavy green), degrees
+
+def heavy_green(im, char, mat):
+    """the blue Minor skin's armour plates turned green, only where Halo's colour-change mask is (the armour): the
+    undersuit, hands and the rest keep their own colours"""
+    from scipy import ndimage
+    mp = f'{OUT}/models/{char}/{mat}_multi.png'
+    if not os.path.exists(mp): return im
+    m = np.asarray(Image.open(mp).convert('RGBA').resize(im.size)).astype(np.float32)[..., 2] / 255.0
+    m = np.clip(ndimage.gaussian_filter(m, 0.6), 0, 1)
+    hsv = np.asarray(im.convert('HSV')).astype(np.float32)
+    h, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    blue = np.clip(1 - (np.abs(h * 360 / 255 - 210) - 45) / 20, 0, 1)            # the plates' blues and cyans
+    arm = m * blue
+    near = ndimage.grey_dilation(m, size=(7, 7))                                   # the plates' edges the mask misses:
+    arm = np.maximum(arm, near * blue * np.clip((sat - 110) / 40, 0, 1))          # only their vivid blues, not the suit
+    h = h * (1 - arm) + (HEAVY_HUE * 255 / 360) * arm
+    sat = np.clip(sat * (1 + 0.1 * arm), 0, 255); val = val * (1 - 0.3 * arm)
+    return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
+
+def is_green(color):
+    import colorsys
+    if color is None: return False
+    h, l, sat = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
+    return sat >= 0.25 and 75 <= h * 360 <= 170
 
 def grunt_purple(char, mat, path):
     """the Spec Ops Grunts' armour in the Spec Ops Elites' violet. Their CE textures are grimy and blotchy (the painted
@@ -551,16 +600,16 @@ def grunt_purple(char, mat, path):
     Image.fromarray(np.clip(out * 255, 0, 255).astype(np.uint8)).save(path)
 
 
-def purple(im):
-    """the blue Minor skin turned vibrant dark purple: the armour's blues and cyans coloured violet (their shading and
-    shine kept), a little darker and richer"""
+def purple(im, to_hue=282, darken=0.25):
+    """the blue Minor skin turned vibrant dark purple (or another hue): the armour's blues and cyans coloured violet
+    (their shading and shine kept), a little darker and richer"""
     hsv = np.asarray(im.convert('HSV')).astype(np.float32)
     h, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
     hue = np.abs(h * 360 / 255 - 205) < 60
     arm = np.clip((sat - 95) / 50, 0, 1) * hue                                   # the armour's blues and cyans (not the undersuit)
     arm = np.maximum(arm, np.clip((val - 170) / 40, 0, 1) * np.clip((sat - 25) / 30, 0, 1) * hue)   # and its pale cyan glints
-    h = h * (1 - arm) + (282 * 255 / 360) * arm
-    sat = np.clip(sat * (1 + 0.2 * arm), 0, 255); val = val * (1 - 0.25 * arm)
+    h = h * (1 - arm) + (to_hue * 255 / 360) * arm
+    sat = np.clip(sat * (1 + 0.2 * arm), 0, 255); val = val * (1 - darken * arm)
     return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
 
 def cube_index(char, color):
@@ -978,6 +1027,7 @@ LIP_CODE = """
 
 MARINE_KIT = f'{OUT}/models/MarineKit'
 KIT_SLOT_ORDER = ('head', 'face', 'chest', 'back', 'shoulders', 'arms', 'legs', 'wrists', 'waist')
+MEDIC_KIT = ('first_aid',)          # the corpsmen's kit pieces (the red-cross first-aid kit): theirs only
 
 
 def marine_kit_code(char, names, mdir, sis):
@@ -991,6 +1041,8 @@ def marine_kit_code(char, names, mdir, sis):
     kit = json.load(open(kj))
     pools = kit['pools'].get(char)
     if not pools: return '', ''
+    # the first-aid kit (its red cross) is the corpsmen's alone: off everyone else's rolls, always on a corpsman
+    pools = {sl: dict(p, picks=[(pid, w) for pid, w in p['picks'] if pid not in MEDIC_KIT]) for sl, p in pools.items()}
     P = kit['pieces']
     NS = len(KIT_SLOT_ORDER)
     out = ['\t// ---- Elefant\'s Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,\n'
@@ -1033,6 +1085,8 @@ def marine_kit_code(char, names, mdir, sis):
     for slot in KIT_SLOT_ORDER:
         if pools.get(slot) and pools[slot]['picks']: d.append(f'\t\t\thce_kit[{SI[slot]}] = HCE_Kit_{slot}();\n')
     d.append('\t\t}\n')
+    for pid in MEDIC_KIT:
+        if pid in P: d.append(f'\t\tif(hce_isMedic) hce_kit[{SI[P[pid]["slot"]]}] = "{pid}";     // a corpsman\'s first-aid kit, always\n')
     wb = kit.get('weapon_backs', {})
     if wb:
         d.append('\t\tName w = default.hce_dropWeapon;          // a weapon\'s own back piece, always\n')
@@ -1080,7 +1134,13 @@ def marine_code(meta, mdir, char='Marine'):
         helmet = 'cap' not in h and not johnson
         hide = sis(lambda n: n.startswith('head.') and n != 'head.shared' and n != f'head.{h}')
         if not helmet: hide += sis(lambda n: n == 'head.shared')
-        if sergeant: hide += sis(lambda n: n.startswith('arms.') and not jarms(n))
+        if johnson: hide += sis(lambda n: n.startswith('arms.') and not jarms(n))
+        elif sergeant:
+            # Stacker is white: the full sleeves without Johnson's dark hands (the regular Marines' full sleeves),
+            # else the plain arms; never Johnson's
+            full = [n for n in names if n.startswith('arms.') and 'sleeve' in n and not jarms(n)]
+            keep = full[0] if full else 'arms.__base'
+            hide += sis(lambda n, keep=keep: n.startswith('arms.') and n != keep)
         else: hide += sis(jarms)
         cases.append(f'\t\tcase {k}: {{ static const int H[] = {{ {", ".join(map(str, sorted(hide)))} }}; for(int i = 0; i < H.Size(); i++) hce_hideSurf.Push(H[i]);'
                      + (" hce_voice = 'Marine_Johnson';" if johnson else '') + ' break; }\n')
@@ -1305,6 +1365,7 @@ def build(cfg=None):
             elif char.startswith('Elite') and weapon == 'energy sword': w = 'sword'
             elif char.startswith('Elite') and weapon == 'beam rifle': w = 'rifle'
             elif char.startswith('Flood'): w = 'pistol' if weapon else 'unarmed'
+            elif char.startswith('Marine') and weapon == 'plasma rifle': w = 'h2plasma'      # Halo 2's rifle stance, the left hand under the gun (marine_plasma_grip.py)
             elif char.startswith('Marine'): w = 'pistol' if weapon in ('pistol', 'needler', 'plasma pistol') else 'rifle'
             else: w = 'pistol'
             A = AnimSet(meta); A.jackal = char.startswith('Jackal')
@@ -2012,6 +2073,9 @@ MEDIC_CODE = """
 """
 
 
+MEDIC_GUNS = ('assault rifle', 'shotgun', 'ma37', 'smg', 'magnum')
+
+
 def add_marine_arsenal(variants):
     import copy
     for body in ('marine', 'marine_armored'):
@@ -2053,6 +2117,17 @@ def add_marine_arsenal(variants):
         v = copy.deepcopy(sk)
         v['_ov'] = dict(v['_ov'], code=MEDIC_CODE)
         variants['characters\\marine\\marine medic'] = v
+    # more corpsmen, each with another gun (HCE_MarineMedic<Gun>): the CE assault rifle and shotgun, the MA37, the SMG
+    # and the Magnum
+    for gun in MEDIC_GUNS:
+        src = variants.get(f'characters\\marine\\marine {gun}')
+        vn = f'characters\\marine\\marine medic {gun}'
+        if not src or vn in variants: continue
+        v = copy.deepcopy(src)
+        ov = dict(v.get('_ov') or {}, code=MEDIC_CODE)
+        if 'skin_as' not in ov: ov['skin_as'] = cname(f'marine {gun}')
+        v['_ov'] = ov; v['_late'] = True
+        variants[vn] = v
 
 add_marine_arsenal(AI['variants'])
 

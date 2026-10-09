@@ -55,7 +55,7 @@ PUFFS_HUMAN = [('ce', CE_PART + 'blood h impact'), ('ce', CE_PART + 'blood burst
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
 # Halo's blood bitmaps are small (about 50 px a splat): drawn at their own size in Doom units they came out
 # fist-sized. Halo spreads them over a body's width and more: this many times bigger
-DECAL_GROW = 3.2
+DECAL_GROW = 2.0
 # floor splat sprite codes per species (HS<code> hits, HP<code> deaths)
 FLOOR = {'Elite': 'EL', 'Grunt': 'GR', 'Hunter': 'HU', 'Brute': 'BR', 'Drone': 'DR', 'Engineer': 'EN', 'Beast': 'BE', 'Human': 'HM'}
 
@@ -154,7 +154,7 @@ def main():
     for d in (gdir, sdir):
         for f in os.listdir(d): os.remove(os.path.join(d, f))
     dec = ['// Halo CE and Halo 2 blood decals (extract_halo_gore.py), used by the NashGore patch (hce_gore.zsc)',
-           'Fader HCEGoreFade\n{\n\tDecayStart 120.0\n\tDecayTime 30.0\n}\n']
+           'Fader HCEGoreFade\n{\n\tDecayStart 90.0\n\tDecayTime 25.0\n}\n']
     groups = {}; made = {}
     def add_group(gname, src):
         names = []

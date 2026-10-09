@@ -154,7 +154,7 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
 | Lost Soul | Flood infection form |
 | Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills. With the Digsite add-on (or in a bundle), always Halo 2 Drones |
-| Hell Knight | Minor Elites 71%, Spec-Ops fuel-rod Grunt 9%, Ultra (plasma rifle) Jackal 9%, Major Elite 8% |
+| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9% |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
 | Pain Elemental | Flood Carrier (Flood pack); the Digsite add-on makes it the Engineer instead |
@@ -214,7 +214,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 
 **Sergeant Johnson** (`HCE_SgtJohnson`) carries the **Stanchion** (the Macworld 1999 sniper rifle from Digsite). Each shot takes about 0.7 s of aiming: a glint and a targeting laser show it coming, with the Stanchion's charge sound. Then one rail shot (150) is drawn as a red-orange beam, and it tears apart what it kills. When an enemy gets within about 6 m he switches to his **Magnum** in Halo 2's pistol stance, and goes back to the Stanchion once it's past about 9 m. He is the only Marine with Johnson's face and voice, and he has more health (75) and a harder punch (90). He isn't in the random Marine pool; place him with his DoomEdNum or summon him.
 
-**Sergeant Stacker** (`HCE_SgtStacker`, DoomEdNum 30454) is the white sergeant: Halo CE's sergeant's cap face with the full-sleeved arms, the **double barrel** as his main gun, with an **SMG** as his close-range backup (Halo 2's SMG stance): when both barrels are spent with an enemy within about 11 m he draws the SMG instead of reloading, and goes back to the reloaded double barrel once the enemy is past about 13 m or after 6 seconds, and Halo CE's second sergeant voice (the lines Pete Stacker recorded), which no other Marine uses. He has 60 health and a harder punch (75). Halo CE and Halo 2 have no model of their own for Stacker, so he is built from these parts. Like Johnson, he isn't in the random pool.
+**Sergeant Stacker** (`HCE_SgtStacker`, DoomEdNum 30454) is the white sergeant: Halo CE's sergeant's cap face with the regular Marines' full sleeves (not Johnson's arms and hands), the **double barrel** as his main gun, with an **SMG** as his close-range backup (Halo 2's SMG stance): when both barrels are spent with an enemy within about 11 m he draws the SMG instead of reloading, and goes back to the reloaded double barrel once the enemy is past about 13 m or after 6 seconds, and Halo CE's second sergeant voice (the lines Pete Stacker recorded), which no other Marine uses. He has 60 health and a harder punch (75). Halo CE and Halo 2 have no model of their own for Stacker, so he is built from these parts. Like Johnson, he isn't in the random pool.
 
 **SMG, battle rifle and Bulldog in Halo 2's rifle stance, hands on the grips.** These three Marines use Halo 2's Marine rifle animations (idle, warn, moves, turns, dives, evades, airborne and landings, melee, grenade throw, berserk, signal, celebrate, crouch and fire), re-posed per gun so both hands hold it properly: the right hand on the pistol grip and the left hand on the gun's foregrip (the SMG's vertical grip, the battle rifle's fore-end, the Bulldog's pump grip). The Bulldog has its own version of the set in which the gun is also pulled back so its stock sits in the shoulder. Grenade throws and hand signals still free the left hand. The other rifles keep Halo CE's rifle stance.
 
@@ -296,7 +296,8 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Noticing it** depends on how deep inside its vision cone the grenade is: each look (every 4 tics) the chance runs from about 6% at the edge of the cone to almost 100% dead ahead. Behind it, it won't see one at all, unless the grenade lands right at its feet.
   * Whoever spots it shouts its grenade line, and squadmates within 480 units who hear the shout notice that grenade much sooner.
   * The escape heading turns away from walls. Grunts, Jackals, Elites, Hunters, Brutes, Marines and Slug Men use their dive or evade animations, and a berserk Elite or Brute mostly ignores the grenade.
-  * **Distance:** a dive throws the body at twice its run speed for most of the animation, then it sprints on in the same direction for over half a second, well clear of a plasma grenade's blast. Those without dive animations sprint at 1.35 times their run speed for about 1.3 seconds.
+  * **Distance:** a dive throws the body at 1.75 times its run speed for most of the animation, then it sprints on in the same direction for about 0.4 seconds. Those without dive animations sprint at 1.25 times their run speed for about a second.
+  * **Cooldown:** one dodge every 3 seconds; a grenade seen sooner than that after the last dodge isn't dodged (they still shout the warning).
   * `hce_grenadedodge 0` turns it off.
 * **Dropping off ledges:** Marines and the Covenant step off a drop too deep to walk down when where they're going is below: their target, the spot they last saw it, or (for Marines) you. The drop must be safe, up to two and a half times their own height, and not into a damaging floor. They fall in the airborne animation and land in the landing one.
 * **Jumping:** a ledge or a low obstacle (crate, barrel) in the way that is too tall to step onto is jumped onto or over, in the airborne animation, with the landing animation on touchdown. Jump height is about three quarters of the body (24–56 units: a Grunt manages about 30, an Elite or Brute 50+), Hunters only hop 32, and flyers never jump. A ledge that is jumpable doesn't count as a wall when they pick a heading, so they head for it; enemies hunting you by Doom pathfinding also jump up toward you when you are on higher ground. `hce_jumping 0` turns it off.
@@ -361,6 +362,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Ultra** (Halo 2's `grunt_ultra`): white armour, a third more health than a Major (100 with the needler, 80 with the plasma pistol); it fights like a Major. `HCE_GruntUltraNeedler` (30319), `HCE_GruntUltraPlasmaPistol` (30320).
   * **Heavy** (Halo 2's `grunt_heavy`, in Halo 3's green): the fuel rod on the Spec Ops body; it fights like the Spec Ops fuel-rod Grunt. `HCE_GruntHeavyFuelRod` (30318).
   * They get the same baked armour shine as the other Grunts, and are in the `HCE_RandomGrunt` / `HCE_RandomGruntSpecOps` spawners; Doom's monsters aren't replaced by them.
+* **Elite Heavy (new, green):** a rank between the Major and the Commander, in a deep green (the blue Minor's painted armour turned green, its shading and shine kept): 125 health and a 200-point shield, the Major's combat behaviour, and the heavier guns: the fuel rod in Halo 2's fuel-rod stance (`HCE_EliteHeavyFuelRod`, 30322), the plasma rifle (`HCE_EliteHeavyPlasmaRifle`, 30324) and the needler (`HCE_EliteHeavyNeedler`, 30323). In the random Elite pool, and among the Hell Knights' replacements on the harder skill levels.
 * **Fuel-rod Elite (new, `HCE_EliteMajorFuelRod`, 30282):** a Major Elite with the fuel rod gun, in **Halo 2's fuel-rod stance**. Halo CE's and Halo 2's Elites are the same 3ds Max biped: every CE bone has a Halo 2 twin with the same parent and the same offset in its parent's frame, so Halo 2's animations play on the CE Elite as they are (`h2_elite_anims.py`). It gets Halo 2's fuel-rod idle, moves, turns, dives, evades, grenade throw, berserk, melee and the firing overlay. Its firing data is the Spec Ops Grunt's fuel rod; it drops HDE's fuel rod.
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
@@ -390,7 +392,7 @@ Marines and the Covenant swap their gun for a better one they see lying nearby (
   * The **Covenant only ever use Covenant weapons**, except the Brutes (below), and only ones their body is modelled with: Elites the plasma rifle, needler and fuel rod; Spec Ops Elites the plasma rifle and needler; Grunts the plasma pistol and needler; Spec Ops and Heavy Grunts the needler and fuel rod. They only trade up (fuel rod over needler and plasma rifle, those over the plasma pistol).
   * **Brutes** are the one Covenant race that uses human guns. Besides their own (plasma rifle, assault rifle, shotgun, Spiker) they pick up the human guns a Brute would like: the MA5B and MA37, SMG, double barrel, Bulldog, GPMG, flamethrower, rocket launcher, Hydra and grenade launcher. The GPMG and the flamethrower go in Halo 2's **Brute Shot stance** (`brute_stance.py`, from `08b_deltacontrol.map`: held low across the body in both hands, with its idle, moves, turns, dives, evades, grenade throw, cheer, taunt, jumps, landings and the Brute Shot's melee and firing); the rest go in the Brute's one-handed rifle stance.
   * **Marines** can carry **every human and Covenant gun HaloDoom Evolved has** except the melee weapons (energy sword, gravity hammer) and the BFG-class ones (the Unmaker and the Stanchion; Johnson is the exception, as the Stanchion is his own gun: traded away, he takes it back); Forerunner guns aren't human or Covenant, so not those either. That's 28 guns: the whole [Marine arsenal](#the-marine-arsenal) and Halo CE's guns, plus the plasma pistol, plasma rifle, needler, fuel rod, beam rifle, Plasma Caster, carbine, Spiker, Pulse Carbine and Needle Ballista. Every Marine, Johnson and Stacker included, can pick any of them up or be traded one.
-  * **The Covenant guns on a Marine:** each is the model the Covenant carry (the plasma pistol, fuel rod, needler and plasma rifle Halo CE's; the beam rifle, carbine and Spiker Halo 2's; the Plasma Caster this pack's), the Pulse Carbine is the carbine in blue, and the Needle Ballista (a 2D gun in HDE, with no model) is Halo CE's needler drawn out half as long again. Pistol-sized ones (plasma pistol, Spiker) go in Halo 2's pistol stance, the fuel rod on the shoulder, the rest in the rifle stance. The beam rifle fires HDE's held beam, the Pulse Carbine's bolts home on the Marine's target, and the sticky detonator's charges go off 1.5 s after they land, whoever carries them.
+  * **The Covenant guns on a Marine:** each is the model the Covenant carry (the plasma pistol, fuel rod, needler and plasma rifle Halo CE's; the beam rifle, carbine and Spiker Halo 2's; the Plasma Caster this pack's), the Pulse Carbine is the carbine in blue, and the Needle Ballista (a 2D gun in HDE, with no model) is Halo CE's needler drawn out half as long again. Pistol-sized ones (plasma pistol, Spiker) go in Halo 2's pistol stance, the fuel rod on the shoulder, the rest in the rifle stance. The plasma rifle is held like a rifle in Halo 2's Marine rifle stance, the left hand moved under it, cupping its lower prong (`marine_plasma_grip.py`). The beam rifle fires HDE's held beam, the Pulse Carbine's bolts home on the Marine's target, and the sticky detonator's charges go off 1.5 s after they land, whoever carries them.
   * **Launchers on the shoulder:** the rocket launcher and fuel rod use Halo 2's Marine launcher stance (`marine_stances.py`, from `01b_spacestation.map`: idle, moves, turns, evades, jumps and landings, grenade throw, cheer, point, crouch, the launcher's melee and reload).
 * **Weapon biases:** every gun has a base worth (power weapons highest, sidearms lowest) and a kind (close quarters, mid range, long range, heavy, sidearm). Each Marine adds his liking for some kinds, and picks up (or welcomes in a trade) whatever scores highest:
 
@@ -469,7 +471,7 @@ The fork's Acid Breath lines aren't used.
   * **Headgear (Armored Marines, about one in three):** helmet shells worn over the Marine's own face in place of Halo CE's helmet (the Hellbringer among them), Elefant's helmets on the Fred and Marcus faces, balaclava helmets on the Marcus, Matt and Shiek faces, and the closed and enclosed visor helmets. Unarmoured Marines sometimes (about one in eight) wear Charles's balaclava or Paul's cap head instead of a Halo CE face.
   * **ODST (Armored Marines, about one in seven):** the whole ODST outfit from the kit instead of single pieces: the ODST helmet (closed, shock or open), headset, vest, leg armour, pads, gauntlets and cape.
   * **Face and head (about one in three):** headsets and boom mics, HUD eyepieces, goggles, pilot and sniper goggles, glasses, a cigar, a gas mask, a face wrap, and goggles on a strap over Halo CE's helmet. None go under an enclosed helmet.
-  * **Chest (about half):** pouches, grenade pouches, a grenade belt, a chest rig, a first-aid pouch, a scarf.
+  * **Chest (about half):** pouches, grenade pouches, a grenade belt, a chest rig, a scarf. The first-aid kit (the red cross) is the corpsmen's alone.
   * **Back (about two in five):** a radio pack, backpacks, bedrolls, an ammo pack. A rocket launcher Marine always wears the launcher tube, and a flamethrower Marine always wears the flamer tank; nobody else does.
   * **Shoulders (one in four or five):** small, medium or long pads.
   * **Gloves (unarmoured Marines, one in five):** full sleeves with gloves, gauntlets, or both, in place of the arms.
@@ -687,7 +689,7 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 * **No revivals:** infection forms can't reanimate it, and feigning Elites stay down.
 
 **Halo CE and Halo 2 gore (Covenant pack patch):** with NashGore loaded, Covenant enemies, Marines and the creatures bleed Halo's blood **instead of NashGore's**: no NashGore sprays, floor splats, wall blood, corpse pools, spurts or NashGore gibs on them (the pack's own dismemberment and gibbing still happen). The Flood keep NashGore's blood. Without NashGore the patch does nothing.
-* **Wall splats:** every hit sprays two of the species' own Halo blood decals onto the walls behind it (up to 260 units away), picked at random from Halo CE's and Halo 2's splats and drawn large, the size Halo spreads them over a body and more:
+* **Wall splats:** every hit sprays the species' own Halo blood decal onto the wall behind it (a second one for a heavy hit), up to 210 units away, picked at random from Halo CE's and Halo 2's splats and drawn at about twice their own size, the size Halo spreads them over a body:
 
   | Species | Halo decals |
   |---|---|
@@ -701,12 +703,12 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
   | Marines | Halo CE's red human splats (and Halo 2's); dying, Halo CE's blood pool and the drippy splat |
 
 * **Impact bursts:** a Halo blood burst puffs out of the wound in the victim's blood colour, with a few blood streaks flung away from the shot (Halo 2's blood trails). The Covenant's are Halo CE's Covenant impact bursts, the Marines' its human impact bursts (with CE's blood bursts); the beasts use the generic Halo CE and Halo 2 bursts.
-* **Floor splats:** Halo draws its blood decals on floors as well as walls (Doom's decals only go on walls), so the same splats are laid flat on the floor: under a wounded enemy at every hit (two for a heavy one), and under the dead a pool of the large splats and smears (Halo CE's blood pool for the Marines) where the body comes to rest. At most 500 at a time; they fade after two and a half minutes.
-* **Kills:** a large burst, six big splats sprayed on the walls behind and around the body (Halo CE's Elite and Grunt smears among them), and three to five floor splats around it.
+* **Floor splats:** Halo draws its blood decals on floors as well as walls (Doom's decals only go on walls), so the same splats are laid flat on the floor: under a wounded enemy at most hits (more often the harder the hit), and under the dead a pool of the large splats and smears (Halo CE's blood pool for the Marines) where the body comes to rest. At most 400 at a time; they fade after two minutes.
+* **Kills:** a large burst, four big splats sprayed on the walls behind and around the body (Halo CE's Elite and Grunt smears among them), and two or three floor splats around it.
 * **Skid marks:** a body thrown by its death (a rocket, a shotgun blast, a melee blow) leaves Halo CE's blood smears along the floor as it slides, stretched in the direction it went, then its pool where it stops. Grenade kills don't skid: a grenade throws bodies every which way.
 * **Blood the body sheds itself** (a severed stump, a corpse being shot, a flying limb): Halo blood-burst puffs in its colour.
 * **Toggle:** `hce_halogore 0` turns the Halo gore off and leaves NashGore's own.
-* Wall splats fade after two and a half minutes.
+* Wall splats fade after about two minutes.
 * Fire, freezing, drowning and telefrags don't bleed.
 * **Toggled off** (`hce_halogore 0`), NashGore's blood comes back on them as NashGore would draw it (`nashgore_bloodtype`).
 
@@ -716,18 +718,20 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 
 Covenant enemies can lose their head or arms, or be torn apart, depending on the weapon that kills them. This works with or without NashGore.
 
-**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it), isn't auto-aimed, doesn't turn HaloDoom Evolved's reticle red (it no longer counts as a monster), and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit), grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
+**Corpses too:** a body stays shootable once it's down. It isn't solid (you walk over it), isn't auto-aimed, doesn't turn HaloDoom Evolved's reticle red (it no longer counts as a monster), and it sits low once it has fallen. Shooting it makes it bleed and adds to the blood on it. The dismembering weapons can take its head and arms off (60% a hit; the rifles only arms), frag grenades sometimes a limb, and the gibbing weapons, or blasts adding up to three times its health, tear it apart.
 
 **Weapons that dismember:** the Magnum, Battle Rifle, DMR, Sniper Rifle, pump Shotgun, Carbine, Scattershot (normal fire), Spiker (melee only), Energy Sword, Plasma Pistol overcharge, Light Rifle (normal fire), MA5B, Beam Rifle, Boltshot and Commando. The enemies' and Marines' own pistols, rifles, carbines, shotguns and beams dismember each other too.
-* **Headshot kills:** always take the head off.
+* **Headshot kills:** always take the head off, except with the rifles: the Battle Rifle, DMR, Carbine, Light Rifle, MA5B and Commando (and the enemies' and Marines' assault rifles, battle rifles, DMRs and carbines) take arms but never the head.
 * **Other kills:** a kill landing on an arm, or on a Grunt's methane pack, takes it off nearly every time (85%). Body shots leave the limbs on.
 * **Where a hit lands:** the top of the enemy (the headshot zone) is the head; the outer sides at arm height are the arms, the middle of a Grunt's back is its methane pack, the rest is the body. The Elites', Grunts', Jackals' and Marines' hit boxes reach the tops of their heads, so a shot at the head connects.
 
 **Weapons that gib:** the Rocket Launcher, Hydra, Scattershot alt fire, Light Rifle alt fire, Binary Rifle, Unmaker, Stanchion, Gravity Hammer, GPMG (autocannon), Double Barrel, Fuel Rod, Needler supercombine, Needle Javelin, Plasma Caster, Sentinel Beam supercombine and Sticky Detonator. A body killed by one bursts apart: the head and arms fly off as pieces in a spray of blood, the rest is gone, and NashGore (when loaded) adds its meat chunks and splats.
 
-**Grenades:** they never gib. Half the time a grenade kill takes off one or two limbs (a Grunt's pack among them).
+**Grenades:** only frag grenades dismember, and they never gib. A frag kill always takes off the limb nearest the blast (a Grunt's pack among them), and a second one half the time, always within 96 units of it. Plasma and spike grenades and firebombs leave the body whole.
 
-**Anything else** (plasma rifles, needles that don't supercombine, ordinary melee, fire) leaves the body whole.
+**Flying pieces:** a severed head or arm flies off: a blast throws it 20–25 units a tic at point blank and still about 12 at 100 units (a frag grenade sends pieces well across a room), and one shot off pops a metre or so clear of the body. NashGore's gibs from a body torn apart fly further too.
+
+**Anything else** (plasma rifles, needles that don't supercombine, plasma grenades, ordinary melee, fire) leaves the body whole.
 
 **In the standalone packs**, the Doom weapons count as the nearest Halo ones:
 * **Dismember:** pistol, chaingun, shotgun and chainsaw.
@@ -802,7 +806,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (any human or Covenant gun but the melee and BFG-class ones), you swap: you get his gun and he takes yours. What he says depends on how he rates the swap (his own liking, see the weapon biases): a clearly better gun gets thanks, a fair swap an "okay", a worse one scorn, and one he can't carry at all a refusal (he keeps his). He also refuses if you already carry his gun (say, as your other weapon): taking it would only top up your ammo while he kept yours, and you'd be a weapon short. Each has its own set of Halo 2 lines, every take Halo 2 has for each voice (about 8 to 24 per voice and reaction). The Halo CE voices have no trade lines, so they tell you off instead. (HaloDoom Evolved packs only.)
 * **Names:** every Marine has a rank and a name, rolled when he spawns: Privates, Privates First Class and Lance Corporals among the regulars, Lance Corporals to Sergeants among the Armored Marines, Corporals and Staff Sergeants for the Majors, Hospital Corpsman Third Class (`HM3.`) for the corpsmen. First names, middle initials and surnames are drawn from long lists, e.g. `PVT. George A. Romero`. Sergeant Johnson is always `SGT. Avery J. Johnson` and Stacker `MSG. Marcus P. Stacker`.
 * **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.
-* **Corpsman (new, `HCE_MarineMedic`, 30321):** a Marine with the Sidekick who answers the medic order. He's in the random Marine pool.
+* **Corpsmen (new):** Marines who answer the medic order, each with his own gun: `HCE_MarineMedic` (30321, the Sidekick), `HCE_MarineMedicAssaultRifle` (30325, Halo CE's assault rifle), `HCE_MarineMedicMa37` (30326), `HCE_MarineMedicMagnum` (30327), `HCE_MarineMedicShotgun` (30328, Halo CE's shotgun) and `HCE_MarineMedicSmg` (30329). They're in the random Marine pool. A corpsman always wears the first-aid kit with its red cross; no other Marine does.
 * **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
   * Killing a Marine: the others who saw it call it out, and each of them counts it as two hits against you.
   * Turn betrayal off with `hce_betrayal 0`; they still scold you.
@@ -1001,6 +1005,14 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30319 | `HCE_GruntUltraNeedler` |
 | 30320 | `HCE_GruntUltraPlasmaPistol` |
 | 30321 | `HCE_MarineMedic` |
+| 30322 | `HCE_EliteHeavyFuelRod` |
+| 30323 | `HCE_EliteHeavyNeedler` |
+| 30324 | `HCE_EliteHeavyPlasmaRifle` |
+| 30325 | `HCE_MarineMedicAssaultRifle` |
+| 30326 | `HCE_MarineMedicMa37` |
+| 30327 | `HCE_MarineMedicMagnum` |
+| 30328 | `HCE_MarineMedicShotgun` |
+| 30329 | `HCE_MarineMedicSmg` |
 | 30454 | `HCE_SgtStacker` |
 
 ## Credits

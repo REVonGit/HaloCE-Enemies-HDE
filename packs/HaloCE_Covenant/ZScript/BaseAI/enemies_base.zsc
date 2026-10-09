@@ -3429,6 +3429,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		return best;
 	}
 
+	int hce_nadeDodgeUntil;               // a dodge's cooldown: one every 3 seconds
 	bool HCE_DodgeGrenade(Actor g, vector3 at)
 	{
 		HCE_Say('EnemyGrenade', 1.0, 35 * 2, true);
@@ -3439,6 +3440,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(e && e != self && e.hce_enabled && e.hce_team == hce_team && e.health > 0) { e.hce_nadeHeard = g; e.hce_nadeHeardTics = level.maptime + 35; }
 		}
 		if(hce_berserk && frandom(0, 1) < 0.7) return false;         // a berserker mostly ignores it
+		if(level.maptime < hce_nadeDodgeUntil) return false;           // still getting up from the last one
+		hce_nadeDodgeUntil = level.maptime + 35 * 3;
 		vector3 aw = level.Vec3Diff(at, pos);
 		double esc = HCE_OpenHeading(aw.xy.Length() > 1 ? atan2(aw.y, aw.x) : angle + 180);
 		double rel = DeltaAngle(angle, esc);
@@ -3460,21 +3463,21 @@ class HaloDoom_EnemyBase : Actor abstract
 			HCE_PlayLocked(k, 0.8);
 			hce_diveAngle = esc;
 			hce_diveTics = min(24, hce_animLock);
-			hce_diveBoost = 2.0;
+			hce_diveBoost = 1.75;
 			hce_evadeTics = 35;
 			hce_nadeRunAngle = esc;
-			hce_nadeRunTics = 20;                                     // once the dive animation is done
+			hce_nadeRunTics = 14;                                     // once the dive animation is done
 			return true;
 		}
 		hce_nadeRunAngle = esc;                                       // no dive animations: sprint clear
-		hce_nadeRunTics = 45;
+		hce_nadeRunTics = 38;
 		return true;
 	}
 
 	void HCE_NadeRunTick()
 	{
 		hce_nadeRunTics--;
-		HCE_Move(HCE_PickHeading(hce_nadeRunAngle, target ? AngleTo(target) : hce_nadeRunAngle + 180), hce_runSpeed * 1.35);
+		HCE_Move(HCE_PickHeading(hce_nadeRunAngle, target ? AngleTo(target) : hce_nadeRunAngle + 180), hce_runSpeed * 1.25);
 		if(target) HCE_FaceTarget(); else A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
 		HCE_PickMoveAnim();
 	}
@@ -3784,11 +3787,15 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Gib: the rocket launcher, Hydra, Scattershot and Light Rifle alt fire, binary rifle, Unmaker, Stanchion,
 	// gravity hammer, GPMG (autocannon), double-barrel shotgun (the Marines' too), fuel rod, needler supercombine, Needle Javelin,
 	// plasma caster, Sentinel beam supercombine and sticky detonator.
-	// Grenades never gib: half the time they take one or two limbs. Everything else leaves the body whole.
+	// The rifles among them (battle rifle, DMR, carbine, Light Rifle, MA5B, Commando, and the enemies' rifles and
+	// carbines) take arms but never the head.
+	// Frag grenades (and barrels) never gib: they always take a limb or two, the ones nearest the blast. Other
+	// grenades (plasma, spike, firebombs) leave the body whole, as does everything else.
 	const HCE_WK_NONE = 0;
 	const HCE_WK_DISMEMBER = 1;
 	const HCE_WK_GIB = 2;
 	const HCE_WK_GRENADE = 3;
+	const HCE_WK_LIMBS = 4;                // dismember, but never the head (the rifles)
 	int hce_killKind;                      // what the latest hit's weapon may do
 	vector3 hce_hitRel;                    // where it struck, relative to the actor
 	bool hce_lastHeadshot;                 // the latest hit was a headshot
@@ -3811,7 +3818,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		static const String GIBI[] = { "rocket", "hydra", "unmaker", "stanchion", "hammer", "gpmg", "fuelrod", "javelin",
 			"plasmacaster", "sentinelbeamexplosion", "stickydet", "dblshotgun", "bfg" };
 		for(int i = 0; i < GIBI.Size(); i++) if(inf.IndexOf(GIBI[i]) >= 0) return HCE_WK_GIB;
-		if(inf.IndexOf("grenade") >= 0 || inf.IndexOf("barrel") >= 0) return HCE_WK_GRENADE;
+		if(inf.IndexOf("fraggrenade") >= 0 || inf.IndexOf("barrel") >= 0) return HCE_WK_GRENADE;
+		if(inf.IndexOf("grenade") >= 0) return HCE_WK_NONE;                // plasma and spike grenades, firebombs
 		// otherwise by the weapon in hand
 		if(wpn.Length() > 0)
 		{
@@ -3820,14 +3828,18 @@ class HaloDoom_EnemyBase : Actor abstract
 				"halo_stickydetonator", "supershotgun", "rocketlauncher", "bfg9000" };
 			for(int i = 0; i < GIBW.Size(); i++) if(wpn == GIBW[i]) return HCE_WK_GIB;
 			if(wpn == "halo_spiker") return mod == 'Melee' ? HCE_WK_DISMEMBER : HCE_WK_NONE;
-			static const String DISW[] = { "halo_magnum", "halo_battlerifle", "halo_dmr", "halo_sniperrifle", "halo_shotgun",
-				"halo_carbine", "halo_scattershot", "halo_energysword", "halo_lightrifle", "halo_ma5b", "halo_beamrifle",
-				"halo_boltshot", "halo_commando", "pistol", "chaingun", "shotgun", "chainsaw" };
+			static const String RIFW[] = { "halo_battlerifle", "halo_dmr", "halo_carbine", "halo_lightrifle", "halo_ma5b", "halo_commando", "chaingun" };
+			for(int i = 0; i < RIFW.Size(); i++) if(wpn == RIFW[i]) return mod == 'Melee' ? HCE_WK_NONE : HCE_WK_LIMBS;
+			static const String DISW[] = { "halo_magnum", "halo_sniperrifle", "halo_shotgun",
+				"halo_scattershot", "halo_energysword", "halo_beamrifle",
+				"halo_boltshot", "pistol", "shotgun", "chainsaw" };
 			for(int i = 0; i < DISW.Size(); i++) if(wpn == DISW[i]) return HCE_WK_DISMEMBER;
 			return HCE_WK_NONE;
 		}
 		// enemies and Marines shooting each other
-		static const String DISI[] = { "sniperbullet", "pistolbullet", "arbullet", "shotgunpellet", "carbineround", "beamshot", "beamrifleshot" };
+		static const String RIFI[] = { "arbullet", "carbineround", "dmrsniper" };
+		for(int i = 0; i < RIFI.Size(); i++) if(inf.IndexOf(RIFI[i]) >= 0) return HCE_WK_LIMBS;
+		static const String DISI[] = { "sniperbullet", "pistolbullet", "shotgunpellet", "beamshot", "beamrifleshot" };
 		for(int i = 0; i < DISI.Size(); i++) if(inf.IndexOf(DISI[i]) >= 0) return HCE_WK_DISMEMBER;
 		return HCE_WK_NONE;
 	}
@@ -3899,23 +3911,33 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_forceLimb > 0) { HCE_SeverLimb(hce_forceLimb - 1); hce_forceLimb = 0; return; }
 		if(hce_killKind == HCE_WK_GRENADE)
 		{
-			// a grenade never gibs: half the time it takes one or two limbs
-			if(frandom[HCEGore](0, 1) < 0.5)
+			// a frag never gibs: it always takes a limb, the one nearest the blast, and a second one half the time
+			// (always within 96 units of it)
+			Array<int> opts; Array<double> dist;
+			vector3 from = hce_blastHit ? hce_blastFrom : pos;
+			for(int l = 0; l < HCE_LIMBS; l++)
 			{
-				Array<int> opts;
-				for(int l = 0; l < HCE_LIMBS; l++) { vector3 o = HCE_LimbOffset(l); if(o.z > -999) opts.Push(l); }
-				int n = min(opts.Size(), random[HCEGore](1, 2));
-				for(int i = 0; i < n; i++) { int k = random[HCEGore](0, opts.Size() - 1); HCE_SeverLimb(opts[k]); opts.Delete(k); }
+				vector3 o = HCE_LimbOffset(l);
+				if(o.z <= -999 || (hce_severed & (1 << l))) continue;
+				vector3 r = HCE_LimbRel(l);
+				opts.Push(l); dist.Push(level.Vec3Diff(from, pos + r).Length() + frandom[HCEGore](0, 24));
+			}
+			int n = (frandom[HCEGore](0, 1) < 0.5 || level.Vec3Diff(from, pos).Length() < 96) ? 2 : 1;
+			for(int i = 0; i < n && opts.Size() > 0; i++)
+			{
+				int k = 0;
+				for(int j = 1; j < opts.Size(); j++) if(dist[j] < dist[k]) k = j;
+				HCE_SeverLimb(opts[k]); opts.Delete(k); dist.Delete(k);
 			}
 		}
-		else if(hce_killKind == HCE_WK_DISMEMBER)
+		else if(hce_killKind == HCE_WK_DISMEMBER || hce_killKind == HCE_WK_LIMBS)
 		{
-			// a killing headshot always takes the head; a kill on an arm nearly always takes the arm
-			if(hce_lastHeadshot || hce_struckLimb == HCE_LIMB_HEAD) HCE_SeverLimb(HCE_LIMB_HEAD);
+			// a killing headshot always takes the head (not with a rifle); a kill on an arm nearly always takes the arm
+			if(hce_killKind == HCE_WK_DISMEMBER && (hce_lastHeadshot || hce_struckLimb == HCE_LIMB_HEAD)) HCE_SeverLimb(HCE_LIMB_HEAD);
 			else
 			{
 				int l = hce_struckLimb;
-				if(l >= 0 && frandom[HCEGore](0, 1) < 0.85) HCE_SeverLimb(l);
+				if(l >= 0 && !(l == HCE_LIMB_HEAD && hce_killKind == HCE_WK_LIMBS) && frandom[HCEGore](0, 1) < 0.85) HCE_SeverLimb(l);
 			}
 		}
 	}
@@ -3955,7 +3977,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			bool ok; Actor m;
 			[ok, m] = A_SpawnItemEx(gib, frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, height * frandom(0.3, 0.8),
-				frandom(-6, 6), frandom(-6, 6), frandom(3, 12), frandom(0, 360), SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
+				frandom(-10, 10), frandom(-10, 10), frandom(5, 14), frandom(0, 360), SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
 			if(m) m.target = self;
 		}
 	}
@@ -4065,7 +4087,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_bleedOut;
 	void HCE_ArmCheck(int dealt)
 	{
-		if(health <= 0 || dealt <= 0 || hce_killKind != HCE_WK_DISMEMBER || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
+		if(health <= 0 || dealt <= 0 || (hce_killKind != HCE_WK_DISMEMBER && hce_killKind != HCE_WK_LIMBS) || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
 		int gl = HCE_GunLimb();
 		if(gl < 0 || (hce_severed & (1 << gl)) || hce_struckLimb != gl || dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return;
 		bool small = (hce_type == 1 || hce_type == 2) && hce_team == HCE_TEAM_COVENANT;
@@ -4179,15 +4201,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		double g = max(0.05, GetGravity() * 0.85);         // the gib's gravity (Gravity 0.85)
 		if(hce_blastHit)
 		{
-			// the explosion's impulse: ov from its centre through the piece; a grenade's ~100-200 at point blank
-			// throws it 15-20 map units a tic, falling off with distance
+			// the explosion's impulse: out from its centre through the piece; a grenade at point blank throws it
+			// 20-25 map units a tic, falling off slowly with distance (at 100 units still about 12)
 			vector3 d = level.Vec3Diff(hce_blastFrom, at);
 			double dist = d.Length();
 			vector3 dir = dist > 1 ? d / dist : (0, 0, 1);
-			double spd = clamp(hce_blastDmg * 0.1, 5, 18) * clamp(72.0 / (dist + 24.0), 0.4, 1.6);
-			if(hce_gibbed) spd = max(spd, 7);
-			vector3 v = dir * spd + (frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), 0);
-			v.z = max(v.z, 2.5) + frandom[HCEGore](1, 3);     // blasts lift what they throw
+			double spd = clamp(hce_blastDmg * 0.18, 11, 24) * clamp(120.0 / (dist + 30.0), 0.75, 1.5);
+			if(hce_gibbed) spd = max(spd, 12);
+			vector3 v = dir * spd + (frandom[HCEGore](-1.5, 1.5), frandom[HCEGore](-1.5, 1.5), 0);
+			v.z = max(v.z, 4) + frandom[HCEGore](2, 5);       // blasts lift what they throw
 			return v + vel * 0.5;
 		}
 		// popped off by a shot: outward from the body, a little away from the shooter
@@ -4200,11 +4222,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 away = (pos.xy - from.xy).Length() > 1 ? (pos.xy - from.xy).Unit() : -fw;
 		ov = (ov.Unit() + away * 0.35).Unit();
 		ov = Actor.RotateVector(ov, frandom[HCEGore](-15, 15));
-		if(hce_gibbed) { double gs = frandom[HCEGore](6, 9); return (ov * gs, frandom[HCEGore](3, 6)) + vel * 0.5; }
+		if(hce_gibbed) { double gs = frandom[HCEGore](9, 13); return (ov * gs, frandom[HCEGore](4, 8)) + vel * 0.5; }
 		// how far it has to go: from the cut to the body's edge along 'ov', then 2-3 feet; the flight from its
 		// height takes it most of the way, the bounces (HCE_LimbGib) the rest
 		double edge = max(0, radius - (rel.xy dot ov));
-		double want = edge + frandom[HCEGore](16, 24);
+		double want = edge + frandom[HCEGore](28, 44);
 		double vz = frandom[HCEGore](3, 4) + (limb == HCE_LIMB_HEAD ? 1 : 0);
 		double h = max(0, at.z - floorz);
 		double t = (vz + sqrt(vz * vz + 2 * g * h)) / g;
@@ -4686,7 +4708,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		if(!opts.Size()) return dmg;
 		int pick = opts[random[HCEGore](0, opts.Size() - 1)];         // lying down: any limb
-		if(hce_killKind == HCE_WK_DISMEMBER && dmg >= 8 && frandom[HCEGore](0, 1) < 0.6) HCE_SeverLimb(pick);
+		if(hce_killKind == HCE_WK_LIMBS && pick == HCE_LIMB_HEAD) return dmg;           // a rifle: never the head
+		if((hce_killKind == HCE_WK_DISMEMBER || hce_killKind == HCE_WK_LIMBS) && dmg >= 8 && frandom[HCEGore](0, 1) < 0.6) HCE_SeverLimb(pick);
 		else if(hce_killKind == HCE_WK_GRENADE && frandom[HCEGore](0, 1) < 0.5) HCE_SeverLimb(pick);
 		return dmg;
 	}

@@ -51,11 +51,11 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_Sentinel*4 HCE_SentinelDefensive*2 HCE_SentinelShielded*1",
 			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1",
 			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_Sentinel*1",
-		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major Elites
+		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major and Heavy Elites
 		"HellKnight",
 			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1",
-			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1",
+			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1",
 		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health)
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",

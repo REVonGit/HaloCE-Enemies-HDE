@@ -3,6 +3,8 @@ kinematics, so the hands hold the gun the Marine actually carries:
 
 * 'h2smg'     the SMG: the left hand on the SMG's vertical fore-grip (Halo 2's own left_hand marker on the SMG)
 * 'h2br'      the battle rifle: the left hand where Halo 2's battle rifle puts it (its left_hand marker)
+* 'h2plasma'  the plasma rifle: the left hand underneath it, cupping the lower prong (marine_plasma_grip.py adds it to
+              Marines already extracted)
 * 'h2bulldog' the Bulldog: the gun slid along its own axis until the stock's butt plate sits in the right shoulder
               pocket, the right hand carried with it to the pistol grip, and the left hand on the vertical fore-grip
 
@@ -20,6 +22,8 @@ GUNS = {
     'h2smg':     (np.array([0.063, 0.003, 0.009]), None),
     'h2br':      (np.array([0.105, 0.002, 0.019]), None),
     'h2bulldog': (np.array([0.162, 0.000, -0.012]), np.array([-0.106, 0.0, 0.029])),
+    # the plasma rifle: held like a rifle, the left hand under its lower prong, a little ahead of the grip
+    'h2plasma':  (np.array([0.035, 0.000, -0.080]), None),
 }
 FREE_LEFT = ('throw-grenade', 'signal-attack', 'celebrate', 'warn')
 

@@ -1,4 +1,5 @@
-// HaloDoom Evolved only (the standalone packs leave this file out): the weapon a dropped HDE gun gives. HDE turns
+// HaloDoom Evolved only (the standalone packs leave this file out): the weapon a dropped HDE gun gives, and whether
+// the player's flashlight is on. HDE turns
 // a dropped weapon into a WeaponPickupProxy that carries the weapon class; enemies and Marines that pick guns up
 // off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan) read it through this.
 class HCE_HDEPickupResolver : HCE_PickupResolver
@@ -8,5 +9,12 @@ class HCE_HDEPickupResolver : HCE_PickupResolver
 		let p = WeaponPickupProxy(a);
 		if(!p || !p.trueitem) return 'None';
 		return p.trueitem.GetClassName();
+	}
+
+	// HaloDoom Evolved's flashlight is on (enemies notice its beam: HCE_MissileTracker.Flashlight)
+	override bool FlashlightOn(Actor p)
+	{
+		let hp = HaloPlayer(p);
+		return hp && hp.flashlight && hp.flashlight.active;
 	}
 }

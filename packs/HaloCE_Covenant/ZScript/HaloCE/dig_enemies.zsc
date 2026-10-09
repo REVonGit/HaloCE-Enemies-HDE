@@ -1945,13 +1945,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -2450,13 +2444,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -2945,13 +2933,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -3440,13 +3422,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -3933,13 +3909,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -4424,13 +4394,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -4915,13 +4879,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -5411,13 +5369,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -5907,13 +5859,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -6403,13 +6349,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{

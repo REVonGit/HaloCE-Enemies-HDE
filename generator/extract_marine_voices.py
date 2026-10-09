@@ -78,6 +78,24 @@ PLAN = {
     'Wounded':       (['postcombatchatter\\seriouslywounded'], ['whn', 'whn_hrtbrn', 'hlpme']),
     'Forgive':       ([], ['forgive']),
     'Worse Weapon':  ([], ['scrn_plr_wrswpn', 'scrn_plr']),   # scorn: the player traded him a worse gun
+    # combat callouts: cover, searching, rallying, orders, warnings (HCE_Say: Cover, SearchStart ...)
+    'Cover': (['groupcomm\\cover'], ['cvrme', 'cvrme_re']),
+    'Uncovered': ([], ['hlpme_uncovered']),
+    'Search Start': (['groupcomm\\searchstart'], ['srchstart', 'srchpresrch']),
+    'Search Clear': ([], ['srch_allclr', 'prst_allclr']),
+    'Search Fail': ([], ['prstfail', 'prstfail_agg', 'prstfail_tim']),
+    'Keep Watch': ([], ['keepwatch']),
+    'Found Foe': ([], ['foundfoe_srch', 'foundfoe']),
+    'Join Me': ([], ['joinme', 'joinme_emrg']),
+    'Charge': ([], ['newordr_charge', 'charge']),
+    'Investigate': (['groupcomm\\searchquery'], ['cvrme_invsgt']),
+    'Behind': ([], ['seefoe_srprs', 'seefoe_too']),
+    'Sniper': ([], ['warn_wpn_snpr']),
+    'Sword': ([], ['warn_wpn_swrd']),
+    'Up There': ([], ['seefoe_upthere']),
+    'Down There': ([], ['seefoe_downthere']),
+    'Fall Back': ([], ['newordr_fallback', 'newordr_retreat']),
+    'Advance': ([], ['newordr_advance', 'newordr_moveon']),
     'Refuse':        ([], ['scrn_plr', 'scld_plr']),            # a gun he can't carry at all
 }
 

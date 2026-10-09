@@ -23,6 +23,7 @@ server bool hce_betrayal = true;      // Marines turn on a player who keeps shoo
 server bool hce_tactics = true;        // squad tactics: Marines in fire teams (bounding overwatch, flanking, break contact, 360 perimeter on hold); Covenant lances in echelons (barrage, shield wall, feigned retreat, encircling wings, breakthrough charge)
 server bool hce_cover = true;          // enemies and Marines fight from cover: lean out past corners (Halo 2's corner cover) or shoot over low walls, and hide while their shields recharge
 server int hce_difficulty = -1;        // Halo difficulty (Halo CE's own table): -1 = from the skill level (ITYTD/HNTR Easy, HMP Normal, UV Heroic, NM Legendary), 0 Easy, 1 Normal, 2 Heroic, 3 Legendary
+server bool hce_search = true;         // the Covenant search for a target they lost (its tracks, the spots round where it vanished) and go back to their post when they give up; enemies investigate explosions they hear and notice a flashlight's beam
 
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3

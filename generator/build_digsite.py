@@ -1062,13 +1062,7 @@ def brute_code():
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
 		if(health > 0 && !isFrozen())
 		{
-			// footfalls: heavier, quicker on the berserk run
-			double sp = vel.xy.Length() + hce_moveSpeed;
-			if(pos.z <= floorz + 1 && sp > 1.5 && ++hce_stepTics >= (hce_berserk ? 9 : 15))
-			{
-				hce_stepTics = 0;
-				A_StartSound(hce_berserk ? "HCE/Brute/Run" : "HCE/Brute/Step", CHAN_BODY, CHANF_OVERLAP, 0.7);
-			}
+			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
 			// swing whoosh on each melee / tackle, chest thump on the berserk roar
 			if(hce_curAnim != hce_lastSwing)
 			{
@@ -1153,6 +1147,24 @@ BRUTE_EVENTS = {
     'Panic': ['panic'], 'Regroup': ['pstcmbt', 'newordr_charge'], 'LeaderDead': ['lmnt_deadally', 'lmnt'],
     'EnemyGrenade': ['warn_incmn_grnd', 'warn_incmn'], 'GrenadeThrow': ['strk_grnd'],
     'ManDown': ['lmnt_deadally', 'lmnt'], 'HeardGunfire': ['hrdfoe', 'srchstart'],
+    # combat callouts (HCE_Say: Cover, SearchStart ...)
+    'Cover': ['cvrme', 'cvrme_re'],
+    'Uncovered': ['hlpme_uncovered'],
+    'SearchStart': ['srchstart', 'srchpresrch'],
+    'SearchClear': ['srch_allclr', 'prst_allclr'],
+    'SearchFail': ['prstfail', 'prstfail_agg', 'prstfail_tim'],
+    'KeepWatch': ['keepwatch'],
+    'FoundFoe': ['foundfoe_srch', 'foundfoe'],
+    'JoinMe': ['joinme', 'joinme_emrg'],
+    'Charge': ['newordr_charge', 'charge'],
+    'Investigate': ['cvrme_invsgt'],
+    'Behind': ['seefoe_srprs', 'seefoe_too'],
+    'Sniper': ['warn_wpn_snpr'],
+    'Sword': ['warn_wpn_swrd'],
+    'UpThere': ['seefoe_upthere'],
+    'DownThere': ['seefoe_downthere'],
+    'FallBack': ['newordr_fallback', 'newordr_retreat'],
+    'Advance': ['newordr_advance', 'newordr_moveon'],
 }
 BRUTE_FX = {'Step': ['step_walk'], 'Run': ['step_run'], 'Thump': ['thump'], 'MeleeMove': ['melee_moves'],
             'BodyFall': ['bodyfall']}

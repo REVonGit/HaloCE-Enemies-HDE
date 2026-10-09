@@ -83,6 +83,17 @@ $alias HCE/Slug/Betrayal HCE/Slug/Taunt
 $alias HCE/Slug/Acknowledge HCE/Slug/Regroup
 $alias HCE/Slug/Wounded HCE/Slug/PainHeavy
 $alias HCE/Slug/HeardGunfire HCE/Slug/Alert
+$alias HCE/Slug/Cover HCE/Slug/Regroup
+$alias HCE/Slug/SearchFail HCE/Slug/Regroup
+$alias HCE/Slug/FoundFoe HCE/Slug/Alert
+$alias HCE/Slug/JoinMe HCE/Slug/Regroup
+$alias HCE/Slug/Behind HCE/Slug/Alert
+$alias HCE/Slug/Sniper HCE/Slug/Alert
+$alias HCE/Slug/Sword HCE/Slug/Alert
+$alias HCE/Slug/UpThere HCE/Slug/Alert
+$alias HCE/Slug/DownThere HCE/Slug/Alert
+$alias HCE/Slug/FallBack HCE/Slug/Flee
+$alias HCE/Slug/Advance HCE/Slug/Regroup
 
 // Thorn Beast (SPV3 a30 sound tags)
 HCE/ThornBeast/death/0 "sounds/hce_dig/thornbeast/death_0.ogg"
@@ -421,6 +432,16 @@ $random HCE/Drone/Taunt { HCE/Drone/chr/0 HCE/Drone/chr/1 HCE/Drone/chr/2 HCE/Dr
 $random HCE/Drone/Whoosh { HCE/Drone/long_move/0 HCE/Drone/long_move/1 HCE/Drone/long_move/2 HCE/Drone/long_move/3 HCE/Drone/long_move/4 HCE/Drone/long_move/5 HCE/Drone/long_move/6 HCE/Drone/long_move/7 HCE/Drone/long_move/8 HCE/Drone/long_move/9 HCE/Drone/long_move/10 HCE/Drone/long_move/11 HCE/Drone/long_move/12 HCE/Drone/long_move/13 HCE/Drone/long_move/14 HCE/Drone/long_move/15 HCE/Drone/long_move/16 HCE/Drone/long_move/17 HCE/Drone/long_move/18 HCE/Drone/long_move/19 HCE/Drone/long_move/20 HCE/Drone/long_move/21 HCE/Drone/long_move/22 HCE/Drone/long_move/23 HCE/Drone/long_move/24 }
 
 // Brutes (Halo 2 MCC: dialogue from sounds_en.dat, effects from sounds_neutral.dat)
+HCE/Brute_Bloodthirsty/newordr_advance/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_advance_00.ogg"
+HCE/Brute_Bloodthirsty/newordr_advance/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_advance_01.ogg"
+HCE/Brute_Bloodthirsty/newordr_advance/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_advance_02.ogg"
+HCE/Brute_Bloodthirsty/newordr_advance/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_advance_03.ogg"
+HCE/Brute_Bloodthirsty/newordr_advance/4 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_advance_04.ogg"
+HCE/Brute_Bloodthirsty/newordr_moveon/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_moveon_00.ogg"
+HCE/Brute_Bloodthirsty/newordr_moveon/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_moveon_01.ogg"
+HCE/Brute_Bloodthirsty/newordr_moveon/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_moveon_02.ogg"
+HCE/Brute_Bloodthirsty/newordr_moveon/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_moveon_03.ogg"
+$random HCE/Brute_Bloodthirsty/Advance { HCE/Brute_Bloodthirsty/newordr_advance/0 HCE/Brute_Bloodthirsty/newordr_advance/1 HCE/Brute_Bloodthirsty/newordr_advance/2 HCE/Brute_Bloodthirsty/newordr_advance/3 HCE/Brute_Bloodthirsty/newordr_advance/4 HCE/Brute_Bloodthirsty/newordr_moveon/0 HCE/Brute_Bloodthirsty/newordr_moveon/1 HCE/Brute_Bloodthirsty/newordr_moveon/2 HCE/Brute_Bloodthirsty/newordr_moveon/3 }
 HCE/Brute_Bloodthirsty/seefoe/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_00.ogg"
 HCE/Brute_Bloodthirsty/seefoe/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_01.ogg"
 HCE/Brute_Bloodthirsty/seefoe/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_02.ogg"
@@ -451,6 +472,12 @@ HCE/Brute_Bloodthirsty/srprs/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/srprs_02
 HCE/Brute_Bloodthirsty/srprs/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/srprs_03.ogg"
 HCE/Brute_Bloodthirsty/srprs/4 "sounds/hce_dig/brute/Brute_Bloodthirsty/srprs_04.ogg"
 $random HCE/Brute_Bloodthirsty/Alert { HCE/Brute_Bloodthirsty/seefoe/0 HCE/Brute_Bloodthirsty/seefoe/1 HCE/Brute_Bloodthirsty/seefoe/2 HCE/Brute_Bloodthirsty/seefoe/3 HCE/Brute_Bloodthirsty/seefoe/4 HCE/Brute_Bloodthirsty/seefoe/5 HCE/Brute_Bloodthirsty/seefoe_srprs/0 HCE/Brute_Bloodthirsty/seefoe_srprs/1 HCE/Brute_Bloodthirsty/foundfoe/0 HCE/Brute_Bloodthirsty/foundfoe/1 HCE/Brute_Bloodthirsty/foundfoe/2 HCE/Brute_Bloodthirsty/foundfoe/3 HCE/Brute_Bloodthirsty/foundfoe/4 HCE/Brute_Bloodthirsty/foundfoe/5 HCE/Brute_Bloodthirsty/foundfoe/6 HCE/Brute_Bloodthirsty/foundfoe/7 HCE/Brute_Bloodthirsty/foundfoe/8 HCE/Brute_Bloodthirsty/foundfoe/9 HCE/Brute_Bloodthirsty/foundfoe/10 HCE/Brute_Bloodthirsty/foundfoe/11 HCE/Brute_Bloodthirsty/hrdfoe/0 HCE/Brute_Bloodthirsty/hrdfoe/1 HCE/Brute_Bloodthirsty/morefoe/0 HCE/Brute_Bloodthirsty/morefoe/1 HCE/Brute_Bloodthirsty/srprs/0 HCE/Brute_Bloodthirsty/srprs/1 HCE/Brute_Bloodthirsty/srprs/2 HCE/Brute_Bloodthirsty/srprs/3 HCE/Brute_Bloodthirsty/srprs/4 }
+HCE/Brute_Bloodthirsty/seefoe_srprs/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_srprs_00.ogg"
+HCE/Brute_Bloodthirsty/seefoe_srprs/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_srprs_01.ogg"
+HCE/Brute_Bloodthirsty/seefoe_too/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_too_00.ogg"
+HCE/Brute_Bloodthirsty/seefoe_too/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_too_01.ogg"
+HCE/Brute_Bloodthirsty/seefoe_too/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_too_02.ogg"
+$random HCE/Brute_Bloodthirsty/Behind { HCE/Brute_Bloodthirsty/seefoe_srprs/0 HCE/Brute_Bloodthirsty/seefoe_srprs/1 HCE/Brute_Bloodthirsty/seefoe_too/0 HCE/Brute_Bloodthirsty/seefoe_too/1 HCE/Brute_Bloodthirsty/seefoe_too/2 }
 HCE/Brute_Bloodthirsty/brsrk/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/brsrk_00.ogg"
 HCE/Brute_Bloodthirsty/brsrk/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/brsrk_01.ogg"
 HCE/Brute_Bloodthirsty/brsrk/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/brsrk_02.ogg"
@@ -467,6 +494,19 @@ HCE/Brute_Bloodthirsty/charge/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_
 HCE/Brute_Bloodthirsty/charge/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_01.ogg"
 HCE/Brute_Bloodthirsty/charge/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_02.ogg"
 $random HCE/Brute_Bloodthirsty/Berserk { HCE/Brute_Bloodthirsty/brsrk/0 HCE/Brute_Bloodthirsty/brsrk/1 HCE/Brute_Bloodthirsty/brsrk/2 HCE/Brute_Bloodthirsty/brsrk/3 HCE/Brute_Bloodthirsty/brsrk/4 HCE/Brute_Bloodthirsty/brsrk/5 HCE/Brute_Bloodthirsty/brsrk/6 HCE/Brute_Bloodthirsty/brsrk/7 HCE/Brute_Bloodthirsty/brsrk/8 HCE/Brute_Bloodthirsty/brsrk/9 HCE/Brute_Bloodthirsty/brsrk/10 HCE/Brute_Bloodthirsty/brsrk/11 HCE/Brute_Bloodthirsty/charge/0 HCE/Brute_Bloodthirsty/charge/1 HCE/Brute_Bloodthirsty/charge/2 }
+HCE/Brute_Bloodthirsty/newordr_charge/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_00.ogg"
+HCE/Brute_Bloodthirsty/newordr_charge/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_01.ogg"
+HCE/Brute_Bloodthirsty/newordr_charge/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_02.ogg"
+HCE/Brute_Bloodthirsty/newordr_charge/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_03.ogg"
+HCE/Brute_Bloodthirsty/charge/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_00.ogg"
+HCE/Brute_Bloodthirsty/charge/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_01.ogg"
+HCE/Brute_Bloodthirsty/charge/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/charge_02.ogg"
+$random HCE/Brute_Bloodthirsty/Charge { HCE/Brute_Bloodthirsty/newordr_charge/0 HCE/Brute_Bloodthirsty/newordr_charge/1 HCE/Brute_Bloodthirsty/newordr_charge/2 HCE/Brute_Bloodthirsty/newordr_charge/3 HCE/Brute_Bloodthirsty/charge/0 HCE/Brute_Bloodthirsty/charge/1 HCE/Brute_Bloodthirsty/charge/2 }
+HCE/Brute_Bloodthirsty/cvrme/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_00.ogg"
+HCE/Brute_Bloodthirsty/cvrme/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_01.ogg"
+HCE/Brute_Bloodthirsty/cvrme_re/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_re_00.ogg"
+HCE/Brute_Bloodthirsty/cvrme_re/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_re_01.ogg"
+$random HCE/Brute_Bloodthirsty/Cover { HCE/Brute_Bloodthirsty/cvrme/0 HCE/Brute_Bloodthirsty/cvrme/1 HCE/Brute_Bloodthirsty/cvrme_re/0 HCE/Brute_Bloodthirsty/cvrme_re/1 }
 HCE/Brute_Bloodthirsty/dth/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_00.ogg"
 HCE/Brute_Bloodthirsty/dth/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_01.ogg"
 HCE/Brute_Bloodthirsty/dth/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_02.ogg"
@@ -510,6 +550,10 @@ HCE/Brute_Bloodthirsty/dth_hdsht/6 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_
 HCE/Brute_Bloodthirsty/dth_fall/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_fall_00.ogg"
 HCE/Brute_Bloodthirsty/dth_fall/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/dth_fall_01.ogg"
 $random HCE/Brute_Bloodthirsty/DeathHard { HCE/Brute_Bloodthirsty/dth_mjr/0 HCE/Brute_Bloodthirsty/dth_mjr/1 HCE/Brute_Bloodthirsty/dth_mjr/2 HCE/Brute_Bloodthirsty/dth_mjr/3 HCE/Brute_Bloodthirsty/dth_mjr/4 HCE/Brute_Bloodthirsty/dth_mjr/5 HCE/Brute_Bloodthirsty/dth_hdsht/0 HCE/Brute_Bloodthirsty/dth_hdsht/1 HCE/Brute_Bloodthirsty/dth_hdsht/2 HCE/Brute_Bloodthirsty/dth_hdsht/3 HCE/Brute_Bloodthirsty/dth_hdsht/4 HCE/Brute_Bloodthirsty/dth_hdsht/5 HCE/Brute_Bloodthirsty/dth_hdsht/6 HCE/Brute_Bloodthirsty/dth_fall/0 HCE/Brute_Bloodthirsty/dth_fall/1 }
+HCE/Brute_Bloodthirsty/seefoe_downthere/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_downthere_00.ogg"
+HCE/Brute_Bloodthirsty/seefoe_downthere/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_downthere_01.ogg"
+HCE/Brute_Bloodthirsty/seefoe_downthere/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_downthere_02.ogg"
+$random HCE/Brute_Bloodthirsty/DownThere { HCE/Brute_Bloodthirsty/seefoe_downthere/0 HCE/Brute_Bloodthirsty/seefoe_downthere/1 HCE/Brute_Bloodthirsty/seefoe_downthere/2 }
 HCE/Brute_Bloodthirsty/warn_incmn_grnd/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_incmn_grnd_00.ogg"
 HCE/Brute_Bloodthirsty/warn_incmn_grnd/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_incmn_grnd_01.ogg"
 HCE/Brute_Bloodthirsty/warn_incmn/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_incmn_00.ogg"
@@ -517,6 +561,30 @@ HCE/Brute_Bloodthirsty/warn_incmn/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/war
 HCE/Brute_Bloodthirsty/warn_incmn/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_incmn_02.ogg"
 HCE/Brute_Bloodthirsty/warn_incmn/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_incmn_03.ogg"
 $random HCE/Brute_Bloodthirsty/EnemyGrenade { HCE/Brute_Bloodthirsty/warn_incmn_grnd/0 HCE/Brute_Bloodthirsty/warn_incmn_grnd/1 HCE/Brute_Bloodthirsty/warn_incmn/0 HCE/Brute_Bloodthirsty/warn_incmn/1 HCE/Brute_Bloodthirsty/warn_incmn/2 HCE/Brute_Bloodthirsty/warn_incmn/3 }
+HCE/Brute_Bloodthirsty/newordr_fallback/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_fallback_00.ogg"
+HCE/Brute_Bloodthirsty/newordr_fallback/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_fallback_01.ogg"
+HCE/Brute_Bloodthirsty/newordr_fallback/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_fallback_02.ogg"
+HCE/Brute_Bloodthirsty/newordr_fallback/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_fallback_03.ogg"
+HCE/Brute_Bloodthirsty/newordr_retreat/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_retreat_00.ogg"
+HCE/Brute_Bloodthirsty/newordr_retreat/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_retreat_01.ogg"
+HCE/Brute_Bloodthirsty/newordr_retreat/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_retreat_02.ogg"
+HCE/Brute_Bloodthirsty/newordr_retreat/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_retreat_03.ogg"
+$random HCE/Brute_Bloodthirsty/FallBack { HCE/Brute_Bloodthirsty/newordr_fallback/0 HCE/Brute_Bloodthirsty/newordr_fallback/1 HCE/Brute_Bloodthirsty/newordr_fallback/2 HCE/Brute_Bloodthirsty/newordr_fallback/3 HCE/Brute_Bloodthirsty/newordr_retreat/0 HCE/Brute_Bloodthirsty/newordr_retreat/1 HCE/Brute_Bloodthirsty/newordr_retreat/2 HCE/Brute_Bloodthirsty/newordr_retreat/3 }
+HCE/Brute_Bloodthirsty/foundfoe_srch/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_srch_00.ogg"
+HCE/Brute_Bloodthirsty/foundfoe_srch/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_srch_01.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_00.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_01.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_02.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_03.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/4 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_04.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/5 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_05.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/6 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_06.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/7 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_07.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/8 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_08.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/9 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_09.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/10 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_10.ogg"
+HCE/Brute_Bloodthirsty/foundfoe/11 "sounds/hce_dig/brute/Brute_Bloodthirsty/foundfoe_11.ogg"
+$random HCE/Brute_Bloodthirsty/FoundFoe { HCE/Brute_Bloodthirsty/foundfoe_srch/0 HCE/Brute_Bloodthirsty/foundfoe_srch/1 HCE/Brute_Bloodthirsty/foundfoe/0 HCE/Brute_Bloodthirsty/foundfoe/1 HCE/Brute_Bloodthirsty/foundfoe/2 HCE/Brute_Bloodthirsty/foundfoe/3 HCE/Brute_Bloodthirsty/foundfoe/4 HCE/Brute_Bloodthirsty/foundfoe/5 HCE/Brute_Bloodthirsty/foundfoe/6 HCE/Brute_Bloodthirsty/foundfoe/7 HCE/Brute_Bloodthirsty/foundfoe/8 HCE/Brute_Bloodthirsty/foundfoe/9 HCE/Brute_Bloodthirsty/foundfoe/10 HCE/Brute_Bloodthirsty/foundfoe/11 }
 HCE/Brute_Bloodthirsty/strk_grnd/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_grnd_00.ogg"
 HCE/Brute_Bloodthirsty/strk_grnd/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_grnd_01.ogg"
 HCE/Brute_Bloodthirsty/strk_grnd/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_grnd_02.ogg"
@@ -531,6 +599,18 @@ HCE/Brute_Bloodthirsty/hrdfoe/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/hrdfoe_
 HCE/Brute_Bloodthirsty/srchstart/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_00.ogg"
 HCE/Brute_Bloodthirsty/srchstart/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_01.ogg"
 $random HCE/Brute_Bloodthirsty/HeardGunfire { HCE/Brute_Bloodthirsty/hrdfoe/0 HCE/Brute_Bloodthirsty/hrdfoe/1 HCE/Brute_Bloodthirsty/srchstart/0 HCE/Brute_Bloodthirsty/srchstart/1 }
+HCE/Brute_Bloodthirsty/cvrme_invsgt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_invsgt_00.ogg"
+HCE/Brute_Bloodthirsty/cvrme_invsgt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/cvrme_invsgt_01.ogg"
+$random HCE/Brute_Bloodthirsty/Investigate { HCE/Brute_Bloodthirsty/cvrme_invsgt/0 HCE/Brute_Bloodthirsty/cvrme_invsgt/1 }
+HCE/Brute_Bloodthirsty/joinme/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/joinme_00.ogg"
+HCE/Brute_Bloodthirsty/joinme/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/joinme_01.ogg"
+HCE/Brute_Bloodthirsty/joinme/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/joinme_02.ogg"
+HCE/Brute_Bloodthirsty/joinme_emrg/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/joinme_emrg_00.ogg"
+HCE/Brute_Bloodthirsty/joinme_emrg/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/joinme_emrg_01.ogg"
+$random HCE/Brute_Bloodthirsty/JoinMe { HCE/Brute_Bloodthirsty/joinme/0 HCE/Brute_Bloodthirsty/joinme/1 HCE/Brute_Bloodthirsty/joinme/2 HCE/Brute_Bloodthirsty/joinme_emrg/0 HCE/Brute_Bloodthirsty/joinme_emrg/1 }
+HCE/Brute_Bloodthirsty/keepwatch/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/keepwatch_00.ogg"
+HCE/Brute_Bloodthirsty/keepwatch/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/keepwatch_01.ogg"
+$random HCE/Brute_Bloodthirsty/KeepWatch { HCE/Brute_Bloodthirsty/keepwatch/0 HCE/Brute_Bloodthirsty/keepwatch/1 }
 HCE/Brute_Bloodthirsty/glt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_00.ogg"
 HCE/Brute_Bloodthirsty/glt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_01.ogg"
 HCE/Brute_Bloodthirsty/glt/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_02.ogg"
@@ -631,6 +711,32 @@ HCE/Brute_Bloodthirsty/newordr_charge/1 "sounds/hce_dig/brute/Brute_Bloodthirsty
 HCE/Brute_Bloodthirsty/newordr_charge/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_02.ogg"
 HCE/Brute_Bloodthirsty/newordr_charge/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/newordr_charge_03.ogg"
 $random HCE/Brute_Bloodthirsty/Regroup { HCE/Brute_Bloodthirsty/pstcmbt/0 HCE/Brute_Bloodthirsty/pstcmbt/1 HCE/Brute_Bloodthirsty/pstcmbt/2 HCE/Brute_Bloodthirsty/pstcmbt/3 HCE/Brute_Bloodthirsty/newordr_charge/0 HCE/Brute_Bloodthirsty/newordr_charge/1 HCE/Brute_Bloodthirsty/newordr_charge/2 HCE/Brute_Bloodthirsty/newordr_charge/3 }
+HCE/Brute_Bloodthirsty/srch_allclr/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/srch_allclr_00.ogg"
+HCE/Brute_Bloodthirsty/srch_allclr/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/srch_allclr_01.ogg"
+HCE/Brute_Bloodthirsty/prst_allclr/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/prst_allclr_00.ogg"
+HCE/Brute_Bloodthirsty/prst_allclr/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/prst_allclr_01.ogg"
+$random HCE/Brute_Bloodthirsty/SearchClear { HCE/Brute_Bloodthirsty/srch_allclr/0 HCE/Brute_Bloodthirsty/srch_allclr/1 HCE/Brute_Bloodthirsty/prst_allclr/0 HCE/Brute_Bloodthirsty/prst_allclr/1 }
+HCE/Brute_Bloodthirsty/prstfail/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_00.ogg"
+HCE/Brute_Bloodthirsty/prstfail/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_01.ogg"
+HCE/Brute_Bloodthirsty/prstfail/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_02.ogg"
+HCE/Brute_Bloodthirsty/prstfail/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_03.ogg"
+HCE/Brute_Bloodthirsty/prstfail/4 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_04.ogg"
+HCE/Brute_Bloodthirsty/prstfail_agg/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_agg_00.ogg"
+HCE/Brute_Bloodthirsty/prstfail_agg/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_agg_01.ogg"
+HCE/Brute_Bloodthirsty/prstfail_tim/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_tim_00.ogg"
+HCE/Brute_Bloodthirsty/prstfail_tim/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/prstfail_tim_01.ogg"
+$random HCE/Brute_Bloodthirsty/SearchFail { HCE/Brute_Bloodthirsty/prstfail/0 HCE/Brute_Bloodthirsty/prstfail/1 HCE/Brute_Bloodthirsty/prstfail/2 HCE/Brute_Bloodthirsty/prstfail/3 HCE/Brute_Bloodthirsty/prstfail/4 HCE/Brute_Bloodthirsty/prstfail_agg/0 HCE/Brute_Bloodthirsty/prstfail_agg/1 HCE/Brute_Bloodthirsty/prstfail_tim/0 HCE/Brute_Bloodthirsty/prstfail_tim/1 }
+HCE/Brute_Bloodthirsty/srchstart/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_00.ogg"
+HCE/Brute_Bloodthirsty/srchstart/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_01.ogg"
+HCE/Brute_Bloodthirsty/srchpresrch/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchpresrch_00.ogg"
+HCE/Brute_Bloodthirsty/srchpresrch/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchpresrch_01.ogg"
+$random HCE/Brute_Bloodthirsty/SearchStart { HCE/Brute_Bloodthirsty/srchstart/0 HCE/Brute_Bloodthirsty/srchstart/1 HCE/Brute_Bloodthirsty/srchpresrch/0 HCE/Brute_Bloodthirsty/srchpresrch/1 }
+HCE/Brute_Bloodthirsty/warn_wpn_snpr/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_wpn_snpr_00.ogg"
+HCE/Brute_Bloodthirsty/warn_wpn_snpr/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_wpn_snpr_01.ogg"
+$random HCE/Brute_Bloodthirsty/Sniper { HCE/Brute_Bloodthirsty/warn_wpn_snpr/0 HCE/Brute_Bloodthirsty/warn_wpn_snpr/1 }
+HCE/Brute_Bloodthirsty/warn_wpn_swrd/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_wpn_swrd_00.ogg"
+HCE/Brute_Bloodthirsty/warn_wpn_swrd/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/warn_wpn_swrd_01.ogg"
+$random HCE/Brute_Bloodthirsty/Sword { HCE/Brute_Bloodthirsty/warn_wpn_swrd/0 HCE/Brute_Bloodthirsty/warn_wpn_swrd/1 }
 HCE/Brute_Bloodthirsty/tnt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/tnt_00.ogg"
 HCE/Brute_Bloodthirsty/tnt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/tnt_01.ogg"
 HCE/Brute_Bloodthirsty/tnt/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/tnt_02.ogg"
@@ -660,6 +766,24 @@ HCE/Brute_Bloodthirsty/strk/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_03.o
 HCE/Brute_Bloodthirsty/strk/4 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_04.ogg"
 HCE/Brute_Bloodthirsty/strk/5 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_05.ogg"
 $random HCE/Brute_Bloodthirsty/Taunt { HCE/Brute_Bloodthirsty/tnt/0 HCE/Brute_Bloodthirsty/tnt/1 HCE/Brute_Bloodthirsty/tnt/2 HCE/Brute_Bloodthirsty/tnt/3 HCE/Brute_Bloodthirsty/tnt/4 HCE/Brute_Bloodthirsty/thrtn/0 HCE/Brute_Bloodthirsty/thrtn/1 HCE/Brute_Bloodthirsty/thrtn/2 HCE/Brute_Bloodthirsty/thrtn/3 HCE/Brute_Bloodthirsty/crs/0 HCE/Brute_Bloodthirsty/crs/1 HCE/Brute_Bloodthirsty/crs/2 HCE/Brute_Bloodthirsty/crs/3 HCE/Brute_Bloodthirsty/crs/4 HCE/Brute_Bloodthirsty/cllcoward/0 HCE/Brute_Bloodthirsty/cllcoward/1 HCE/Brute_Bloodthirsty/cllcoward/2 HCE/Brute_Bloodthirsty/cllcoward/3 HCE/Brute_Bloodthirsty/cllwimp/0 HCE/Brute_Bloodthirsty/cllwimp/1 HCE/Brute_Bloodthirsty/cllwimp/2 HCE/Brute_Bloodthirsty/cllwimp/3 HCE/Brute_Bloodthirsty/strk/0 HCE/Brute_Bloodthirsty/strk/1 HCE/Brute_Bloodthirsty/strk/2 HCE/Brute_Bloodthirsty/strk/3 HCE/Brute_Bloodthirsty/strk/4 HCE/Brute_Bloodthirsty/strk/5 }
+HCE/Brute_Bloodthirsty/hlpme_uncovered/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/hlpme_uncovered_00.ogg"
+HCE/Brute_Bloodthirsty/hlpme_uncovered/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/hlpme_uncovered_01.ogg"
+HCE/Brute_Bloodthirsty/hlpme_uncovered/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/hlpme_uncovered_02.ogg"
+$random HCE/Brute_Bloodthirsty/Uncovered { HCE/Brute_Bloodthirsty/hlpme_uncovered/0 HCE/Brute_Bloodthirsty/hlpme_uncovered/1 HCE/Brute_Bloodthirsty/hlpme_uncovered/2 }
+HCE/Brute_Bloodthirsty/seefoe_upthere/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_upthere_00.ogg"
+HCE/Brute_Bloodthirsty/seefoe_upthere/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_upthere_01.ogg"
+HCE/Brute_Bloodthirsty/seefoe_upthere/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_upthere_02.ogg"
+HCE/Brute_Bloodthirsty/seefoe_upthere/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/seefoe_upthere_03.ogg"
+$random HCE/Brute_Bloodthirsty/UpThere { HCE/Brute_Bloodthirsty/seefoe_upthere/0 HCE/Brute_Bloodthirsty/seefoe_upthere/1 HCE/Brute_Bloodthirsty/seefoe_upthere/2 HCE/Brute_Bloodthirsty/seefoe_upthere/3 }
+HCE/Brute_Cruel/newordr_advance/0 "sounds/hce_dig/brute/Brute_Cruel/newordr_advance_00.ogg"
+HCE/Brute_Cruel/newordr_advance/1 "sounds/hce_dig/brute/Brute_Cruel/newordr_advance_01.ogg"
+HCE/Brute_Cruel/newordr_advance/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_advance_02.ogg"
+HCE/Brute_Cruel/newordr_advance/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_advance_03.ogg"
+HCE/Brute_Cruel/newordr_moveon/0 "sounds/hce_dig/brute/Brute_Cruel/newordr_moveon_00.ogg"
+HCE/Brute_Cruel/newordr_moveon/1 "sounds/hce_dig/brute/Brute_Cruel/newordr_moveon_01.ogg"
+HCE/Brute_Cruel/newordr_moveon/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_moveon_02.ogg"
+HCE/Brute_Cruel/newordr_moveon/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_moveon_03.ogg"
+$random HCE/Brute_Cruel/Advance { HCE/Brute_Cruel/newordr_advance/0 HCE/Brute_Cruel/newordr_advance/1 HCE/Brute_Cruel/newordr_advance/2 HCE/Brute_Cruel/newordr_advance/3 HCE/Brute_Cruel/newordr_moveon/0 HCE/Brute_Cruel/newordr_moveon/1 HCE/Brute_Cruel/newordr_moveon/2 HCE/Brute_Cruel/newordr_moveon/3 }
 HCE/Brute_Cruel/seefoe/0 "sounds/hce_dig/brute/Brute_Cruel/seefoe_00.ogg"
 HCE/Brute_Cruel/seefoe/1 "sounds/hce_dig/brute/Brute_Cruel/seefoe_01.ogg"
 HCE/Brute_Cruel/seefoe/2 "sounds/hce_dig/brute/Brute_Cruel/seefoe_02.ogg"
@@ -683,6 +807,11 @@ HCE/Brute_Cruel/srprs/0 "sounds/hce_dig/brute/Brute_Cruel/srprs_00.ogg"
 HCE/Brute_Cruel/srprs/1 "sounds/hce_dig/brute/Brute_Cruel/srprs_01.ogg"
 HCE/Brute_Cruel/srprs/2 "sounds/hce_dig/brute/Brute_Cruel/srprs_02.ogg"
 $random HCE/Brute_Cruel/Alert { HCE/Brute_Cruel/seefoe/0 HCE/Brute_Cruel/seefoe/1 HCE/Brute_Cruel/seefoe/2 HCE/Brute_Cruel/seefoe/3 HCE/Brute_Cruel/seefoe_srprs/0 HCE/Brute_Cruel/seefoe_srprs/1 HCE/Brute_Cruel/foundfoe/0 HCE/Brute_Cruel/foundfoe/1 HCE/Brute_Cruel/foundfoe/2 HCE/Brute_Cruel/foundfoe/3 HCE/Brute_Cruel/foundfoe/4 HCE/Brute_Cruel/foundfoe/5 HCE/Brute_Cruel/foundfoe/6 HCE/Brute_Cruel/foundfoe/7 HCE/Brute_Cruel/foundfoe/8 HCE/Brute_Cruel/hrdfoe/0 HCE/Brute_Cruel/hrdfoe/1 HCE/Brute_Cruel/morefoe/0 HCE/Brute_Cruel/morefoe/1 HCE/Brute_Cruel/srprs/0 HCE/Brute_Cruel/srprs/1 HCE/Brute_Cruel/srprs/2 }
+HCE/Brute_Cruel/seefoe_srprs/0 "sounds/hce_dig/brute/Brute_Cruel/seefoe_srprs_00.ogg"
+HCE/Brute_Cruel/seefoe_srprs/1 "sounds/hce_dig/brute/Brute_Cruel/seefoe_srprs_01.ogg"
+HCE/Brute_Cruel/seefoe_too/0 "sounds/hce_dig/brute/Brute_Cruel/seefoe_too_00.ogg"
+HCE/Brute_Cruel/seefoe_too/1 "sounds/hce_dig/brute/Brute_Cruel/seefoe_too_01.ogg"
+$random HCE/Brute_Cruel/Behind { HCE/Brute_Cruel/seefoe_srprs/0 HCE/Brute_Cruel/seefoe_srprs/1 HCE/Brute_Cruel/seefoe_too/0 HCE/Brute_Cruel/seefoe_too/1 }
 HCE/Brute_Cruel/brsrk/0 "sounds/hce_dig/brute/Brute_Cruel/brsrk_00.ogg"
 HCE/Brute_Cruel/brsrk/1 "sounds/hce_dig/brute/Brute_Cruel/brsrk_01.ogg"
 HCE/Brute_Cruel/brsrk/2 "sounds/hce_dig/brute/Brute_Cruel/brsrk_02.ogg"
@@ -701,6 +830,21 @@ HCE/Brute_Cruel/charge/1 "sounds/hce_dig/brute/Brute_Cruel/charge_01.ogg"
 HCE/Brute_Cruel/charge/2 "sounds/hce_dig/brute/Brute_Cruel/charge_02.ogg"
 HCE/Brute_Cruel/charge/3 "sounds/hce_dig/brute/Brute_Cruel/charge_03.ogg"
 $random HCE/Brute_Cruel/Berserk { HCE/Brute_Cruel/brsrk/0 HCE/Brute_Cruel/brsrk/1 HCE/Brute_Cruel/brsrk/2 HCE/Brute_Cruel/brsrk/3 HCE/Brute_Cruel/brsrk/4 HCE/Brute_Cruel/brsrk/5 HCE/Brute_Cruel/brsrk/6 HCE/Brute_Cruel/brsrk/7 HCE/Brute_Cruel/brsrk/8 HCE/Brute_Cruel/brsrk/9 HCE/Brute_Cruel/brsrk/10 HCE/Brute_Cruel/brsrk/11 HCE/Brute_Cruel/brsrk/12 HCE/Brute_Cruel/charge/0 HCE/Brute_Cruel/charge/1 HCE/Brute_Cruel/charge/2 HCE/Brute_Cruel/charge/3 }
+HCE/Brute_Cruel/newordr_charge/0 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_00.ogg"
+HCE/Brute_Cruel/newordr_charge/1 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_01.ogg"
+HCE/Brute_Cruel/newordr_charge/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_02.ogg"
+HCE/Brute_Cruel/newordr_charge/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_03.ogg"
+HCE/Brute_Cruel/newordr_charge/4 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_04.ogg"
+HCE/Brute_Cruel/charge/0 "sounds/hce_dig/brute/Brute_Cruel/charge_00.ogg"
+HCE/Brute_Cruel/charge/1 "sounds/hce_dig/brute/Brute_Cruel/charge_01.ogg"
+HCE/Brute_Cruel/charge/2 "sounds/hce_dig/brute/Brute_Cruel/charge_02.ogg"
+HCE/Brute_Cruel/charge/3 "sounds/hce_dig/brute/Brute_Cruel/charge_03.ogg"
+$random HCE/Brute_Cruel/Charge { HCE/Brute_Cruel/newordr_charge/0 HCE/Brute_Cruel/newordr_charge/1 HCE/Brute_Cruel/newordr_charge/2 HCE/Brute_Cruel/newordr_charge/3 HCE/Brute_Cruel/newordr_charge/4 HCE/Brute_Cruel/charge/0 HCE/Brute_Cruel/charge/1 HCE/Brute_Cruel/charge/2 HCE/Brute_Cruel/charge/3 }
+HCE/Brute_Cruel/cvrme/0 "sounds/hce_dig/brute/Brute_Cruel/cvrme_00.ogg"
+HCE/Brute_Cruel/cvrme/1 "sounds/hce_dig/brute/Brute_Cruel/cvrme_01.ogg"
+HCE/Brute_Cruel/cvrme_re/0 "sounds/hce_dig/brute/Brute_Cruel/cvrme_re_00.ogg"
+HCE/Brute_Cruel/cvrme_re/1 "sounds/hce_dig/brute/Brute_Cruel/cvrme_re_01.ogg"
+$random HCE/Brute_Cruel/Cover { HCE/Brute_Cruel/cvrme/0 HCE/Brute_Cruel/cvrme/1 HCE/Brute_Cruel/cvrme_re/0 HCE/Brute_Cruel/cvrme_re/1 }
 HCE/Brute_Cruel/dth/0 "sounds/hce_dig/brute/Brute_Cruel/dth_00.ogg"
 HCE/Brute_Cruel/dth/1 "sounds/hce_dig/brute/Brute_Cruel/dth_01.ogg"
 HCE/Brute_Cruel/dth/2 "sounds/hce_dig/brute/Brute_Cruel/dth_02.ogg"
@@ -727,6 +871,9 @@ HCE/Brute_Cruel/dth_fall/0 "sounds/hce_dig/brute/Brute_Cruel/dth_fall_00.ogg"
 HCE/Brute_Cruel/dth_fall/1 "sounds/hce_dig/brute/Brute_Cruel/dth_fall_01.ogg"
 HCE/Brute_Cruel/dth_fall/2 "sounds/hce_dig/brute/Brute_Cruel/dth_fall_02.ogg"
 $random HCE/Brute_Cruel/DeathHard { HCE/Brute_Cruel/dth_mjr/0 HCE/Brute_Cruel/dth_mjr/1 HCE/Brute_Cruel/dth_mjr/2 HCE/Brute_Cruel/dth_hdsht/0 HCE/Brute_Cruel/dth_hdsht/1 HCE/Brute_Cruel/dth_hdsht/2 HCE/Brute_Cruel/dth_fall/0 HCE/Brute_Cruel/dth_fall/1 HCE/Brute_Cruel/dth_fall/2 }
+HCE/Brute_Cruel/seefoe_downthere/0 "sounds/hce_dig/brute/Brute_Cruel/seefoe_downthere_00.ogg"
+HCE/Brute_Cruel/seefoe_downthere/1 "sounds/hce_dig/brute/Brute_Cruel/seefoe_downthere_01.ogg"
+$random HCE/Brute_Cruel/DownThere { HCE/Brute_Cruel/seefoe_downthere/0 HCE/Brute_Cruel/seefoe_downthere/1 }
 HCE/Brute_Cruel/warn_incmn_grnd/0 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_grnd_00.ogg"
 HCE/Brute_Cruel/warn_incmn_grnd/1 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_grnd_01.ogg"
 HCE/Brute_Cruel/warn_incmn/0 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_00.ogg"
@@ -736,6 +883,28 @@ HCE/Brute_Cruel/warn_incmn/3 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_03.ogg
 HCE/Brute_Cruel/warn_incmn/4 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_04.ogg"
 HCE/Brute_Cruel/warn_incmn/5 "sounds/hce_dig/brute/Brute_Cruel/warn_incmn_05.ogg"
 $random HCE/Brute_Cruel/EnemyGrenade { HCE/Brute_Cruel/warn_incmn_grnd/0 HCE/Brute_Cruel/warn_incmn_grnd/1 HCE/Brute_Cruel/warn_incmn/0 HCE/Brute_Cruel/warn_incmn/1 HCE/Brute_Cruel/warn_incmn/2 HCE/Brute_Cruel/warn_incmn/3 HCE/Brute_Cruel/warn_incmn/4 HCE/Brute_Cruel/warn_incmn/5 }
+HCE/Brute_Cruel/newordr_fallback/0 "sounds/hce_dig/brute/Brute_Cruel/newordr_fallback_00.ogg"
+HCE/Brute_Cruel/newordr_fallback/1 "sounds/hce_dig/brute/Brute_Cruel/newordr_fallback_01.ogg"
+HCE/Brute_Cruel/newordr_fallback/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_fallback_02.ogg"
+HCE/Brute_Cruel/newordr_fallback/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_fallback_03.ogg"
+HCE/Brute_Cruel/newordr_retreat/0 "sounds/hce_dig/brute/Brute_Cruel/newordr_retreat_00.ogg"
+HCE/Brute_Cruel/newordr_retreat/1 "sounds/hce_dig/brute/Brute_Cruel/newordr_retreat_01.ogg"
+HCE/Brute_Cruel/newordr_retreat/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_retreat_02.ogg"
+HCE/Brute_Cruel/newordr_retreat/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_retreat_03.ogg"
+$random HCE/Brute_Cruel/FallBack { HCE/Brute_Cruel/newordr_fallback/0 HCE/Brute_Cruel/newordr_fallback/1 HCE/Brute_Cruel/newordr_fallback/2 HCE/Brute_Cruel/newordr_fallback/3 HCE/Brute_Cruel/newordr_retreat/0 HCE/Brute_Cruel/newordr_retreat/1 HCE/Brute_Cruel/newordr_retreat/2 HCE/Brute_Cruel/newordr_retreat/3 }
+HCE/Brute_Cruel/foundfoe_srch/0 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_srch_00.ogg"
+HCE/Brute_Cruel/foundfoe_srch/1 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_srch_01.ogg"
+HCE/Brute_Cruel/foundfoe_srch/2 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_srch_02.ogg"
+HCE/Brute_Cruel/foundfoe/0 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_00.ogg"
+HCE/Brute_Cruel/foundfoe/1 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_01.ogg"
+HCE/Brute_Cruel/foundfoe/2 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_02.ogg"
+HCE/Brute_Cruel/foundfoe/3 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_03.ogg"
+HCE/Brute_Cruel/foundfoe/4 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_04.ogg"
+HCE/Brute_Cruel/foundfoe/5 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_05.ogg"
+HCE/Brute_Cruel/foundfoe/6 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_06.ogg"
+HCE/Brute_Cruel/foundfoe/7 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_07.ogg"
+HCE/Brute_Cruel/foundfoe/8 "sounds/hce_dig/brute/Brute_Cruel/foundfoe_08.ogg"
+$random HCE/Brute_Cruel/FoundFoe { HCE/Brute_Cruel/foundfoe_srch/0 HCE/Brute_Cruel/foundfoe_srch/1 HCE/Brute_Cruel/foundfoe_srch/2 HCE/Brute_Cruel/foundfoe/0 HCE/Brute_Cruel/foundfoe/1 HCE/Brute_Cruel/foundfoe/2 HCE/Brute_Cruel/foundfoe/3 HCE/Brute_Cruel/foundfoe/4 HCE/Brute_Cruel/foundfoe/5 HCE/Brute_Cruel/foundfoe/6 HCE/Brute_Cruel/foundfoe/7 HCE/Brute_Cruel/foundfoe/8 }
 HCE/Brute_Cruel/strk_grnd/0 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_00.ogg"
 HCE/Brute_Cruel/strk_grnd/1 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_01.ogg"
 HCE/Brute_Cruel/strk_grnd/2 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_02.ogg"
@@ -747,6 +916,21 @@ HCE/Brute_Cruel/hrdfoe/1 "sounds/hce_dig/brute/Brute_Cruel/hrdfoe_01.ogg"
 HCE/Brute_Cruel/srchstart/0 "sounds/hce_dig/brute/Brute_Cruel/srchstart_00.ogg"
 HCE/Brute_Cruel/srchstart/1 "sounds/hce_dig/brute/Brute_Cruel/srchstart_01.ogg"
 $random HCE/Brute_Cruel/HeardGunfire { HCE/Brute_Cruel/hrdfoe/0 HCE/Brute_Cruel/hrdfoe/1 HCE/Brute_Cruel/srchstart/0 HCE/Brute_Cruel/srchstart/1 }
+HCE/Brute_Cruel/cvrme_invsgt/0 "sounds/hce_dig/brute/Brute_Cruel/cvrme_invsgt_00.ogg"
+HCE/Brute_Cruel/cvrme_invsgt/1 "sounds/hce_dig/brute/Brute_Cruel/cvrme_invsgt_01.ogg"
+$random HCE/Brute_Cruel/Investigate { HCE/Brute_Cruel/cvrme_invsgt/0 HCE/Brute_Cruel/cvrme_invsgt/1 }
+HCE/Brute_Cruel/joinme/0 "sounds/hce_dig/brute/Brute_Cruel/joinme_00.ogg"
+HCE/Brute_Cruel/joinme/1 "sounds/hce_dig/brute/Brute_Cruel/joinme_01.ogg"
+HCE/Brute_Cruel/joinme_emrg/0 "sounds/hce_dig/brute/Brute_Cruel/joinme_emrg_00.ogg"
+HCE/Brute_Cruel/joinme_emrg/1 "sounds/hce_dig/brute/Brute_Cruel/joinme_emrg_01.ogg"
+$random HCE/Brute_Cruel/JoinMe { HCE/Brute_Cruel/joinme/0 HCE/Brute_Cruel/joinme/1 HCE/Brute_Cruel/joinme_emrg/0 HCE/Brute_Cruel/joinme_emrg/1 }
+HCE/Brute_Cruel/keepwatch/0 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_00.ogg"
+HCE/Brute_Cruel/keepwatch/1 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_01.ogg"
+HCE/Brute_Cruel/keepwatch/2 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_02.ogg"
+HCE/Brute_Cruel/keepwatch/3 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_03.ogg"
+HCE/Brute_Cruel/keepwatch/4 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_04.ogg"
+HCE/Brute_Cruel/keepwatch/5 "sounds/hce_dig/brute/Brute_Cruel/keepwatch_05.ogg"
+$random HCE/Brute_Cruel/KeepWatch { HCE/Brute_Cruel/keepwatch/0 HCE/Brute_Cruel/keepwatch/1 HCE/Brute_Cruel/keepwatch/2 HCE/Brute_Cruel/keepwatch/3 HCE/Brute_Cruel/keepwatch/4 HCE/Brute_Cruel/keepwatch/5 }
 HCE/Brute_Cruel/glt/0 "sounds/hce_dig/brute/Brute_Cruel/glt_00.ogg"
 HCE/Brute_Cruel/glt/1 "sounds/hce_dig/brute/Brute_Cruel/glt_01.ogg"
 HCE/Brute_Cruel/glt/2 "sounds/hce_dig/brute/Brute_Cruel/glt_02.ogg"
@@ -843,6 +1027,42 @@ HCE/Brute_Cruel/newordr_charge/2 "sounds/hce_dig/brute/Brute_Cruel/newordr_charg
 HCE/Brute_Cruel/newordr_charge/3 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_03.ogg"
 HCE/Brute_Cruel/newordr_charge/4 "sounds/hce_dig/brute/Brute_Cruel/newordr_charge_04.ogg"
 $random HCE/Brute_Cruel/Regroup { HCE/Brute_Cruel/pstcmbt/0 HCE/Brute_Cruel/pstcmbt/1 HCE/Brute_Cruel/pstcmbt/2 HCE/Brute_Cruel/pstcmbt/3 HCE/Brute_Cruel/pstcmbt/4 HCE/Brute_Cruel/pstcmbt/5 HCE/Brute_Cruel/newordr_charge/0 HCE/Brute_Cruel/newordr_charge/1 HCE/Brute_Cruel/newordr_charge/2 HCE/Brute_Cruel/newordr_charge/3 HCE/Brute_Cruel/newordr_charge/4 }
+HCE/Brute_Cruel/srch_allclr/0 "sounds/hce_dig/brute/Brute_Cruel/srch_allclr_00.ogg"
+HCE/Brute_Cruel/srch_allclr/1 "sounds/hce_dig/brute/Brute_Cruel/srch_allclr_01.ogg"
+HCE/Brute_Cruel/srch_allclr/2 "sounds/hce_dig/brute/Brute_Cruel/srch_allclr_02.ogg"
+HCE/Brute_Cruel/prst_allclr/0 "sounds/hce_dig/brute/Brute_Cruel/prst_allclr_00.ogg"
+HCE/Brute_Cruel/prst_allclr/1 "sounds/hce_dig/brute/Brute_Cruel/prst_allclr_01.ogg"
+HCE/Brute_Cruel/prst_allclr/2 "sounds/hce_dig/brute/Brute_Cruel/prst_allclr_02.ogg"
+HCE/Brute_Cruel/prst_allclr/3 "sounds/hce_dig/brute/Brute_Cruel/prst_allclr_03.ogg"
+$random HCE/Brute_Cruel/SearchClear { HCE/Brute_Cruel/srch_allclr/0 HCE/Brute_Cruel/srch_allclr/1 HCE/Brute_Cruel/srch_allclr/2 HCE/Brute_Cruel/prst_allclr/0 HCE/Brute_Cruel/prst_allclr/1 HCE/Brute_Cruel/prst_allclr/2 HCE/Brute_Cruel/prst_allclr/3 }
+HCE/Brute_Cruel/prstfail/0 "sounds/hce_dig/brute/Brute_Cruel/prstfail_00.ogg"
+HCE/Brute_Cruel/prstfail/1 "sounds/hce_dig/brute/Brute_Cruel/prstfail_01.ogg"
+HCE/Brute_Cruel/prstfail/2 "sounds/hce_dig/brute/Brute_Cruel/prstfail_02.ogg"
+HCE/Brute_Cruel/prstfail/3 "sounds/hce_dig/brute/Brute_Cruel/prstfail_03.ogg"
+HCE/Brute_Cruel/prstfail/4 "sounds/hce_dig/brute/Brute_Cruel/prstfail_04.ogg"
+HCE/Brute_Cruel/prstfail/5 "sounds/hce_dig/brute/Brute_Cruel/prstfail_05.ogg"
+HCE/Brute_Cruel/prstfail/6 "sounds/hce_dig/brute/Brute_Cruel/prstfail_06.ogg"
+HCE/Brute_Cruel/prstfail/7 "sounds/hce_dig/brute/Brute_Cruel/prstfail_07.ogg"
+HCE/Brute_Cruel/prstfail_agg/0 "sounds/hce_dig/brute/Brute_Cruel/prstfail_agg_00.ogg"
+HCE/Brute_Cruel/prstfail_agg/1 "sounds/hce_dig/brute/Brute_Cruel/prstfail_agg_01.ogg"
+HCE/Brute_Cruel/prstfail_agg/2 "sounds/hce_dig/brute/Brute_Cruel/prstfail_agg_02.ogg"
+HCE/Brute_Cruel/prstfail_agg/3 "sounds/hce_dig/brute/Brute_Cruel/prstfail_agg_03.ogg"
+HCE/Brute_Cruel/prstfail_agg/4 "sounds/hce_dig/brute/Brute_Cruel/prstfail_agg_04.ogg"
+HCE/Brute_Cruel/prstfail_tim/0 "sounds/hce_dig/brute/Brute_Cruel/prstfail_tim_00.ogg"
+HCE/Brute_Cruel/prstfail_tim/1 "sounds/hce_dig/brute/Brute_Cruel/prstfail_tim_01.ogg"
+HCE/Brute_Cruel/prstfail_tim/2 "sounds/hce_dig/brute/Brute_Cruel/prstfail_tim_02.ogg"
+$random HCE/Brute_Cruel/SearchFail { HCE/Brute_Cruel/prstfail/0 HCE/Brute_Cruel/prstfail/1 HCE/Brute_Cruel/prstfail/2 HCE/Brute_Cruel/prstfail/3 HCE/Brute_Cruel/prstfail/4 HCE/Brute_Cruel/prstfail/5 HCE/Brute_Cruel/prstfail/6 HCE/Brute_Cruel/prstfail/7 HCE/Brute_Cruel/prstfail_agg/0 HCE/Brute_Cruel/prstfail_agg/1 HCE/Brute_Cruel/prstfail_agg/2 HCE/Brute_Cruel/prstfail_agg/3 HCE/Brute_Cruel/prstfail_agg/4 HCE/Brute_Cruel/prstfail_tim/0 HCE/Brute_Cruel/prstfail_tim/1 HCE/Brute_Cruel/prstfail_tim/2 }
+HCE/Brute_Cruel/srchstart/0 "sounds/hce_dig/brute/Brute_Cruel/srchstart_00.ogg"
+HCE/Brute_Cruel/srchstart/1 "sounds/hce_dig/brute/Brute_Cruel/srchstart_01.ogg"
+HCE/Brute_Cruel/srchpresrch/0 "sounds/hce_dig/brute/Brute_Cruel/srchpresrch_00.ogg"
+HCE/Brute_Cruel/srchpresrch/1 "sounds/hce_dig/brute/Brute_Cruel/srchpresrch_01.ogg"
+$random HCE/Brute_Cruel/SearchStart { HCE/Brute_Cruel/srchstart/0 HCE/Brute_Cruel/srchstart/1 HCE/Brute_Cruel/srchpresrch/0 HCE/Brute_Cruel/srchpresrch/1 }
+HCE/Brute_Cruel/warn_wpn_snpr/0 "sounds/hce_dig/brute/Brute_Cruel/warn_wpn_snpr_00.ogg"
+HCE/Brute_Cruel/warn_wpn_snpr/1 "sounds/hce_dig/brute/Brute_Cruel/warn_wpn_snpr_01.ogg"
+$random HCE/Brute_Cruel/Sniper { HCE/Brute_Cruel/warn_wpn_snpr/0 HCE/Brute_Cruel/warn_wpn_snpr/1 }
+HCE/Brute_Cruel/warn_wpn_swrd/0 "sounds/hce_dig/brute/Brute_Cruel/warn_wpn_swrd_00.ogg"
+HCE/Brute_Cruel/warn_wpn_swrd/1 "sounds/hce_dig/brute/Brute_Cruel/warn_wpn_swrd_01.ogg"
+$random HCE/Brute_Cruel/Sword { HCE/Brute_Cruel/warn_wpn_swrd/0 HCE/Brute_Cruel/warn_wpn_swrd/1 }
 HCE/Brute_Cruel/tnt/0 "sounds/hce_dig/brute/Brute_Cruel/tnt_00.ogg"
 HCE/Brute_Cruel/tnt/1 "sounds/hce_dig/brute/Brute_Cruel/tnt_01.ogg"
 HCE/Brute_Cruel/tnt/2 "sounds/hce_dig/brute/Brute_Cruel/tnt_02.ogg"
@@ -885,6 +1105,12 @@ HCE/Brute_Cruel/strk/2 "sounds/hce_dig/brute/Brute_Cruel/strk_02.ogg"
 HCE/Brute_Cruel/strk/3 "sounds/hce_dig/brute/Brute_Cruel/strk_03.ogg"
 HCE/Brute_Cruel/strk/4 "sounds/hce_dig/brute/Brute_Cruel/strk_04.ogg"
 $random HCE/Brute_Cruel/Taunt { HCE/Brute_Cruel/tnt/0 HCE/Brute_Cruel/tnt/1 HCE/Brute_Cruel/tnt/2 HCE/Brute_Cruel/tnt/3 HCE/Brute_Cruel/tnt/4 HCE/Brute_Cruel/tnt/5 HCE/Brute_Cruel/tnt/6 HCE/Brute_Cruel/tnt/7 HCE/Brute_Cruel/tnt/8 HCE/Brute_Cruel/thrtn/0 HCE/Brute_Cruel/thrtn/1 HCE/Brute_Cruel/thrtn/2 HCE/Brute_Cruel/thrtn/3 HCE/Brute_Cruel/thrtn/4 HCE/Brute_Cruel/thrtn/5 HCE/Brute_Cruel/thrtn/6 HCE/Brute_Cruel/crs/0 HCE/Brute_Cruel/crs/1 HCE/Brute_Cruel/crs/2 HCE/Brute_Cruel/crs/3 HCE/Brute_Cruel/crs/4 HCE/Brute_Cruel/crs/5 HCE/Brute_Cruel/cllcoward/0 HCE/Brute_Cruel/cllcoward/1 HCE/Brute_Cruel/cllcoward/2 HCE/Brute_Cruel/cllcoward/3 HCE/Brute_Cruel/cllcoward/4 HCE/Brute_Cruel/cllwimp/0 HCE/Brute_Cruel/cllwimp/1 HCE/Brute_Cruel/cllwimp/2 HCE/Brute_Cruel/cllwimp/3 HCE/Brute_Cruel/cllwimp/4 HCE/Brute_Cruel/cllwimp/5 HCE/Brute_Cruel/cllwimp/6 HCE/Brute_Cruel/cllwimp/7 HCE/Brute_Cruel/cllwimp/8 HCE/Brute_Cruel/strk/0 HCE/Brute_Cruel/strk/1 HCE/Brute_Cruel/strk/2 HCE/Brute_Cruel/strk/3 HCE/Brute_Cruel/strk/4 }
+HCE/Brute_Cruel/hlpme_uncovered/0 "sounds/hce_dig/brute/Brute_Cruel/hlpme_uncovered_00.ogg"
+HCE/Brute_Cruel/hlpme_uncovered/1 "sounds/hce_dig/brute/Brute_Cruel/hlpme_uncovered_01.ogg"
+$random HCE/Brute_Cruel/Uncovered { HCE/Brute_Cruel/hlpme_uncovered/0 HCE/Brute_Cruel/hlpme_uncovered/1 }
+HCE/Brute_Cruel/seefoe_upthere/0 "sounds/hce_dig/brute/Brute_Cruel/seefoe_upthere_00.ogg"
+HCE/Brute_Cruel/seefoe_upthere/1 "sounds/hce_dig/brute/Brute_Cruel/seefoe_upthere_01.ogg"
+$random HCE/Brute_Cruel/UpThere { HCE/Brute_Cruel/seefoe_upthere/0 HCE/Brute_Cruel/seefoe_upthere/1 }
 HCE/Brute/bodyfall/0 "sounds/hce_dig/brute/fx/bodyfall_00.ogg"
 HCE/Brute/bodyfall/1 "sounds/hce_dig/brute/fx/bodyfall_01.ogg"
 HCE/Brute/bodyfall/2 "sounds/hce_dig/brute/fx/bodyfall_02.ogg"

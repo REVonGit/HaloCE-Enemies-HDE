@@ -1,39 +1,50 @@
 version "4.15.1"
-// Test-only: logs the Halo CE AI's cover and climbing once a second, and spawns every enemy class
-// ("netevent hce_spawnall") two seconds into the map. Never shipped in a pack.
+// Test-only: spawns every enemy class ("netevent hce_spawnall") two seconds into covertest.wad, teleports the player
+// into the annex at 25 s (the Marines must follow, the Covenant must open the door), and logs once a second what
+// the Halo CE AI is doing: cover, climbing, doors and lifts, searching, perches, lunges, investigating. Never shipped.
 class HCE_TestHarness : EventHandler
 {
-	Array<Actor> climbing;
-	Array<Actor> covered, peeked;
-	int climbs, peeks, everCover, spawnTic;
-	int lastOpen[1024];
+	Array<Actor> climbing, covered, peeked, doored, searched, perched, lunged, invest, lifted;
+	int climbs;
 
 	override void UiTick()
 	{
 		if(gamestate == GS_LEVEL && level.maptime == 70) EventHandler.SendNetworkEvent("hce_spawnall");
 	}
 
+	void Mark(Array<Actor> a, Actor m) { if(a.Find(m) == a.Size()) a.Push(m); }
+
 	override void WorldTick()
 	{
-		// once everyone is out, the camera faces the north wall: nothing on screen to draw, so the test runs fast
-		if(level.maptime == 80 && players[0].mo) { players[0].mo.angle = 90; players[0].mo.pitch = -30; }
+		let pl = players[0].mo;
+		// once everyone is out, the camera faces a wall: nothing on screen to draw, so the test runs fast
+		if(level.maptime == 80 && pl) { pl.angle = 90; pl.pitch = -30; }
+		if(level.maptime == 35 * 25 && pl)
+		{
+			pl.Teleport((2440, 1286, 0), 0, TELF_SOURCEFOG | TELF_DESTFOG);
+			pl.pitch = -30;
+			Console.Printf("HCETEST teleported the player into the annex");
+		}
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
 		HaloDoom_EnemyBase m;
-		int alive, go, hide, open, climb, friends, foes, seeing;
+		int alive, go, hide, open, climb, friends, foes, seeing, inAnnexF, inAnnexE, onPlat;
 		while(m = HaloDoom_EnemyBase(it.Next()))
 		{
 			if(m.health <= 0) continue;
 			alive++;
 			if(m.bFRIENDLY) friends++; else foes++;
+			if(m.pos.x > 2080) { if(m.bFRIENDLY) inAnnexF++; else inAnnexE++; }
+			if(m.pos.z > 70 && !m.bFRIENDLY) onPlat++;
 			if(m.hce_cvState == 1) go++;
 			else if(m.hce_cvState == 2) hide++;
-			else if(m.hce_cvState == 3)
-			{
-				open++;
-				if(peeked.Find(m) == peeked.Size()) { peeked.Push(m); }
-				if(m.hce_canSee) seeing++;
-			}
-			if(m.hce_cvState >= 2 && covered.Find(m) == covered.Size()) covered.Push(m);
+			else if(m.hce_cvState == 3) { open++; Mark(peeked, m); if(m.hce_canSee) seeing++; }
+			if(m.hce_cvState >= 2) Mark(covered, m);
+			if(m.hce_doorLine) Mark(doored, m);
+			if(m.hce_srPhase > 0) Mark(searched, m);
+			if(m.hce_pcMoving) Mark(perched, m);
+			if(m.hce_lgTics > 0) Mark(lunged, m);
+			if(m.hce_invUntil > level.maptime) Mark(invest, m);
+			if(m.CurSector && m.CurSector.floordata && m.pos.z <= m.floorz + 2) Mark(lifted, m);
 			if(m.hce_climbTics > 0)
 			{
 				climb++;
@@ -42,8 +53,12 @@ class HCE_TestHarness : EventHandler
 			else { int k = climbing.Find(m); if(k < climbing.Size()) climbing.Delete(k); }
 		}
 		if(level.maptime % 35 == 0)
+		{
 			Console.Printf("HCETEST t=%d alive=%d foes=%d friends=%d cover go=%d hide=%d open=%d (seeing %d) climbing=%d | ever in cover=%d peeked=%d climbs=%d skill=%d diff=%.2f",
 				level.maptime / 35, alive, foes, friends, go, hide, open, seeing, climb, covered.Size(), peeked.Size(), climbs,
 				HaloDoom_EnemyBase.HCE_HaloSkill(), HaloDoom_EnemyBase.HCE_Diff(HCE_D_DAMAGE));
+			Console.Printf("HCETEST2 t=%d annex marines=%d covenant=%d | foes on platform=%d | used doors=%d rode lifts=%d searched=%d perch moves=%d lunges=%d investigated=%d",
+				level.maptime / 35, inAnnexF, inAnnexE, onPlat, doored.Size(), lifted.Size(), searched.Size(), perched.Size(), lunged.Size(), invest.Size());
+		}
 	}
 }

@@ -39,6 +39,24 @@ PLAN = {
     'Pain Xtr':      [('pain_mjr', 1), ('dth_slw', 1)],
     'On Fire':       [('dth_slw', 1)],                                          # drawn-out agonised screams
     'Heard Gunfire': [('hrdfoe', 3), ('srchstart', 2)],                          # gunfire heard before the enemy is seen
+    # combat callouts (HCE_Say: Cover, SearchStart ...)
+    'Cover': [('cvrme', 3), ('cvrme_re', 2)],
+    'Uncovered': [('hlpme_uncovered', 3)],
+    'Search Start': [('srchstart', 3), ('srchpresrch', 2)],
+    'Search Clear': [('srch_allclr', 3), ('prst_allclr', 2)],
+    'Search Fail': [('prstfail', 3), ('prstfail_agg', 1), ('prstfail_tim', 1)],
+    'Keep Watch': [('keepwatch', 3)],
+    'Found Foe': [('foundfoe_srch', 3), ('foundfoe', 2)],
+    'Join Me': [('joinme', 3), ('joinme_emrg', 2)],
+    'Charge': [('newordr_charge', 3), ('charge', 2)],
+    'Investigate': [('cvrme_invsgt', 3)],
+    'Behind': [('seefoe_srprs', 3), ('seefoe_too', 2)],
+    'Sniper': [('warn_wpn_snpr', 3)],
+    'Sword': [('warn_wpn_swrd', 3)],
+    'Up There': [('seefoe_upthere', 3)],
+    'Down There': [('seefoe_downthere', 3)],
+    'Fall Back': [('newordr_fallback', 3), ('newordr_retreat', 2)],
+    'Advance': [('newordr_advance', 3), ('newordr_moveon', 2)],
 }
 # the grenade death screams (the same voice actor in both games, though Halo CE doesn't label its Grunt voices): the
 # kamikaze run and a stuck grenade. Halo 2: grunt_crazy's panic screams; Halo CE: combat2 grenade_danger_self

@@ -57,6 +57,22 @@ $alias HCE/Blind_Wolf/WorseWeapon HCE/Blind_Wolf/PainMed
 $alias HCE/Blind_Wolf/TradeOk HCE/Blind_Wolf/Alert
 $alias HCE/Blind_Wolf/Refuse HCE/Blind_Wolf/PainMed
 $alias HCE/Blind_Wolf/HeardGunfire HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Cover HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Uncovered HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/SearchStart HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/SearchClear HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/SearchFail HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/KeepWatch HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/FoundFoe HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/JoinMe HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Charge HCE/Blind_Wolf/Berserk
+$alias HCE/Blind_Wolf/Investigate HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Behind HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Sniper HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Sword HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/UpThere HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/DownThere HCE/Blind_Wolf/Alert
+$alias HCE/Blind_Wolf/Advance HCE/Blind_Wolf/Alert
 
 // ---- Drinol
 HCE/Drinol/Alert/0 "sounds/hce_voice/drinol/alert_00.ogg"
@@ -109,8 +125,30 @@ $alias HCE/Drinol/WorseWeapon HCE/Drinol/PainMed
 $alias HCE/Drinol/TradeOk HCE/Drinol/Alert
 $alias HCE/Drinol/Refuse HCE/Drinol/PainMed
 $alias HCE/Drinol/HeardGunfire HCE/Drinol/Alert
+$alias HCE/Drinol/Cover HCE/Drinol/Alert
+$alias HCE/Drinol/Uncovered HCE/Drinol/Alert
+$alias HCE/Drinol/SearchStart HCE/Drinol/Alert
+$alias HCE/Drinol/SearchClear HCE/Drinol/Alert
+$alias HCE/Drinol/SearchFail HCE/Drinol/Alert
+$alias HCE/Drinol/KeepWatch HCE/Drinol/Alert
+$alias HCE/Drinol/FoundFoe HCE/Drinol/Alert
+$alias HCE/Drinol/JoinMe HCE/Drinol/Alert
+$alias HCE/Drinol/Charge HCE/Drinol/Berserk
+$alias HCE/Drinol/Investigate HCE/Drinol/Alert
+$alias HCE/Drinol/Behind HCE/Drinol/Alert
+$alias HCE/Drinol/Sniper HCE/Drinol/Alert
+$alias HCE/Drinol/Sword HCE/Drinol/Alert
+$alias HCE/Drinol/UpThere HCE/Drinol/Alert
+$alias HCE/Drinol/DownThere HCE/Drinol/Alert
+$alias HCE/Drinol/Advance HCE/Drinol/Alert
 
 // ---- Elite_Dogmatic
+HCE/Elite_Dogmatic/Advance/0 "sounds/hce_voice/elite_dogmatic/advance_39.ogg"
+HCE/Elite_Dogmatic/Advance/1 "sounds/hce_voice/elite_dogmatic/advance_40.ogg"
+HCE/Elite_Dogmatic/Advance/2 "sounds/hce_voice/elite_dogmatic/advance_41.ogg"
+HCE/Elite_Dogmatic/Advance/3 "sounds/hce_voice/elite_dogmatic/advance_42.ogg"
+HCE/Elite_Dogmatic/Advance/4 "sounds/hce_voice/elite_dogmatic/advance_43.ogg"
+$random HCE/Elite_Dogmatic/Advance { HCE/Elite_Dogmatic/Advance/0 HCE/Elite_Dogmatic/Advance/1 HCE/Elite_Dogmatic/Advance/2 HCE/Elite_Dogmatic/Advance/3 HCE/Elite_Dogmatic/Advance/4 }
 HCE/Elite_Dogmatic/Alert/0 "sounds/hce_voice/elite_dogmatic/alert_00.ogg"
 HCE/Elite_Dogmatic/Alert/1 "sounds/hce_voice/elite_dogmatic/alert_01.ogg"
 HCE/Elite_Dogmatic/Alert/2 "sounds/hce_voice/elite_dogmatic/alert_02.ogg"
@@ -119,34 +157,74 @@ HCE/Elite_Dogmatic/Alert/4 "sounds/hce_voice/elite_dogmatic/alert_04.ogg"
 HCE/Elite_Dogmatic/Alert/5 "sounds/hce_voice/elite_dogmatic/alert_05.ogg"
 HCE/Elite_Dogmatic/Alert/6 "sounds/hce_voice/elite_dogmatic/alert_06.ogg"
 $random HCE/Elite_Dogmatic/Alert { HCE/Elite_Dogmatic/Alert/0 HCE/Elite_Dogmatic/Alert/1 HCE/Elite_Dogmatic/Alert/2 HCE/Elite_Dogmatic/Alert/3 HCE/Elite_Dogmatic/Alert/4 HCE/Elite_Dogmatic/Alert/5 HCE/Elite_Dogmatic/Alert/6 }
+HCE/Elite_Dogmatic/Behind/0 "sounds/hce_voice/elite_dogmatic/behind_44.ogg"
+HCE/Elite_Dogmatic/Behind/1 "sounds/hce_voice/elite_dogmatic/behind_45.ogg"
+HCE/Elite_Dogmatic/Behind/2 "sounds/hce_voice/elite_dogmatic/behind_46.ogg"
+HCE/Elite_Dogmatic/Behind/3 "sounds/hce_voice/elite_dogmatic/behind_47.ogg"
+$random HCE/Elite_Dogmatic/Behind { HCE/Elite_Dogmatic/Behind/0 HCE/Elite_Dogmatic/Behind/1 HCE/Elite_Dogmatic/Behind/2 HCE/Elite_Dogmatic/Behind/3 }
 HCE/Elite_Dogmatic/Berserk/0 "sounds/hce_voice/elite_dogmatic/berserk_07.ogg"
 HCE/Elite_Dogmatic/Berserk/1 "sounds/hce_voice/elite_dogmatic/berserk_08.ogg"
 $random HCE/Elite_Dogmatic/Berserk { HCE/Elite_Dogmatic/Berserk/0 HCE/Elite_Dogmatic/Berserk/1 }
+HCE/Elite_Dogmatic/Charge/0 "sounds/hce_voice/elite_dogmatic/charge_48.ogg"
+HCE/Elite_Dogmatic/Charge/1 "sounds/hce_voice/elite_dogmatic/charge_49.ogg"
+HCE/Elite_Dogmatic/Charge/2 "sounds/hce_voice/elite_dogmatic/charge_50.ogg"
+HCE/Elite_Dogmatic/Charge/3 "sounds/hce_voice/elite_dogmatic/charge_51.ogg"
+HCE/Elite_Dogmatic/Charge/4 "sounds/hce_voice/elite_dogmatic/charge_52.ogg"
+$random HCE/Elite_Dogmatic/Charge { HCE/Elite_Dogmatic/Charge/0 HCE/Elite_Dogmatic/Charge/1 HCE/Elite_Dogmatic/Charge/2 HCE/Elite_Dogmatic/Charge/3 HCE/Elite_Dogmatic/Charge/4 }
+HCE/Elite_Dogmatic/Cover/0 "sounds/hce_voice/elite_dogmatic/cover_53.ogg"
+HCE/Elite_Dogmatic/Cover/1 "sounds/hce_voice/elite_dogmatic/cover_54.ogg"
+HCE/Elite_Dogmatic/Cover/2 "sounds/hce_voice/elite_dogmatic/cover_55.ogg"
+HCE/Elite_Dogmatic/Cover/3 "sounds/hce_voice/elite_dogmatic/cover_56.ogg"
+$random HCE/Elite_Dogmatic/Cover { HCE/Elite_Dogmatic/Cover/0 HCE/Elite_Dogmatic/Cover/1 HCE/Elite_Dogmatic/Cover/2 HCE/Elite_Dogmatic/Cover/3 }
 HCE/Elite_Dogmatic/Death/0 "sounds/hce_voice/elite_dogmatic/death_09.ogg"
 HCE/Elite_Dogmatic/Death/1 "sounds/hce_voice/elite_dogmatic/death_10.ogg"
 $random HCE/Elite_Dogmatic/Death { HCE/Elite_Dogmatic/Death/0 HCE/Elite_Dogmatic/Death/1 }
+HCE/Elite_Dogmatic/DownThere/0 "sounds/hce_voice/elite_dogmatic/downthere_57.ogg"
+HCE/Elite_Dogmatic/DownThere/1 "sounds/hce_voice/elite_dogmatic/downthere_58.ogg"
+$random HCE/Elite_Dogmatic/DownThere { HCE/Elite_Dogmatic/DownThere/0 HCE/Elite_Dogmatic/DownThere/1 }
 HCE/Elite_Dogmatic/EnemyGrenade/0 "sounds/hce_voice/elite_dogmatic/enemygrenade_11.ogg"
 HCE/Elite_Dogmatic/EnemyGrenade/1 "sounds/hce_voice/elite_dogmatic/enemygrenade_12.ogg"
 $random HCE/Elite_Dogmatic/EnemyGrenade { HCE/Elite_Dogmatic/EnemyGrenade/0 HCE/Elite_Dogmatic/EnemyGrenade/1 }
+HCE/Elite_Dogmatic/FallBack/0 "sounds/hce_voice/elite_dogmatic/fallback_59.ogg"
+HCE/Elite_Dogmatic/FallBack/1 "sounds/hce_voice/elite_dogmatic/fallback_60.ogg"
+HCE/Elite_Dogmatic/FallBack/2 "sounds/hce_voice/elite_dogmatic/fallback_61.ogg"
+HCE/Elite_Dogmatic/FallBack/3 "sounds/hce_voice/elite_dogmatic/fallback_62.ogg"
+HCE/Elite_Dogmatic/FallBack/4 "sounds/hce_voice/elite_dogmatic/fallback_63.ogg"
+$random HCE/Elite_Dogmatic/FallBack { HCE/Elite_Dogmatic/FallBack/0 HCE/Elite_Dogmatic/FallBack/1 HCE/Elite_Dogmatic/FallBack/2 HCE/Elite_Dogmatic/FallBack/3 HCE/Elite_Dogmatic/FallBack/4 }
+HCE/Elite_Dogmatic/FoundFoe/0 "sounds/hce_voice/elite_dogmatic/foundfoe_64.ogg"
+HCE/Elite_Dogmatic/FoundFoe/1 "sounds/hce_voice/elite_dogmatic/foundfoe_65.ogg"
+HCE/Elite_Dogmatic/FoundFoe/2 "sounds/hce_voice/elite_dogmatic/foundfoe_66.ogg"
+HCE/Elite_Dogmatic/FoundFoe/3 "sounds/hce_voice/elite_dogmatic/foundfoe_67.ogg"
+$random HCE/Elite_Dogmatic/FoundFoe { HCE/Elite_Dogmatic/FoundFoe/0 HCE/Elite_Dogmatic/FoundFoe/1 HCE/Elite_Dogmatic/FoundFoe/2 HCE/Elite_Dogmatic/FoundFoe/3 }
 HCE/Elite_Dogmatic/GrenadeThrow/0 "sounds/hce_voice/elite_dogmatic/grenadethrow_13.ogg"
 HCE/Elite_Dogmatic/GrenadeThrow/1 "sounds/hce_voice/elite_dogmatic/grenadethrow_14.ogg"
 HCE/Elite_Dogmatic/GrenadeThrow/2 "sounds/hce_voice/elite_dogmatic/grenadethrow_15.ogg"
 $random HCE/Elite_Dogmatic/GrenadeThrow { HCE/Elite_Dogmatic/GrenadeThrow/0 HCE/Elite_Dogmatic/GrenadeThrow/1 HCE/Elite_Dogmatic/GrenadeThrow/2 }
-HCE/Elite_Dogmatic/HeardGunfire/0 "sounds/hce_voice/elite_dogmatic/heardgunfire_39.ogg"
-HCE/Elite_Dogmatic/HeardGunfire/1 "sounds/hce_voice/elite_dogmatic/heardgunfire_40.ogg"
-HCE/Elite_Dogmatic/HeardGunfire/2 "sounds/hce_voice/elite_dogmatic/heardgunfire_41.ogg"
-HCE/Elite_Dogmatic/HeardGunfire/3 "sounds/hce_voice/elite_dogmatic/heardgunfire_42.ogg"
+HCE/Elite_Dogmatic/HeardGunfire/0 "sounds/hce_voice/elite_dogmatic/heardgunfire_68.ogg"
+HCE/Elite_Dogmatic/HeardGunfire/1 "sounds/hce_voice/elite_dogmatic/heardgunfire_69.ogg"
+HCE/Elite_Dogmatic/HeardGunfire/2 "sounds/hce_voice/elite_dogmatic/heardgunfire_70.ogg"
+HCE/Elite_Dogmatic/HeardGunfire/3 "sounds/hce_voice/elite_dogmatic/heardgunfire_71.ogg"
 $random HCE/Elite_Dogmatic/HeardGunfire { HCE/Elite_Dogmatic/HeardGunfire/0 HCE/Elite_Dogmatic/HeardGunfire/1 HCE/Elite_Dogmatic/HeardGunfire/2 HCE/Elite_Dogmatic/HeardGunfire/3 }
+HCE/Elite_Dogmatic/Investigate/0 "sounds/hce_voice/elite_dogmatic/investigate_72.ogg"
+HCE/Elite_Dogmatic/Investigate/1 "sounds/hce_voice/elite_dogmatic/investigate_73.ogg"
+$random HCE/Elite_Dogmatic/Investigate { HCE/Elite_Dogmatic/Investigate/0 HCE/Elite_Dogmatic/Investigate/1 }
+HCE/Elite_Dogmatic/JoinMe/0 "sounds/hce_voice/elite_dogmatic/joinme_74.ogg"
+HCE/Elite_Dogmatic/JoinMe/1 "sounds/hce_voice/elite_dogmatic/joinme_75.ogg"
+HCE/Elite_Dogmatic/JoinMe/2 "sounds/hce_voice/elite_dogmatic/joinme_76.ogg"
+$random HCE/Elite_Dogmatic/JoinMe { HCE/Elite_Dogmatic/JoinMe/0 HCE/Elite_Dogmatic/JoinMe/1 HCE/Elite_Dogmatic/JoinMe/2 }
+HCE/Elite_Dogmatic/KeepWatch/0 "sounds/hce_voice/elite_dogmatic/keepwatch_77.ogg"
+HCE/Elite_Dogmatic/KeepWatch/1 "sounds/hce_voice/elite_dogmatic/keepwatch_78.ogg"
+$random HCE/Elite_Dogmatic/KeepWatch { HCE/Elite_Dogmatic/KeepWatch/0 HCE/Elite_Dogmatic/KeepWatch/1 }
 HCE/Elite_Dogmatic/KillPlayer/0 "sounds/hce_voice/elite_dogmatic/killplayer_16.ogg"
 HCE/Elite_Dogmatic/KillPlayer/1 "sounds/hce_voice/elite_dogmatic/killplayer_17.ogg"
 HCE/Elite_Dogmatic/KillPlayer/2 "sounds/hce_voice/elite_dogmatic/killplayer_18.ogg"
 HCE/Elite_Dogmatic/KillPlayer/3 "sounds/hce_voice/elite_dogmatic/killplayer_19.ogg"
 HCE/Elite_Dogmatic/KillPlayer/4 "sounds/hce_voice/elite_dogmatic/killplayer_20.ogg"
 $random HCE/Elite_Dogmatic/KillPlayer { HCE/Elite_Dogmatic/KillPlayer/0 HCE/Elite_Dogmatic/KillPlayer/1 HCE/Elite_Dogmatic/KillPlayer/2 HCE/Elite_Dogmatic/KillPlayer/3 HCE/Elite_Dogmatic/KillPlayer/4 }
-HCE/Elite_Dogmatic/ManDown/0 "sounds/hce_voice/elite_dogmatic/mandown_43.ogg"
-HCE/Elite_Dogmatic/ManDown/1 "sounds/hce_voice/elite_dogmatic/mandown_44.ogg"
-HCE/Elite_Dogmatic/ManDown/2 "sounds/hce_voice/elite_dogmatic/mandown_45.ogg"
-HCE/Elite_Dogmatic/ManDown/3 "sounds/hce_voice/elite_dogmatic/mandown_46.ogg"
+HCE/Elite_Dogmatic/ManDown/0 "sounds/hce_voice/elite_dogmatic/mandown_79.ogg"
+HCE/Elite_Dogmatic/ManDown/1 "sounds/hce_voice/elite_dogmatic/mandown_80.ogg"
+HCE/Elite_Dogmatic/ManDown/2 "sounds/hce_voice/elite_dogmatic/mandown_81.ogg"
+HCE/Elite_Dogmatic/ManDown/3 "sounds/hce_voice/elite_dogmatic/mandown_82.ogg"
 $random HCE/Elite_Dogmatic/ManDown { HCE/Elite_Dogmatic/ManDown/0 HCE/Elite_Dogmatic/ManDown/1 HCE/Elite_Dogmatic/ManDown/2 HCE/Elite_Dogmatic/ManDown/3 }
 HCE/Elite_Dogmatic/Melee/0 "sounds/hce_voice/elite_dogmatic/melee_21.ogg"
 HCE/Elite_Dogmatic/Melee/1 "sounds/hce_voice/elite_dogmatic/melee_22.ogg"
@@ -166,12 +244,40 @@ HCE/Elite_Dogmatic/PainMed/0 "sounds/hce_voice/elite_dogmatic/painmed_27.ogg"
 HCE/Elite_Dogmatic/PainMed/1 "sounds/hce_voice/elite_dogmatic/painmed_28.ogg"
 HCE/Elite_Dogmatic/PainMed/2 "sounds/hce_voice/elite_dogmatic/painmed_29.ogg"
 $random HCE/Elite_Dogmatic/PainMed { HCE/Elite_Dogmatic/PainMed/0 HCE/Elite_Dogmatic/PainMed/1 HCE/Elite_Dogmatic/PainMed/2 }
+HCE/Elite_Dogmatic/SearchClear/0 "sounds/hce_voice/elite_dogmatic/searchclear_83.ogg"
+HCE/Elite_Dogmatic/SearchClear/1 "sounds/hce_voice/elite_dogmatic/searchclear_84.ogg"
+HCE/Elite_Dogmatic/SearchClear/2 "sounds/hce_voice/elite_dogmatic/searchclear_85.ogg"
+HCE/Elite_Dogmatic/SearchClear/3 "sounds/hce_voice/elite_dogmatic/searchclear_86.ogg"
+$random HCE/Elite_Dogmatic/SearchClear { HCE/Elite_Dogmatic/SearchClear/0 HCE/Elite_Dogmatic/SearchClear/1 HCE/Elite_Dogmatic/SearchClear/2 HCE/Elite_Dogmatic/SearchClear/3 }
+HCE/Elite_Dogmatic/SearchFail/0 "sounds/hce_voice/elite_dogmatic/searchfail_87.ogg"
+HCE/Elite_Dogmatic/SearchFail/1 "sounds/hce_voice/elite_dogmatic/searchfail_88.ogg"
+HCE/Elite_Dogmatic/SearchFail/2 "sounds/hce_voice/elite_dogmatic/searchfail_89.ogg"
+HCE/Elite_Dogmatic/SearchFail/3 "sounds/hce_voice/elite_dogmatic/searchfail_90.ogg"
+$random HCE/Elite_Dogmatic/SearchFail { HCE/Elite_Dogmatic/SearchFail/0 HCE/Elite_Dogmatic/SearchFail/1 HCE/Elite_Dogmatic/SearchFail/2 HCE/Elite_Dogmatic/SearchFail/3 }
+HCE/Elite_Dogmatic/SearchStart/0 "sounds/hce_voice/elite_dogmatic/searchstart_91.ogg"
+HCE/Elite_Dogmatic/SearchStart/1 "sounds/hce_voice/elite_dogmatic/searchstart_92.ogg"
+HCE/Elite_Dogmatic/SearchStart/2 "sounds/hce_voice/elite_dogmatic/searchstart_93.ogg"
+HCE/Elite_Dogmatic/SearchStart/3 "sounds/hce_voice/elite_dogmatic/searchstart_94.ogg"
+$random HCE/Elite_Dogmatic/SearchStart { HCE/Elite_Dogmatic/SearchStart/0 HCE/Elite_Dogmatic/SearchStart/1 HCE/Elite_Dogmatic/SearchStart/2 HCE/Elite_Dogmatic/SearchStart/3 }
+HCE/Elite_Dogmatic/Sniper/0 "sounds/hce_voice/elite_dogmatic/sniper_95.ogg"
+HCE/Elite_Dogmatic/Sniper/1 "sounds/hce_voice/elite_dogmatic/sniper_96.ogg"
+$random HCE/Elite_Dogmatic/Sniper { HCE/Elite_Dogmatic/Sniper/0 HCE/Elite_Dogmatic/Sniper/1 }
+HCE/Elite_Dogmatic/Sword/0 "sounds/hce_voice/elite_dogmatic/sword_97.ogg"
+HCE/Elite_Dogmatic/Sword/1 "sounds/hce_voice/elite_dogmatic/sword_98.ogg"
+$random HCE/Elite_Dogmatic/Sword { HCE/Elite_Dogmatic/Sword/0 HCE/Elite_Dogmatic/Sword/1 }
 HCE/Elite_Dogmatic/Taunt/0 "sounds/hce_voice/elite_dogmatic/taunt_34.ogg"
 HCE/Elite_Dogmatic/Taunt/1 "sounds/hce_voice/elite_dogmatic/taunt_35.ogg"
 HCE/Elite_Dogmatic/Taunt/2 "sounds/hce_voice/elite_dogmatic/taunt_36.ogg"
 HCE/Elite_Dogmatic/Taunt/3 "sounds/hce_voice/elite_dogmatic/taunt_37.ogg"
 HCE/Elite_Dogmatic/Taunt/4 "sounds/hce_voice/elite_dogmatic/taunt_38.ogg"
 $random HCE/Elite_Dogmatic/Taunt { HCE/Elite_Dogmatic/Taunt/0 HCE/Elite_Dogmatic/Taunt/1 HCE/Elite_Dogmatic/Taunt/2 HCE/Elite_Dogmatic/Taunt/3 HCE/Elite_Dogmatic/Taunt/4 }
+HCE/Elite_Dogmatic/Uncovered/0 "sounds/hce_voice/elite_dogmatic/uncovered_99.ogg"
+HCE/Elite_Dogmatic/Uncovered/1 "sounds/hce_voice/elite_dogmatic/uncovered_100.ogg"
+$random HCE/Elite_Dogmatic/Uncovered { HCE/Elite_Dogmatic/Uncovered/0 HCE/Elite_Dogmatic/Uncovered/1 }
+HCE/Elite_Dogmatic/UpThere/0 "sounds/hce_voice/elite_dogmatic/upthere_101.ogg"
+HCE/Elite_Dogmatic/UpThere/1 "sounds/hce_voice/elite_dogmatic/upthere_102.ogg"
+HCE/Elite_Dogmatic/UpThere/2 "sounds/hce_voice/elite_dogmatic/upthere_103.ogg"
+$random HCE/Elite_Dogmatic/UpThere { HCE/Elite_Dogmatic/UpThere/0 HCE/Elite_Dogmatic/UpThere/1 HCE/Elite_Dogmatic/UpThere/2 }
 $alias HCE/Elite_Dogmatic/Regroup HCE/Elite_Dogmatic/Alert
 $alias HCE/Elite_Dogmatic/DeathHard HCE/Elite_Dogmatic/Death
 $alias HCE/Elite_Dogmatic/Scold HCE/Elite_Dogmatic/PainMed
@@ -186,268 +292,334 @@ $alias HCE/Elite_Dogmatic/TradeOk HCE/Elite_Dogmatic/Alert
 $alias HCE/Elite_Dogmatic/Refuse HCE/Elite_Dogmatic/PainMed
 
 // ---- Elite_Loose
-HCE/Elite_Loose/Alert/0 "sounds/hce_voice/elite_loose/alert_00.ogg"
-HCE/Elite_Loose/Alert/1 "sounds/hce_voice/elite_loose/alert_01.ogg"
-HCE/Elite_Loose/Alert/2 "sounds/hce_voice/elite_loose/alert_02.ogg"
-HCE/Elite_Loose/Alert/3 "sounds/hce_voice/elite_loose/alert_03.ogg"
-HCE/Elite_Loose/Alert/4 "sounds/hce_voice/elite_loose/alert_04.ogg"
-HCE/Elite_Loose/Alert/5 "sounds/hce_voice/elite_loose/alert_05.ogg"
-HCE/Elite_Loose/Alert/6 "sounds/hce_voice/elite_loose/alert_06.ogg"
-HCE/Elite_Loose/Alert/7 "sounds/hce_voice/elite_loose/alert_07.ogg"
-HCE/Elite_Loose/Alert/8 "sounds/hce_voice/elite_loose/alert_08.ogg"
-HCE/Elite_Loose/Alert/9 "sounds/hce_voice/elite_loose/alert_09.ogg"
-HCE/Elite_Loose/Alert/10 "sounds/hce_voice/elite_loose/alert_10.ogg"
-HCE/Elite_Loose/Alert/11 "sounds/hce_voice/elite_loose/alert_11.ogg"
-HCE/Elite_Loose/Alert/12 "sounds/hce_voice/elite_loose/alert_12.ogg"
-HCE/Elite_Loose/Alert/13 "sounds/hce_voice/elite_loose/alert_13.ogg"
-HCE/Elite_Loose/Alert/14 "sounds/hce_voice/elite_loose/alert_14.ogg"
+HCE/Elite_Loose/Advance/0 "sounds/hce_voice/elite_loose/advance_00.ogg"
+HCE/Elite_Loose/Advance/1 "sounds/hce_voice/elite_loose/advance_01.ogg"
+HCE/Elite_Loose/Advance/2 "sounds/hce_voice/elite_loose/advance_02.ogg"
+HCE/Elite_Loose/Advance/3 "sounds/hce_voice/elite_loose/advance_03.ogg"
+HCE/Elite_Loose/Advance/4 "sounds/hce_voice/elite_loose/advance_04.ogg"
+$random HCE/Elite_Loose/Advance { HCE/Elite_Loose/Advance/0 HCE/Elite_Loose/Advance/1 HCE/Elite_Loose/Advance/2 HCE/Elite_Loose/Advance/3 HCE/Elite_Loose/Advance/4 }
+HCE/Elite_Loose/Alert/0 "sounds/hce_voice/elite_loose/alert_05.ogg"
+HCE/Elite_Loose/Alert/1 "sounds/hce_voice/elite_loose/alert_06.ogg"
+HCE/Elite_Loose/Alert/2 "sounds/hce_voice/elite_loose/alert_07.ogg"
+HCE/Elite_Loose/Alert/3 "sounds/hce_voice/elite_loose/alert_08.ogg"
+HCE/Elite_Loose/Alert/4 "sounds/hce_voice/elite_loose/alert_09.ogg"
+HCE/Elite_Loose/Alert/5 "sounds/hce_voice/elite_loose/alert_10.ogg"
+HCE/Elite_Loose/Alert/6 "sounds/hce_voice/elite_loose/alert_11.ogg"
+HCE/Elite_Loose/Alert/7 "sounds/hce_voice/elite_loose/alert_12.ogg"
+HCE/Elite_Loose/Alert/8 "sounds/hce_voice/elite_loose/alert_13.ogg"
+HCE/Elite_Loose/Alert/9 "sounds/hce_voice/elite_loose/alert_14.ogg"
+HCE/Elite_Loose/Alert/10 "sounds/hce_voice/elite_loose/alert_15.ogg"
+HCE/Elite_Loose/Alert/11 "sounds/hce_voice/elite_loose/alert_16.ogg"
+HCE/Elite_Loose/Alert/12 "sounds/hce_voice/elite_loose/alert_17.ogg"
+HCE/Elite_Loose/Alert/13 "sounds/hce_voice/elite_loose/alert_18.ogg"
+HCE/Elite_Loose/Alert/14 "sounds/hce_voice/elite_loose/alert_19.ogg"
 $random HCE/Elite_Loose/Alert { HCE/Elite_Loose/Alert/0 HCE/Elite_Loose/Alert/1 HCE/Elite_Loose/Alert/2 HCE/Elite_Loose/Alert/3 HCE/Elite_Loose/Alert/4 HCE/Elite_Loose/Alert/5 HCE/Elite_Loose/Alert/6 HCE/Elite_Loose/Alert/7 HCE/Elite_Loose/Alert/8 HCE/Elite_Loose/Alert/9 HCE/Elite_Loose/Alert/10 HCE/Elite_Loose/Alert/11 HCE/Elite_Loose/Alert/12 HCE/Elite_Loose/Alert/13 HCE/Elite_Loose/Alert/14 }
-HCE/Elite_Loose/Berserk/0 "sounds/hce_voice/elite_loose/berserk_15.ogg"
-HCE/Elite_Loose/Berserk/1 "sounds/hce_voice/elite_loose/berserk_16.ogg"
-HCE/Elite_Loose/Berserk/2 "sounds/hce_voice/elite_loose/berserk_17.ogg"
-HCE/Elite_Loose/Berserk/3 "sounds/hce_voice/elite_loose/berserk_18.ogg"
-HCE/Elite_Loose/Berserk/4 "sounds/hce_voice/elite_loose/berserk_19.ogg"
-HCE/Elite_Loose/Berserk/5 "sounds/hce_voice/elite_loose/berserk_20.ogg"
-HCE/Elite_Loose/Berserk/6 "sounds/hce_voice/elite_loose/berserk_21.ogg"
+HCE/Elite_Loose/Behind/0 "sounds/hce_voice/elite_loose/behind_20.ogg"
+HCE/Elite_Loose/Behind/1 "sounds/hce_voice/elite_loose/behind_21.ogg"
+$random HCE/Elite_Loose/Behind { HCE/Elite_Loose/Behind/0 HCE/Elite_Loose/Behind/1 }
+HCE/Elite_Loose/Berserk/0 "sounds/hce_voice/elite_loose/berserk_22.ogg"
+HCE/Elite_Loose/Berserk/1 "sounds/hce_voice/elite_loose/berserk_23.ogg"
+HCE/Elite_Loose/Berserk/2 "sounds/hce_voice/elite_loose/berserk_24.ogg"
+HCE/Elite_Loose/Berserk/3 "sounds/hce_voice/elite_loose/berserk_25.ogg"
+HCE/Elite_Loose/Berserk/4 "sounds/hce_voice/elite_loose/berserk_26.ogg"
+HCE/Elite_Loose/Berserk/5 "sounds/hce_voice/elite_loose/berserk_27.ogg"
+HCE/Elite_Loose/Berserk/6 "sounds/hce_voice/elite_loose/berserk_28.ogg"
 $random HCE/Elite_Loose/Berserk { HCE/Elite_Loose/Berserk/0 HCE/Elite_Loose/Berserk/1 HCE/Elite_Loose/Berserk/2 HCE/Elite_Loose/Berserk/3 HCE/Elite_Loose/Berserk/4 HCE/Elite_Loose/Berserk/5 HCE/Elite_Loose/Berserk/6 }
-HCE/Elite_Loose/Death/0 "sounds/hce_voice/elite_loose/death_22.ogg"
-HCE/Elite_Loose/Death/1 "sounds/hce_voice/elite_loose/death_23.ogg"
-HCE/Elite_Loose/Death/2 "sounds/hce_voice/elite_loose/death_24.ogg"
-HCE/Elite_Loose/Death/3 "sounds/hce_voice/elite_loose/death_25.ogg"
-HCE/Elite_Loose/Death/4 "sounds/hce_voice/elite_loose/death_26.ogg"
-HCE/Elite_Loose/Death/5 "sounds/hce_voice/elite_loose/death_27.ogg"
-HCE/Elite_Loose/Death/6 "sounds/hce_voice/elite_loose/death_28.ogg"
-HCE/Elite_Loose/Death/7 "sounds/hce_voice/elite_loose/death_29.ogg"
-HCE/Elite_Loose/Death/8 "sounds/hce_voice/elite_loose/death_30.ogg"
-HCE/Elite_Loose/Death/9 "sounds/hce_voice/elite_loose/death_31.ogg"
-HCE/Elite_Loose/Death/10 "sounds/hce_voice/elite_loose/death_32.ogg"
-HCE/Elite_Loose/Death/11 "sounds/hce_voice/elite_loose/death_33.ogg"
-HCE/Elite_Loose/Death/12 "sounds/hce_voice/elite_loose/death_34.ogg"
-HCE/Elite_Loose/Death/13 "sounds/hce_voice/elite_loose/death_35.ogg"
-HCE/Elite_Loose/Death/14 "sounds/hce_voice/elite_loose/death_36.ogg"
-HCE/Elite_Loose/Death/15 "sounds/hce_voice/elite_loose/death_37.ogg"
-HCE/Elite_Loose/Death/16 "sounds/hce_voice/elite_loose/death_38.ogg"
-HCE/Elite_Loose/Death/17 "sounds/hce_voice/elite_loose/death_39.ogg"
-HCE/Elite_Loose/Death/18 "sounds/hce_voice/elite_loose/death_40.ogg"
-HCE/Elite_Loose/Death/19 "sounds/hce_voice/elite_loose/death_41.ogg"
-HCE/Elite_Loose/Death/20 "sounds/hce_voice/elite_loose/death_42.ogg"
-HCE/Elite_Loose/Death/21 "sounds/hce_voice/elite_loose/death_43.ogg"
-HCE/Elite_Loose/Death/22 "sounds/hce_voice/elite_loose/death_44.ogg"
-HCE/Elite_Loose/Death/23 "sounds/hce_voice/elite_loose/death_45.ogg"
+HCE/Elite_Loose/Charge/0 "sounds/hce_voice/elite_loose/charge_29.ogg"
+HCE/Elite_Loose/Charge/1 "sounds/hce_voice/elite_loose/charge_30.ogg"
+HCE/Elite_Loose/Charge/2 "sounds/hce_voice/elite_loose/charge_31.ogg"
+HCE/Elite_Loose/Charge/3 "sounds/hce_voice/elite_loose/charge_32.ogg"
+$random HCE/Elite_Loose/Charge { HCE/Elite_Loose/Charge/0 HCE/Elite_Loose/Charge/1 HCE/Elite_Loose/Charge/2 HCE/Elite_Loose/Charge/3 }
+HCE/Elite_Loose/Cover/0 "sounds/hce_voice/elite_loose/cover_33.ogg"
+HCE/Elite_Loose/Cover/1 "sounds/hce_voice/elite_loose/cover_34.ogg"
+$random HCE/Elite_Loose/Cover { HCE/Elite_Loose/Cover/0 HCE/Elite_Loose/Cover/1 }
+HCE/Elite_Loose/Death/0 "sounds/hce_voice/elite_loose/death_35.ogg"
+HCE/Elite_Loose/Death/1 "sounds/hce_voice/elite_loose/death_36.ogg"
+HCE/Elite_Loose/Death/2 "sounds/hce_voice/elite_loose/death_37.ogg"
+HCE/Elite_Loose/Death/3 "sounds/hce_voice/elite_loose/death_38.ogg"
+HCE/Elite_Loose/Death/4 "sounds/hce_voice/elite_loose/death_39.ogg"
+HCE/Elite_Loose/Death/5 "sounds/hce_voice/elite_loose/death_40.ogg"
+HCE/Elite_Loose/Death/6 "sounds/hce_voice/elite_loose/death_41.ogg"
+HCE/Elite_Loose/Death/7 "sounds/hce_voice/elite_loose/death_42.ogg"
+HCE/Elite_Loose/Death/8 "sounds/hce_voice/elite_loose/death_43.ogg"
+HCE/Elite_Loose/Death/9 "sounds/hce_voice/elite_loose/death_44.ogg"
+HCE/Elite_Loose/Death/10 "sounds/hce_voice/elite_loose/death_45.ogg"
+HCE/Elite_Loose/Death/11 "sounds/hce_voice/elite_loose/death_46.ogg"
+HCE/Elite_Loose/Death/12 "sounds/hce_voice/elite_loose/death_47.ogg"
+HCE/Elite_Loose/Death/13 "sounds/hce_voice/elite_loose/death_48.ogg"
+HCE/Elite_Loose/Death/14 "sounds/hce_voice/elite_loose/death_49.ogg"
+HCE/Elite_Loose/Death/15 "sounds/hce_voice/elite_loose/death_50.ogg"
+HCE/Elite_Loose/Death/16 "sounds/hce_voice/elite_loose/death_51.ogg"
+HCE/Elite_Loose/Death/17 "sounds/hce_voice/elite_loose/death_52.ogg"
+HCE/Elite_Loose/Death/18 "sounds/hce_voice/elite_loose/death_53.ogg"
+HCE/Elite_Loose/Death/19 "sounds/hce_voice/elite_loose/death_54.ogg"
+HCE/Elite_Loose/Death/20 "sounds/hce_voice/elite_loose/death_55.ogg"
+HCE/Elite_Loose/Death/21 "sounds/hce_voice/elite_loose/death_56.ogg"
+HCE/Elite_Loose/Death/22 "sounds/hce_voice/elite_loose/death_57.ogg"
+HCE/Elite_Loose/Death/23 "sounds/hce_voice/elite_loose/death_58.ogg"
 $random HCE/Elite_Loose/Death { HCE/Elite_Loose/Death/0 HCE/Elite_Loose/Death/1 HCE/Elite_Loose/Death/2 HCE/Elite_Loose/Death/3 HCE/Elite_Loose/Death/4 HCE/Elite_Loose/Death/5 HCE/Elite_Loose/Death/6 HCE/Elite_Loose/Death/7 HCE/Elite_Loose/Death/8 HCE/Elite_Loose/Death/9 HCE/Elite_Loose/Death/10 HCE/Elite_Loose/Death/11 HCE/Elite_Loose/Death/12 HCE/Elite_Loose/Death/13 HCE/Elite_Loose/Death/14 HCE/Elite_Loose/Death/15 HCE/Elite_Loose/Death/16 HCE/Elite_Loose/Death/17 HCE/Elite_Loose/Death/18 HCE/Elite_Loose/Death/19 HCE/Elite_Loose/Death/20 HCE/Elite_Loose/Death/21 HCE/Elite_Loose/Death/22 HCE/Elite_Loose/Death/23 }
-HCE/Elite_Loose/DeathHard/0 "sounds/hce_voice/elite_loose/deathhard_46.ogg"
-HCE/Elite_Loose/DeathHard/1 "sounds/hce_voice/elite_loose/deathhard_47.ogg"
-HCE/Elite_Loose/DeathHard/2 "sounds/hce_voice/elite_loose/deathhard_48.ogg"
-HCE/Elite_Loose/DeathHard/3 "sounds/hce_voice/elite_loose/deathhard_49.ogg"
-HCE/Elite_Loose/DeathHard/4 "sounds/hce_voice/elite_loose/deathhard_50.ogg"
-HCE/Elite_Loose/DeathHard/5 "sounds/hce_voice/elite_loose/deathhard_51.ogg"
-HCE/Elite_Loose/DeathHard/6 "sounds/hce_voice/elite_loose/deathhard_52.ogg"
-HCE/Elite_Loose/DeathHard/7 "sounds/hce_voice/elite_loose/deathhard_53.ogg"
-HCE/Elite_Loose/DeathHard/8 "sounds/hce_voice/elite_loose/deathhard_54.ogg"
-HCE/Elite_Loose/DeathHard/9 "sounds/hce_voice/elite_loose/deathhard_55.ogg"
-HCE/Elite_Loose/DeathHard/10 "sounds/hce_voice/elite_loose/deathhard_56.ogg"
-HCE/Elite_Loose/DeathHard/11 "sounds/hce_voice/elite_loose/deathhard_57.ogg"
-HCE/Elite_Loose/DeathHard/12 "sounds/hce_voice/elite_loose/deathhard_58.ogg"
-HCE/Elite_Loose/DeathHard/13 "sounds/hce_voice/elite_loose/deathhard_59.ogg"
-HCE/Elite_Loose/DeathHard/14 "sounds/hce_voice/elite_loose/deathhard_60.ogg"
-HCE/Elite_Loose/DeathHard/15 "sounds/hce_voice/elite_loose/deathhard_61.ogg"
-HCE/Elite_Loose/DeathHard/16 "sounds/hce_voice/elite_loose/deathhard_62.ogg"
-HCE/Elite_Loose/DeathHard/17 "sounds/hce_voice/elite_loose/deathhard_63.ogg"
-HCE/Elite_Loose/DeathHard/18 "sounds/hce_voice/elite_loose/deathhard_64.ogg"
-HCE/Elite_Loose/DeathHard/19 "sounds/hce_voice/elite_loose/deathhard_65.ogg"
-HCE/Elite_Loose/DeathHard/20 "sounds/hce_voice/elite_loose/deathhard_66.ogg"
-HCE/Elite_Loose/DeathHard/21 "sounds/hce_voice/elite_loose/deathhard_67.ogg"
-HCE/Elite_Loose/DeathHard/22 "sounds/hce_voice/elite_loose/deathhard_68.ogg"
-HCE/Elite_Loose/DeathHard/23 "sounds/hce_voice/elite_loose/deathhard_69.ogg"
-HCE/Elite_Loose/DeathHard/24 "sounds/hce_voice/elite_loose/deathhard_70.ogg"
-HCE/Elite_Loose/DeathHard/25 "sounds/hce_voice/elite_loose/deathhard_71.ogg"
-HCE/Elite_Loose/DeathHard/26 "sounds/hce_voice/elite_loose/deathhard_72.ogg"
-HCE/Elite_Loose/DeathHard/27 "sounds/hce_voice/elite_loose/deathhard_73.ogg"
-HCE/Elite_Loose/DeathHard/28 "sounds/hce_voice/elite_loose/deathhard_74.ogg"
+HCE/Elite_Loose/DeathHard/0 "sounds/hce_voice/elite_loose/deathhard_59.ogg"
+HCE/Elite_Loose/DeathHard/1 "sounds/hce_voice/elite_loose/deathhard_60.ogg"
+HCE/Elite_Loose/DeathHard/2 "sounds/hce_voice/elite_loose/deathhard_61.ogg"
+HCE/Elite_Loose/DeathHard/3 "sounds/hce_voice/elite_loose/deathhard_62.ogg"
+HCE/Elite_Loose/DeathHard/4 "sounds/hce_voice/elite_loose/deathhard_63.ogg"
+HCE/Elite_Loose/DeathHard/5 "sounds/hce_voice/elite_loose/deathhard_64.ogg"
+HCE/Elite_Loose/DeathHard/6 "sounds/hce_voice/elite_loose/deathhard_65.ogg"
+HCE/Elite_Loose/DeathHard/7 "sounds/hce_voice/elite_loose/deathhard_66.ogg"
+HCE/Elite_Loose/DeathHard/8 "sounds/hce_voice/elite_loose/deathhard_67.ogg"
+HCE/Elite_Loose/DeathHard/9 "sounds/hce_voice/elite_loose/deathhard_68.ogg"
+HCE/Elite_Loose/DeathHard/10 "sounds/hce_voice/elite_loose/deathhard_69.ogg"
+HCE/Elite_Loose/DeathHard/11 "sounds/hce_voice/elite_loose/deathhard_70.ogg"
+HCE/Elite_Loose/DeathHard/12 "sounds/hce_voice/elite_loose/deathhard_71.ogg"
+HCE/Elite_Loose/DeathHard/13 "sounds/hce_voice/elite_loose/deathhard_72.ogg"
+HCE/Elite_Loose/DeathHard/14 "sounds/hce_voice/elite_loose/deathhard_73.ogg"
+HCE/Elite_Loose/DeathHard/15 "sounds/hce_voice/elite_loose/deathhard_74.ogg"
+HCE/Elite_Loose/DeathHard/16 "sounds/hce_voice/elite_loose/deathhard_75.ogg"
+HCE/Elite_Loose/DeathHard/17 "sounds/hce_voice/elite_loose/deathhard_76.ogg"
+HCE/Elite_Loose/DeathHard/18 "sounds/hce_voice/elite_loose/deathhard_77.ogg"
+HCE/Elite_Loose/DeathHard/19 "sounds/hce_voice/elite_loose/deathhard_78.ogg"
+HCE/Elite_Loose/DeathHard/20 "sounds/hce_voice/elite_loose/deathhard_79.ogg"
+HCE/Elite_Loose/DeathHard/21 "sounds/hce_voice/elite_loose/deathhard_80.ogg"
+HCE/Elite_Loose/DeathHard/22 "sounds/hce_voice/elite_loose/deathhard_81.ogg"
+HCE/Elite_Loose/DeathHard/23 "sounds/hce_voice/elite_loose/deathhard_82.ogg"
+HCE/Elite_Loose/DeathHard/24 "sounds/hce_voice/elite_loose/deathhard_83.ogg"
+HCE/Elite_Loose/DeathHard/25 "sounds/hce_voice/elite_loose/deathhard_84.ogg"
+HCE/Elite_Loose/DeathHard/26 "sounds/hce_voice/elite_loose/deathhard_85.ogg"
+HCE/Elite_Loose/DeathHard/27 "sounds/hce_voice/elite_loose/deathhard_86.ogg"
+HCE/Elite_Loose/DeathHard/28 "sounds/hce_voice/elite_loose/deathhard_87.ogg"
 $random HCE/Elite_Loose/DeathHard { HCE/Elite_Loose/DeathHard/0 HCE/Elite_Loose/DeathHard/1 HCE/Elite_Loose/DeathHard/2 HCE/Elite_Loose/DeathHard/3 HCE/Elite_Loose/DeathHard/4 HCE/Elite_Loose/DeathHard/5 HCE/Elite_Loose/DeathHard/6 HCE/Elite_Loose/DeathHard/7 HCE/Elite_Loose/DeathHard/8 HCE/Elite_Loose/DeathHard/9 HCE/Elite_Loose/DeathHard/10 HCE/Elite_Loose/DeathHard/11 HCE/Elite_Loose/DeathHard/12 HCE/Elite_Loose/DeathHard/13 HCE/Elite_Loose/DeathHard/14 HCE/Elite_Loose/DeathHard/15 HCE/Elite_Loose/DeathHard/16 HCE/Elite_Loose/DeathHard/17 HCE/Elite_Loose/DeathHard/18 HCE/Elite_Loose/DeathHard/19 HCE/Elite_Loose/DeathHard/20 HCE/Elite_Loose/DeathHard/21 HCE/Elite_Loose/DeathHard/22 HCE/Elite_Loose/DeathHard/23 HCE/Elite_Loose/DeathHard/24 HCE/Elite_Loose/DeathHard/25 HCE/Elite_Loose/DeathHard/26 HCE/Elite_Loose/DeathHard/27 HCE/Elite_Loose/DeathHard/28 }
-HCE/Elite_Loose/EnemyGrenade/0 "sounds/hce_voice/elite_loose/enemygrenade_75.ogg"
-HCE/Elite_Loose/EnemyGrenade/1 "sounds/hce_voice/elite_loose/enemygrenade_76.ogg"
-HCE/Elite_Loose/EnemyGrenade/2 "sounds/hce_voice/elite_loose/enemygrenade_77.ogg"
-HCE/Elite_Loose/EnemyGrenade/3 "sounds/hce_voice/elite_loose/enemygrenade_78.ogg"
-HCE/Elite_Loose/EnemyGrenade/4 "sounds/hce_voice/elite_loose/enemygrenade_79.ogg"
-HCE/Elite_Loose/EnemyGrenade/5 "sounds/hce_voice/elite_loose/enemygrenade_80.ogg"
-HCE/Elite_Loose/EnemyGrenade/6 "sounds/hce_voice/elite_loose/enemygrenade_81.ogg"
-HCE/Elite_Loose/EnemyGrenade/7 "sounds/hce_voice/elite_loose/enemygrenade_82.ogg"
-HCE/Elite_Loose/EnemyGrenade/8 "sounds/hce_voice/elite_loose/enemygrenade_83.ogg"
-HCE/Elite_Loose/EnemyGrenade/9 "sounds/hce_voice/elite_loose/enemygrenade_84.ogg"
+HCE/Elite_Loose/DownThere/0 "sounds/hce_voice/elite_loose/downthere_88.ogg"
+HCE/Elite_Loose/DownThere/1 "sounds/hce_voice/elite_loose/downthere_89.ogg"
+$random HCE/Elite_Loose/DownThere { HCE/Elite_Loose/DownThere/0 HCE/Elite_Loose/DownThere/1 }
+HCE/Elite_Loose/EnemyGrenade/0 "sounds/hce_voice/elite_loose/enemygrenade_90.ogg"
+HCE/Elite_Loose/EnemyGrenade/1 "sounds/hce_voice/elite_loose/enemygrenade_91.ogg"
+HCE/Elite_Loose/EnemyGrenade/2 "sounds/hce_voice/elite_loose/enemygrenade_92.ogg"
+HCE/Elite_Loose/EnemyGrenade/3 "sounds/hce_voice/elite_loose/enemygrenade_93.ogg"
+HCE/Elite_Loose/EnemyGrenade/4 "sounds/hce_voice/elite_loose/enemygrenade_94.ogg"
+HCE/Elite_Loose/EnemyGrenade/5 "sounds/hce_voice/elite_loose/enemygrenade_95.ogg"
+HCE/Elite_Loose/EnemyGrenade/6 "sounds/hce_voice/elite_loose/enemygrenade_96.ogg"
+HCE/Elite_Loose/EnemyGrenade/7 "sounds/hce_voice/elite_loose/enemygrenade_97.ogg"
+HCE/Elite_Loose/EnemyGrenade/8 "sounds/hce_voice/elite_loose/enemygrenade_98.ogg"
+HCE/Elite_Loose/EnemyGrenade/9 "sounds/hce_voice/elite_loose/enemygrenade_99.ogg"
 $random HCE/Elite_Loose/EnemyGrenade { HCE/Elite_Loose/EnemyGrenade/0 HCE/Elite_Loose/EnemyGrenade/1 HCE/Elite_Loose/EnemyGrenade/2 HCE/Elite_Loose/EnemyGrenade/3 HCE/Elite_Loose/EnemyGrenade/4 HCE/Elite_Loose/EnemyGrenade/5 HCE/Elite_Loose/EnemyGrenade/6 HCE/Elite_Loose/EnemyGrenade/7 HCE/Elite_Loose/EnemyGrenade/8 HCE/Elite_Loose/EnemyGrenade/9 }
-HCE/Elite_Loose/Flee/0 "sounds/hce_voice/elite_loose/flee_85.ogg"
-HCE/Elite_Loose/Flee/1 "sounds/hce_voice/elite_loose/flee_86.ogg"
-HCE/Elite_Loose/Flee/2 "sounds/hce_voice/elite_loose/flee_87.ogg"
-HCE/Elite_Loose/Flee/3 "sounds/hce_voice/elite_loose/flee_88.ogg"
-HCE/Elite_Loose/Flee/4 "sounds/hce_voice/elite_loose/flee_89.ogg"
+HCE/Elite_Loose/FallBack/0 "sounds/hce_voice/elite_loose/fallback_100.ogg"
+HCE/Elite_Loose/FallBack/1 "sounds/hce_voice/elite_loose/fallback_101.ogg"
+HCE/Elite_Loose/FallBack/2 "sounds/hce_voice/elite_loose/fallback_102.ogg"
+HCE/Elite_Loose/FallBack/3 "sounds/hce_voice/elite_loose/fallback_103.ogg"
+HCE/Elite_Loose/FallBack/4 "sounds/hce_voice/elite_loose/fallback_104.ogg"
+$random HCE/Elite_Loose/FallBack { HCE/Elite_Loose/FallBack/0 HCE/Elite_Loose/FallBack/1 HCE/Elite_Loose/FallBack/2 HCE/Elite_Loose/FallBack/3 HCE/Elite_Loose/FallBack/4 }
+HCE/Elite_Loose/Flee/0 "sounds/hce_voice/elite_loose/flee_105.ogg"
+HCE/Elite_Loose/Flee/1 "sounds/hce_voice/elite_loose/flee_106.ogg"
+HCE/Elite_Loose/Flee/2 "sounds/hce_voice/elite_loose/flee_107.ogg"
+HCE/Elite_Loose/Flee/3 "sounds/hce_voice/elite_loose/flee_108.ogg"
+HCE/Elite_Loose/Flee/4 "sounds/hce_voice/elite_loose/flee_109.ogg"
 $random HCE/Elite_Loose/Flee { HCE/Elite_Loose/Flee/0 HCE/Elite_Loose/Flee/1 HCE/Elite_Loose/Flee/2 HCE/Elite_Loose/Flee/3 HCE/Elite_Loose/Flee/4 }
-HCE/Elite_Loose/GrenadeThrow/0 "sounds/hce_voice/elite_loose/grenadethrow_90.ogg"
-HCE/Elite_Loose/GrenadeThrow/1 "sounds/hce_voice/elite_loose/grenadethrow_91.ogg"
-HCE/Elite_Loose/GrenadeThrow/2 "sounds/hce_voice/elite_loose/grenadethrow_92.ogg"
-HCE/Elite_Loose/GrenadeThrow/3 "sounds/hce_voice/elite_loose/grenadethrow_93.ogg"
-HCE/Elite_Loose/GrenadeThrow/4 "sounds/hce_voice/elite_loose/grenadethrow_94.ogg"
-HCE/Elite_Loose/GrenadeThrow/5 "sounds/hce_voice/elite_loose/grenadethrow_95.ogg"
+HCE/Elite_Loose/FoundFoe/0 "sounds/hce_voice/elite_loose/foundfoe_110.ogg"
+HCE/Elite_Loose/FoundFoe/1 "sounds/hce_voice/elite_loose/foundfoe_111.ogg"
+HCE/Elite_Loose/FoundFoe/2 "sounds/hce_voice/elite_loose/foundfoe_112.ogg"
+HCE/Elite_Loose/FoundFoe/3 "sounds/hce_voice/elite_loose/foundfoe_113.ogg"
+$random HCE/Elite_Loose/FoundFoe { HCE/Elite_Loose/FoundFoe/0 HCE/Elite_Loose/FoundFoe/1 HCE/Elite_Loose/FoundFoe/2 HCE/Elite_Loose/FoundFoe/3 }
+HCE/Elite_Loose/GrenadeThrow/0 "sounds/hce_voice/elite_loose/grenadethrow_114.ogg"
+HCE/Elite_Loose/GrenadeThrow/1 "sounds/hce_voice/elite_loose/grenadethrow_115.ogg"
+HCE/Elite_Loose/GrenadeThrow/2 "sounds/hce_voice/elite_loose/grenadethrow_116.ogg"
+HCE/Elite_Loose/GrenadeThrow/3 "sounds/hce_voice/elite_loose/grenadethrow_117.ogg"
+HCE/Elite_Loose/GrenadeThrow/4 "sounds/hce_voice/elite_loose/grenadethrow_118.ogg"
+HCE/Elite_Loose/GrenadeThrow/5 "sounds/hce_voice/elite_loose/grenadethrow_119.ogg"
 $random HCE/Elite_Loose/GrenadeThrow { HCE/Elite_Loose/GrenadeThrow/0 HCE/Elite_Loose/GrenadeThrow/1 HCE/Elite_Loose/GrenadeThrow/2 HCE/Elite_Loose/GrenadeThrow/3 HCE/Elite_Loose/GrenadeThrow/4 HCE/Elite_Loose/GrenadeThrow/5 }
-HCE/Elite_Loose/HeardGunfire/0 "sounds/hce_voice/elite_loose/heardgunfire_96.ogg"
-HCE/Elite_Loose/HeardGunfire/1 "sounds/hce_voice/elite_loose/heardgunfire_97.ogg"
-HCE/Elite_Loose/HeardGunfire/2 "sounds/hce_voice/elite_loose/heardgunfire_98.ogg"
-HCE/Elite_Loose/HeardGunfire/3 "sounds/hce_voice/elite_loose/heardgunfire_99.ogg"
-HCE/Elite_Loose/HeardGunfire/4 "sounds/hce_voice/elite_loose/heardgunfire_100.ogg"
-HCE/Elite_Loose/HeardGunfire/5 "sounds/hce_voice/elite_loose/heardgunfire_101.ogg"
-HCE/Elite_Loose/HeardGunfire/6 "sounds/hce_voice/elite_loose/heardgunfire_102.ogg"
+HCE/Elite_Loose/HeardGunfire/0 "sounds/hce_voice/elite_loose/heardgunfire_120.ogg"
+HCE/Elite_Loose/HeardGunfire/1 "sounds/hce_voice/elite_loose/heardgunfire_121.ogg"
+HCE/Elite_Loose/HeardGunfire/2 "sounds/hce_voice/elite_loose/heardgunfire_122.ogg"
+HCE/Elite_Loose/HeardGunfire/3 "sounds/hce_voice/elite_loose/heardgunfire_123.ogg"
+HCE/Elite_Loose/HeardGunfire/4 "sounds/hce_voice/elite_loose/heardgunfire_124.ogg"
+HCE/Elite_Loose/HeardGunfire/5 "sounds/hce_voice/elite_loose/heardgunfire_125.ogg"
+HCE/Elite_Loose/HeardGunfire/6 "sounds/hce_voice/elite_loose/heardgunfire_126.ogg"
 $random HCE/Elite_Loose/HeardGunfire { HCE/Elite_Loose/HeardGunfire/0 HCE/Elite_Loose/HeardGunfire/1 HCE/Elite_Loose/HeardGunfire/2 HCE/Elite_Loose/HeardGunfire/3 HCE/Elite_Loose/HeardGunfire/4 HCE/Elite_Loose/HeardGunfire/5 HCE/Elite_Loose/HeardGunfire/6 }
-HCE/Elite_Loose/KillPlayer/0 "sounds/hce_voice/elite_loose/killplayer_103.ogg"
-HCE/Elite_Loose/KillPlayer/1 "sounds/hce_voice/elite_loose/killplayer_104.ogg"
-HCE/Elite_Loose/KillPlayer/2 "sounds/hce_voice/elite_loose/killplayer_105.ogg"
-HCE/Elite_Loose/KillPlayer/3 "sounds/hce_voice/elite_loose/killplayer_106.ogg"
-HCE/Elite_Loose/KillPlayer/4 "sounds/hce_voice/elite_loose/killplayer_107.ogg"
-HCE/Elite_Loose/KillPlayer/5 "sounds/hce_voice/elite_loose/killplayer_108.ogg"
-HCE/Elite_Loose/KillPlayer/6 "sounds/hce_voice/elite_loose/killplayer_109.ogg"
-HCE/Elite_Loose/KillPlayer/7 "sounds/hce_voice/elite_loose/killplayer_110.ogg"
-HCE/Elite_Loose/KillPlayer/8 "sounds/hce_voice/elite_loose/killplayer_111.ogg"
-HCE/Elite_Loose/KillPlayer/9 "sounds/hce_voice/elite_loose/killplayer_112.ogg"
-HCE/Elite_Loose/KillPlayer/10 "sounds/hce_voice/elite_loose/killplayer_113.ogg"
-HCE/Elite_Loose/KillPlayer/11 "sounds/hce_voice/elite_loose/killplayer_114.ogg"
-HCE/Elite_Loose/KillPlayer/12 "sounds/hce_voice/elite_loose/killplayer_115.ogg"
-HCE/Elite_Loose/KillPlayer/13 "sounds/hce_voice/elite_loose/killplayer_116.ogg"
-HCE/Elite_Loose/KillPlayer/14 "sounds/hce_voice/elite_loose/killplayer_117.ogg"
-HCE/Elite_Loose/KillPlayer/15 "sounds/hce_voice/elite_loose/killplayer_118.ogg"
-HCE/Elite_Loose/KillPlayer/16 "sounds/hce_voice/elite_loose/killplayer_119.ogg"
+HCE/Elite_Loose/Investigate/0 "sounds/hce_voice/elite_loose/investigate_127.ogg"
+HCE/Elite_Loose/Investigate/1 "sounds/hce_voice/elite_loose/investigate_128.ogg"
+$random HCE/Elite_Loose/Investigate { HCE/Elite_Loose/Investigate/0 HCE/Elite_Loose/Investigate/1 }
+HCE/Elite_Loose/JoinMe/0 "sounds/hce_voice/elite_loose/joinme_129.ogg"
+HCE/Elite_Loose/JoinMe/1 "sounds/hce_voice/elite_loose/joinme_130.ogg"
+$random HCE/Elite_Loose/JoinMe { HCE/Elite_Loose/JoinMe/0 HCE/Elite_Loose/JoinMe/1 }
+HCE/Elite_Loose/KeepWatch/0 "sounds/hce_voice/elite_loose/keepwatch_131.ogg"
+HCE/Elite_Loose/KeepWatch/1 "sounds/hce_voice/elite_loose/keepwatch_132.ogg"
+$random HCE/Elite_Loose/KeepWatch { HCE/Elite_Loose/KeepWatch/0 HCE/Elite_Loose/KeepWatch/1 }
+HCE/Elite_Loose/KillPlayer/0 "sounds/hce_voice/elite_loose/killplayer_133.ogg"
+HCE/Elite_Loose/KillPlayer/1 "sounds/hce_voice/elite_loose/killplayer_134.ogg"
+HCE/Elite_Loose/KillPlayer/2 "sounds/hce_voice/elite_loose/killplayer_135.ogg"
+HCE/Elite_Loose/KillPlayer/3 "sounds/hce_voice/elite_loose/killplayer_136.ogg"
+HCE/Elite_Loose/KillPlayer/4 "sounds/hce_voice/elite_loose/killplayer_137.ogg"
+HCE/Elite_Loose/KillPlayer/5 "sounds/hce_voice/elite_loose/killplayer_138.ogg"
+HCE/Elite_Loose/KillPlayer/6 "sounds/hce_voice/elite_loose/killplayer_139.ogg"
+HCE/Elite_Loose/KillPlayer/7 "sounds/hce_voice/elite_loose/killplayer_140.ogg"
+HCE/Elite_Loose/KillPlayer/8 "sounds/hce_voice/elite_loose/killplayer_141.ogg"
+HCE/Elite_Loose/KillPlayer/9 "sounds/hce_voice/elite_loose/killplayer_142.ogg"
+HCE/Elite_Loose/KillPlayer/10 "sounds/hce_voice/elite_loose/killplayer_143.ogg"
+HCE/Elite_Loose/KillPlayer/11 "sounds/hce_voice/elite_loose/killplayer_144.ogg"
+HCE/Elite_Loose/KillPlayer/12 "sounds/hce_voice/elite_loose/killplayer_145.ogg"
+HCE/Elite_Loose/KillPlayer/13 "sounds/hce_voice/elite_loose/killplayer_146.ogg"
+HCE/Elite_Loose/KillPlayer/14 "sounds/hce_voice/elite_loose/killplayer_147.ogg"
+HCE/Elite_Loose/KillPlayer/15 "sounds/hce_voice/elite_loose/killplayer_148.ogg"
+HCE/Elite_Loose/KillPlayer/16 "sounds/hce_voice/elite_loose/killplayer_149.ogg"
 $random HCE/Elite_Loose/KillPlayer { HCE/Elite_Loose/KillPlayer/0 HCE/Elite_Loose/KillPlayer/1 HCE/Elite_Loose/KillPlayer/2 HCE/Elite_Loose/KillPlayer/3 HCE/Elite_Loose/KillPlayer/4 HCE/Elite_Loose/KillPlayer/5 HCE/Elite_Loose/KillPlayer/6 HCE/Elite_Loose/KillPlayer/7 HCE/Elite_Loose/KillPlayer/8 HCE/Elite_Loose/KillPlayer/9 HCE/Elite_Loose/KillPlayer/10 HCE/Elite_Loose/KillPlayer/11 HCE/Elite_Loose/KillPlayer/12 HCE/Elite_Loose/KillPlayer/13 HCE/Elite_Loose/KillPlayer/14 HCE/Elite_Loose/KillPlayer/15 HCE/Elite_Loose/KillPlayer/16 }
-HCE/Elite_Loose/LeaderDead/0 "sounds/hce_voice/elite_loose/leaderdead_120.ogg"
-HCE/Elite_Loose/LeaderDead/1 "sounds/hce_voice/elite_loose/leaderdead_121.ogg"
-HCE/Elite_Loose/LeaderDead/2 "sounds/hce_voice/elite_loose/leaderdead_122.ogg"
-HCE/Elite_Loose/LeaderDead/3 "sounds/hce_voice/elite_loose/leaderdead_123.ogg"
-HCE/Elite_Loose/LeaderDead/4 "sounds/hce_voice/elite_loose/leaderdead_124.ogg"
-HCE/Elite_Loose/LeaderDead/5 "sounds/hce_voice/elite_loose/leaderdead_125.ogg"
-HCE/Elite_Loose/LeaderDead/6 "sounds/hce_voice/elite_loose/leaderdead_126.ogg"
-HCE/Elite_Loose/LeaderDead/7 "sounds/hce_voice/elite_loose/leaderdead_127.ogg"
+HCE/Elite_Loose/LeaderDead/0 "sounds/hce_voice/elite_loose/leaderdead_150.ogg"
+HCE/Elite_Loose/LeaderDead/1 "sounds/hce_voice/elite_loose/leaderdead_151.ogg"
+HCE/Elite_Loose/LeaderDead/2 "sounds/hce_voice/elite_loose/leaderdead_152.ogg"
+HCE/Elite_Loose/LeaderDead/3 "sounds/hce_voice/elite_loose/leaderdead_153.ogg"
+HCE/Elite_Loose/LeaderDead/4 "sounds/hce_voice/elite_loose/leaderdead_154.ogg"
+HCE/Elite_Loose/LeaderDead/5 "sounds/hce_voice/elite_loose/leaderdead_155.ogg"
+HCE/Elite_Loose/LeaderDead/6 "sounds/hce_voice/elite_loose/leaderdead_156.ogg"
+HCE/Elite_Loose/LeaderDead/7 "sounds/hce_voice/elite_loose/leaderdead_157.ogg"
 $random HCE/Elite_Loose/LeaderDead { HCE/Elite_Loose/LeaderDead/0 HCE/Elite_Loose/LeaderDead/1 HCE/Elite_Loose/LeaderDead/2 HCE/Elite_Loose/LeaderDead/3 HCE/Elite_Loose/LeaderDead/4 HCE/Elite_Loose/LeaderDead/5 HCE/Elite_Loose/LeaderDead/6 HCE/Elite_Loose/LeaderDead/7 }
-HCE/Elite_Loose/ManDown/0 "sounds/hce_voice/elite_loose/mandown_128.ogg"
-HCE/Elite_Loose/ManDown/1 "sounds/hce_voice/elite_loose/mandown_129.ogg"
-HCE/Elite_Loose/ManDown/2 "sounds/hce_voice/elite_loose/mandown_130.ogg"
-HCE/Elite_Loose/ManDown/3 "sounds/hce_voice/elite_loose/mandown_131.ogg"
-HCE/Elite_Loose/ManDown/4 "sounds/hce_voice/elite_loose/mandown_132.ogg"
-HCE/Elite_Loose/ManDown/5 "sounds/hce_voice/elite_loose/mandown_133.ogg"
+HCE/Elite_Loose/ManDown/0 "sounds/hce_voice/elite_loose/mandown_158.ogg"
+HCE/Elite_Loose/ManDown/1 "sounds/hce_voice/elite_loose/mandown_159.ogg"
+HCE/Elite_Loose/ManDown/2 "sounds/hce_voice/elite_loose/mandown_160.ogg"
+HCE/Elite_Loose/ManDown/3 "sounds/hce_voice/elite_loose/mandown_161.ogg"
+HCE/Elite_Loose/ManDown/4 "sounds/hce_voice/elite_loose/mandown_162.ogg"
+HCE/Elite_Loose/ManDown/5 "sounds/hce_voice/elite_loose/mandown_163.ogg"
 $random HCE/Elite_Loose/ManDown { HCE/Elite_Loose/ManDown/0 HCE/Elite_Loose/ManDown/1 HCE/Elite_Loose/ManDown/2 HCE/Elite_Loose/ManDown/3 HCE/Elite_Loose/ManDown/4 HCE/Elite_Loose/ManDown/5 }
-HCE/Elite_Loose/Melee/0 "sounds/hce_voice/elite_loose/melee_134.ogg"
-HCE/Elite_Loose/Melee/1 "sounds/hce_voice/elite_loose/melee_135.ogg"
-HCE/Elite_Loose/Melee/2 "sounds/hce_voice/elite_loose/melee_136.ogg"
-HCE/Elite_Loose/Melee/3 "sounds/hce_voice/elite_loose/melee_137.ogg"
-HCE/Elite_Loose/Melee/4 "sounds/hce_voice/elite_loose/melee_138.ogg"
-HCE/Elite_Loose/Melee/5 "sounds/hce_voice/elite_loose/melee_139.ogg"
-HCE/Elite_Loose/Melee/6 "sounds/hce_voice/elite_loose/melee_140.ogg"
+HCE/Elite_Loose/Melee/0 "sounds/hce_voice/elite_loose/melee_164.ogg"
+HCE/Elite_Loose/Melee/1 "sounds/hce_voice/elite_loose/melee_165.ogg"
+HCE/Elite_Loose/Melee/2 "sounds/hce_voice/elite_loose/melee_166.ogg"
+HCE/Elite_Loose/Melee/3 "sounds/hce_voice/elite_loose/melee_167.ogg"
+HCE/Elite_Loose/Melee/4 "sounds/hce_voice/elite_loose/melee_168.ogg"
+HCE/Elite_Loose/Melee/5 "sounds/hce_voice/elite_loose/melee_169.ogg"
+HCE/Elite_Loose/Melee/6 "sounds/hce_voice/elite_loose/melee_170.ogg"
 $random HCE/Elite_Loose/Melee { HCE/Elite_Loose/Melee/0 HCE/Elite_Loose/Melee/1 HCE/Elite_Loose/Melee/2 HCE/Elite_Loose/Melee/3 HCE/Elite_Loose/Melee/4 HCE/Elite_Loose/Melee/5 HCE/Elite_Loose/Melee/6 }
-HCE/Elite_Loose/OnFire/0 "sounds/hce_voice/elite_loose/onfire_141.ogg"
-HCE/Elite_Loose/OnFire/1 "sounds/hce_voice/elite_loose/onfire_142.ogg"
-HCE/Elite_Loose/OnFire/2 "sounds/hce_voice/elite_loose/onfire_143.ogg"
-HCE/Elite_Loose/OnFire/3 "sounds/hce_voice/elite_loose/onfire_144.ogg"
-HCE/Elite_Loose/OnFire/4 "sounds/hce_voice/elite_loose/onfire_145.ogg"
-HCE/Elite_Loose/OnFire/5 "sounds/hce_voice/elite_loose/onfire_146.ogg"
-HCE/Elite_Loose/OnFire/6 "sounds/hce_voice/elite_loose/onfire_147.ogg"
-HCE/Elite_Loose/OnFire/7 "sounds/hce_voice/elite_loose/onfire_148.ogg"
-HCE/Elite_Loose/OnFire/8 "sounds/hce_voice/elite_loose/onfire_149.ogg"
-HCE/Elite_Loose/OnFire/9 "sounds/hce_voice/elite_loose/onfire_150.ogg"
-HCE/Elite_Loose/OnFire/10 "sounds/hce_voice/elite_loose/onfire_151.ogg"
-HCE/Elite_Loose/OnFire/11 "sounds/hce_voice/elite_loose/onfire_152.ogg"
-HCE/Elite_Loose/OnFire/12 "sounds/hce_voice/elite_loose/onfire_153.ogg"
-HCE/Elite_Loose/OnFire/13 "sounds/hce_voice/elite_loose/onfire_154.ogg"
+HCE/Elite_Loose/OnFire/0 "sounds/hce_voice/elite_loose/onfire_171.ogg"
+HCE/Elite_Loose/OnFire/1 "sounds/hce_voice/elite_loose/onfire_172.ogg"
+HCE/Elite_Loose/OnFire/2 "sounds/hce_voice/elite_loose/onfire_173.ogg"
+HCE/Elite_Loose/OnFire/3 "sounds/hce_voice/elite_loose/onfire_174.ogg"
+HCE/Elite_Loose/OnFire/4 "sounds/hce_voice/elite_loose/onfire_175.ogg"
+HCE/Elite_Loose/OnFire/5 "sounds/hce_voice/elite_loose/onfire_176.ogg"
+HCE/Elite_Loose/OnFire/6 "sounds/hce_voice/elite_loose/onfire_177.ogg"
+HCE/Elite_Loose/OnFire/7 "sounds/hce_voice/elite_loose/onfire_178.ogg"
+HCE/Elite_Loose/OnFire/8 "sounds/hce_voice/elite_loose/onfire_179.ogg"
+HCE/Elite_Loose/OnFire/9 "sounds/hce_voice/elite_loose/onfire_180.ogg"
+HCE/Elite_Loose/OnFire/10 "sounds/hce_voice/elite_loose/onfire_181.ogg"
+HCE/Elite_Loose/OnFire/11 "sounds/hce_voice/elite_loose/onfire_182.ogg"
+HCE/Elite_Loose/OnFire/12 "sounds/hce_voice/elite_loose/onfire_183.ogg"
+HCE/Elite_Loose/OnFire/13 "sounds/hce_voice/elite_loose/onfire_184.ogg"
 $random HCE/Elite_Loose/OnFire { HCE/Elite_Loose/OnFire/0 HCE/Elite_Loose/OnFire/1 HCE/Elite_Loose/OnFire/2 HCE/Elite_Loose/OnFire/3 HCE/Elite_Loose/OnFire/4 HCE/Elite_Loose/OnFire/5 HCE/Elite_Loose/OnFire/6 HCE/Elite_Loose/OnFire/7 HCE/Elite_Loose/OnFire/8 HCE/Elite_Loose/OnFire/9 HCE/Elite_Loose/OnFire/10 HCE/Elite_Loose/OnFire/11 HCE/Elite_Loose/OnFire/12 HCE/Elite_Loose/OnFire/13 }
-HCE/Elite_Loose/Pain/0 "sounds/hce_voice/elite_loose/pain_166.ogg"
-HCE/Elite_Loose/Pain/1 "sounds/hce_voice/elite_loose/pain_167.ogg"
-HCE/Elite_Loose/Pain/2 "sounds/hce_voice/elite_loose/pain_168.ogg"
-HCE/Elite_Loose/Pain/3 "sounds/hce_voice/elite_loose/pain_169.ogg"
-HCE/Elite_Loose/Pain/4 "sounds/hce_voice/elite_loose/pain_170.ogg"
-HCE/Elite_Loose/Pain/5 "sounds/hce_voice/elite_loose/pain_171.ogg"
-HCE/Elite_Loose/Pain/6 "sounds/hce_voice/elite_loose/pain_172.ogg"
-HCE/Elite_Loose/Pain/7 "sounds/hce_voice/elite_loose/pain_173.ogg"
-HCE/Elite_Loose/Pain/8 "sounds/hce_voice/elite_loose/pain_174.ogg"
-HCE/Elite_Loose/Pain/9 "sounds/hce_voice/elite_loose/pain_175.ogg"
-HCE/Elite_Loose/Pain/10 "sounds/hce_voice/elite_loose/pain_176.ogg"
-HCE/Elite_Loose/Pain/11 "sounds/hce_voice/elite_loose/pain_177.ogg"
-HCE/Elite_Loose/Pain/12 "sounds/hce_voice/elite_loose/pain_178.ogg"
-HCE/Elite_Loose/Pain/13 "sounds/hce_voice/elite_loose/pain_179.ogg"
-HCE/Elite_Loose/Pain/14 "sounds/hce_voice/elite_loose/pain_180.ogg"
-HCE/Elite_Loose/Pain/15 "sounds/hce_voice/elite_loose/pain_181.ogg"
-HCE/Elite_Loose/Pain/16 "sounds/hce_voice/elite_loose/pain_182.ogg"
-HCE/Elite_Loose/Pain/17 "sounds/hce_voice/elite_loose/pain_183.ogg"
-HCE/Elite_Loose/Pain/18 "sounds/hce_voice/elite_loose/pain_184.ogg"
-HCE/Elite_Loose/Pain/19 "sounds/hce_voice/elite_loose/pain_185.ogg"
+HCE/Elite_Loose/Pain/0 "sounds/hce_voice/elite_loose/pain_196.ogg"
+HCE/Elite_Loose/Pain/1 "sounds/hce_voice/elite_loose/pain_197.ogg"
+HCE/Elite_Loose/Pain/2 "sounds/hce_voice/elite_loose/pain_198.ogg"
+HCE/Elite_Loose/Pain/3 "sounds/hce_voice/elite_loose/pain_199.ogg"
+HCE/Elite_Loose/Pain/4 "sounds/hce_voice/elite_loose/pain_200.ogg"
+HCE/Elite_Loose/Pain/5 "sounds/hce_voice/elite_loose/pain_201.ogg"
+HCE/Elite_Loose/Pain/6 "sounds/hce_voice/elite_loose/pain_202.ogg"
+HCE/Elite_Loose/Pain/7 "sounds/hce_voice/elite_loose/pain_203.ogg"
+HCE/Elite_Loose/Pain/8 "sounds/hce_voice/elite_loose/pain_204.ogg"
+HCE/Elite_Loose/Pain/9 "sounds/hce_voice/elite_loose/pain_205.ogg"
+HCE/Elite_Loose/Pain/10 "sounds/hce_voice/elite_loose/pain_206.ogg"
+HCE/Elite_Loose/Pain/11 "sounds/hce_voice/elite_loose/pain_207.ogg"
+HCE/Elite_Loose/Pain/12 "sounds/hce_voice/elite_loose/pain_208.ogg"
+HCE/Elite_Loose/Pain/13 "sounds/hce_voice/elite_loose/pain_209.ogg"
+HCE/Elite_Loose/Pain/14 "sounds/hce_voice/elite_loose/pain_210.ogg"
+HCE/Elite_Loose/Pain/15 "sounds/hce_voice/elite_loose/pain_211.ogg"
+HCE/Elite_Loose/Pain/16 "sounds/hce_voice/elite_loose/pain_212.ogg"
+HCE/Elite_Loose/Pain/17 "sounds/hce_voice/elite_loose/pain_213.ogg"
+HCE/Elite_Loose/Pain/18 "sounds/hce_voice/elite_loose/pain_214.ogg"
+HCE/Elite_Loose/Pain/19 "sounds/hce_voice/elite_loose/pain_215.ogg"
 $random HCE/Elite_Loose/Pain { HCE/Elite_Loose/Pain/0 HCE/Elite_Loose/Pain/1 HCE/Elite_Loose/Pain/2 HCE/Elite_Loose/Pain/3 HCE/Elite_Loose/Pain/4 HCE/Elite_Loose/Pain/5 HCE/Elite_Loose/Pain/6 HCE/Elite_Loose/Pain/7 HCE/Elite_Loose/Pain/8 HCE/Elite_Loose/Pain/9 HCE/Elite_Loose/Pain/10 HCE/Elite_Loose/Pain/11 HCE/Elite_Loose/Pain/12 HCE/Elite_Loose/Pain/13 HCE/Elite_Loose/Pain/14 HCE/Elite_Loose/Pain/15 HCE/Elite_Loose/Pain/16 HCE/Elite_Loose/Pain/17 HCE/Elite_Loose/Pain/18 HCE/Elite_Loose/Pain/19 }
-HCE/Elite_Loose/PainHeavy/0 "sounds/hce_voice/elite_loose/painheavy_186.ogg"
-HCE/Elite_Loose/PainHeavy/1 "sounds/hce_voice/elite_loose/painheavy_187.ogg"
-HCE/Elite_Loose/PainHeavy/2 "sounds/hce_voice/elite_loose/painheavy_188.ogg"
-HCE/Elite_Loose/PainHeavy/3 "sounds/hce_voice/elite_loose/painheavy_189.ogg"
-HCE/Elite_Loose/PainHeavy/4 "sounds/hce_voice/elite_loose/painheavy_190.ogg"
-HCE/Elite_Loose/PainHeavy/5 "sounds/hce_voice/elite_loose/painheavy_191.ogg"
-HCE/Elite_Loose/PainHeavy/6 "sounds/hce_voice/elite_loose/painheavy_192.ogg"
-HCE/Elite_Loose/PainHeavy/7 "sounds/hce_voice/elite_loose/painheavy_193.ogg"
-HCE/Elite_Loose/PainHeavy/8 "sounds/hce_voice/elite_loose/painheavy_194.ogg"
-HCE/Elite_Loose/PainHeavy/9 "sounds/hce_voice/elite_loose/painheavy_195.ogg"
-HCE/Elite_Loose/PainHeavy/10 "sounds/hce_voice/elite_loose/painheavy_196.ogg"
-HCE/Elite_Loose/PainHeavy/11 "sounds/hce_voice/elite_loose/painheavy_197.ogg"
-HCE/Elite_Loose/PainHeavy/12 "sounds/hce_voice/elite_loose/painheavy_198.ogg"
-HCE/Elite_Loose/PainHeavy/13 "sounds/hce_voice/elite_loose/painheavy_199.ogg"
-HCE/Elite_Loose/PainHeavy/14 "sounds/hce_voice/elite_loose/painheavy_200.ogg"
-HCE/Elite_Loose/PainHeavy/15 "sounds/hce_voice/elite_loose/painheavy_201.ogg"
+HCE/Elite_Loose/PainHeavy/0 "sounds/hce_voice/elite_loose/painheavy_216.ogg"
+HCE/Elite_Loose/PainHeavy/1 "sounds/hce_voice/elite_loose/painheavy_217.ogg"
+HCE/Elite_Loose/PainHeavy/2 "sounds/hce_voice/elite_loose/painheavy_218.ogg"
+HCE/Elite_Loose/PainHeavy/3 "sounds/hce_voice/elite_loose/painheavy_219.ogg"
+HCE/Elite_Loose/PainHeavy/4 "sounds/hce_voice/elite_loose/painheavy_220.ogg"
+HCE/Elite_Loose/PainHeavy/5 "sounds/hce_voice/elite_loose/painheavy_221.ogg"
+HCE/Elite_Loose/PainHeavy/6 "sounds/hce_voice/elite_loose/painheavy_222.ogg"
+HCE/Elite_Loose/PainHeavy/7 "sounds/hce_voice/elite_loose/painheavy_223.ogg"
+HCE/Elite_Loose/PainHeavy/8 "sounds/hce_voice/elite_loose/painheavy_224.ogg"
+HCE/Elite_Loose/PainHeavy/9 "sounds/hce_voice/elite_loose/painheavy_225.ogg"
+HCE/Elite_Loose/PainHeavy/10 "sounds/hce_voice/elite_loose/painheavy_226.ogg"
+HCE/Elite_Loose/PainHeavy/11 "sounds/hce_voice/elite_loose/painheavy_227.ogg"
+HCE/Elite_Loose/PainHeavy/12 "sounds/hce_voice/elite_loose/painheavy_228.ogg"
+HCE/Elite_Loose/PainHeavy/13 "sounds/hce_voice/elite_loose/painheavy_229.ogg"
+HCE/Elite_Loose/PainHeavy/14 "sounds/hce_voice/elite_loose/painheavy_230.ogg"
+HCE/Elite_Loose/PainHeavy/15 "sounds/hce_voice/elite_loose/painheavy_231.ogg"
 $random HCE/Elite_Loose/PainHeavy { HCE/Elite_Loose/PainHeavy/0 HCE/Elite_Loose/PainHeavy/1 HCE/Elite_Loose/PainHeavy/2 HCE/Elite_Loose/PainHeavy/3 HCE/Elite_Loose/PainHeavy/4 HCE/Elite_Loose/PainHeavy/5 HCE/Elite_Loose/PainHeavy/6 HCE/Elite_Loose/PainHeavy/7 HCE/Elite_Loose/PainHeavy/8 HCE/Elite_Loose/PainHeavy/9 HCE/Elite_Loose/PainHeavy/10 HCE/Elite_Loose/PainHeavy/11 HCE/Elite_Loose/PainHeavy/12 HCE/Elite_Loose/PainHeavy/13 HCE/Elite_Loose/PainHeavy/14 HCE/Elite_Loose/PainHeavy/15 }
-HCE/Elite_Loose/PainMed/0 "sounds/hce_voice/elite_loose/painmed_155.ogg"
-HCE/Elite_Loose/PainMed/1 "sounds/hce_voice/elite_loose/painmed_156.ogg"
-HCE/Elite_Loose/PainMed/2 "sounds/hce_voice/elite_loose/painmed_157.ogg"
-HCE/Elite_Loose/PainMed/3 "sounds/hce_voice/elite_loose/painmed_158.ogg"
-HCE/Elite_Loose/PainMed/4 "sounds/hce_voice/elite_loose/painmed_159.ogg"
-HCE/Elite_Loose/PainMed/5 "sounds/hce_voice/elite_loose/painmed_160.ogg"
-HCE/Elite_Loose/PainMed/6 "sounds/hce_voice/elite_loose/painmed_161.ogg"
-HCE/Elite_Loose/PainMed/7 "sounds/hce_voice/elite_loose/painmed_162.ogg"
-HCE/Elite_Loose/PainMed/8 "sounds/hce_voice/elite_loose/painmed_163.ogg"
-HCE/Elite_Loose/PainMed/9 "sounds/hce_voice/elite_loose/painmed_164.ogg"
-HCE/Elite_Loose/PainMed/10 "sounds/hce_voice/elite_loose/painmed_165.ogg"
+HCE/Elite_Loose/PainMed/0 "sounds/hce_voice/elite_loose/painmed_185.ogg"
+HCE/Elite_Loose/PainMed/1 "sounds/hce_voice/elite_loose/painmed_186.ogg"
+HCE/Elite_Loose/PainMed/2 "sounds/hce_voice/elite_loose/painmed_187.ogg"
+HCE/Elite_Loose/PainMed/3 "sounds/hce_voice/elite_loose/painmed_188.ogg"
+HCE/Elite_Loose/PainMed/4 "sounds/hce_voice/elite_loose/painmed_189.ogg"
+HCE/Elite_Loose/PainMed/5 "sounds/hce_voice/elite_loose/painmed_190.ogg"
+HCE/Elite_Loose/PainMed/6 "sounds/hce_voice/elite_loose/painmed_191.ogg"
+HCE/Elite_Loose/PainMed/7 "sounds/hce_voice/elite_loose/painmed_192.ogg"
+HCE/Elite_Loose/PainMed/8 "sounds/hce_voice/elite_loose/painmed_193.ogg"
+HCE/Elite_Loose/PainMed/9 "sounds/hce_voice/elite_loose/painmed_194.ogg"
+HCE/Elite_Loose/PainMed/10 "sounds/hce_voice/elite_loose/painmed_195.ogg"
 $random HCE/Elite_Loose/PainMed { HCE/Elite_Loose/PainMed/0 HCE/Elite_Loose/PainMed/1 HCE/Elite_Loose/PainMed/2 HCE/Elite_Loose/PainMed/3 HCE/Elite_Loose/PainMed/4 HCE/Elite_Loose/PainMed/5 HCE/Elite_Loose/PainMed/6 HCE/Elite_Loose/PainMed/7 HCE/Elite_Loose/PainMed/8 HCE/Elite_Loose/PainMed/9 HCE/Elite_Loose/PainMed/10 }
-HCE/Elite_Loose/Panic/0 "sounds/hce_voice/elite_loose/panic_202.ogg"
-HCE/Elite_Loose/Panic/1 "sounds/hce_voice/elite_loose/panic_203.ogg"
+HCE/Elite_Loose/Panic/0 "sounds/hce_voice/elite_loose/panic_232.ogg"
+HCE/Elite_Loose/Panic/1 "sounds/hce_voice/elite_loose/panic_233.ogg"
 $random HCE/Elite_Loose/Panic { HCE/Elite_Loose/Panic/0 HCE/Elite_Loose/Panic/1 }
-HCE/Elite_Loose/Regroup/0 "sounds/hce_voice/elite_loose/regroup_204.ogg"
-HCE/Elite_Loose/Regroup/1 "sounds/hce_voice/elite_loose/regroup_205.ogg"
-HCE/Elite_Loose/Regroup/2 "sounds/hce_voice/elite_loose/regroup_206.ogg"
-HCE/Elite_Loose/Regroup/3 "sounds/hce_voice/elite_loose/regroup_207.ogg"
-HCE/Elite_Loose/Regroup/4 "sounds/hce_voice/elite_loose/regroup_208.ogg"
-HCE/Elite_Loose/Regroup/5 "sounds/hce_voice/elite_loose/regroup_209.ogg"
-HCE/Elite_Loose/Regroup/6 "sounds/hce_voice/elite_loose/regroup_210.ogg"
-HCE/Elite_Loose/Regroup/7 "sounds/hce_voice/elite_loose/regroup_211.ogg"
-HCE/Elite_Loose/Regroup/8 "sounds/hce_voice/elite_loose/regroup_212.ogg"
-HCE/Elite_Loose/Regroup/9 "sounds/hce_voice/elite_loose/regroup_213.ogg"
-HCE/Elite_Loose/Regroup/10 "sounds/hce_voice/elite_loose/regroup_214.ogg"
-HCE/Elite_Loose/Regroup/11 "sounds/hce_voice/elite_loose/regroup_215.ogg"
+HCE/Elite_Loose/Regroup/0 "sounds/hce_voice/elite_loose/regroup_234.ogg"
+HCE/Elite_Loose/Regroup/1 "sounds/hce_voice/elite_loose/regroup_235.ogg"
+HCE/Elite_Loose/Regroup/2 "sounds/hce_voice/elite_loose/regroup_236.ogg"
+HCE/Elite_Loose/Regroup/3 "sounds/hce_voice/elite_loose/regroup_237.ogg"
+HCE/Elite_Loose/Regroup/4 "sounds/hce_voice/elite_loose/regroup_238.ogg"
+HCE/Elite_Loose/Regroup/5 "sounds/hce_voice/elite_loose/regroup_239.ogg"
+HCE/Elite_Loose/Regroup/6 "sounds/hce_voice/elite_loose/regroup_240.ogg"
+HCE/Elite_Loose/Regroup/7 "sounds/hce_voice/elite_loose/regroup_241.ogg"
+HCE/Elite_Loose/Regroup/8 "sounds/hce_voice/elite_loose/regroup_242.ogg"
+HCE/Elite_Loose/Regroup/9 "sounds/hce_voice/elite_loose/regroup_243.ogg"
+HCE/Elite_Loose/Regroup/10 "sounds/hce_voice/elite_loose/regroup_244.ogg"
+HCE/Elite_Loose/Regroup/11 "sounds/hce_voice/elite_loose/regroup_245.ogg"
 $random HCE/Elite_Loose/Regroup { HCE/Elite_Loose/Regroup/0 HCE/Elite_Loose/Regroup/1 HCE/Elite_Loose/Regroup/2 HCE/Elite_Loose/Regroup/3 HCE/Elite_Loose/Regroup/4 HCE/Elite_Loose/Regroup/5 HCE/Elite_Loose/Regroup/6 HCE/Elite_Loose/Regroup/7 HCE/Elite_Loose/Regroup/8 HCE/Elite_Loose/Regroup/9 HCE/Elite_Loose/Regroup/10 HCE/Elite_Loose/Regroup/11 }
-HCE/Elite_Loose/Stuck/0 "sounds/hce_voice/elite_loose/stuck_216.ogg"
-HCE/Elite_Loose/Stuck/1 "sounds/hce_voice/elite_loose/stuck_217.ogg"
-HCE/Elite_Loose/Stuck/2 "sounds/hce_voice/elite_loose/stuck_218.ogg"
-HCE/Elite_Loose/Stuck/3 "sounds/hce_voice/elite_loose/stuck_219.ogg"
-HCE/Elite_Loose/Stuck/4 "sounds/hce_voice/elite_loose/stuck_220.ogg"
+HCE/Elite_Loose/SearchClear/0 "sounds/hce_voice/elite_loose/searchclear_246.ogg"
+HCE/Elite_Loose/SearchClear/1 "sounds/hce_voice/elite_loose/searchclear_247.ogg"
+HCE/Elite_Loose/SearchClear/2 "sounds/hce_voice/elite_loose/searchclear_248.ogg"
+HCE/Elite_Loose/SearchClear/3 "sounds/hce_voice/elite_loose/searchclear_249.ogg"
+$random HCE/Elite_Loose/SearchClear { HCE/Elite_Loose/SearchClear/0 HCE/Elite_Loose/SearchClear/1 HCE/Elite_Loose/SearchClear/2 HCE/Elite_Loose/SearchClear/3 }
+HCE/Elite_Loose/SearchFail/0 "sounds/hce_voice/elite_loose/searchfail_250.ogg"
+HCE/Elite_Loose/SearchFail/1 "sounds/hce_voice/elite_loose/searchfail_251.ogg"
+HCE/Elite_Loose/SearchFail/2 "sounds/hce_voice/elite_loose/searchfail_252.ogg"
+HCE/Elite_Loose/SearchFail/3 "sounds/hce_voice/elite_loose/searchfail_253.ogg"
+$random HCE/Elite_Loose/SearchFail { HCE/Elite_Loose/SearchFail/0 HCE/Elite_Loose/SearchFail/1 HCE/Elite_Loose/SearchFail/2 HCE/Elite_Loose/SearchFail/3 }
+HCE/Elite_Loose/SearchStart/0 "sounds/hce_voice/elite_loose/searchstart_254.ogg"
+HCE/Elite_Loose/SearchStart/1 "sounds/hce_voice/elite_loose/searchstart_255.ogg"
+$random HCE/Elite_Loose/SearchStart { HCE/Elite_Loose/SearchStart/0 HCE/Elite_Loose/SearchStart/1 }
+HCE/Elite_Loose/Sniper/0 "sounds/hce_voice/elite_loose/sniper_256.ogg"
+HCE/Elite_Loose/Sniper/1 "sounds/hce_voice/elite_loose/sniper_257.ogg"
+$random HCE/Elite_Loose/Sniper { HCE/Elite_Loose/Sniper/0 HCE/Elite_Loose/Sniper/1 }
+HCE/Elite_Loose/Stuck/0 "sounds/hce_voice/elite_loose/stuck_258.ogg"
+HCE/Elite_Loose/Stuck/1 "sounds/hce_voice/elite_loose/stuck_259.ogg"
+HCE/Elite_Loose/Stuck/2 "sounds/hce_voice/elite_loose/stuck_260.ogg"
+HCE/Elite_Loose/Stuck/3 "sounds/hce_voice/elite_loose/stuck_261.ogg"
+HCE/Elite_Loose/Stuck/4 "sounds/hce_voice/elite_loose/stuck_262.ogg"
 $random HCE/Elite_Loose/Stuck { HCE/Elite_Loose/Stuck/0 HCE/Elite_Loose/Stuck/1 HCE/Elite_Loose/Stuck/2 HCE/Elite_Loose/Stuck/3 HCE/Elite_Loose/Stuck/4 }
-HCE/Elite_Loose/Taunt/0 "sounds/hce_voice/elite_loose/taunt_221.ogg"
-HCE/Elite_Loose/Taunt/1 "sounds/hce_voice/elite_loose/taunt_222.ogg"
-HCE/Elite_Loose/Taunt/2 "sounds/hce_voice/elite_loose/taunt_223.ogg"
-HCE/Elite_Loose/Taunt/3 "sounds/hce_voice/elite_loose/taunt_224.ogg"
-HCE/Elite_Loose/Taunt/4 "sounds/hce_voice/elite_loose/taunt_225.ogg"
-HCE/Elite_Loose/Taunt/5 "sounds/hce_voice/elite_loose/taunt_226.ogg"
-HCE/Elite_Loose/Taunt/6 "sounds/hce_voice/elite_loose/taunt_227.ogg"
-HCE/Elite_Loose/Taunt/7 "sounds/hce_voice/elite_loose/taunt_228.ogg"
-HCE/Elite_Loose/Taunt/8 "sounds/hce_voice/elite_loose/taunt_229.ogg"
-HCE/Elite_Loose/Taunt/9 "sounds/hce_voice/elite_loose/taunt_230.ogg"
-HCE/Elite_Loose/Taunt/10 "sounds/hce_voice/elite_loose/taunt_231.ogg"
-HCE/Elite_Loose/Taunt/11 "sounds/hce_voice/elite_loose/taunt_232.ogg"
-HCE/Elite_Loose/Taunt/12 "sounds/hce_voice/elite_loose/taunt_233.ogg"
-HCE/Elite_Loose/Taunt/13 "sounds/hce_voice/elite_loose/taunt_234.ogg"
-HCE/Elite_Loose/Taunt/14 "sounds/hce_voice/elite_loose/taunt_235.ogg"
-HCE/Elite_Loose/Taunt/15 "sounds/hce_voice/elite_loose/taunt_236.ogg"
-HCE/Elite_Loose/Taunt/16 "sounds/hce_voice/elite_loose/taunt_237.ogg"
-HCE/Elite_Loose/Taunt/17 "sounds/hce_voice/elite_loose/taunt_238.ogg"
-HCE/Elite_Loose/Taunt/18 "sounds/hce_voice/elite_loose/taunt_239.ogg"
-HCE/Elite_Loose/Taunt/19 "sounds/hce_voice/elite_loose/taunt_240.ogg"
-HCE/Elite_Loose/Taunt/20 "sounds/hce_voice/elite_loose/taunt_241.ogg"
+HCE/Elite_Loose/Sword/0 "sounds/hce_voice/elite_loose/sword_263.ogg"
+HCE/Elite_Loose/Sword/1 "sounds/hce_voice/elite_loose/sword_264.ogg"
+$random HCE/Elite_Loose/Sword { HCE/Elite_Loose/Sword/0 HCE/Elite_Loose/Sword/1 }
+HCE/Elite_Loose/Taunt/0 "sounds/hce_voice/elite_loose/taunt_265.ogg"
+HCE/Elite_Loose/Taunt/1 "sounds/hce_voice/elite_loose/taunt_266.ogg"
+HCE/Elite_Loose/Taunt/2 "sounds/hce_voice/elite_loose/taunt_267.ogg"
+HCE/Elite_Loose/Taunt/3 "sounds/hce_voice/elite_loose/taunt_268.ogg"
+HCE/Elite_Loose/Taunt/4 "sounds/hce_voice/elite_loose/taunt_269.ogg"
+HCE/Elite_Loose/Taunt/5 "sounds/hce_voice/elite_loose/taunt_270.ogg"
+HCE/Elite_Loose/Taunt/6 "sounds/hce_voice/elite_loose/taunt_271.ogg"
+HCE/Elite_Loose/Taunt/7 "sounds/hce_voice/elite_loose/taunt_272.ogg"
+HCE/Elite_Loose/Taunt/8 "sounds/hce_voice/elite_loose/taunt_273.ogg"
+HCE/Elite_Loose/Taunt/9 "sounds/hce_voice/elite_loose/taunt_274.ogg"
+HCE/Elite_Loose/Taunt/10 "sounds/hce_voice/elite_loose/taunt_275.ogg"
+HCE/Elite_Loose/Taunt/11 "sounds/hce_voice/elite_loose/taunt_276.ogg"
+HCE/Elite_Loose/Taunt/12 "sounds/hce_voice/elite_loose/taunt_277.ogg"
+HCE/Elite_Loose/Taunt/13 "sounds/hce_voice/elite_loose/taunt_278.ogg"
+HCE/Elite_Loose/Taunt/14 "sounds/hce_voice/elite_loose/taunt_279.ogg"
+HCE/Elite_Loose/Taunt/15 "sounds/hce_voice/elite_loose/taunt_280.ogg"
+HCE/Elite_Loose/Taunt/16 "sounds/hce_voice/elite_loose/taunt_281.ogg"
+HCE/Elite_Loose/Taunt/17 "sounds/hce_voice/elite_loose/taunt_282.ogg"
+HCE/Elite_Loose/Taunt/18 "sounds/hce_voice/elite_loose/taunt_283.ogg"
+HCE/Elite_Loose/Taunt/19 "sounds/hce_voice/elite_loose/taunt_284.ogg"
+HCE/Elite_Loose/Taunt/20 "sounds/hce_voice/elite_loose/taunt_285.ogg"
 $random HCE/Elite_Loose/Taunt { HCE/Elite_Loose/Taunt/0 HCE/Elite_Loose/Taunt/1 HCE/Elite_Loose/Taunt/2 HCE/Elite_Loose/Taunt/3 HCE/Elite_Loose/Taunt/4 HCE/Elite_Loose/Taunt/5 HCE/Elite_Loose/Taunt/6 HCE/Elite_Loose/Taunt/7 HCE/Elite_Loose/Taunt/8 HCE/Elite_Loose/Taunt/9 HCE/Elite_Loose/Taunt/10 HCE/Elite_Loose/Taunt/11 HCE/Elite_Loose/Taunt/12 HCE/Elite_Loose/Taunt/13 HCE/Elite_Loose/Taunt/14 HCE/Elite_Loose/Taunt/15 HCE/Elite_Loose/Taunt/16 HCE/Elite_Loose/Taunt/17 HCE/Elite_Loose/Taunt/18 HCE/Elite_Loose/Taunt/19 HCE/Elite_Loose/Taunt/20 }
+HCE/Elite_Loose/Uncovered/0 "sounds/hce_voice/elite_loose/uncovered_286.ogg"
+HCE/Elite_Loose/Uncovered/1 "sounds/hce_voice/elite_loose/uncovered_287.ogg"
+$random HCE/Elite_Loose/Uncovered { HCE/Elite_Loose/Uncovered/0 HCE/Elite_Loose/Uncovered/1 }
+HCE/Elite_Loose/UpThere/0 "sounds/hce_voice/elite_loose/upthere_288.ogg"
+HCE/Elite_Loose/UpThere/1 "sounds/hce_voice/elite_loose/upthere_289.ogg"
+HCE/Elite_Loose/UpThere/2 "sounds/hce_voice/elite_loose/upthere_290.ogg"
+$random HCE/Elite_Loose/UpThere { HCE/Elite_Loose/UpThere/0 HCE/Elite_Loose/UpThere/1 HCE/Elite_Loose/UpThere/2 }
 $alias HCE/Elite_Loose/Kamikaze HCE/Elite_Loose/Panic
 $alias HCE/Elite_Loose/Scold HCE/Elite_Loose/PainMed
 $alias HCE/Elite_Loose/AllyKilled HCE/Elite_Loose/PainMed
@@ -461,37 +633,61 @@ $alias HCE/Elite_Loose/TradeOk HCE/Elite_Loose/Regroup
 $alias HCE/Elite_Loose/Refuse HCE/Elite_Loose/PainMed
 
 // ---- Grunt_Crazy
+HCE/Grunt_Crazy/Advance/0 "sounds/hce_voice/grunt_crazy/advance_83.ogg"
+HCE/Grunt_Crazy/Advance/1 "sounds/hce_voice/grunt_crazy/advance_84.ogg"
+HCE/Grunt_Crazy/Advance/2 "sounds/hce_voice/grunt_crazy/advance_85.ogg"
+HCE/Grunt_Crazy/Advance/3 "sounds/hce_voice/grunt_crazy/advance_86.ogg"
+HCE/Grunt_Crazy/Advance/4 "sounds/hce_voice/grunt_crazy/advance_87.ogg"
+$random HCE/Grunt_Crazy/Advance { HCE/Grunt_Crazy/Advance/0 HCE/Grunt_Crazy/Advance/1 HCE/Grunt_Crazy/Advance/2 HCE/Grunt_Crazy/Advance/3 HCE/Grunt_Crazy/Advance/4 }
 HCE/Grunt_Crazy/Alert/0 "sounds/hce_voice/grunt_crazy/alert_03.ogg"
 HCE/Grunt_Crazy/Alert/1 "sounds/hce_voice/grunt_crazy/alert_04.ogg"
 HCE/Grunt_Crazy/Alert/2 "sounds/hce_voice/grunt_crazy/alert_05.ogg"
 HCE/Grunt_Crazy/Alert/3 "sounds/hce_voice/grunt_crazy/alert_06.ogg"
 HCE/Grunt_Crazy/Alert/4 "sounds/hce_voice/grunt_crazy/alert_07.ogg"
 HCE/Grunt_Crazy/Alert/5 "sounds/hce_voice/grunt_crazy/alert_08.ogg"
-HCE/Grunt_Crazy/Alert/6 "sounds/hce_voice/grunt_crazy/alert_83.ogg"
-HCE/Grunt_Crazy/Alert/7 "sounds/hce_voice/grunt_crazy/alert_84.ogg"
+HCE/Grunt_Crazy/Alert/6 "sounds/hce_voice/grunt_crazy/alert_88.ogg"
+HCE/Grunt_Crazy/Alert/7 "sounds/hce_voice/grunt_crazy/alert_89.ogg"
 $random HCE/Grunt_Crazy/Alert { HCE/Grunt_Crazy/Alert/0 HCE/Grunt_Crazy/Alert/1 HCE/Grunt_Crazy/Alert/2 HCE/Grunt_Crazy/Alert/3 HCE/Grunt_Crazy/Alert/4 HCE/Grunt_Crazy/Alert/5 HCE/Grunt_Crazy/Alert/6 HCE/Grunt_Crazy/Alert/7 }
+HCE/Grunt_Crazy/Behind/0 "sounds/hce_voice/grunt_crazy/behind_90.ogg"
+HCE/Grunt_Crazy/Behind/1 "sounds/hce_voice/grunt_crazy/behind_91.ogg"
+HCE/Grunt_Crazy/Behind/2 "sounds/hce_voice/grunt_crazy/behind_92.ogg"
+HCE/Grunt_Crazy/Behind/3 "sounds/hce_voice/grunt_crazy/behind_93.ogg"
+$random HCE/Grunt_Crazy/Behind { HCE/Grunt_Crazy/Behind/0 HCE/Grunt_Crazy/Behind/1 HCE/Grunt_Crazy/Behind/2 HCE/Grunt_Crazy/Behind/3 }
+HCE/Grunt_Crazy/Cover/0 "sounds/hce_voice/grunt_crazy/cover_94.ogg"
+HCE/Grunt_Crazy/Cover/1 "sounds/hce_voice/grunt_crazy/cover_95.ogg"
+HCE/Grunt_Crazy/Cover/2 "sounds/hce_voice/grunt_crazy/cover_96.ogg"
+HCE/Grunt_Crazy/Cover/3 "sounds/hce_voice/grunt_crazy/cover_97.ogg"
+$random HCE/Grunt_Crazy/Cover { HCE/Grunt_Crazy/Cover/0 HCE/Grunt_Crazy/Cover/1 HCE/Grunt_Crazy/Cover/2 HCE/Grunt_Crazy/Cover/3 }
 HCE/Grunt_Crazy/Death/0 "sounds/hce_voice/grunt_crazy/death_09.ogg"
 HCE/Grunt_Crazy/Death/1 "sounds/hce_voice/grunt_crazy/death_10.ogg"
 HCE/Grunt_Crazy/Death/2 "sounds/hce_voice/grunt_crazy/death_11.ogg"
 HCE/Grunt_Crazy/Death/3 "sounds/hce_voice/grunt_crazy/death_12.ogg"
-HCE/Grunt_Crazy/Death/4 "sounds/hce_voice/grunt_crazy/death_85.ogg"
-HCE/Grunt_Crazy/Death/5 "sounds/hce_voice/grunt_crazy/death_86.ogg"
-HCE/Grunt_Crazy/Death/6 "sounds/hce_voice/grunt_crazy/death_87.ogg"
-HCE/Grunt_Crazy/Death/7 "sounds/hce_voice/grunt_crazy/death_88.ogg"
+HCE/Grunt_Crazy/Death/4 "sounds/hce_voice/grunt_crazy/death_98.ogg"
+HCE/Grunt_Crazy/Death/5 "sounds/hce_voice/grunt_crazy/death_99.ogg"
+HCE/Grunt_Crazy/Death/6 "sounds/hce_voice/grunt_crazy/death_100.ogg"
+HCE/Grunt_Crazy/Death/7 "sounds/hce_voice/grunt_crazy/death_101.ogg"
 $random HCE/Grunt_Crazy/Death { HCE/Grunt_Crazy/Death/0 HCE/Grunt_Crazy/Death/1 HCE/Grunt_Crazy/Death/2 HCE/Grunt_Crazy/Death/3 HCE/Grunt_Crazy/Death/4 HCE/Grunt_Crazy/Death/5 HCE/Grunt_Crazy/Death/6 HCE/Grunt_Crazy/Death/7 }
-HCE/Grunt_Crazy/DeathHard/0 "sounds/hce_voice/grunt_crazy/deathhard_89.ogg"
-HCE/Grunt_Crazy/DeathHard/1 "sounds/hce_voice/grunt_crazy/deathhard_90.ogg"
-HCE/Grunt_Crazy/DeathHard/2 "sounds/hce_voice/grunt_crazy/deathhard_91.ogg"
-HCE/Grunt_Crazy/DeathHard/3 "sounds/hce_voice/grunt_crazy/deathhard_92.ogg"
-HCE/Grunt_Crazy/DeathHard/4 "sounds/hce_voice/grunt_crazy/deathhard_93.ogg"
-HCE/Grunt_Crazy/DeathHard/5 "sounds/hce_voice/grunt_crazy/deathhard_94.ogg"
+HCE/Grunt_Crazy/DeathHard/0 "sounds/hce_voice/grunt_crazy/deathhard_102.ogg"
+HCE/Grunt_Crazy/DeathHard/1 "sounds/hce_voice/grunt_crazy/deathhard_103.ogg"
+HCE/Grunt_Crazy/DeathHard/2 "sounds/hce_voice/grunt_crazy/deathhard_104.ogg"
+HCE/Grunt_Crazy/DeathHard/3 "sounds/hce_voice/grunt_crazy/deathhard_105.ogg"
+HCE/Grunt_Crazy/DeathHard/4 "sounds/hce_voice/grunt_crazy/deathhard_106.ogg"
+HCE/Grunt_Crazy/DeathHard/5 "sounds/hce_voice/grunt_crazy/deathhard_107.ogg"
 $random HCE/Grunt_Crazy/DeathHard { HCE/Grunt_Crazy/DeathHard/0 HCE/Grunt_Crazy/DeathHard/1 HCE/Grunt_Crazy/DeathHard/2 HCE/Grunt_Crazy/DeathHard/3 HCE/Grunt_Crazy/DeathHard/4 HCE/Grunt_Crazy/DeathHard/5 }
+HCE/Grunt_Crazy/DownThere/0 "sounds/hce_voice/grunt_crazy/downthere_108.ogg"
+HCE/Grunt_Crazy/DownThere/1 "sounds/hce_voice/grunt_crazy/downthere_109.ogg"
+$random HCE/Grunt_Crazy/DownThere { HCE/Grunt_Crazy/DownThere/0 HCE/Grunt_Crazy/DownThere/1 }
 HCE/Grunt_Crazy/EnemyGrenade/0 "sounds/hce_voice/grunt_crazy/enemygrenade_13.ogg"
 HCE/Grunt_Crazy/EnemyGrenade/1 "sounds/hce_voice/grunt_crazy/enemygrenade_14.ogg"
 HCE/Grunt_Crazy/EnemyGrenade/2 "sounds/hce_voice/grunt_crazy/enemygrenade_15.ogg"
 HCE/Grunt_Crazy/EnemyGrenade/3 "sounds/hce_voice/grunt_crazy/enemygrenade_16.ogg"
-HCE/Grunt_Crazy/EnemyGrenade/4 "sounds/hce_voice/grunt_crazy/enemygrenade_95.ogg"
+HCE/Grunt_Crazy/EnemyGrenade/4 "sounds/hce_voice/grunt_crazy/enemygrenade_110.ogg"
 $random HCE/Grunt_Crazy/EnemyGrenade { HCE/Grunt_Crazy/EnemyGrenade/0 HCE/Grunt_Crazy/EnemyGrenade/1 HCE/Grunt_Crazy/EnemyGrenade/2 HCE/Grunt_Crazy/EnemyGrenade/3 HCE/Grunt_Crazy/EnemyGrenade/4 }
+HCE/Grunt_Crazy/FallBack/0 "sounds/hce_voice/grunt_crazy/fallback_111.ogg"
+HCE/Grunt_Crazy/FallBack/1 "sounds/hce_voice/grunt_crazy/fallback_112.ogg"
+HCE/Grunt_Crazy/FallBack/2 "sounds/hce_voice/grunt_crazy/fallback_113.ogg"
+HCE/Grunt_Crazy/FallBack/3 "sounds/hce_voice/grunt_crazy/fallback_114.ogg"
+$random HCE/Grunt_Crazy/FallBack { HCE/Grunt_Crazy/FallBack/0 HCE/Grunt_Crazy/FallBack/1 HCE/Grunt_Crazy/FallBack/2 HCE/Grunt_Crazy/FallBack/3 }
 HCE/Grunt_Crazy/Flee/0 "sounds/hce_voice/grunt_crazy/flee_17.ogg"
 HCE/Grunt_Crazy/Flee/1 "sounds/hce_voice/grunt_crazy/flee_18.ogg"
 HCE/Grunt_Crazy/Flee/2 "sounds/hce_voice/grunt_crazy/flee_19.ogg"
@@ -506,68 +702,79 @@ HCE/Grunt_Crazy/Flee/10 "sounds/hce_voice/grunt_crazy/flee_27.ogg"
 HCE/Grunt_Crazy/Flee/11 "sounds/hce_voice/grunt_crazy/flee_28.ogg"
 HCE/Grunt_Crazy/Flee/12 "sounds/hce_voice/grunt_crazy/flee_29.ogg"
 $random HCE/Grunt_Crazy/Flee { HCE/Grunt_Crazy/Flee/0 HCE/Grunt_Crazy/Flee/1 HCE/Grunt_Crazy/Flee/2 HCE/Grunt_Crazy/Flee/3 HCE/Grunt_Crazy/Flee/4 HCE/Grunt_Crazy/Flee/5 HCE/Grunt_Crazy/Flee/6 HCE/Grunt_Crazy/Flee/7 HCE/Grunt_Crazy/Flee/8 HCE/Grunt_Crazy/Flee/9 HCE/Grunt_Crazy/Flee/10 HCE/Grunt_Crazy/Flee/11 HCE/Grunt_Crazy/Flee/12 }
+HCE/Grunt_Crazy/FoundFoe/0 "sounds/hce_voice/grunt_crazy/foundfoe_115.ogg"
+HCE/Grunt_Crazy/FoundFoe/1 "sounds/hce_voice/grunt_crazy/foundfoe_116.ogg"
+HCE/Grunt_Crazy/FoundFoe/2 "sounds/hce_voice/grunt_crazy/foundfoe_117.ogg"
+HCE/Grunt_Crazy/FoundFoe/3 "sounds/hce_voice/grunt_crazy/foundfoe_118.ogg"
+$random HCE/Grunt_Crazy/FoundFoe { HCE/Grunt_Crazy/FoundFoe/0 HCE/Grunt_Crazy/FoundFoe/1 HCE/Grunt_Crazy/FoundFoe/2 HCE/Grunt_Crazy/FoundFoe/3 }
 HCE/Grunt_Crazy/GrenadeThrow/0 "sounds/hce_voice/grunt_crazy/grenadethrow_30.ogg"
 HCE/Grunt_Crazy/GrenadeThrow/1 "sounds/hce_voice/grunt_crazy/grenadethrow_31.ogg"
 HCE/Grunt_Crazy/GrenadeThrow/2 "sounds/hce_voice/grunt_crazy/grenadethrow_32.ogg"
 HCE/Grunt_Crazy/GrenadeThrow/3 "sounds/hce_voice/grunt_crazy/grenadethrow_33.ogg"
 HCE/Grunt_Crazy/GrenadeThrow/4 "sounds/hce_voice/grunt_crazy/grenadethrow_34.ogg"
 HCE/Grunt_Crazy/GrenadeThrow/5 "sounds/hce_voice/grunt_crazy/grenadethrow_35.ogg"
-HCE/Grunt_Crazy/GrenadeThrow/6 "sounds/hce_voice/grunt_crazy/grenadethrow_96.ogg"
-HCE/Grunt_Crazy/GrenadeThrow/7 "sounds/hce_voice/grunt_crazy/grenadethrow_97.ogg"
-HCE/Grunt_Crazy/GrenadeThrow/8 "sounds/hce_voice/grunt_crazy/grenadethrow_98.ogg"
+HCE/Grunt_Crazy/GrenadeThrow/6 "sounds/hce_voice/grunt_crazy/grenadethrow_119.ogg"
+HCE/Grunt_Crazy/GrenadeThrow/7 "sounds/hce_voice/grunt_crazy/grenadethrow_120.ogg"
+HCE/Grunt_Crazy/GrenadeThrow/8 "sounds/hce_voice/grunt_crazy/grenadethrow_121.ogg"
 $random HCE/Grunt_Crazy/GrenadeThrow { HCE/Grunt_Crazy/GrenadeThrow/0 HCE/Grunt_Crazy/GrenadeThrow/1 HCE/Grunt_Crazy/GrenadeThrow/2 HCE/Grunt_Crazy/GrenadeThrow/3 HCE/Grunt_Crazy/GrenadeThrow/4 HCE/Grunt_Crazy/GrenadeThrow/5 HCE/Grunt_Crazy/GrenadeThrow/6 HCE/Grunt_Crazy/GrenadeThrow/7 HCE/Grunt_Crazy/GrenadeThrow/8 }
-HCE/Grunt_Crazy/HeardGunfire/0 "sounds/hce_voice/grunt_crazy/heardgunfire_99.ogg"
-HCE/Grunt_Crazy/HeardGunfire/1 "sounds/hce_voice/grunt_crazy/heardgunfire_100.ogg"
-HCE/Grunt_Crazy/HeardGunfire/2 "sounds/hce_voice/grunt_crazy/heardgunfire_101.ogg"
-HCE/Grunt_Crazy/HeardGunfire/3 "sounds/hce_voice/grunt_crazy/heardgunfire_102.ogg"
-HCE/Grunt_Crazy/HeardGunfire/4 "sounds/hce_voice/grunt_crazy/heardgunfire_103.ogg"
+HCE/Grunt_Crazy/HeardGunfire/0 "sounds/hce_voice/grunt_crazy/heardgunfire_122.ogg"
+HCE/Grunt_Crazy/HeardGunfire/1 "sounds/hce_voice/grunt_crazy/heardgunfire_123.ogg"
+HCE/Grunt_Crazy/HeardGunfire/2 "sounds/hce_voice/grunt_crazy/heardgunfire_124.ogg"
+HCE/Grunt_Crazy/HeardGunfire/3 "sounds/hce_voice/grunt_crazy/heardgunfire_125.ogg"
+HCE/Grunt_Crazy/HeardGunfire/4 "sounds/hce_voice/grunt_crazy/heardgunfire_126.ogg"
 $random HCE/Grunt_Crazy/HeardGunfire { HCE/Grunt_Crazy/HeardGunfire/0 HCE/Grunt_Crazy/HeardGunfire/1 HCE/Grunt_Crazy/HeardGunfire/2 HCE/Grunt_Crazy/HeardGunfire/3 HCE/Grunt_Crazy/HeardGunfire/4 }
-HCE/Grunt_Crazy/Kamikaze/0 "sounds/hce_voice/grunt_crazy/kamikaze_104.ogg"
-HCE/Grunt_Crazy/Kamikaze/1 "sounds/hce_voice/grunt_crazy/kamikaze_105.ogg"
-HCE/Grunt_Crazy/Kamikaze/2 "sounds/hce_voice/grunt_crazy/kamikaze_106.ogg"
-HCE/Grunt_Crazy/Kamikaze/3 "sounds/hce_voice/grunt_crazy/kamikaze_107.ogg"
-HCE/Grunt_Crazy/Kamikaze/4 "sounds/hce_voice/grunt_crazy/kamikaze_108.ogg"
-HCE/Grunt_Crazy/Kamikaze/5 "sounds/hce_voice/grunt_crazy/kamikaze_109.ogg"
-HCE/Grunt_Crazy/Kamikaze/6 "sounds/hce_voice/grunt_crazy/kamikaze_110.ogg"
-HCE/Grunt_Crazy/Kamikaze/7 "sounds/hce_voice/grunt_crazy/kamikaze_111.ogg"
-HCE/Grunt_Crazy/Kamikaze/8 "sounds/hce_voice/grunt_crazy/kamikaze_112.ogg"
-HCE/Grunt_Crazy/Kamikaze/9 "sounds/hce_voice/grunt_crazy/kamikaze_113.ogg"
-HCE/Grunt_Crazy/Kamikaze/10 "sounds/hce_voice/grunt_crazy/kamikaze_114.ogg"
-HCE/Grunt_Crazy/Kamikaze/11 "sounds/hce_voice/grunt_crazy/kamikaze_115.ogg"
-HCE/Grunt_Crazy/Kamikaze/12 "sounds/hce_voice/grunt_crazy/kamikaze_116.ogg"
-HCE/Grunt_Crazy/Kamikaze/13 "sounds/hce_voice/grunt_crazy/kamikaze_117.ogg"
-HCE/Grunt_Crazy/Kamikaze/14 "sounds/hce_voice/grunt_crazy/kamikaze_118.ogg"
-HCE/Grunt_Crazy/Kamikaze/15 "sounds/hce_voice/grunt_crazy/kamikaze_119.ogg"
+HCE/Grunt_Crazy/Investigate/0 "sounds/hce_voice/grunt_crazy/investigate_127.ogg"
+HCE/Grunt_Crazy/Investigate/1 "sounds/hce_voice/grunt_crazy/investigate_128.ogg"
+$random HCE/Grunt_Crazy/Investigate { HCE/Grunt_Crazy/Investigate/0 HCE/Grunt_Crazy/Investigate/1 }
+HCE/Grunt_Crazy/Kamikaze/0 "sounds/hce_voice/grunt_crazy/kamikaze_129.ogg"
+HCE/Grunt_Crazy/Kamikaze/1 "sounds/hce_voice/grunt_crazy/kamikaze_130.ogg"
+HCE/Grunt_Crazy/Kamikaze/2 "sounds/hce_voice/grunt_crazy/kamikaze_131.ogg"
+HCE/Grunt_Crazy/Kamikaze/3 "sounds/hce_voice/grunt_crazy/kamikaze_132.ogg"
+HCE/Grunt_Crazy/Kamikaze/4 "sounds/hce_voice/grunt_crazy/kamikaze_133.ogg"
+HCE/Grunt_Crazy/Kamikaze/5 "sounds/hce_voice/grunt_crazy/kamikaze_134.ogg"
+HCE/Grunt_Crazy/Kamikaze/6 "sounds/hce_voice/grunt_crazy/kamikaze_135.ogg"
+HCE/Grunt_Crazy/Kamikaze/7 "sounds/hce_voice/grunt_crazy/kamikaze_136.ogg"
+HCE/Grunt_Crazy/Kamikaze/8 "sounds/hce_voice/grunt_crazy/kamikaze_137.ogg"
+HCE/Grunt_Crazy/Kamikaze/9 "sounds/hce_voice/grunt_crazy/kamikaze_138.ogg"
+HCE/Grunt_Crazy/Kamikaze/10 "sounds/hce_voice/grunt_crazy/kamikaze_139.ogg"
+HCE/Grunt_Crazy/Kamikaze/11 "sounds/hce_voice/grunt_crazy/kamikaze_140.ogg"
+HCE/Grunt_Crazy/Kamikaze/12 "sounds/hce_voice/grunt_crazy/kamikaze_141.ogg"
+HCE/Grunt_Crazy/Kamikaze/13 "sounds/hce_voice/grunt_crazy/kamikaze_142.ogg"
+HCE/Grunt_Crazy/Kamikaze/14 "sounds/hce_voice/grunt_crazy/kamikaze_143.ogg"
+HCE/Grunt_Crazy/Kamikaze/15 "sounds/hce_voice/grunt_crazy/kamikaze_144.ogg"
 $random HCE/Grunt_Crazy/Kamikaze { HCE/Grunt_Crazy/Kamikaze/0 HCE/Grunt_Crazy/Kamikaze/1 HCE/Grunt_Crazy/Kamikaze/2 HCE/Grunt_Crazy/Kamikaze/3 HCE/Grunt_Crazy/Kamikaze/4 HCE/Grunt_Crazy/Kamikaze/5 HCE/Grunt_Crazy/Kamikaze/6 HCE/Grunt_Crazy/Kamikaze/7 HCE/Grunt_Crazy/Kamikaze/8 HCE/Grunt_Crazy/Kamikaze/9 HCE/Grunt_Crazy/Kamikaze/10 HCE/Grunt_Crazy/Kamikaze/11 HCE/Grunt_Crazy/Kamikaze/12 HCE/Grunt_Crazy/Kamikaze/13 HCE/Grunt_Crazy/Kamikaze/14 HCE/Grunt_Crazy/Kamikaze/15 }
+HCE/Grunt_Crazy/KeepWatch/0 "sounds/hce_voice/grunt_crazy/keepwatch_145.ogg"
+HCE/Grunt_Crazy/KeepWatch/1 "sounds/hce_voice/grunt_crazy/keepwatch_146.ogg"
+$random HCE/Grunt_Crazy/KeepWatch { HCE/Grunt_Crazy/KeepWatch/0 HCE/Grunt_Crazy/KeepWatch/1 }
 HCE/Grunt_Crazy/KillPlayer/0 "sounds/hce_voice/grunt_crazy/killplayer_36.ogg"
 HCE/Grunt_Crazy/KillPlayer/1 "sounds/hce_voice/grunt_crazy/killplayer_37.ogg"
 HCE/Grunt_Crazy/KillPlayer/2 "sounds/hce_voice/grunt_crazy/killplayer_38.ogg"
 HCE/Grunt_Crazy/KillPlayer/3 "sounds/hce_voice/grunt_crazy/killplayer_39.ogg"
-HCE/Grunt_Crazy/KillPlayer/4 "sounds/hce_voice/grunt_crazy/killplayer_120.ogg"
-HCE/Grunt_Crazy/KillPlayer/5 "sounds/hce_voice/grunt_crazy/killplayer_121.ogg"
-HCE/Grunt_Crazy/KillPlayer/6 "sounds/hce_voice/grunt_crazy/killplayer_122.ogg"
-HCE/Grunt_Crazy/KillPlayer/7 "sounds/hce_voice/grunt_crazy/killplayer_123.ogg"
-HCE/Grunt_Crazy/KillPlayer/8 "sounds/hce_voice/grunt_crazy/killplayer_124.ogg"
-HCE/Grunt_Crazy/KillPlayer/9 "sounds/hce_voice/grunt_crazy/killplayer_125.ogg"
+HCE/Grunt_Crazy/KillPlayer/4 "sounds/hce_voice/grunt_crazy/killplayer_147.ogg"
+HCE/Grunt_Crazy/KillPlayer/5 "sounds/hce_voice/grunt_crazy/killplayer_148.ogg"
+HCE/Grunt_Crazy/KillPlayer/6 "sounds/hce_voice/grunt_crazy/killplayer_149.ogg"
+HCE/Grunt_Crazy/KillPlayer/7 "sounds/hce_voice/grunt_crazy/killplayer_150.ogg"
+HCE/Grunt_Crazy/KillPlayer/8 "sounds/hce_voice/grunt_crazy/killplayer_151.ogg"
+HCE/Grunt_Crazy/KillPlayer/9 "sounds/hce_voice/grunt_crazy/killplayer_152.ogg"
 $random HCE/Grunt_Crazy/KillPlayer { HCE/Grunt_Crazy/KillPlayer/0 HCE/Grunt_Crazy/KillPlayer/1 HCE/Grunt_Crazy/KillPlayer/2 HCE/Grunt_Crazy/KillPlayer/3 HCE/Grunt_Crazy/KillPlayer/4 HCE/Grunt_Crazy/KillPlayer/5 HCE/Grunt_Crazy/KillPlayer/6 HCE/Grunt_Crazy/KillPlayer/7 HCE/Grunt_Crazy/KillPlayer/8 HCE/Grunt_Crazy/KillPlayer/9 }
 HCE/Grunt_Crazy/LeaderDead/0 "sounds/hce_voice/grunt_crazy/leaderdead_40.ogg"
 HCE/Grunt_Crazy/LeaderDead/1 "sounds/hce_voice/grunt_crazy/leaderdead_41.ogg"
 HCE/Grunt_Crazy/LeaderDead/2 "sounds/hce_voice/grunt_crazy/leaderdead_42.ogg"
 HCE/Grunt_Crazy/LeaderDead/3 "sounds/hce_voice/grunt_crazy/leaderdead_43.ogg"
-HCE/Grunt_Crazy/LeaderDead/4 "sounds/hce_voice/grunt_crazy/leaderdead_126.ogg"
-HCE/Grunt_Crazy/LeaderDead/5 "sounds/hce_voice/grunt_crazy/leaderdead_127.ogg"
-HCE/Grunt_Crazy/LeaderDead/6 "sounds/hce_voice/grunt_crazy/leaderdead_128.ogg"
-HCE/Grunt_Crazy/LeaderDead/7 "sounds/hce_voice/grunt_crazy/leaderdead_129.ogg"
-HCE/Grunt_Crazy/LeaderDead/8 "sounds/hce_voice/grunt_crazy/leaderdead_130.ogg"
-HCE/Grunt_Crazy/LeaderDead/9 "sounds/hce_voice/grunt_crazy/leaderdead_131.ogg"
-HCE/Grunt_Crazy/LeaderDead/10 "sounds/hce_voice/grunt_crazy/leaderdead_132.ogg"
-HCE/Grunt_Crazy/LeaderDead/11 "sounds/hce_voice/grunt_crazy/leaderdead_133.ogg"
+HCE/Grunt_Crazy/LeaderDead/4 "sounds/hce_voice/grunt_crazy/leaderdead_153.ogg"
+HCE/Grunt_Crazy/LeaderDead/5 "sounds/hce_voice/grunt_crazy/leaderdead_154.ogg"
+HCE/Grunt_Crazy/LeaderDead/6 "sounds/hce_voice/grunt_crazy/leaderdead_155.ogg"
+HCE/Grunt_Crazy/LeaderDead/7 "sounds/hce_voice/grunt_crazy/leaderdead_156.ogg"
+HCE/Grunt_Crazy/LeaderDead/8 "sounds/hce_voice/grunt_crazy/leaderdead_157.ogg"
+HCE/Grunt_Crazy/LeaderDead/9 "sounds/hce_voice/grunt_crazy/leaderdead_158.ogg"
+HCE/Grunt_Crazy/LeaderDead/10 "sounds/hce_voice/grunt_crazy/leaderdead_159.ogg"
+HCE/Grunt_Crazy/LeaderDead/11 "sounds/hce_voice/grunt_crazy/leaderdead_160.ogg"
 $random HCE/Grunt_Crazy/LeaderDead { HCE/Grunt_Crazy/LeaderDead/0 HCE/Grunt_Crazy/LeaderDead/1 HCE/Grunt_Crazy/LeaderDead/2 HCE/Grunt_Crazy/LeaderDead/3 HCE/Grunt_Crazy/LeaderDead/4 HCE/Grunt_Crazy/LeaderDead/5 HCE/Grunt_Crazy/LeaderDead/6 HCE/Grunt_Crazy/LeaderDead/7 HCE/Grunt_Crazy/LeaderDead/8 HCE/Grunt_Crazy/LeaderDead/9 HCE/Grunt_Crazy/LeaderDead/10 HCE/Grunt_Crazy/LeaderDead/11 }
 HCE/Grunt_Crazy/OnFire/0 "sounds/hce_voice/grunt_crazy/onfire_44.ogg"
 HCE/Grunt_Crazy/OnFire/1 "sounds/hce_voice/grunt_crazy/onfire_45.ogg"
 HCE/Grunt_Crazy/OnFire/2 "sounds/hce_voice/grunt_crazy/onfire_46.ogg"
 HCE/Grunt_Crazy/OnFire/3 "sounds/hce_voice/grunt_crazy/onfire_47.ogg"
-HCE/Grunt_Crazy/OnFire/4 "sounds/hce_voice/grunt_crazy/onfire_134.ogg"
+HCE/Grunt_Crazy/OnFire/4 "sounds/hce_voice/grunt_crazy/onfire_161.ogg"
 $random HCE/Grunt_Crazy/OnFire { HCE/Grunt_Crazy/OnFire/0 HCE/Grunt_Crazy/OnFire/1 HCE/Grunt_Crazy/OnFire/2 HCE/Grunt_Crazy/OnFire/3 HCE/Grunt_Crazy/OnFire/4 }
 HCE/Grunt_Crazy/Pain/0 "sounds/hce_voice/grunt_crazy/pain_48.ogg"
 HCE/Grunt_Crazy/Pain/1 "sounds/hce_voice/grunt_crazy/pain_50.ogg"
@@ -578,7 +785,7 @@ $random HCE/Grunt_Crazy/Pain { HCE/Grunt_Crazy/Pain/0 HCE/Grunt_Crazy/Pain/1 HCE
 HCE/Grunt_Crazy/PainHeavy/0 "sounds/hce_voice/grunt_crazy/painheavy_00.ogg"
 HCE/Grunt_Crazy/PainHeavy/1 "sounds/hce_voice/grunt_crazy/painheavy_01.ogg"
 HCE/Grunt_Crazy/PainHeavy/2 "sounds/hce_voice/grunt_crazy/painheavy_02.ogg"
-HCE/Grunt_Crazy/PainHeavy/3 "sounds/hce_voice/grunt_crazy/painheavy_135.ogg"
+HCE/Grunt_Crazy/PainHeavy/3 "sounds/hce_voice/grunt_crazy/painheavy_162.ogg"
 $random HCE/Grunt_Crazy/PainHeavy { HCE/Grunt_Crazy/PainHeavy/0 HCE/Grunt_Crazy/PainHeavy/1 HCE/Grunt_Crazy/PainHeavy/2 HCE/Grunt_Crazy/PainHeavy/3 }
 HCE/Grunt_Crazy/PainMed/0 "sounds/hce_voice/grunt_crazy/pain_48.ogg"
 HCE/Grunt_Crazy/PainMed/1 "sounds/hce_voice/grunt_crazy/pain_50.ogg"
@@ -601,41 +808,62 @@ HCE/Grunt_Crazy/Panic/11 "sounds/hce_voice/grunt_crazy/panic_69.ogg"
 $random HCE/Grunt_Crazy/Panic { HCE/Grunt_Crazy/Panic/0 HCE/Grunt_Crazy/Panic/1 HCE/Grunt_Crazy/Panic/2 HCE/Grunt_Crazy/Panic/3 HCE/Grunt_Crazy/Panic/4 HCE/Grunt_Crazy/Panic/5 HCE/Grunt_Crazy/Panic/6 HCE/Grunt_Crazy/Panic/7 HCE/Grunt_Crazy/Panic/8 HCE/Grunt_Crazy/Panic/9 HCE/Grunt_Crazy/Panic/10 HCE/Grunt_Crazy/Panic/11 }
 HCE/Grunt_Crazy/Regroup/0 "sounds/hce_voice/grunt_crazy/regroup_70.ogg"
 HCE/Grunt_Crazy/Regroup/1 "sounds/hce_voice/grunt_crazy/regroup_71.ogg"
-HCE/Grunt_Crazy/Regroup/2 "sounds/hce_voice/grunt_crazy/regroup_136.ogg"
-HCE/Grunt_Crazy/Regroup/3 "sounds/hce_voice/grunt_crazy/regroup_137.ogg"
-HCE/Grunt_Crazy/Regroup/4 "sounds/hce_voice/grunt_crazy/regroup_138.ogg"
-HCE/Grunt_Crazy/Regroup/5 "sounds/hce_voice/grunt_crazy/regroup_139.ogg"
-HCE/Grunt_Crazy/Regroup/6 "sounds/hce_voice/grunt_crazy/regroup_140.ogg"
-HCE/Grunt_Crazy/Regroup/7 "sounds/hce_voice/grunt_crazy/regroup_141.ogg"
+HCE/Grunt_Crazy/Regroup/2 "sounds/hce_voice/grunt_crazy/regroup_163.ogg"
+HCE/Grunt_Crazy/Regroup/3 "sounds/hce_voice/grunt_crazy/regroup_164.ogg"
+HCE/Grunt_Crazy/Regroup/4 "sounds/hce_voice/grunt_crazy/regroup_165.ogg"
+HCE/Grunt_Crazy/Regroup/5 "sounds/hce_voice/grunt_crazy/regroup_166.ogg"
+HCE/Grunt_Crazy/Regroup/6 "sounds/hce_voice/grunt_crazy/regroup_167.ogg"
+HCE/Grunt_Crazy/Regroup/7 "sounds/hce_voice/grunt_crazy/regroup_168.ogg"
 $random HCE/Grunt_Crazy/Regroup { HCE/Grunt_Crazy/Regroup/0 HCE/Grunt_Crazy/Regroup/1 HCE/Grunt_Crazy/Regroup/2 HCE/Grunt_Crazy/Regroup/3 HCE/Grunt_Crazy/Regroup/4 HCE/Grunt_Crazy/Regroup/5 HCE/Grunt_Crazy/Regroup/6 HCE/Grunt_Crazy/Regroup/7 }
+HCE/Grunt_Crazy/SearchClear/0 "sounds/hce_voice/grunt_crazy/searchclear_169.ogg"
+HCE/Grunt_Crazy/SearchClear/1 "sounds/hce_voice/grunt_crazy/searchclear_170.ogg"
+HCE/Grunt_Crazy/SearchClear/2 "sounds/hce_voice/grunt_crazy/searchclear_171.ogg"
+HCE/Grunt_Crazy/SearchClear/3 "sounds/hce_voice/grunt_crazy/searchclear_172.ogg"
+$random HCE/Grunt_Crazy/SearchClear { HCE/Grunt_Crazy/SearchClear/0 HCE/Grunt_Crazy/SearchClear/1 HCE/Grunt_Crazy/SearchClear/2 HCE/Grunt_Crazy/SearchClear/3 }
+HCE/Grunt_Crazy/SearchFail/0 "sounds/hce_voice/grunt_crazy/searchfail_173.ogg"
+HCE/Grunt_Crazy/SearchFail/1 "sounds/hce_voice/grunt_crazy/searchfail_174.ogg"
+HCE/Grunt_Crazy/SearchFail/2 "sounds/hce_voice/grunt_crazy/searchfail_175.ogg"
+HCE/Grunt_Crazy/SearchFail/3 "sounds/hce_voice/grunt_crazy/searchfail_176.ogg"
+$random HCE/Grunt_Crazy/SearchFail { HCE/Grunt_Crazy/SearchFail/0 HCE/Grunt_Crazy/SearchFail/1 HCE/Grunt_Crazy/SearchFail/2 HCE/Grunt_Crazy/SearchFail/3 }
+HCE/Grunt_Crazy/SearchStart/0 "sounds/hce_voice/grunt_crazy/searchstart_177.ogg"
+HCE/Grunt_Crazy/SearchStart/1 "sounds/hce_voice/grunt_crazy/searchstart_178.ogg"
+HCE/Grunt_Crazy/SearchStart/2 "sounds/hce_voice/grunt_crazy/searchstart_179.ogg"
+$random HCE/Grunt_Crazy/SearchStart { HCE/Grunt_Crazy/SearchStart/0 HCE/Grunt_Crazy/SearchStart/1 HCE/Grunt_Crazy/SearchStart/2 }
 HCE/Grunt_Crazy/Stuck/0 "sounds/hce_voice/grunt_crazy/stuck_72.ogg"
 HCE/Grunt_Crazy/Stuck/1 "sounds/hce_voice/grunt_crazy/stuck_73.ogg"
 HCE/Grunt_Crazy/Stuck/2 "sounds/hce_voice/grunt_crazy/stuck_74.ogg"
 HCE/Grunt_Crazy/Stuck/3 "sounds/hce_voice/grunt_crazy/stuck_75.ogg"
 HCE/Grunt_Crazy/Stuck/4 "sounds/hce_voice/grunt_crazy/stuck_76.ogg"
-HCE/Grunt_Crazy/Stuck/5 "sounds/hce_voice/grunt_crazy/stuck_142.ogg"
-HCE/Grunt_Crazy/Stuck/6 "sounds/hce_voice/grunt_crazy/stuck_143.ogg"
-HCE/Grunt_Crazy/Stuck/7 "sounds/hce_voice/grunt_crazy/stuck_144.ogg"
-HCE/Grunt_Crazy/Stuck/8 "sounds/hce_voice/grunt_crazy/stuck_145.ogg"
-HCE/Grunt_Crazy/Stuck/9 "sounds/hce_voice/grunt_crazy/stuck_146.ogg"
-HCE/Grunt_Crazy/Stuck/10 "sounds/hce_voice/grunt_crazy/stuck_147.ogg"
-HCE/Grunt_Crazy/Stuck/11 "sounds/hce_voice/grunt_crazy/stuck_148.ogg"
-HCE/Grunt_Crazy/Stuck/12 "sounds/hce_voice/grunt_crazy/stuck_149.ogg"
-HCE/Grunt_Crazy/Stuck/13 "sounds/hce_voice/grunt_crazy/stuck_150.ogg"
+HCE/Grunt_Crazy/Stuck/5 "sounds/hce_voice/grunt_crazy/stuck_180.ogg"
+HCE/Grunt_Crazy/Stuck/6 "sounds/hce_voice/grunt_crazy/stuck_181.ogg"
+HCE/Grunt_Crazy/Stuck/7 "sounds/hce_voice/grunt_crazy/stuck_182.ogg"
+HCE/Grunt_Crazy/Stuck/8 "sounds/hce_voice/grunt_crazy/stuck_183.ogg"
+HCE/Grunt_Crazy/Stuck/9 "sounds/hce_voice/grunt_crazy/stuck_184.ogg"
+HCE/Grunt_Crazy/Stuck/10 "sounds/hce_voice/grunt_crazy/stuck_185.ogg"
+HCE/Grunt_Crazy/Stuck/11 "sounds/hce_voice/grunt_crazy/stuck_186.ogg"
+HCE/Grunt_Crazy/Stuck/12 "sounds/hce_voice/grunt_crazy/stuck_187.ogg"
+HCE/Grunt_Crazy/Stuck/13 "sounds/hce_voice/grunt_crazy/stuck_188.ogg"
 $random HCE/Grunt_Crazy/Stuck { HCE/Grunt_Crazy/Stuck/0 HCE/Grunt_Crazy/Stuck/1 HCE/Grunt_Crazy/Stuck/2 HCE/Grunt_Crazy/Stuck/3 HCE/Grunt_Crazy/Stuck/4 HCE/Grunt_Crazy/Stuck/5 HCE/Grunt_Crazy/Stuck/6 HCE/Grunt_Crazy/Stuck/7 HCE/Grunt_Crazy/Stuck/8 HCE/Grunt_Crazy/Stuck/9 HCE/Grunt_Crazy/Stuck/10 HCE/Grunt_Crazy/Stuck/11 HCE/Grunt_Crazy/Stuck/12 HCE/Grunt_Crazy/Stuck/13 }
+HCE/Grunt_Crazy/Sword/0 "sounds/hce_voice/grunt_crazy/sword_189.ogg"
+HCE/Grunt_Crazy/Sword/1 "sounds/hce_voice/grunt_crazy/sword_190.ogg"
+$random HCE/Grunt_Crazy/Sword { HCE/Grunt_Crazy/Sword/0 HCE/Grunt_Crazy/Sword/1 }
 HCE/Grunt_Crazy/Taunt/0 "sounds/hce_voice/grunt_crazy/taunt_77.ogg"
 HCE/Grunt_Crazy/Taunt/1 "sounds/hce_voice/grunt_crazy/taunt_78.ogg"
 HCE/Grunt_Crazy/Taunt/2 "sounds/hce_voice/grunt_crazy/taunt_79.ogg"
 HCE/Grunt_Crazy/Taunt/3 "sounds/hce_voice/grunt_crazy/taunt_80.ogg"
 HCE/Grunt_Crazy/Taunt/4 "sounds/hce_voice/grunt_crazy/taunt_81.ogg"
 HCE/Grunt_Crazy/Taunt/5 "sounds/hce_voice/grunt_crazy/taunt_82.ogg"
-HCE/Grunt_Crazy/Taunt/6 "sounds/hce_voice/grunt_crazy/taunt_151.ogg"
-HCE/Grunt_Crazy/Taunt/7 "sounds/hce_voice/grunt_crazy/taunt_152.ogg"
-HCE/Grunt_Crazy/Taunt/8 "sounds/hce_voice/grunt_crazy/taunt_153.ogg"
-HCE/Grunt_Crazy/Taunt/9 "sounds/hce_voice/grunt_crazy/taunt_154.ogg"
-HCE/Grunt_Crazy/Taunt/10 "sounds/hce_voice/grunt_crazy/taunt_155.ogg"
-HCE/Grunt_Crazy/Taunt/11 "sounds/hce_voice/grunt_crazy/taunt_156.ogg"
+HCE/Grunt_Crazy/Taunt/6 "sounds/hce_voice/grunt_crazy/taunt_191.ogg"
+HCE/Grunt_Crazy/Taunt/7 "sounds/hce_voice/grunt_crazy/taunt_192.ogg"
+HCE/Grunt_Crazy/Taunt/8 "sounds/hce_voice/grunt_crazy/taunt_193.ogg"
+HCE/Grunt_Crazy/Taunt/9 "sounds/hce_voice/grunt_crazy/taunt_194.ogg"
+HCE/Grunt_Crazy/Taunt/10 "sounds/hce_voice/grunt_crazy/taunt_195.ogg"
+HCE/Grunt_Crazy/Taunt/11 "sounds/hce_voice/grunt_crazy/taunt_196.ogg"
 $random HCE/Grunt_Crazy/Taunt { HCE/Grunt_Crazy/Taunt/0 HCE/Grunt_Crazy/Taunt/1 HCE/Grunt_Crazy/Taunt/2 HCE/Grunt_Crazy/Taunt/3 HCE/Grunt_Crazy/Taunt/4 HCE/Grunt_Crazy/Taunt/5 HCE/Grunt_Crazy/Taunt/6 HCE/Grunt_Crazy/Taunt/7 HCE/Grunt_Crazy/Taunt/8 HCE/Grunt_Crazy/Taunt/9 HCE/Grunt_Crazy/Taunt/10 HCE/Grunt_Crazy/Taunt/11 }
+HCE/Grunt_Crazy/UpThere/0 "sounds/hce_voice/grunt_crazy/upthere_197.ogg"
+HCE/Grunt_Crazy/UpThere/1 "sounds/hce_voice/grunt_crazy/upthere_198.ogg"
+HCE/Grunt_Crazy/UpThere/2 "sounds/hce_voice/grunt_crazy/upthere_199.ogg"
+$random HCE/Grunt_Crazy/UpThere { HCE/Grunt_Crazy/UpThere/0 HCE/Grunt_Crazy/UpThere/1 HCE/Grunt_Crazy/UpThere/2 }
 $alias HCE/Grunt_Crazy/Berserk HCE/Grunt_Crazy/Taunt
 $alias HCE/Grunt_Crazy/Scold HCE/Grunt_Crazy/PainMed
 $alias HCE/Grunt_Crazy/AllyKilled HCE/Grunt_Crazy/PainMed
@@ -648,6 +876,10 @@ $alias HCE/Grunt_Crazy/WorseWeapon HCE/Grunt_Crazy/PainMed
 $alias HCE/Grunt_Crazy/TradeOk HCE/Grunt_Crazy/Regroup
 $alias HCE/Grunt_Crazy/Refuse HCE/Grunt_Crazy/PainMed
 $alias HCE/Grunt_Crazy/ManDown HCE/Grunt_Crazy/LeaderDead
+$alias HCE/Grunt_Crazy/Uncovered HCE/Grunt_Crazy/Cover
+$alias HCE/Grunt_Crazy/JoinMe HCE/Grunt_Crazy/Regroup
+$alias HCE/Grunt_Crazy/Charge HCE/Grunt_Crazy/Taunt
+$alias HCE/Grunt_Crazy/Sniper HCE/Grunt_Crazy/Alert
 
 // ---- Grunt_Whiley
 HCE/Grunt_Whiley/Alert/0 "sounds/hce_voice/grunt_whiley/alert_04.ogg"
@@ -780,6 +1012,23 @@ $alias HCE/Grunt_Whiley/TradeOk HCE/Grunt_Whiley/Regroup
 $alias HCE/Grunt_Whiley/Refuse HCE/Grunt_Whiley/PainMed
 $alias HCE/Grunt_Whiley/ManDown HCE/Grunt_Whiley/LeaderDead
 $alias HCE/Grunt_Whiley/HeardGunfire HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/Cover HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/Uncovered HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/SearchStart HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/SearchClear HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/SearchFail HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/KeepWatch HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/FoundFoe HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/JoinMe HCE/Grunt_Whiley/Regroup
+$alias HCE/Grunt_Whiley/Charge HCE/Grunt_Whiley/Taunt
+$alias HCE/Grunt_Whiley/Investigate HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/Behind HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/Sniper HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/Sword HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/UpThere HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/DownThere HCE/Grunt_Whiley/Alert
+$alias HCE/Grunt_Whiley/FallBack HCE/Grunt_Whiley/Flee
+$alias HCE/Grunt_Whiley/Advance HCE/Grunt_Whiley/Regroup
 
 // ---- Grunt_Whimpy
 HCE/Grunt_Whimpy/Alert/0 "sounds/hce_voice/grunt_whimpy/alert_04.ogg"
@@ -912,6 +1161,23 @@ $alias HCE/Grunt_Whimpy/TradeOk HCE/Grunt_Whimpy/Regroup
 $alias HCE/Grunt_Whimpy/Refuse HCE/Grunt_Whimpy/PainMed
 $alias HCE/Grunt_Whimpy/ManDown HCE/Grunt_Whimpy/LeaderDead
 $alias HCE/Grunt_Whimpy/HeardGunfire HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/Cover HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/Uncovered HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/SearchStart HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/SearchClear HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/SearchFail HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/KeepWatch HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/FoundFoe HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/JoinMe HCE/Grunt_Whimpy/Regroup
+$alias HCE/Grunt_Whimpy/Charge HCE/Grunt_Whimpy/Taunt
+$alias HCE/Grunt_Whimpy/Investigate HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/Behind HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/Sniper HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/Sword HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/UpThere HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/DownThere HCE/Grunt_Whimpy/Alert
+$alias HCE/Grunt_Whimpy/FallBack HCE/Grunt_Whimpy/Flee
+$alias HCE/Grunt_Whimpy/Advance HCE/Grunt_Whimpy/Regroup
 
 // ---- Hunter
 HCE/Hunter/Berserk/0 "sounds/hce_voice/hunter/berserk_00.ogg"
@@ -932,6 +1198,7 @@ HCE/Hunter/Melting/1 "sounds/hce_voice/hunter/melting_11.ogg"
 HCE/Hunter/Melting/2 "sounds/hce_voice/hunter/melting_12.ogg"
 $random HCE/Hunter/Melting { HCE/Hunter/Melting/0 HCE/Hunter/Melting/1 HCE/Hunter/Melting/2 }
 $alias HCE/Hunter/DeathHard HCE/Hunter/Death
+$alias HCE/Hunter/Charge HCE/Hunter/Berserk
 
 // ---- Jackal
 HCE/Jackal/Alert/0 "sounds/hce_voice/jackal/alert_04.ogg"
@@ -939,6 +1206,11 @@ HCE/Jackal/Alert/1 "sounds/hce_voice/jackal/alert_05.ogg"
 HCE/Jackal/Alert/2 "sounds/hce_voice/jackal/alert_06.ogg"
 HCE/Jackal/Alert/3 "sounds/hce_voice/jackal/alert_07.ogg"
 $random HCE/Jackal/Alert { HCE/Jackal/Alert/0 HCE/Jackal/Alert/1 HCE/Jackal/Alert/2 HCE/Jackal/Alert/3 }
+HCE/Jackal/Behind/0 "sounds/hce_voice/jackal/behind_33.ogg"
+HCE/Jackal/Behind/1 "sounds/hce_voice/jackal/behind_34.ogg"
+HCE/Jackal/Behind/2 "sounds/hce_voice/jackal/behind_35.ogg"
+HCE/Jackal/Behind/3 "sounds/hce_voice/jackal/behind_36.ogg"
+$random HCE/Jackal/Behind { HCE/Jackal/Behind/0 HCE/Jackal/Behind/1 HCE/Jackal/Behind/2 HCE/Jackal/Behind/3 }
 HCE/Jackal/Death/0 "sounds/hce_voice/jackal/death_12.ogg"
 HCE/Jackal/Death/1 "sounds/hce_voice/jackal/death_13.ogg"
 HCE/Jackal/Death/2 "sounds/hce_voice/jackal/death_14.ogg"
@@ -948,13 +1220,17 @@ HCE/Jackal/Flee/1 "sounds/hce_voice/jackal/flee_16.ogg"
 HCE/Jackal/Flee/2 "sounds/hce_voice/jackal/flee_17.ogg"
 HCE/Jackal/Flee/3 "sounds/hce_voice/jackal/flee_18.ogg"
 $random HCE/Jackal/Flee { HCE/Jackal/Flee/0 HCE/Jackal/Flee/1 HCE/Jackal/Flee/2 HCE/Jackal/Flee/3 }
-HCE/Jackal/HeardGunfire/0 "sounds/hce_voice/jackal/heardgunfire_33.ogg"
-HCE/Jackal/HeardGunfire/1 "sounds/hce_voice/jackal/heardgunfire_34.ogg"
-HCE/Jackal/HeardGunfire/2 "sounds/hce_voice/jackal/heardgunfire_35.ogg"
-HCE/Jackal/HeardGunfire/3 "sounds/hce_voice/jackal/heardgunfire_36.ogg"
-HCE/Jackal/HeardGunfire/4 "sounds/hce_voice/jackal/heardgunfire_37.ogg"
-HCE/Jackal/HeardGunfire/5 "sounds/hce_voice/jackal/heardgunfire_38.ogg"
-HCE/Jackal/HeardGunfire/6 "sounds/hce_voice/jackal/heardgunfire_39.ogg"
+HCE/Jackal/FoundFoe/0 "sounds/hce_voice/jackal/foundfoe_37.ogg"
+HCE/Jackal/FoundFoe/1 "sounds/hce_voice/jackal/foundfoe_38.ogg"
+HCE/Jackal/FoundFoe/2 "sounds/hce_voice/jackal/foundfoe_39.ogg"
+$random HCE/Jackal/FoundFoe { HCE/Jackal/FoundFoe/0 HCE/Jackal/FoundFoe/1 HCE/Jackal/FoundFoe/2 }
+HCE/Jackal/HeardGunfire/0 "sounds/hce_voice/jackal/heardgunfire_40.ogg"
+HCE/Jackal/HeardGunfire/1 "sounds/hce_voice/jackal/heardgunfire_41.ogg"
+HCE/Jackal/HeardGunfire/2 "sounds/hce_voice/jackal/heardgunfire_42.ogg"
+HCE/Jackal/HeardGunfire/3 "sounds/hce_voice/jackal/heardgunfire_43.ogg"
+HCE/Jackal/HeardGunfire/4 "sounds/hce_voice/jackal/heardgunfire_44.ogg"
+HCE/Jackal/HeardGunfire/5 "sounds/hce_voice/jackal/heardgunfire_45.ogg"
+HCE/Jackal/HeardGunfire/6 "sounds/hce_voice/jackal/heardgunfire_46.ogg"
 $random HCE/Jackal/HeardGunfire { HCE/Jackal/HeardGunfire/0 HCE/Jackal/HeardGunfire/1 HCE/Jackal/HeardGunfire/2 HCE/Jackal/HeardGunfire/3 HCE/Jackal/HeardGunfire/4 HCE/Jackal/HeardGunfire/5 HCE/Jackal/HeardGunfire/6 }
 HCE/Jackal/Pain/0 "sounds/hce_voice/jackal/pain_19.ogg"
 HCE/Jackal/Pain/1 "sounds/hce_voice/jackal/pain_21.ogg"
@@ -978,6 +1254,10 @@ HCE/Jackal/Panic/1 "sounds/hce_voice/jackal/panic_09.ogg"
 HCE/Jackal/Panic/2 "sounds/hce_voice/jackal/panic_10.ogg"
 HCE/Jackal/Panic/3 "sounds/hce_voice/jackal/panic_11.ogg"
 $random HCE/Jackal/Panic { HCE/Jackal/Panic/0 HCE/Jackal/Panic/1 HCE/Jackal/Panic/2 HCE/Jackal/Panic/3 }
+HCE/Jackal/SearchFail/0 "sounds/hce_voice/jackal/searchfail_47.ogg"
+HCE/Jackal/SearchFail/1 "sounds/hce_voice/jackal/searchfail_48.ogg"
+HCE/Jackal/SearchFail/2 "sounds/hce_voice/jackal/searchfail_49.ogg"
+$random HCE/Jackal/SearchFail { HCE/Jackal/SearchFail/0 HCE/Jackal/SearchFail/1 HCE/Jackal/SearchFail/2 }
 HCE/Jackal/Taunt/0 "sounds/hce_voice/jackal/taunt_29.ogg"
 HCE/Jackal/Taunt/1 "sounds/hce_voice/jackal/taunt_30.ogg"
 HCE/Jackal/Taunt/2 "sounds/hce_voice/jackal/taunt_31.ogg"
@@ -1002,4 +1282,18 @@ $alias HCE/Jackal/WorseWeapon HCE/Jackal/PainMed
 $alias HCE/Jackal/TradeOk HCE/Jackal/Alert
 $alias HCE/Jackal/Refuse HCE/Jackal/PainMed
 $alias HCE/Jackal/ManDown HCE/Jackal/Panic
+$alias HCE/Jackal/Cover HCE/Jackal/Alert
+$alias HCE/Jackal/Uncovered HCE/Jackal/Alert
+$alias HCE/Jackal/SearchStart HCE/Jackal/HeardGunfire
+$alias HCE/Jackal/SearchClear HCE/Jackal/SearchFail
+$alias HCE/Jackal/KeepWatch HCE/Jackal/SearchFail
+$alias HCE/Jackal/JoinMe HCE/Jackal/Alert
+$alias HCE/Jackal/Charge HCE/Jackal/Taunt
+$alias HCE/Jackal/Investigate HCE/Jackal/HeardGunfire
+$alias HCE/Jackal/Sniper HCE/Jackal/Alert
+$alias HCE/Jackal/Sword HCE/Jackal/Alert
+$alias HCE/Jackal/UpThere HCE/Jackal/Alert
+$alias HCE/Jackal/DownThere HCE/Jackal/Alert
+$alias HCE/Jackal/FallBack HCE/Jackal/Flee
+$alias HCE/Jackal/Advance HCE/Jackal/Alert
 

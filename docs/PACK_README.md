@@ -106,6 +106,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 * **Place in maps:** use DoomEdNums **30200–30281** (table below), or the `HCE_Random*` spawners for a random variant of a character.
 * **Summon:** e.g. `summon HCE_EliteMajorPlasmaRifle`.
 * **Spawn everything:** the console command `punkassbitches` spawns one of every enemy class that's loaded (every pack and add-on), side by side in lines in front of you and facing you: 640 units of enemies per line, a line every 128 units. They don't patrol or walk to squad stations while idle, so they hold their place in the line until they see something to fight (flyers still hover). Spots blocked by walls are retried further ahead, then behind you, then anywhere free within 1024 units. Marines come out as allies. A class with several looks stands in the line once per look, so all three Brute Chieftains (Tartarus's look and both kit sets) appear. It's a console alias (`KEYCONF`) for `netevent hce_spawnall`, so it works in multiplayer too.
+* **Spawn every ODST:** `helljumpers` does the same with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven), as allies.
 * **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks) and Sergeants Johnson and Stacker, as allies, in the same lines. They don't move at all (no following, no squad orders, no dives): each turns, aims and fights from his spot. It's an alias for `netevent hce_spawnmarines`.
 * **Doom monsters are replaced automatically.** See the next section for what replaces what. To keep Doom's monsters, set `hce_keepdoommonsters 1`.
 
@@ -132,6 +133,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_squads` | true | Grunts and Jackals form squads around the nearest Elite or Brute and follow its lead |
 | `hce_difficulty` | -1 | **Halo difficulty** (see [Halo difficulty](#halo-difficulty)): -1 follows the skill level (I'm Too Young To Die and Hey, Not Too Rough are Easy, Hurt Me Plenty Normal, Ultra-Violence Heroic, Nightmare Legendary); 0 Easy, 1 Normal, 2 Heroic, 3 Legendary pin one. Also under Options > Halo CE AI |
 | `hce_cover` | true | Enemies and Marines fight from cover: they lean out past corners and shoot over low walls (see [Cover](#cover)) |
+| `hce_search` | true | The Covenant search for a target they lost and go back to their post when they give up; enemies investigate explosions they hear and notice a flashlight's beam (see [Searching](#searching)) |
 | `hce_tactics` | true | Squad tactics: Marine fire teams and battle drills, Covenant lances in echelons (see [Squad tactics](#squad-tactics)) |
 | `hce_patrols` | true | Idle enemies walk short patrols around where they were placed (or along a map's PatrolPoint route) |
 | `hce_sleepinggrunts` | 0.3 | Chance that a Grunt placed in a map starts asleep (Grunts placed as deaf/ambush always do; 0 = never) |
@@ -303,6 +305,9 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * `hce_grenadedodge 0` turns it off.
 * **Dropping off ledges:** Marines and the Covenant step off a drop too deep to walk down when where they're going is below: their target, the spot they last saw it, or (for Marines) you. The drop must be safe, up to two and a half times their own height, and not into a damaging floor. They fall in the airborne animation and land in the landing one.
 * **Jumping:** a ledge or a low obstacle (crate, barrel) in the way that is too tall to step onto is jumped onto or over, in the airborne animation, with the landing animation on touchdown. Jump height is about three quarters of the body (24–56 units: a Grunt manages about 30, an Elite or Brute 50+), Hunters only hop 32, and flyers never jump. A ledge that is jumpable doesn't count as a wall when they pick a heading, so they head for it; enemies hunting you by Doom pathfinding also jump up toward you when you are on higher ground. `hce_jumping 0` turns it off.
+* **Sniper perches:** Jackal snipers and marksmen change perches after a few shots, or when hurt: another spot with a view of their target, higher ground preferred, well away from the last, and they move there without firing.
+* **Rallying:** when an Elite or Brute leader dies, the nearest other leader takes on its Grunts and Jackals (*join me!*), cutting their panic short.
+* **Sword lunge:** sword Elites lunge as in Halo 2: from 120–360 units, a fast dash straight at the target into a swing.
 * **Shield impacts:** every shot that strikes an energy shield (Elites and the Chieftain's overshield, and the Jackals' arm shields) flashes where it hit: a burst of light and sparks off the shield's surface, thrown back toward the shooter. They come in the shield's colour (Elite blue, Brute gold, the Jackal shield's rank colour), and turn red when the shield is nearly down.
 * **Shield flares:** when an Elite's or Brute's energy shield takes a hit, a bright copy of its body lights up in the shield's colour (blue for Elites, gold for Brutes) and fades in a fraction of a second. It flashes brighter when the shield pops and glows softly while recharging. The flare is a second copy of the model, a touch larger, drawn additively with a noise texture, and it plays the same animation as the body.
 * **Active camo shimmer:** stealth Elites' skins run through a GLSL shader (`shaders/hce_camo.fp`) that adds moving bands of refraction-like distortion and a faint sparkle, so a cloaked Elite shimmers instead of being a flat translucent ghost.
@@ -383,6 +388,40 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Strength:** the throw scales with the damage dealt and the body's mass, so lighter enemies fly further. In testing, a frag grenade threw a Grunt about 100 units up and over 150 units back. A Jackal went about 80 up, and an Elite about 60.
   * **Exceptions:** Hunters are too heavy to throw and fall in place. Infection forms and Carriers burst instead, and blasts too weak to throw a body just drop it.
   * **Mid-air deaths:** anything that dies in mid-air (a leaping Flood form, a Sentinel) also plays `landing-dead` when it lands.
+
+## Getting around
+
+* **Teleporters:** when you take a teleporter, the Marines following you who were with you come through after you a moment later, one by one, with the teleport fog, and take up places round where you came out. A Marine left far behind (out of sight and 1800 units or more away for 20 seconds) catches up the same way. Marines told to hold stay put.
+* **Round corners:** a Marine that can't walk straight to its place in the formation follows your trail instead: the newest point on the path you walked that it can reach.
+* **Doors and lifts:** Marines and the Covenant use doors and lifts in their way, the same way the squad's *press that button* order works. A door or lift worked by using it is used, and they wait for it; on a moving lift they stand still and ride it. A closed door worked from a switch elsewhere sends them to press the switch, then back through. Locked doors stay locked. The Flood and the Sentinels don't use them.
+
+## Searching
+
+When the Covenant lose sight of you for a few seconds, they search (`hce_search`, on by default) instead of walking straight to where they last saw you:
+
+* They go to where they last saw you, then follow the way you went for a few seconds (your trail), then check the spots round there they can't see into, looking about at each. A squad fans out to different spots.
+* They call it (*search start*, *cover me while I check it out*), shout when they find you, and after 20–30 seconds give up (*all clear*, *lost them*) and go back to their post.
+* Beyond `hce_maxpursuers`, the rest of a team keep watch where they are.
+* **Explosions:** an enemy with nothing to fight that hears a grenade, rocket or barrel go off (within 1.25× `hce_hearing`) walks over warily to look, then goes back. A Marine following you just turns to watch that way.
+* **Flashlights:** an idle enemy that HaloDoom Evolved's flashlight beam falls on, and that can see you, notices you. (The standalone packs' Doom player has no flashlight.)
+
+## Combat callouts
+
+Halo 2's own combat dialogue, for the Marines, Elites, Grunts, Jackals and Brutes (voices without a line borrow the nearest one they have):
+
+| Callout | When |
+|---|---|
+| Cover me / I'm exposed | taking cover / flanked in it |
+| Search start, cover me while I check it out, found you, all clear, lost them, keep watch | searching (above) |
+| Join me | an Elite or Brute rallying a fallen leader's squad |
+| Charge | a lance's breakthrough, a sword lunge |
+| Fall back / advance | the Marines' break-contact drill / a fire team's rush |
+| Up there / down there, sword, sniper | sighting an enemy above or below, with an energy sword, or a sniper |
+| Behind us | an enemy at the squad's rear or flank |
+
+## Footsteps
+
+Every body that walks has footsteps: Halo 2's Marine (the Chief's, played softer: the MCC archive's Marine set doesn't decode), Elite, Grunt and Brute sets; Jackals step as Grunts (lighter), Hunters as Brutes (heavier), the Flood's combat forms as the body they were. One plays a stride of ground actually covered, walk or run, on the surface the floor's texture suggests: hard floor, metal grating, dirt, grass or shallow water (liquid floors and wading).
 
 ## Cover
 
@@ -871,6 +910,8 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Motion tracker:** Marines show on HaloDoom Evolved's motion tracker as yellow friendly dots at all times, not only while they have a target (the tracker draws a monster only while it has one, so a Marine with none carries a stand-in dot that rides with him). (HaloDoom Evolved packs only.)
 * **Lobbed rounds:** with a gun whose rounds drop (the grenade launchers, the sticky detonator, the Plasma Caster), a Marine leads a moving target and aims up into the arc that lands the round on it, the low arc where there is one, or 45 degrees when the target is out of reach.
 * **Sergeant Johnson:** Marines within 640 units of him aim about 30% tighter and never cower. He nearly always has a quip when he kills something, and when he falls, the Marines who see it call out their leader's death.
+
+* **Watching each other's backs:** a Marine hit from behind calls it and the nearest squadmate not already on that enemy turns on it; and an enemy coming from the squad's rear or flank (100 degrees or more off the way the fight faces) that nobody is engaging gets the nearest Marine who isn't busy, with a shout.
 
 ## Low ready
 

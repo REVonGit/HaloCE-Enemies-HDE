@@ -1,7 +1,8 @@
 // Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,
-// "leatherneck" one of every loaded Marine
+// "leatherneck" one of every loaded Marine, "helljumpers" one of every ODST
 alias punkassbitches "netevent hce_spawnall"
 alias leatherneck "netevent hce_spawnmarines"
+alias helljumpers "netevent hce_spawnodsts"
 
 // squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)
 alias hce_follow "netevent hce_squad 0"

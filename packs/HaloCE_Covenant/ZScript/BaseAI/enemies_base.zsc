@@ -1114,7 +1114,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_burstTics = 0; hce_shotsLeft = 0; hce_chargeTics = 0;
 		// reaction time before the first burst (Halo first_burst_delay, at least ~0.4 s)
 		hce_sepTics = max(4, int((max(hce_firstBurstDelay, 0.4) * 35 + random(0, 10)) * HCE_D(HCE_D_NEW_TARGET)));
-		HCE_Say('Alert', 0.7, 35 * 3);
+		HCE_Say(HCE_SightingLine(), 0.7, 35 * 3);
 		hce_grenadeTics = max(hce_grenadeTics, int(35 * frandom(3, 6) * HCE_GrenadeScale()));
 		if(bHCE_Surprise && !hce_surprised && target && Distance3D(target) < hce_surpriseDist)
 		{
@@ -1189,6 +1189,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
+		if(health > 0) HCE_StepTick();
+		if(HCE_TeleportTick()) return;
 		if(hce_recentDamageTics > 0 && --hce_recentDamageTics == 0) hce_recentDamage = 0;
 		HCE_SquadTick();
 		if(hce_heat > 0 && hce_shotsLeft <= 0) hce_heat = max(0, hce_heat - 0.003);     // plasma cools between bursts (a full gun in ~10 s)
@@ -1228,7 +1230,9 @@ class HaloDoom_EnemyBase : Actor abstract
 
 		if(!target)
 		{
-			hce_cvState = 0;
+			hce_cvState = 0; hce_srPhase = 0; hce_pcMoving = false; hce_lgTics = 0;
+			if(HCE_InvestigateTick()) return;
+			if(HCE_ReturnTick()) return;
 			if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);   // lost the target mid-run: the grenades go off where it stands
 			if(hce_action == HCE_ACT_FEED) { HCE_Feed(); return; }
 			if(HCE_SeekCorpse()) return;
@@ -1358,6 +1362,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		let L = HaloDoom_EnemyBase(leader);
 		if(!L) return;
+		HCE_LeaderDiedPanic(leader, L);
+		if(L.bHCE_Leader && !L.bFRIENDLY) HCE_Rally(L);          // another leader takes the survivors on
+	}
+
+	static void HCE_LeaderDiedPanic(Actor leader, HaloDoom_EnemyBase L)
+	{
 		int b = L.bHCE_Leader ? L.hce_brutalityFinal : 0;
 		bool last = L.bHCE_Leader;
 		let it = BlockThingsIterator.Create(leader, 900);
@@ -1404,6 +1414,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			hce_strafeDir = -hce_strafeDir; hce_strafeTics = random(20, 40); hce_flipTics = level.maptime + 35;
 		}
+		if(hce_canSee && hce_srPhase > 0) { hce_srPhase = 0; HCE_Say('FoundFoe', 0.8, 35 * 4); HCE_AlertSquad(target); }
+		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25 && HCE_Searches() && level.maptime - hce_lastSeen > 35 * 3)
+		{
+			if(HCE_TryFlush()) return;
+			if(HCE_MayPursue()) HCE_SearchTick();
+			else { HCE_Hold(); if(random(0, 200) == 0) HCE_Say('KeepWatch', 0.5, 35 * 10); }
+			return;
+		}
 		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25)
 		{
 			if(HCE_TryFlush()) return;
@@ -1416,6 +1434,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		hce_pursuing = false;
 
+		if(HCE_TryLunge(d)) return;
 		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
 		if(bHCE_Leaps && HCE_TryLeap(d)) return;
 
@@ -1453,6 +1472,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		bool fire = true;
 		bool docMove = HCE_Doctrine(d, toT, moveA, spd, fire) && spd > 0;       // squad tactics (UNSC fire teams, Covenant lance)
+		if(HCE_PerchTick(d, moveA, spd, fire)) docMove = true;                    // a sniper changing perches
 		if(HCE_CoverTick(d, toT, docMove, moveA, spd, fire) == 2) return;      // cover: a corner or low wall to fight from
 		if(hce_ffStepTics > 0) { hce_ffStepTics--; moveA = hce_ffStepAng; spd = hce_runSpeed * 0.7; }   // clearing a friend out of the line of fire
 		if(spd > 0) moveA = HCE_PickHeading(moveA, toT);
@@ -1526,6 +1546,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		double d = Distance2D(target);
 		HCE_FaceTarget(2.0);
+		if(HCE_TryLunge(d)) return;
 		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
 		if(bHCE_Leaps && HCE_TryLeap(d)) return;
 		if(!hce_canSee) { if(HCE_MayPursue()) HCE_Pursue(); else HCE_Hold(); return; }
@@ -1584,6 +1605,525 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(recovered) hce_coverTics = min(hce_coverTics, 10);
 		}
 		HCE_PickMoveAnim();
+	}
+
+	// ==================================================================
+	// Getting around a Doom map
+	// ==================================================================
+	// can it walk straight there: no wall in the way at knee or chest height, a floor it can step up, climb or drop to
+	bool HCE_Walkable(vector3 to)
+	{
+		vector2 d = to.xy - pos.xy;
+		double l = d.Length();
+		if(l < 8) return true;
+		double up = to.z - pos.z;
+		if(up > max(MaxStepHeight, hce_jumpHeight) || up < -HCE_SafeDrop()) return false;
+		vector3 knee = pos + (0, 0, MaxStepHeight + 4), chest = pos + (0, 0, height * 0.6);
+		if(HCE_SightBlocked(knee, (to.xy, max(to.z, pos.z) + MaxStepHeight + 4))) return false;
+		return !HCE_SightBlocked(chest, (to.xy, max(to.z, pos.z) + height * 0.6));
+	}
+
+	// the player's trail (HCE_MissileTracker): the newest point on it, recorded between fromTic and toTic, that it can
+	// walk straight to (Marines catching up round corners; the Covenant tracking where you went)
+	vector3 hce_trailHit;                       // HCE_TrailGoal's answer (an out vector3 trips the JIT)
+	bool HCE_TrailGoal(int pn, int fromTic, int toTic)
+	{
+		let tr = HCE_MissileTracker.Get();
+		if(!tr) return false;
+		int n = tr.crX.Size(), tested = 0;
+		for(int i = n - 1; i >= 0 && tested < 28; i--)
+		{
+			if(tr.crP[i] != pn) continue;
+			if(tr.crT[i] > toTic) continue;
+			if(tr.crT[i] < fromTic) break;
+			vector3 c = (tr.crX[i], tr.crY[i], tr.crZ[i]);
+			if((c.xy - pos.xy).Length() <= 1200)
+			{
+				tested++;
+				if(HCE_Walkable(c)) { hce_trailHit = c; return true; }
+			}
+			if(tr.crB[i]) break;                        // a teleport: nothing older on this side joins up
+		}
+		return false;
+	}
+
+	int PlayerNum(Actor a) { return a && a.player ? a.PlayerNumber() : -1; }
+
+	// ------------------------------------------------------------------
+	// Teleporters: when the player takes a teleporter (or a map's scripted teleport), the Marines following him who
+	// were with him come through after him a moment later, one by one, with the teleport fog, and take up places
+	// round where he came out. A Marine left far behind (out of sight, 1800 units or more, for 20 seconds) catches
+	// up the same way. Holding Marines stay put.
+	// ------------------------------------------------------------------
+	int hce_tpAt, hce_nearTic;
+
+	static void HCE_PlayerTeleported(Actor pl, vector3 from, vector3 to)
+	{
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase m;
+		int k = 0;
+		while(m = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(m.health <= 0 || !m.HCE_InSquad() || m.hce_betrayed || m.hce_squadOrder == HCE_ORDER_HOLD) continue;
+			if((m.pos.xy - from.xy).Length() > 1536 || (m.pos.xy - to.xy).Length() < 400) continue;
+			m.hce_tpAt = level.maptime + 20 + 12 * k++ + random(0, 6);
+		}
+	}
+
+	bool HCE_TeleportTick()
+	{
+		if(hce_tpAt <= 0 || level.maptime < hce_tpAt || hce_animLock > 0 || hce_climbTics > 0) return false;
+		hce_tpAt = 0;
+		let p = players[consoleplayer].mo;
+		if(!p || health <= 0) return false;
+		double a0 = p.angle + 180;
+		static const double rads[] = { 72, 120, 168, 216 };
+		for(int r = 0; r < 4; r++)
+			for(int i = 0; i < 8; i++)
+			{
+				double a = a0 + ((i % 2) ? 1 : -1) * ((i + 1) / 2) * 40;
+				vector2 sp = p.pos.xy + AngleToVector(a, rads[r]);
+				double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+				if(!level.IsPointInLevel((sp, fz + 1)) || abs(fz - p.floorz) > MaxStepHeight) continue;
+				if(GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - fz < height + 2) continue;
+				if(HCE_SightBlocked(p.pos + (0, 0, p.height * 0.5), (sp, fz + height * 0.5))) continue;
+				if(!CheckPosition(sp)) continue;
+				vector3 old = pos;
+				if(!Teleport((sp, fz), p.angle, TELF_SOURCEFOG | TELF_DESTFOG)) continue;
+				hce_cvState = 0; hce_peekTics = 0; hce_doorWait = 0;
+				hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy; hce_nearTic = level.maptime;
+				return true;
+			}
+		hce_tpAt = level.maptime + 35;            // nowhere free yet: try again in a second
+		return false;
+	}
+
+	// ------------------------------------------------------------------
+	// Doors and lifts. A unit walking into a door or a lift that's worked by using it (the door's own line, a lift's
+	// side) uses it and waits for it, rides a lift up or down, and walks on. A closed door that's worked from a switch
+	// somewhere else (a tagged door): it goes and presses the switch (the squad's "press that button" order does the
+	// same), then comes back through. Locked doors stay locked. Marines and the Covenant do this; the Flood and the
+	// Sentinels don't.
+	// ------------------------------------------------------------------
+	Line hce_doorLine;
+	int hce_doorWait, hce_doorNext;
+
+	static bool HCE_DoorOrLift(int sp)
+	{
+		switch(sp)
+		{
+		case 10: case 11: case 12: case 14: case 105: case 106: case 202: case 249:           // doors (not 13: locked)
+		case 60: case 61: case 62: case 63: case 64: case 65: case 66: case 67: case 68: case 69:  // plats and lifts
+		case 172: case 203: case 206: case 207: case 228: case 230: case 231:
+		case 245: case 246: case 247:                                                          // elevators
+			return true;
+		}
+		return false;
+	}
+
+	bool HCE_CanUseDoors() { return !bHCE_Flying && (hce_team == HCE_TEAM_HUMAN || hce_team == HCE_TEAM_COVENANT) && health > 0; }
+
+	// true: it's waiting on a door or lift (don't walk round it)
+	bool HCE_TryDoor(double ang)
+	{
+		if(!HCE_CanUseDoors()) return false;
+		let l = BlockingLine;
+		if(hce_doorWait > level.maptime) return hce_doorLine && l == hce_doorLine;
+		if(!l || level.maptime < hce_doorNext) return false;
+		hce_doorNext = level.maptime + 35;
+		int side = level.PointOnLineSide(pos.xy, l);
+		if(l.special && HCE_DoorOrLift(l.special) && (l.activation & (SPAC_Use | SPAC_UseThrough)) && !l.locknumber)
+		{
+			if(l.Activate(self, side, SPAC_Use))
+			{
+				hce_doorLine = l; hce_doorWait = level.maptime + 35 * 3;
+				HCE_StopFireLoop();
+				return true;
+			}
+			return false;
+		}
+		// a closed door with no use of its own: its switch
+		Sector bs = side == 0 ? l.backsector : l.frontsector;
+		if(!bs || hce_button) return false;
+		vector2 mid = l.v1.p + l.delta * 0.5;
+		if(bs.ceilingplane.ZatPoint(mid) - bs.floorplane.ZatPoint(mid) >= height) return false;
+		let tr = HCE_MissileTracker.Get();
+		Line sw = tr ? tr.SwitchFor(bs, self) : null;
+		if(!sw) return false;
+		vector2 sm = sw.v1.p + sw.delta * 0.5;
+		vector2 nrm = (sw.delta.y, -sw.delta.x).Unit();              // the front side's normal
+		int ss = level.PointOnLineSide(pos.xy, sw);
+		hce_button = sw; hce_buttonSide = ss; hce_buttonAt = (sm + nrm * (ss == 0 ? 1 : -1) * (radius + 12), pos.z); hce_buttonTics = 35 * 12;
+		hce_doorNext = level.maptime + 35 * 8;
+		return false;
+	}
+
+	// on a lift that's moving: stand still and ride it
+	bool HCE_OnMovingLift()
+	{
+		return CurSector && CurSector.floordata && pos.z <= floorz + 2 && level.maptime < hce_doorWait + 35 * 6;
+	}
+
+	// ------------------------------------------------------------------
+	// Footsteps (extract_footsteps.py): Halo 2's, one a stride of ground actually covered, walk or run, on the
+	// surface its floor's texture suggests (hard floor, metal grating, dirt, grass, shallow water)
+	// ------------------------------------------------------------------
+	double hce_stepAcc;
+	vector2 hce_stepLast;
+	Name hce_footSet;
+	bool hce_stepInit;
+
+	virtual Name HCE_StepSet()
+	{
+		String cn = GetClassName();
+		if(bHCE_Flying || hce_type == 10 || hce_type == 11 || hce_type == 13 || hce_type == 12 || hce_type == 4) return 'None';
+		if(cn.IndexOf("Brute") >= 0 || hce_type == 3) return 'brute';
+		if(hce_team == HCE_TEAM_HUMAN) return 'marine';
+		if(hce_team == HCE_TEAM_FLOOD) return cn.IndexOf("Human") >= 0 ? 'marine' : cn.IndexOf("Elite") >= 0 ? 'elite' : 'None';
+		if(hce_type == 0) return 'elite';
+		if(hce_type == 1 || hce_type == 2) return 'grunt';
+		return 'None';
+	}
+
+	String HCE_StepSurface()
+	{
+		if(waterlevel >= 1) return "water";
+		String t = TexMan.GetName(CurSector.GetTexture(Sector.floor));
+		t = t.MakeUpper();
+		if(t.IndexOf("WATER") >= 0 || t.IndexOf("NUKAGE") >= 0 || t.IndexOf("SLIME") >= 0 || t.IndexOf("BLOOD") >= 0) return "water";
+		if(t.IndexOf("GRASS") >= 0 || t.IndexOf("GRN") >= 0) return "grass";
+		if(t.IndexOf("METAL") >= 0 || t.IndexOf("GRAT") >= 0 || t.IndexOf("PLAT") >= 0 || t.IndexOf("STEP") >= 0 || t.IndexOf("FLOOR4") >= 0 || t.IndexOf("TLITE") >= 0) return "metal";
+		if(t.IndexOf("RROCK") >= 0 || t.IndexOf("FLAT10") >= 0 || t.IndexOf("FLAT5_") >= 0 || t.IndexOf("MFLR8_2") >= 0 || t.IndexOf("MFLR8_3") >= 0
+			|| t.IndexOf("DIRT") >= 0 || t.IndexOf("SAND") >= 0 || t.IndexOf("ROCK") >= 0 || t.IndexOf("MUD") >= 0) return "dirt";
+		return "hard";
+	}
+
+	void HCE_StepTick()
+	{
+		if(!hce_stepInit) { hce_stepInit = true; hce_footSet = HCE_StepSet(); hce_stepLast = pos.xy; }
+		if(hce_footSet == 'None') return;
+		double d = (pos.xy - hce_stepLast).Length();
+		hce_stepLast = pos.xy;
+		if(d > 40 || pos.z > floorz + 2 || hce_climbTics > 0) return;      // a teleport, a jump, a climb: no steps
+		bool run = d > hce_walkSpeed * 1.25;
+		hce_stepAcc += d;
+		double stride = height * (run ? 0.62 : 0.42);
+		if(hce_stepAcc < stride) return;
+		hce_stepAcc = 0;
+		String snd = String.Format("HCE/Step/%s/%s_%s", hce_footSet, HCE_StepSurface(), run ? "run" : "walk");
+		double vol = (run ? 0.6 : 0.42) * (hce_footSet == 'marine' ? 0.8 : 1.0);
+		double pitch = hce_type == 3 ? 0.78 : hce_type == 1 ? 1.12 : 1.0;      // Hunters heavier, Jackals lighter
+		A_StartSound(snd, CHAN_AUTO, CHANF_OVERLAP, vol, 1.6, pitch);
+	}
+
+	// ------------------------------------------------------------------
+	// Callouts. Which line a sighting gets: up there / down there, a sword or a sniper, or the plain alert
+	// ------------------------------------------------------------------
+	static bool HCE_IsSniperActor(Actor a)
+	{
+		let e = HaloDoom_EnemyBase(a);
+		if(e) { int b; return HCE_WeaponKindOf(e.hce_dropWeapon, b) == HCE_WK_LONG && e.hce_type == 1; }
+		if(a && a.player && a.player.ReadyWeapon)
+		{
+			String wn = a.player.ReadyWeapon.GetClassName();
+			wn = wn.MakeLower();
+			return wn.IndexOf("sniper") >= 0 || wn.IndexOf("beam") >= 0;
+		}
+		return false;
+	}
+
+	Name HCE_SightingLine()
+	{
+		if(!target) return 'Alert';
+		let e = HaloDoom_EnemyBase(target);
+		if(e && e.hce_dropWeapon == 'Halo_EnergySword') return 'Sword';
+		if(HCE_IsSniperActor(target) && Distance3D(target) > 640) return 'Sniper';
+		double dz = target.pos.z - pos.z;
+		if(dz > 96) return 'UpThere';
+		if(dz < -96) return 'DownThere';
+		return 'Alert';
+	}
+
+	// ------------------------------------------------------------------
+	// Searching (the Covenant). When a unit loses its target it doesn't just walk to where it last saw it: it goes
+	// there, then follows the way the target went for a few seconds (a player's trail), then checks the spots round
+	// there it can't see into, looking about at each, its squad fanning out to different spots. They call the search
+	// ("search start", "cover me while I check it out"), shout when they find you, and after 20-30 seconds give up
+	// ("all clear" / "lost them") and go back to their post. Beyond hce_maxpursuers a team's units keep watch instead.
+	// ------------------------------------------------------------------
+	int hce_srPhase, hce_srUntil, hce_srPoints, hce_srLook, hce_srGoalTic, hce_srIdx;
+	vector3 hce_srGoal;
+	bool hce_returnHome;
+	int hce_returnUntil;
+
+	bool HCE_Searches() { return hce_team == HCE_TEAM_COVENANT && !bFRIENDLY && !bHCE_Flying && HCE_CVarF('hce_search', 1) > 0; }
+
+	vector3 HCE_SearchPoint()
+	{
+		vector3 c = hce_lastKnown;
+		double a0 = hce_srIdx * 72 + frandom(-25, 25);
+		for(int k = 0; k < 8; k++)
+		{
+			double a = a0 + k * 47;
+			double r = frandom(96, 320);
+			vector2 sp = c.xy + AngleToVector(a, r);
+			double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+			if(!level.IsPointInLevel((sp, fz + 1)) || abs(fz - c.z) > 64) continue;
+			if(HCE_SightBlocked(c + (0, 0, height * 0.5), (sp, fz + height * 0.5))) continue;    // open from where it was seen
+			return (sp, fz);
+		}
+		return c;
+	}
+
+	void HCE_EndSearch(bool found)
+	{
+		hce_srPhase = 0;
+		if(found) return;
+		HCE_Say(random(0, 1) ? 'SearchClear' : 'SearchFail', 0.8, 35 * 5);
+		HCE_StopFireLoop();
+		target = null; hce_pursuing = false;
+		hce_returnHome = true; hce_returnUntil = level.maptime + 35 * 25;
+	}
+
+	void HCE_SearchTick()
+	{
+		if(hce_srPhase == 0)
+		{
+			hce_srPhase = 1;
+			hce_srUntil = level.maptime + random(35 * 20, 35 * 30);
+			hce_srPoints = 0; hce_srLook = 0;
+			let L = HCE_SquadLeader();
+			hce_srIdx = L ? int(hce_slotAng) / 30 : random(0, 4);
+			hce_srGoal = hce_lastKnown; hce_srGoalTic = 0;
+			if(!L) HCE_Say('SearchStart', 0.9, 35 * 6);
+			else HCE_Say('Investigate', 0.25, 35 * 6);
+		}
+		if(level.maptime > hce_srUntil) { HCE_EndSearch(false); return; }
+		// tracking: after where it was seen, the way the player went in the few seconds after
+		if(hce_srPhase == 2 && hce_srGoalTic != level.maptime && level.maptime % 12 == 0 && target && target.player)
+		{
+			if(HCE_TrailGoal(PlayerNum(target), hce_lastSeen, hce_lastSeen + 35 * 4) && (hce_trailHit.xy - pos.xy).Length() > 48) hce_srGoal = hce_trailHit;
+		}
+		vector2 dv = hce_srGoal.xy - pos.xy;
+		double l = dv.Length();
+		if(l > 40 && hce_srLook == 0)
+		{
+			double sp = l > 200 ? hce_runSpeed * 0.8 : hce_walkSpeed;
+			if(!HCE_Move(HCE_PickHeading(atan2(dv.y, dv.x), atan2(dv.y, dv.x)), sp) && hce_stuckTics > 35 * 2) hce_srLook = level.maptime + 20;
+			A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+			HCE_PickMoveAnim();
+			return;
+		}
+		// there: look about, then the next spot
+		HCE_Brake();
+		if(hce_srLook == 0) hce_srLook = level.maptime + random(35, 75);
+		A_SetAngle(angle + 3.5 * sin(level.maptime * 7.0), SPF_INTERPOLATE);
+		HCE_Play(HCE_A_ALERT);
+		if(level.maptime < hce_srLook) return;
+		hce_srLook = 0;
+		if(hce_srPhase == 1) { hce_srPhase = 2; return; }                   // seen-at reached: now its tracks
+		if(++hce_srPoints >= 4) { HCE_EndSearch(false); return; }
+		hce_srPhase = 3;
+		hce_srGoal = HCE_SearchPoint();
+	}
+
+	// given up: back to its post (where it was placed), then idle and patrol as before
+	bool HCE_ReturnTick()
+	{
+		if(!hce_returnHome) return false;
+		vector2 dv = hce_home.xy - pos.xy;
+		if(dv.Length() < 48 || level.maptime > hce_returnUntil) { hce_returnHome = false; HCE_Say('KeepWatch', 0.3, 35 * 8); return false; }
+		HCE_Move(HCE_PickHeading(atan2(dv.y, dv.x), atan2(dv.y, dv.x)), hce_walkSpeed);
+		A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
+	// ------------------------------------------------------------------
+	// Investigating (explosions heard, a flashlight seen): an idle Covenant unit walks over warily to look, then goes
+	// back to its post; a Marine following you turns to watch that way
+	// ------------------------------------------------------------------
+	vector3 hce_invPos;
+	int hce_invUntil, hce_invLook;
+
+	void HCE_Investigate(vector3 at, Actor src)
+	{
+		if(health <= 0 || target || hce_sleeping) return;
+		if(HCE_InSquad())
+		{
+			if(level.maptime >= hce_invUntil) HCE_Say('HeardGunfire', 0.4, 35 * 6);
+			hce_invPos = at; hce_invUntil = level.maptime + 35 * 3; hce_invLook = -1;
+			return;
+		}
+		if(!HCE_Searches()) return;
+		if(level.maptime >= hce_invUntil) HCE_Say('Investigate', 0.6, 35 * 6);
+		hce_invPos = at; hce_invUntil = level.maptime + 35 * 15; hce_invLook = 0;
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	bool HCE_InvestigateTick()
+	{
+		if(level.maptime >= hce_invUntil) return false;
+		double toI = atan2(hce_invPos.y - pos.y, hce_invPos.x - pos.x);
+		if(hce_invLook < 0)                       // a Marine: just a look that way (HCE_Follow keeps him with you)
+		{
+			A_SetAngle(angle + clamp(DeltaAngle(angle, toI), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+			return false;
+		}
+		vector2 dv = hce_invPos.xy - pos.xy;
+		if(dv.Length() > 128 && hce_invLook == 0)
+		{
+			HCE_Move(HCE_PickHeading(toI, toI), hce_walkSpeed);
+			A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+			HCE_PickMoveAnim();
+			if(hce_stuckTics > 35 * 2) hce_invLook = level.maptime;
+			return true;
+		}
+		HCE_Brake();
+		if(hce_invLook == 0) hce_invLook = level.maptime + random(35 * 2, 35 * 4);
+		A_SetAngle(angle + 3 * sin(level.maptime * 6.0), SPF_INTERPOLATE);
+		HCE_Play(HCE_A_ALERT);
+		if(level.maptime >= hce_invLook) { hce_invUntil = 0; hce_returnHome = true; hce_returnUntil = level.maptime + 35 * 25; }
+		return true;
+	}
+
+	// ------------------------------------------------------------------
+	// Jackal snipers change perches: after a few shots, or when hurt, one finds another spot with a view of its
+	// target (higher ground preferred, well away from the last) and moves there without firing
+	// ------------------------------------------------------------------
+	int hce_pcShots, hce_pcEvery, hce_pcArrive;
+	bool hce_pcMoving;
+	vector3 hce_pcGoal;
+
+	bool HCE_IsSniper() { int b; return hce_type == 1 && !bFRIENDLY && HCE_WeaponKindOf(hce_dropWeapon, b) == HCE_WK_LONG; }
+
+	bool HCE_FindPerch()
+	{
+		if(!target) return false;
+		double best = -1e9; bool got = false;
+		vector3 tgt = target.pos + (0, 0, target.height * 0.6);
+		static const double rads[] = { 192, 320, 448 };
+		for(int r = 0; r < 3; r++)
+			for(int i = 0; i < 10; i++)
+			{
+				vector2 sp = pos.xy + AngleToVector(i * 36 + frandom(-10, 10), rads[r]);
+				double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+				if(!level.IsPointInLevel((sp, fz + 1))) continue;
+				double dt = (target.pos.xy - sp).Length();
+				if(dt < 384 || dt > max(hce_rangeMax * 1.1, 900)) continue;
+				if(!HCE_Walkable((sp, fz)) || !CheckPosition(sp)) continue;
+				if(HCE_SightBlocked((sp, fz + height * 0.85), tgt)) continue;
+				double sc = (fz - pos.z) * 2 + rads[r] * 0.3 + frandom(0, 60);
+				if(sc > best) { best = sc; hce_pcGoal = (sp, fz); got = true; }
+			}
+		return got;
+	}
+
+	// true while moving to a new perch (the caller's move is replaced)
+	bool HCE_PerchTick(double d, out double moveA, out double spd, out bool fire)
+	{
+		if(!HCE_IsSniper()) return false;
+		if(!hce_pcMoving)
+		{
+			if(hce_pcEvery == 0) hce_pcEvery = random(3, 6);
+			if(hce_pcShots < hce_pcEvery && !(hce_recentDamageTics > 0 && random(0, 40) == 0)) return false;
+			hce_pcShots = 0; hce_pcEvery = random(3, 6);
+			if(!HCE_FindPerch()) return false;
+			hce_pcMoving = true; hce_pcArrive = level.maptime + 35 * 6;
+			HCE_StopFireLoop();
+		}
+		vector2 dv = hce_pcGoal.xy - pos.xy;
+		if(dv.Length() < 24 || level.maptime > hce_pcArrive) { hce_pcMoving = false; return false; }
+		moveA = atan2(dv.y, dv.x); spd = hce_runSpeed; fire = false;
+		return true;
+	}
+
+	// ------------------------------------------------------------------
+	// Sword Elites lunge, as in Halo 2: from 120-360 units, a fast dash straight at the target into a swing
+	// ------------------------------------------------------------------
+	int hce_lgTics, hce_lgNext;
+
+	bool HCE_HasSword() { return hce_dropWeapon == 'Halo_EnergySword' && hce_type == 0; }
+
+	bool HCE_TryLunge(double d)
+	{
+		if(hce_lgTics > 0)
+		{
+			hce_lgTics--;
+			A_SetAngle(AngleTo(target), SPF_INTERPOLATE);
+			if(HCE_InMeleeRange(Distance2D(target), 8)) { hce_lgTics = 0; hce_meleeTics = 0; HCE_TryMelee(); return true; }
+			if(!HCE_Move(AngleTo(target), hce_runSpeed * 2.6)) hce_lgTics = 0;
+			HCE_Play(HCE_A_MOVE_F);
+			return true;
+		}
+		if(!HCE_HasSword() || !hce_canSee || level.maptime < hce_lgNext || d < 120 || d > 360) return false;
+		if(abs(target.pos.z - pos.z) > 48 || frandom(0, 1) > 0.25) { hce_lgNext = level.maptime + 12; return false; }
+		hce_lgNext = level.maptime + int(35 * frandom(3, 5) * HCE_D(HCE_D_MELEE_SCALE));
+		hce_lgTics = 14;
+		HCE_Say('Charge', 0.5, 35 * 4);
+		return HCE_TryLunge(d);
+	}
+
+	// ------------------------------------------------------------------
+	// Rallying: an Elite (or Brute) leader takes on the leaderless Grunts and Jackals of a fallen leader ("join
+	// me!"), cutting their panic short. HCE_LeaderDied calls it.
+	// ------------------------------------------------------------------
+	void HCE_JoinSquad(HaloDoom_EnemyBase L)
+	{
+		static const double SA[] = { 150, -150, 115, -115, 175, -175, 135, -135, 160 };
+		static const double SD[] = { 72, 72, 104, 104, 130, 130, 160, 160, 185 };
+		hce_squadLead = L;
+		int n = L.hce_squadCount++ % 9;
+		hce_slotAng = SA[n]; hce_slotDist = SD[n] + L.radius;
+		hce_squadCheck = level.maptime + 35 * 3;
+	}
+
+	static void HCE_Rally(HaloDoom_EnemyBase fallen)
+	{
+		HaloDoom_EnemyBase best = null; double bd = 1100;
+		let it = BlockThingsIterator.Create(fallen, 1100);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == fallen || !e.hce_enabled || e.health <= 0 || !e.bHCE_Leader || e.bFRIENDLY || e.hce_team != fallen.hce_team || e.hce_squadCount >= 9) continue;
+			double d = e.Distance3D(fallen);
+			if(d < bd) { bd = d; best = e; }
+		}
+		if(!best) return;
+		int n = 0;
+		it = BlockThingsIterator.Create(best, 900);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || !e.hce_enabled || e.health <= 0 || !e.HCE_IsFollowerType() || e.hce_team != best.hce_team) continue;
+			if(e.hce_squadLead && e.hce_squadLead != fallen && e.hce_squadLead.health > 0) continue;
+			e.HCE_JoinSquad(best);
+			if(e.hce_action == HCE_ACT_FLEE) e.hce_panicTics = min(e.hce_panicTics, random(30, 60));
+			n++;
+		}
+		if(n > 0) best.HCE_Say('JoinMe', 1.0, 35 * 4, true);
+	}
+
+	// ------------------------------------------------------------------
+	// Watching each other's backs (Marines): hit from behind, a Marine calls it and the nearest squadmate not already
+	// on that enemy turns on it; HCE_Formation also sends someone at any enemy coming from the squad's rear or flank
+	// that nobody is engaging
+	// ------------------------------------------------------------------
+	int hce_behindNext;
+	void HCE_CoverMyBack(Actor foe)
+	{
+		hce_behindNext = level.maptime + 35 * 6;
+		HCE_Say('Behind', 1.0, 35 * 5, true);
+		HaloDoom_EnemyBase best = null; double bd = 900;
+		let it = BlockThingsIterator.Create(self, 900);
+		while(it.Next())
+		{
+			let m = HaloDoom_EnemyBase(it.thing);
+			if(!m || m == self || m.health <= 0 || !m.HCE_InSquad() || m.target == foe || m.hce_betrayed) continue;
+			double dd = m.Distance3D(foe);
+			if(dd < bd && m.CheckSight(foe)) { bd = dd; best = m; }
+		}
+		if(best) { best.target = foe; best.hce_lastKnown = foe.pos; best.hce_cvState = 0; }
 	}
 
 	// ------------------------------------------------------------------
@@ -1780,6 +2320,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			}
 			HCE_Brake();
 			A_SetAngle(toT, SPF_INTERPOLATE);
+			HCE_Say('Cover', 0.45, 35 * 6);
 			hce_cvState = HCE_CV_HIDE;
 			hce_cvPhase = level.maptime + HCE_CvHideTics();
 			hce_cvCheck = level.maptime + 15;
@@ -1795,7 +2336,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_cvCheck = level.maptime + 15;
 			int sd;
 			int k = HCE_CoverAt(hce_cvSpot.xy, hce_cvSpot.z, target, !hce_cvLow, hce_cvLow, sd);
-			if(k == 0) { HCE_Say('Flee', 0.15, 35 * 4); HCE_LeaveCover(); return 0; }   // flanked
+			if(k == 0) { HCE_Say('Uncovered', 0.6, 35 * 4); HCE_LeaveCover(); return 0; }   // flanked
 			if(k == 1 && hce_cvState == HCE_CV_HIDE && sd != hce_cvSide && hce_animLock <= 0) hce_cvSide = sd;
 		}
 		HCE_Brake();
@@ -1938,6 +2479,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_moveAngle = ang;
 		hce_moveSpeed = spd;
 		if(spd <= 0) { HCE_Brake(); return false; }
+		if(HCE_OnMovingLift()) { hce_moveSpeed = 0; HCE_Brake(); return false; }        // riding a lift
 		if(hce_wounded) spd = min(spd, max(hce_walkSpeed * 0.6, hce_runSpeed * 0.45));   // a wounded Marine limps
 		bool leash = hce_squadOrder == HCE_ORDER_HOLD && HCE_InSquad();
 		double held = leash ? (pos.xy - hce_holdPos.xy).Length() : 0;
@@ -1958,6 +2500,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				vel.xy = (0, 0);
 				return true;
 			}
+			if(i == 0 && HCE_TryDoor(a)) { hce_moveSpeed = 0; HCE_Brake(); return false; }   // a door or lift it's waiting on
 			if(i == 0 && HCE_TryJump(a, true)) { hce_moveAngle = a; return true; }
 			if(i == 0 && HCE_TryDrop(a, spd)) { hce_moveAngle = a; return true; }
 		}
@@ -2736,7 +3279,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	HCE_Formation hce_formation;
-	vector2 hce_formSpot;
+	vector2 hce_formSpot, hce_navVia;
 	double hce_formFace;
 	int hce_formTics;
 	virtual void HCE_Follow()
@@ -2768,6 +3311,16 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(level.maptime >= hce_formTics) { hce_formation.Spot(self, hce_formSpot, hce_formFace); hce_formTics = level.maptime + 6; }
 			vector2 dv = hce_formSpot - pos.xy;
 			double gd = dv.Length(), d = Distance2D(p);
+			// round corners: no straight way to its place, so the newest point on the player's trail it can reach
+			if(d < 900 || CheckSight(p)) hce_nearTic = level.maptime;
+			else if(level.maptime - hce_nearTic > 35 * 20 && d > 1800 && hce_tpAt <= 0) hce_tpAt = level.maptime;
+			if(gd > 40 && d > 160 && level.maptime % 8 == (hce_scavOff & 7))
+			{
+				double fz = GetZAt(hce_formSpot.x, hce_formSpot.y, 0, GZF_ABSOLUTEPOS);
+				hce_navVia = (0, 0);
+				if(!HCE_Walkable((hce_formSpot, fz)) && HCE_TrailGoal(PlayerNum(p), level.maptime - 35 * 90, level.maptime)) hce_navVia = hce_trailHit.xy;
+			}
+			if(hce_navVia != (0, 0) && gd > 40 && d > 160) { dv = hce_navVia - pos.xy; if(dv.Length() < 32) hce_navVia = (0, 0); }
 			if(gd > 40 && d > 72)
 			{
 				bool hurry = gd > 160 || d > 500 || p.vel.xy.Length() > hce_walkSpeed * 1.2;
@@ -3148,6 +3701,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_FireShot(bool special = false)
 	{
 		if(!target) return;
+		hce_pcShots++;
 		if(level.maptime >= hce_gunfireTic) { hce_gunfireTic = level.maptime + 35 * 2; HCE_GunfireHeard(); }
 		if(bHCE_Beam) { HCE_FireBeam(); return; }
 		if(hce_projectile == 'HCE_H2BeamShot') { HCE_FireBeamRifle(); return; }
@@ -4095,6 +4649,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		Actor from = inflictor ? inflictor : source;
 		if(from && from != self) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));   // shield hits too: the stun faces it
 		// the player shooting a squad Marine (shield hits count too)
+		if(health > 0 && source && source != target && !source.player && HCE_InSquad() && HCE_IsEnemy(source)
+			&& abs(DeltaAngle(angle, AngleTo(source))) > 100 && level.maptime >= hce_behindNext)
+			HCE_CoverMyBack(source);
 		bool ff = health > 0 && source && source.player && (HCE_InSquad() || hce_betrayed);
 		if(ff) HCE_FriendlyFire(source, max(0, dealt));
 		if(dealt <= 0) return;
@@ -5343,14 +5900,14 @@ class HCE_Lance : Thinker
 		{
 			int grunts = 0;
 			for(int k = 0; k < members.Size(); k++) if(members[k].hce_type == 2) grunts++;
-			if(members.Size() <= startCount * 0.6 || t - phaseAt > 35 * 16) { phase = PH_EXPLOIT; phaseAt = t; }
+			if(members.Size() <= startCount * 0.6 || t - phaseAt > 35 * 16) { phase = PH_EXPLOIT; phaseAt = t; leader.HCE_Say('Charge', 1.0, 35 * 4, true); }
 			else if(grunts >= 2 && closing && td < 700 && t >= feintNext && random(0, 2) == 0)
 			{ phase = PH_FEINT; phaseAt = t; feintAt = t; feintNext = t + 35 * 15; }
 			else if(t % 70 == 0) feintNext = max(feintNext, t + 35);
 			break;
 		}
 		case PH_FEINT:
-			if(td < 320) { phase = PH_EXPLOIT; phaseAt = t; }                 // they took the bait: spring it
+			if(td < 320) { phase = PH_EXPLOIT; phaseAt = t; leader.HCE_Say('Charge', 1.0, 35 * 4, true); }   // they took the bait: spring it
 			else if(t - phaseAt > 35 * 4) { phase = PH_ASSAULT; phaseAt = t; } // the rout turns and fights again
 			break;
 		}
@@ -5441,11 +5998,56 @@ class HCE_Formation : Thinker
 			drill = 1; bounding = -1; boundAt = level.maptime + 70; flank = random(0, 1) ? 1 : -1;
 		}
 		maxStrength = max(maxStrength, str);
-		if(drill == 1 && roster.Size() >= 2 && str < maxStrength * 0.45) { drill = 2; bounding = 0; boundAt = level.maptime + 35 * 3; }
+		if(drill == 1 && roster.Size() >= 2 && str < maxStrength * 0.45)
+		{
+			drill = 2; bounding = 0; boundAt = level.maptime + 35 * 3;
+			roster[random(0, roster.Size() - 1)].HCE_Say('FallBack', 1.0, 35 * 5, true);
+		}
 		if(level.maptime >= boundAt)
 		{
 			bounding = bounding == 0 ? 1 : 0;                        // the other team's rush
 			boundAt = level.maptime + random(35 * 3, 35 * 5);
+			if(drill == 1 && roster.Size() > bounding && random(0, 3) == 0) roster[bounding].HCE_Say('Advance', 1.0, 35 * 6);
+		}
+		if(level.maptime % 35 == 11) WatchRear();
+	}
+
+	// the squad's rear and flanks: an enemy in sight of a man but well off the way the fight faces (100 degrees or
+	// more), that nobody is on, gets the nearest man who isn't busy, with a shout
+	void WatchRear()
+	{
+		if(roster.Size() < 2) return;
+		vector2 c = (0, 0), dir = (0, 0);
+		for(int i = 0; i < roster.Size(); i++)
+		{
+			c += roster[i].pos.xy;
+			if(roster[i].target) dir += (roster[i].target.pos.xy - roster[i].pos.xy).Unit();
+		}
+		c /= roster.Size();
+		if(dir.Length() < 0.01) return;
+		double main = atan2(dir.y, dir.x);
+		let it = BlockThingsIterator.Create(leader, 1280);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e.health <= 0 || e.hce_team == HCE_TEAM_HUMAN || e.bFRIENDLY) continue;
+			vector2 to = e.pos.xy - c;
+			if(abs(Actor.DeltaAngle(main, atan2(to.y, to.x))) < 100) continue;
+			bool covered = false;
+			for(int i = 0; i < roster.Size() && !covered; i++) if(roster[i].target == e) covered = true;
+			if(covered) continue;
+			HaloDoom_EnemyBase best = null; double bd = 1e9;
+			for(int i = 0; i < roster.Size(); i++)
+			{
+				let m = roster[i];
+				if(m.hce_cvState >= HaloDoom_EnemyBase.HCE_CV_HIDE || m.hce_medicFor || m.hce_button) continue;
+				double dd = m.Distance3D(e);
+				if(dd < bd && m.CheckSight(e)) { bd = dd; best = m; }
+			}
+			if(!best) continue;
+			best.target = e; best.hce_lastKnown = e.pos;
+			best.HCE_Say('Behind', 1.0, 35 * 5, true);
+			return;                                     // one at a time
 		}
 	}
 
@@ -5714,15 +6316,153 @@ class TestImp : HaloDoom_EnemyBase
 class HCE_MissileTracker : EventHandler
 {
 	Array<Actor> missiles;
+
+	static HCE_MissileTracker Get() { return HCE_MissileTracker(EventHandler.Find("HCE_MissileTracker")); }
+
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		if(e.Thing && e.Thing.bMISSILE) missiles.Push(e.Thing);
 	}
+
+	// ---- each player's trail: a point every 32 units walked, with when, and where a teleport broke it
+	Array<double> crX, crY, crZ;
+	Array<int> crT, crP;
+	Array<bool> crB;
+	vector3 lastPos[MAXPLAYERS];
+	bool havePos[MAXPLAYERS], breakNext[MAXPLAYERS];
+
+	void AddCrumb(int pn, vector3 p)
+	{
+		crX.Push(p.x); crY.Push(p.y); crZ.Push(p.z); crT.Push(level.maptime); crP.Push(pn); crB.Push(breakNext[pn]);
+		breakNext[pn] = false;
+		if(crX.Size() > 1600) { crX.Delete(0); crY.Delete(0); crZ.Delete(0); crT.Delete(0); crP.Delete(0); crB.Delete(0); }
+	}
+
+	int LastCrumb(int pn)
+	{
+		for(int i = crX.Size() - 1; i >= 0; i--) if(crP[i] == pn) return i;
+		return -1;
+	}
+
+	// ---- the switches that work tagged doors and lifts, gathered once
+	Array<Line> switches;
+	bool switchesDone;
+
+	Line SwitchFor(Sector door, Actor who)
+	{
+		if(!switchesDone)
+		{
+			switchesDone = true;
+			for(int i = 0; i < level.Lines.Size(); i++)
+			{
+				Line l = level.Lines[i];
+				if(l.special && l.Args[0] != 0 && HaloDoom_EnemyBase.HCE_DoorOrLift(l.special) && (l.activation & (SPAC_Use | SPAC_UseThrough)) && !l.locknumber)
+					switches.Push(l);
+			}
+		}
+		Line best = null; double bd = 2048;
+		for(int i = 0; i < switches.Size(); i++)
+		{
+			Line l = switches[i];
+			bool works = false;
+			let si = level.CreateSectorTagIterator(l.Args[0]);
+			int k;
+			while((k = si.Next()) >= 0) if(k == door.Index()) { works = true; break; }
+			if(!works) continue;
+			vector2 m = l.v1.p + l.delta * 0.5;
+			double d = (m - who.pos.xy).Length();
+			if(d < bd) { bd = d; best = l; }
+		}
+		return best;
+	}
+
+	// ---- flashlights (HaloDoom Evolved's, through the pickup resolver; the standalone packs have none)
+	HCE_PickupResolver resolver;
+	bool resolverTried;
+	bool FlashlightOn(Actor p)
+	{
+		if(!resolverTried)
+		{
+			resolverTried = true;
+			String rn = "HCE_HDEPickupResolver";
+			class<HCE_PickupResolver> rc = rn;
+			if(rc) resolver = HCE_PickupResolver(new(rc));
+		}
+		return resolver && resolver.FlashlightOn(p);
+	}
+
 	override void WorldTick()
 	{
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo) { havePos[i] = false; continue; }
+			let p = players[i].mo;
+			if(havePos[i] && level.maptime > 5)
+			{
+				double jump = (p.pos.xy - lastPos[i].xy).Length();
+				if(jump > max(96, p.vel.xy.Length() * 3 + 48))
+				{
+					breakNext[i] = true;
+					HaloDoom_EnemyBase.HCE_PlayerTeleported(p, lastPos[i], p.pos);
+				}
+			}
+			lastPos[i] = p.pos; havePos[i] = true;
+			int lc = LastCrumb(i);
+			if(p.pos.z <= p.floorz + 2 && (lc < 0 || breakNext[i] || (p.pos.xy - (crX[lc], crY[lc])).Length() >= 32)) AddCrumb(i, p.pos);
+			if(level.maptime % 8 == i % 8 && FlashlightOn(p)) Flashlight(p);
+		}
 		if(level.maptime % 35) return;
 		for(int i = missiles.Size() - 1; i >= 0; i--)
 			if(!missiles[i] || !missiles[i].bMISSILE) missiles.Delete(i);
+	}
+
+	// a flashlight's beam on an idle enemy that can see the player: it notices him
+	void Flashlight(Actor p)
+	{
+		let it = BlockThingsIterator.Create(p, 1536);
+		vector3 fwd = (Actor.AngleToVector(p.angle, cos(p.pitch)), -sin(p.pitch));
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e.health <= 0 || e.target || e.bFRIENDLY || !e.HCE_IsEnemy(p) || e.hce_sleeping && random(0, 1)) continue;
+			vector3 to = e.pos + (0, 0, e.height * 0.5) - (p.pos + (0, 0, p.player.viewheight));
+			double l = to.Length();
+			if(l < 1 || l > 1536 || (to / l) dot fwd < cos(16)) continue;
+			if(!e.CheckSight(p, SF_IGNOREVISIBILITY)) continue;
+			e.target = p; e.hce_lastKnown = p.pos; e.hce_lastSeen = level.maptime;
+			e.HCE_OnAcquire();
+		}
+	}
+
+	// explosions: whoever hears one and has nothing to fight goes to look (HaloDoom_EnemyBase.HCE_Investigate)
+	override void WorldThingDestroyed(WorldEvent e)
+	{
+		let t = e.Thing;
+		if(!t || !t.bMISSILE || level.maptime < 35) return;
+		String cn = t.GetClassName();
+		cn = cn.MakeLower();
+		if(t.ExplosionRadius <= 0 && t.ExplosionDamage <= 0 && cn.IndexOf("grenade") < 0 && cn.IndexOf("rocket") < 0
+			&& cn.IndexOf("explos") < 0 && cn.IndexOf("fuelrod") < 0 && cn.IndexOf("caster") < 0 && cn.IndexOf("missile") < 0) return;
+		Noise(t.pos, t.target);
+	}
+
+	override void WorldThingDied(WorldEvent e)
+	{
+		if(e.Thing && e.Thing is "ExplosiveBarrel") Noise(e.Thing.pos, e.Thing.target);
+	}
+
+	void Noise(vector3 at, Actor src)
+	{
+		double r = HaloDoom_EnemyBase.HCE_CVarF('hce_hearing', 1024) * 1.25;
+		let it = BlockThingsIterator.CreateFromPos(at.x, at.y, at.z, 64, r, false);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e.health <= 0 || e.target || e.bAMBUSH) continue;
+			if((e.pos.xy - at.xy).Length() > r) continue;
+			if(src && !e.HCE_IsEnemy(src) && src != e && !src.player) continue;       // its own side's blast: nothing new
+			e.HCE_Investigate(at, src);
+		}
 	}
 }
 
@@ -5962,4 +6702,5 @@ class HCE_EnemyLaser : Actor
 class HCE_PickupResolver play
 {
 	virtual Name WeaponOf(Actor a) { return 'None'; }
+	virtual bool FlashlightOn(Actor p) { return false; }      // HaloDoom Evolved's flashlight (hce_hde.zsc)
 }

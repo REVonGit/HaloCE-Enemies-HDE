@@ -27,6 +27,24 @@ CAT = {
     'trade ok': ['TradeOk'], 'refuse': ['Refuse'],
     # a comrade killed in sight; gunfire heard before the enemy is seen
     'man down': ['ManDown'], 'heard gunfire': ['HeardGunfire'],
+    # combat callouts: taking cover, flanked, searching, rallying, orders, warnings
+    'cover': ['Cover'],
+    'uncovered': ['Uncovered'],
+    'search start': ['SearchStart'],
+    'search clear': ['SearchClear'],
+    'search fail': ['SearchFail'],
+    'keep watch': ['KeepWatch'],
+    'found foe': ['FoundFoe'],
+    'join me': ['JoinMe'],
+    'charge': ['Charge'],
+    'investigate': ['Investigate'],
+    'behind': ['Behind'],
+    'sniper': ['Sniper'],
+    'sword': ['Sword'],
+    'up there': ['UpThere'],
+    'down there': ['DownThere'],
+    'fall back': ['FallBack'],
+    'advance': ['Advance'],
 }
 # events a voice lacks borrow another of its own events
 FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 'Pain', 'PainHeavy': 'PainMed',
@@ -35,7 +53,11 @@ FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 
             # the squad's lines (Halo 2 has most; the CE-only voices borrow the nearest they have)
             'Scold': 'PainMed', 'AllyKilled': 'Scold', 'Betrayal': 'Taunt', 'Acknowledge': 'Regroup',
             'Thanks': 'Acknowledge', 'Wounded': 'PainHeavy', 'Forgive': 'Acknowledge', 'WorseWeapon': 'Scold',
-            'TradeOk': 'Thanks', 'Refuse': 'WorseWeapon', 'ManDown': 'LeaderDead', 'HeardGunfire': 'Alert'}
+            'TradeOk': 'Thanks', 'Refuse': 'WorseWeapon', 'ManDown': 'LeaderDead', 'HeardGunfire': 'Alert',
+            'Cover': 'Regroup', 'Uncovered': 'Cover', 'SearchStart': 'HeardGunfire', 'SearchClear': 'SearchFail',
+            'SearchFail': 'Regroup', 'KeepWatch': 'SearchFail', 'FoundFoe': 'Alert', 'JoinMe': 'Regroup', 'Charge': 'Berserk',
+            'Investigate': 'SearchStart', 'Behind': 'Alert', 'Sniper': 'Alert', 'Sword': 'Alert', 'UpThere': 'Alert',
+            'DownThere': 'Alert', 'FallBack': 'Flee', 'Advance': 'Regroup'}
 
 def main():
     if os.path.exists(OUT): shutil.rmtree(OUT)

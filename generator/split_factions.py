@@ -12,6 +12,7 @@ DoomEdNums are unchanged: each pack lists the numbers of its own classes."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, sys
+import json, os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
 
@@ -36,6 +37,11 @@ def chunks(text):
 HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_healthbar')   # CE_HB1..9 from HDE
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
+# Halo 2's footsteps (extract_footsteps.py): the sets each faction's bodies use (Jackals step as Grunts, Hunters as
+# Brutes, the Flood's combat forms as the body they were)
+from build_pack import OUT as _OUT
+STEPS = f'{_OUT}/footsteps'
+STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
                'hold position': 'HoldPosition', 'pressbutton': 'PressButton', 'press button': 'PressButton',
@@ -97,8 +103,9 @@ def main():
         '\tStaticText "Enemies get bloodier as they are hurt.", 1\n}\n')
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
-                                          '// "leatherneck" one of every loaded Marine\n'
+                                          '// "leatherneck" one of every loaded Marine, "helljumpers" one of every ODST\n'
                                           'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
+                                          'alias helljumpers "netevent hce_spawnodsts"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)\n'
                                           'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
                                           'alias hce_holdfire "netevent hce_squad 3"\nalias hce_openfire "netevent hce_squad 4"\nalias hce_focus "netevent hce_squad 5"\n'
@@ -211,6 +218,21 @@ def main():
                 out += [f'{sid} "{f}"' for sid, f in zip(ids, files)]
                 out.append(f'$random HCE/Chief/{key} {{ {" ".join(ids)} }}')
             open(f'{d}/sndinfo.chief', 'w').write('\n'.join(out) + '\n')
+        if fac in STEP_SETS and os.path.exists(f'{STEPS}/index.json'):
+            # footsteps: HCE/Step/<set>/<surface>_<walk|run>, one a stride (HaloDoom_EnemyBase.HCE_StepTick)
+            idx = json.load(open(f'{STEPS}/index.json'))
+            out = ["// Halo 2's footsteps (extract_footsteps.py): HCE/Step/<set>/<surface>_<walk|run>"]
+            for st in STEP_SETS[fac]:
+                for key, files in sorted(idx.get(st, {}).items()):
+                    ids = []
+                    for k, fn in enumerate(files):
+                        dst = f'sounds/hce_steps/{fn}'
+                        os.makedirs(os.path.dirname(f'{d}/{dst}'), exist_ok=True)
+                        shutil.copy(f'{STEPS}/{fn}', f'{d}/{dst}')
+                        ids.append(f'HCE/Step/{st}/{key}/{k}')
+                        out.append(f'{ids[-1]} "{dst}"')
+                    out.append(f'$random HCE/Step/{st}/{key} {{ {" ".join(ids)} }}')
+            open(f'{d}/sndinfo.steps', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{GORE}/decaldef.hcegore'):
             # NashGore patch: Halo CE / Halo 2 blood decals and bursts (extract_halo_gore.py, hce_gore.zsc)
             shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{d}/ZScript/HaloCE/hce_gore.zsc')

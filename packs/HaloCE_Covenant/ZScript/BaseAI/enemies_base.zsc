@@ -965,6 +965,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// the energy-shield flare: a copy of the model that glows when the shield takes a hit (pack code)
 	Actor hce_shellActor;
+	Actor hce_holoActor;                 // a companion drawn on the same skeleton (the Brute Captain's hologram flag)
 	// sniper glint: a purple star flashing at the rifle while the enemy takes aim (beam rifles), so the player
 	// sees the shot coming. rel = the muzzle relative to the actor; t = tics into the aim.
 	void HCE_SniperGlint(vector3 rel, int t)
@@ -1126,6 +1127,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!target && !bAMBUSH && CurSector.SoundTarget && HCE_IsEnemy(CurSector.SoundTarget)
 			&& Distance3D(CurSector.SoundTarget) < min(hce_hearingDist, HCE_CVarF('hce_hearing', 1024)))
 		{
+			if(!CheckSight(CurSector.SoundTarget)) HCE_Say('HeardGunfire', 1.0, 35 * 3);   // gunfire heard, nobody seen yet
 			target = CurSector.SoundTarget;
 			hce_lastKnown = target.pos;
 			HCE_OnAcquire();
@@ -2067,6 +2069,48 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// a squad Marine down: the player killed it (the others call it out, and it counts as two hits against the
 	// player for each of them), or it was Johnson
+	// ------------------------------------------------------------------
+	// Callouts. "Man down": a comrade of the same side dies where one of its own can see it (not a leader, who gets
+	// the leader-dead line, nor a Marine the player killed, who gets the squad's scolding): the nearest who saw it
+	// calls it out. "Heard gunfire": an enemy's shooting heard by someone who has no target and can't see the
+	// shooter (Doom's sound for the player's guns, HCE_GunfireHeard for the enemies' and the Marines'); it turns
+	// toward the sound. One caller per side per event, and each speaker only now and then.
+	// ------------------------------------------------------------------
+	int hce_gunfireTic, hce_gunfireHeardTic;
+
+	void HCE_ManDown()
+	{
+		if(bHCE_Leader || bHCE_PairBond || hce_team == HCE_TEAM_FLOOD || hce_team == HCE_TEAM_SENTINEL) return;
+		if(hce_team == HCE_TEAM_HUMAN && hce_lastHurter && hce_lastHurter.player && !hce_betrayed) return;   // AllyKilled
+		HaloDoom_EnemyBase best = null; double bd = 1e9;
+		let it = BlockThingsIterator.Create(self, 768);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.hce_enabled || e.health <= 0 || e.hce_team != hce_team || e.hce_sleeping) continue;
+			double d = e.Distance3D(self);
+			if(d < bd && e.CheckSight(self, SF_IGNOREVISIBILITY)) { best = e; bd = d; }
+		}
+		if(best) best.HCE_Say('ManDown', 0.8, 35 * 4);
+	}
+
+	void HCE_GunfireHeard()
+	{
+		int said = 0;                                  // a bit per side that has called it
+		let it = BlockThingsIterator.Create(self, 1024);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.hce_enabled || e.health <= 0 || e.target || e.hce_sleeping || !e.HCE_IsEnemy(self)) continue;
+			if(level.maptime < e.hce_gunfireHeardTic || e.Distance3D(self) > 1024 || e.CheckSight(self, SF_IGNOREVISIBILITY)) continue;
+			e.hce_gunfireHeardTic = level.maptime + 35 * 8;
+			e.hce_lastKnown = pos;
+			e.A_SetAngle(e.AngleTo(self), SPF_INTERPOLATE);
+			int bit = 1 << clamp(e.hce_team, 0, 7);
+			if(!(said & bit)) { said |= bit; e.HCE_Say('HeardGunfire', 1.0, 35 * 3); }
+		}
+	}
+
 	void HCE_SquadDeath()
 	{
 		if(hce_squadDeathDone || hce_team != HCE_TEAM_HUMAN || !bHCE_FollowPlayer) return;
@@ -2709,6 +2753,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_FireShot(bool special = false)
 	{
 		if(!target) return;
+		if(level.maptime >= hce_gunfireTic) { hce_gunfireTic = level.maptime + 35 * 2; HCE_GunfireHeard(); }
 		if(bHCE_Beam) { HCE_FireBeam(); return; }
 		if(hce_projectile == 'HCE_H2BeamShot') { HCE_FireBeamRifle(); return; }
 		class<Actor> pc = (class<Actor>)(hce_projectile);
@@ -3722,6 +3767,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		hce_burnDying = false; hce_bleedOut = 0;
 		HCE_SquadDeath();
+		HCE_ManDown();
 		let mate = HaloDoom_EnemyBase(hce_bondMate);
 		if(bHCE_PairBond && mate && mate.health > 0) mate.HCE_BondRage(self);
 		bNOBLOOD = default.bNOBLOOD || hce_burnHit;           // dead: the shield no longer keeps the blood in (fire still does)
@@ -5357,6 +5403,8 @@ class HCE_LimbGib : Actor
 		{
 			RandomizeVelocity(0.5);
 			RandomizeAngles(true);
+			// Nash's Gore Mod's sounds, when it is loaded (otherwise the names don't exist and nothing plays)
+			A_StartSound("nashgore/gibbounce", CHAN_AUTO, CHANF_OVERLAP);
 			return ResolveState("Spawn");
 		}
 		Wait;
@@ -5365,6 +5413,7 @@ class HCE_LimbGib : Actor
 	Crash:
 		HCEM A 1
 		{
+			A_StartSound("nashgore/gibsmall", CHAN_AUTO, CHANF_OVERLAP);       // it lands (NashGore's gib sound)
 			isStatic = true;
 			life = GetAge();
 			// lying flat: keep the heading, level out (pitch and roll 0 is its broad side down)

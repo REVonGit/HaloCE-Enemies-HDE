@@ -161,11 +161,12 @@ CHAR_OF_UNIT = {
     r'characters\floodcarrier\floodcarrier': 'FloodCarrier', r'characters\floodcombat elite\floodcombat elite': 'FloodElite',
     r'characters\floodcombat_human\floodcombat_human': 'FloodHuman', r'characters\sentinel\sentinel': 'Sentinel',
     r'characters\marine\marine': 'Marine', r'characters\marine_armored\marine_armored': 'MarineArmored',
+    r'characters\marine_odst\odst': 'MarineODST',
 }
 TEAM = {'Grunt': 'COVENANT', 'GruntSpecOps': 'COVENANT', 'Jackal': 'COVENANT', 'JackalMajor': 'COVENANT',
         'Elite': 'COVENANT', 'EliteSpecial': 'COVENANT', 'Hunter': 'COVENANT', 'FloodInfection': 'FLOOD',
         'FloodCarrier': 'FLOOD', 'FloodElite': 'FLOOD', 'FloodHuman': 'FLOOD', 'Sentinel': 'SENTINEL',
-        'Marine': 'HUMAN', 'MarineArmored': 'HUMAN'}
+        'Marine': 'HUMAN', 'MarineArmored': 'HUMAN', 'MarineODST': 'HUMAN'}
 
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
 WEAPONS = {
@@ -245,7 +246,8 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
           # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
           'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
+          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
+          'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
@@ -264,7 +266,7 @@ BLOOD = {
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
     'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
-    'Marine': 'A01010', 'MarineArmored': 'A01010',                        # human: red
+    'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
 }
@@ -1182,7 +1184,7 @@ def marine_code(meta, mdir, char='Marine'):
 # their stances the heads stand above it, so shots at the top of a head passed over the box and headshots and
 # beheadings were rare. Heights up to the top of the head in the idle stances (head bone + its geometry)
 HEAD_CLEAR = {'Elite': 68, 'EliteSpecial': 68, 'Grunt': 48, 'GruntSpecOps': 48, 'Jackal': 54, 'JackalMajor': 54,
-              'Marine': 58, 'MarineArmored': 58}
+              'Marine': 58, 'MarineArmored': 58, 'MarineODST': 58}
 
 BLOOD_IDX = 7     # model attachment index of the blood overlay (the Brutes' armour kit uses 1-6)
 
@@ -1342,7 +1344,8 @@ def build(cfg=None):
                   f'\tPain:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tGoto See;\n'
                   f'\tPain.PlasmaStuck:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
-                  f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n\t}}\n'
+                  f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n'
+                  f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
@@ -1765,6 +1768,8 @@ def build(cfg=None):
         open(f'{pack}/shaders/hce_camo.fp', 'w').write(CAMO_SHADER)
         for t in sorted(set(camo)):
             gl.append(f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}')
+    # the ODSTs' visors: Halo CE's visor reflection, a cube map looked up per pixel (extract_odst.py)
+    gl += odst_visors(pack, mdir, md)
     tg = cfg['tag']
     open(f'{pack}/gldefs.{tg}', 'w').write('\n'.join(gl) + '\n')
     # HCEM A: placeholder sprite. Models draw instead, but the map spawner rejects actors whose sprite
@@ -2130,6 +2135,106 @@ def add_marine_arsenal(variants):
         variants[vn] = v
 
 add_marine_arsenal(AI['variants'])
+
+# ODSTs (new): SPV3's Halo CE ODST (extract_odst.py: its own model on the Marine's skeleton and animations) with the
+# a50 ODSTs' loadouts -- the assault rifle (a Private and a Major) and the shotgun -- and Fire Team Raven, SPV3's four
+# ODSTs in their own colours from a10: green with the shotgun, orange with the battle rifle, blue with the assault
+# rifle and purple with the sniper rifle. They fight as Armored Marines do (the same combat data and collision,
+# so the same toughness) and wear their textures as they are: no colour change.
+ODST_UNIT = r'characters\marine_odst\odst'
+ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven colour or None)
+    'marine odst assault rifle':       ('marine_armored assault rifle', None),
+    'marine odst assault rifle major': ('marine_armored assault rifle major', None),
+    'marine odst shotgun':             ('marine_armored shotgun major', None),
+    'marine odst raven green':         ('marine_armored shotgun major', 'green'),
+    'marine odst raven orange':        ('marine_armored battle rifle', 'orange'),
+    'marine odst raven blue':          ('marine_armored assault rifle', 'blue'),
+    'marine odst raven purple':        ('marine_armored sniper', 'purple'),
+}
+def add_odsts(ai):
+    import copy
+    if not os.path.exists(f'{OUT}/models/MarineODST/MarineODST.json'): return
+    b = copy.deepcopy(ai['bipeds'].get(r'characters\marine_armored\marine_armored'))
+    if not b: return
+    b['change_colors_list'] = []
+    ai['bipeds'][ODST_UNIT] = b
+    minor = ai['variants'].get(r'characters\marine_armored\marine_armored assault rifle', {}).get('actor_reference')
+    for vn, (src, raven) in ODST.items():
+        base = ai['variants'].get('characters\\marine_armored\\' + src)
+        key = 'characters\\marine_odst\\' + vn
+        if not base or key in ai['variants']: continue
+        v = copy.deepcopy(base)
+        v['unit_reference'] = ODST_UNIT
+        if vn == 'marine odst shotgun' and minor: v['actor_reference'] = minor      # a Private, as a50's shotgun ODST
+        v['change_colors'] = None; v['change_colors_list'] = []
+        v['_late'] = True
+        ov = dict(v.get('_ov') or {})
+        ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
+        if raven: ov['raven'] = raven
+        v['_ov'] = ov
+        ai['variants'][key] = v
+
+add_odsts(AI)
+
+def odst_skin(cls, v, si, mat, meta, skin_dir):
+    """Fire Team Raven's own textures (extract_odst.py), copied as they are"""
+    raven = (v.get('_ov') or {}).get('raven')
+    fn = (meta.get('raven') or {}).get(raven, {}).get(mat) if raven else None
+    if not fn: return None
+    os.makedirs(skin_dir, exist_ok=True)
+    if not os.path.exists(f'{skin_dir}/{fn.lower()}'): shutil.copy(f'{OUT}/models/MarineODST/{fn}', f'{skin_dir}/{fn.lower()}')
+    return fn.lower()
+SKIN_HOOK['MarineODST'] = odst_skin
+
+# Halo CE's visor shader (shader_model with a reflection cube map): the reflection direction per pixel (the view ray
+# off the surface normal), its cube face and texel looked up in the six faces laid side by side (Halo's axes, Direct3D
+# face layout), tinted by the visor's texture (its perpendicular / parallel tints, extract_odst.py) and brighter toward
+# grazing angles (Halo's fresnel blend), over the visor's own dark glass
+VISOR_SHADER = '''// Halo CE visor: a reflection cube map (six faces in a strip: +x -x +y -y +z -z), tinted, with fresnel
+vec4 ProcessTexel()
+{
+	vec4 tint = getTexel(vTexCoord.st);
+	vec3 n = normalize(vWorldNormal.xyz);
+	vec3 v = normalize(pixelpos.xyz - uCameraPos.xyz);
+	vec3 r = reflect(v, n);
+	vec3 h = vec3(r.x, r.z, r.y);                      // GL (x, up, y) -> Halo (x, y, up)
+	vec3 a = abs(h);
+	float face; float sc; float tc; float ma;
+	if(a.x >= a.y && a.x >= a.z) { ma = a.x; if(h.x > 0.0) { face = 0.0; sc = -h.z; tc = -h.y; } else { face = 1.0; sc = h.z; tc = -h.y; } }
+	else if(a.y >= a.z) { ma = a.y; if(h.y > 0.0) { face = 2.0; sc = h.x; tc = h.z; } else { face = 3.0; sc = h.x; tc = -h.z; } }
+	else { ma = a.z; if(h.z > 0.0) { face = 4.0; sc = h.x; tc = -h.y; } else { face = 5.0; sc = -h.x; tc = -h.y; } }
+	vec2 fuv = clamp(vec2(sc, tc) / max(ma, 0.0001) * 0.5 + 0.5, 0.002, 0.998);
+	vec3 env = texture(tex_cube, vec2((face + fuv.x) / 6.0, fuv.y)).rgb;
+	float fres = pow(1.0 - abs(dot(n, v)), 2.0);
+	vec3 col = tint.rgb * 0.25 + env * tint.rgb * (1.1 + 1.4 * fres) + env * env * 0.25 * fres;
+	return vec4(min(col, vec3(1.0)), 1.0);
+}
+'''
+
+def odst_visors(pack, mdir, md):
+    """GLDEFS materials giving each ODST visor skin the visor shader and its cube map"""
+    j = f'{OUT}/models/MarineODST/MarineODST.json'
+    if not os.path.exists(j) or 'MarineODST' not in '\n'.join(md): return []
+    meta = json.load(open(j)); vis = meta.get('visor')
+    if not vis: return []
+    si = meta['meshes'].index(vis['mat'])
+    d = f'{pack}/models/{mdir}/MarineODST'
+    out = []; done = set()
+    for blk in md:
+        if f'"models/{mdir}/MarineODST"' not in blk: continue
+        m = re.search(rf'SurfaceSkin 0 {si} "([^"]+)"', blk)
+        if not m or m.group(1) in done: continue
+        done.add(m.group(1))
+        rv = re.search(r'raven_(\w+?)\.png', m.group(1))
+        cube = vis['raven'][rv.group(1)]['cube'] if rv and rv.group(1) in vis['raven'] else vis['base']['cube']
+        cf = f'MarineODST_cube_{cube}.png'
+        if not os.path.exists(f'{d}/{cf}'): shutil.copy(f'{OUT}/models/MarineODST/{cf}', f'{d}/{cf}')
+        out.append(f'material texture "models/{mdir}/MarineODST/{m.group(1)}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
+                   f'\ttexture tex_cube "models/{mdir}/MarineODST/{cf}"\n}}')
+    if out:
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_visor.fp', 'w').write(VISOR_SHADER)
+    return out
 
 def arsenal_lines(char, name, meta, pack, mdir, idx=None):
     """MODELDEF lines attaching a Marine arsenal overlay (model 6) and copying its files into the pack"""

@@ -38,10 +38,13 @@ PLAN = {
     'Stuck':         [('panic', 2)],
     'Pain Xtr':      [('pain_mjr', 1), ('dth_slw', 1)],
     'On Fire':       [('dth_slw', 1)],                                          # drawn-out agonised screams
+    'Heard Gunfire': [('hrdfoe', 3), ('srchstart', 2)],                          # gunfire heard before the enemy is seen
 }
 # the grenade death screams (the same voice actor in both games, though Halo CE doesn't label its Grunt voices): the
 # kamikaze run and a stuck grenade. Halo 2: grunt_crazy's panic screams; Halo CE: combat2 grenade_danger_self
-CE_PLAN = {'Kamikaze': [('shouting\\grenade_danger_self', 5)], 'Stuck': [('shouting\\grenade_danger_self', 5)]}
+H2_EXTRA = {'Kamikaze': [('panic', 6)], 'Stuck': [('panic', 6)]}     # after PLAN, so its picks stay as they were
+CE_PLAN = {'Kamikaze': [('shouting\\grenade_danger_self', 5)], 'Stuck': [('shouting\\grenade_danger_self', 5)],
+           'Heard Gunfire': [('groupcomm\\search_query', 3)]}
 CE_PREFIX = 'sound\\dialog\\grunt\\conditional\\combat2\\'
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
 

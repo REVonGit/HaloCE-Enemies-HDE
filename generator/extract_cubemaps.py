@@ -12,6 +12,8 @@ import bitmaps as bm
 from hce_paths import OUT, MAPS_DIR
 MAP = os.environ.get('HCE_CUBE_MAP', os.path.join(MAPS_DIR, 'a50.map'))
 CUBES = {'elite': r'characters\elite\bitmaps\cubemaps', 'dark_gray': r'characters\elite\bitmaps\cubemap dark gray'}
+CUBES = {'elite': r'characters\elite\bitmaps\cubemaps', 'dark_gray': r'characters\elite\bitmaps\cubemap dark gray',
+         'cyborg': r'characters\cyborg\bitmaps\cyborg reflection armor'}      # the ODSTs' visor (extract_odst.py)
 
 def main():
     m = HMap(MAP)

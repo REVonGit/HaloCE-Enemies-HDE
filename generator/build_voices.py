@@ -25,6 +25,8 @@ CAT = {
     'scold': ['Scold'], 'betrayal': ['Betrayal'], 'ally killed': ['AllyKilled'], 'acknowledge': ['Acknowledge'],
     'thanks': ['Thanks'], 'wounded': ['Wounded'], 'forgive': ['Forgive'], 'worse weapon': ['WorseWeapon'],
     'trade ok': ['TradeOk'], 'refuse': ['Refuse'],
+    # a comrade killed in sight; gunfire heard before the enemy is seen
+    'man down': ['ManDown'], 'heard gunfire': ['HeardGunfire'],
 }
 # events a voice lacks borrow another of its own events
 FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 'Pain', 'PainHeavy': 'PainMed',
@@ -33,7 +35,7 @@ FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 
             # the squad's lines (Halo 2 has most; the CE-only voices borrow the nearest they have)
             'Scold': 'PainMed', 'AllyKilled': 'Scold', 'Betrayal': 'Taunt', 'Acknowledge': 'Regroup',
             'Thanks': 'Acknowledge', 'Wounded': 'PainHeavy', 'Forgive': 'Acknowledge', 'WorseWeapon': 'Scold',
-            'TradeOk': 'Thanks', 'Refuse': 'WorseWeapon'}
+            'TradeOk': 'Thanks', 'Refuse': 'WorseWeapon', 'ManDown': 'LeaderDead', 'HeardGunfire': 'Alert'}
 
 def main():
     if os.path.exists(OUT): shutil.rmtree(OUT)

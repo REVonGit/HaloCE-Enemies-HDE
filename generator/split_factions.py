@@ -106,6 +106,7 @@ def main():
     camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
     shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
     swords = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_sword.fp"', gl)
+    visors = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "([^"]+)"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -150,7 +151,8 @@ def main():
         mycamo = [t for t in camo if t in need]
         myshields = [t for t in shields if t in need]
         myswords = [t for t in swords if t in need]
-        if mybms or mycamo or myshields or myswords:
+        myvisors = [(t, c) for t, c in visors if t in need]
+        if mybms or mycamo or myshields or myswords or myvisors:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
             if mybms or myshields or myswords:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
@@ -167,6 +169,12 @@ def main():
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_sword.fp', f'{d}/shaders/hce_sword.fp')
                 out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_sword.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myswords]
+            if myvisors:                       # the ODSTs' visors: the cube-map reflection shader and its cube map
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_visor.fp', f'{d}/shaders/hce_visor.fp')
+                for t, c in myvisors:
+                    os.makedirs(os.path.dirname(f'{d}/{c}'), exist_ok=True); shutil.copy(f'{PACK}/{c}', f'{d}/{c}')
+                    out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "{c}"\n}}')
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'

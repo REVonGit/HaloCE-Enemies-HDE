@@ -82,6 +82,7 @@ $alias HCE/Slug/Scold HCE/Slug/PainMed
 $alias HCE/Slug/Betrayal HCE/Slug/Taunt
 $alias HCE/Slug/Acknowledge HCE/Slug/Regroup
 $alias HCE/Slug/Wounded HCE/Slug/PainHeavy
+$alias HCE/Slug/HeardGunfire HCE/Slug/Alert
 
 // Thorn Beast (SPV3 a30 sound tags)
 HCE/ThornBeast/death/0 "sounds/hce_dig/thornbeast/death_0.ogg"
@@ -525,6 +526,11 @@ HCE/Brute_Bloodthirsty/strk_grnd/5 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk
 HCE/Brute_Bloodthirsty/strk_grnd/6 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_grnd_06.ogg"
 HCE/Brute_Bloodthirsty/strk_grnd/7 "sounds/hce_dig/brute/Brute_Bloodthirsty/strk_grnd_07.ogg"
 $random HCE/Brute_Bloodthirsty/GrenadeThrow { HCE/Brute_Bloodthirsty/strk_grnd/0 HCE/Brute_Bloodthirsty/strk_grnd/1 HCE/Brute_Bloodthirsty/strk_grnd/2 HCE/Brute_Bloodthirsty/strk_grnd/3 HCE/Brute_Bloodthirsty/strk_grnd/4 HCE/Brute_Bloodthirsty/strk_grnd/5 HCE/Brute_Bloodthirsty/strk_grnd/6 HCE/Brute_Bloodthirsty/strk_grnd/7 }
+HCE/Brute_Bloodthirsty/hrdfoe/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/hrdfoe_00.ogg"
+HCE/Brute_Bloodthirsty/hrdfoe/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/hrdfoe_01.ogg"
+HCE/Brute_Bloodthirsty/srchstart/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_00.ogg"
+HCE/Brute_Bloodthirsty/srchstart/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/srchstart_01.ogg"
+$random HCE/Brute_Bloodthirsty/HeardGunfire { HCE/Brute_Bloodthirsty/hrdfoe/0 HCE/Brute_Bloodthirsty/hrdfoe/1 HCE/Brute_Bloodthirsty/srchstart/0 HCE/Brute_Bloodthirsty/srchstart/1 }
 HCE/Brute_Bloodthirsty/glt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_00.ogg"
 HCE/Brute_Bloodthirsty/glt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_01.ogg"
 HCE/Brute_Bloodthirsty/glt/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/glt_02.ogg"
@@ -544,6 +550,14 @@ HCE/Brute_Bloodthirsty/lmnt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_00.o
 HCE/Brute_Bloodthirsty/lmnt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_01.ogg"
 HCE/Brute_Bloodthirsty/lmnt/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_02.ogg"
 $random HCE/Brute_Bloodthirsty/LeaderDead { HCE/Brute_Bloodthirsty/lmnt_deadally/0 HCE/Brute_Bloodthirsty/lmnt_deadally/1 HCE/Brute_Bloodthirsty/lmnt_deadally/2 HCE/Brute_Bloodthirsty/lmnt_deadally/3 HCE/Brute_Bloodthirsty/lmnt/0 HCE/Brute_Bloodthirsty/lmnt/1 HCE/Brute_Bloodthirsty/lmnt/2 }
+HCE/Brute_Bloodthirsty/lmnt_deadally/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_deadally_00.ogg"
+HCE/Brute_Bloodthirsty/lmnt_deadally/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_deadally_01.ogg"
+HCE/Brute_Bloodthirsty/lmnt_deadally/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_deadally_02.ogg"
+HCE/Brute_Bloodthirsty/lmnt_deadally/3 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_deadally_03.ogg"
+HCE/Brute_Bloodthirsty/lmnt/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_00.ogg"
+HCE/Brute_Bloodthirsty/lmnt/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_01.ogg"
+HCE/Brute_Bloodthirsty/lmnt/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/lmnt_02.ogg"
+$random HCE/Brute_Bloodthirsty/ManDown { HCE/Brute_Bloodthirsty/lmnt_deadally/0 HCE/Brute_Bloodthirsty/lmnt_deadally/1 HCE/Brute_Bloodthirsty/lmnt_deadally/2 HCE/Brute_Bloodthirsty/lmnt_deadally/3 HCE/Brute_Bloodthirsty/lmnt/0 HCE/Brute_Bloodthirsty/lmnt/1 HCE/Brute_Bloodthirsty/lmnt/2 }
 HCE/Brute_Bloodthirsty/melee/0 "sounds/hce_dig/brute/Brute_Bloodthirsty/melee_00.ogg"
 HCE/Brute_Bloodthirsty/melee/1 "sounds/hce_dig/brute/Brute_Bloodthirsty/melee_01.ogg"
 HCE/Brute_Bloodthirsty/melee/2 "sounds/hce_dig/brute/Brute_Bloodthirsty/melee_02.ogg"
@@ -728,6 +742,11 @@ HCE/Brute_Cruel/strk_grnd/2 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_02.ogg"
 HCE/Brute_Cruel/strk_grnd/3 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_03.ogg"
 HCE/Brute_Cruel/strk_grnd/4 "sounds/hce_dig/brute/Brute_Cruel/strk_grnd_04.ogg"
 $random HCE/Brute_Cruel/GrenadeThrow { HCE/Brute_Cruel/strk_grnd/0 HCE/Brute_Cruel/strk_grnd/1 HCE/Brute_Cruel/strk_grnd/2 HCE/Brute_Cruel/strk_grnd/3 HCE/Brute_Cruel/strk_grnd/4 }
+HCE/Brute_Cruel/hrdfoe/0 "sounds/hce_dig/brute/Brute_Cruel/hrdfoe_00.ogg"
+HCE/Brute_Cruel/hrdfoe/1 "sounds/hce_dig/brute/Brute_Cruel/hrdfoe_01.ogg"
+HCE/Brute_Cruel/srchstart/0 "sounds/hce_dig/brute/Brute_Cruel/srchstart_00.ogg"
+HCE/Brute_Cruel/srchstart/1 "sounds/hce_dig/brute/Brute_Cruel/srchstart_01.ogg"
+$random HCE/Brute_Cruel/HeardGunfire { HCE/Brute_Cruel/hrdfoe/0 HCE/Brute_Cruel/hrdfoe/1 HCE/Brute_Cruel/srchstart/0 HCE/Brute_Cruel/srchstart/1 }
 HCE/Brute_Cruel/glt/0 "sounds/hce_dig/brute/Brute_Cruel/glt_00.ogg"
 HCE/Brute_Cruel/glt/1 "sounds/hce_dig/brute/Brute_Cruel/glt_01.ogg"
 HCE/Brute_Cruel/glt/2 "sounds/hce_dig/brute/Brute_Cruel/glt_02.ogg"
@@ -747,6 +766,14 @@ HCE/Brute_Cruel/lmnt/0 "sounds/hce_dig/brute/Brute_Cruel/lmnt_00.ogg"
 HCE/Brute_Cruel/lmnt/1 "sounds/hce_dig/brute/Brute_Cruel/lmnt_01.ogg"
 HCE/Brute_Cruel/lmnt/2 "sounds/hce_dig/brute/Brute_Cruel/lmnt_02.ogg"
 $random HCE/Brute_Cruel/LeaderDead { HCE/Brute_Cruel/lmnt_deadally/0 HCE/Brute_Cruel/lmnt_deadally/1 HCE/Brute_Cruel/lmnt_deadally/2 HCE/Brute_Cruel/lmnt_deadally/3 HCE/Brute_Cruel/lmnt/0 HCE/Brute_Cruel/lmnt/1 HCE/Brute_Cruel/lmnt/2 }
+HCE/Brute_Cruel/lmnt_deadally/0 "sounds/hce_dig/brute/Brute_Cruel/lmnt_deadally_00.ogg"
+HCE/Brute_Cruel/lmnt_deadally/1 "sounds/hce_dig/brute/Brute_Cruel/lmnt_deadally_01.ogg"
+HCE/Brute_Cruel/lmnt_deadally/2 "sounds/hce_dig/brute/Brute_Cruel/lmnt_deadally_02.ogg"
+HCE/Brute_Cruel/lmnt_deadally/3 "sounds/hce_dig/brute/Brute_Cruel/lmnt_deadally_03.ogg"
+HCE/Brute_Cruel/lmnt/0 "sounds/hce_dig/brute/Brute_Cruel/lmnt_00.ogg"
+HCE/Brute_Cruel/lmnt/1 "sounds/hce_dig/brute/Brute_Cruel/lmnt_01.ogg"
+HCE/Brute_Cruel/lmnt/2 "sounds/hce_dig/brute/Brute_Cruel/lmnt_02.ogg"
+$random HCE/Brute_Cruel/ManDown { HCE/Brute_Cruel/lmnt_deadally/0 HCE/Brute_Cruel/lmnt_deadally/1 HCE/Brute_Cruel/lmnt_deadally/2 HCE/Brute_Cruel/lmnt_deadally/3 HCE/Brute_Cruel/lmnt/0 HCE/Brute_Cruel/lmnt/1 HCE/Brute_Cruel/lmnt/2 }
 HCE/Brute_Cruel/melee/0 "sounds/hce_dig/brute/Brute_Cruel/melee_00.ogg"
 HCE/Brute_Cruel/melee/1 "sounds/hce_dig/brute/Brute_Cruel/melee_01.ogg"
 HCE/Brute_Cruel/melee/2 "sounds/hce_dig/brute/Brute_Cruel/melee_02.ogg"

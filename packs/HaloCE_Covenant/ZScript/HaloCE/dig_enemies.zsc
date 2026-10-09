@@ -47,6 +47,7 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -202,6 +203,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_BruteShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
@@ -1634,6 +1636,12 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -2088,6 +2096,12 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -2532,6 +2546,12 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -2976,6 +2996,12 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -3418,6 +3444,12 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -3858,6 +3890,12 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -4298,6 +4336,12 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -4743,6 +4787,12 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -5188,6 +5238,12 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -5633,6 +5689,12 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	override void PostBeginPlay()
 	{
 		HCE_DressArmour();                     // before any animation starts (A_ChangeModel resets the current one)
+		String gn = GetClassName();
+		if(gn.IndexOf("Captain") >= 0)         // Halo 2's Captains fly the hologram flag (dig_brute.zsc)
+		{
+			hce_holoActor = Spawn("HCE_BruteCaptainFlag", pos, NO_REPLACE);
+			if(hce_holoActor) hce_holoActor.master = self;
+		}
 		super.PostBeginPlay();
 		String cn = GetClassName();
 		hce_chief = cn.IndexOf("Chieftain") >= 0;
@@ -5836,6 +5898,7 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -6024,6 +6087,7 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 
 	// ---- Halo 2 Drone behaviour ----------------------------------------------------------------------
@@ -7027,6 +7091,7 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -8443,6 +8508,7 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_EliteZealotShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
@@ -8759,6 +8825,7 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -9042,6 +9109,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -10351,6 +10419,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -13215,6 +13284,7 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{

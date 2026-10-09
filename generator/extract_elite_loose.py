@@ -45,6 +45,8 @@ PLAN = {
     'Stuck':         ([], [('whn', 3), ('whn_hrtblt', 2)]),
     'Panic':         ([], [('panic', 3)]),
     'Flee':          ([], [('newordr_retreat', 3), ('foeordr_fallback', 2)]),
+    'Man Down':      (['friendsdying\\frienddied', 'friendsdying\\friendkilledbyenemy'], [('lmnt_deadally', 3), ('lmnt', 2)]),
+    'Heard Gunfire': (['groupcomm\\searchquery'], [('hrdfoe', 3), ('srchstart', 2)]),
 }
 
 

@@ -60,6 +60,10 @@ PLAN = {
     'Panic':         ([], ['panic', 'fear']),
     'Regroup':       (['groupcomm\\groupuncover', 'groupcomm\\advance', 'groupcomm\\cover'], ['joinme', 'cvrme', 'newordr_advance', 'newordr_charge']),
     'Leader Dead':   (['friendsdying\\frienddied', 'friendsdying\\friendkilledbycovenant', 'friendsdying\\friendkilledbyenemy'], ['lmnt', 'lmnt_deadally']),
+    # a squadmate killed in sight ('man down'), and gunfire heard before the enemy is seen
+    'Man Down':      (['friendsdying\\frienddied', 'friendsdying\\friendkilledbyenemy', 'friendsdying\\friendkilledbycovenant',
+                       'shouting\\deadfriendfound'], ['lmnt_deadally', 'lmnt']),
+    'Heard Gunfire': (['groupcomm\\searchstart', 'groupcomm\\searchquery', 'actions\\partiallysighted'], ['hrdfoe', 'srchstart']),
     'Berserk':       (['exclamations\\berserk', 'actions\\shootingberserk'], ['brsrk', 'charge']),
     'Melee':         ([], ['melee']),
     # the player's squad: scolded for friendly fire, turning on him, a Marine he killed, orders acknowledged, a

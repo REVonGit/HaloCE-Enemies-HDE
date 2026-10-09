@@ -46,6 +46,7 @@ class HCE_SentinelBase : HaloDoom_EnemyBase abstract
 	{
 		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{

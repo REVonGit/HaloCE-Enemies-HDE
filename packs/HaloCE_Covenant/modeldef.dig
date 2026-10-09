@@ -1746,3 +1746,51 @@ Model HCE_BruteHelmetDebris
 	UseActorRoll
 	FrameIndex HCEM A 0 0
 }
+
+Model HCE_BruteCaptainFlag
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 0 "hce_hidden.png"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 12 "hce_hidden.png"
+	SurfaceSkin 0 13 "hce_hidden.png"
+	SurfaceSkin 0 14 "hce_hidden.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	SurfaceSkin 0 28 "hce_hidden.png"
+	SurfaceSkin 0 29 "hce_hidden.png"
+	SurfaceSkin 0 30 "hce_hidden.png"
+	SurfaceSkin 0 31 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 1 "Brute_captain_flag.iqm"
+	SurfaceSkin 1 0 "skins/captain_flag.png"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 1 0
+}

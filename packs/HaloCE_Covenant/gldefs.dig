@@ -63,3 +63,9 @@ brightmap texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_
 {
 	map "models/hce_dig/brightmap_full.png"
 }
+material texture "models/hce_dig/Brute/skins/captain_flag.png"
+{
+	shader "shaders/hce_holoflag.fp"
+	speed 1.0
+	brightmap "models/hce_dig/brightmap_full.png"
+}

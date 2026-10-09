@@ -43,3 +43,36 @@ class HCE_BruteHelmetDebris : Actor
 		Loop;
 	}
 }
+
+// Halo 2's Brute Captain hologram flag (brute_captain_flag.py): the pennant on the pole on a Captain's back, drawn
+// additively and bright on its own copy of the Brute's skeleton, playing the Brute's animations (HCE_ApplyAnim mirrors
+// them onto hce_holoActor). Its shimmer, scan lines and flicker are the hce_holoflag.fp shader. It stays with the body
+// once the Captain is dead, and goes when the body does (or is torn apart).
+class HCE_BruteCaptainFlag : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+DECOUPLEDANIMATIONS
+		+NOTONAUTOMAP
+		RenderStyle "Add";
+		Alpha 0.95;
+	}
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
+	}
+	override void Tick()
+	{
+		if(!master || master.bDestroyed) { Destroy(); return; }
+		if(isFrozen()) return;
+		SetOrigin(master.pos, true);
+		angle = master.angle; pitch = master.pitch; roll = master.roll;
+		scale = master.scale;
+		bInvisible = master.bInvisible || master.alpha < 0.05;
+		alpha = 0.85 + 0.1 * sin(level.maptime * 23.0) - (random[HCEFlag](0, 40) == 0 ? 0.5 : 0);   // a hologram's flicker
+	}
+}

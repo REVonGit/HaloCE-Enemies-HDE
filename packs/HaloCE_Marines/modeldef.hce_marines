@@ -1908,3 +1908,167 @@ Model HCE_MarineArmoredStickyDetonator
 	FrameIndex HCEM A 0 0
 	FrameIndex HCEM A 6 0
 }
+
+Model HCE_MarineOdstAssaultRifle
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodstassaultrifle_marineodst_0.png"
+	SurfaceSkin 0 1 "skins/marineodstassaultrifle_marineodst_1.png"
+	SurfaceSkin 0 2 "skins/marineodstassaultrifle_marineodst_2.png"
+	SurfaceSkin 0 3 "skins/marineodstassaultrifle_marineodst_3.png"
+	SurfaceSkin 0 4 "skins/marineodstassaultrifle_marineodst_4.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_ma5b.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_assault_rifle_0.png"
+	SurfaceSkin 6 1 "w_assault_rifle_0.png"
+	SurfaceSkin 6 2 "w_assault_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstAssaultRifleMajor
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodstassaultrifle_marineodst_0.png"
+	SurfaceSkin 0 1 "skins/marineodstassaultrifle_marineodst_1.png"
+	SurfaceSkin 0 2 "skins/marineodstassaultrifle_marineodst_2.png"
+	SurfaceSkin 0 3 "skins/marineodstassaultrifle_marineodst_3.png"
+	SurfaceSkin 0 4 "skins/marineodstassaultrifle_marineodst_4.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_ma5b.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_assault_rifle_0.png"
+	SurfaceSkin 6 1 "w_assault_rifle_0.png"
+	SurfaceSkin 6 2 "w_assault_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenBlue
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_blue.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_blue.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_blue.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_blue.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_blue.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_ma5b.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_assault_rifle_0.png"
+	SurfaceSkin 6 1 "w_assault_rifle_0.png"
+	SurfaceSkin 6 2 "w_assault_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenGreen
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_green.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_green.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_green.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_green.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_green.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_pump_shotgun.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_shotgun_0.png"
+	SurfaceSkin 6 1 "w_shotgun_1.png"
+	SurfaceSkin 6 2 "w_shotgun_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenOrange
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_orange.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_orange.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_orange.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_orange.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_orange.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_battle_rifle.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_battle_rifle_0.png"
+	SurfaceSkin 6 1 "w_m_battle_rifle_1.png"
+	SurfaceSkin 6 2 "w_m_battle_rifle_2.png"
+	SurfaceSkin 6 3 "w_m_battle_rifle_3.png"
+	SurfaceSkin 6 4 "w_m_battle_rifle_4.png"
+	SurfaceSkin 6 5 "w_m_battle_rifle_5.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenPurple
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_purple.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_purple.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_purple.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_purple.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_purple.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_sniper.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 1 "w_sniper_rifle_0.png"
+	SurfaceSkin 6 2 "w_sniper_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstShotgun
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodstassaultrifle_marineodst_0.png"
+	SurfaceSkin 0 1 "skins/marineodstassaultrifle_marineodst_1.png"
+	SurfaceSkin 0 2 "skins/marineodstassaultrifle_marineodst_2.png"
+	SurfaceSkin 0 3 "skins/marineodstassaultrifle_marineodst_3.png"
+	SurfaceSkin 0 4 "skins/marineodstassaultrifle_marineodst_4.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_pump_shotgun.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_shotgun_0.png"
+	SurfaceSkin 6 1 "w_shotgun_1.png"
+	SurfaceSkin 6 2 "w_shotgun_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}

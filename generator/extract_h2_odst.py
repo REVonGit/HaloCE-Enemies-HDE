@@ -33,10 +33,17 @@ BODY = 'h2_odst_body'
 ARMOR = 'mk_h2_odst_armor.png'               # the ODST armour's colour map, shared by the body and the helmet
 VISOR = 'mk_h2_odst_visor.png'               # Halo 2's dark bluish-purple ODST visor: build_pack.kit_visors makes it from the
                                              # kit's visor texture (KIT_VISOR_TINTS 'h2odst') and gives it the cube-map shader
-LIFT = 1.3                                   # brightness lift: Halo 2's specular sheen keeps the charcoal off black; Doom has none
+LIFT = 1.2                                   # brightness lift: Halo 2's specular sheen keeps the charcoal off black; Doom has none
+DETAIL_TILES = 6                             # Halo 2's detail map (metal_dirty) repeats this often across the colour map
+DETAIL_MIX = 0.75                            # how much of it is baked in
+DIRT = 0.38                                  # grime baked into the crevices (from the bump map's height)
+WEAR = 0.30                                  # worn, lighter edges on the armour plates
+GRIME = 0.16                                 # broad dirty patches over everything, tinted like the CE Marines' grime
+GRIME_TINT = np.array([1.0, 0.93, 0.80])     # brownish
+SHEEN = 26                                   # the plates' specular sheen (Halo 2's specular mask, the alpha), baked in
 BUMP_LIGHT = (-0.35, 0.45, 0.82)             # the light baked in from the bump map (tangent space), like Spiral's painted shading
 BUMP_AMBIENT = 0.45                          # the baked shade: ambient + (1 - ambient) * n.l
-SMOOTH = 0.55                                # how much of the camo's fine speckle is evened out (0 = as it is)
+SMOOTH = 0.3                                 # how much of the camo's fine speckle is evened out (0 = as it is)
 COLLAR_Z = 0.515                            # triangles wholly below this (the neck collar) are left off
 
 
@@ -91,24 +98,63 @@ def ce_bone_of(name, nodes, ce):
     return ce['bip01 pelvis']
 
 
+def height_from_normals(n):
+    """the bump map's height field (Frankot-Chellappa: the surface whose slopes the normals give), zero mean"""
+    gx = -n[..., 0] / np.maximum(n[..., 2], 0.2); gy = n[..., 1] / np.maximum(n[..., 2], 0.2)
+    h, w = gx.shape
+    u, v = np.meshgrid(np.fft.fftfreq(w) * 2 * np.pi, np.fft.fftfreq(h) * 2 * np.pi)
+    d = u * u + v * v; d[0, 0] = 1
+    z = (-1j * u * np.fft.fft2(gx) - 1j * v * np.fft.fft2(gy)) / d; z[0, 0] = 0
+    return np.real(np.fft.ifft2(z))
+
+
+def blur(a, r):
+    from scipy import ndimage
+    return ndimage.gaussian_filter(a, r / 2.0, mode='wrap')
+
+
 def armor_texture(m, hb, bms):
-    """the ODST armour's colour map, lifted for Doom and with the camo's fine speckle evened out"""
+    """the ODST armour's colour map, weathered like the Halo CE Marines' painted textures: Halo 2's bump-map shading,
+    its detail map, grime in the crevices, worn plate edges, broad dirty patches and the plates' sheen, all baked in
+    (Doom lights the model flat, with no bump, detail or specular pass of its own)"""
     from PIL import Image, ImageFilter
     cands = [n for n in bms if not any(x in n for x in ('bump', 'default_', 'detail', 'cube_map', 'multipurpose', 'noise', 'linear_corner'))]
     print('   armour bitmaps', bms[:6], '->', cands[:1])
-    im = hb.bitmap(m, cands[0]).convert('RGB') if cands else Image.new('RGB', (8, 8), (70, 72, 70))
+    src = hb.bitmap(m, cands[0]).convert('RGBA') if cands else Image.new('RGBA', (8, 8), (70, 72, 70, 0))
     bump = [n for n in bms if 'bump' in n]
-    size = hb.bitmap(m, bump[0]).size if bump else im.size
-    im = im.resize(size, Image.LANCZOS)                 # up to the bump map's size, so its detail survives
+    size = hb.bitmap(m, bump[0]).size if bump else src.size
+    # up to the bump map's size, so its detail survives (colour and mask apart: an RGBA resize premultiplies, blacking
+    # out everything the mask leaves at 0)
+    im = src.convert('RGB').resize(size, Image.LANCZOS)
+    spec = np.asarray(src.split()[3].resize(size, Image.LANCZOS), float)[..., None] / 255.0   # Halo 2's specular mask: the plates
     a = np.asarray(im, float)
     soft = np.asarray(im.filter(ImageFilter.MedianFilter(5)).filter(ImageFilter.GaussianBlur(1.2)), float)
-    a = a * (1 - SMOOTH) + soft * SMOOTH                 # Halo 2 hides the speckle under its sheen; Doom shows it all
-    if bump:                                             # Halo 2 shades the plates and seams from its bump map: bake it in
+    a = a * (1 - SMOOTH) + soft * SMOOTH                 # the camo's fine speckle evened out
+    H, W = a.shape[:2]
+    if bump:
         n = np.asarray(hb.bitmap(m, bump[0]).convert('RGB'), float) / 127.5 - 1
         n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
         l = np.array(BUMP_LIGHT); l /= np.linalg.norm(l)
-        shade = BUMP_AMBIENT + (1 - BUMP_AMBIENT) * np.clip(n @ l, 0, 1)
+        lit = np.clip(n @ l, 0, 1)
+        shade = BUMP_AMBIENT + (1 - BUMP_AMBIENT) * lit
         a = a * shade[..., None] / (BUMP_AMBIENT + (1 - BUMP_AMBIENT) * l[2])   # flat areas keep their colour
+        # crevices and edges: the height field's departure from its own neighbourhood
+        ht = height_from_normals(n)
+        cav = ht - blur(ht, 6)
+        cav /= max(np.percentile(np.abs(cav), 98), 1e-9)
+        cav = np.clip(cav, -1, 1)[..., None]
+        a = a * (1 - DIRT * np.clip(-cav, 0, 1) )        # grime settles in the seams
+        a = a * (1 + WEAR * np.clip(cav, 0, 1) * spec)                          # the plates' raised edges rubbed bright
+        a = a + SHEEN * spec * (lit[..., None] ** 8)                           # the plates' sheen, where the light catches
+    det = [n for n in bms if 'detail' in n]
+    if det:                                               # Halo 2's detail map (colour x detail x 2), tiled
+        d = np.asarray(hb.bitmap(m, det[0]).convert('L').resize((W // DETAIL_TILES, H // DETAIL_TILES), Image.LANCZOS), float)
+        d = np.tile(d, (DETAIL_TILES + 1, DETAIL_TILES + 1))[:H, :W, None] / 255.0 * 2
+        a = a * (1 + DETAIL_MIX * (d - 1))
+    rng = np.random.default_rng(7)                        # broad grime patches, the same on every build
+    g = blur(rng.random((H, W)), 14); g = (g - g.min()) / max(g.max() - g.min(), 1e-9)
+    g = np.clip((g - 0.45) * 2.2, 0, 1)[..., None]
+    a = a * (1 - GRIME * g) * (1 - g * (1 - GRIME_TINT) * 0.6)
     a = np.clip(a * LIFT, 0, 255).astype(np.uint8)
     Image.fromarray(a).save(f'{KIT}/{ARMOR}')
 

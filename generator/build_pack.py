@@ -2186,6 +2186,8 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
+# the Halo 2 ODSTs fight in Halo 2's rifle set, re-posed per gun (marine_h2_grips.py); the battle rifle keeps 'h2br'
+ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
 # other visor colours (odst_helmet_code): the orange visor texture's shading, recoloured; same shader and cube map
 KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png', 'h2odst': 'mk_h2_odst_visor.png'}
@@ -2232,6 +2234,7 @@ def add_odsts(ai):
         ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
         if raven: ov['raven'] = raven
         if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet, visor=visor)
+        if helmet in ODST_BODIES and not ov.get('stance'): ov['stance'] = dict(ODST_BODY_STANCE)
         v['_ov'] = ov
         ai['variants'][key] = v
 

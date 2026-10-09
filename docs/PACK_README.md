@@ -24,11 +24,11 @@ The enemies come as one pack per faction on top of a small shared core. Load the
 
 | Pack | Contents | Size |
 |---|---|---|
-| `HaloCE_Core.pk3` | **Required.** Shared projectiles, the Doom-monster replacement handler, CVARs and sound aliases. It contains no Halo assets, so it can be shared publicly. | 6 KB |
-| `HaloCE_Covenant.pk3` | Grunts, Jackals, Elites, Hunters, and the Doom boss stand-ins | 14 MB |
-| `HaloCE_Flood.pk3` | Infection, carrier and combat forms | 10 MB |
+| `HaloCE_Core.pk3` | **Required.** Shared projectiles, the Doom-monster replacement handler, CVARs and sound aliases. It contains no Halo assets, so it can be shared publicly. | 23 KB |
+| `HaloCE_Covenant.pk3` | Grunts, Jackals, Elites, Hunters, and the Doom boss stand-ins | 32 MB |
+| `HaloCE_Flood.pk3` | Infection, carrier and combat forms | 11.3 MB |
 | `HaloCE_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these), the Marine arsenal and Sergeant Johnson | 16 MB |
+| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these), the Marine arsenal and Sergeant Johnson | 33.6 MB |
 
 The replacement table lives in the core. Any pick whose faction pack isn't loaded is skipped, and the remaining picks share its weight. A Doom monster whose entire list is missing stays a Doom monster (for example Pinkies without the Flood pack, or Cacodemons without Sentinels). Without the Marines pack, Doom's marines and allied monsters stay as they are. DoomEdNums didn't change; each pack lists its own.
 
@@ -590,12 +590,12 @@ DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elite
 
 | Pack | Contents | Size |
 |---|---|---|
-| `HaloCE_Standalone_Core.pk3` | **required**: the enemy AI, the Doom-monster replacement handler, and the projectiles, grenades, explosions, shields, sounds, sprites and models taken from HDE | 14.3 MB |
-| `HaloCE_Standalone_Covenant.pk3` | Grunts, Jackals, Elites, Hunters | 14.1 MB |
-| `HaloCE_Standalone_Flood.pk3` | infection, carrier and combat forms | 10.3 MB |
+| `HaloCE_Standalone_Core.pk3` | **required**: the enemy AI, the Doom-monster replacement handler, and the projectiles, grenades, explosions, shields, sounds, sprites and models taken from HDE | 18.8 MB |
+| `HaloCE_Standalone_Covenant.pk3` | Grunts, Jackals, Elites, Hunters | 32.1 MB |
+| `HaloCE_Standalone_Flood.pk3` | infection, carrier and combat forms | 11.3 MB |
 | `HaloCE_Standalone_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Standalone_Marines.pk3` | Marines (allies), the Marine arsenal and Sergeant Johnson | 16 MB |
-| `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, the Blind Wolf and Thorn Beast, Drones, Brutes and the Chieftain | 31.7 MB |
+| `HaloCE_Standalone_Marines.pk3` | Marines (allies), the Marine arsenal and Sergeant Johnson | 33.6 MB |
+| `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, the Blind Wolf and Thorn Beast, Drones, Brutes and the Chieftain | 60.7 MB |
 
 **Load order:**
 1. `HaloCE_Standalone_Core.pk3`
@@ -879,7 +879,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 
 * `HaloCE_Core.pk3`: shared projectiles, the replacement handler and CVARs (required, no Halo assets).
 * `HaloCE_Covenant.pk3`, `HaloCE_Flood.pk3`, `HaloCE_Sentinels.pk3`, `HaloCE_Marines.pk3`: the faction packs (models with held weapons, animations, skins, enemy classes).
-* `HaloCE_Enemies_Voices.pk3`: optional dialogue (14 MB), loaded after the enemy pack.
+* `HaloCE_Enemies_Voices.pk3`: optional dialogue (48 MB), loaded after the enemy pack.
 * `HCE_EnemyAPI_LocalDEV.pk3`: the enemy API addon for HDE Local_DEV.
 * `enemies_base.zsc`: the extended enemy API source (the file the addon carries).
 * `halo_ce_enemy_tools.zip`: the extraction and generation scripts (Python 3, numpy, Pillow), plus the addon source tree. They rebuild the pk3 byte-for-byte from the `.map` files.

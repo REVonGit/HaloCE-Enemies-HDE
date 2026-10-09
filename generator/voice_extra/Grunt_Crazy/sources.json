@@ -1,7 +1,9 @@
 {
  "Kamikaze": [
   "thrtn:5",
-  "thrtn_hum:2"
+  "thrtn_hum:2",
+  "panic:6",
+  "ce:shouting\\grenade_danger_self:3"
  ],
  "Kill Player": [
   "glt:3",
@@ -39,7 +41,9 @@
   "warn_incmn_grnd:1"
  ],
  "Stuck": [
-  "panic:2"
+  "panic:2",
+  "panic:4",
+  "ce:shouting\\grenade_danger_self:3"
  ],
  "Pain Xtr": [
   "pain_mjr:0",
@@ -47,5 +51,10 @@
  ],
  "On Fire": [
   "dth_slw:1"
+ ],
+ "Heard Gunfire": [
+  "hrdfoe:2",
+  "srchstart:2",
+  "ce:groupcomm\\search_query:1"
  ]
 }

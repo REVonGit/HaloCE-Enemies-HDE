@@ -141,7 +141,6 @@ def stance_anims(ce_joints, stance, path=None, cache=None):
     model, dpath, dcache = STANCE_SOURCE[stance]
     path = path or dpath; cache = cache or dcache
     if not os.path.exists(path): return []
-    sys.path.insert(0, '/home/claude/spv3')
     from h2map import H2Map, render_model
     import h2anim
     m = H2Map(path, cache)

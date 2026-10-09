@@ -595,7 +595,7 @@ DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elite
 | `HaloCE_Standalone_Flood.pk3` | infection, carrier and combat forms | 10.3 MB |
 | `HaloCE_Standalone_Sentinels.pk3` | Sentinels | 1.3 MB |
 | `HaloCE_Standalone_Marines.pk3` | Marines (allies), the Marine arsenal and Sergeant Johnson | 16 MB |
-| `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, SPV3 creatures, Drones, Brutes and the Chieftain | 31.7 MB |
+| `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, the Blind Wolf and Thorn Beast, Drones, Brutes and the Chieftain | 31.7 MB |
 
 **Load order:**
 1. `HaloCE_Standalone_Core.pk3`
@@ -752,14 +752,14 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 
 | Race | What comes off | Stump |
 |---|---|---|
-| Elites, Jackals (Halo CE) | head, either arm | SPV3's own stump models |
-| Grunts (Halo CE) | head, either arm, the methane pack, regular or shellback (as in SPV3) | SPV3's own stump models |
+| Elites, Jackals (Halo CE) | head, either arm | Tropical Thunder 98's stump models |
+| Grunts (Halo CE) | head, either arm, the methane pack, regular or shellback (as in SPV3) | Tropical Thunder 98's stump models |
 | Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
 | Brutes | head | kitbashed cap |
 
 The stump texture is the gore Tropical Thunder 98 made for the XAM Campaign Overhaul (as SPV3 ships it), wet ropy flesh with a bone end:
-* **Elites, Jackals and Halo 2 Jackals:** SPV3's purple Jackal gore.
-* **Grunts:** SPV3's teal Grunt gore.
+* **Elites, Jackals and Halo 2 Jackals:** the purple Jackal gore.
+* **Grunts:** the teal Grunt gore.
 * **The others:** recoloured to their blood. Brutes are navy, Hunters and Slug Men orange, and Drones a pale ichor.
 * **Kitbashed caps:** these put the bone end in the middle of the cut. Hunters, Slug Men and Drones have no bones, so theirs show flesh only.
 
@@ -809,9 +809,9 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (any human or Covenant gun but the melee and BFG-class ones), you swap: you get his gun and he takes yours. What he says depends on how he rates the swap (his own liking, see the weapon biases): a clearly better gun gets thanks, a fair swap an "okay", a worse one scorn, and one he can't carry at all a refusal (he keeps his). He also refuses if you already carry his gun (say, as your other weapon): taking it would only top up your ammo while he kept yours, and you'd be a weapon short. Each has its own set of Halo 2 lines, every take Halo 2 has for each voice (about 8 to 24 per voice and reaction). The Halo CE voices have no trade lines, so they tell you off instead. (HaloDoom Evolved packs only.)
 * **Names:** every Marine has a rank and a name, rolled when he spawns: Privates, Privates First Class and Lance Corporals among the regulars, Lance Corporals to Sergeants among the Armored Marines, Corporals and Staff Sergeants for the Majors, Hospital Corpsman Third Class (`HM3.`) for the corpsmen. First names, middle initials and surnames are drawn from long lists, e.g. `PVT. George A. Romero`. Sergeant Johnson is always `SGT. Avery J. Johnson` and Stacker `MSG. Marcus P. Stacker`.
 * **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.
-* **ODSTs (new):** SPV3's Halo CE ODST (`extract_odst.py`, from SPV3's a50: its own model, legs, torso, arms, helmet and visor, rigged to the Marine's skeleton), with every animation the Marines have and the Marines' guns, voices, blood and squad orders. They fight as Armored Marines (the same combat data, toughness and collision) and wear their textures as they are. The visor reflects Halo CE's cube map per pixel as you move around it (the visor shader's own cube and tints: the cyborg's reflection cube on the base ODSTs, a darker one tinted in each Raven's colour), brighter toward glancing angles.
+* **ODSTs (new):** Spiral's Halo CE ODST (`extract_odst.py`, from the a50 map: its own model, legs, torso, arms, helmet and visor, rigged to the Marine's skeleton), with every animation the Marines have and the Marines' guns, voices, blood and squad orders. They fight as Armored Marines (the same combat data, toughness and collision) and wear their textures as they are. The visor reflects Halo CE's cube map per pixel as you move around it (the visor shader's own cube and tints: the cyborg's reflection cube on the base ODSTs, a darker one tinted in each Raven's colour), brighter toward glancing angles.
   * **a50's loadouts:** the assault rifle (`HCE_MarineOdstAssaultRifle`, 30331, and the Major, `HCE_MarineOdstAssaultRifleMajor`, 30332) and the shotgun (`HCE_MarineOdstShotgun`, 30337).
-  * **Fire Team Raven** (Connor Dawn's models, from SPV3's a10): four ODSTs in their own colours, with their a10 guns: green with the shotgun (`HCE_MarineOdstRavenGreen`, 30334), orange with the battle rifle (`HCE_MarineOdstRavenOrange`, 30335), blue with the assault rifle (`HCE_MarineOdstRavenBlue`, 30333) and purple with the sniper rifle (`HCE_MarineOdstRavenPurple`, 30336).
+  * **Fire Team Raven** (Connor Dawn's models, from the a10 map): four ODSTs in their own colours, with their a10 guns: green with the shotgun (`HCE_MarineOdstRavenGreen`, 30334), orange with the battle rifle (`HCE_MarineOdstRavenOrange`, 30335), blue with the assault rifle (`HCE_MarineOdstRavenBlue`, 30333) and purple with the sniper rifle (`HCE_MarineOdstRavenPurple`, 30336).
   * `HCE_RandomMarineODST` (30330) spawns any of them; `leatherneck` spawns them with the other Marines.
 * **Corpsmen (new):** Marines who answer the medic order, each with his own gun: `HCE_MarineMedic` (30321, the Sidekick), `HCE_MarineMedicAssaultRifle` (30325, Halo CE's assault rifle), `HCE_MarineMedicMa37` (30326), `HCE_MarineMedicMagnum` (30327), `HCE_MarineMedicShotgun` (30328, Halo CE's shotgun) and `HCE_MarineMedicSmg` (30329). They're in the random Marine pool. A corpsman always wears the first-aid kit with its red cross; no other Marine does.
 * **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
@@ -884,7 +884,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 * `enemies_base.zsc`: the extended enemy API source (the file the addon carries).
 * `halo_ce_enemy_tools.zip`: the extraction and generation scripts (Python 3, numpy, Pillow), plus the addon source tree. They rebuild the pk3 byte-for-byte from the `.map` files.
 * `preview.png`: the lineup in UZDoom.
-* `HaloCE_Enemies_Digsite.pk3`: the private Digsite/SPV3 add-on (Drinol and its boss, Slug Men, carbine and pulse-carbine Elites, Engineer, Blind Wolf, Thorn Beast). `digsite_preview.png` shows some of them.
+* `HaloCE_Enemies_Digsite.pk3`: the private Digsite add-on (Drinol and its boss, Slug Men, carbine and pulse-carbine Elites, Engineer, Blind Wolf, Thorn Beast). `digsite_preview.png` shows some of them.
 
 ## DoomEdNums
 
@@ -1038,7 +1038,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's.
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
-* **ODSTs:** the Halo CE ODST model and textures from SPV3 (its a50 map), by the SPV3 team.
-* **Fire Team Raven:** the Fire Team Raven ODST models by Connor Dawn (from SPV3's a10 map).
+* **ODSTs:** the Halo CE ODST model and textures by Spiral.
+* **Fire Team Raven:** the Fire Team Raven ODST models by Connor Dawn.
 * **Halo assets:** property of Microsoft / 343 Industries / Bungie, used under the Game Content Usage Rules (non-commercial).
 * HaloDoom Evolved team (HDE and the enemy API base); Lewisk3/HaloDoomEnemies (voice files); the CMT Covenant carbine and the Halo 3 Spiker port authors; the Digsite source release.

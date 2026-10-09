@@ -1,8 +1,8 @@
-"""The ODSTs (SPV3's Halo CE ODST, `characters\\marine_odst\\odst_marine`) and Fire Team Raven -> out/models/MarineODST/
+"""The ODSTs (Spiral's Halo CE ODST, `characters\\marine_odst\\odst_marine`) and Fire Team Raven -> out/models/MarineODST/
 
     python3 extract_odst.py
 
-* The body: SPV3's a50_1.map (HCE_SPV3_A50): the ODST model (legs, torso, arms, helmet, visor). It is rigged to the
+* The body: Spiral's ODST model, read from SPV3's a50_1.map (HCE_SPV3_A50) (legs, torso, arms, helmet, visor). It is rigged to the
   Halo CE Marine's 20 bones and plays the Marine's own animation graph, so it goes on the Marine's skeleton with every
   animation the Marine has now (Halo 2's stances, reloads, low ready, the flamethrower and plasma-rifle sets...),
   copied from out/models/Marine/Marine.iqm: run after the Marine steps (reload_anims.py, cyborg_flame_anims.py,

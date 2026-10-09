@@ -2136,8 +2136,8 @@ def add_marine_arsenal(variants):
 
 add_marine_arsenal(AI['variants'])
 
-# ODSTs (new): SPV3's Halo CE ODST (extract_odst.py: its own model on the Marine's skeleton and animations) with the
-# a50 ODSTs' loadouts -- the assault rifle (a Private and a Major) and the shotgun -- and Fire Team Raven, SPV3's four
+# ODSTs (new): Spiral's Halo CE ODST (extract_odst.py: its own model on the Marine's skeleton and animations) with the
+# a50 ODSTs' loadouts -- the assault rifle (a Private and a Major) and the shotgun -- and Fire Team Raven, Connor Dawn's four
 # ODSTs in their own colours from a10: green with the shotgun, orange with the battle rifle, blue with the assault
 # rifle and purple with the sniper rifle. They fight as Armored Marines do (the same combat data and collision,
 # so the same toughness) and wear their textures as they are: no colour change.

@@ -7,6 +7,8 @@ the Halo CE Marine skeleton the way the other Halo 2 stances are; its melee and 
 animations, laid over the stance idle (reload_anims.h2_anims). The rocket launcher, Hydra and fuel rod Marines use
 it. Run after extract_chars.py and the gore / blood / arsenal steps; re-running replaces only these animations.
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))

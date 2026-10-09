@@ -123,13 +123,15 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_dismember` | true | Weapon-based dismemberment and gibbing, and gun arms shot off (see [Dismemberment](#dismemberment)) |
 | `hce_grenadefreq` | 1.0 | Scales how often enemies throw grenades |
 | `hce_grenadedodge` | true | Enemies that notice a live grenade near them dive or run clear |
-| `hce_jumping` | true | Enemies jump onto ledges and over low obstacles in their way |
+| `hce_jumping` | true | Enemies jump, climb and vault onto ledges and over low obstacles in their way (see [Climbing and vaulting](#climbing-and-vaulting)) |
 | `hce_burstpause` | 1.0 | Scales the pause between enemy bursts (1.5 = 50% longer, easier; 0.75 = more aggressive) |
 | `hce_enemyspread` | 1.75 | Enemy aim error multiplier (automatic weapons also bloom over a burst; Marines unaffected) |
 | `hce_enemytracking` | 5.0 | How fast enemy aim follows a moving target, in map units a tic (lower = easier to strafe out of) |
 | `hce_hearing` | 1024 | How far gunfire wakes idle enemies (deaf/ambush enemies only wake on sight, as in Doom) |
 | `hce_maxpursuers` | 4 | At most this many enemies of a team hunt one target they can't see at a time; the rest hold position (0 = no limit) |
 | `hce_squads` | true | Grunts and Jackals form squads around the nearest Elite or Brute and follow its lead |
+| `hce_difficulty` | -1 | **Halo difficulty** (see [Halo difficulty](#halo-difficulty)): -1 follows the skill level (I'm Too Young To Die and Hey, Not Too Rough are Easy, Hurt Me Plenty Normal, Ultra-Violence Heroic, Nightmare Legendary); 0 Easy, 1 Normal, 2 Heroic, 3 Legendary pin one. Also under Options > Halo CE AI |
+| `hce_cover` | true | Enemies and Marines fight from cover: they lean out past corners and shoot over low walls (see [Cover](#cover)) |
 | `hce_tactics` | true | Squad tactics: Marine fire teams and battle drills, Covenant lances in echelons (see [Squad tactics](#squad-tactics)) |
 | `hce_patrols` | true | Idle enemies walk short patrols around where they were placed (or along a map's PatrolPoint route) |
 | `hce_sleepinggrunts` | 0.3 | Chance that a Grunt placed in a map starts asleep (Grunts placed as deaf/ambush always do; 0 = never) |
@@ -382,6 +384,27 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Exceptions:** Hunters are too heavy to throw and fall in place. Infection forms and Carriers burst instead, and blasts too weak to throw a body just drop it.
   * **Mid-air deaths:** anything that dies in mid-air (a leaping Flood form, a Sentinel) also plays `landing-dead` when it lands.
 
+## Cover
+
+Under fire, or now and then of their own accord, Marines and the Covenant fight from cover, with Halo 2's own corner-cover animations moved onto the Halo CE bodies (`cover_anims.py`). `hce_cover 0` turns it off; it's also under **Options > Halo CE AI**.
+
+* **Corners:** Marines, Elites and Brutes look for a wall that hides them from their target with a corner beside it. They run there (shooting as they go), step in beside the corner and wait pressed to the wall, then lean out past the edge to shoot for a couple of seconds and lean back in. While they lean out they really stand clear of the corner, so their line of sight and fire clear the wall, not just the animation.
+* **Low walls:** anyone with a crouch (Grunts, Jackals, Slug Men...) can use a low wall instead: it crouches behind it and stands up to shoot over it.
+* **Leaving:** they leave when the spot stops hiding them (you flanked them), when you come too close, when they've lost sight of you for a few seconds, or after 10–16 seconds, then look for another spot a few seconds later.
+* **Shields:** Elites and Jackals whose shields are down (Halo's shield-low cover) now hide behind real cover when there is some near, and stay hidden until their shields are back.
+* **Who doesn't:** Hunters, Jackals with their arm shield up (the shield is their cover), sword and hammer wielders, berserkers, flyers, the Flood and the Sentinels.
+* **Squads:** a unit tied to a squad (Covenant squads, Marines following you) only takes cover close to where its squad wants it, and not while a battle drill or lance manoeuvre is moving it.
+* **Difficulty:** the harder the difficulty, the shorter they hide between peeks (Halo's burst separation).
+* **How spots are found:** by sampling round the unit with line traces when it wants cover. There is no precomputed graph, so it works on any map and against a moving target. Two units never take the same spot.
+
+## Climbing and vaulting
+
+Halo 2's hoist and vault animations (`cover_anims.py`) are used where they fit, with jumps as before for everything else:
+
+* **Hoist:** a ledge about as high as the body's hoist climbs is climbed, not jumped. Elites and Brutes hoist about 85–95 units, so they now get onto ledges higher than they can jump. Marines hoist about 35 units, Jackals about 40 and Grunts about 45.
+* **Vault:** a low wall or a crate with floor beyond it, up to about 60% of the body's height, is vaulted in one movement.
+* The body moves with the animation, and the actor is put where the body ended up when it finishes. It's under `hce_jumping`, like the jumps.
+
 ## Picking up weapons
 
 Marines and the Covenant swap their gun for a better one they see lying nearby (HaloDoom Evolved packs only; the standalone packs have no Halo weapons to find).
@@ -512,6 +535,32 @@ Lines don't pile up:
 * Death, panic, berserk, stuck and grenade warnings interrupt whatever that enemy was saying.
 
 Without the voice pk3 the sound names don't exist, so enemies are silent and nothing errors. Voices are addressed as `HCE/<Voice>/<Event>`; add your own by defining those names in any SNDINFO and listing the voice in a class's `HaloDoom_EnemyBase.HCE_Voices` property.
+
+## Halo difficulty
+
+Halo CE's own difficulty table, read from the game globals of its maps (the same in a10, b30 and d40), scales the AI with the skill level. `hce_difficulty` pins one (see the CVar table), and it's under **Options > Halo CE AI**.
+
+| | Easy | Normal | Heroic | Legendary |
+|---|---|---|---|---|
+| Doom skill | ITYTD, HNTR | HMP | UV | NM |
+| Enemy damage (shots and melee) | 0.3 | 1 | 1.4 | 1.8 |
+| Enemy health and shields | 0.6 | 1 | 1.2 | 1.4 |
+| Enemy shield recharge speed | 0.5 | 1 | 1.5 | 2 |
+| Rate of fire | 0.8 | 1 | 1.2 | 1.5 |
+| Aim error (first shots / over a burst) | 0.75 / 1.25 | 1 | 0.8 | 0.5 |
+| Pause between bursts | 1.2 | 1 | 0.8 | 0.5 |
+| Reaction to a new target | 1.4 | 1 | 0.6 | 0.3 |
+| Tracking and leading a moving target | — | — | +0.2 | +0.4 |
+| Plasma overcharges | 0.2 | 1 | 1.5 | 2 |
+| Grenade chance / time between throws | 0.2 / 1.2 | 1 | 1.5 / 0.8 | 2 / 0.5 |
+| Melee delay | 2× + 1.5 s | 1 | 0.8 | 0.5 |
+| Infection forms' speed | up to 0.6× | 1 | up to 1.5× | up to 2× |
+| Marines' health and shields | 0.8 | 1 | 1.2 | 1.4 |
+
+* **Normal is what the pack played like before.** The difficulty multiplies the pack's own nerfs (`hce_nerf_*`), which stay what Normal plays like.
+* **Ultra-Violence is now Heroic:** enemies do 1.4× and take 1.2× as much to kill. Set `hce_difficulty 1` to play UV as before.
+* **Marines:** as in Halo CE, they only get their own health, shields and recharge from the difficulty; their aim and damage stay at Normal.
+* The pack's skill-based rank mix (stronger ranks on harder skills) is unchanged.
 
 ## Damage scale
 

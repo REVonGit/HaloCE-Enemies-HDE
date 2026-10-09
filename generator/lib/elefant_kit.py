@@ -13,7 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import brute_kit as bk
 
-BLEND = os.environ.get('HCE_MARINE_KIT', '/mnt/user-data/uploads/marine.blend')
+BLEND = os.environ.get('HCE_MARINE_KIT', 'marine.blend')
 # CustomData layer types (Blender 4.0): 48 float3, 49 float2, 11 int32 attribute
 _SPEC = {48: ('<f4', 3), 49: ('<f4', 2), 11: ('<i4', 1)}
 

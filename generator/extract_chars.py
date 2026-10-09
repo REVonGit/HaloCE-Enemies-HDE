@@ -1,4 +1,6 @@
 """Extract Halo CE campaign enemies (+ marines) to IQM + PNG skins + JSON stats."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, re, shutil
 import numpy as np
 from PIL import Image

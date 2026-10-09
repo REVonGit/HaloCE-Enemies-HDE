@@ -63,7 +63,22 @@ enum HCE_AnimKinds
 	HCE_A_RELOAD, HCE_A_VENT, HCE_A_LOW_IDLE, HCE_A_LOW_MOVE,
 	HCE_A_GUARD_IDLE, HCE_A_GUARD_MOVE_F, HCE_A_GUARD_MOVE_B, HCE_A_GUARD_MOVE_L, HCE_A_GUARD_MOVE_R,
 	HCE_A_GUARD_CROUCH_IDLE, HCE_A_GUARD_CROUCH_MOVE,
+	// Halo 2's corner cover, per side: enter, idle, peek (lean out), open (held), unpeek (lean back), exit; hoist, vault
+	HCE_A_COVER_L_ENTER, HCE_A_COVER_L_IDLE, HCE_A_COVER_L_PEEK, HCE_A_COVER_L_OPEN, HCE_A_COVER_L_UNPEEK, HCE_A_COVER_L_EXIT,
+	HCE_A_COVER_R_ENTER, HCE_A_COVER_R_IDLE, HCE_A_COVER_R_PEEK, HCE_A_COVER_R_OPEN, HCE_A_COVER_R_UNPEEK, HCE_A_COVER_R_EXIT,
+	HCE_A_HOIST, HCE_A_VAULT,
 	HCE_A_COUNT
+};
+
+// Halo CE's difficulty values (game_globals_difficulty_information, in the order of the decomp's enum)
+enum HCE_DiffValues
+{
+	HCE_D_DAMAGE = 0, HCE_D_VITALITY, HCE_D_SHIELD, HCE_D_RECHARGE,
+	HCE_D_F_DAMAGE, HCE_D_F_VITALITY, HCE_D_F_SHIELD, HCE_D_F_RECHARGE,
+	HCE_D_INFECTION, HCE_D_UNUSED9, HCE_D_ROF, HCE_D_PROJ_ERROR, HCE_D_BURST_ERROR, HCE_D_NEW_TARGET,
+	HCE_D_BURST_SEP, HCE_D_TRACKING, HCE_D_LEADING, HCE_D_OVERCHARGE, HCE_D_SPECIAL_DELAY, HCE_D_GUIDANCE,
+	HCE_D_MELEE_BASE, HCE_D_MELEE_SCALE, HCE_D_UNUSED22, HCE_D_GRENADE_CHANCE, HCE_D_GRENADE_TIMER,
+	HCE_D_COUNT
 };
 
 class HaloDoom_EnemyBase : Actor abstract
@@ -612,6 +627,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	virtual Name HCE_AnimName(int kind) { return 'None'; }
 	virtual int  HCE_AnimTics(Name anim) { return 30; }   // length in Doom tics
+	virtual vector3 HCE_AnimMove(Name anim) { return (0, 0, 0); }   // how far a hoist / vault carries the body (forward, left, up)
 
 	bool HCE_HasAnim(int kind) { return HCE_AnimName(kind) != 'None'; }
 
@@ -642,7 +658,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_curAnimKind = kind;
 		hce_curAnim = n;
 		hce_animStartTic = level.maptime; hce_curLoop = loop;
-		HCE_ApplyAnim(n, blend, loop);
+		HCE_ApplyAnim(n, hce_noBlend ? 0 : blend, loop);
+		hce_noBlend = false;
 		HCE_CrouchHitbox(n);
 	}
 	int hce_animStartTic;
@@ -717,21 +734,22 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_grenadeTics = int(hce_grenadeDelay * 35 * frandom(0.5, 1.0));
 		// toughness nerf (hce_nerf_health / hce_nerf_shields): StartHealth keeps SpawnHealth()-based
 		// thresholds (berserk, panic, hard kills) in proportion
-		double hs = HCE_HealthScale();
-		if(hs != 1.0 && !bFRIENDLY)
+		// Halo difficulty (HCE_Diff): enemies' and allies' own vitality and shields, as Halo CE scales them
+		double hs = (bFRIENDLY ? 1.0 : HCE_HealthScale()) * HCE_D(HCE_D_VITALITY);
+		if(hs != 1.0)
 		{
 			StartHealth = max(1, int(GetDefaultByType(GetClass()).health * hs));
 			health = SpawnHealth();
 		}
-		if(!bFRIENDLY) hce_shieldMax *= HCE_ShieldScale();
+		hce_shieldMax *= (bFRIENDLY ? 1.0 : HCE_ShieldScale()) * HCE_D(HCE_D_SHIELD);
 		if(hce_shieldMax > 0 && !bHCE_FrontShield)
 		{
-			A_SetupShield(hce_shieldMax, max(1, hce_shieldStun) * 35, max(1, hce_shieldRecharge) * 35,
+			A_SetupShield(hce_shieldMax, max(1, hce_shieldStun) * 35, max(1, int(max(1, hce_shieldRecharge) * 35 / max(0.1, HCE_D(HCE_D_RECHARGE)))),
 				"Shield/Explode", "", "Shield/Regenerate", "HCE_Shield");
 		}
 		if(bHCE_FrontShield)
 		{
-			hce_frontShieldMax = hce_frontShieldHP = max(40 * (bFRIENDLY ? 1.0 : HCE_ShieldScale()), hce_shieldMax);
+			hce_frontShieldMax = hce_frontShieldHP = max(40 * (bFRIENDLY ? 1.0 : HCE_ShieldScale()) * HCE_D(HCE_D_SHIELD), hce_shieldMax);
 			// the shield is its own entity on the wrist (HCE_JackalShield in the core pack, found by name
 			// because the core compiles after this file); without it the old front-arc absorb applies
 			Name sn = 'HCE_JackalShield';
@@ -749,6 +767,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Flying)
 		{
 			bNOGRAVITY = true; bFLOAT = true;
+		}
+		// infection forms: each one a little faster or slower by difficulty (Halo CE's random speed increase)
+		if(hce_type == 10 && hce_team == HCE_TEAM_FLOOD)
+		{
+			double sp = max(0.3, 1 + HCE_D(HCE_D_INFECTION) * frandom(0, 1));
+			hce_runSpeed *= sp; hce_walkSpeed *= sp;
 		}
 		// jump height: about three quarters of the body, Hunters only a low hop, flyers never
 		if(hce_jumpHeight == 0)
@@ -1089,7 +1113,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(target && hce_squadNotified != level.maptime) HCE_AlertSquad(target);
 		hce_burstTics = 0; hce_shotsLeft = 0; hce_chargeTics = 0;
 		// reaction time before the first burst (Halo first_burst_delay, at least ~0.4 s)
-		hce_sepTics = int(max(hce_firstBurstDelay, 0.4) * 35) + random(0, 10);
+		hce_sepTics = max(4, int((max(hce_firstBurstDelay, 0.4) * 35 + random(0, 10)) * HCE_D(HCE_D_NEW_TARGET)));
 		HCE_Say('Alert', 0.7, 35 * 3);
 		hce_grenadeTics = max(hce_grenadeTics, int(35 * frandom(3, 6) * HCE_GrenadeScale()));
 		if(bHCE_Surprise && !hce_surprised && target && Distance3D(target) < hce_surpriseDist)
@@ -1204,6 +1228,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 		if(!target)
 		{
+			hce_cvState = 0;
 			if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);   // lost the target mid-run: the grenades go off where it stands
 			if(hce_action == HCE_ACT_FEED) { HCE_Feed(); return; }
 			if(HCE_SeekCorpse()) return;
@@ -1221,6 +1246,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_canSee) { hce_lastSeen = level.maptime; hce_lastKnown = target.pos; }
 
 		HCE_Emotions();
+		if(hce_cvState > 0 && hce_action != HCE_ACT_FIGHT && hce_action != HCE_ACT_COVER) hce_cvState = 0;
 
 		switch(hce_action)
 		{
@@ -1374,11 +1400,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_TauntTick();
 
 		// lost line of sight: a strafe that broke it is undone first, then go find a firing position
-		if(!hce_canSee && hce_strafeDir != 0 && level.maptime - hce_lastSeen < 3 && hce_flipTics < level.maptime)
+		if(!hce_canSee && hce_cvState == 0 && hce_strafeDir != 0 && level.maptime - hce_lastSeen < 3 && hce_flipTics < level.maptime)
 		{
 			hce_strafeDir = -hce_strafeDir; hce_strafeTics = random(20, 40); hce_flipTics = level.maptime + 35;
 		}
-		if(!hce_canSee && level.maptime - hce_lastSeen > 25)
+		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25)
 		{
 			if(HCE_TryFlush()) return;
 			// a squad member stays with its leader instead of hunting on its own
@@ -1426,7 +1452,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			else if(dl > 280 && spd > 0 && abs(DeltaAngle(moveA, AngleTo(L))) > 90) moveA = AngleTo(L) + 60 * (hce_strafeDir != 0 ? hce_strafeDir : 1);
 		}
 		bool fire = true;
-		HCE_Doctrine(d, toT, moveA, spd, fire);       // squad tactics (UNSC fire teams, Covenant lance)
+		bool docMove = HCE_Doctrine(d, toT, moveA, spd, fire) && spd > 0;       // squad tactics (UNSC fire teams, Covenant lance)
+		if(HCE_CoverTick(d, toT, docMove, moveA, spd, fire) == 2) return;      // cover: a corner or low wall to fight from
 		if(hce_ffStepTics > 0) { hce_ffStepTics--; moveA = hce_ffStepAng; spd = hce_runSpeed * 0.7; }   // clearing a friend out of the line of fire
 		if(spd > 0) moveA = HCE_PickHeading(moveA, toT);
 		HCE_Move(moveA, spd);
@@ -1521,6 +1548,24 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
 		bool recovered = !sh || sh.shields >= sh.maxShields * hce_shieldEmerge;
+		// a real corner or low wall near, if there is one (Halo 2's cover), else the old sidestep
+		if(target && (hce_cvState > 0 || (level.maptime >= hce_cvNext && HCE_CoverCapable() && HCE_FindCover(384))))
+		{
+			if(hce_cvState == 0) HCE_CvBegin();
+			double moveA = angle, spd = 0; bool fire = true;
+			double d = Distance2D(target), toT = AngleTo(target);
+			int cv = HCE_CoverTick(d, toT, false, moveA, spd, fire);
+			if(cv == 1)
+			{
+				HCE_FaceTarget();
+				HCE_Move(HCE_PickHeading(moveA, toT), spd);
+				if(fire) HCE_UpdateFiring(d);
+				HCE_PickMoveAnim();
+			}
+			if(recovered && hce_cvState >= HCE_CV_HIDE) hce_action = HCE_ACT_FIGHT;    // back to the fight from the same spot
+			if(cv != 0) return;
+		}
+		else if(target && hce_cvState == 0) hce_cvNext = max(hce_cvNext, level.maptime + 35 * 2);
 		if(--hce_coverTics <= 0 && recovered) { hce_action = HCE_ACT_FIGHT; return; }
 		if(hce_canSee)
 		{
@@ -1539,6 +1584,262 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(recovered) hce_coverTics = min(hce_coverTics, 10);
 		}
 		HCE_PickMoveAnim();
+	}
+
+	// ------------------------------------------------------------------
+	// Cover (Halo 2's corner cover). Under fire, or now and then of its own accord, a unit that can use cover looks
+	// for a spot near it that hides it from its target: a wall that blocks the line of sight at head height with a
+	// corner it can lean out past (Marines, Elites and Brutes, with Halo 2's corner animations: cover_anims.py), or
+	// a low wall it can crouch behind and shoot over (anyone with a crouch). It runs there, shooting, steps in
+	// beside the corner and waits pressed to the wall, then leans out to shoot for a couple of seconds and back in
+	// again. It leaves when the spot stops hiding it (flanked), when its target comes too close or stays out of
+	// sight, or after 10-16 s. Shields recharge while it hides; an Elite whose shields are down (HCE_ACT_COVER)
+	// stays hidden until they are back. On harder difficulties it hides for less time between peeks.
+	// Spots are found by sampling round the unit with line traces (no precomputed graph, so it works on any map and
+	// against a moving target); two units never take the same spot. hce_cover turns it off.
+	// ------------------------------------------------------------------
+	const HCE_CV_GO = 1;
+	const HCE_CV_HIDE = 2;
+	const HCE_CV_OPEN = 3;
+	int hce_cvState, hce_cvSide, hce_cvUntil, hce_cvPhase, hce_cvNext, hce_cvArrive, hce_cvCheck;
+	bool hce_cvLow;
+	vector3 hce_cvSpot;
+
+	bool HCE_CoverCapable()
+	{
+		if(bHCE_Flying || bHCE_FrontArmor || bHCE_Explodes || bHCE_AlwaysBerserk || hce_berserk) return false;
+		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;          // not the Flood or Sentinels
+		if(bHCE_FrontShield && hce_frontShieldHP > 0) return false;                             // a Jackal's shield is its cover
+		if(hce_projectile == 'None' && !bHCE_Beam) return false;                                // swords and hammers close in
+		if(!HCE_HasAnim(HCE_A_COVER_L_IDLE) && !HCE_HasAnim(HCE_A_CROUCH_IDLE)) return false;
+		return HCE_CVarF('hce_cover', 1) > 0;
+	}
+
+	// Halo 2's corner_cover_left set hides the body to the left of the corner and leans out to the right (measured from
+	// its root: cover_anims.py), so a corner open to the right (side 1) takes the left set
+	int HCE_CvKind(int off) { return (hce_cvSide > 0 ? HCE_A_COVER_L_ENTER : HCE_A_COVER_R_ENTER) + off; }
+
+	// the spot it steps out to when it leans out past the corner: far enough that its line of sight (and fire) clears
+	// the wall, since the lean itself is only the animation
+	vector2 HCE_CvPeekPos() { return hce_cvSpot.xy + AngleToVector(AngleTo(target) - 90 * hce_cvSide, radius * 2 + 12); }
+
+	// a short slide (the step out to the corner and back), spread over a locked animation
+	vector3 hce_peekFrom, hce_peekTo;
+	int hce_peekTics, hce_peekDur;
+	void HCE_PeekSlide(vector3 to, int tics)
+	{
+		hce_peekFrom = pos; hce_peekTo = to; hce_peekDur = hce_peekTics = max(1, tics);
+	}
+	void HCE_PeekSlideTick()
+	{
+		double t = 1.0 - (--hce_peekTics) / double(hce_peekDur);
+		vector3 p = hce_peekFrom + (hce_peekTo - hce_peekFrom) * (t * t * (3 - 2 * t));
+		if(hce_peekTics <= 0 || CheckPosition(p.xy)) SetOrigin((p.xy, pos.z), true);
+		else hce_peekTics = 0;          // something stepped into the way: stop where it is
+	}
+
+	// something solid between two points (within maxd of the first, if given)
+	bool HCE_SightBlocked(vector3 from, vector3 to, double maxd = 0)
+	{
+		vector3 d = to - from;
+		double l = d.Length();
+		if(l < 2) return false;
+		FLineTraceData tr;
+		if(!LineTrace(atan2(d.y, d.x), l - 2, -atan2(d.z, d.xy.Length()), TRF_THRUACTORS | TRF_THRUHITSCAN | TRF_ABSPOSITION,
+			from.z, from.x, from.y, tr)) return false;
+		return maxd <= 0 || tr.Distance <= maxd;
+	}
+
+	// what a spot gives against a threat: 0 nothing, 1 a wall with a corner to lean out past (side: 1 right, -1 left),
+	// 2 a low wall close in front to crouch behind with a clear view over it standing
+	int HCE_CoverAt(vector2 p, double pz, Actor threat, bool corner, bool low, out int side)
+	{
+		side = 0;
+		vector3 t = threat.pos + (0, 0, threat.height * 0.75);
+		vector3 head = (p, pz + height * 0.85);
+		double toT = atan2(t.y - p.y, t.x - p.x);
+		if(HCE_SightBlocked(head, t, 128))
+		{
+			if(!corner) return 0;
+			double off = radius * 2 + 12;
+			int first = random(0, 1) ? 1 : -1;
+			for(int i = 0; i < 2; i++)
+			{
+				int sd = i == 0 ? first : -first;
+				vector2 q = p + AngleToVector(toT - 90 * sd, off);
+				if(HCE_SightBlocked((p, pz + height * 0.5), (q, pz + height * 0.5))) continue;    // a wall that side
+				if(!HCE_SightBlocked((q, pz + height * 0.85), t)) { side = sd; return 1; }
+			}
+			return 0;
+		}
+		if(low && HCE_SightBlocked((p, pz + height * 0.4), t, 96)) return 2;
+		return 0;
+	}
+
+	bool HCE_SpotFree(vector2 p)
+	{
+		if(!CheckPosition(p)) return false;
+		let it = BlockThingsIterator.CreateFromPos(p.x, p.y, pos.z, height, 448, false);
+		while(it.Next())
+		{
+			let o = HaloDoom_EnemyBase(it.thing);
+			if(o && o != self && o.health > 0 && o.hce_cvState > 0 && (o.hce_cvSpot.xy - p).Length() < radius + o.radius + 16) return false;
+		}
+		return true;
+	}
+
+	// the nearest spot within maxR that hides it from its target and keeps it in the fight
+	bool HCE_FindCover(double maxR)
+	{
+		if(!target) return false;
+		bool corner = HCE_HasAnim(HCE_A_COVER_L_IDLE) && HCE_HasAnim(HCE_A_COVER_R_IDLE);
+		bool low = HCE_HasAnim(HCE_A_CROUCH_IDLE);
+		double dT = Distance2D(target);
+		static const double rads[] = { 64, 128, 192, 256, 320, 384 };
+		for(int r = 0; r < 6 && rads[r] <= maxR; r++)
+		{
+			int n = r < 2 ? 8 : 12;
+			double a0 = frandom(0, 360);
+			for(int i = 0; i < n; i++)
+			{
+				vector2 p = pos.xy + AngleToVector(a0 + i * 360.0 / n, rads[r]);
+				double dp = (target.pos.xy - p).Length();
+				if(dp < max(hce_rangeMin * 0.7, 128) || dp > max(max(hce_rangeMax, 256), dT) * 1.1) continue;
+				double pz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+				if(!level.IsPointInLevel((p, pz + 1)) || abs(pz - pos.z) > MaxStepHeight * 2) continue;
+				if(GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - pz < height + 4) continue;
+				if(HCE_SightBlocked(pos + (0, 0, MaxStepHeight + 4), (p, pz + MaxStepHeight + 4))) continue;   // no straight way there
+				int side;
+				int k = HCE_CoverAt(p, pz, target, corner, low, side);
+				if(k == 0 || !HCE_SpotFree(p)) continue;
+				hce_cvSpot = (p, pz); hce_cvSide = side; hce_cvLow = k == 2;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool HCE_AimedAt()
+	{
+		return target && target.player && abs(DeltaAngle(target.angle, target.AngleTo(self))) < 12;
+	}
+
+	bool HCE_ShieldsBack()
+	{
+		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
+		return !sh || sh.shields >= sh.maxShields * hce_shieldEmerge;
+	}
+
+	int HCE_CvHideTics() { return max(15, int(35 * frandom(0.9, 2.2) * HCE_D(HCE_D_BURST_SEP))); }
+
+	void HCE_CvBegin()
+	{
+		hce_cvState = HCE_CV_GO;
+		hce_cvArrive = level.maptime + 35 * 5;
+		hce_cvUntil = level.maptime + random(35 * 10, 35 * 16);
+	}
+
+	void HCE_LeaveCover()
+	{
+		if(hce_cvState >= HCE_CV_HIDE && !hce_cvLow && hce_animLock <= 0 && health > 0) HCE_PlayLocked(HCE_CvKind(5), 0.7);
+		hce_cvState = 0;
+		hce_cvNext = level.maptime + random(35 * 3, 35 * 6);
+	}
+
+	// 0: not in cover (fight as usual); 1: on the way (moveA / spd / fire set for the caller); 2: in cover, all handled
+	int HCE_CoverTick(double d, double toT, bool busy, out double moveA, out double spd, out bool fire)
+	{
+		if(hce_cvState == 0)
+		{
+			if(busy || level.maptime < hce_cvNext || !hce_canSee || !HCE_CoverCapable()) return 0;
+			hce_cvNext = level.maptime + random(30, 45);
+			if(d < max(hce_rangeMin * 0.7, 128)) return 0;
+			// under fire (hurt lately, or the player aiming its way), or a third of the looks on its own account
+			if(hce_recentDamageTics <= 0 && !HCE_AimedAt() && random(0, 2) != 0) return 0;
+			bool tied = HCE_InSquad() || (HCE_SquadLeader() != null);
+			if(!HCE_FindCover(tied ? 192 : 320)) { hce_cvNext = level.maptime + 35 * 3; return 0; }
+			HCE_CvBegin();
+		}
+		if(!target || hce_berserk || d < max(hce_rangeMin * 0.5, 96) || level.maptime > hce_cvUntil
+			|| level.maptime - hce_lastSeen > 35 * 4)
+		{
+			HCE_LeaveCover();
+			return 0;
+		}
+		if(hce_cvState == HCE_CV_GO)
+		{
+			vector2 dv = hce_cvSpot.xy - pos.xy;
+			double l = dv.Length();
+			if(l > 12)
+			{
+				if(level.maptime > hce_cvArrive) { HCE_LeaveCover(); return 0; }
+				moveA = atan2(dv.y, dv.x);
+				spd = min(l > 96 ? hce_runSpeed : hce_walkSpeed, l);
+				fire = hce_canSee;
+				return 1;
+			}
+			HCE_Brake();
+			A_SetAngle(toT, SPF_INTERPOLATE);
+			hce_cvState = HCE_CV_HIDE;
+			hce_cvPhase = level.maptime + HCE_CvHideTics();
+			hce_cvCheck = level.maptime + 15;
+			HCE_StopFireLoop(); hce_shotsLeft = 0; hce_burstTics = 0;
+			if(!hce_cvLow) hce_cvPhase += HCE_PlayLocked(HCE_CvKind(0));
+			return 2;
+		}
+		// in cover: still on the spot (a grenade dodge may have moved it), and the spot still hiding it
+		vector2 anchor = hce_cvState == HCE_CV_OPEN && !hce_cvLow ? HCE_CvPeekPos() : hce_cvSpot.xy;
+		if(hce_peekTics <= 0 && (anchor - pos.xy).Length() > 40) { hce_cvState = HCE_CV_GO; hce_cvArrive = level.maptime + 35 * 3; return 0; }
+		if(level.maptime >= hce_cvCheck)
+		{
+			hce_cvCheck = level.maptime + 15;
+			int sd;
+			int k = HCE_CoverAt(hce_cvSpot.xy, hce_cvSpot.z, target, !hce_cvLow, hce_cvLow, sd);
+			if(k == 0) { HCE_Say('Flee', 0.15, 35 * 4); HCE_LeaveCover(); return 0; }   // flanked
+			if(k == 1 && hce_cvState == HCE_CV_HIDE && sd != hce_cvSide && hce_animLock <= 0) hce_cvSide = sd;
+		}
+		HCE_Brake();
+		HCE_FaceTarget();
+		spd = 0;
+		if(hce_cvState == HCE_CV_HIDE)
+		{
+			if(hce_shotsLeft > 0 || hce_burstTics > 0) { HCE_StopFireLoop(); hce_shotsLeft = 0; hce_burstTics = 0; }
+			HCE_Play(hce_cvLow ? HCE_A_CROUCH_IDLE : HCE_CvKind(1));
+			hce_crouch = hce_cvLow;
+			bool recovering = hce_action == HCE_ACT_COVER && !HCE_ShieldsBack();
+			if(level.maptime >= hce_cvPhase && !recovering)
+			{
+				hce_cvState = HCE_CV_OPEN;
+				hce_cvPhase = level.maptime + random(55, 110);
+				hce_crouch = false;
+				if(!hce_cvLow)
+				{
+					int lt = HCE_PlayLocked(HCE_CvKind(2));
+					hce_cvPhase += lt;
+					vector2 pp = HCE_CvPeekPos();
+					if(CheckPosition(pp)) HCE_PeekSlide((pp, pos.z), lt);
+				}
+				else HCE_Play(HCE_A_ALERT);
+			}
+			return 2;
+		}
+		// leaning out past the corner, or standing up over the low wall: shoot
+		HCE_Play(hce_cvLow ? HCE_A_ALERT : HCE_CvKind(3));
+		HCE_UpdateFiring(d);
+		if(bHCE_ThrowsGrenades) HCE_TryGrenade(d);
+		if(level.maptime >= hce_cvPhase && hce_shotsLeft <= 0 && hce_chargeTics <= 0)
+		{
+			hce_cvState = HCE_CV_HIDE;
+			hce_cvPhase = level.maptime + HCE_CvHideTics();
+			HCE_StopFireLoop();
+			if(!hce_cvLow)
+			{
+				int lt = HCE_PlayLocked(HCE_CvKind(4));
+				hce_cvPhase += lt;
+				HCE_PeekSlide(hce_cvSpot, lt);
+			}
+		}
+		return 2;
 	}
 
 	// ------------------------------------------------------------------
@@ -1669,6 +1970,88 @@ class HaloDoom_EnemyBase : Actor abstract
 	// too tall to step onto but within hce_jumpHeight is hopped onto / over:
 	// airborne animation in the air, landing animation on touchdown.
 	// ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Halo 2's hoist and vault (cover_anims.py): a ledge about as high as the hoist climbs is climbed instead of
+	// jumped (Elites and Brutes climb ledges higher than they can jump), and a low wall or crate with floor beyond it
+	// is vaulted. The animation carries the body; the actor stays where it started (rising by whatever the ledge is
+	// taller than the animation) and is put where the body ended up when it finishes.
+	// ------------------------------------------------------------------
+	vector3 hce_climbFrom, hce_climbTo;
+	int hce_climbTics, hce_climbDur;
+	double hce_climbExtra;
+	bool hce_noBlend;
+
+	bool HCE_TryClimb(double ang, double rise, double top, bool overThing, Actor bm)
+	{
+		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
+		vector2 dir = AngleToVector(ang, 1);
+		double fwdMin = radius * 2 + 12 + (overThing && bm ? bm.radius * 2 : 0);
+		vector2 far = pos.xy + dir * fwdMin;
+		double fzFar = GetZAt(far.x, far.y, 0, GZF_ABSOLUTEPOS);
+		if(abs(fzFar - pos.z) > MaxStepHeight && rise <= height * 0.6)
+		{
+			// a low wall crossed at a slant: floor again a little further on is a vault, not a climb onto the wall
+			vector2 far2 = far + dir * 48;
+			double fz2 = GetZAt(far2.x, far2.y, 0, GZF_ABSOLUTEPOS);
+			if(abs(fz2 - pos.z) <= MaxStepHeight) { far = far2; fzFar = fz2; fwdMin += 48; }
+		}
+		bool vault;
+		if(abs(fzFar - pos.z) <= MaxStepHeight && rise <= height * 0.6) vault = true;      // over and back down
+		else if(!overThing && abs(fzFar - top) <= MaxStepHeight) vault = false;           // up onto a ledge
+		else return false;
+		int kind = vault ? HCE_A_VAULT : HCE_A_HOIST;
+		Name n = HCE_AnimName(kind);
+		if(n == 'None') return false;
+		vector3 mv = HCE_AnimMove(n);
+		if(mv.x <= 4) return false;
+		if(!vault && (mv.z < 8 || rise < mv.z * 0.75 || rise > mv.z * 1.25)) return false;
+		double fwd = max(mv.x, fwdMin);
+		vector2 land = pos.xy + dir * fwd;
+		double lz = GetZAt(land.x, land.y, 0, GZF_ABSOLUTEPOS);
+		if(abs(lz - (vault ? pos.z : top)) > MaxStepHeight) return false;
+		if(GetZAt(land.x, land.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - lz < height + 2) return false;
+		FLineTraceData tr;
+		if(LineTrace(ang, fwd + radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;            // a wall above it
+		if(LineTrace(ang, fwd + radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + height * 0.8, data: tr)) return false; // no room for the body
+		let it = BlockThingsIterator.CreateFromPos(land.x, land.y, lz, height, radius + 64, false);
+		while(it.Next())
+		{
+			let o = it.thing;
+			if(o == self || o == bm || !o.bSOLID || o.health <= 0 && o.bISMONSTER) continue;
+			if((o.pos.xy - land).Length() < radius + o.radius && o.pos.z < lz + height && o.pos.z + o.height > lz) return false;
+		}
+		A_SetAngle(ang);
+		HCE_StopFireLoop();
+		hce_climbFrom = pos;
+		hce_climbTo = (land, lz);
+		hce_climbExtra = vault ? 0 : max(0, (lz - pos.z) - mv.z);
+		vel = (0, 0, 0);
+		bNOGRAVITY = true;
+		hce_climbDur = max(1, HCE_PlayLocked(kind));
+		hce_climbTics = hce_climbDur;
+		hce_jumpCooldown = level.maptime + 20;
+		return true;
+	}
+
+	void HCE_ClimbTick()
+	{
+		vel = (0, 0, 0);
+		double t = 1.0 - (hce_climbTics - 1) / double(hce_climbDur);
+		SetZ(hce_climbFrom.z + hce_climbExtra * t * t * (3 - 2 * t));
+		if(--hce_climbTics <= 0) HCE_EndClimb(true);
+	}
+
+	void HCE_EndClimb(bool arrive)
+	{
+		hce_climbTics = 0;
+		bNOGRAVITY = default.bNOGRAVITY;
+		if(!arrive) return;
+		SetOrigin(hce_climbTo, false);
+		hce_animLock = 0;
+		hce_noBlend = true;                      // the body is already where the animation left it
+		hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy;
+	}
+
 	bool HCE_TryJump(double ang, bool useBlocker)
 	{
 		if(hce_jumpHeight <= 0 || bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0) return false;
@@ -1689,6 +2072,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(t > top) { top = t; overThing = true; }
 		}
 		double rise = top - pos.z;
+		if(rise > MaxStepHeight && HCE_TryClimb(ang, rise, top, overThing, bm)) return true;
 		if(rise <= MaxStepHeight || rise > hce_jumpHeight) return false;
 		if(cz - top < height + 2 || ceilingz - pos.z < rise + height + 4) return false;   // no headroom
 		// somewhere to land: past a ledge the ground must stay up (not a thin wall or a railing);
@@ -2416,11 +2800,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_burstTics--;
 			if(--hce_shotTics <= 0)
 			{
-				hce_shotTics = max(1, int(35.0 / max(0.25, hce_rateOfFire)));
+				hce_shotTics = max(1, int(35.0 / (max(0.25, hce_rateOfFire) * HCE_D(HCE_D_ROF))));
 				HCE_FireShot();
 				if(HCE_SpendRound()) hce_burstTics = 1;
 			}
-			if(hce_burstTics == 0) hce_sepTics = int(35 * frandom(hce_sepMin, hce_sepMax));
+			if(hce_burstTics == 0) hce_sepTics = int(35 * frandom(hce_sepMin, hce_sepMax) * HCE_D(HCE_D_BURST_SEP));
 			return;
 		}
 		if(--hce_sepTics <= 0)
@@ -2545,7 +2929,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				A_StopSound(CHAN_7);
 				HCE_FireShot(true);
 				HCE_SpendRound(true);
-				hce_sepTics = int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * 1.6 * HCE_PauseScale());
+				hce_sepTics = int(35 * frandom(hce_patPauseMin, hce_patPauseMax) * 1.6 * HCE_PauseScale() * HCE_D(HCE_D_SPECIAL_DELAY));
 			}
 			return;
 		}
@@ -2555,7 +2939,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			{
 				if(!(hce_burstShot % 3) && HCE_FriendInFire()) { HCE_EndBurst(0.25); return; }   // someone stepped in
 				HCE_FireShot();
-				hce_shotTics = max(1, hce_patInterval);
+				hce_shotTics = max(1, int(round(hce_patInterval / HCE_D(HCE_D_ROF))));
 				if(HCE_SpendRound()) { HCE_EndBurst(0.2); hce_sepTics = 1; }    // empty / overheated: reload next tic
 				else if(--hce_shotsLeft <= 0) HCE_EndBurst(1.0);
 			}
@@ -2563,7 +2947,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		if(--hce_sepTics > 0) return;
 		if(HCE_AmmoCheck()) return;
-		if(hce_specialFire > 0 && hce_patChargeTics > 0 && frandom(0, 1) < hce_specialChance
+		if(hce_specialFire > 0 && hce_patChargeTics > 0 && frandom(0, 1) < hce_specialChance * HCE_D(HCE_D_OVERCHARGE)
 			&& !(bHCE_Lobbed && !HCE_LobPossible((class<Actor>)(hce_projectile), height * 0.5 + hce_gunOffset.z, 26)))
 		{
 			hce_chargeTics = hce_patChargeTics;
@@ -2743,7 +3127,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			hit.DamageMobj(self, self, dmg, 'Fire');
 		}
 		else { hce_beamVictim = null; hce_beamRamp = 1.0; }
-		if(hce_moveSpeed <= 0.1 && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		hce_burstShot++;
 	}
 
@@ -2770,7 +3154,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		class<Actor> pc = (class<Actor>)(hce_projectile);
 		if(!pc) return;
 		// legacy mode rolls the overcharge per shot
-		if(!special && hce_patShotsMax <= 0) special = hce_specialFire > 0 && frandom(0, 1) < hce_specialChance;
+		if(!special && hce_patShotsMax <= 0) special = hce_specialFire > 0 && frandom(0, 1) < hce_specialChance * HCE_D(HCE_D_OVERCHARGE);
 		int n = max(1, hce_projectilesPerShot);
 		if(special)
 		{
@@ -2816,7 +3200,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			}
 		}
 		HCE_PlayFireSound(special);
-		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		if(bHCE_ActiveCamo) A_SetRenderStyle(0.45, STYLE_Translucent);
 	}
 
@@ -2871,6 +3255,65 @@ class HaloDoom_EnemyBase : Actor abstract
 		return cv ? cv.GetFloat() : def;
 	}
 
+	// ------------------------------------------------------------------
+	// Halo difficulty. Halo CE scales its AI by difficulty from one table in the game globals of every map (read
+	// from a10, b30 and d40: the same in all): enemy damage, vitality, shields and their recharge, rate of fire,
+	// aim error, reaction to a new target, pauses between bursts, tracking and leading a moving target, plasma
+	// overcharges, melee delays, grenade chance and timers, and the infection forms' speed. Allies get their own
+	// vitality, shields and recharge, and everything else at Normal. Doom's skills map onto Halo's four: I'm Too
+	// Young To Die and Hey, Not Too Rough are Easy, Hurt Me Plenty is Normal, Ultra-Violence Heroic, Nightmare
+	// Legendary; hce_difficulty 0-3 pins one. The values multiply the pack's own nerfs (hce_nerf_*), which stay
+	// what Normal plays like.
+	// ------------------------------------------------------------------
+	static int HCE_HaloSkill()
+	{
+		int d = int(HCE_CVarF('hce_difficulty', -1));
+		if(d >= 0) return min(d, 3);
+		int sk = G_SkillPropertyInt(SKILLP_ACSReturn);
+		return sk <= 1 ? 0 : sk == 2 ? 1 : sk == 3 ? 2 : 3;
+	}
+
+	static double HCE_Diff(int v, bool friendly = false)
+	{
+		static const double t[] = {
+			//  easy  normal heroic legendary
+			0.30, 1.00, 1.40, 1.80,     // enemy damage
+			0.60, 1.00, 1.20, 1.40,     // enemy vitality
+			0.60, 1.00, 1.20, 1.40,     // enemy shield
+			0.50, 1.00, 1.50, 2.00,     // enemy recharge
+			0.40, 1.00, 1.40, 1.80,     // friend damage
+			0.80, 1.00, 1.20, 1.40,     // friend vitality
+			0.80, 1.00, 1.20, 1.40,     // friend shield
+			0.50, 1.00, 1.50, 2.00,     // friend recharge
+			-0.40, 0.00, 0.50, 1.00,    // infection forms
+			1.00, 1.00, 1.00, 1.00,     // (unused)
+			0.80, 1.00, 1.20, 1.50,     // rate of fire
+			0.75, 1.00, 0.80, 0.50,     // projectile error
+			1.25, 1.00, 0.80, 0.50,     // burst error
+			1.40, 1.00, 0.60, 0.30,     // new target delay
+			1.20, 1.00, 0.80, 0.50,     // burst separation
+			0.00, 0.00, 0.20, 0.40,     // target tracking
+			0.00, 0.00, 0.20, 0.40,     // target leading
+			0.20, 1.00, 1.50, 2.00,     // overcharge chance
+			1.20, 1.00, 0.80, 0.50,     // special fire delay
+			0.50, 0.50, 0.75, 1.00,     // guidance vs player
+			1.50, 0.00, 0.00, 0.00,     // melee delay base (s)
+			2.00, 1.00, 0.80, 0.50,     // melee delay scale
+			0.00, 0.00, 0.00, 0.00,     // (unused)
+			0.20, 1.00, 1.50, 2.00,     // grenade chance scale
+			1.20, 1.00, 0.80, 0.50      // grenade timer scale
+		};
+		if(v < 0 || v >= HCE_D_COUNT) return 1.0;
+		int sk = HCE_HaloSkill();
+		if(friendly)
+		{
+			if(v <= HCE_D_RECHARGE) v += HCE_D_F_DAMAGE;        // their own damage / vitality / shield / recharge
+			else sk = 1;                                       // the rest at Normal
+		}
+		return t[v * 4 + sk];
+	}
+	double HCE_D(int v) { return HCE_Diff(v, bFRIENDLY); }
+
 	double HCE_SpreadScale()
 	{
 		if(bFRIENDLY) return 1.0;
@@ -2882,7 +3325,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		double err = hce_errorAngle;
 		if(bFRIENDLY) return hce_inspired ? err * 0.7 : err;     // Johnson nearby: steadier hands
 		bool isAuto = hce_patShotsMax >= 4 || hce_burstMax > 0.5;
-		err = max(err, isAuto ? 2.5 : 1.2) * HCE_SpreadScale();             // automatics: no laser-accurate tags
+		err = max(err, isAuto ? 2.5 : 1.2) * HCE_SpreadScale() * HCE_D(HCE_D_PROJ_ERROR);   // automatics: no laser-accurate tags
 		if(isAuto) err *= min(2.0, 1.0 + 0.12 * hce_burstShot);            // automatic bloom
 		hce_burstShot++;
 		return err;
@@ -2891,15 +3334,15 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 HCE_AimPoint()
 	{
 		double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
-		double lead = bFRIENDLY ? hce_leadFraction : hce_leadFraction * 0.5;
+		double lead = bFRIENDLY ? hce_leadFraction : min(1.0, hce_leadFraction * 0.5 + HCE_D(HCE_D_LEADING));
 		vector3 want = target.pos + (0, 0, target.height * 0.55) + target.vel * t * lead;
 		if(bFRIENDLY) return want;
-		double rate = max(0.5, HCE_CVarF('hce_enemytracking', 5.0));
+		double rate = max(0.5, HCE_CVarF('hce_enemytracking', 5.0)) * (1 + 2 * HCE_D(HCE_D_TRACKING));
 		int dt = level.maptime - hce_aimTic;
 		if(hce_aimTic == 0 || dt > 30)
 		{
 			// a fresh burst: the first rounds land off the mark by up to how far the target moves in ~6 tics
-			double off = min(64, target.vel.xy.Length() * 6) + 4;
+			double off = (min(64, target.vel.xy.Length() * 6) + 4) * HCE_D(HCE_D_BURST_ERROR);
 			hce_aimPt = want + (frandom(-off, off), frandom(-off, off), frandom(-off, off) * 0.4);
 		}
 		else
@@ -3004,7 +3447,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		CVar cv = CVar.FindCVar("hce_enemydamage");
 		CVar nerf = CVar.FindCVar("hce_nerf_projectiles");
-		return (cv ? max(0., cv.GetFloat()) : 1.0) * (nerf ? max(0., nerf.GetFloat()) : 0.4);
+		return (cv ? max(0., cv.GetFloat()) : 1.0) * (nerf ? max(0., nerf.GetFloat()) : 0.4) * HCE_Diff(HCE_D_DAMAGE);
 	}
 	static double HCE_HealthScale()
 	{
@@ -3048,13 +3491,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_grenadeType <= 0 || hce_grenades <= 0 || !hce_canSee || hce_holdFire) return false;
 		if(--hce_grenadeTics > 0) return false;
 		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group
-		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale());
+		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER));
 		if(dist < hce_grenadeMin || dist > hce_grenadeMax) return false;
-		if(frandom(0, 1) > hce_grenadeChance * 0.45) return false;
+		if(frandom(0, 1) > hce_grenadeChance * 0.45 * HCE_D(HCE_D_GRENADE_CHANCE)) return false;
 		if(!HCE_GrenadeArcClear()) { hce_grenadeTics = 35; return false; }   // low ceiling: hold it, look again in a second
 		if(HCE_FriendNear(target.pos, 200)) { hce_grenadeTics = 35; return false; }   // a friend by the target: not now
 		hce_grenades--;
-		hce_grenadeTics = int(35 * frandom(12, 20) * HCE_GrenadeScale());
+		hce_grenadeTics = int(35 * frandom(12, 20) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER));
 		// squad discipline: nearby allies hold their grenades for a few seconds
 		let it = BlockThingsIterator.Create(self, 640);
 		while(it.Next())
@@ -3270,7 +3713,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('Melee', 0.35, 35 * 3);
 		HCE_PlayLocked(HCE_A_MELEE);
 		hce_pendingMelee = max(3, int(hce_animLock * 0.4));
-		hce_meleeTics = level.maptime + hce_animLock + 10;
+		hce_meleeTics = level.maptime + hce_animLock + int(10 * HCE_D(HCE_D_MELEE_SCALE) + 35 * HCE_D(HCE_D_MELEE_BASE));
 		return true;
 	}
 	int hce_pendingMelee;
@@ -3280,7 +3723,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!target || !HCE_InMeleeRange(Distance2D(target), 14)) return;
 		if(abs(target.pos.z - pos.z) > max(height, target.height)) return;
 		if(abs(DeltaAngle(angle, AngleTo(target))) > 70) return;   // swung at empty air
-		int dmg = int(hce_meleeDamage * frandom(0.9, 1.1));
+		int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
 		target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
 		target.Thrust(dmg * 0.08, AngleTo(target));
 		A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
@@ -3319,7 +3762,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// airborne
 		if(target && Distance3D(target) < radius + target.radius + 16)
 		{
-			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1));
+			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
 			target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
 			if(bHCE_Swarm)
 			{
@@ -3387,6 +3830,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// per-tic work while a one-shot animation plays
 	virtual void HCE_LockedTick()
 	{
+		if(hce_climbTics > 0) { if(health > 0) HCE_ClimbTick(); else HCE_EndClimb(false); return; }
+		if(hce_peekTics > 0) { HCE_PeekSlideTick(); if(target) HCE_FaceTarget(0.5); return; }
 		if(hce_diveTics > 0)
 		{
 			hce_diveTics--;
@@ -3777,6 +4222,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_Die()
 	{
 		hce_burnDying = false; hce_bleedOut = 0;
+		if(hce_climbTics > 0) HCE_EndClimb(false);
+		hce_cvState = 0;
 		HCE_SquadDeath();
 		HCE_ManDown();
 		let mate = HaloDoom_EnemyBase(hce_bondMate);

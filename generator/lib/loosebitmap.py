@@ -2,10 +2,7 @@
 import sys
 sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
 from loosewalk import LooseTag
-try:
-    from bitmaps import decode
-except ImportError:
-    sys.path.insert(0, '/home/claude/work'); from bitmaps import decode
+from bitmaps import decode          # lib/bitmaps.py
 
 CH = {('bitmap_group', 'sequences'): 'bitmap_group_sequence', ('bitmap_group_sequence', 'sprites'): 'bitmap_group_sprite',
       ('bitmap_group', 'bitmaps'): 'bitmap_data'}

@@ -1,6 +1,28 @@
 AddOptionMenu "OptionsMenu"
 {
 	Submenu "Halo CE Gore", "HCE_GoreOptions"
+	Submenu "Halo CE AI", "HCE_AIOptions"
+}
+
+OptionValue "HCE_Difficulty"
+{
+	-1, "From the skill level"
+	0, "Easy"
+	1, "Normal"
+	2, "Heroic"
+	3, "Legendary"
+}
+
+OptionMenu "HCE_AIOptions"
+{
+	Title "Halo CE AI"
+	Option "Halo difficulty", "hce_difficulty", "HCE_Difficulty"
+	StaticText "Halo CE's own difficulty table: damage, toughness, aim,", 1
+	StaticText "rate of fire, reactions and grenades.", 1
+	StaticText ""
+	Option "Fight from cover", "hce_cover", "OnOff"
+	Option "Squad tactics", "hce_tactics", "OnOff"
+	Option "Jumping and climbing", "hce_jumping", "OnOff"
 }
 
 OptionMenu "HCE_GoreOptions"

@@ -153,6 +153,13 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 
 	// carrier pop: releases infection forms
 	override void HCE_OnDetonate()
@@ -372,6 +379,13 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite flame thrower
@@ -498,6 +512,13 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite needler
@@ -622,6 +643,13 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 		case 'stand unarmed resurrect-front': return 27;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -748,6 +776,13 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite plasma pistol
@@ -872,6 +907,13 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 		case 'stand unarmed resurrect-front': return 27;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -998,6 +1040,13 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite rocket launcher
@@ -1122,6 +1171,13 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 		case 'stand unarmed resurrect-front': return 27;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -1248,6 +1304,13 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite sniper rifle
@@ -1373,6 +1436,13 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite stealth unarmed
@@ -1496,6 +1566,13 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite unarmed
@@ -1617,6 +1694,13 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 		case 'stand unarmed turn-right': return 16;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -1801,6 +1885,13 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human flame thrower
@@ -1910,6 +2001,13 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human needler
@@ -2017,6 +2115,13 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 		case 'stand unarmed resurrect-front': return 35;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -2126,6 +2231,13 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human plasma pistol
@@ -2233,6 +2345,13 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 		case 'stand unarmed resurrect-front': return 35;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -2342,6 +2461,13 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human rocket launcher
@@ -2449,6 +2575,13 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 		case 'stand unarmed resurrect-front': return 35;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -2558,6 +2691,13 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\floodcombat_human\floodcombat_human unarmed
@@ -2660,6 +2800,13 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 		case 'stand unarmed turn-right': return 16;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -2807,6 +2954,13 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 		case 'stand unarmed move-front': return 32;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// infection forms hunt for dead humans / elites and reanimate them

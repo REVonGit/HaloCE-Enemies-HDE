@@ -13,6 +13,8 @@ Per frame: forward kinematics on the CE skeleton, the gun placed in the right ha
 bend plane (the elbow stays on the side the animation put it); the hand keeps the world rotation the animation gave
 it. Animations where the left hand lets go of the gun (grenade throw, signals, celebrating, warning) only get the
 right-arm / stock correction."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import numpy as np
 import halomodel as hm
 

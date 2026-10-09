@@ -1,4 +1,6 @@
 """Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
 from PIL import Image
@@ -355,6 +357,14 @@ def anim_table(A, w, weapon):
     m['FLAME_MOVE'] = f(f'flaming {w} move-front', 'flaming pistol move-front', 'flaming rifle move-front', 'flaming unarmed move-front')
     # Halo 2's reloads and plasma vents (reload_anims.py): the gun's own (the needler's, the shotguns' shells), else the stance's
     fam = 'pistol' if 'pistol' in w else 'missle' if 'missile' in w else 'rifle' if w.startswith('h2') else w
+    # Halo 2's corner cover (cover_anims.py): step in beside a corner, lean out past it to shoot, lean back; and its
+    # hoist onto a ledge and vault over a low wall. The stance's own, else the nearest Halo 2 stance's
+    for k, n in [('COVER_L_ENTER', 'cover-left-enter'), ('COVER_L_IDLE', 'cover-left-idle'), ('COVER_L_PEEK', 'cover-left-peek'),
+                 ('COVER_L_OPEN', 'cover-left-open'), ('COVER_L_UNPEEK', 'cover-left-unpeek'), ('COVER_L_EXIT', 'cover-left-exit'),
+                 ('COVER_R_ENTER', 'cover-right-enter'), ('COVER_R_IDLE', 'cover-right-idle'), ('COVER_R_PEEK', 'cover-right-peek'),
+                 ('COVER_R_OPEN', 'cover-right-open'), ('COVER_R_UNPEEK', 'cover-right-unpeek'), ('COVER_R_EXIT', 'cover-right-exit'),
+                 ('HOIST', 'hoist'), ('VAULT', 'vault')]:
+        m[k] = f(f'stand {w} {n}', f'stand {fam} {n}', f'stand rifle {n}', f'stand pistol {n}', f'stand support {n}', f'stand missle {n}')
     rc = {'needler': 'ne', 'shotgun': 'sg', 'bulldog': 'sg', 'double barrel': 'sg'}.get(weapon or '', '1')
     m['RELOAD'] = f(f'stand {w} reload-{rc}', f'stand {fam} reload-{rc}', f'stand {w} reload-1', f'stand {fam} reload-1')
     m['VENT'] = f(f'stand {w} overheat', f'stand {fam} overheat')
@@ -375,9 +385,20 @@ KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE',
          'HPING_F', 'HPING_B', 'DIE_F', 'DIE_B', 'DIE_L', 'DIE_R', 'DIE_HARD_F', 'DIE_HARD_B', 'DIE_AIR', 'DIE_LAND',
          'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE',
          'RELOAD', 'VENT', 'LOW_IDLE', 'LOW_MOVE', 'GUARD_IDLE', 'GUARD_MOVE_F', 'GUARD_MOVE_B', 'GUARD_MOVE_L',
-         'GUARD_MOVE_R', 'GUARD_CROUCH_IDLE', 'GUARD_CROUCH_MOVE']
+         'GUARD_MOVE_R', 'GUARD_CROUCH_IDLE', 'GUARD_CROUCH_MOVE',
+         'COVER_L_ENTER', 'COVER_L_IDLE', 'COVER_L_PEEK', 'COVER_L_OPEN', 'COVER_L_UNPEEK', 'COVER_L_EXIT',
+         'COVER_R_ENTER', 'COVER_R_IDLE', 'COVER_R_PEEK', 'COVER_R_OPEN', 'COVER_R_UNPEEK', 'COVER_R_EXIT', 'HOIST', 'VAULT']
 
-def zs_anim_funcs(A, table, bers=None):
+def zs_anim_move(A, used, msc=1.0):
+    """HCE_AnimMove: how far a hoist / vault carries the body (cover_anims.py's 'move', Halo world units forward, left,
+    up), in map units: the model's own scale, with the 1.2 vertical stretch every Halo model gets"""
+    mv = [(n, A.meta['anims'][n]['move']) for n in used if 'move' in A.meta['anims'].get(n, {})]
+    out = ['\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
+    for n, (x, y, z) in mv:
+        out.append(f"\t\tcase '{n}': return ({x * S * msc:.1f}, {y * S * msc:.1f}, {z * S * msc * 1.2:.1f});")
+    return out + ['\t\t}', '\t\treturn (0, 0, 0);', '\t}']
+
+def zs_anim_funcs(A, table, bers=None, msc=1.0):
     lines = ['\toverride Name HCE_AnimName(int kind)', '\t{',
              "\t\tif(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up"]
     if bers:
@@ -403,6 +424,7 @@ def zs_anim_funcs(A, table, bers=None):
     for n in used:
         lines.append(f"\t\tcase '{n}': return {A.tics(n)};")
     lines += ['\t\t}', '\t\treturn 30;', '\t}']
+    lines += zs_anim_move(A, used, msc)
     return '\n'.join(lines)
 
 # ---------------------------------------------------------------- skins
@@ -1615,7 +1637,7 @@ def build(cfg=None):
                           f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tsuper.HCE_ApplyAnim(n, blend, loop);\n'
                           f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n'
                           f'\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{{\n\t\tif(gunArm && hce_bladeActor) {{ hce_bladeActor.Destroy(); hce_bladeActor = null; }}\n\t}}\n')
-            animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)))
+            animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)), msc)
             if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx
             if ov.get('stacker'): animtxt, jx = stacker_code(A, animtxt, char, meta, mdir); extra += jx
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
@@ -2288,9 +2310,11 @@ def johnson_code(A, animtxt, char, meta, mdir):
     """Sergeant Johnson: the Stanchion at range, the Magnum (Halo 2's pistol stance) when an enemy closes in"""
     cqc = zs_anim_funcs(A, anim_table(A, H2PISTOL_STANCE, 'pistol'))
     animtxt = (animtxt.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameLong(int kind)')
-                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsLong(Name anim)'))
+                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsLong(Name anim)')
+                      .replace('override vector3 HCE_AnimMove(Name anim)', 'vector3 HCE_AnimMoveLong(Name anim)'))
     cqc = (cqc.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameCQC(int kind)')
-              .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsCQC(Name anim)'))
+              .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsCQC(Name anim)')
+              .replace('override vector3 HCE_AnimMove(Name anim)', 'vector3 HCE_AnimMoveCQC(Name anim)'))
     def swap(name):
         a = meta['arsenal'][name]
         out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
@@ -2304,6 +2328,7 @@ def johnson_code(A, animtxt, char, meta, mdir):
 	override int HCE_PickFace() {{ return HCE_JOHNSON_FACE; }}
 	override Name HCE_AnimName(int kind) {{ return hce_cqc ? HCE_AnimNameCQC(kind) : HCE_AnimNameLong(kind); }}
 	override int HCE_AnimTics(Name anim) {{ int t = HCE_AnimTicsLong(anim); return t != 30 ? t : HCE_AnimTicsCQC(anim); }}
+	override vector3 HCE_AnimMove(Name anim) {{ vector3 m = HCE_AnimMoveLong(anim); return m != (0, 0, 0) ? m : HCE_AnimMoveCQC(anim); }}
 	override void HCE_OwnGunBack() {{ hce_cqc = false; }}          // the Stanchion back in his hands (a trade)
 	Name hce_longProj; int hce_longShots[3]; double hce_longPause[2]; double hce_longErr, hce_longSpeed, hce_longRange[2];
 	String hce_longSound[3];
@@ -2355,15 +2380,18 @@ def stacker_code(A, animtxt, char, meta, mdir):
     back to the (reloaded) double barrel once the enemy is past ~13 m or after 6 seconds"""
     smg_table = zs_anim_funcs(A, anim_table(A, MARINE_ARSENAL['smg'][1], 'smg'))
     animtxt = (animtxt.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameMain(int kind)')
-                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsMain(Name anim)'))
+                      .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsMain(Name anim)')
+                      .replace('override vector3 HCE_AnimMove(Name anim)', 'vector3 HCE_AnimMoveMain(Name anim)'))
     smg_table = (smg_table.replace('override Name HCE_AnimName(int kind)', 'Name HCE_AnimNameSMG(int kind)')
-                          .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsSMG(Name anim)'))
+                          .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsSMG(Name anim)')
+                          .replace('override vector3 HCE_AnimMove(Name anim)', 'vector3 HCE_AnimMoveSMG(Name anim)'))
     sp = PATTERNS['smg']; ss = FIRE_SOUNDS['smg']; smg = WEAPONS['smg']
     code = f"""
 	// Sergeant Stacker's double barrel, with the SMG as his close-range backup (stacker_code)
 	bool hce_onBackup; int hce_backupUntil;
 	override Name HCE_AnimName(int kind) {{ return hce_onBackup ? HCE_AnimNameSMG(kind) : HCE_AnimNameMain(kind); }}
 	override int HCE_AnimTics(Name anim) {{ int t = HCE_AnimTicsMain(anim); return t != 30 ? t : HCE_AnimTicsSMG(anim); }}
+	override vector3 HCE_AnimMove(Name anim) {{ vector3 m = HCE_AnimMoveMain(anim); return m != (0, 0, 0) ? m : HCE_AnimMoveSMG(anim); }}
 	override void HCE_OwnGunBack() {{ hce_onBackup = false; }}       // the double barrel back in his hands (a trade)
 	Name hce_mainProj; int hce_mainShots[3], hce_mainPellets; double hce_mainPause[2]; double hce_mainErr, hce_mainSpeed, hce_mainRange[2];
 	String hce_mainSound[2];

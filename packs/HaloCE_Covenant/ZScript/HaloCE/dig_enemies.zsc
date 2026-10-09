@@ -152,6 +152,13 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 class HCE_BruteBase : HaloDoom_EnemyBase abstract
@@ -730,6 +737,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -775,6 +796,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -820,6 +855,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -865,6 +914,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand support turn-right';
 		case HCE_A_LOW_IDLE: return 'stand support low-idle';
 		case HCE_A_LOW_MOVE: return 'stand support low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand support cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand support cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand support cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand support cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand support cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand support cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand support cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand support cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand support cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand support cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand support cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand support cover-right-exit';
+		case HCE_A_HOIST: return 'stand support hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -910,6 +973,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand support turn-right';
 		case HCE_A_LOW_IDLE: return 'stand support low-idle';
 		case HCE_A_LOW_MOVE: return 'stand support low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand support cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand support cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand support cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand support cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand support cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand support cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand support cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand support cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand support cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand support cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand support cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand support cover-right-exit';
+		case HCE_A_HOIST: return 'stand support hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -955,6 +1032,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1000,6 +1091,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1045,6 +1150,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1090,6 +1209,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1135,6 +1268,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1180,6 +1327,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1225,6 +1386,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1270,6 +1445,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1294,6 +1483,18 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
@@ -1303,6 +1504,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle fire-1 sk baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -1319,12 +1521,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle warn': return 63;
 		case 'stand support airborne': return 69;
 		case 'stand support celebrate': return 66;
+		case 'stand support cover-left-enter': return 24;
+		case 'stand support cover-left-exit': return 10;
+		case 'stand support cover-left-idle': return 104;
+		case 'stand support cover-left-open': return 2;
+		case 'stand support cover-left-peek': return 16;
+		case 'stand support cover-left-unpeek': return 16;
+		case 'stand support cover-right-enter': return 24;
+		case 'stand support cover-right-exit': return 15;
+		case 'stand support cover-right-idle': return 104;
+		case 'stand support cover-right-open': return 2;
+		case 'stand support cover-right-peek': return 22;
+		case 'stand support cover-right-unpeek': return 22;
 		case 'stand support dive-front': return 66;
 		case 'stand support dive-left': return 66;
 		case 'stand support dive-right': return 66;
 		case 'stand support evade-left': return 47;
 		case 'stand support evade-right': return 47;
 		case 'stand support fire-1 baked': return 28;
+		case 'stand support hoist': return 51;
 		case 'stand support idle': return 104;
 		case 'stand support land-soft': return 29;
 		case 'stand support low-idle': return 140;
@@ -1337,6 +1552,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand support throw-grenade': return 69;
 		case 'stand support turn-left': return 16;
 		case 'stand support turn-right': return 16;
+		case 'stand support vault': return 21;
 		case 'stand support warn': return 63;
 		}
 		return 0;
@@ -1439,6 +1655,20 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1476,12 +1706,25 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 pr baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -1496,8 +1739,18 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -1907,6 +2160,20 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -1944,12 +2211,25 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 pr baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -1964,8 +2244,18 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -2365,6 +2655,20 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -2402,12 +2706,25 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 sg baked': return 12;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -2422,8 +2739,18 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -2823,6 +3150,20 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand melee turn-right';
 		case HCE_A_LOW_IDLE: return 'stand melee low-idle';
 		case HCE_A_LOW_MOVE: return 'stand melee low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand melee hoist';
+		case HCE_A_VAULT: return 'stand melee vault';
 		}
 		return 'None';
 	}
@@ -2851,6 +3192,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
 		case 'stand melee airborne': return 69;
+		case 'stand melee hoist': return 48;
 		case 'stand melee idle': return 69;
 		case 'stand melee land-soft': return 29;
 		case 'stand melee leap-airborne': return 19;
@@ -2870,8 +3212,21 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand melee throw-grenade': return 35;
 		case 'stand melee turn-left': return 16;
 		case 'stand melee turn-right': return 16;
+		case 'stand melee vault': return 21;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
@@ -2882,6 +3237,15 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand rifle warn': return 63;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand melee hoist': return (87.8, 1.1, 95.6);
+		case 'stand melee vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -3279,6 +3643,20 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -3316,12 +3694,25 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 ar baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -3336,8 +3727,18 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -3733,6 +4134,20 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -3770,12 +4185,25 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 pr baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -3790,8 +4218,18 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -4187,6 +4625,20 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -4224,12 +4676,25 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 sg baked': return 12;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -4244,8 +4709,18 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -4646,6 +5121,20 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -4683,12 +5172,25 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 sk baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -4703,8 +5205,18 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -5105,6 +5617,20 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -5142,12 +5668,25 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 ar baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -5162,8 +5701,18 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -5564,6 +6113,20 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand support vault';
 		}
 		return 'None';
 	}
@@ -5601,12 +6164,25 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 'stand rifle airborne': return 69;
 		case 'stand rifle berserk': return 51;
 		case 'stand rifle celebrate': return 66;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 15;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 22;
+		case 'stand rifle cover-right-unpeek': return 22;
 		case 'stand rifle dive-front': return 66;
 		case 'stand rifle dive-left': return 66;
 		case 'stand rifle dive-right': return 66;
 		case 'stand rifle evade-left': return 47;
 		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 pr baked': return 10;
+		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 104;
 		case 'stand rifle land-soft': return 29;
 		case 'stand rifle low-idle': return 140;
@@ -5621,8 +6197,18 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
 		case 'stand rifle warn': return 63;
+		case 'stand support vault': return 21;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (87.8, 1.1, 94.1);
+		case 'stand support vault': return (128.2, -7.9, 8.5);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -6115,6 +6701,13 @@ class HCE_Drinol : HCE_DrinolBase
 		case 'stand unarmed turn-right': return 36;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -6826,6 +7419,13 @@ class HCE_DroneNeedler : HCE_DroneBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\drone\drone plasma pistol
@@ -6923,6 +7523,13 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		case 'stand pistol surprise-front': return 28;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -7022,6 +7629,13 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\drone\drone spiker
@@ -7119,6 +7733,13 @@ class HCE_DroneSpiker : HCE_DroneBase
 		case 'stand pistol surprise-front': return 28;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -7348,6 +7969,20 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -7386,12 +8021,25 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -7410,9 +8058,19 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
@@ -7512,6 +8170,20 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -7550,12 +8222,25 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -7574,9 +8259,19 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -7667,6 +8362,20 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -7705,12 +8414,25 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -7729,9 +8451,19 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
@@ -7831,6 +8563,20 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -7869,12 +8615,25 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -7893,9 +8652,19 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -7986,6 +8755,20 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -8024,12 +8807,25 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -8048,9 +8844,19 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
@@ -8150,6 +8956,20 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -8188,12 +9008,25 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -8212,9 +9045,19 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -8306,6 +9149,20 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -8344,12 +9201,25 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -8368,9 +9238,19 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
@@ -8471,6 +9351,20 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_VENT: return 'stand rifle overheat';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_VAULT: return 'stand rifle vault';
 		}
 		return 'None';
 	}
@@ -8509,12 +9403,25 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case 'stand landing-dead': return 47;
 		case 'stand rifle airborne': return 74;
 		case 'stand rifle berserk': return 52;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand rifle cr fire-1 baked': return 9;
 		case 'stand rifle dive-front': return 46;
 		case 'stand rifle dive-left': return 46;
 		case 'stand rifle dive-right': return 46;
 		case 'stand rifle evade-left': return 35;
 		case 'stand rifle evade-right': return 35;
+		case 'stand rifle hoist': return 65;
 		case 'stand rifle idle': return 70;
 		case 'stand rifle land-soft': return 47;
 		case 'stand rifle low-idle': return 70;
@@ -8533,9 +9440,19 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case 'stand rifle throw-grenade': return 63;
 		case 'stand rifle turn-left': return 16;
 		case 'stand rifle turn-right': return 16;
+		case 'stand rifle vault': return 26;
 		case 'stand rifle warn': return 33;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (92.3, -0.0, 84.7);
+		case 'stand rifle vault': return (103.9, 0.0, 10.6);
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -8779,6 +9696,20 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case HCE_A_GUARD_MOVE_R: return 'guard sword move-right';
 		case HCE_A_GUARD_CROUCH_IDLE: return 'crouch guard sword idle';
 		case HCE_A_GUARD_CROUCH_MOVE: return 'crouch guard sword move-front';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand sword hoist';
+		case HCE_A_VAULT: return 'stand sword vault';
 		}
 		return 'None';
 	}
@@ -8825,6 +9756,18 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand missle fire-1 fr baked': return 13;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol warn': return 33;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
 		case 'stand sword airborne': return 75;
 		case 'stand sword berserk': return 55;
 		case 'stand sword dive-front': return 47;
@@ -8832,6 +9775,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand sword dive-right': return 47;
 		case 'stand sword evade-left': return 37;
 		case 'stand sword evade-right': return 36;
+		case 'stand sword hoist': return 65;
 		case 'stand sword idle': return 70;
 		case 'stand sword land-soft': return 47;
 		case 'stand sword low-idle': return 70;
@@ -8847,8 +9791,18 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand sword throw-grenade': return 63;
 		case 'stand sword turn-left': return 16;
 		case 'stand sword turn-right': return 16;
+		case 'stand sword vault': return 22;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand sword hoist': return (92.4, -0.0, 84.4);
+		case 'stand sword vault': return (71.4, -0.0, 1.8);
+		}
+		return (0, 0, 0);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 }
@@ -8991,6 +9945,13 @@ class HCE_Engineer : HCE_EngineerBase
 		case 'stand unarmed move-front': return 47;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// The Engineer never fights: nothing is its enemy (not even whoever shoots it), so it never picks a
@@ -9490,6 +10451,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -9540,6 +10502,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_VENT: return 'stand pistol overheat';
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -9587,6 +10550,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -9637,6 +10601,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_VENT: return 'stand pistol overheat';
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -9673,6 +10638,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
+		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
 		case 'stand pistol low-idle': return 70;
@@ -9698,6 +10664,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
 		case 'stand rifle low-move': return 34;
@@ -9798,6 +10765,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -9835,6 +10803,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
 		case 'stand rifle low-move': return 34;
@@ -9850,6 +10819,14 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case 'stand rifle warn': return 50;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -9949,6 +10926,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -9986,6 +10964,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
 		case 'stand rifle low-move': return 34;
@@ -10001,6 +10980,14 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case 'stand rifle warn': return 50;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -10092,6 +11079,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -10129,6 +11117,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
 		case 'stand rifle low-move': return 34;
@@ -10144,6 +11133,14 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case 'stand rifle warn': return 50;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -10238,6 +11235,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_VENT: return 'stand pistol overheat';
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -10274,6 +11272,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
+		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
 		case 'stand pistol low-idle': return 70;
@@ -10293,6 +11292,14 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case 'stand pistol warn': return 50;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (59.0, 0.1, 39.9);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -10387,6 +11394,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case HCE_A_VENT: return 'stand pistol overheat';
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -10423,6 +11431,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
+		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
 		case 'stand pistol low-idle': return 70;
@@ -10442,6 +11451,14 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case 'stand pistol warn': return 50;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (59.0, 0.1, 39.9);
+		}
+		return (0, 0, 0);
 	}
 
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -11196,6 +12213,13 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man major particle beam
@@ -11344,6 +12368,13 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		case 'stand rifle warn': return 51;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan
@@ -11543,6 +12574,13 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
 	// muzzle to where it will land, fading in a few tics
@@ -11702,6 +12740,13 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man major plasma rifle
@@ -11852,6 +12897,13 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man major pulse carbine
@@ -12000,6 +13052,13 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		case 'stand rifle warn': return 51;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -12151,6 +13210,13 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man minor plasma carbine
@@ -12299,6 +13365,13 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		case 'stand rifle warn': return 51;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
@@ -12459,6 +13532,13 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man particle beam
@@ -12607,6 +13687,13 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		case 'stand rifle warn': return 51;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan
@@ -12807,6 +13894,13 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // digsite\characters\slug_man\slug_man ultra particle beam
@@ -12955,6 +14049,13 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		case 'stand rifle warn': return 51;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// Particle beam rifle: every shot is telegraphed by a second-long aiming laser and the sniper glint, then one hitscan
@@ -13154,6 +14255,13 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 
 	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
 	// muzzle to where it will land, fading in a few tics
@@ -13313,6 +14421,13 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
@@ -13464,6 +14579,13 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 		case 'stand unarmed turn-right': return 28;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 
 	// heavy footfalls from its own sound set while it walks

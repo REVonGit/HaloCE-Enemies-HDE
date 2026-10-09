@@ -20,6 +20,8 @@ animation table looks for:
 Run after extract_chars.py (which writes the IQM from scratch) and the gore / blood / arsenal steps; re-running it
 replaces its own animations and leaves everything else in the IQM as it is.
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -70,7 +72,6 @@ MARK = ' reload-', ' overheat'
 
 
 def h2_anims(model, path, cache, plan, ce_joints):
-    sys.path.insert(0, '/home/claude/spv3')
     from h2map import H2Map, render_model
     import h2anim
     m = H2Map(path, cache)

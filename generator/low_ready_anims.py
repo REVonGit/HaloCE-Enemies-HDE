@@ -14,6 +14,8 @@ fight). Halo CE bodies take Halo 2's Marine (01b_spacestation.map) or Elite / Gr
 animations bone for bone, as reload_anims.py does; the Brute takes its own (08b_deltacontrol.map). Run after
 reload_anims.py (and brute_stance.py); re-running replaces only these.
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +64,6 @@ def stances(meta):
 
 def h2_patrol(model, path, cache, plan, ce_joints):
     """{pack name: (frames on the body's joints, movement (F,4))} for the body's stances"""
-    sys.path.insert(0, '/home/claude/spv3')
     from h2map import H2Map, render_model
     import h2anim
     m = H2Map(path, cache)

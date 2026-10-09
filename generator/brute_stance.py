@@ -9,6 +9,8 @@ the heavy ones, held the way a Brute holds its own launcher. The Brute's skeleto
 go on as they are. Names follow the generator ('stand support idle', 'stand support melee', ...); the firing overlay
 (combat:support:bs:fire_1) is baked onto the idle. Run after extract_h2_brute.py and the gore / blood / overlay steps.
 """
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +27,6 @@ PLAN = {'idle': 'idle', 'move_front': 'move-front', 'move_back': 'move-back', 'm
 
 
 def main():
-    sys.path.insert(0, '/home/claude/spv3')
     from h2map import H2Map
     import h2anim
     pi, pj = f'{OUT}/models/Brute/Brute.iqm', f'{OUT}/models/Brute/Brute.json'

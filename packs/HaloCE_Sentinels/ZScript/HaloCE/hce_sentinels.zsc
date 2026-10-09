@@ -128,6 +128,13 @@ class HCE_Sentinel : HCE_SentinelBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\sentinel\sentinel major
@@ -200,6 +207,13 @@ class HCE_SentinelMajor : HCE_SentinelBase
 		case 'stand landing-dead': return 4;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 
@@ -274,6 +288,13 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\sentinel\sentinel_shielded
@@ -347,6 +368,13 @@ class HCE_SentinelShielded : HCE_SentinelBase
 		}
 		return 30;
 	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
+	}
 }
 
 // characters\sentinel\sentinel_shielded major
@@ -419,6 +447,13 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 		case 'stand landing-dead': return 4;
 		}
 		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		}
+		return (0, 0, 0);
 	}
 }
 

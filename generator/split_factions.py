@@ -9,6 +9,8 @@
 
 Every faction pack only needs the core (and the enemy API addon); load any combination.
 DoomEdNums are unchanged: each pack lists the numbers of its own classes."""
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
@@ -79,7 +81,16 @@ def main():
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
     open(f'{core}/menudef.hce', 'w').write(
-        'AddOptionMenu "OptionsMenu"\n{\n\tSubmenu "Halo CE Gore", "HCE_GoreOptions"\n}\n\n'
+        'AddOptionMenu "OptionsMenu"\n{\n\tSubmenu "Halo CE Gore", "HCE_GoreOptions"\n\tSubmenu "Halo CE AI", "HCE_AIOptions"\n}\n\n'
+        'OptionValue "HCE_Difficulty"\n{\n\t-1, "From the skill level"\n\t0, "Easy"\n\t1, "Normal"\n\t2, "Heroic"\n\t3, "Legendary"\n}\n\n'
+        'OptionMenu "HCE_AIOptions"\n{\n\tTitle "Halo CE AI"\n'
+        '\tOption "Halo difficulty", "hce_difficulty", "HCE_Difficulty"\n'
+        '\tStaticText "Halo CE\'s own difficulty table: damage, toughness, aim,", 1\n'
+        '\tStaticText "rate of fire, reactions and grenades.", 1\n'
+        '\tStaticText ""\n'
+        '\tOption "Fight from cover", "hce_cover", "OnOff"\n'
+        '\tOption "Squad tactics", "hce_tactics", "OnOff"\n'
+        '\tOption "Jumping and climbing", "hce_jumping", "OnOff"\n}\n\n'
         'OptionMenu "HCE_GoreOptions"\n{\n\tTitle "Halo CE Gore"\n'
         '\tOption "Blood on bodies", "hce_bodyblood", "OnOff"\n'
         '\tStaticText ""\n'

@@ -1,0 +1,49 @@
+version "4.15.1"
+// Test-only: logs the Halo CE AI's cover and climbing once a second, and spawns every enemy class
+// ("netevent hce_spawnall") two seconds into the map. Never shipped in a pack.
+class HCE_TestHarness : EventHandler
+{
+	Array<Actor> climbing;
+	Array<Actor> covered, peeked;
+	int climbs, peeks, everCover, spawnTic;
+	int lastOpen[1024];
+
+	override void UiTick()
+	{
+		if(gamestate == GS_LEVEL && level.maptime == 70) EventHandler.SendNetworkEvent("hce_spawnall");
+	}
+
+	override void WorldTick()
+	{
+		// once everyone is out, the camera faces the north wall: nothing on screen to draw, so the test runs fast
+		if(level.maptime == 80 && players[0].mo) { players[0].mo.angle = 90; players[0].mo.pitch = -30; }
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase m;
+		int alive, go, hide, open, climb, friends, foes, seeing;
+		while(m = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(m.health <= 0) continue;
+			alive++;
+			if(m.bFRIENDLY) friends++; else foes++;
+			if(m.hce_cvState == 1) go++;
+			else if(m.hce_cvState == 2) hide++;
+			else if(m.hce_cvState == 3)
+			{
+				open++;
+				if(peeked.Find(m) == peeked.Size()) { peeked.Push(m); }
+				if(m.hce_canSee) seeing++;
+			}
+			if(m.hce_cvState >= 2 && covered.Find(m) == covered.Size()) covered.Push(m);
+			if(m.hce_climbTics > 0)
+			{
+				climb++;
+				if(climbing.Find(m) == climbing.Size()) { climbing.Push(m); climbs++; Console.Printf("HCETEST climb %s %s z=%.0f to=%.0f extra=%.0f", m.GetClassName(), m.hce_curAnim, m.pos.z, m.hce_climbTo.z, m.hce_climbExtra); }
+			}
+			else { int k = climbing.Find(m); if(k < climbing.Size()) climbing.Delete(k); }
+		}
+		if(level.maptime % 35 == 0)
+			Console.Printf("HCETEST t=%d alive=%d foes=%d friends=%d cover go=%d hide=%d open=%d (seeing %d) climbing=%d | ever in cover=%d peeked=%d climbs=%d skill=%d diff=%.2f",
+				level.maptime / 35, alive, foes, friends, go, hide, open, seeing, climb, covered.Size(), peeked.Size(), climbs,
+				HaloDoom_EnemyBase.HCE_HaloSkill(), HaloDoom_EnemyBase.HCE_Diff(HCE_D_DAMAGE));
+	}
+}

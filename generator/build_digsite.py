@@ -934,13 +934,21 @@ def kit_code():
 		}}
 		return "";
 	}}
+	override int HCE_LineupLooks()
+	{{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}}
 	void HCE_DressArmour()
 	{{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < {n}; s++) pick.Push("");
 		bool outfit = false;
@@ -954,7 +962,7 @@ def kit_code():
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < {n} && s < f.Size(); s++) pick[s] = f[s];
@@ -988,7 +996,7 @@ vec4 ProcessTexel()
 	float scan = 0.78 + 0.22 * sin(uv.y * 90.0 - t * 14.0);
 	float pulse = 0.85 + 0.15 * sin(t * 5.3);
 	vec3 col = c.rgb * scan * pulse * (0.85 + 0.3 * n) + c.rgb * band;
-	return vec4(min(col * 1.3, vec3(1.0)), c.a);
+	return vec4(min(col * 1.6, vec3(1.0)), c.a);
 }
 '''
 

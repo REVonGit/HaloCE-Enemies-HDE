@@ -463,6 +463,16 @@ class HCE_SpawnAllHandler : EventHandler
 			while(j >= 0 && names[j] > k) { names[j + 1] = names[j]; j--; }
 			names[j + 1] = k;
 		}
+		// a class with several looks (the Chieftain's sets) stands in the line once per look
+		Array<int> looks;
+		for(int i = 0; i < names.Size(); i++)
+		{
+			let d = HaloDoom_EnemyBase(GetDefaultByType((class<Actor>)(names[i])));
+			int n = d ? max(1, d.HCE_LineupLooks()) : 1;
+			if(n == 1) { looks.Push(-1); continue; }
+			looks.Push(0);
+			for(int k = 1; k < n; k++) { names.Insert(i + 1, names[i]); looks.Insert(i + 1, k); i++; }
+		}
 		if(names.Size() == 0) { Console.Printf("%s: no Halo CE %s loaded", cmd, marines ? "Marines" : "enemies"); return; }
 		// lines across the player's view, starting 160 units ahead: each enemy its own width apart, a new line
 		// every 640 units of width (128 further on), so they fit an ordinary room
@@ -502,7 +512,7 @@ class HCE_SpawnAllHandler : EventHandler
 			if(!mo) { blocked++; continue; }
 			mo.angle = mo.AngleTo(pl);
 			let en = HaloDoom_EnemyBase(mo);
-			if(en) en.hce_standStill = true;      // no idle patrols: they hold their place in the line
+			if(en) { en.hce_standStill = true; en.hce_lineupLook = looks[i] + 1; }     // no idle patrols: they hold their place in the line
 			made++;
 		}
 		Console.Printf("%s: %d %s spawned%s", cmd, made, marines ? "Marines" : "enemies", blocked ? String.Format(", %d had no room", blocked) : "");

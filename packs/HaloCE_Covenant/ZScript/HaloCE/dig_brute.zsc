@@ -57,7 +57,7 @@ class HCE_BruteCaptainFlag : Actor
 		+DECOUPLEDANIMATIONS
 		+NOTONAUTOMAP
 		RenderStyle "Add";
-		Alpha 0.95;
+		Alpha 1.0;
 	}
 	States
 	{
@@ -73,6 +73,6 @@ class HCE_BruteCaptainFlag : Actor
 		angle = master.angle; pitch = master.pitch; roll = master.roll;
 		scale = master.scale;
 		bInvisible = master.bInvisible || master.alpha < 0.05;
-		alpha = 0.85 + 0.1 * sin(level.maptime * 23.0) - (random[HCEFlag](0, 40) == 0 ? 0.5 : 0);   // a hologram's flicker
+		alpha = 0.92 + 0.08 * sin(level.maptime * 23.0) - (random[HCEFlag](0, 40) == 0 ? 0.5 : 0);   // a hologram's flicker
 	}
 }

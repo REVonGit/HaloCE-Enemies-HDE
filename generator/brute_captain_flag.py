@@ -20,7 +20,7 @@ from iqm import read_iqm, write_iqm
 
 CLOTH = r'effects\objects\characters\brute\captain_flag'
 SHADER = r'objects\characters\brute\shaders\captain_flag'
-TINT = (255, 155, 157)            # the shader's colour (its packed colour: ff 9b 9d)
+TINT = (235, 12, 16)              # a bright blood red (Halo 2's shader colour is a pale ff 9b 9d)
 MARKER = 'flag attach'
 
 
@@ -73,11 +73,11 @@ def main():
     off = np.asarray(eb.bitmap(m, eb.find_bitmap(m, 'captain_flag_offset')).convert('RGBA')).astype(np.float32) / 255
     shape = mask[..., :3].max(2)
     marks = off[..., :3].max(2)
-    lum = np.clip(0.35 * shape + 0.9 * marks, 0, 1)
+    lum = np.clip(0.6 * shape + 1.0 * marks, 0, 1)
     edge = np.clip(1 - mask[..., 3], 0, 1)                           # the alpha is the field, dark at the border
-    lum = np.clip(lum * (0.55 + 0.45 * (1 - edge)), 0, 1)
+    lum = np.clip(lum * (0.7 + 0.3 * (1 - edge)) * 1.35, 0, 1)
     rgb = np.array(TINT, np.float32) / 255 * lum[..., None]
-    rgb += np.clip(marks - 0.6, 0, 1)[..., None] * 0.8                # the claw marks burn white-hot
+    rgb += np.clip(marks - 0.6, 0, 1)[..., None] * np.array([0.5, 0.12, 0.1], np.float32)   # the claw marks burn hotter red
     Image.fromarray((np.clip(rgb, 0, 1) * 255).astype(np.uint8)).save(f'{d}/captain_flag.png')
     print('captain flag', gx, 'x', gy, 'grid,', len(tris) // 2, 'triangles, marker', inst['node'], np.round(P[0], 3))
 

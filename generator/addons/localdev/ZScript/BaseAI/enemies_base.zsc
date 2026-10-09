@@ -851,6 +851,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 hce_home, hce_patrolTo;
 	int     hce_patrolState, hce_patrolTics;
 	bool    hce_standStill;                 // no idle walking at all, patrols or squad stations (punkassbitches spawns)
+	int     hce_lineupLook;                 // punkassbitches: 1 + which of the class's looks to wear (0: roll as usual)
+	virtual int HCE_LineupLooks() { return 1; }   // how many looks the class has for punkassbitches to line up (one of each)
 
 	bool HCE_IdleMove()
 	{

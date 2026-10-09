@@ -1568,13 +1568,21 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -1588,7 +1596,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -2028,13 +2036,21 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -2048,7 +2064,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -2478,13 +2494,21 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -2498,7 +2522,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -2928,13 +2952,21 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -2948,7 +2980,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -3376,13 +3408,21 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -3396,7 +3436,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -3822,13 +3862,21 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -3842,7 +3890,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -4268,13 +4316,21 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -4288,7 +4344,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -4719,13 +4775,21 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -4739,7 +4803,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -5170,13 +5234,21 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -5190,7 +5262,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];
@@ -5621,13 +5693,21 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		}
 		return "";
 	}
+	override int HCE_LineupLooks()
+	{
+		String cn = GetClassName();
+		if(cn.IndexOf("Chieftain") < 0) return 1;
+		Array<String> ol; HCE_KitOutfits(3).Split(ol, "|", TOK_SKIPEMPTY);
+		return 1 + ol.Size();
+	}
 	void HCE_DressArmour()
 	{
 		String cn = GetClassName();
 		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		if(keep > 0 && frandom[HCEKit](0, 1) < keep) return;
+		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < 6; s++) pick.Push("");
 		bool outfit = false;
@@ -5641,7 +5721,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 				Array<String> p; ol[i].Split(p, ";");
 				if(p.Size() < 2) continue;
 				double c = p[0].ToDouble();
-				if(x < c)
+				if(look > 0 ? i == look - 1 : x < c)
 				{
 					Array<String> f; p[1].Split(f, ",");
 					for(int s = 0; s < 6 && s < f.Size(); s++) pick[s] = f[s];

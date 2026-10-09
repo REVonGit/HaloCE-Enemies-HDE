@@ -10,5 +10,5 @@ vec4 ProcessTexel()
 	float scan = 0.78 + 0.22 * sin(uv.y * 90.0 - t * 14.0);
 	float pulse = 0.85 + 0.15 * sin(t * 5.3);
 	vec3 col = c.rgb * scan * pulse * (0.85 + 0.3 * n) + c.rgb * band;
-	return vec4(min(col * 1.3, vec3(1.0)), c.a);
+	return vec4(min(col * 1.6, vec3(1.0)), c.a);
 }

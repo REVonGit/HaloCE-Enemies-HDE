@@ -285,8 +285,9 @@ def anim_table(A, w, weapon):
     st = ['stand', 'alert']
     def f(*pats): return A.find(*pats)
     m['IDLE'] = f(f'stand {w} idle', f'alert {w} idle', 'stand unarmed idle', 'stand pistol idle', 'stand rifle idle', 'stand fixed overlay baked', 'stand fixed idle')
-    # Halo CE's Marines: 'stand' is weapon up, 'alert' is their low ready (used out of combat: LOW_IDLE / LOW_MOVE)
-    marine = any(n.startswith('stand h2missile') for n in A.names)
+    # Halo CE's Marines and Jackals: 'stand' is weapon (shield) up, 'alert' is their low ready (used out of combat:
+    # LOW_IDLE / LOW_MOVE)
+    marine = any(n.startswith('stand h2missile') for n in A.names) or getattr(A, 'jackal', False)
     m['ALERT'] = (f(f'stand {w} idle') if marine else []) or f(f'alert {w} idle', f'stand {w} idle') or m['IDLE']
     for k, n in [('MOVE_F', 'move-front'), ('MOVE_B', 'move-back'), ('MOVE_L', 'move-left'), ('MOVE_R', 'move-right')]:
         m[k] = f(f'stand {w} {n}', f'alert {w} {n}', f'stand unarmed {n}', f'stand pistol {n}')
@@ -333,9 +334,15 @@ def anim_table(A, w, weapon):
     rc = {'needler': 'ne', 'shotgun': 'sg', 'bulldog': 'sg', 'double barrel': 'sg'}.get(weapon or '', '1')
     m['RELOAD'] = f(f'stand {w} reload-{rc}', f'stand {fam} reload-{rc}', f'stand {w} reload-1', f'stand {fam} reload-1')
     m['VENT'] = f(f'stand {w} overheat', f'stand {fam} overheat')
-    # the low-ready idle and walk, out of combat: Halo CE's own for its Marines, else Halo 2's (low_ready_anims.py)
+    # the low-ready idle and walk, out of combat: Halo CE's own for its Marines and Jackals, else Halo 2's (low_ready_anims.py)
     m['LOW_IDLE'] = (f(f'alert {w} idle') if marine else []) or f(f'stand {w} low-idle')
     m['LOW_MOVE'] = (f(f'alert {w} move-front') if marine else []) or f(f'stand {w} low-move')
+    # a guard stance taken up in cover, under fire (the Ultra Zealot's shield held out: extract_ultra_zealot.py)
+    for k, n in [('GUARD_IDLE', 'idle'), ('GUARD_MOVE_F', 'move-front'), ('GUARD_MOVE_B', 'move-back'),
+                 ('GUARD_MOVE_L', 'move-left'), ('GUARD_MOVE_R', 'move-right')]:
+        m[k] = f(f'guard {w} {n}')
+    m['GUARD_CROUCH_IDLE'] = f(f'crouch guard {w} idle')
+    m['GUARD_CROUCH_MOVE'] = f(f'crouch guard {w} move-front')
     return m
 
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
@@ -343,7 +350,8 @@ KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE',
          'SIGNAL', 'AIRBORNE', 'LAND', 'LEAP_START', 'LEAP_AIR', 'LEAP_MELEE', 'PING_F', 'PING_B', 'PING_L', 'PING_R',
          'HPING_F', 'HPING_B', 'DIE_F', 'DIE_B', 'DIE_L', 'DIE_R', 'DIE_HARD_F', 'DIE_HARD_B', 'DIE_AIR', 'DIE_LAND',
          'RESURRECT_F', 'RESURRECT_B', 'FEED', 'CELEBRATE', 'SLEEP', 'TURN_L', 'TURN_R', 'FLAME_IDLE', 'FLAME_MOVE',
-         'RELOAD', 'VENT', 'LOW_IDLE', 'LOW_MOVE']
+         'RELOAD', 'VENT', 'LOW_IDLE', 'LOW_MOVE', 'GUARD_IDLE', 'GUARD_MOVE_F', 'GUARD_MOVE_B', 'GUARD_MOVE_L',
+         'GUARD_MOVE_R', 'GUARD_CROUCH_IDLE', 'GUARD_CROUCH_MOVE']
 
 def zs_anim_funcs(A, table, bers=None):
     lines = ['\toverride Name HCE_AnimName(int kind)', '\t{',
@@ -794,6 +802,29 @@ vec4 ProcessTexel()
 	float pulse = 0.82 + 0.18 * sin(t * 4.5);
 	vec3 hue = base / max(0.001, max(base.r, max(base.g, base.b)));
 	vec3 col = base * pulse + hue * (edge * (0.35 + 0.55 * flick) * 0.6 + sweep * 0.45);
+	return vec4(min(col, vec3(1.0)), c.a);
+}
+'''
+
+SWORD_SHADER = '''// Halo energy sword blade: plasma flowing up the blade in streaks, a white-hot core along its length, the edges
+// shimmering and the whole blade breathing; drawn fullbright
+vec4 ProcessTexel()
+{
+	vec2 uv = vTexCoord.st;
+	float t = timer;
+	vec4 c = getTexel(uv);
+	float w = sin(uv.y * 22.0 + t * 5.0) * 0.004 + sin(uv.y * 57.0 - t * 9.0) * 0.0025;
+	vec4 c2 = getTexel(uv + vec2(w, 0.0));
+	vec3 base = mix(c.rgb, c2.rgb, 0.6);
+	float lum = max(base.r, max(base.g, base.b));
+	vec3 hue = base / max(0.001, lum);
+	float flow = 0.5 + 0.5 * sin(uv.y * 40.0 - t * 7.0 + sin(uv.x * 9.0 + t * 2.0) * 1.5);
+	float streak = smoothstep(0.75, 1.0, flow);
+	float core = smoothstep(0.55, 0.95, lum);
+	float n = fract(sin(dot(floor(uv * vec2(48.0, 160.0)) + floor(t * 20.0), vec2(12.9898, 78.233))) * 43758.5453);
+	float spark = step(0.97, n) * (1.0 - core);
+	float breathe = 0.88 + 0.12 * sin(t * 3.3) + 0.05 * sin(t * 13.0);
+	vec3 col = base * breathe * (0.85 + 0.35 * flow) + hue * streak * 0.35 + vec3(core * 0.55) + hue * spark * 0.6;
 	return vec4(min(col, vec3(1.0)), c.a);
 }
 '''
@@ -1276,7 +1307,7 @@ def build(cfg=None):
             elif char.startswith('Flood'): w = 'pistol' if weapon else 'unarmed'
             elif char.startswith('Marine'): w = 'pistol' if weapon in ('pistol', 'needler', 'plasma pistol') else 'rifle'
             else: w = 'pistol'
-            A = AnimSet(meta)
+            A = AnimSet(meta); A.jackal = char.startswith('Jackal')
             table = anim_table(A, w, weapon)
             for k, names in list(ov.get('anims', {}).items()) + list(ov.get('anims_by_weapon', {}).get(weapon, {}).items()):
                 table[k] = [n for n in names if n in A.names]
@@ -1643,9 +1674,10 @@ def build(cfg=None):
     for cls in late_items:                 # classes added after the first release keep old numbers stable
         if cls.startswith('HCE_Random') and cls[10:] in late_chars: spawner(cls[10:], spawners[cls[10:]])
         else: ednums.append((ed, cls)); ed += 1
-    # glow: shields, needles, sword blade
-    for w in ('w_needler_glow.png', 'w_energy_sword_glow.png'):
+    # glow: shields, needles, sword blade (the blade has its own shader below)
+    for w in ('w_needler_glow.png',):
         if os.path.exists(f'{pack}/models/{mdir}/weapons/{w}'): brightmaps.append(f'models/{mdir}/weapons/{w}')
+    swords = [f'models/{mdir}/weapons/w_energy_sword_glow.png'] if os.path.exists(f'{pack}/models/{mdir}/weapons/w_energy_sword_glow.png') else []
     for w in cfg.get('glow', []):
         if os.path.exists(f'{pack}/models/{mdir}/weapons/{w}'): brightmaps.append(f'models/{mdir}/weapons/{w}')
     gl = [cfg.get('gl_title', '// Halo CE enemy pack: glowing surfaces (energy shields, needles, sword blade)')]
@@ -1660,6 +1692,12 @@ def build(cfg=None):
         open(f'{pack}/shaders/hce_shield.fp', 'w').write(SHIELD_SHADER)
         for t in sorted(set(shield_tex)):
             gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
+    # the energy sword's blade: plasma streaming up it, a white-hot core, shimmering edges (fullbright)
+    if swords:
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_sword.fp', 'w').write(SWORD_SHADER)
+        for t in swords:
+            gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_sword.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
     # active camo: a shimmer shader on the camo variants' own skins (bands of light running over a faint body)
     if camo:
         os.makedirs(f'{pack}/shaders', exist_ok=True)

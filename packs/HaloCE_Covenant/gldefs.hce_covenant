@@ -1,8 +1,4 @@
 // Halo CE enemies, covenant: glowing surfaces, active camo shimmer
-brightmap texture "models/hce/weapons/w_energy_sword_glow.png"
-{
-	map "models/hce/brightmap_full.png"
-}
 brightmap texture "models/hce/weapons/w_needler_glow.png"
 {
 	map "models/hce/brightmap_full.png"
@@ -106,6 +102,12 @@ material texture "models/hce/Jackal/skins/jackalminorplasmapistol_shield.png"
 material texture "models/hce/JackalMajor/skins/jackalmajorneedler_shield.png"
 {
 	shader "shaders/hce_shield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/weapons/w_energy_sword_glow.png"
+{
+	shader "shaders/hce_sword.fp"
 	speed 1.0
 	brightmap "models/hce/brightmap_full.png"
 }

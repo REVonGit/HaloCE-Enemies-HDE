@@ -53,6 +53,9 @@ PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\soli
 PUFFS_COV = [('ce', CE_PART + 'blood elite impact burst'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 PUFFS_HUMAN = [('ce', CE_PART + 'blood h impact'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
+# Halo's blood bitmaps are small (about 50 px a splat): drawn at their own size in Doom units they came out
+# fist-sized. Halo spreads them over a body's width and more: this many times bigger
+DECAL_GROW = 3.2
 # floor splat sprite codes per species (HS<code> hits, HP<code> deaths)
 FLOOR = {'Elite': 'EL', 'Grunt': 'GR', 'Hunter': 'HU', 'Brute': 'BR', 'Drone': 'DR', 'Engineer': 'EN', 'Beast': 'BE', 'Human': 'HM'}
 
@@ -151,7 +154,7 @@ def main():
     for d in (gdir, sdir):
         for f in os.listdir(d): os.remove(os.path.join(d, f))
     dec = ['// Halo CE and Halo 2 blood decals (extract_halo_gore.py), used by the NashGore patch (hce_gore.zsc)',
-           'Fader HCEGoreFade\n{\n\tDecayStart 60.0\n\tDecayTime 20.0\n}\n']
+           'Fader HCEGoreFade\n{\n\tDecayStart 120.0\n\tDecayTime 30.0\n}\n']
     groups = {}; made = {}
     def add_group(gname, src):
         names = []
@@ -168,7 +171,7 @@ def main():
                 glow = 'glow' in bm
                 dec.append(f'Decal {dn}\n{{\n\tPic "graphics/hcegore/{stem}.png"\n'
                            + ('\tAdd 0.8\n\tFullbright\n' if glow else '\tTranslucent 0.95\n')
-                           + f'\tX-Scale {scale:.2f}\n\tY-Scale {scale:.2f}\n\tRandomFlipX\n\tRandomFlipY\n\tAnimator HCEGoreFade\n}}\n')
+                           + f'\tX-Scale {scale * DECAL_GROW:.2f}\n\tY-Scale {scale * DECAL_GROW:.2f}\n\tRandomFlipX\n\tRandomFlipY\n\tAnimator HCEGoreFade\n}}\n')
                 names.append(dn); made[bm].append(dn)
         groups[gname] = names
     for sp, src in SPLATS.items(): add_group(f'HCEGore_{sp}', src)
@@ -213,6 +216,31 @@ def main():
                 png_grab(f'{sdir}/{kind}{code}{chr(65 + n)}0.png', im, im.size[0] // 2, im.size[1] // 2)
                 n += 1
             floor[kind + code] = n
+    # skid marks (HK<code>): Halo CE's long and medium blood smears, laid along the floor behind a body that slides;
+    # the Elites and Grunts have their own smears, every other species gets the Elite's shapes in its own blood colour
+    smears = {sp: sorted(f for f in os.listdir(gdir) if f.startswith(f'ce_blood_smear_{sp.lower()}_')) for sp in ('Elite', 'Grunt')}
+    for sp, code in FLOOR.items():
+        own = smears.get(sp)
+        files = own or smears['Elite']
+        tint = None
+        if not own:                                   # the species' blood colour: the mean of its own splats
+            px = []
+            for dn in groups.get(f'HCEGore_{sp}', []):
+                if 'glow' in dn: continue
+                a = np.asarray(Image.open(f'{gdir}/{dn[5:]}.png').convert('RGBA')).astype(float).reshape(-1, 4)
+                px.append(a[a[:, 3] > 128, :3])
+            if px: tint = np.concatenate(px).mean(0) / 255
+        n = 0
+        for f in files:
+            im = Image.open(f'{gdir}/{f}').convert('RGBA')
+            if tint is not None:
+                a = np.asarray(im).astype(float) / 255
+                lum = a[..., :3].mean(-1, keepdims=True)
+                rgb = np.clip(tint * (0.55 + 0.9 * lum / max(1e-3, lum[a[..., 3] > 0.5].mean())), 0, 1)
+                im = Image.fromarray((np.dstack([rgb, a[..., 3:]]) * 255).astype(np.uint8), 'RGBA')
+            png_grab(f'{sdir}/HK{code}{chr(65 + n)}0.png', im, im.size[0] // 2, im.size[1] // 2)
+            n += 1
+        floor['HK' + code] = n
     json.dump(dict(groups={g: len(v) for g, v in groups.items()}, puffs=npuff, puffs_cov=ncov, puffs_human=nhum, streaks=nstreak, floor=floor),
               open(f'{od}/gore.json', 'w'), indent=1)
     print({g: len(v) for g, v in groups.items()}, 'puffs', npuff, ncov, nhum, 'streaks', nstreak)

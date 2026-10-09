@@ -384,3 +384,52 @@ class HCE_HaloBlood : Blood
 		Super.Tick();
 	}
 }
+
+// ---------------------------------------------------------------------------
+// A friendly Marine's dot on HaloDoom Evolved's motion tracker. The tracker draws a monster only while it has a
+// target (yellow if friendly, red if not), so a Marine with nothing to shoot at, following or holding, was missing
+// from it. This rides on him and stands in for him then: a monster with a target (him), friendly, a speck at his feet, that
+// nothing can hit (NONSHOOTABLE), target or collide with, and that never counts as a kill. While he has a target of
+// his own he shows by himself, and the stand-in steps aside.
+// ---------------------------------------------------------------------------
+class HCE_RadarBlip : Actor
+{
+	Default
+	{
+		+SHOOTABLE
+		+NONSHOOTABLE
+		+ISMONSTER
+		+FRIENDLY
+		-SOLID
+		-COUNTKILL
+		+NOGRAVITY
+		+NOCLIP
+		+NOTARGET
+		+NEVERTARGET
+		+NOTAUTOAIMED
+		+NOBLOOD
+		+DONTTHRUST
+		+NOTONAUTOMAP
+		+INVULNERABLE
+		+NODAMAGE
+		+DONTSPLASH
+		+NOTELEPORT
+		+DONTBLAST
+		+THRUACTORS
+		Health 1000;
+		Radius 1;           // a speck at his feet: line traces (aim, use, the crosshair name) find him, not it
+		Height 1;
+	}
+	States
+	{
+	Spawn:
+		TNT1 A -1;
+		Stop;
+	}
+	override void Tick()
+	{
+		if(!master || master.health <= 0 || !master.bFRIENDLY || master.bCORPSE) { Destroy(); return; }
+		if(pos != master.pos) SetOrigin(master.pos, true);
+		target = master.target ? null : master;      // shown only while he isn't
+	}
+}

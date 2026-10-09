@@ -105,6 +105,7 @@ def main():
     bms = re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "[^"]+"\n\}', gl)
     camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
     shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
+    swords = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_sword.fp"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -148,9 +149,10 @@ def main():
         mybms = [t for t in bms if t in need]
         mycamo = [t for t in camo if t in need]
         myshields = [t for t in shields if t in need]
-        if mybms or mycamo or myshields:
+        myswords = [t for t in swords if t in need]
+        if mybms or mycamo or myshields or myswords:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
-            if mybms or myshields:
+            if mybms or myshields or myswords:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
                 out += [f'brightmap texture "{t}"\n{{\n\tmap "models/hce/brightmap_full.png"\n}}' for t in mybms]
             if mycamo:
@@ -161,6 +163,10 @@ def main():
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_shield.fp', f'{d}/shaders/hce_shield.fp')
                 out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myshields]
+            if myswords:                       # the energy sword's blade
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_sword.fp', f'{d}/shaders/hce_sword.fp')
+                out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_sword.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myswords]
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'

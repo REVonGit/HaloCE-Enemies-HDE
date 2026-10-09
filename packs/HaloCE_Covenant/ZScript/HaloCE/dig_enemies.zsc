@@ -8552,7 +8552,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		HaloDoom_EnemyBase.HCE_Variant "elite ultra zealot energy sword";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 6.06, 9.32, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 6.06;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.23;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
@@ -8626,6 +8626,13 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
 		case HCE_A_LOW_IDLE: return 'stand sword low-idle';
 		case HCE_A_LOW_MOVE: return 'stand sword low-move';
+		case HCE_A_GUARD_IDLE: return 'guard sword idle';
+		case HCE_A_GUARD_MOVE_F: return 'guard sword move-front';
+		case HCE_A_GUARD_MOVE_B: return 'guard sword move-back';
+		case HCE_A_GUARD_MOVE_L: return 'guard sword move-left';
+		case HCE_A_GUARD_MOVE_R: return 'guard sword move-right';
+		case HCE_A_GUARD_CROUCH_IDLE: return 'crouch guard sword idle';
+		case HCE_A_GUARD_CROUCH_MOVE: return 'crouch guard sword move-front';
 		}
 		return 'None';
 	}
@@ -8635,9 +8642,16 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'crouch guard sword idle': return 70;
+		case 'crouch guard sword move-front': return 35;
 		case 'crouch sword idle': return 70;
 		case 'crouch sword move-front': return 35;
 		case 'flaming pistol idle': return 37;
+		case 'guard sword idle': return 70;
+		case 'guard sword move-back': return 30;
+		case 'guard sword move-front': return 30;
+		case 'guard sword move-left': return 30;
+		case 'guard sword move-right': return 30;
 		case 'h-kill back gut': return 63;
 		case 'h-kill front gut': return 51;
 		case 'h-ping back gut': return 40;
@@ -8675,7 +8689,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand sword idle': return 70;
 		case 'stand sword land-soft': return 47;
 		case 'stand sword low-idle': return 70;
-		case 'stand sword low-move': return 30;
+		case 'stand sword low-move': return 48;
 		case 'stand sword melee%0': return 33;
 		case 'stand sword melee%1': return 41;
 		case 'stand sword move-back': return 30;

@@ -1,16 +1,16 @@
 // Halo CE and Halo 2 blood decals (extract_halo_gore.py), used by the NashGore patch (hce_gore.zsc)
 Fader HCEGoreFade
 {
-	DecayStart 60.0
-	DecayTime 20.0
+	DecayStart 120.0
+	DecayTime 30.0
 }
 
 Decal HCEG_ce_blood_splat_elite_0
 {
 	Pic "graphics/hcegore/ce_blood_splat_elite_0.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -20,8 +20,8 @@ Decal HCEG_ce_blood_splat_elite_1
 {
 	Pic "graphics/hcegore/ce_blood_splat_elite_1.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -31,8 +31,8 @@ Decal HCEG_ce_blood_splat_elite_2
 {
 	Pic "graphics/hcegore/ce_blood_splat_elite_2.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -42,8 +42,8 @@ Decal HCEG_ce_blood_splat_elite_3
 {
 	Pic "graphics/hcegore/ce_blood_splat_elite_3.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -53,8 +53,8 @@ Decal HCEG_h2_blood_splat_elite_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_elite_0.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -64,8 +64,8 @@ Decal HCEG_h2_blood_splat_elite_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_elite_1.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -75,8 +75,8 @@ Decal HCEG_h2_blood_splat_elite_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_elite_2.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -86,8 +86,8 @@ Decal HCEG_h2_blood_splat_elite_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_elite_3.png"
 	Translucent 0.95
-	X-Scale 0.80
-	Y-Scale 0.80
+	X-Scale 2.56
+	Y-Scale 2.56
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -97,8 +97,8 @@ Decal HCEG_ce_blood_splat_grunt_0
 {
 	Pic "graphics/hcegore/ce_blood_splat_grunt_0.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -108,8 +108,8 @@ Decal HCEG_ce_blood_splat_grunt_1
 {
 	Pic "graphics/hcegore/ce_blood_splat_grunt_1.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -119,8 +119,8 @@ Decal HCEG_ce_blood_splat_grunt_2
 {
 	Pic "graphics/hcegore/ce_blood_splat_grunt_2.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -130,8 +130,8 @@ Decal HCEG_ce_blood_splat_grunt_3
 {
 	Pic "graphics/hcegore/ce_blood_splat_grunt_3.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -141,8 +141,8 @@ Decal HCEG_h2_blood_splat_grunt_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_grunt_0.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -152,8 +152,8 @@ Decal HCEG_h2_blood_splat_grunt_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_grunt_1.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -163,8 +163,8 @@ Decal HCEG_h2_blood_splat_grunt_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_grunt_2.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -174,8 +174,8 @@ Decal HCEG_h2_blood_splat_grunt_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_grunt_3.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -185,8 +185,8 @@ Decal HCEG_ce_blood_splat_hunter_0
 {
 	Pic "graphics/hcegore/ce_blood_splat_hunter_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -196,8 +196,8 @@ Decal HCEG_ce_blood_splat_hunter_1
 {
 	Pic "graphics/hcegore/ce_blood_splat_hunter_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -207,8 +207,8 @@ Decal HCEG_ce_blood_splat_hunter_2
 {
 	Pic "graphics/hcegore/ce_blood_splat_hunter_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -219,8 +219,8 @@ Decal HCEG_ce_blood_splat_hunter_glow_0
 	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_0.png"
 	Add 0.8
 	Fullbright
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -231,8 +231,8 @@ Decal HCEG_ce_blood_splat_hunter_glow_1
 	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_1.png"
 	Add 0.8
 	Fullbright
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -243,8 +243,8 @@ Decal HCEG_ce_blood_splat_hunter_glow_2
 	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_2.png"
 	Add 0.8
 	Fullbright
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -255,8 +255,8 @@ Decal HCEG_ce_blood_splat_hunter_glow_3
 	Pic "graphics/hcegore/ce_blood_splat_hunter_glow_3.png"
 	Add 0.8
 	Fullbright
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -266,8 +266,8 @@ Decal HCEG_h2_blood_splat_hunter_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -277,8 +277,8 @@ Decal HCEG_h2_blood_splat_hunter_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -288,8 +288,8 @@ Decal HCEG_h2_blood_splat_hunter_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -299,8 +299,8 @@ Decal HCEG_h2_blood_splat_hunter_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter_3.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -310,8 +310,8 @@ Decal HCEG_h2_blood_splat_hunter2_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter2_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -321,8 +321,8 @@ Decal HCEG_h2_blood_splat_hunter2_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter2_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -332,8 +332,8 @@ Decal HCEG_h2_blood_splat_hunter2_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter2_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -343,8 +343,8 @@ Decal HCEG_h2_blood_splat_hunter2_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_hunter2_3.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -354,8 +354,8 @@ Decal HCEG_h2_blood_splat_brute_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_brute_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -365,8 +365,8 @@ Decal HCEG_h2_blood_splat_brute_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_brute_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -376,8 +376,8 @@ Decal HCEG_h2_blood_splat_brute_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_brute_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -387,8 +387,8 @@ Decal HCEG_h2_blood_splat_brute_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_brute_3.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -398,8 +398,8 @@ Decal HCEG_h2_blood_splat_bugger_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger_0.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -409,8 +409,8 @@ Decal HCEG_h2_blood_splat_bugger_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger_1.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -420,8 +420,8 @@ Decal HCEG_h2_blood_splat_bugger_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger_2.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -431,8 +431,8 @@ Decal HCEG_h2_blood_splat_bugger_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger_3.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -442,8 +442,8 @@ Decal HCEG_h2_blood_splat_bugger2_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger2_0.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -453,8 +453,8 @@ Decal HCEG_h2_blood_splat_bugger2_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger2_1.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -464,8 +464,8 @@ Decal HCEG_h2_blood_splat_bugger2_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger2_2.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -475,8 +475,8 @@ Decal HCEG_h2_blood_splat_bugger2_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_bugger2_3.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -486,8 +486,8 @@ Decal HCEG_ce_blood_splat_engineer_0
 {
 	Pic "graphics/hcegore/ce_blood_splat_engineer_0.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -497,8 +497,8 @@ Decal HCEG_ce_blood_splat_engineer_1
 {
 	Pic "graphics/hcegore/ce_blood_splat_engineer_1.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -508,8 +508,8 @@ Decal HCEG_ce_blood_splat_engineer_2
 {
 	Pic "graphics/hcegore/ce_blood_splat_engineer_2.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -519,8 +519,8 @@ Decal HCEG_ce_blood_splat_engineer_3
 {
 	Pic "graphics/hcegore/ce_blood_splat_engineer_3.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -530,8 +530,8 @@ Decal HCEG_ce_blood_splat_0
 {
 	Pic "graphics/hcegore/ce_blood_splat_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -541,8 +541,8 @@ Decal HCEG_ce_blood_splat_1
 {
 	Pic "graphics/hcegore/ce_blood_splat_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -552,8 +552,8 @@ Decal HCEG_ce_blood_splat_2
 {
 	Pic "graphics/hcegore/ce_blood_splat_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -563,8 +563,8 @@ Decal HCEG_ce_blood_splat_3
 {
 	Pic "graphics/hcegore/ce_blood_splat_3.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -574,8 +574,8 @@ Decal HCEG_h2_blood_splat_0
 {
 	Pic "graphics/hcegore/h2_blood_splat_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -585,8 +585,8 @@ Decal HCEG_h2_blood_splat_1
 {
 	Pic "graphics/hcegore/h2_blood_splat_1.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -596,8 +596,8 @@ Decal HCEG_h2_blood_splat_2
 {
 	Pic "graphics/hcegore/h2_blood_splat_2.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -607,8 +607,8 @@ Decal HCEG_h2_blood_splat_3
 {
 	Pic "graphics/hcegore/h2_blood_splat_3.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -618,8 +618,8 @@ Decal HCEG_ce_blood_smear_elite_lg_0
 {
 	Pic "graphics/hcegore/ce_blood_smear_elite_lg_0.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -629,8 +629,8 @@ Decal HCEG_ce_blood_smear_elite_lg_1
 {
 	Pic "graphics/hcegore/ce_blood_smear_elite_lg_1.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -640,8 +640,8 @@ Decal HCEG_ce_blood_smear_elite_med_0
 {
 	Pic "graphics/hcegore/ce_blood_smear_elite_med_0.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -651,8 +651,8 @@ Decal HCEG_ce_blood_smear_elite_med_1
 {
 	Pic "graphics/hcegore/ce_blood_smear_elite_med_1.png"
 	Translucent 0.95
-	X-Scale 0.70
-	Y-Scale 0.70
+	X-Scale 2.24
+	Y-Scale 2.24
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -662,8 +662,8 @@ Decal HCEG_ce_blood_smear_grunt_lg_0
 {
 	Pic "graphics/hcegore/ce_blood_smear_grunt_lg_0.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -673,8 +673,8 @@ Decal HCEG_ce_blood_smear_grunt_lg_1
 {
 	Pic "graphics/hcegore/ce_blood_smear_grunt_lg_1.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -684,8 +684,8 @@ Decal HCEG_ce_blood_smear_grunt_med_0
 {
 	Pic "graphics/hcegore/ce_blood_smear_grunt_med_0.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -695,8 +695,8 @@ Decal HCEG_ce_blood_smear_grunt_med_1
 {
 	Pic "graphics/hcegore/ce_blood_smear_grunt_med_1.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -706,8 +706,8 @@ Decal HCEG_h2_bloodsplat_drippy_0
 {
 	Pic "graphics/hcegore/h2_bloodsplat_drippy_0.png"
 	Translucent 0.95
-	X-Scale 0.60
-	Y-Scale 0.60
+	X-Scale 1.92
+	Y-Scale 1.92
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade
@@ -717,8 +717,8 @@ Decal HCEG_ce_blood_pool_0
 {
 	Pic "graphics/hcegore/ce_blood_pool_0.png"
 	Translucent 0.95
-	X-Scale 0.90
-	Y-Scale 0.90
+	X-Scale 2.88
+	Y-Scale 2.88
 	RandomFlipX
 	RandomFlipY
 	Animator HCEGoreFade

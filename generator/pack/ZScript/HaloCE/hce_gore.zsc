@@ -8,8 +8,12 @@
 // * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks: Halo CE's Covenant
 //   impact burst for the Covenant, its human impact for the Marines;
 // * kills leave bigger splats and the Elite / Grunt smears, and a larger burst;
-// * the blood lands on the floor too, Halo's splats laid flat (Doom's decals go on walls only): now and then under a
-//   wounded enemy, and a pool of the large splats and smears (the Marines' Halo CE blood pool) under the dead.
+// * the blood lands on the floor too, Halo's splats laid flat (Doom's decals go on walls only): under a wounded enemy
+//   at every hit, a spread of them around a kill, and a pool of the large splats and smears (the Marines' Halo CE
+//   blood pool) where the body comes to rest;
+// * a body flung by its death (a rocket, a shotgun blast, a melee blow: not a grenade, which throws them every which
+//   way) leaves skid marks, Halo CE's blood smears laid along its slide.
+// The splats are big (Halo spreads its small blood bitmaps over a body's width and more) and plentiful.
 // NashGore's own blood is kept off these enemies: their blood type is the core's HCE_HaloBlood (NashGore only
 // replaces Doom's own), and NashGore's per-monster gore (corpse pools, spurts, its gibs) is turned off for them as they
 // spawn (it reads their no-blood flag once, then: set for that moment). The Flood and the Sentinels keep NashGore's.
@@ -20,7 +24,10 @@ class HCE_HaloGoreHandler : EventHandler
 	Array<Actor> recent; Array<int> recentUntil;      // a decal per victim at most every few tics
 	Array<Actor> unbled;                               // no-blood set only while NashGore looks at them (WorldThingSpawned)
 	Array<Actor> splats;                               // floor splats, oldest first
-	const MAX_SPLATS = 300;
+	const MAX_SPLATS = 500;
+	// the dead: a body flung by a hit (not a grenade) leaves skid marks as it slides, and every body leaves its pool
+	// where it comes to rest
+	Array<Actor> bodies; Array<int> bodyUntil, bodyStill; Array<double> bodyLastX, bodyLastY; Array<bool> bodySkid, bodyAir;
 
 	override void OnRegister()
 	{
@@ -35,11 +42,77 @@ class HCE_HaloGoreHandler : EventHandler
 		unbled.Push(v);
 	}
 
+	override void WorldThingDied(WorldEvent e)
+	{
+		let v = e.Thing;
+		if(!v || !(v is "HaloDoom_EnemyBase") || v.bNOBLOOD || !Active() || Species(v) == "") return;
+		String inf = "";
+		if(e.Inflictor) inf = e.Inflictor.GetClassName();
+		bodies.Push(v); bodyUntil.Push(level.maptime + 35 * 5); bodyStill.Push(0);
+		bodyLastX.Push(v.pos.x); bodyLastY.Push(v.pos.y);
+		bodySkid.Push(inf.IndexOf("Grenade") < 0 && inf.IndexOf("grenade") < 0);   // a grenade throws them every which way
+		bodyAir.Push(false);
+	}
+
 	override void WorldTick()
 	{
 		for(int i = 0; i < unbled.Size(); i++)
 			if(unbled[i]) unbled[i].bNOBLOOD = unbled[i].default.bNOBLOOD;
 		unbled.Clear();
+		for(int i = bodies.Size() - 1; i >= 0; i--)
+		{
+			let v = bodies[i];
+			bool done = !v || v.bInvisible || v.bDESTROYED;
+			if(!done)
+			{
+				String sp = Species(v);
+				bool grounded = v.pos.z <= v.floorz + 4;
+				double spd = v.vel.xy.Length();
+				vector2 last = (bodyLastX[i], bodyLastY[i]);
+				vector2 moved = v.pos.xy - last;
+				// skid marks: where a thrown body comes down, a smear dragged on ahead of it (as long as it hit the
+				// ground hard), and a smear laid along a slide every so often
+				if(bodySkid[i] && grounded && bodyAir[i] && spd > 1.5)
+				{
+					vector2 dir = v.vel.xy / spd;
+					double len = clamp(spd / 3.5, 0.9, 2.2);
+					SkidMark(v, sp, v.pos.xy + dir * len * 14, atan2(dir.y, dir.x), len);
+					bodyLastX[i] = v.pos.x; bodyLastY[i] = v.pos.y;
+				}
+				else if(bodySkid[i] && grounded && spd > 1.0 && moved.Length() >= 22)
+				{
+					SkidMark(v, sp, (last + v.pos.xy) * 0.5, atan2(moved.y, moved.x), clamp(moved.Length() / 40.0, 0.7, 1.6));
+					bodyLastX[i] = v.pos.x; bodyLastY[i] = v.pos.y;
+				}
+				else if(!grounded || moved.Length() > 60) { bodyLastX[i] = v.pos.x; bodyLastY[i] = v.pos.y; }
+				bodyAir[i] = !grounded;
+				bodyStill[i] = (grounded && spd < 0.6) ? bodyStill[i] + 1 : 0;
+				if(bodyStill[i] >= 4 || level.maptime >= bodyUntil[i])
+				{
+					// at rest: its pool, and a ring of splats
+					FloorSplat(v, sp, true, frandom[HCEGore](0, v.radius * 0.3), clamp(v.radius / 16.0, 1.0, 2.0));
+					FloorSplat(v, sp, true, frandom[HCEGore](v.radius * 0.4, v.radius), clamp(v.radius / 24.0, 0.7, 1.4));
+					done = true;
+				}
+			}
+			if(done)
+			{
+				bodies.Delete(i); bodyUntil.Delete(i); bodyStill.Delete(i); bodyLastX.Delete(i); bodyLastY.Delete(i); bodySkid.Delete(i); bodyAir.Delete(i);
+			}
+		}
+	}
+
+	// a skid mark: one of Halo CE's blood smears laid flat along the body's slide
+	void SkidMark(Actor v, String group, vector2 at, double ang, double len)
+	{
+		let s = HCE_GoreFloorSplat(Actor.Spawn("HCE_GoreFloorSplat", (at, v.floorz), ALLOW_REPLACE));
+		if(!s) return;
+		if(!s.Pick("HK" .. FloorCode(group), 1.0)) { s.Destroy(); return; }
+		s.angle = ang + 90;                                     // a flat sprite's width lies across its angle
+		s.bXFLIP = false;
+		s.scale.x *= len * 1.3;
+		splats.Push(s);
+		while(splats.Size() > MAX_SPLATS) { if(splats[0]) splats[0].Destroy(); splats.Delete(0); }
 	}
 
 	static String FloorCode(String group)
@@ -138,7 +211,7 @@ class HCE_HaloGoreHandler : EventHandler
 		double a = (from ? from.AngleTo(v) : v.angle + 180) + frandom[HCEGore](-spread, spread);
 		double pt = frandom[HCEGore](-10, up);
 		vector3 dir = (Actor.AngleToVector(a, cos(pt)), -sin(pt));
-		v.A_SprayDecal(group, 160, (0, 0, v.height * frandom[HCEGore](0.3, 0.7)), dir);
+		v.A_SprayDecal(group, 260, (0, 0, v.height * frandom[HCEGore](0.3, 0.7)), dir);
 	}
 
 	override void WorldThingDamaged(WorldEvent e)
@@ -150,21 +223,24 @@ class HCE_HaloGoreHandler : EventHandler
 		if(sp == "") return;
 		Actor from = e.DamageSource ? e.DamageSource : e.Inflictor;
 		bool dead = v.health <= 0;
-		double size = clamp(e.Damage / 25.0, 0.6, 1.6);
+		double size = clamp(e.Damage / 20.0, 0.8, 1.8);
 		vector3 at = WoundPos(v, e.Inflictor, e.DamageSource);
 		if(dead)
 		{
-			Burst(v, sp, at, from, 6, 5, size * 1.3);
-			for(int i = 0; i < 3; i++) Spray(v, "HCEGore_" .. sp .. "Big", from, i == 0 ? 15 : 120, i == 0 ? 15 : 60);
-			FloorSplat(v, sp, true, frandom[HCEGore](0, v.radius * 0.4), clamp(v.radius / 20.0, 0.8, 1.6));
-			for(int i = random[HCEGore](1, 2); i > 0; i--) FloorSplat(v, sp, false, frandom[HCEGore](v.radius * 0.5, v.radius * 1.5), size * 0.7);
+			// a kill paints the wall behind and around it and the floor under it (the pool comes when the body
+			// has come to rest: WorldTick)
+			Burst(v, sp, at, from, 9, 8, size * 1.6);
+			for(int i = 0; i < 6; i++) Spray(v, "HCEGore_" .. sp .. "Big", from, i < 2 ? 15 : 130, i < 2 ? 20 : 60);
+			for(int i = random[HCEGore](3, 5); i > 0; i--) FloorSplat(v, sp, false, frandom[HCEGore](v.radius * 0.3, v.radius * 2.2), size * 1.2);
 			return;
 		}
-		Burst(v, sp, at, from, e.Damage >= 15 ? 3 : 2, e.Damage >= 15 ? 3 : 1, size);
-		if(!Throttled(v, 6))
+		Burst(v, sp, at, from, e.Damage >= 15 ? 5 : 3, e.Damage >= 15 ? 5 : 3, size * 1.3);
+		if(!Throttled(v, 3))
 		{
 			Spray(v, "HCEGore_" .. sp, from, 20, 20);
-			if(frandom[HCEGore](0, 1) < 0.35 + e.Damage / 60.0) FloorSplat(v, sp, false, frandom[HCEGore](0, v.radius * 1.2), size * 0.6);
+			Spray(v, "HCEGore_" .. sp, from, 55, 40);
+			FloorSplat(v, sp, false, frandom[HCEGore](0, v.radius * 1.5), size);
+			if(e.Damage >= 15) FloorSplat(v, sp, false, frandom[HCEGore](v.radius, v.radius * 2.5), size * 0.8);
 		}
 	}
 }
@@ -267,7 +343,7 @@ class HCE_GoreStreak : Actor
 }
 
 // Halo's blood on the floor: a splat lying flat (Halo CE / Halo 2's blood decals as flat sprites, extract_halo_gore.py:
-// HS<species> hit splats, HP<species> death pools and smears), fading after a minute and a half
+// HS<species> hit splats, HP<species> death pools and smears, HK<species> skid marks), fading after two and a half minutes
 class HCE_GoreFloorSplat : Actor
 {
 	int life;
@@ -280,13 +356,14 @@ class HCE_GoreFloorSplat : Actor
 		+NOTONAUTOMAP
 		RenderStyle "Translucent";
 		Alpha 0.9;
-		Scale 0.5;
+		Scale 2.0;
 	}
 	States
 	{
 	Precache:
 		HSEL A 0; HPEL A 0; HSGR A 0; HPGR A 0; HSHU A 0; HPHU A 0; HSBR A 0; HPBR A 0;
 		HSDR A 0; HPDR A 0; HSEN A 0; HPEN A 0; HSBE A 0; HPBE A 0; HSHM A 0; HPHM A 0;
+		HKEL A 0; HKGR A 0; HKHU A 0; HKBR A 0; HKDR A 0; HKEN A 0; HKBE A 0; HKHM A 0;
 		Stop;
 	Spawn:
 		HSBE A -1;
@@ -306,7 +383,7 @@ class HCE_GoreFloorSplat : Actor
 		angle = frandom[HCEGore](0, 360);
 		bXFLIP = random[HCEGore](0, 1) == 1;
 		SetZ(floorz + frandom[HCEGore](0.1, 0.4));    // a hair apart, so overlapping splats don't flicker
-		life = 35 * 90;
+		life = 35 * 150;
 		return true;
 	}
 	override void Tick()

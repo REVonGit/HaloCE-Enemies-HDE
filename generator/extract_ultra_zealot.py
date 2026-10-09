@@ -5,8 +5,9 @@
 elite.blend is the Halo CE Elite rebuilt with Zealot armour by Shigure: a crested Zealot helmet and ornament, the
 Zealot torso and Reach-style arm plates over the Elite Special's undersuit and legs, and a diamond energy shield on
 the left forearm. Every piece is rigged to the Halo CE Elite's skeleton ('bip01 ...' groups; the shield has none and
-rides the left forearm), so it goes on the Elite's own skeleton and animations; its sword stance is SPV3's shield
-Elite's (a30_1.map, 'elite shield new': the Elite Vanguard animations by Masterz1337 and Ruby of Blue; the shield arm held out in front, so the shield never cuts into the body). The
+rides the left forearm), so it goes on the Elite's own skeleton and animations, and stands like any sword Elite. Its
+guard, taken up when it takes cover from fire, and its sword actions are SPV3's shield Elite's (a30_1.map, 'elite
+shield new': the Elite Vanguard animations by Masterz1337 and Ruby of Blue; the shield arm held out in front). The
 Halo CE energy sword is kept from the Elite (its weapon surfaces). Textures are Halo CE's own (read from b30.map by shader
 name: base map, multipurpose map), so build_pack.py paints the armour like any Elite rank; the inset lights are
 turned Reach blue, and the shield keeps the Jackal shield's noise for build_pack.bake_shield (a blue energy field,
@@ -42,17 +43,13 @@ SHADERS = {'elite arms': r'characters\elite\shaders\elite arms', 'elite head': r
            'jackal shield': r'characters\jackal\shaders\jackal shield'}
 SPV3_A30 = os.environ.get('HCE_SPV3_A30', 'a30_1.map')
 SHIELD_BIPED = r'characters\elite\elite shield\elite shielded'
-# the sword stance as SPV3's shield Elite moves (a30: 'elite shield new', on the Halo CE Elite's skeleton): its shield
-# arm held out in front, so the Zealot's arm shield clears its body. pack name <- SPV3 name (its 'new' stance set,
-# and its own sword actions where it has them)
-SHIELD_ANIMS = {'stand sword idle': 'new stand idle', 'stand sword low-idle': 'new stand idle',
-                'stand sword move-front': 'new stand move front', 'alert sword move-front': 'new stand move front',
-                'stand sword low-move': 'new stand move front', 'stand sword move-back': 'new stand move back',
-                'stand sword move-left': 'new stand move left', 'stand sword move-right': 'new stand move right',
-                'stand sword turn-left': 'new stand turn left', 'stand sword turn-right': 'new stand turn right',
-                'stand sword airborne': 'new stand airborne', 'crouch sword idle': 'new crouch idle',
-                'crouch sword move-front': 'new crouch move front', 'crouch sword move-back': 'new crouch move back',
-                'crouch sword move-left': 'new crouch move left', 'crouch sword move-right': 'new crouch move right'}
+# SPV3's shield Elite (a30: 'elite shield new', on the Halo CE Elite's skeleton), its shield arm held out in front: the
+# Zealot's guard, taken up when it takes cover from fire ('guard sword ...', the API's GUARD kinds); otherwise it
+# stands and moves like every sword Elite. pack name <- SPV3 name (its 'new' stance set, and its own sword actions)
+SHIELD_ANIMS = {'guard sword idle': 'new stand idle',
+                'guard sword move-front': 'new stand move front', 'guard sword move-back': 'new stand move back',
+                'guard sword move-left': 'new stand move left', 'guard sword move-right': 'new stand move right',
+                'crouch guard sword idle': 'new crouch idle', 'crouch guard sword move-front': 'new crouch move front'}
 LIGHTS = ('elite inset lights', 'elite special inset lights')
 SHIELD = 'jackal shield'
 REACH_BLUE = np.array([0.30, 0.66, 1.00], np.float32)
@@ -86,7 +83,7 @@ def lights(im):
 
 def shield_anims():
     """SPV3's shield Elite (a30) -> (anims, anim meta) under the pack's sword-stance names, or None"""
-    if not os.path.exists(SPV3_A30): print('no', SPV3_A30, ': the Zealot keeps the Elite sword stance'); return None
+    if not os.path.exists(SPV3_A30): print('no', SPV3_A30, ': the Zealot keeps the Elite sword animations, no guard'); return None
     import tempfile
     import halomodel as hm
     import extract_chars as ec
@@ -126,7 +123,7 @@ def build():
     if sa:
         for k, fr in sa[0].items():
             anims[k] = fr; emeta['anims'][k] = dict(sa[1][k], loop=emeta['anims'].get(k, sa[1][k]).get('loop', sa[1][k]['loop']))
-        print('shield Elite sword stance:', len(sa[0]), 'animations')
+        print('shield Elite guard and sword actions:', len(sa[0]), 'animations')
     nodes = [j[0][6:].replace(' ', '_') if j[0].startswith('bip01 ') else j[0].replace(' ', '_') for j in joints]
     lfore = nodes.index('l_forearm')
     kit = bk.Kit(BLEND)

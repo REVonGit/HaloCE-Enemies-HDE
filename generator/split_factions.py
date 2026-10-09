@@ -35,8 +35,9 @@ HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_health
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
-               'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'hold position': 'HoldPosition',
-               'pressbutton': 'PressButton'}
+               'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
+               'hold position': 'HoldPosition', 'pressbutton': 'PressButton', 'press button': 'PressButton',
+               'regroup': 'Regroup'}
 
 def main():
     if os.path.exists(OUTDIR): shutil.rmtree(OUTDIR)
@@ -186,7 +187,7 @@ def main():
             # the Master Chief's squad orders (HCE_SpawnAllHandler.SquadOrder plays them on the player)
             os.makedirs(f'{d}/sounds/hce_chief', exist_ok=True)
             groups = {}
-            for fn in sorted(os.listdir(CHIEF)):
+            for fn in sorted(os.listdir(CHIEF), key=lambda f: [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', f)]):
                 m = re.fullmatch(r'(.+?) (\d+)\.(mp3|ogg|wav|flac)', fn, re.I)
                 if not m or m.group(1).lower() not in CHIEF_LINES: continue
                 key = CHIEF_LINES[m.group(1).lower()]

@@ -160,7 +160,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
-	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock"; }
+	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	String hce_kit[9];
 	void HCE_DressKit(bool helmetFace)
@@ -7725,10 +7725,12 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	}
 	String HCE_KitOutfit0_head()
 	{
-		int x = random[HCEKit](0, 6);
+		int x = random[HCEKit](0, 8);
 		if(x < 3) return "odst_helmet";
 		if(x < 5) return "odst_helmet_shock";
 		if(x < 7) return "odst_helmet_open";
+		if(x < 8) return "odst_helmet_filters";
+		if(x < 9) return "odst_helmet_shock_filters";
 		return "";
 	}
 	String HCE_KitOutfit0_chest()
@@ -7772,7 +7774,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
-	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock"; }
+	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	String hce_kit[9];
 	void HCE_DressKit(bool helmetFace)

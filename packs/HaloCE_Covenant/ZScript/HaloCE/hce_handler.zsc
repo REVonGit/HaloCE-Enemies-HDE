@@ -512,7 +512,7 @@ class HCE_SpawnAllHandler : EventHandler
 			if(!mo) { blocked++; continue; }
 			mo.angle = mo.AngleTo(pl);
 			let en = HaloDoom_EnemyBase(mo);
-			if(en) { en.hce_standStill = true; en.hce_lineupLook = looks[i] + 1; }     // no idle patrols: they hold their place in the line
+			if(en) { en.hce_standStill = true; en.hce_noMove = marines; en.hce_lineupLook = looks[i] + 1; }     // no idle patrols: they hold their place in the line
 			made++;
 		}
 		Console.Printf("%s: %d %s spawned%s", cmd, made, marines ? "Marines" : "enemies", blocked ? String.Format(", %d had no room", blocked) : "");

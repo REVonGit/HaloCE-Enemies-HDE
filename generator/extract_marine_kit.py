@@ -1,6 +1,7 @@
 """Elefant's Marine kit (marine.blend + elefant.zip) -> one small IQM per accessory, for the Marines to mix and match.
 
     python3 extract_marine_kit.py      # -> out/models/MarineKit/<piece>.iqm, textures, MarineKit.json
+    python3 extract_marine_kit.py odst_helmet_filters ...     # only those pieces, into the kit already extracted
 
 Elefant rebuilt Halo CE's Marine in Blender and gave it a wardrobe: helmets and headgear, headsets, HUD eyepieces,
 goggles and glasses, masks, pouches, packs, radios, sleeping bags, shoulder pads and gloves, all rigged to the Halo CE
@@ -12,7 +13,8 @@ bitmaps in elefant.zip (Elefant's 'innie' set), and the balaclavas and glasses t
 Every piece keeps the full Marine skeleton, so in game it is a model attachment riding the Marine's own animation, as
 the Brutes' armour kit does (build_pack.marine_kit_code). Slots (model attachments): 1 headgear (a whole head, or a
 helmet shell worn in place of Halo CE's helmet), 2 face and head add-ons, 3 chest, 4 back, 5 shoulders, 8 gloves (replace the
-arms), 9 leg armour, 10 gauntlets, 11 waist. ODST pieces come as a whole outfit (OUTFITS) on some Armored Marines; the
+arms), 9 leg armour, 10 gauntlets, 11 waist. ODST pieces come as a whole outfit (OUTFITS) on some Armored Marines, some of the closed ODST helmets with the blend's
+orphaned pair of gas-mask filters on the chin; the
 launcher tube and the fuel tanks go with the rocket launcher and the flamethrower (WEAPON_BACKS). Faces in the kit get the same clean jaw hinge as the base faces (jaw_weights.py).
 """
 import os as _os, sys as _sys
@@ -77,6 +79,9 @@ PIECES = {
     'head:shiek_helmet_bala': ('helmet_shiek_balaclava', 'head'),
     # ODST: helmets (the shock-trooper shell over the Marine's own face), headset, vest, leg armour, pads, gauntlets, cape
     'helm_odst': ('odst_helmet', 'head'), 'helm_odst_shock': ('odst_helmet_shock', 'head'), 'helm_odst_shock.003': ('odst_helmet_open', 'head'),
+    # the closed ODST helmets with the blend's orphaned pair of gas-mask filters (addon_gasmask.001) on the chin
+    ('helm_odst', 'addon_gasmask.001'): ('odst_helmet_filters', 'head'),
+    ('helm_odst_shock', 'addon_gasmask.001'): ('odst_helmet_shock_filters', 'head'),
     'addons_head_set_odst': ('odst_headset', 'face'), 'addons_head_set_odst_b': ('odst_headset_b', 'face'),
     'torso_odst': ('odst_vest', 'chest'), 'legs_odst': ('odst_legs', 'legs'), 'pads_odst': ('odst_pads', 'shoulders'),
     'pads_odst_heavy': ('odst_pads_heavy', 'shoulders'), 'arms_gauntlet_odst': ('odst_gauntlets', 'wrists'),
@@ -104,14 +109,14 @@ PIECES = {
     'arms:sleeves_guantlets_gloves': ('arms_gauntlets_gloves', 'arms'),
 }
 SLOTS = {'head': 1, 'face': 2, 'chest': 3, 'back': 4, 'shoulders': 5, 'arms': 8, 'legs': 9, 'wrists': 10, 'waist': 11}
-ENCLOSED = {'helmet_closed', 'helmet_enclosed', 'odst_helmet', 'odst_helmet_shock'}                  # no face showing: no face add-ons over them
+ENCLOSED = {'helmet_closed', 'helmet_enclosed', 'odst_helmet', 'odst_helmet_shock', 'odst_helmet_filters', 'odst_helmet_shock_filters'}                  # no face showing: no face add-ons over them
 SHELLS = {'helmet_tilted', 'helmet_strapped', 'helmet_hellbringer', 'odst_helmet_open'}  # worn over the Marine's own (helmeted) face: hide only CE's helmet
 NEEDS_HELMET = {'helmet_strap_goggles'}                       # only over Halo CE's own helmet
 # a weapon's own back piece, always (and only) on the Marines carrying it
 WEAPON_BACKS = {'Halo_RocketLauncher': 'launcher_tube', 'Halo_Flamethrower': 'flamer_tank'}
 # whole outfits: (chance, {slot: [(piece, weight)], '' = nothing}); rolled before the slots
 OUTFITS = {
-    'MarineArmored': [(0.15, dict(head=[('odst_helmet', 3), ('odst_helmet_shock', 2), ('odst_helmet_open', 2)], chest=[('odst_vest', 1)],
+    'MarineArmored': [(0.15, dict(head=[('odst_helmet', 3), ('odst_helmet_shock', 2), ('odst_helmet_open', 2), ('odst_helmet_filters', 1), ('odst_helmet_shock_filters', 1)], chest=[('odst_vest', 1)],
                                   legs=[('odst_legs', 1)], shoulders=[('odst_pads', 2), ('odst_pads_heavy', 1)],
                                   wrists=[('odst_gauntlets', 1)], waist=[('odst_cape', 1), ('', 1)], face=[('odst_headset', 1), ('odst_headset_b', 1), ('', 2)]))],
 }
@@ -186,10 +191,27 @@ class Textures:
         return fn
 
 
-def main():
+def merged_piece(K, objs, nodes):
+    """one piece from several blend objects (a helmet and the filters on it): their meshes and materials together"""
+    ps = [K.piece(o, nodes) for o in objs]
+    mats = []; tm = []; tris = []; base = 0
+    for p in ps:
+        ix = []
+        for mn in p['mats']:
+            if mn not in mats: mats.append(mn)
+            ix.append(mats.index(mn))
+        tm.append(np.array(ix)[p['tmat']]); tris.append(p['tris'] + base); base += len(p['pos'])
+    out = {k: np.concatenate([p[k] for p in ps]) for k in ('pos', 'nrm', 'uv', 'bi', 'bw')}
+    out.update(tris=np.concatenate(tris), tmat=np.concatenate(tm), mats=mats)
+    return out
+
+
+def main(only=None):
+    """only: piece ids to (re)build into the existing kit, keeping the rest"""
     od = f'{OUT}/models/MarineKit'
-    if os.path.isdir(od): shutil.rmtree(od)
-    os.makedirs(od)
+    if not only:
+        if os.path.isdir(od): shutil.rmtree(od)
+        os.makedirs(od)
     joints, bmeshes, _ = read_iqm(f'{OUT}/models/Marine/Marine.iqm')
     nodes = ek.marine_nodes(joints)
     K = ek.Kit(BLEND)
@@ -199,8 +221,12 @@ def main():
                 bw=np.concatenate([m['bw'] for m in bmeshes]).astype(float) / 255.0)
     bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
     meta = dict(slots=SLOTS, pieces={}, pools={}, enclosed=sorted(ENCLOSED))
+    if only:
+        meta['pieces'] = json.load(open(f'{od}/MarineKit.json'))['pieces']
+        for pid in only: meta['pieces'].pop(pid, None)
     for obj, (pid, slot) in PIECES.items():
-        p = brute_kit.fill_weights(K.piece(obj, nodes), body)
+        if only and pid not in only: continue
+        p = brute_kit.fill_weights(merged_piece(K, obj, nodes) if isinstance(obj, tuple) else K.piece(obj, nodes), body)
         uv = p['uv'].copy(); uv[:, 1] = 1.0 - uv[:, 1]
         bi = p['bi'].astype(np.uint8); bw = np.round(p['bw'] * 255).astype(np.uint8)
         bw[:, 0] += (255 - bw.sum(1).astype(int)).astype(np.uint8)
@@ -222,7 +248,7 @@ def main():
         if not meshes: print(f'  {pid}: nothing left, skipped'); continue
         if 'head.kit' in names: jaw_weights.fix(joints, meshes, names)       # a clean jaw hinge, as the base faces
         write_iqm(f'{od}/{pid}.iqm', joints, meshes, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
-        meta['pieces'][pid] = dict(slot=slot, source=obj, file=pid + '.iqm', shell=pid in SHELLS, enclosed=pid in ENCLOSED, needs_helmet=pid in NEEDS_HELMET, tris=int(sum(len(m['tris']) for m in meshes)))
+        meta['pieces'][pid] = dict(slot=slot, source='+'.join(obj) if isinstance(obj, tuple) else obj, file=pid + '.iqm', shell=pid in SHELLS, enclosed=pid in ENCLOSED, needs_helmet=pid in NEEDS_HELMET, tris=int(sum(len(m['tris']) for m in meshes)))
         print(f'{pid:24s} {slot:9s} {meta["pieces"][pid]["tris"]:5d} tris' + (f'  (no texture, left out: {skipped})' if skipped else ''))
     for body_, pools in POOLS.items():
         meta['pools'][body_] = {s: dict(chance=c, picks=[(p, w) for p, w in picks if p in meta['pieces']]) for s, (c, picks) in pools.items()}
@@ -235,4 +261,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # python3 extract_marine_kit.py [piece ...]: only those pieces, added to the kit already extracted
+    main(sys.argv[1:] or None)

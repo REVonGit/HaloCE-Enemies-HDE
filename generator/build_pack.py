@@ -1770,6 +1770,8 @@ def build(cfg=None):
             gl.append(f'HardwareShader Texture "{t}"\n{{\n\tShader "shaders/hce_camo.fp"\n\tSpeed 1.0\n}}')
     # the ODSTs' visors: Halo CE's visor reflection, a cube map looked up per pixel (extract_odst.py)
     gl += odst_visors(pack, mdir, md)
+    # the Marine kit's enclosed helmets: the same reflection on their orange visor
+    gl += kit_visors(pack, mdir)
     tg = cfg['tag']
     open(f'{pack}/gldefs.{tg}', 'w').write('\n'.join(gl) + '\n')
     # HCEM A: placeholder sprite. Models draw instead, but the map spawner rejects actors whose sprite
@@ -2210,6 +2212,24 @@ vec4 ProcessTexel()
 	return vec4(min(col, vec3(1.0)), 1.0);
 }
 '''
+
+# the Marine kit's enclosed helmets (helmet_closed, helmet_enclosed and the two ODST helmets) share one orange visor
+# texture: it gets the ODSTs' visor shader, tinted by its own orange, over the ODST visor's cube map
+KIT_VISOR = 'mk_innie_visor_diff.png'
+KIT_VISOR_CUBE = 'mk_visor_cube.png'
+
+def kit_visors(pack, mdir):
+    """the GLDEFS material giving the Marine kit's helmet visor the visor shader and a cube map"""
+    d = f'{pack}/models/{mdir}/MarineKit'
+    if not os.path.exists(f'{d}/{KIT_VISOR}'): return []
+    if not os.path.exists(f'{MARINE_KIT}/{KIT_VISOR_CUBE}'):
+        from extract_odst import cube_strip
+        cube_strip('cyborg', f'{MARINE_KIT}/{KIT_VISOR_CUBE}')
+    shutil.copy(f'{MARINE_KIT}/{KIT_VISOR_CUBE}', f'{d}/{KIT_VISOR_CUBE}')
+    os.makedirs(f'{pack}/shaders', exist_ok=True)
+    open(f'{pack}/shaders/hce_visor.fp', 'w').write(VISOR_SHADER)
+    return [f'material texture "models/{mdir}/MarineKit/{KIT_VISOR}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
+            f'\ttexture tex_cube "models/{mdir}/MarineKit/{KIT_VISOR_CUBE}"\n}}']
 
 def odst_visors(pack, mdir, md):
     """GLDEFS materials giving each ODST visor skin the visor shader and its cube map"""

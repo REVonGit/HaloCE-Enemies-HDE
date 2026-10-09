@@ -28,3 +28,8 @@ material texture "models/hce/MarineODST/skins/marineodst_2_raven_purple.png"
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/MarineODST/MarineODST_cube_dark_gray.png"
 }
+material texture "models/hce/MarineKit/mk_innie_visor_diff.png"
+{
+	shader "shaders/hce_visor.fp"
+	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
+}

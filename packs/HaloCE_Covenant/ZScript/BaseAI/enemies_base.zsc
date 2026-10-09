@@ -94,6 +94,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
 		else if(hce_enabled && health <= 0 && hce_burnHit && !default.bNOBLOOD) bNOBLOOD = false;   // a corpse after a fire hit
 		hce_burnHit = false;
+		if(hce_enabled && hce_noMove && health > 0)        // pinned to his spot (leatherneck): turns, aims and fights, never moves
+		{
+			if(!hce_anchored) { hce_anchor = pos.xy; hce_anchored = true; }
+			if(pos.xy != hce_anchor) SetOrigin((hce_anchor, pos.z), true);
+			vel.xy = (0, 0); hce_shove = (0, 0);
+		}
 		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
 		if(hce_enabled && hce_ackAt > 0 && level.maptime >= hce_ackAt) { hce_ackAt = 0; if(health > 0) HCE_Say('Acknowledge', 1.0, 35, true); }
 		// HaloDoom Evolved's motion tracker shows a monster only while it has a target: a friendly Marine with none
@@ -851,6 +857,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 hce_home, hce_patrolTo;
 	int     hce_patrolState, hce_patrolTics;
 	bool    hce_standStill;                 // no idle walking at all, patrols or squad stations (punkassbitches spawns)
+	bool    hce_noMove, hce_anchored;       // leatherneck spawns: no movement at all, held on hce_anchor
+	vector2 hce_anchor;
 	int     hce_lineupLook;                 // punkassbitches: 1 + which of the class's looks to wear (0: roll as usual)
 	virtual int HCE_LineupLooks() { return 1; }   // how many looks the class has for punkassbitches to line up (one of each)
 
@@ -1622,6 +1630,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// steering: try the wanted heading, then fan out
 	bool HCE_Move(double ang, double spd)
 	{
+		if(hce_noMove) { hce_moveSpeed = 0; HCE_Brake(); return false; }
 		if(spd > 0 && spd <= hce_walkSpeed * 1.01 && HCE_Relaxed()) spd = hce_lowWalkSpeed;     // an unhurried low-ready walk
 		HCE_StuckCheck(spd);
 		if(hce_unstickTics > 0) ang = hce_unstickAngle;

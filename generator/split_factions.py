@@ -169,7 +169,7 @@ def main():
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_sword.fp', f'{d}/shaders/hce_sword.fp')
                 out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_sword.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myswords]
-            if myvisors:                       # the ODSTs' visors: the cube-map reflection shader and its cube map
+            if myvisors:                       # the ODSTs' and kit helmets' visors: the cube-map reflection shader and its cube map
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_visor.fp', f'{d}/shaders/hce_visor.fp')
                 for t, c in myvisors:

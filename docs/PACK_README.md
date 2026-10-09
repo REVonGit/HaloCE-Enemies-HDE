@@ -900,7 +900,8 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **ODSTs (new):** Spiral's Halo CE ODST (`extract_odst.py`, from the a50 map: its own model, legs, torso, arms, helmet and visor, rigged to the Marine's skeleton), with every animation the Marines have and the Marines' guns, voices, blood and squad orders. They fight as Armored Marines (the same combat data, toughness and collision) and wear their textures as they are. The visor reflects Halo CE's cube map per pixel as you move around it (the visor shader's own cube and tints: the cyborg's reflection cube on the base ODSTs, a darker one tinted in each Raven's colour), brighter toward glancing angles.
   * **a50's loadouts:** the assault rifle (`HCE_MarineOdstAssaultRifle`, 30331, and the Major, `HCE_MarineOdstAssaultRifleMajor`, 30332) and the shotgun (`HCE_MarineOdstShotgun`, 30337).
   * **Fire Team Raven** (Connor Dawn's models, from the a10 map): four ODSTs in their own colours, with their a10 guns: green with the shotgun (`HCE_MarineOdstRavenGreen`, 30334), orange with the battle rifle (`HCE_MarineOdstRavenOrange`, 30335), blue with the assault rifle (`HCE_MarineOdstRavenBlue`, 30333) and purple with the sniper rifle (`HCE_MarineOdstRavenPurple`, 30336).
-  * **Sealed helmets:** three more ODSTs on Spiral's body with a fully closed helmet in place of its own: Halo 2's ODST helmet (`extract_h2_odst_helmet.py`: the Halo 2 Marine's `odst` head, with its visor) with the assault rifle (`HCE_MarineOdstHalo2Helmet`, 30340), the kit's closed visor helmet with the battle rifle (`HCE_MarineOdstClosedHelmet`, 30338), and the kit's enclosed visor helmet with the Major's shotgun (`HCE_MarineOdstEnclosedHelmet`, 30339).
+  * **Halo 2's ODSTs:** their own body, the Halo 2 Marine's ODST armour and helmet (`extract_h2_odst.py`), carried onto the Halo CE Marine's skeleton so they play every Marine animation, with the Halo 2 armour's bump-map shading baked into its camo: with the assault rifle (`HCE_MarineOdstHalo2`, 30340), the battle rifle (`HCE_MarineOdstHalo2BattleRifle`, 30341) and the Major's shotgun (`HCE_MarineOdstHalo2Shotgun`, 30342).
+  * **Sealed helmets:** two more ODSTs on Spiral's body with one of the kit's fully closed helmets in place of its own: the closed visor helmet, with a silver visor, and the battle rifle (`HCE_MarineOdstClosedHelmet`, 30338), and the enclosed visor helmet with the Major's shotgun (`HCE_MarineOdstEnclosedHelmet`, 30339).
   * `HCE_RandomMarineODST` (30330) spawns any of them; `leatherneck` spawns them with the other Marines.
 * **Corpsmen (new):** Marines who answer the medic order, each with his own gun: `HCE_MarineMedic` (30321, the Sidekick), `HCE_MarineMedicAssaultRifle` (30325, Halo CE's assault rifle), `HCE_MarineMedicMa37` (30326), `HCE_MarineMedicMagnum` (30327), `HCE_MarineMedicShotgun` (30328, Halo CE's shotgun) and `HCE_MarineMedicSmg` (30329). They're in the random Marine pool. A corpsman always wears the first-aid kit with its red cross; no other Marine does.
 * **Friendly fire:** a Marine you shoot scolds you, and shield hits count too. After 4 hits within 12 seconds, or 60% of its health, it turns on you, says so and fights you. It forgives you 30 seconds after your last hit on it, or once you die.
@@ -1121,7 +1122,9 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30337 | `HCE_MarineOdstShotgun` |
 | 30338 | `HCE_MarineOdstClosedHelmet` |
 | 30339 | `HCE_MarineOdstEnclosedHelmet` |
-| 30340 | `HCE_MarineOdstHalo2Helmet` |
+| 30340 | `HCE_MarineOdstHalo2` |
+| 30341 | `HCE_MarineOdstHalo2BattleRifle` |
+| 30342 | `HCE_MarineOdstHalo2Shotgun` |
 | 30454 | `HCE_SgtStacker` |
 
 ## Credits

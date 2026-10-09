@@ -2174,21 +2174,37 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst raven orange':        ('marine_armored battle rifle', 'orange'),
     'marine odst raven blue':          ('marine_armored assault rifle', 'blue'),
     'marine odst raven purple':        ('marine_armored sniper', 'purple'),
-    # other sealed helmets on the ODST's body: Halo 2's ODST helmet (extract_h2_odst_helmet.py) and Elefant's two
-    # closed kit helmets, in place of Spiral's own (ODST_HELMET_CODE)
-    'marine odst halo2 helmet':        ('marine_armored assault rifle', None, 'h2_odst_helmet'),
-    'marine odst closed helmet':       ('marine_armored battle rifle', None, 'helmet_closed'),
+    # Halo 2's ODSTs: their own body (extract_h2_odst.py: the Halo 2 Marine's ODST body and head on the CE skeleton)
+    # worn in place of all of Spiral's
+    'marine odst halo2':               ('marine_armored assault rifle', None, 'h2_odst_body'),
+    'marine odst halo2 shotgun':       ('marine_armored shotgun major', None, 'h2_odst_body'),
+    'marine odst halo2 battle rifle':  ('marine_armored battle rifle', None, 'h2_odst_body'),
+    # Elefant's two closed kit helmets on Spiral's body in place of its own helmet (odst_helmet_code)
+    'marine odst closed helmet':       ('marine_armored battle rifle', None, 'helmet_closed', 'silver'),
     'marine odst enclosed helmet':     ('marine_armored shotgun major', None, 'helmet_enclosed'),
 }
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
+ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
+ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
+KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
+# other visor colours (odst_helmet_code): the orange visor texture's shading, recoloured; same shader and cube map
+KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png'}
+KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88)}
 
-def odst_helmet_code(piece, mdir='hce'):
+def odst_helmet_code(piece, mdir='hce', visor=None):
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
-    hide = ''.join(f"\t\tA_ChangeModel('None', {{idx}}, \"\", 'None', {k}, {hid});\n" for k in ODST_HELMET_SURFS)
-    return (f'\t// another sealed helmet in place of the ODST\'s own: {piece} (a Marine kit piece on the head bone)\n'
+    surfs = ODST_ALL_SURFS if piece in ODST_BODIES else ODST_HELMET_SURFS
+    hide = ''.join(f"\t\tA_ChangeModel('None', {{idx}}, \"\", 'None', {k}, {hid});\n" for k in surfs)
+    tint = (f'\t\tA_ChangeModel(\'None\', 1, "", \'None\', {KIT_VISOR_SURF}, "models/{mdir}/MarineKit", '
+            f'\'{KIT_VISOR_TINTS[visor]}\', CMDL_USESURFACESKIN);\n') if visor else ''
+    what = ('a whole body in place of Spiral\'s ODST' if piece in ODST_BODIES else
+            'another sealed helmet in place of the ODST\'s own')
+    return (f'\t// {what}: {piece} (a Marine kit piece on the Marine\'s skeleton)'
+            + (f', {visor} visor' if visor else '') + '\n'
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
             + hide.replace('{idx}', '0') +
             f'\t\tA_ChangeModel(\'None\', 1, "models/{mdir}/MarineKit", "{piece}.iqm", 1, "", \'None\');\n'
+            + tint +
             '\t\tHCE_ResumeAnim();\n\t}\n'
             '\toverride void HCE_BloodHideClass()\n\t{\n' + hide.replace('{idx}', str(BLOOD_IDX)) + '\t}\n')
 def add_odsts(ai):
@@ -2202,6 +2218,7 @@ def add_odsts(ai):
     for vn, spec in ODST.items():
         src, raven = spec[0], spec[1]
         helmet = spec[2] if len(spec) > 2 else None
+        visor = spec[3] if len(spec) > 3 else None
         base = ai['variants'].get('characters\\marine_armored\\' + src)
         key = 'characters\\marine_odst\\' + vn
         if not base or key in ai['variants']: continue
@@ -2213,7 +2230,7 @@ def add_odsts(ai):
         ov = dict(v.get('_ov') or {})
         ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
         if raven: ov['raven'] = raven
-        if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet)
+        if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet, visor=visor)
         v['_ov'] = ov
         ai['variants'][key] = v
 
@@ -2259,6 +2276,13 @@ vec4 ProcessTexel()
 KIT_VISOR = 'mk_innie_visor_diff.png'
 KIT_VISOR_CUBE = 'mk_visor_cube.png'
 
+def kit_visor_tint(src, dst, rgb):
+    from PIL import Image
+    l = np.asarray(Image.open(src).convert('L'), float)
+    l = l / max(l.max(), 1)                               # the orange texture's light and shade, normalised
+    im = np.clip(l[..., None] * np.array(rgb) * 255 * 1.05, 0, 255).astype(np.uint8)
+    Image.fromarray(im).save(dst)
+
 def kit_visors(pack, mdir):
     """the GLDEFS material giving the Marine kit's helmet visor the visor shader and a cube map"""
     d = f'{pack}/models/{mdir}/MarineKit'
@@ -2269,8 +2293,12 @@ def kit_visors(pack, mdir):
     shutil.copy(f'{MARINE_KIT}/{KIT_VISOR_CUBE}', f'{d}/{KIT_VISOR_CUBE}')
     os.makedirs(f'{pack}/shaders', exist_ok=True)
     open(f'{pack}/shaders/hce_visor.fp', 'w').write(VISOR_SHADER)
-    return [f'material texture "models/{mdir}/MarineKit/{KIT_VISOR}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
-            f'\ttexture tex_cube "models/{mdir}/MarineKit/{KIT_VISOR_CUBE}"\n}}']
+    out = []
+    for name, tex in [(None, KIT_VISOR)] + list(KIT_VISOR_TINTS.items()):
+        if name: kit_visor_tint(f'{d}/{KIT_VISOR}', f'{d}/{tex}', KIT_VISOR_COLOURS[name])
+        out.append(f'material texture "models/{mdir}/MarineKit/{tex}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
+                   f'\ttexture tex_cube "models/{mdir}/MarineKit/{KIT_VISOR_CUBE}"\n}}')
+    return out
 
 def odst_visors(pack, mdir, md):
     """GLDEFS materials giving each ODST visor skin the visor shader and its cube map"""

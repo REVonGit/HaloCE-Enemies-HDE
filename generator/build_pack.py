@@ -2188,8 +2188,9 @@ ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, leg
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
 # other visor colours (odst_helmet_code): the orange visor texture's shading, recoloured; same shader and cube map
-KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png'}
-KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88)}
+KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png', 'h2odst': 'mk_h2_odst_visor.png'}
+# h2odst: Halo 2's ODST visor, a dark bluish purple (extract_h2_odst.py puts it on the Halo 2 ODST's visor)
+KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88), 'h2odst': (0.16, 0.15, 0.40)}
 
 def odst_helmet_code(piece, mdir='hce', visor=None):
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'

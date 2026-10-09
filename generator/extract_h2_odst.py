@@ -31,7 +31,8 @@ KIT = f'{OUT}/models/MarineKit'
 PID = 'h2_odst_helmet'
 BODY = 'h2_odst_body'
 ARMOR = 'mk_h2_odst_armor.png'               # the ODST armour's colour map, shared by the body and the helmet
-VISOR = 'mk_innie_visor_diff.png'            # the kit's visor texture: build_pack.kit_visors gives it the cube-map shader
+VISOR = 'mk_h2_odst_visor.png'               # Halo 2's dark bluish-purple ODST visor: build_pack.kit_visors makes it from the
+                                             # kit's visor texture (KIT_VISOR_TINTS 'h2odst') and gives it the cube-map shader
 LIFT = 1.3                                   # brightness lift: Halo 2's specular sheen keeps the charcoal off black; Doom has none
 BUMP_LIGHT = (-0.35, 0.45, 0.82)             # the light baked in from the bump map (tangent space), like Spiral's painted shading
 BUMP_AMBIENT = 0.45                          # the baked shade: ambient + (1 - ambient) * n.l

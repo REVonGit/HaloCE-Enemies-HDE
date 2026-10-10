@@ -2192,7 +2192,7 @@ ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
 # more kit pieces on an ODST variant (model attachments 2, 3...) and which of Spiral's surfaces its helmet hides
-ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), (1, 2))}
+ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), (1,))}   # Spiral's visor stays: the Hellbringer helmet is an open shell
 # the Halo 2 ODSTs fight in Halo 2's rifle set, re-posed per gun (marine_h2_grips.py); the battle rifle keeps 'h2br'
 ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet

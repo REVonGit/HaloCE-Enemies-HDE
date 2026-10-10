@@ -18756,7 +18756,6 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 	{
 		super.PostBeginPlay();
 		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/MarineKit", "helmet_hellbringer.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/MarineKit", "flamer_tank.iqm", 1, "", 'None');
 		A_ChangeModel('None', 3, "models/hce/MarineKit", "gas_mask.iqm", 1, "", 'None');
@@ -18765,7 +18764,6 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 	override void HCE_BloodHideClass()
 	{
 		A_ChangeModel('None', 7, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-		A_ChangeModel('None', 7, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override void HCE_ShowGun(bool show)
 	{

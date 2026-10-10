@@ -2186,7 +2186,7 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst enclosed helmet':     ('marine_armored shotgun major', None, 'helmet_enclosed'),
     # the Hellbringer: an ODST flame trooper in Halo Wars 2's flamethrower helmet (Elefant's kit), with the fuel tank
     # on his back (ODST_EXTRAS)
-    'marine odst hellbringer':         ('marine_armored flamethrower', None, 'helmet_hellbringer'),
+    'marine odst hellbringer':         ('marine_armored flamethrower', None, 'helmet_hellbringer', 'red'),
 }
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
@@ -2197,9 +2197,11 @@ ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), None)}  
 ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
 # other visor colours (odst_helmet_code): the orange visor texture's shading, recoloured; same shader and cube map
-KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png', 'h2odst': 'mk_h2_odst_visor.png'}
+KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png', 'h2odst': 'mk_h2_odst_visor.png', 'red': 'mk_hellbringer_visor_red.png'}
+# tints shaded from another visor texture than the enclosed helmets' (the Hellbringer's lens has its own UVs)
+KIT_VISOR_TINT_SRC = {'red': 'mk_hellbringer_visor.png'}
 # h2odst: Halo 2's ODST visor, a dark bluish purple (extract_h2_odst.py puts it on the Halo 2 ODST's visor)
-KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88), 'h2odst': (0.16, 0.15, 0.40)}
+KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88), 'h2odst': (0.16, 0.15, 0.40), 'red': (0.85, 0.10, 0.07)}   # red: the Hellbringer ODSTs
 
 def odst_helmet_code(piece, mdir='hce', visor=None, extras=(), surfs=None):
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
@@ -2309,7 +2311,7 @@ def kit_visors(pack, mdir):
     open(f'{pack}/shaders/hce_visor.fp', 'w').write(VISOR_SHADER)
     out = []
     for name, tex in [(None, KIT_VISOR)] + [(None, t) for t in KIT_OWN_VISORS if os.path.exists(f'{d}/{t}')] + list(KIT_VISOR_TINTS.items()):
-        if name: kit_visor_tint(f'{d}/{KIT_VISOR}', f'{d}/{tex}', KIT_VISOR_COLOURS[name])
+        if name: kit_visor_tint(f'{d}/{KIT_VISOR_TINT_SRC.get(name, KIT_VISOR)}', f'{d}/{tex}', KIT_VISOR_COLOURS[name])
         out.append(f'material texture "models/{mdir}/MarineKit/{tex}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
                    f'\ttexture tex_cube "models/{mdir}/MarineKit/{KIT_VISOR_CUBE}"\n}}')
     return out

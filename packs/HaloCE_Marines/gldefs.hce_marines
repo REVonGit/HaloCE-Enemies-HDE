@@ -48,3 +48,8 @@ material texture "models/hce/MarineKit/mk_h2_odst_visor.png"
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
 }
+material texture "models/hce/MarineKit/mk_hellbringer_visor_red.png"
+{
+	shader "shaders/hce_visor.fp"
+	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
+}

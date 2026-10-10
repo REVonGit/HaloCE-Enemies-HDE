@@ -18751,7 +18751,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 		}
 		return (0, 0, 0);
 	}
-	// another sealed helmet in place of the ODST's own: helmet_hellbringer (a Marine kit piece on the Marine's skeleton)
+	// another sealed helmet in place of the ODST's own: helmet_hellbringer (a Marine kit piece on the Marine's skeleton), red visor
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -18760,6 +18760,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 		A_ChangeModel('None', 1, "models/hce/MarineKit", "helmet_hellbringer.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/MarineKit", "flamer_tank.iqm", 1, "", 'None');
 		A_ChangeModel('None', 3, "models/hce/MarineKit", "gas_mask.iqm", 1, "", 'None');
+		A_ChangeModel('None', 1, "", 'None', 1, "models/hce/MarineKit", 'mk_hellbringer_visor_red.png', CMDL_USESURFACESKIN);
 		HCE_ResumeAnim();
 	}
 	override void HCE_BloodHideClass()

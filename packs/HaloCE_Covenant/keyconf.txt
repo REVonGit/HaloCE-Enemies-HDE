@@ -1,10 +1,16 @@
 // Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,
-// "leatherneck" one of every loaded Marine, "helljumpers" one of every ODST
+// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same
+// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST
 alias punkassbitches "netevent hce_spawnall"
 alias leatherneck "netevent hce_spawnmarines"
+alias leatherneck2 "netevent hce_spawnmarines2"
 alias helljumpers "netevent hce_spawnodsts"
 
-// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)
+// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on
+// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.
+// The rest stay bindable from the console (bind <key> hce_regroup, and so on)
+alias +hce_wheel "event hce_wheel_open"
+alias -hce_wheel "event hce_wheel_close"
 alias hce_follow "netevent hce_squad 0"
 alias hce_hold "netevent hce_squad 1"
 alias hce_regroup "netevent hce_squad 2"
@@ -14,15 +20,11 @@ alias hce_focus "netevent hce_squad 5"
 alias hce_suppress "netevent hce_squad 6"
 alias hce_medic "netevent hce_squad 7"
 alias hce_weapon "netevent hce_squad 8"
+alias hce_button "netevent hce_squad 9"
 addkeysection "Halo CE Squad" hce_squad
-addmenukey "Squad: follow me" hce_follow
-addmenukey "Squad: hold here" hce_hold
-addmenukey "Squad: regroup on me" hce_regroup
-addmenukey "Squad: hold fire" hce_holdfire
+addmenukey "Squad: order wheel (hold)" +hce_wheel
 addmenukey "Squad: open fire" hce_openfire
+addmenukey "Squad: hold fire" hce_holdfire
 addmenukey "Squad: focus on my target" hce_focus
 addmenukey "Squad: suppress" hce_suppress
 addmenukey "Squad: medic" hce_medic
-addmenukey "Squad: get that weapon" hce_weapon
-alias hce_button "netevent hce_squad 9"
-addmenukey "Squad: press that button" hce_button

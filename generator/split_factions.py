@@ -80,7 +80,7 @@ def main():
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
         '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler"\n}\n')
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel"\n}\n')
     # enemy laser tracers (HCE_EnemyLaser, in the API): HaloDoom Evolved's own beam model and texture
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
@@ -103,19 +103,23 @@ def main():
         '\tStaticText "Enemies get bloodier as they are hurt.", 1\n}\n')
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
-                                          '// "leatherneck" one of every loaded Marine, "helljumpers" one of every ODST\n'
+                                          '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'
+                                          '// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST\n'
                                           'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
-                                          'alias helljumpers "netevent hce_spawnodsts"\n'
-                                          '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad)\n'
+                                          'alias leatherneck2 "netevent hce_spawnmarines2"\nalias helljumpers "netevent hce_spawnodsts"\n'
+                                          '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on\n'
+                                          '// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.\n'
+                                          '// The rest stay bindable from the console (bind <key> hce_regroup, and so on)\n'
+                                          'alias +hce_wheel "event hce_wheel_open"\nalias -hce_wheel "event hce_wheel_close"\n'
                                           'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
                                           'alias hce_holdfire "netevent hce_squad 3"\nalias hce_openfire "netevent hce_squad 4"\nalias hce_focus "netevent hce_squad 5"\n'
                                           'alias hce_suppress "netevent hce_squad 6"\nalias hce_medic "netevent hce_squad 7"\nalias hce_weapon "netevent hce_squad 8"\n'
+                                          'alias hce_button "netevent hce_squad 9"\n'
                                           'addkeysection "Halo CE Squad" hce_squad\n'
-                                          'addmenukey "Squad: follow me" hce_follow\naddmenukey "Squad: hold here" hce_hold\naddmenukey "Squad: regroup on me" hce_regroup\n'
-                                          'addmenukey "Squad: hold fire" hce_holdfire\naddmenukey "Squad: open fire" hce_openfire\n'
+                                          'addmenukey "Squad: order wheel (hold)" +hce_wheel\n'
+                                          'addmenukey "Squad: open fire" hce_openfire\naddmenukey "Squad: hold fire" hce_holdfire\n'
                                           'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
-                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: get that weapon" hce_weapon\n'
-                                          'alias hce_button "netevent hce_squad 9"\naddmenukey "Squad: press that button" hce_button\n')
+                                          'addmenukey "Squad: medic" hce_medic\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}

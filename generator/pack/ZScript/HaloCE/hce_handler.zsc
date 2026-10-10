@@ -283,7 +283,8 @@ class HCE_ReplaceHandler : EventHandler
 // class that's loaded (every pack and add-on), side by side in lines in front of the player, facing them.
 // "helljumpers" ("netevent hce_spawnodsts") with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven).
 // "leatherneck" ("netevent hce_spawnmarines") does the same with only the Marines (every human-team class: both
-// bodies, every gun, Sergeant Johnson).
+// bodies, every gun, Sergeant Johnson), pinned to their spots; "leatherneck2" ("netevent hce_spawnmarines2") spawns the
+// same Marines free to move: they join the squad, follow and take orders like any other.
 // They don't patrol while idle. Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
@@ -438,10 +439,11 @@ class HCE_SpawnAllHandler : EventHandler
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if(e.Name == "hce_squad") { SquadOrder(e); return; }
-		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines" && e.Name != "hce_spawnodsts") return;
+		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines" && e.Name != "hce_spawnmarines2" && e.Name != "hce_spawnodsts") return;
 		bool odsts = e.Name == "hce_spawnodsts";                  // helljumpers: only the ODSTs
-		bool marines = odsts || e.Name == "hce_spawnmarines";
-		String cmd = odsts ? "helljumpers" : marines ? "leatherneck" : "punkassbitches";
+		bool free = e.Name == "hce_spawnmarines2";                // leatherneck2: the Marines, free to move
+		bool marines = odsts || free || e.Name == "hce_spawnmarines";
+		String cmd = odsts ? "helljumpers" : free ? "leatherneck2" : marines ? "leatherneck" : "punkassbitches";
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
 		// every concrete enemy class, sorted by name so ranks and weapons of a species stand together
@@ -515,9 +517,120 @@ class HCE_SpawnAllHandler : EventHandler
 			if(!mo) { blocked++; continue; }
 			mo.angle = mo.AngleTo(pl);
 			let en = HaloDoom_EnemyBase(mo);
-			if(en) { en.hce_standStill = true; en.hce_noMove = marines; en.hce_lineupLook = looks[i] + 1; }     // no idle patrols: they hold their place in the line
+			// no idle patrols: they hold their place in the line (leatherneck2's Marines move as they please)
+			if(en) { en.hce_standStill = !free; en.hce_noMove = marines && !free; en.hce_lineupLook = looks[i] + 1; }
 			made++;
 		}
 		Console.Printf("%s: %d %s spawned%s", cmd, made, odsts ? "ODSTs" : marines ? "Marines" : "enemies", blocked ? String.Format(", %d had no room", blocked) : "");
+	}
+}
+
+// The Master Chief's order wheel. Hold the "Squad: order wheel" key (+hce_wheel), point the mouse at an order and let
+// go to give it (or click; right-click or Escape puts it away; 1-0 pick one straight off). Every squad order is on
+// it; only the combat ones also have keys of their own (Options > Customize Controls > Halo CE Squad). While it is
+// up the mouse moves the pointer, not the view, and the fire button gives the order instead of shooting.
+class HCE_SquadWheel : EventHandler
+{
+	ui bool wOpen;
+	ui double wx, wy;          // the pointer, from the wheel's centre (mouse units, +y up)
+	ui int wSel;               // the slice under it, -1: none (the middle)
+	const SLICES = 10;
+	const REACH = 240.0;       // how far the pointer goes
+	const DEAD = 48.0;         // the middle: nothing picked
+
+	// clockwise from the top: the squad order (HCE_SpawnAllHandler.SquadOrder) and its name
+	static const int ORDER[] = { 0, 2, 1, 4, 5, 6, 3, 7, 8, 9 };
+	static const String LABEL[] = { "Follow me", "Regroup", "Hold here", "Open fire", "Focus fire", "Suppress",
+		"Hold fire", "Medic", "Get that weapon", "Press that button" };
+
+	override void ConsoleProcess(ConsoleEvent e)
+	{
+		if(e.Name == "hce_wheel_open")
+		{
+			if(gamestate != GS_LEVEL || menuactive != Menu.Off || !players[consoleplayer].mo || players[consoleplayer].health <= 0) return;
+			wOpen = true; wx = wy = 0; wSel = -1;
+		}
+		else if(e.Name == "hce_wheel_close") { if(wOpen) Give(); }
+		else if(e.Name == "hce_wheel_pick") { wOpen = true; wSel = clamp(e.Args[0], 0, SLICES - 1); Give(); }    // console / tests
+	}
+
+	ui void Give()
+	{
+		wOpen = false;
+		if(wSel >= 0 && wSel < SLICES)
+		{
+			Console.Printf("HCEWHEEL order %d %s", ORDER[wSel], LABEL[wSel]);
+			EventHandler.SendNetworkEvent("hce_squad", ORDER[wSel]);
+		}
+	}
+
+	ui void Point()
+	{
+		double r = sqrt(wx * wx + wy * wy);
+		if(r > REACH) { wx *= REACH / r; wy *= REACH / r; r = REACH; }
+		if(r < DEAD) { wSel = -1; return; }
+		double a = atan2(wx, wy);                                  // degrees clockwise from straight up
+		wSel = int(((a + 360 + 180.0 / SLICES) % 360) / (360.0 / SLICES)) % SLICES;
+	}
+
+	override bool InputProcess(InputEvent e)
+	{
+		if(!wOpen) return false;
+		if(e.Type == InputEvent.Type_Mouse) { wx += e.MouseX; wy += e.MouseY; Point(); return true; }
+		if(e.Type == InputEvent.Type_KeyDown)
+		{
+			if(e.KeyScan == InputEvent.Key_Mouse1) { Give(); return true; }
+			if(e.KeyScan == InputEvent.Key_Mouse2 || e.KeyScan == InputEvent.Key_Escape) { wOpen = false; return true; }
+			if(e.KeyScan >= 2 && e.KeyScan <= 11) { wSel = e.KeyScan - 2; Give(); return true; }     // the 1-0 keys
+		}
+		return false;
+	}
+
+	override void UiTick()
+	{
+		if(wOpen && (gamestate != GS_LEVEL || menuactive != Menu.Off || !players[consoleplayer].mo || players[consoleplayer].health <= 0)) wOpen = false;
+	}
+
+	override void RenderOverlay(RenderEvent e)
+	{
+		if(!wOpen) return;
+		int w = Screen.GetWidth(), h = Screen.GetHeight();
+		double cx = w / 2.0, cy = h / 2.0, sc = h / 1080.0;
+		double rIn = 70 * sc, rOut = 300 * sc, rLab = 215 * sc;
+		Color blue = Color(255, 96, 170, 255), dark = Color(255, 10, 30, 60);
+		Screen.Dim(dark, 0.45, 0, 0, w, h);
+		// the ring, and a spoke between each pair of orders
+		int seg = 60;
+		for(int k = 0; k < seg; k++)
+		{
+			double a0 = k * 360.0 / seg, a1 = (k + 1) * 360.0 / seg;
+			Screen.DrawThickLine(int(cx + sin(a0) * rOut), int(cy - cos(a0) * rOut), int(cx + sin(a1) * rOut), int(cy - cos(a1) * rOut), 2 * sc, blue, 200);
+			Screen.DrawThickLine(int(cx + sin(a0) * rIn), int(cy - cos(a0) * rIn), int(cx + sin(a1) * rIn), int(cy - cos(a1) * rIn), 2 * sc, blue, 200);
+		}
+		for(int i = 0; i < SLICES; i++)
+		{
+			double a = (i + 0.5) * 360.0 / SLICES;
+			Screen.DrawThickLine(int(cx + sin(a) * rIn), int(cy - cos(a) * rIn), int(cx + sin(a) * rOut), int(cy - cos(a) * rOut), 1.5 * sc, blue, 120);
+		}
+		Font f = NewSmallFont;
+		double ts = 2.2 * sc;
+		for(int i = 0; i < SLICES; i++)
+		{
+			double a = i * 360.0 / SLICES;
+			double x = cx + sin(a) * rLab, y = cy - cos(a) * rLab;
+			String t = LABEL[i];
+			double tw = f.StringWidth(t) * ts, th = f.GetHeight() * ts;
+			bool on = i == wSel;
+			if(on) Screen.Dim(blue, 0.55, int(x - tw / 2 - 10 * sc), int(y - th / 2 - 6 * sc), int(tw + 20 * sc), int(th + 12 * sc));
+			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, x - tw / 2, y - th / 2, t, DTA_ScaleX, ts, DTA_ScaleY, ts);
+			String n = String.Format("%d", (i + 1) % 10);
+			Screen.DrawText(f, Font.CR_DARKGRAY, x - f.StringWidth(n) * ts * 0.6 / 2, y + th / 2 + 4 * sc, n, DTA_ScaleX, ts * 0.6, DTA_ScaleY, ts * 0.6);
+		}
+		// the pointer, and in the middle the order it is on
+		double px = cx + wx / REACH * (rOut - 20 * sc), py = cy - wy / REACH * (rOut - 20 * sc);
+		Screen.DrawThickLine(int(cx), int(cy), int(px), int(py), 3 * sc, Color(255, 255, 255, 255), 160);
+		String mid = wSel >= 0 ? LABEL[wSel] : "SQUAD";
+		double ms = min(2.4 * sc, (rIn * 1.8) / max(1, f.StringWidth(mid)));
+		Screen.DrawText(f, wSel >= 0 ? Font.CR_WHITE : Font.CR_LIGHTBLUE, cx - f.StringWidth(mid) * ms / 2, cy - f.GetHeight() * ms / 2, mid, DTA_ScaleX, ms, DTA_ScaleY, ms);
 	}
 }

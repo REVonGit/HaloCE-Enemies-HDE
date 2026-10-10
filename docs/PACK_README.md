@@ -1,109 +1,57 @@
 # Halo CE Enemy Pack for UZDoom / HaloDoom Evolved
 
-> **In this repository** there are four packs. `HaloCE_Covenant.pk3` is the main one: it carries Core, the enemy API, the Covenant (the Digsite add-on included) and the enemy dialogue, so load it right after HDE. `HaloCE_Flood.pk3`, `HaloCE_Sentinels.pk3` and `HaloCE_Marines.pk3` (with the Marine dialogue) go after it, or load `HaloCE_Merged.pk3` for everything. Where this manual mentions `HaloCE_Core.pk3`, `HCE_EnemyAPI_LocalDEV.pk3`, `HaloCE_Enemies_Voices.pk3` or `HaloCE_Enemies_Digsite.pk3`, that content is in the Covenant pack (the Marine voices in the Marines pack); the enemies and settings are the same.
-
-Halo: Combat Evolved's campaign enemies (plus Marines) are extracted from the ten Xbox campaign `.map` files. Each one is an **IQM model with its full Halo animation set**, and its AI is translated from the Halo CE decomp into **ZScript** on top of an extended `enemies_base.zsc`.
+Halo: Combat Evolved's campaign enemies (plus Marines) are extracted from the ten Xbox campaign `.map` files. Each one is an **IQM model with its full Halo animation set**, and its AI is translated from the Halo CE decomp into **ZScript** on top of an extended `enemies_base.zsc`. The Digsite / SPV3 / Halo 2 add-on adds Drones, Brutes and their Chieftain, the Engineer, Blind Wolf, Thorn Beast, Slug Men and the Drinol.
 
 | | |
 |---|---|
-| Characters | 14: Grunt, Grunt Spec-Ops, Jackal, Jackal Major/Ultra, Elite, Elite Special (Spec-Ops/Stealth/Commander), Hunter, Flood Infection, Flood Carrier, Flood Combat Elite, Flood Combat Human, Sentinel, Marine, Armored Marine |
-| Spawnable classes | 82: 68 actor variants (65 from Halo CE plus the new needler Jackal and White/Red Hunters) plus 14 `HCE_Random<Character>` spawners |
+| Characters | Halo CE's 14 (Grunt, Grunt Spec-Ops, Jackal, Jackal Major/Ultra, Elite, Elite Special, Hunter, the Flood's Infection, Carrier, Combat Elite and Combat Human forms, Sentinel, Marine, Armored Marine), the ODSTs (Spiral's and Halo 2's) and Fire Team Raven, Sergeants Johnson and Stacker, and the add-on's creatures |
+| Placeable classes | 199 DoomEdNums (the table at the end), plus `HCE_Random<Character>` spawners among them |
 | Animations | 40–200+ per character, played by name (`SetAnimation`). Fire, flinch and reload overlays are baked into standalone clips |
-| Weapons | Each enemy holds its Halo CE weapon (11 third-person models: plasma pistol, plasma rifle, needler, fuel rod, energy sword, assault rifle, pistol, shotgun, sniper rifle, rocket launcher, flamethrower), bound to Halo's hand marker |
-| Skins | Halo base maps, with each variant's colours (Minor/Major/Spec-Ops etc.) pre-baked from the multipurpose map's change-colour mask. Flood forms use their untinted base maps; on Xbox the change colour covers almost the whole body and turned them green |
-| Stats | Health, shields, weapon, burst timing, accuracy, ranges and grenade counts all come straight from each variant's `actv`/`actr`/`coll` tags |
+| Weapons | Each enemy holds its Halo weapon as a model bound to Halo's hand marker; Marines carry the whole HaloDoom Evolved arsenal |
+| Skins | Halo base maps, with each variant's colours (Minor/Major/Spec-Ops etc.) pre-baked from the multipurpose map's change-colour mask |
+| Stats | Health, shields, weapon, burst timing, accuracy, ranges and grenade counts come straight from each variant's `actv`/`actr`/`coll` tags |
 
 ## Requirements and load order
 
 * **UZDoom**. The enemy pack uses ZScript `version "4.15.1"`.
-* **HaloDoom Evolved, Local_DEV branch, unmodified.** HDE supplies the projectiles, grenades, `ShieldProcessor`, weapon sounds and player. The pack's changes to HDE's enemy API ship as a small addon pk3 that loads on top of your build, so you never rebuild or edit Local_DEV itself. (HDE master isn't supported.)
+* **HaloDoom Evolved, Local_DEV branch, unmodified.** HDE supplies the projectiles, grenades, `ShieldProcessor`, weapon sounds and player. The pack's extended enemy API rides in `HaloCE_Covenant.pk3` and overrides HDE's own file (below), so you never edit or rebuild Local_DEV.
+* **Nash's Gore Mod** (optional): load it last.
 
-### Faction packs
+### The packs
 
-The enemies come as one pack per faction on top of a small shared core. Load the core plus any combination of factions:
+| Pack | Contents |
+|---|---|
+| `HaloCE_Covenant.pk3` | **Required, the main pack.** The Core (Doom-monster replacement handler, enemy projectiles and explosives, CVars, console commands, menus), the enemy API, the Covenant (Grunts, Jackals, Elites, Hunters, the Doom boss stand-ins), the Digsite / SPV3 / Halo 2 add-on and the enemy dialogue |
+| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these), the ODSTs, the Marine arsenal, Sergeants Johnson and Stacker, the Marine dialogue and the Master Chief's squad orders |
+| `HaloCE_Flood.pk3` | Infection, carrier and combat forms |
+| `HaloCE_Sentinels.pk3` | Sentinels |
 
-| Pack | Contents | Size |
-|---|---|---|
-| `HaloCE_Core.pk3` | **Required.** Shared projectiles, the Doom-monster replacement handler, CVARs and sound aliases. It contains no Halo assets, so it can be shared publicly. | 23 KB |
-| `HaloCE_Covenant.pk3` | Grunts, Jackals, Elites, Hunters, and the Doom boss stand-ins | 32 MB |
-| `HaloCE_Flood.pk3` | Infection, carrier and combat forms | 11.3 MB |
-| `HaloCE_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Marines.pk3` | Marines (Doom's marines and allied monsters become these), the Marine arsenal and Sergeant Johnson | 33.6 MB |
-
-The replacement table lives in the core. Any pick whose faction pack isn't loaded is skipped, and the remaining picks share its weight. A Doom monster whose entire list is missing stays a Doom monster (for example Pinkies without the Flood pack, or Cacodemons without Sentinels). Without the Marines pack, Doom's marines and allied monsters stay as they are. DoomEdNums didn't change; each pack lists its own.
-
-#### Merging packs into one
-
-`merge_hce_packs.py` combines any set of these packs into a single pk3. It needs only Python 3.
+Load order: HDE (Local_DEV) → `HaloCE_Covenant.pk3` → `HaloCE_Flood.pk3` / `HaloCE_Sentinels.pk3` / `HaloCE_Marines.pk3` (any order) → `nashgore.pk3` (optional, last).
 
 ```
-python3 merge_hce_packs.py                    # Core + Covenant + Digsite in the same folder -> HaloCE_Merged.pk3
-python3 merge_hce_packs.py -o MyHalo.pk3 HaloCE_Core.pk3 HaloCE_Covenant.pk3 HaloCE_Flood.pk3 HaloCE_Enemies_Digsite.pk3
+uzdoom -file HDE_LocalDEV.pk3 HaloCE_Covenant.pk3 HaloCE_Flood.pk3 HaloCE_Sentinels.pk3 HaloCE_Marines.pk3
 ```
 
-* It writes one `zscript.txt` with every pack's includes, and one `mapinfo.txt` with all DoomEdNums and both event handlers, kept in their original order.
-* `cvarinfo.txt` and `CREDITS.txt` are joined, with one section per pack.
-* Everything else is copied. If a file exists in two packs with different contents, or a DoomEdNum is used twice, the merge stops and names it instead of guessing.
-* Load the result where the separate packs went: after the API addon, before the voice pack.
-* On Windows, keep `Merge_HaloCE_Packs.bat` next to the script. Double-click it to merge Core + Covenant + Digsite from that folder, or drag any pk3s onto it to merge exactly those. It finds Python for you and keeps the window open so you can read the result.
+The replacement table lives in the Covenant pack's core. Any pick whose faction pack isn't loaded is skipped, and the remaining picks share its weight; a Doom monster whose whole list is missing stays a Doom monster.
 
-**One-click merges per pack set.** There is a script and a launcher for each set. Put them next to `merge_set.py`, `merge_hce_packs.py` and the pk3s:
+* **Everything in one file:** `build.py` also writes `dist/HaloCE_Merged.pk3`; load it right after HDE, instead of the separate packs, never with them.
+* **Merging your own set:** `tools/merge_hce_packs.py <packs...> -o <out.pk3>` merges any set of these packs (one `zscript.txt`, one `mapinfo.txt`, joined `cvarinfo.txt` and `CREDITS.txt`; it stops and names any file or DoomEdNum two packs disagree on).
+* **Older downloads:** don't load `HaloCE_Core`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices` or `HaloCE_Enemies_Digsite` pk3s from earlier releases with these: the Covenant pack carries all of them now, and their classes would be defined twice.
 
-| Set | Script | Windows launcher | Packs it picks up | Output |
-|---|---|---|---|---|
-| HDE (needs HDE Local_DEV + `HCE_EnemyAPI_LocalDEV.pk3`) | `merge_hde_packs.py` | `Merge_HDE_Packs.bat` | `HaloCE_Core` (required), `HaloCE_Covenant`, `HaloCE_Flood`, `HaloCE_Sentinels`, `HaloCE_Marines`, `HaloCE_Enemies_Digsite` | `HaloCE_Merged.pk3` |
-| Standalone (no HDE) | `merge_standalone_packs.py` | `Merge_Standalone_Packs.bat` | `HaloCE_Standalone_Core` (required), `_Covenant`, `_Flood`, `_Sentinels`, `_Marines`, `_Digsite` | `HaloCE_Standalone_Merged.pk3` |
-
-* **Which packs:** each script merges every pack of its set that is in the folder, so leave out the factions you don't want.
-* **Voices:** `--voices` (or answering Y in the launcher) puts `HaloCE_Enemies_Voices.pk3` inside the merged pack too.
-* **Drag and drop:** dragging pk3s onto a launcher merges exactly those.
-* **Safety checks:** a pack from the other set is refused with a message naming the right script. `merge_hce_packs.py` itself now also refuses to mix HDE and standalone packs.
-* **Load order:** after merging, each script prints the load order for its result.
-
-**All-in-one bundles.** `merge_bundle.py` packs the usual set (Core, Covenant, Digsite, the enemy API and the voices) into a single pk3 for either version. There is a launcher for each:
-
-| Launcher | Needs next to it | Output | Load |
-|---|---|---|---|
-| `Merge_HDE_Bundle.bat` (`merge_bundle.py hde`) | `HaloCE_Core`, `HaloCE_Covenant`, `HaloCE_Enemies_Digsite`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices` | `HaloCE_HDE_Bundle.pk3` | HDE (Local_DEV), then the bundle; nothing else |
-| `Merge_Standalone_Bundle.bat` (`merge_bundle.py standalone`) | `HaloCE_Standalone_Core`, `_Covenant`, `_Digsite`, `HaloCE_Enemies_Voices` | `HaloCE_Standalone_Bundle.pk3` | the bundle on its own, with any other mods |
-
-* **Standalone API:** the standalone core already contains the enemy API, so that bundle has no separate API pack.
-* **HDE API:** in the HDE bundle, the API's `ZScript/BaseAI/enemies_base.zsc` still overrides HDE's file of the same path, so the bundle must load after HDE.
-* **Requirements:** keep `merge_bundle.py` and `merge_hce_packs.py` together. Every listed pack is required, and a missing one is named.
-
-**Updating a merged pack.** When a new Digsite add-on comes out, `update_merged_pack.py` swaps it into your existing `HaloCE_Merged.pk3`, so you don't need Core or Covenant again:
-
-```
-python3 update_merged_pack.py                                         # HaloCE_Merged.pk3 + HaloCE_Enemies_Digsite.pk3 in this folder
-python3 update_merged_pack.py HaloCE_Merged.pk3 HaloCE_Enemies_Digsite.pk3 -o New_Merged.pk3
-```
-
-* The tool removes the old add-on's ZScript, its `.dig` lumps, its own asset folders (`models/hce_dig`, `sounds/hce_dig`), its DoomEdNums and event handler, and its sections of `cvarinfo.txt` / `CREDITS.txt`. Then it merges the new add-on in. Files the new version no longer ships don't linger. The result is identical to merging Core + Covenant + the new Digsite from scratch.
-* Without `-o` it updates the merged pk3 in place and keeps the previous one as `HaloCE_Merged.bak.pk3`.
-* It needs `merge_hce_packs.py` in the same folder.
-* It works for any pack that was merged in. Give the newer copy of that pack instead: it is matched by file name.
-* On Windows, double-click `Update_Merged_With_Digsite.bat`, or drag the merged pk3 and then the new Digsite pk3 onto it.
-
-Load order: `HDE (Local_DEV).pk3` → `HCE_EnemyAPI_LocalDEV.pk3` → `HaloCE_Core.pk3` → faction packs (any order) → `HaloCE_Enemies_Digsite.pk3` (optional, private) → `HaloCE_Enemies_Voices.pk3` (optional)
-
-```
-uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_Covenant.pk3 HaloCE_Flood.pk3 HaloCE_Sentinels.pk3 HaloCE_Marines.pk3 HaloCE_Enemies_Voices.pk3
-```
-
-### How the addon works
+### How the enemy API is loaded
 
 UZDoom resolves every `#include` to the **last-loaded** file with that path.
 
-* **`HCE_EnemyAPI_LocalDEV.pk3`** contains only `ZScript/BaseAI/enemies_base.zsc`. Local_DEV's own `ZSCRIPT.txt` already includes that path, so loading the addon after Local_DEV swaps in the extended API. Local_DEV's files stay untouched, and the addon has no `ZSCRIPT` lump of its own, so the class is never defined twice.
+* **`HaloCE_Covenant.pk3`** carries `ZScript/BaseAI/enemies_base.zsc`. HDE's own `ZSCRIPT.txt` already includes that path, so loading the pack after HDE swaps in the extended API; HDE's files stay untouched and the class is never defined twice.
   * The file keeps every member of Local_DEV's original `HaloDoom_EnemyBase` and `LastDamageInfo`, plus its usage example.
   * It compiles under Local_DEV's `version "4.10.0"`. The one 4.12+ call (`SetAnimation`) sits behind a virtual hook, `HCE_ApplyAnim`, which the enemy pack implements in its own 4.15.1 unit.
-* **`HaloCE_Core.pk3` and the faction packs** don't contain the API. They add the projectiles, handler, enemy classes and models, so they must load **after** the addon.
+* That's why the pack must load **after** HDE.
 
-> **Local_DEV crash note:** if UZDoom crashes during "Texman.Init" (signal 11) with a Local_DEV pk3, check whether the pk3 was zipped with the `Raw_Assets/` folder. That 2.6 GB folder of source art is what crashes texture init. A Local_DEV pk3 without `Raw_Assets/` and `.git/` (~500 MB) runs fine on current UZDoom and needs no code fixes.
+> **Local_DEV crash note:** if UZDoom crashes during "Texman.Init" (signal 11) with a Local_DEV pk3, check whether the pk3 was zipped with the `Raw_Assets/` folder. That 2.6 GB folder of source art is what crashes texture init. A Local_DEV pk3 without `Raw_Assets/` and `.git/` (~500 MB) runs fine on current UZDoom.
 
 ## Using it
 
-* **Place in maps:** use DoomEdNums **30200–30281** (table below), or the `HCE_Random*` spawners for a random variant of a character.
+* **Place in maps:** use the DoomEdNums in the table at the end, or the `HCE_Random*` spawners for a random variant of a character.
 * **Summon:** e.g. `summon HCE_EliteMajorPlasmaRifle`.
 * **Spawn everything:** the console command `punkassbitches` spawns one of every enemy class that's loaded (every pack and add-on), side by side in lines in front of you and facing you: 640 units of enemies per line, a line every 128 units. They don't patrol or walk to squad stations while idle, so they hold their place in the line until they see something to fight (flyers still hover). Spots blocked by walls are retried further ahead, then behind you, then anywhere free within 1024 units. Marines come out as allies. A class with several looks stands in the line once per look, so all three Brute Chieftains (Tartarus's look and both kit sets) appear. It's a console alias (`KEYCONF`) for `netevent hce_spawnall`, so it works in multiplayer too.
 * **Spawn every ODST:** `helljumpers` does the same with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven), as allies.
@@ -135,6 +83,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_difficulty` | -1 | **Halo difficulty** (see [Halo difficulty](#halo-difficulty)): -1 follows the skill level (I'm Too Young To Die and Hey, Not Too Rough are Easy, Hurt Me Plenty Normal, Ultra-Violence Heroic, Nightmare Legendary); 0 Easy, 1 Normal, 2 Heroic, 3 Legendary pin one. Also under Options > Halo CE AI |
 | `hce_cover` | true | Enemies and Marines fight from cover: they lean out past corners and shoot over low walls (see [Cover](#cover)) |
 | `hce_search` | true | The Covenant search for a target they lost and go back to their post when they give up; enemies investigate explosions they hear and notice a flashlight's beam (see [Searching](#searching)) |
+| `hce_corpseshoot` | 0.25 | Chance a Marine or Covenant soldier puts a few more rounds into an enemy it has just killed (guns that don't blow up only; 0 turns it off) |
 | `hce_tactics` | true | Squad tactics: Marine fire teams and battle drills, Covenant lances in echelons (see [Squad tactics](#squad-tactics)) |
 | `hce_patrols` | true | Idle enemies walk short patrols around where they were placed (or along a map's PatrolPoint route) |
 | `hce_sleepinggrunts` | 0.3 | Chance that a Grunt placed in a map starts asleep (Grunts placed as deaf/ambush always do; 0 = never) |
@@ -406,6 +355,13 @@ When the Covenant lose sight of you for a few seconds, they search (`hce_search`
 * **Explosions:** an enemy with nothing to fight that hears a grenade, rocket or barrel go off (within 1.25× `hce_hearing`) walks over warily to look, then goes back. A Marine following you just turns to watch that way.
 * **Flashlights:** an idle enemy that HaloDoom Evolved's flashlight beam falls on, and that can see you, notices you. (The standalone packs' Doom player has no flashlight.)
 
+## Shooting the dead
+
+Now and then (`hce_corpseshoot`, 0.25 by default; the Covenant a little more often, Marines a little less), a Marine or a Covenant soldier that has just dropped its enemy puts a few more rounds into the body, as Halo's AI does: a beat's pause, then a short burst at the body where it lies, which can be enough to gib it.
+
+* **Guns:** only ones that don't blow up: no rockets, grenades, fuel rods, flame, Plasma Casters or stickies.
+* **When:** only with the body in sight and no other enemy about; any new enemy ends it at once. It counts against the magazine like any other shooting.
+
 ## Combat callouts
 
 Halo 2's own combat dialogue, for the Marines, Elites, Grunts, Jackals and Brutes (voices without a line borrow the nearest one they have):
@@ -512,16 +468,16 @@ Other changes:
 
 ## Weapon sounds
 
-Enemy fire uses HDE's own SNDINFO sounds, both the fire layer and its `/Bass` layer, so enemy guns sound like the player's.
+Enemy fire uses HDE's own SNDINFO sounds, the fire layer and, where HDE has one, its `/Bass` layer (the rocket launcher and needle ballista have none), so enemy guns sound like the player's.
 
 * **Covenant:** plasma pistol, plasma rifle, needler and fuel rod (`Halo/Weapons/<Weapon>/Fire`).
 * **Overcharge:** `PlasmaPistol/Charge/Start` during the wind-up, then `PlasmaPistol/Fire/Charged`.
 * **Human:** `MA5B`, `Mag_MD6`, `Shotgun`, `Sniper` and `RocketLauncher`.
 * **Looping weapons:** the flamethrower and Sentinel beam play start, loop and end sounds.
 
-## Dialogue (optional `HaloCE_Enemies_Voices.pk3`)
+## Dialogue
 
-The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/HaloDoomEnemies) (your fork REVonGit/HaloDoomEnemies-Proto): 443 lines in 9 voices, plus 53 Crazy Grunt lines from Halo 2 and a rebuilt Loose Elite set (see below). Each Grunt picks one of three personalities (Crazy, Whiley, Whimpy) and each Elite one of two (Dogmatic, Loose). Jackals and Hunters have one voice each. The Digsite add-on's Drinol and Blind Wolf use the two new creature sets:
+The voice lines come from [Lewisk3/HaloDoomEnemies](https://github.com/Lewisk3/HaloDoomEnemies) (through the REVonGit/HaloDoomEnemies-Proto fork): 443 lines in 9 voices, plus 53 Crazy Grunt lines from Halo 2 and a rebuilt Loose Elite set (see below). Each Grunt picks one of three personalities (Crazy, Whiley, Whimpy) and each Elite one of two (Dogmatic, Loose). Jackals and Hunters have one voice each. The Digsite add-on's Drinol and Blind Wolf use the two new creature sets:
 
 * **Drinol:** Grave Injury plays for medium and heavy pain, Death XTR for explosive or hard deaths (`DeathHard`), and Sonic Roar for `Berserk`, including the boss's charge.
 * **Blind Wolf:** Howl doubles as alert and taunt, and Bite plays for melee.
@@ -622,13 +578,9 @@ Set the three `hce_nerf_*` CVars to 1 for the original Halo numbers. They are ne
 
 Halo weapon damage is used almost 1:1. HDE's own guns already use Halo-like values (Assault Rifle 10 vs HDE 6, plasma rifle 12–14 vs 12, sniper 101 vs 128), and enemy health is Halo's body vitality, with shields given through HDE's `ShieldProcessor`. Halo's Marines really are fragile (12 body + 24 shield), so expect them to die fast, as in the game. Approximations where Halo uses physics or scripted damage: Hunter melee 80, Carrier burst 40, infection-form nibble.
 
-## Digsite add-on (optional, private): `HaloCE_Enemies_Digsite.pk3`
+## Digsite add-on
 
-More enemies from the [Digsite](https://github.com/digsite/h1) source assets, plus the Engineer (from Ruby's Rebalance), the Blind Wolf and the Thorn Beast (SOI_7's) from SPV3, Halo 2's Drones and Brutes, and Shigure's Ultra Zealot. It needs only `HaloCE_Core.pk3`, for the API, handler and projectiles, and works with or without any faction pack:
-
-```
-uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_Covenant.pk3 HaloCE_Enemies_Digsite.pk3 HaloCE_Enemies_Voices.pk3
-```
+More enemies from the [Digsite](https://github.com/digsite/h1) source assets, plus the Engineer (from Ruby's Rebalance), the Blind Wolf and the Thorn Beast (SOI_7's) from SPV3, Halo 2's Drones and Brutes, and Shigure's Ultra Zealot. It ships inside `HaloCE_Covenant.pk3`.
 
 | Class | What it is |
 |---|---|
@@ -640,13 +592,13 @@ uzdoom -file HDE_LocalDEV.pk3 HCE_EnemyAPI_LocalDEV.pk3 HaloCE_Core.pk3 HaloCE_C
 | `HCE_Engineer` | The Engineer from Halo CE Ruby's Rebalance, extracted from SPV3's b30 map (model, texture, 25 animations, health, dialogue). **Replaces every Pain Elemental** while the add-on is loaded; without it, Pain Elementals become Flood Carriers if the Flood pack is loaded. It carries **no weapon and never fights**: it treats nothing as an enemy, even whoever shoots it, and just drifts around, sometimes pausing in mid-air. It's a support unit rather than a combatant.<br>• **Overshields (Halo 3's Engineer ability):** every second it overshields the allies within 420 units that are fighting and in its sight, with a pink tether to each.<br>&nbsp;&nbsp;– Shielded allies are topped up 20% of their maximum a second, up to 1.5× their maximum.<br>&nbsp;&nbsp;– Unshielded allies (Grunts, Jackals, Hunters) get a small 40-point shield of their own (scaled by `hce_nerf_shields`).<br>&nbsp;&nbsp;– Out of its reach for 4 s, or when it dies, the gift goes away: overshields drop back to their maximum and given shields vanish.<br>&nbsp;&nbsp;– It drifts toward the fight, keeping 200–300 units from the ally it's shielding.<br>&nbsp;&nbsp;– In testing, a Grunt next to it got a 20-point shield and an Elite went to 60 of 50. **Kill the Engineer first.** It's still tough to pop (150 body plus a 200 recharging shield), and **when it dies it bursts and sprays 4–6 charged Plasma Caster shots** (HDE's `PlasmaCasterClusterProj`). Each one sticks to what it hits, arms for two seconds, then explodes and throws two mini-bolts, so don't kill it next to yourself. Its dialogue (idle, surprise, pain) and explosion sound come from the map. 70 tall, radius 26 (1.25× scale). Was `HCE_EngineerMajorPlasmaPistol`; same DoomEdNum, 30418. |
 | `HCE_ThornBeast` | The Thorn Beast, created by SOI_7, extracted from SPV3's a30 map: a slow, tough melee brute in the Hell Knight mix. It has health 350 and heavy swipes of about 45, and walks at speed 6 (its animation stride is 4.3). Shrunk to 70% (67 tall, radius 36). It plays its own sounds from the map: idle growls as alert and taunt, melee roars, minor and major pain, death, and footsteps while it walks. |
 | `HCE_Elite{Minor,Major,Specops,Commander}PulseCarbine` | The same Elite ranks with a **blue Pulse Carbine** (the CMT carbine re-tinted blue, with blue lights) that fires like HDE's Pulse Carbine: bursts of 3–5 slow, accelerating plasma bolts (8 base damage each) that home on the Elite's target. They never re-target onto allies. They drop HDE's Pulse Carbine. |
-| `HCE_BlindWolf` | The Blind Wolf, created by SOI_7, extracted from SPV3's a30 map (model, texture, 18 animations, stats). It's a Pinky-style melee charger, health 90: it runs you down, bites for about 22, and pounces from up to 300 units using its leap-start, leap-airborne and leap-melee animations. It uses the new Blind Wolf sounds (alert, howl, bite, pain, death, idle) from your HaloDoomEnemies fork. |
+| `HCE_BlindWolf` | The Blind Wolf, created by SOI_7, extracted from SPV3's a30 map (model, texture, 18 animations, stats). It's a Pinky-style melee charger, health 90: it runs you down, bites for about 22, and pounces from up to 300 units using its leap-start, leap-airborne and leap-melee animations. It uses the new Blind Wolf sounds (alert, howl, bite, pain, death, idle) from the REVonGit/HaloDoomEnemies-Proto fork. |
 | `HCE_SlugManParticleBeam` | Slug Man sniper with Digsite's own Particle Beam Rifle (the 99_mac model and texture the Slug Man's `particle beam` variant was built around; its NPC projectile flies at 350 WU/s, so it is effectively hitscan here too). Every shot is telegraphed by a one-second purple aiming laser and the beam-rifle charge sound, then one hitscan beam drawn with HDE's beam rifle laser (90 × the variant's 0.5 damage modifier = 45). Keeps 400–3200 units away and crouches to fire. |
 | `HCE_SlugManPlasmaPistol` | Slug Man with a plasma pistol. |
 | `HCE_SlugMan{Minor,Major,Ultra}…` | **Slug Man ranks:** more Slug Men in the pistol stance (plasma pistol, needler, plasma rifle) and the rifle stance (particle beam, Covenant carbine, blue pulse carbine), all held in the left hand.<br>• **Minor** (Digsite's grey-violet, 1× health): needler, plasma rifle, carbine.<br>• **Major** (crimson armour plates, 1.35× health, 10% tighter aim): plasma pistol, needler, plasma rifle, particle beam, carbine, pulse carbine.<br>• **Ultra** (silver-white plates, 1.8× health, 25% tighter aim): plasma rifle, particle beam, carbine.<br>**Armour:** every Slug Man (the two original ones count as Minors) has its armour repainted clean: Digsite's grainy, scuffed plates (where its specular mask marks metal; the flesh is left alone) in the rank's colour over smooth shading, the base map's light and shade with the grain filtered out, blended with the specular map's own shading, and a soft highlight on the raised parts.<br>The carbines draw HDE's green laser trail; the particle beams keep the aiming laser and glint. DoomEdNums 30441–30452 (`HCE_SlugManMajorNeedler` … `HCE_SlugManUltraPlasmaRifle`, alphabetical); `HCE_RandomSlugMan` (30409) now picks from all of them. |
 | `HCE_Elite{Minor,Major,Specops,Commander}PlasmaCarbine` | Elites with **CMT's Covenant carbine** (model and textures from the CMT tags: purple carapace, glowing status lights and ammo read-out) in a real two-handed **rifle stance**. Semi-auto pairs and triples of HDE's green carbine rounds (15 base damage), each with **HDE's green carbine laser trail** from the muzzle to where it lands, with longer combat ranges than the plasma-rifle Elites. They drop HDE's Carbine. |
 
-* **Rifle stance.** The animations come from the CE-rig Elite graph you supplied (`elite.model_animations`): stand/crouch/alert idles, moves and turns, dives, evades, berserk, both rifle melees, surprise, signal and land. Its uncompressed frames decode directly. CMT's carbine sits on the `right hand elite` marker, and the support hand lands where the set already places it. A two-bone IK step keeps the support hand on the fore-grip during strides. The graph has no rifle fire overlay, so firing uses a short synthetic recoil kick. Actions the graph lacks (airborne, hard landing, throw, warn, alert move) use the Elite's pistol body, with the support hand solved onto the carbine. The same graph also has cannon (fuel rod) and flamethrower sets that aren't used yet.
+* **Rifle stance.** The animations come from a CE-rig Elite animation graph (`elite.model_animations`): stand/crouch/alert idles, moves and turns, dives, evades, berserk, both rifle melees, surprise, signal and land. Its uncompressed frames decode directly. CMT's carbine sits on the `right hand elite` marker, and the support hand lands where the set already places it. A two-bone IK step keeps the support hand on the fore-grip during strides. The graph has no rifle fire overlay, so firing uses a short synthetic recoil kick. Actions the graph lacks (airborne, hard landing, throw, warn, alert move) use the Elite's pistol body, with the support hand solved onto the carbine. The same graph also has cannon (fuel rod) and flamethrower sets that aren't used yet.
 * **Slug Man.** Model, 187 animations (full pistol and rifle sets) and stats come from the Digsite JMS/JMA sources and tags. Slug Men are **left-handed**: their guns sit on the left hand marker, which follows Halo's usual weapon axes, so the plasma pistol points ahead from the outstretched left hand and the particle beam rifle is held across the body in every aim, move and fire animation. The voice lines are its own Digsite dialogue (Xbox ADPCM decoded to ogg): sighted, taunt, pain, death, retreat, evade and communication.
 * **Spawns.** Each listed Doom monster has a chance to become a Digsite enemy (easy / normal / hard). Otherwise the main pack's mix applies. `hce_digsite_spawns` scales the chances (0 turns them off), and `hce_keepdoommonsters` is respected.
 
@@ -675,78 +627,7 @@ DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elite
 
 ## Standalone packs (no HaloDoom Evolved needed)
 
-`HaloCE_Standalone_*.pk3` are the same enemies with every HaloDoom Evolved dependency built in. They run on plain UZDoom/GZDoom with any IWAD and next to other gameplay, weapon or map mods. You don't need HDE or `HCE_EnemyAPI_LocalDEV.pk3`.
-
-| Pack | Contents | Size |
-|---|---|---|
-| `HaloCE_Standalone_Core.pk3` | **required**: the enemy AI, the Doom-monster replacement handler, and the projectiles, grenades, explosions, shields, sounds, sprites and models taken from HDE | 18.8 MB |
-| `HaloCE_Standalone_Covenant.pk3` | Grunts, Jackals, Elites, Hunters | 32.1 MB |
-| `HaloCE_Standalone_Flood.pk3` | infection, carrier and combat forms | 11.3 MB |
-| `HaloCE_Standalone_Sentinels.pk3` | Sentinels | 1.3 MB |
-| `HaloCE_Standalone_Marines.pk3` | Marines (allies), the Marine arsenal and Sergeant Johnson | 33.6 MB |
-| `HaloCE_Standalone_Digsite.pk3` | the Digsite add-on: Slug Men, carbine Elites, the Blind Wolf and Thorn Beast, Drones, Brutes and the Chieftain | 60.7 MB |
-
-**Load order:**
-1. `HaloCE_Standalone_Core.pk3`
-2. any of the faction packs and the Digsite pack
-3. optionally `HaloCE_Enemies_Voices.pk3` (unchanged; it never needed HDE)
-4. other mods before or after these
-
-Don't load these together with the regular HDE packs: they define the same enemies.
-
-**What changed from the HDE versions:**
-* **Projectiles:** HDE's projectiles are rebuilt as small self-contained classes (`hces_lib.zsc`). They use HDE's own models and sprites:
-  * tracer bullets
-  * plasma bolts with their glowing cores
-  * overcharged plasma that homes and splashes
-  * accelerating, homing Pulse Carbine bolts
-  * needles that stick, shatter after a second, and supercombine at 7 for a big pink blast
-  * arcing Spiker spikes
-  * fuel-rod plasma with a green blast
-  * accelerating rockets
-  * flamethrower flames
-  * bouncing frag grenades and sticky plasma grenades
-  * Plasma Caster grenades and clusters
-  * the gravity-hammer blast
-* **Shields:** Elites and other shielded enemies use HDE's shield logic, ported unchanged: it absorbs damage, breaks with a sound, and regenerates.
-* **Damage:**
-  * Enemy shots do Halo's damage numbers as plain Doom damage, scaled by `hce_nerf_projectiles` (default 0.3 here) and `hce_enemydamage`.
-  * Enemy health and shields follow `hce_nerf_health` and `hce_nerf_shields`.
-  * Explosions and flames hurt the player and other factions but not the shooter's own side.
-  * Overlapping flames don't stack; a victim burns for at most about 23 a second.
-* **Drops: a loot director, not one fixed item per enemy.** Every kill earns loot points: a Grunt about 1, an Elite about 1.7, a Brute about 3, a Hunter or Chieftain about 6. The points are spent on whatever the neediest living player is shortest of right now:
-  * **Health** when hurt: health bonuses, stimpacks, and medikits from big kills.
-  * **Armor:** armor bonuses as a steady trickle, and sometimes a green armor from a big kill when armor is low.
-  * **Ammo** for the weapons the player actually owns, emptiest first, with the gun in hand counted double. The ammo type comes from the weapon itself, so weapon mods get their own ammo.
-
-  Supplies that have dropped but haven't been picked up yet count toward need for a few seconds, so a burst of kills doesn't bury a hurt player in stimpacks.
-
-  **Weapons** drop themed to what the enemy carried:
-
-  | Enemy weapon | Doom weapon |
-  |---|---|
-  | rifles, pistols, Spikers | chaingun |
-  | shotguns | shotgun, then super shotgun |
-  | rockets, fuel rods, Plasma Casters | rocket launcher |
-  | Covenant energy weapons | shotgun or chaingun first, later the plasma rifle |
-  | bosses | BFG |
-
-  * **Order:** shotgun and chaingun come first; the rocket launcher and super shotgun follow; the plasma rifle needs both basics; the BFG needs a big gun already.
-  * **Pity counter:** a missing weapon gets steadily more likely, so nobody goes long without one.
-  * **Pacing:** at most one weapon every 20 seconds.
-  * **Other mods:** all drops are vanilla Doom item classes spawned with replacement, so gameplay and weapon mods drop their own versions. In games without Doom's items (Heretic, Hexen), nothing drops.
-  * **Settings:**
-    * `hces_loot`: 0 = off, 1 = balanced (default), 2 = generous.
-    * `hces_loot_weapons`: true by default; set it false to turn off weapon drops.
-* **No name clashes:** everything imported has its own names, so nothing collides with HDE or other mods:
-  * `HCES_` classes
-  * `HCES/` sounds
-  * `HZ**` sprites
-  * `models/hces`
-  * `HCES_EnemyBase` in place of `HaloDoom_EnemyBase`
-
-  Credits for the imported material are in `CREDITS_STANDALONE.txt` inside the core pack.
-* **Merging:** `merge_hce_packs.py` and `update_merged_pack.py` work on these packs too. Run with no arguments, they use the standalone set when that's what is in the folder.
+The same enemies with every HaloDoom Evolved dependency built in (projectiles, grenades, explosions, shields, sounds, a loot director dropping vanilla Doom items) are in the **HaloCE-Enemies-Standalone** repository, made by `generator/build_standalone.py`. They run on plain UZDoom / GZDoom with any IWAD, next to other mods. Never load them together with these packs: they define the same enemies. Their manual covers what differs.
 
 ## Gore (Nash's Gore Mod)
 
@@ -882,7 +763,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
   * The doctrinal 10 m interval would spread a squad over a whole Doom room, so the intervals are closed up. They walk to their slots and run when they fall behind or you run.
 
 * **Following you:** the Marines keep to their places in the squad's formation without fidgeting: each walks to his place once he's well off it and stops once he's on it, turns to face his sector only when he's well off it, and turns smoothly; while you walk he keeps pace in his place rather than stopping and starting; one blocked by the others settles where he stands until you move on. A big squad (more than 12) stands in arcs round the back of the wedge, facing out, instead of a long file trailing behind you.
-* **Orders:** the Master Chief's order wheel has every order on it: bind **Squad: order wheel (hold)** under **Options > Customize Controls > Halo CE Squad** (`+hce_wheel`), hold it, point the mouse at an order and let go (or click; right-click or Escape puts it away, and the 1-0 keys pick an order straight off). It's a small, faint ring in the middle of the view, the order under the pointer lit; the game isn't dimmed behind it. While the wheel is up the mouse moves its pointer, not your view, and the fire button gives the order instead of shooting. Only the combat orders also get keys of their own in that section (open fire, hold fire, focus, suppress, medic); the others are on the wheel, and every order stays a console alias you can bind yourself (`bind <key> hce_regroup`). The Master Chief says the order out loud (his own lines, in the Marines pack); nothing is printed on screen. Orders go to every following Marine within 1536 units, and one of them acknowledges.
+* **Orders:** the Master Chief's order wheel has every order on it: bind **Squad: order wheel (hold)** under **Options > Customize Controls > Halo CE Squad** (`+hce_wheel`), hold it, point the mouse at an order and let go (or click; right-click or Escape puts it away, and the 1-0 keys pick an order straight off). It's a small, faint ring in the middle of the view, the order under the pointer lit; the game isn't dimmed behind it. Its labels and the name over a Marine in your crosshair use HaloDoom Evolved's HUD font (HaloFont), or the engine's small font where HDE isn't loaded. While the wheel is up the mouse moves its pointer, not your view, and the fire button gives the order instead of shooting. Only the combat orders also get keys of their own in that section (open fire, hold fire, focus, suppress, medic); the others are on the wheel, and every order stays a console alias you can bind yourself (`bind <key> hce_regroup`). The Master Chief says the order out loud (his own lines, in the Marines pack); nothing is printed on screen. Orders go to every following Marine within 1536 units, and one of them acknowledges.
   * `hce_follow`: follow me (the default).
   * `hce_hold`: hold position. Each Marine keeps to the spot where it stood, fighting from within 192 units of it, and walks back to it when the fight is over.
   * `hce_regroup`: regroup on me. They break off the fight and run back to you, then follow again (they give up after 8 seconds).
@@ -963,22 +844,18 @@ How brutally an Elite or Brute dies decides how long the squad it led takes to p
 
 * The Flood and Sentinels have no dialogue (HaloDoomEnemies has no lines for them).
 * No vehicles, turrets, dropships or scripted AI (encounters, squads, firing points). Units pick positions with local steering instead of Halo's firing-point graph.
-* Only the 14 combat characters are included: no Keyes, Cortana, 343 Guilty Spark or crew.
+* Only combat characters are included: no Keyes, Cortana, 343 Guilty Spark or crew.
 
 ## Legal
 
-The models, textures and animations are extracted from Halo CE, and the voice lines are Halo audio taken from Lewisk3/HaloDoomEnemies; all of it belongs to Microsoft / Bungie. Use the faction packs and `HaloCE_Enemies_Voices.pk3` privately: **keep them out of public releases** (including UZHalo Shell / HDE Core releases). `HCE_EnemyAPI_LocalDEV.pk3` and `HaloCE_Core.pk3` contain no Halo assets (only ZScript, CVARs and sound aliases onto HDE sounds). Ship it with `enemies_base.zsc` and the extraction tools (`halo_ce_enemy_tools.zip`) instead, so users can generate the pk3 from their own copy of the game.
+The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV3 for some of them), and the voice lines are Halo audio; all of it belongs to Microsoft / Bungie. Use the packs privately: **keep them out of public releases** (including UZHalo Shell / HDE Core releases), and keep this repository private. The extraction pipeline in the HDE repository's `generator/` rebuilds the packs from your own copy of the games instead.
 
 ## Files
 
-* `HaloCE_Core.pk3`: shared projectiles, the replacement handler and CVARs (required, no Halo assets).
-* `HaloCE_Covenant.pk3`, `HaloCE_Flood.pk3`, `HaloCE_Sentinels.pk3`, `HaloCE_Marines.pk3`: the faction packs (models with held weapons, animations, skins, enemy classes).
-* `HaloCE_Enemies_Voices.pk3`: optional dialogue (48 MB), loaded after the enemy pack.
-* `HCE_EnemyAPI_LocalDEV.pk3`: the enemy API addon for HDE Local_DEV.
-* `enemies_base.zsc`: the extended enemy API source (the file the addon carries).
-* `halo_ce_enemy_tools.zip`: the extraction and generation scripts (Python 3, numpy, Pillow), plus the addon source tree. They rebuild the pk3 byte-for-byte from the `.map` files.
-* `preview.png`: the lineup in UZDoom.
-* `HaloCE_Enemies_Digsite.pk3`: the private Digsite add-on (Drinol and its boss, Slug Men, carbine and pulse-carbine Elites, Engineer, Blind Wolf, Thorn Beast). `digsite_preview.png` shows some of them.
+* `packs/`: the four packs, each folder the root of one pk3; `build.py` (or `Build_PK3s.bat`) compiles them into `dist/`, with the merged pack.
+* `tools/merge_hce_packs.py`: merges any set of packs into one pk3.
+* `docs/PACK_README.md`: this manual.
+* `generator/`: the extraction and generation pipeline (Python 3, numpy, Pillow) that rebuilds the packs from the Halo maps; see `generator/README.md`.
 
 ## DoomEdNums
 
@@ -1032,7 +909,7 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30245 | `HCE_Hunter` |
 | 30246 | `HCE_HunterMajor` |
 | 30247 | `HCE_JackalMinorPlasmaPistol` |
-| 30248 | `HCE_JackalUltraPlasmaRifle` (Digsite add-on: Halo 2 Jackal) |
+| 30248 | `HCE_JackalUltraPlasmaRifle` |
 | 30249 | `HCE_MarineAssaultRifle` |
 | 30250 | `HCE_MarineAssaultRifleMajor` |
 | 30251 | `HCE_MarineNeedler` |
@@ -1127,7 +1004,62 @@ The models, textures and animations are extracted from Halo CE, and the voice li
 | 30340 | `HCE_MarineOdstHalo2` |
 | 30341 | `HCE_MarineOdstHalo2BattleRifle` |
 | 30342 | `HCE_MarineOdstHalo2Shotgun` |
+| 30400 | `HCE_Drinol` |
+| 30401 | `HCE_EliteCommanderPlasmaCarbine` |
+| 30402 | `HCE_EliteMajorPlasmaCarbine` |
+| 30403 | `HCE_EliteMinorPlasmaCarbine` |
+| 30404 | `HCE_EliteSpecopsPlasmaCarbine` |
+| 30405 | `HCE_SlugManParticleBeam` |
+| 30406 | `HCE_SlugManPlasmaPistol` |
+| 30407 | `HCE_RandomDrinol` |
+| 30408 | `HCE_RandomEliteRifle` |
+| 30409 | `HCE_RandomSlugMan` |
+| 30410 | `HCE_BlindWolf` |
+| 30411 | `HCE_RandomBlindWolf` |
+| 30412 | `HCE_ThornBeast` |
+| 30413 | `HCE_RandomThornBeast` |
+| 30414 | `HCE_EliteMinorPulseCarbine` |
+| 30415 | `HCE_EliteMajorPulseCarbine` |
+| 30416 | `HCE_EliteSpecopsPulseCarbine` |
+| 30417 | `HCE_EliteCommanderPulseCarbine` |
+| 30418 | `HCE_Engineer` |
+| 30419 | `HCE_RandomEngineer` |
+| 30420 | `HCE_DronePlasmaPistol` |
+| 30421 | `HCE_RandomDrone` |
+| 30422 | `HCE_BruteMinorPlasmaRifle` |
+| 30423 | `HCE_BruteMinorAssaultRifle` |
+| 30424 | `HCE_BruteMajorSpiker` |
+| 30425 | `HCE_BruteMajorShotgun` |
+| 30426 | `HCE_BruteCaptainPlasmaRifle` |
+| 30427 | `HCE_BruteCaptainShotgun` |
+| 30428 | `HCE_BruteHonorGuardPlasmaRifle` |
+| 30429 | `HCE_BruteHonorGuardAssaultRifle` |
+| 30430 | `HCE_BruteChieftainGravityHammer` |
+| 30431 | `HCE_RandomBrute` |
+| 30432 | `HCE_RandomEliteZealot` |
+| 30433 | `HCE_JackalZealotSpiker` |
+| 30434 | `HCE_JackalSniperBeamRifle` |
+| 30435 | `HCE_RandomH2Jackal` |
+| 30436 | `HCE_JackalMarksmanPlasmaCarbine` |
+| 30437 | `HCE_JackalMarksmanPulseCarbine` |
+| 30438 | `HCE_DroneNeedler` |
+| 30439 | `HCE_DronePlasmaRifle` |
+| 30440 | `HCE_DroneSpiker` |
+| 30441 | `HCE_SlugManMajorNeedler` |
+| 30442 | `HCE_SlugManMajorParticleBeam` |
+| 30443 | `HCE_SlugManMajorPlasmaCarbine` |
+| 30444 | `HCE_SlugManMajorPlasmaPistol` |
+| 30445 | `HCE_SlugManMajorPlasmaRifle` |
+| 30446 | `HCE_SlugManMajorPulseCarbine` |
+| 30447 | `HCE_SlugManMinorNeedler` |
+| 30448 | `HCE_SlugManMinorPlasmaCarbine` |
+| 30449 | `HCE_SlugManMinorPlasmaRifle` |
+| 30450 | `HCE_SlugManUltraParticleBeam` |
+| 30451 | `HCE_SlugManUltraPlasmaCarbine` |
+| 30452 | `HCE_SlugManUltraPlasmaRifle` |
+| 30453 | `HCE_BruteCaptainPlasmaCaster` |
 | 30454 | `HCE_SgtStacker` |
+| 30455 | `HCE_EliteUltraZealotEnergySword` |
 
 ## Credits
 

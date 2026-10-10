@@ -7910,9 +7910,6 @@ class HCE_Hunter : HCE_HunterBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
@@ -8028,9 +8025,6 @@ class HCE_HunterMajor : HCE_HunterBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
@@ -8148,9 +8142,6 @@ class HCE_HunterRed : HCE_HunterBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_Flamethrower"; }
@@ -8267,9 +8258,6 @@ class HCE_HunterWhite : HCE_HunterBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_PlasmaCaster"; }

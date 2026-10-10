@@ -130,9 +130,6 @@ class HCE_Sentinel : HCE_SentinelBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -210,9 +207,6 @@ class HCE_SentinelMajor : HCE_SentinelBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -290,9 +284,6 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -370,9 +361,6 @@ class HCE_SentinelShielded : HCE_SentinelBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -450,9 +438,6 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }

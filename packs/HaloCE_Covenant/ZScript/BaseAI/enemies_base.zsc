@@ -1225,15 +1225,18 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			if(target.health <= 0) HCE_Say(target.player ? 'KillPlayer' : 'Taunt', target.player || HCE_IsJohnson() ? 0.9 : 0.35, 35 * 2);
 			HCE_StopFireLoop();
+			Actor fallen = target.health <= 0 && !target.player ? target : null;
 			target = null;
 			HCE_ScanTargets();   // next enemy in view, any direction
 			if(target) return;
+			if(fallen) { HCE_StartCorpseShoot(fallen); if(hce_csTics > 0) return; }   // a few more rounds into the body
 			if(HCE_HasAnim(HCE_A_CELEBRATE) && random(0, 3) == 0) { HCE_PlayLocked(HCE_A_CELEBRATE); return; }
 		}
 
 		if(!target)
 		{
 			hce_cvState = 0; hce_srPhase = 0; hce_pcMoving = false; hce_lgTics = 0;
+			if(HCE_CorpseShootTick()) return;
 			if(HCE_InvestigateTick()) return;
 			if(HCE_ReturnTick()) return;
 			if(hce_kamiNades.Size() > 0) HCE_KamikazeBoom(false);   // lost the target mid-run: the grenades go off where it stands
@@ -1833,6 +1836,28 @@ class HaloDoom_EnemyBase : Actor abstract
 			return wn.IndexOf("sniper") >= 0 || wn.IndexOf("beam") >= 0;
 		}
 		return false;
+	}
+
+	// ------------------------------------------------------------------
+	// Sounds loaded with the map. The engine decodes a sound the first time it plays, on the main thread, and at
+	// every map load it unloads every sound nothing marked: so when a crowd of enemies first saw you, dozens of
+	// voice lines and gun sounds were decoded in the same frame (the hitch when many AI are alerted at once).
+	// Each enemy marks its gun's sounds and its own voice's first-contact lines here; the engine decodes them
+	// while the map loads. Only the lines of first contact: pain and death lines come spread out over a fight.
+	// ------------------------------------------------------------------
+	override void MarkPrecacheSounds()
+	{
+		super.MarkPrecacheSounds();
+		if(hce_fireSound.Length() > 0) MarkSound(Sound(hce_fireSound));
+		if(hce_fireSoundBass.Length() > 0) MarkSound(Sound(hce_fireSoundBass));
+		if(hce_specialSound.Length() > 0) MarkSound(Sound(hce_specialSound));
+		if(hce_chargeSound.Length() > 0) MarkSound(Sound(hce_chargeSound));
+		Array<String> vs;
+		if(hce_voice != 'None' && hce_voice != '') vs.Push(String.Format("%s", hce_voice));
+		else if(hce_voiceSet.Length() > 0) hce_voiceSet.Split(vs, ",", TOK_SKIPEMPTY);
+		static const Name ev[] = { 'Alert', 'HeardGunfire', 'Charge' };
+		for(int i = 0; i < vs.Size(); i++)
+			for(int k = 0; k < ev.Size(); k++) MarkSound(Sound(String.Format("HCE/%s/%s", vs[i], ev[k])));
 	}
 
 	Name HCE_SightingLine()
@@ -3392,7 +3417,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			}
 		}
 		HCE_PickMoveAnim();
-		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) { hce_action = HCE_ACT_FIGHT; HCE_OnAcquire(); } }
+		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) hce_action = HCE_ACT_FIGHT; }   // (ScanTargets runs HCE_OnAcquire)
 	}
 
 	// ------------------------------------------------------------------
@@ -3753,6 +3778,70 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(c) { State st = c.FindState("ExplodeAndDie"); if(st) c.SetState(st); }
 			hce_stickies.Delete(i); hce_stickyAt.Delete(i);
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// Shooting the dead: now and then a Marine or a Covenant soldier that has just dropped its enemy puts a few
+	// more rounds into the body (a beat's pause, then a short burst at the body where it lies), as Halo's AI does.
+	// Only with a gun that doesn't blow up (no rockets, grenades, fuel rods, flame or stickies), only with the body
+	// in sight and no other enemy about; any new enemy ends it. The chance: hce_corpseshoot (0 off).
+	// ------------------------------------------------------------------
+	Actor hce_csBody;
+	int hce_csTics, hce_csNext;
+
+	bool HCE_CanCorpseShoot()
+	{
+		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
+		if(bHCE_Beam || bHCE_Lobbed || hce_projectile == 'None' || hce_projectile == 'HCE_H2BeamShot') return false;
+		String p = String.Format("%s", hce_projectile);
+		p = p.MakeLower();
+		static const String boom[] = { "rocket", "grenade", "fuelrod", "hydra", "flame", "stickydet", "plasmacaster", "40mm", "charged", "ballista" };
+		for(int i = 0; i < boom.Size(); i++) if(p.IndexOf(boom[i]) >= 0) return false;
+		return true;
+	}
+
+	void HCE_StartCorpseShoot(Actor body)
+	{
+		if(!body || hce_csTics > 0 || health <= 0 || !HCE_CanCorpseShoot()) return;
+		double ch = HCE_CVarF('hce_corpseshoot', 0.25) * (hce_team == HCE_TEAM_COVENANT ? 1.2 : 0.8);
+		if(ch <= 0 || frandom[HCECorpse](0, 1) >= ch) return;
+		if(Distance3D(body) > 1024 || !CheckSight(body)) return;
+		hce_csBody = body;
+		hce_csTics = random[HCECorpse](24, 45);
+		hce_csNext = level.maptime + random[HCECorpse](6, 14);              // a beat, then the rounds
+	}
+
+	bool HCE_CorpseShootTick()
+	{
+		if(hce_csTics <= 0) return false;
+		let b = hce_csBody;
+		if(!b || target || --hce_csTics <= 0 || (hce_magSize > 0 && hce_mag <= 0) || hce_heat >= 1)
+		{
+			hce_csTics = 0; hce_csBody = null;
+			return false;
+		}
+		HCE_Brake();
+		double da = DeltaAngle(angle, AngleTo(b));
+		A_SetAngle(angle + clamp(da, -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+		if(abs(da) > 12 || level.maptime < hce_csNext) { HCE_Play(HCE_A_ALERT); return true; }
+		class<Actor> pc = (class<Actor>)(hce_projectile);
+		if(!pc) { hce_csTics = 0; return false; }
+		// at the body where it lies, a little scatter
+		vector3 from = pos + (0, 0, height * 0.5 + hce_gunOffset.z);
+		vector3 at = b.pos + (frandom(-6, 6), frandom(-6, 6), min(b.height * 0.3, 10));
+		vector3 diff = level.Vec3Diff(from, at);
+		double aAng = atan2(diff.y, diff.x), aPit = -atan2(diff.z, diff.xy.Length());
+		for(int i = 0; i < max(1, hce_projectilesPerShot); i++)
+		{
+			let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
+				DeltaAngle(angle, aAng) + frandom(-1.5, 1.5), DeltaAngle(pitch, aPit) + frandom(-1.5, 1.5));
+			HCE_ScaleShot(shot);
+		}
+		HCE_PlayFireSound(false);
+		if(HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		HCE_SpendRound();
+		hce_csNext = level.maptime + max(2, int(35.0 / (max(0.25, hce_rateOfFire) * 1.5)));
+		return true;
 	}
 
 	virtual void HCE_FireShot(bool special = false)
@@ -4409,8 +4498,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		for(int mi = 0; mi < tr.missiles.Size(); mi++)
 		{
 			let p = tr.missiles[mi];
-			if(!p || !p.bMISSILE || HCE_IsGrenade(p) || p.target == self) continue;   // grenades: HCE_GrenadeCheck
-			if(abs(p.pos.x - pos.x) > 300 || abs(p.pos.y - pos.y) > 300) continue;
+			if(!p || abs(p.pos.x - pos.x) > 300 || abs(p.pos.y - pos.y) > 300) continue;   // the cheap test first
+			if(!p.bMISSILE || p.target == self || HCE_IsGrenade(p)) continue;       // grenades: HCE_GrenadeCheck
 			if(p.target && !HCE_IsEnemy(p.target)) continue;
 			vector3 rel = level.Vec3Diff(p.pos, pos);
 			if(p.vel.Length() < 1) continue;
@@ -4486,11 +4575,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		CVar cv = CVar.FindCVar("hce_grenadedodge");
 		if(cv && !cv.GetBool()) return false;
 		double danger = 200;
-		// thrown grenades are projectiles, which aren't in the blockmap: walk the grenade class instead
-		let it = ThinkerIterator.Create("HaloGrenade_Proj");
-		Actor g;
-		while(g = Actor(it.Next()))
+		// thrown grenades are projectiles, which aren't in the blockmap: the missile tracker's list of everything
+		// fired (HDE's grenades and, by name, other mods'), not a walk of every thinker in the level
+		let tr = HCE_MissileTracker(EventHandler.Find("HCE_MissileTracker"));
+		if(!tr) return false;
+		for(int gi = 0; gi < tr.missiles.Size(); gi++)
 		{
+			Actor g = tr.missiles[gi];
+			if(!g || abs(g.pos.x - pos.x) > 320 || abs(g.pos.y - pos.y) > 320) continue;
+			if(!(g is "HaloGrenade_Proj") && !HCE_IsGrenade(g)) continue;
 			if(g.bNOINTERACTION || Distance3D(g) > 320 || hce_nadeSeen.Find(g) != hce_nadeSeen.Size()) continue;
 			let pg = PlasmaGrenade_Proj(g);
 			if(pg && pg.hitactor)
@@ -6493,7 +6586,7 @@ class HCE_MissileTracker : EventHandler
 		}
 		if(level.maptime % 35) return;
 		for(int i = missiles.Size() - 1; i >= 0; i--)
-			if(!missiles[i] || !missiles[i].bMISSILE) missiles.Delete(i);
+			if(!missiles[i] || (!missiles[i].bMISSILE && !(missiles[i] is "HaloGrenade_Proj"))) missiles.Delete(i);   // grenades stay till they go off, resting or not
 	}
 
 	// a flashlight's beam on an idle enemy that can see the player: it notices him

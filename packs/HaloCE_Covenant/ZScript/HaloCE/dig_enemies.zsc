@@ -154,9 +154,6 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -417,7 +414,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 			hce_projectile = 'HCE_Rocket'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.50; hce_maxRange = 3600; hce_projSpeed = 37.3;
 			hce_rangeMin = 560; hce_rangeMax = 2000; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.40; hce_patPauseMax = 3.15; hce_patChargeTics = 0;
-			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = "Halo/Weapons/RocketLauncher/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
@@ -6644,9 +6641,6 @@ class HCE_Drinol : HCE_DrinolBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -7361,9 +7355,6 @@ class HCE_DroneNeedler : HCE_DroneBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -7466,9 +7457,6 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -7571,9 +7559,6 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -7676,9 +7661,6 @@ class HCE_DroneSpiker : HCE_DroneBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -9888,9 +9870,6 @@ class HCE_Engineer : HCE_EngineerBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -12155,9 +12134,6 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -12311,9 +12287,6 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -12516,9 +12489,6 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -12682,9 +12652,6 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -12839,9 +12806,6 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -12995,9 +12959,6 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -13152,9 +13113,6 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -13308,9 +13266,6 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -13474,9 +13429,6 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -13630,9 +13582,6 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -13836,9 +13785,6 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -13992,9 +13938,6 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -14197,9 +14140,6 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -14363,9 +14303,6 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -14522,9 +14459,6 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 

@@ -155,9 +155,6 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 
@@ -381,9 +378,6 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -514,9 +508,6 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -646,9 +637,6 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -778,9 +766,6 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -910,9 +895,6 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1042,9 +1024,6 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1078,7 +1057,7 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 3.20, 4.20, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "", "", "";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1174,9 +1153,6 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1306,9 +1282,6 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1438,9 +1411,6 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1568,9 +1538,6 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1697,9 +1664,6 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -1887,9 +1851,6 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2003,9 +1964,6 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2118,9 +2076,6 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2233,9 +2188,6 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2348,9 +2300,6 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2463,9 +2412,6 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2499,7 +2445,7 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 4.11, 5.40, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "", "", "";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2578,9 +2524,6 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2693,9 +2636,6 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2803,9 +2743,6 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 }
@@ -2957,9 +2894,6 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		}
 		return (0, 0, 0);
 	}
 

@@ -482,7 +482,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 			hce_projectile = 'HCE_BallistaNeedle'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 3600; hce_projSpeed = 24.3;
 			hce_rangeMin = 480; hce_rangeMax = 1920; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 3.00; hce_patPauseMax = 4.00; hce_patChargeTics = 0;
-			hce_fireSound = "Halo/Weapons/NeedlerJavelin/Fire"; hce_fireSoundBass = "Halo/Weapons/NeedlerJavelin/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			hce_fireSound = "Halo/Weapons/NeedlerJavelin/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
@@ -532,7 +532,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 			hce_projectile = 'HCE_Rocket'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.50; hce_maxRange = 3600; hce_projSpeed = 37.3;
 			hce_rangeMin = 560; hce_rangeMax = 2000; hce_damageMod = 0.40; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.40; hce_patPauseMax = 3.15; hce_patChargeTics = 0;
-			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = "Halo/Weapons/RocketLauncher/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
@@ -7114,7 +7114,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Shield 24, 5.0, 1.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.40, 3.15, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -9667,7 +9667,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 			hce_projectile = 'HCE_BallistaNeedle'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 1.00; hce_maxRange = 3600; hce_projSpeed = 24.3;
 			hce_rangeMin = 480; hce_rangeMax = 1920; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.64; hce_patPauseMax = 3.52; hce_patChargeTics = 0;
-			hce_fireSound = "Halo/Weapons/NeedlerJavelin/Fire"; hce_fireSoundBass = "Halo/Weapons/NeedlerJavelin/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			hce_fireSound = "Halo/Weapons/NeedlerJavelin/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
@@ -9717,7 +9717,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 			hce_projectile = 'HCE_Rocket'; hce_projectilesPerShot = 1; hce_rateOfFire = 0.80; hce_errorAngle = 0.50; hce_maxRange = 3600; hce_projSpeed = 37.3;
 			hce_rangeMin = 560; hce_rangeMax = 2000; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 2.40; hce_patPauseMax = 3.15; hce_patChargeTics = 0;
-			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = "Halo/Weapons/RocketLauncher/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
+			hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; hce_fireSoundBass = ""; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
 	}
@@ -15275,7 +15275,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Shield 45, 5.0, 1.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.40, 3.15, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "Halo/Weapons/RocketLauncher/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades

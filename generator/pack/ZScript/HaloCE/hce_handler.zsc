@@ -251,7 +251,7 @@ class HCE_ReplaceHandler : EventHandler
 				if(hb) { hb.hce_bondMate = h; h.hce_bondMate = hb; hb.hce_bondLooked = true; h.hce_bondLooked = true; }
 				return;
 			}
-			if(b) b.Destroy();
+			if(b) { b.ClearCounters(); b.Destroy(); }     // a spot with no room: not left in the map's kill count
 		}
 	}
 
@@ -328,6 +328,8 @@ class HCE_SpawnAllHandler : EventHandler
 	{
 		let m = looked[consoleplayer];
 		if(!m || m.health <= 0 || automapactive) return;
+		let wheel = HCE_SquadWheel(EventHandler.Find("HCE_SquadWheel"));
+		if(wheel && wheel.wOpen) return;                  // the order wheel is up: it has the middle of the view
 		double fade = clamp(1.0 - (level.maptime - lookedTic[consoleplayer] - 4) / 8.0, 0, 1);
 		if(fade <= 0) return;
 		vector3 head = m.pos + (0, 0, m.height + 2);      // just over the head
@@ -349,10 +351,11 @@ class HCE_SpawnAllHandler : EventHandler
 		double bw = 168 * 0.55 * sc, bh = 26 * 0.55 * sc;
 		if(tex.IsValid())
 			Screen.DrawTexture(tex, false, sx - bw * 0.5, sy - bh, DTA_DestWidthF, bw, DTA_DestHeightF, bh, DTA_Alpha, 0.9 * fade);
-		// the name above it
-		Font f = NewSmallFont;
+		// the name above it (HaloDoom Evolved's HUD font, HaloFont, when it's loaded)
+		double fk;
+		Font f = HCE_SquadWheel.UIFont(fk);
 		String n = m.hce_rankName;
-		double ts = sc;
+		double ts = sc * fk;
 		Screen.DrawText(f, Font.CR_LIGHTBLUE, sx - f.StringWidth(n) * ts * 0.5, sy - bh - f.GetHeight() * ts - 2 * sc, n,
 			DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, fade);
 	}
@@ -554,12 +557,21 @@ class HCE_SquadWheel : EventHandler
 		else if(e.Name == "hce_wheel_pick") { wOpen = true; wSel = clamp(e.Args[0], 0, SLICES - 1); Give(); }    // console / tests
 	}
 
+	// the Marine add-on's text font: HaloDoom Evolved's HUD font (HaloFont) where it's loaded, else NewSmallFont.
+	// k: the scale that draws it at NewSmallFont's size (HaloFont's line is mostly padding)
+	static clearscope Font UIFont(out double k)
+	{
+		Font h = Font.GetFont('HaloFont');
+		if(!h) { k = 1; return NewSmallFont; }
+		k = 1.6 * NewSmallFont.GetHeight() / max(1, h.GetHeight());
+		return h;
+	}
+
 	ui void Give()
 	{
 		wOpen = false;
 		if(wSel >= 0 && wSel < SLICES)
 		{
-			Console.Printf("HCEWHEEL order %d %s", ORDER[wSel], LABEL[wSel]);
 			EventHandler.SendNetworkEvent("hce_squad", ORDER[wSel]);
 		}
 	}
@@ -614,17 +626,21 @@ class HCE_SquadWheel : EventHandler
 					(on ? 4.0 : 1.5) * sc, on ? lit : ring, on ? 230 : 90);
 			}
 		}
-		Font f = NewSmallFont;
-		double ts = 1.5 * sc;
+		double fk;
+		Font f = UIFont(fk);
+		double ts = 1.5 * sc * fk;
 		for(int i = 0; i < SLICES; i++)
 		{
-			double a = i * slice;
-			double x = cx + sin(a) * rLab, y = cy - cos(a) * rLab;
+			// on a wide ellipse round the ring, each name set off from it on its own side (the left ones end at
+			// their point, the right ones start there, the top and bottom ones centred), so none crowd the next
+			double a = i * slice, sa = sin(a), ca = cos(a);
+			double x = cx + sa * rLab * 1.35, y = cy - ca * rLab * 1.05;
 			String t = LABEL[i];
 			double tw = f.StringWidth(t) * ts, th = f.GetHeight() * ts;
+			double lx = abs(sa) < 0.2 ? x - tw / 2 : sa > 0 ? x - tw * 0.15 : x - tw * 0.85;
 			bool on = i == wSel;
-			if(on) Screen.Dim(tab, 0.55, int(x - tw / 2 - 8 * sc), int(y - th / 2 - 3 * sc), int(tw + 16 * sc), int(th + 6 * sc));
-			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, x - tw / 2, y - th / 2, t,
+			if(on) Screen.Dim(tab, 0.55, int(lx - 8 * sc), int(y - th / 2 - 3 * sc), int(tw + 16 * sc), int(th + 6 * sc));
+			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, lx, y - th / 2, t,
 				DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, on ? 1.0 : 0.6);
 		}
 		// the pointer: a dot inside the ring

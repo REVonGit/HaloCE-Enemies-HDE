@@ -218,7 +218,7 @@ FIRE_SOUNDS = {
     'pistol':          (W + 'Mag_MD6/Fire', W + 'Mag_MD6/Fire/Bass', '', '', False),
     'shotgun':         (W + 'Shotgun/Fire', W + 'Shotgun/Fire/Bass', '', '', False),
     'sniper rifle':    (W + 'Sniper/Fire', W + 'Sniper/Fire/Bass', '', '', False),
-    'rocket launcher': (W + 'RocketLauncher/Fire', W + 'RocketLauncher/Fire/Bass', '', '', False),
+    'rocket launcher': (W + 'RocketLauncher/Fire', '', '', '', False),
     'flamethrower':    (W + 'Flamer/Fire/Loop', '', W + 'Flamer/Fire/End', W + 'Flamer/Fire/Start', True),
     'plasma caster':   (W + 'PlasmaCaster/Fire', '', W + 'PlasmaCaster/ChargedFire', W + 'PlasmaCaster/ChargeBegin', False),
     'sentinel beam':   (W + 'SentinelBeam/Fire/Loop', '', W + 'SentinelBeam/Fire/End', W + 'SentinelBeam/Fire/Begin', True),
@@ -393,6 +393,8 @@ def zs_anim_move(A, used, msc=1.0):
     """HCE_AnimMove: how far a hoist / vault carries the body (cover_anims.py's 'move', Halo world units forward, left,
     up), in map units: the model's own scale, with the 1.2 vertical stretch every Halo model gets"""
     mv = [(n, A.meta['anims'][n]['move']) for n in used if 'move' in A.meta['anims'].get(n, {})]
+    if not mv:   # no hoist or vault of its own: no switch (an empty one is a compile warning)
+        return ['\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\treturn (0, 0, 0);', '\t}']
     out = ['\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
     for n, (x, y, z) in mv:
         out.append(f"\t\tcase '{n}': return ({x * S * msc:.1f}, {y * S * msc:.1f}, {z * S * msc * 1.2:.1f});")
@@ -2009,7 +2011,7 @@ FIRE_SOUNDS['grenade launcher'] = (W + 'GrenadeLauncher/Fire', '', '', '', False
 FIRE_SOUNDS['plasma carbine'] = (W + 'Carbine/Fire', W + 'Carbine/Fire/Bass', '', '', False)
 FIRE_SOUNDS['spiker'] = (W + 'Spiker/Fire', W + 'Spiker/Fire/Bass', '', '', False)
 FIRE_SOUNDS['marine pulse carbine'] = (W + 'PulseCarbine/Fire', W + 'PulseCarbine/Fire/Bass', '', '', False)
-FIRE_SOUNDS['needle ballista'] = (W + 'NeedlerJavelin/Fire', W + 'NeedlerJavelin/Fire/Bass', '', '', False)
+FIRE_SOUNDS['needle ballista'] = (W + 'NeedlerJavelin/Fire', '', '', '', False)
 FIRE_CODE.update({'plasma carbine': 'cr', 'spiker': 'sk', 'marine pulse carbine': 'cr', 'needle ballista': 'ne'})
 FIRE_SOUNDS['stanchion'] = (W + 'Stanchion/Fire', W + 'Stanchion/Fire/Bass', '', W + 'Stanchion/Charge/PreFire', False)
 LOBBED.add('grenade launcher')

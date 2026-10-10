@@ -2184,10 +2184,15 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     # Elefant's two closed kit helmets on Spiral's body in place of its own helmet (odst_helmet_code)
     'marine odst closed helmet':       ('marine_armored battle rifle', None, 'helmet_closed', 'silver'),
     'marine odst enclosed helmet':     ('marine_armored shotgun major', None, 'helmet_enclosed'),
+    # the Hellbringer: an ODST flame trooper in Halo Wars 2's flamethrower helmet (Elefant's kit), with the fuel tank
+    # on his back (ODST_EXTRAS)
+    'marine odst hellbringer':         ('marine_armored flamethrower', None, 'helmet_hellbringer'),
 }
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
+# more kit pieces on an ODST variant (model attachments 2, 3...) and which of Spiral's surfaces its helmet hides
+ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), (1, 2))}
 # the Halo 2 ODSTs fight in Halo 2's rifle set, re-posed per gun (marine_h2_grips.py); the battle rifle keeps 'h2br'
 ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
@@ -2196,9 +2201,9 @@ KIT_VISOR_TINTS = {'silver': 'mk_visor_silver.png', 'h2odst': 'mk_h2_odst_visor.
 # h2odst: Halo 2's ODST visor, a dark bluish purple (extract_h2_odst.py puts it on the Halo 2 ODST's visor)
 KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88), 'h2odst': (0.16, 0.15, 0.40)}
 
-def odst_helmet_code(piece, mdir='hce', visor=None):
+def odst_helmet_code(piece, mdir='hce', visor=None, extras=(), surfs=None):
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
-    surfs = ODST_ALL_SURFS if piece in ODST_BODIES else ODST_HELMET_SURFS
+    surfs = surfs or (ODST_ALL_SURFS if piece in ODST_BODIES else ODST_HELMET_SURFS)
     hide = ''.join(f"\t\tA_ChangeModel('None', {{idx}}, \"\", 'None', {k}, {hid});\n" for k in surfs)
     tint = (f'\t\tA_ChangeModel(\'None\', 1, "", \'None\', {KIT_VISOR_SURF}, "models/{mdir}/MarineKit", '
             f'\'{KIT_VISOR_TINTS[visor]}\', CMDL_USESURFACESKIN);\n') if visor else ''
@@ -2209,6 +2214,7 @@ def odst_helmet_code(piece, mdir='hce', visor=None):
             '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
             + hide.replace('{idx}', '0') +
             f'\t\tA_ChangeModel(\'None\', 1, "models/{mdir}/MarineKit", "{piece}.iqm", 1, "", \'None\');\n'
+            + ''.join(f'\t\tA_ChangeModel(\'None\', {2 + k}, "models/{mdir}/MarineKit", "{x}.iqm", 1, "", \'None\');\n' for k, x in enumerate(extras))
             + tint +
             '\t\tHCE_ResumeAnim();\n\t}\n'
             '\toverride void HCE_BloodHideClass()\n\t{\n' + hide.replace('{idx}', str(BLOOD_IDX)) + '\t}\n')
@@ -2235,7 +2241,8 @@ def add_odsts(ai):
         ov = dict(v.get('_ov') or {})
         ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
         if raven: ov['raven'] = raven
-        if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet, visor=visor)
+        ex, sf = ODST_EXTRAS.get(vn, ((), None))
+        if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet, visor=visor, extras=ex, surfs=sf)
         if helmet in ODST_BODIES and not ov.get('stance'): ov['stance'] = dict(ODST_BODY_STANCE)
         v['_ov'] = ov
         ai['variants'][key] = v

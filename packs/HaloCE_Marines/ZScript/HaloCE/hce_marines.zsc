@@ -9296,13 +9296,12 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	}
 	String HCE_KitOutfit0_head()
 	{
-		int x = random[HCEKit](0, 10);
+		int x = random[HCEKit](0, 8);
 		if(x < 3) return "odst_helmet";
 		if(x < 5) return "odst_helmet_shock";
 		if(x < 7) return "odst_helmet_open";
 		if(x < 8) return "odst_helmet_filters";
 		if(x < 9) return "odst_helmet_shock_filters";
-		if(x < 11) return "h2_odst_helmet";
 		return "";
 	}
 	String HCE_KitOutfit0_chest()

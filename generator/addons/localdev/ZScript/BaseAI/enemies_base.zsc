@@ -638,7 +638,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_Play(int kind, bool loop = true, bool restart = false, int blend = 4, bool force = false)
 	{
 		if(!bDECOUPLEDANIMATIONS) return;
-		if((kind == HCE_A_IDLE || (kind == HCE_A_MOVE_F && hce_moveSpeed <= hce_lowWalkSpeed * 1.05)) && HCE_Relaxed())
+		// the low-ready walk below the low walk speed; once in it, it holds up to a third over (a follower's speed
+		// hovers round the line, and he flipped between the two walks)
+		double lowTop = hce_lowWalkSpeed * (hce_curAnimKind == HCE_A_LOW_MOVE ? 1.35 : 1.05);
+		if((kind == HCE_A_IDLE || (kind == HCE_A_MOVE_F && hce_moveSpeed <= lowTop)) && HCE_Relaxed())
 		{
 			int low = kind == HCE_A_IDLE ? HCE_A_LOW_IDLE : HCE_A_LOW_MOVE;
 			if(HCE_AnimName(low) != 'None') kind = low;
@@ -2695,7 +2698,16 @@ class HaloDoom_EnemyBase : Actor abstract
 			return;
 		}
 		hce_crouch = false;
+		if(hce_fmFwd && HCE_HasAnim(HCE_A_MOVE_F)) { HCE_Play(HCE_A_MOVE_F); return; }   // a follower turning into his way
 		double rel = DeltaAngle(angle, hce_moveAngle);
+		// the walk he's in holds until the way he's going is 20 degrees past its edge: steering round the others
+		// wobbles hce_moveAngle, and without this he flipped between forward, sidestep and backpedal every few tics
+		int cur = hce_curAnimKind == HCE_A_LOW_MOVE ? HCE_A_MOVE_F : hce_curAnimKind;   // the low-ready walk is a forward walk
+		if(cur >= HCE_A_MOVE_F && cur <= HCE_A_MOVE_R && HCE_HasAnim(cur))
+		{
+			double mid = cur == HCE_A_MOVE_F ? 0 : cur == HCE_A_MOVE_L ? 90 : cur == HCE_A_MOVE_R ? -90 : 180;
+			if(abs(DeltaAngle(mid, rel)) < 45 + 20) { HCE_Play(cur); return; }
+		}
 		int k = HCE_A_MOVE_F;
 		if(rel > 45 && rel < 135) k = HCE_A_MOVE_L;
 		else if(rel < -45 && rel > -135) k = HCE_A_MOVE_R;
@@ -3282,6 +3294,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector2 hce_formSpot, hce_navVia;
 	double hce_formFace;
 	int hce_formTics;
+	vector2 hce_fmNewSpot; double hce_fmNewFace;     // the formation's latest slot for him, before he takes it up
+	bool hce_fmWalking, hce_fmTurning, hce_fmHurry;
+	int hce_fmStuck;                       // tics walking without getting anywhere (blocked by the others)
+	bool hce_fmFwd;                        // following and turning into his way: walks forward through the turn (HCE_PickMoveAnim)
+	vector2 hce_fmSettledBy;               // settled short of his place (blocked): where the player was; (0,0) none   // following: on his way to his place / turning to his sector / running (each with hysteresis)
 	virtual void HCE_Follow()
 	{
 		let p = players[consoleplayer].mo;
@@ -3308,7 +3325,17 @@ class HaloDoom_EnemyBase : Actor abstract
 			// a place in the squad's formation (HCE_Formation): a wedge behind the player in the open, a file down
 			// his own path where it's tight
 			if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
-			if(level.maptime >= hce_formTics) { hce_formation.Spot(self, hce_formSpot, hce_formFace); hce_formTics = level.maptime + 6; }
+			hce_fmFwd = false;
+			if(level.maptime >= hce_formTics)
+			{
+				// a new place only when it has really moved: small shifts of the slot don't send him shuffling about
+				hce_formation.Spot(self, hce_fmNewSpot, hce_fmNewFace);      // (fields: the JIT can't take a local vector as an out)
+				// settled short of his place: he stays put until the player has moved on
+				if(hce_fmSettledBy != (0, 0) && (p.pos.xy - hce_fmSettledBy).Length() > 128) hce_fmSettledBy = (0, 0);
+				if(hce_fmSettledBy == (0, 0) && (hce_formSpot == (0, 0) || (hce_fmNewSpot - hce_formSpot).Length() > (hce_fmWalking ? 8 : 40))) hce_formSpot = hce_fmNewSpot;
+				if(abs(DeltaAngle(hce_fmNewFace, hce_formFace)) > 20 || hce_fmTurning) hce_formFace = hce_fmNewFace;
+				hce_formTics = level.maptime + 6;
+			}
 			vector2 dv = hce_formSpot - pos.xy;
 			double gd = dv.Length(), d = Distance2D(p);
 			// round corners: no straight way to its place, so the newest point on the player's trail it can reach
@@ -3321,17 +3348,47 @@ class HaloDoom_EnemyBase : Actor abstract
 				if(!HCE_Walkable((hce_formSpot, fz)) && HCE_TrailGoal(PlayerNum(p), level.maptime - 35 * 90, level.maptime)) hce_navVia = hce_trailHit.xy;
 			}
 			if(hce_navVia != (0, 0) && gd > 40 && d > 160) { dv = hce_navVia - pos.xy; if(dv.Length() < 32) hce_navVia = (0, 0); }
-			if(gd > 40 && d > 72)
+			// walk to his place once he's well off it (64), and on until he's on it (20): no stop-start at its edge
+			// with the player on the move he keeps pace in his place rather than stopping on it and starting again
+			double pv = p.vel.xy.Length();
+			bool pMoving = pv > 1.5;
+			if(!pMoving && (d <= 72 || gd < 20)) { hce_fmWalking = false; hce_fmHurry = false; }
+			else if(!hce_fmWalking && gd > (pMoving ? 32 : 64)) { hce_fmWalking = true; hce_fmStuck = 0; }
+			// blocked by the men round him or by the ground: he settles where he is until the player moves on
+			if(hce_fmWalking) hce_fmStuck = vel.xy.Length() < 1.0 ? hce_fmStuck + 1 : max(0, hce_fmStuck - 1);
+			if(hce_fmWalking && !pMoving && (hce_fmStuck > 14 && gd < 110 || hce_fmStuck > 45))
 			{
-				bool hurry = gd > 160 || d > 500 || p.vel.xy.Length() > hce_walkSpeed * 1.2;
-				HCE_Move(atan2(dv.y, dv.x), hurry ? hce_runSpeed : (gd < 96 ? hce_walkSpeed * 0.75 : hce_walkSpeed));
-				A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+				hce_fmWalking = false; hce_fmHurry = false; hce_formSpot = pos.xy; hce_fmSettledBy = p.pos.xy;
+			}
+			if(hce_fmWalking)
+			{
+				bool fast = gd > 160 || d > 500 || p.vel.xy.Length() > hce_walkSpeed * 1.2;
+				if(fast) hce_fmHurry = true;
+				else if(gd < 96 && d < 400 && p.vel.xy.Length() < hce_walkSpeed * 0.8) hce_fmHurry = false;   // runs on until nearly there
+				double spd = hce_fmHurry ? hce_runSpeed : hce_walkSpeed;
+				double mang = atan2(dv.y, dv.x);
+				if(pMoving && gd < 48)
+				{
+					// in his place and the player walking: his pace and his way, eased back onto the slot
+					spd = clamp(pv * (0.85 + gd / 160), 1, hce_runSpeed);
+					vector2 want = p.vel.xy.Unit() * pv + dv * 0.15;
+					mang = atan2(want.y, want.x);
+				}
+				HCE_Move(mang, spd);
+				// turns into his way at his own rate: steering round the others mustn't snap him about every tic
+				double td = DeltaAngle(angle, hce_moveAngle);
+				double tr = min(hce_turnRate * 2.5, 30);                 // quick enough to keep him walking forward
+				hce_fmFwd = true;                                         // he turns round to go his way, never backpedals to it
+				if(abs(td) > 6) A_SetAngle(angle + clamp(td, -tr, tr), SPF_INTERPOLATE);   // small wobbles ignored
 			}
 			else
 			{
 				HCE_Brake();
+				hce_fmFwd = hce_curAnimKind == HCE_A_MOVE_F || hce_curAnimKind == HCE_A_LOW_MOVE;   // slows to a stop walking forward
 				double dd = DeltaAngle(angle, hce_formFace);              // in place: watch its sector
-				if(abs(dd) > 2) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.5, hce_turnRate * 0.5), SPF_INTERPOLATE);
+				if(abs(dd) > 30) hce_fmTurning = true;                   // turns once it's well off, all the way round
+				else if(abs(dd) < 3) hce_fmTurning = false;
+				if(hce_fmTurning) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.35, hce_turnRate * 0.35), SPF_INTERPOLATE);
 			}
 		}
 		HCE_PickMoveAnim();
@@ -5924,6 +5981,8 @@ class HCE_Formation : Thinker
 	Array<double> tx, ty;        // the leader's path, newest first, a point every 16 units
 	double heading;
 	bool tight;
+	vector2 lead;                // the leader's velocity, smoothed: the slots lead it, so a tap or a stop doesn't throw them
+	double ringHeading;          // a big squad's rear arcs turn after him slowly, so his every turn doesn't swing them round
 	Array<HaloDoom_EnemyBase> roster;
 	// in a fight (HaloDoom_EnemyBase.HCE_DoctrineUNSC): the drill (1 attack, 2 break contact), which fire team is
 	// rushing (-1 neither: reacting to contact), when it swaps, the side the maneuver element flanks on
@@ -5937,7 +5996,7 @@ class HCE_Formation : Thinker
 		while(f = HCE_Formation(it.Next())) if(f.leader == leader) return f;
 		f = new("HCE_Formation");
 		f.ChangeStatNum(STAT_USER);
-		f.leader = leader; f.heading = leader.angle;
+		f.leader = leader; f.heading = leader.angle; f.ringHeading = leader.angle;
 		return f;
 	}
 
@@ -5952,6 +6011,8 @@ class HCE_Formation : Thinker
 		FightTick();
 		vector2 v = leader.vel.xy;
 		if(v.Length() > 1.5) heading += Actor.DeltaAngle(heading, atan2(v.y, v.x)) * 0.12;   // the way he's going
+		lead += (v - lead) * 0.08;
+		ringHeading += Actor.DeltaAngle(ringHeading, heading) * 0.025;
 		if(!tx.Size() || (leader.pos.xy - (tx[0], ty[0])).Length() >= 16)
 		{
 			tx.Insert(0, leader.pos.x); ty.Insert(0, leader.pos.y);
@@ -6099,6 +6160,25 @@ class HCE_Formation : Thinker
 			return;
 		}
 		double back, lat;
+		if(k >= ARM * 2 && n > ARM * 2 + 4)
+		{
+			// a big squad (more than the wedge and a short file): the rest stand in arcs round the back of the
+			// wedge, 68 units apart, ring after ring 72 out, facing out over the rear -- a compact group round him
+			// rather than a column trailing far behind (which had its tail running to and fro along his path)
+			int j = k - ARM * 2;
+			double r = 200, cnt = 1;
+			for(int g = 0; g < 40; g++)
+			{
+				cnt = max(1, int(r * (220.0 / 57.2958) / 68));
+				if(j < cnt) break;
+				j -= int(cnt); r += 72;
+			}
+			double a = ringHeading + 180 - 110 + 220.0 * (j + 0.5) / cnt;
+			spot = leader.pos.xy + Actor.AngleToVector(a, r) + lead * 10;
+			face = a;
+			if(!Open(spot)) spot = TrailPoint(r + j * 40);          // in a wall: down his path, each man his own distance
+			return;
+		}
 		if(k < ARM * 2)
 		{
 			int r = k / 2 + 1;
@@ -6113,7 +6193,7 @@ class HCE_Formation : Thinker
 		}
 		if(last) face = heading + 180;
 		vector2 fw = Actor.AngleToVector(heading, 1), lf = Actor.AngleToVector(heading + 90, 1);
-		spot = leader.pos.xy - fw * back + lf * lat + leader.vel.xy * 10;    // keeping pace: where he'll be shortly
+		spot = leader.pos.xy - fw * back + lf * lat + lead * 10;             // keeping pace: where he'll be shortly
 		if(!Open(spot)) spot = TrailPoint(back + abs(lat) * 0.5);   // his slot is in a wall: on the path instead
 	}
 }

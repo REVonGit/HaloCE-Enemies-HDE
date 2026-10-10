@@ -540,8 +540,8 @@ class HCE_SquadWheel : EventHandler
 
 	// clockwise from the top: the squad order (HCE_SpawnAllHandler.SquadOrder) and its name
 	static const int ORDER[] = { 0, 2, 1, 4, 5, 6, 3, 7, 8, 9 };
-	static const String LABEL[] = { "Follow me", "Regroup", "Hold here", "Open fire", "Focus fire", "Suppress",
-		"Hold fire", "Medic", "Get that weapon", "Press that button" };
+	static const String LABEL[] = { "Follow", "Regroup", "Hold", "Open fire", "Focus", "Suppress",
+		"Hold fire", "Medic", "Weapon", "Button" };
 
 	override void ConsoleProcess(ConsoleEvent e)
 	{
@@ -591,46 +591,46 @@ class HCE_SquadWheel : EventHandler
 		if(wOpen && (gamestate != GS_LEVEL || menuactive != Menu.Off || !players[consoleplayer].mo || players[consoleplayer].health <= 0)) wOpen = false;
 	}
 
+	// drawn small and faint over the middle of the view: a thin ring, the order under the pointer lit on it and its
+	// name on a soft tab, the others' names dimmed, and a dot for the pointer
 	override void RenderOverlay(RenderEvent e)
 	{
 		if(!wOpen) return;
 		int w = Screen.GetWidth(), h = Screen.GetHeight();
 		double cx = w / 2.0, cy = h / 2.0, sc = h / 1080.0;
-		double rIn = 70 * sc, rOut = 300 * sc, rLab = 215 * sc;
-		Color blue = Color(255, 96, 170, 255), dark = Color(255, 10, 30, 60);
-		Screen.Dim(dark, 0.45, 0, 0, w, h);
-		// the ring, and a spoke between each pair of orders
-		int seg = 60;
-		for(int k = 0; k < seg; k++)
-		{
-			double a0 = k * 360.0 / seg, a1 = (k + 1) * 360.0 / seg;
-			Screen.DrawThickLine(int(cx + sin(a0) * rOut), int(cy - cos(a0) * rOut), int(cx + sin(a1) * rOut), int(cy - cos(a1) * rOut), 2 * sc, blue, 200);
-			Screen.DrawThickLine(int(cx + sin(a0) * rIn), int(cy - cos(a0) * rIn), int(cx + sin(a1) * rIn), int(cy - cos(a1) * rIn), 2 * sc, blue, 200);
-		}
+		double rRing = 120 * sc, rLab = 168 * sc;
+		Color ring = Color(255, 120, 190, 255), lit = Color(255, 190, 230, 255), tab = Color(255, 20, 60, 110);
+		double slice = 360.0 / SLICES;
+		// the ring: faint, with the slice under the pointer drawn bright and thicker
+		int seg = 6;
 		for(int i = 0; i < SLICES; i++)
 		{
-			double a = (i + 0.5) * 360.0 / SLICES;
-			Screen.DrawThickLine(int(cx + sin(a) * rIn), int(cy - cos(a) * rIn), int(cx + sin(a) * rOut), int(cy - cos(a) * rOut), 1.5 * sc, blue, 120);
+			bool on = i == wSel;
+			double a0 = i * slice - slice / 2 + 2, a1 = i * slice + slice / 2 - 2;    // a small gap between slices
+			for(int k = 0; k < seg; k++)
+			{
+				double b0 = a0 + (a1 - a0) * k / seg, b1 = a0 + (a1 - a0) * (k + 1) / seg;
+				Screen.DrawThickLine(int(cx + sin(b0) * rRing), int(cy - cos(b0) * rRing), int(cx + sin(b1) * rRing), int(cy - cos(b1) * rRing),
+					(on ? 4.0 : 1.5) * sc, on ? lit : ring, on ? 230 : 90);
+			}
 		}
 		Font f = NewSmallFont;
-		double ts = 2.2 * sc;
+		double ts = 1.5 * sc;
 		for(int i = 0; i < SLICES; i++)
 		{
-			double a = i * 360.0 / SLICES;
+			double a = i * slice;
 			double x = cx + sin(a) * rLab, y = cy - cos(a) * rLab;
 			String t = LABEL[i];
 			double tw = f.StringWidth(t) * ts, th = f.GetHeight() * ts;
 			bool on = i == wSel;
-			if(on) Screen.Dim(blue, 0.55, int(x - tw / 2 - 10 * sc), int(y - th / 2 - 6 * sc), int(tw + 20 * sc), int(th + 12 * sc));
-			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, x - tw / 2, y - th / 2, t, DTA_ScaleX, ts, DTA_ScaleY, ts);
-			String n = String.Format("%d", (i + 1) % 10);
-			Screen.DrawText(f, Font.CR_DARKGRAY, x - f.StringWidth(n) * ts * 0.6 / 2, y + th / 2 + 4 * sc, n, DTA_ScaleX, ts * 0.6, DTA_ScaleY, ts * 0.6);
+			if(on) Screen.Dim(tab, 0.55, int(x - tw / 2 - 8 * sc), int(y - th / 2 - 3 * sc), int(tw + 16 * sc), int(th + 6 * sc));
+			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, x - tw / 2, y - th / 2, t,
+				DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, on ? 1.0 : 0.6);
 		}
-		// the pointer, and in the middle the order it is on
-		double px = cx + wx / REACH * (rOut - 20 * sc), py = cy - wy / REACH * (rOut - 20 * sc);
-		Screen.DrawThickLine(int(cx), int(cy), int(px), int(py), 3 * sc, Color(255, 255, 255, 255), 160);
-		String mid = wSel >= 0 ? LABEL[wSel] : "SQUAD";
-		double ms = min(2.4 * sc, (rIn * 1.8) / max(1, f.StringWidth(mid)));
-		Screen.DrawText(f, wSel >= 0 ? Font.CR_WHITE : Font.CR_LIGHTBLUE, cx - f.StringWidth(mid) * ms / 2, cy - f.GetHeight() * ms / 2, mid, DTA_ScaleX, ms, DTA_ScaleY, ms);
+		// the pointer: a dot inside the ring
+		double pr = min(sqrt(wx * wx + wy * wy) / REACH, 1.0) * (rRing - 14 * sc);
+		double pa = atan2(wx, wy);
+		double px = cx + sin(pa) * pr, py = cy - cos(pa) * pr, ds = 3 * sc;
+		Screen.Dim(wSel >= 0 ? lit : ring, 0.85, int(px - ds), int(py - ds), int(ds * 2 + 1), int(ds * 2 + 1));
 	}
 }

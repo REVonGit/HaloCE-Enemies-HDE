@@ -6,10 +6,12 @@ class HCE_TestHarness : EventHandler
 {
 	Array<Actor> climbing, covered, peeked, doored, searched, perched, lunged, invest, lifted;
 	int climbs;
+	ui bool spawned;
 
 	override void UiTick()
 	{
-		if(gamestate == GS_LEVEL && level.maptime == 70) EventHandler.SendNetworkEvent("hce_spawnall");
+		// once, at or after tic 70: UiTick doesn't see every game tic when frames are slow
+		if(gamestate == GS_LEVEL && level.maptime >= 70 && !spawned) { spawned = true; EventHandler.SendNetworkEvent("hce_spawnall"); }
 	}
 
 	void Mark(Array<Actor> a, Actor m) { if(a.Find(m) == a.Size()) a.Push(m); }

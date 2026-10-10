@@ -13,7 +13,7 @@ Halo CE's (their heads both sit 0.53-0.64 world units up), so the helmet is move
 heads' bind positions and bound wholly to the CE Marine's head bone, like Elefant's kit pieces (extract_marine_kit.py).
 Its neck collar is cut off (the bodies it goes on have their own). The visor takes the kit's visor texture, so it gets
 the kit visors' cube-map reflection (build_pack.kit_visors). The piece is added to MarineKit.json (an enclosed helmet,
-for the ODST variants and the Armored Marines' ODST outfit). Run after extract_marine_kit.py.
+kept as a kit piece; no Marine outfit rolls it: only the Halo 2 ODSTs wear Halo 2's helmet, on their own body). Run after extract_marine_kit.py.
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
@@ -216,7 +216,7 @@ def main():
                          bidx=cb.astype(np.uint8), bw=np.clip(w8, 0, 255).astype(np.uint8), tris=tris[:, [0, 2, 1]]))
         print('   body', mm['region'], mm['shader'], len(pos), 'verts', len(tris), 'tris')
         if mm['region'] != 'head': continue
-        # the helmet alone, rigid on the CE head bone with its neck collar cut off (the Armored Marines' ODST outfit)
+        # the helmet alone, rigid on the CE head bone with its neck collar cut off (a kit piece of its own; no outfit rolls it)
         hp = pos + shift
         keep = hp[tris].max(axis=1)[:, 2] >= COLLAR_Z
         t2 = tris[keep]; used = np.unique(t2)
@@ -236,9 +236,10 @@ def main():
     kit['pieces'][BODY] = dict(slot='body', source='halo2 marine body + head odst', file=f'{BODY}.iqm', shell=False,
                                enclosed=True, needs_helmet=False, whole=True, tris=int(sum(len(x['tris']) for x in body)))
     if PID not in kit['enclosed']: kit['enclosed'].append(PID)
-    for o in kit.get('outfits', {}).get('MarineArmored', []):           # the Armored Marines' ODST outfit wears the helmet too
-        heads = o['slots'].get('head', [])
-        if heads and not any(p == PID for p, _ in heads): heads.append([PID, 2])
+    for o in kit.get('outfits', {}).get('MarineArmored', []):           # only the Halo 2 ODSTs wear it, not the Marines' outfits
+        if 'head' in o['slots']: o['slots']['head'] = [[p, w] for p, w in o['slots']['head'] if p != PID]
+    for pool in kit.get('pools', {}).values():
+        if 'head' in pool: pool['head']['picks'] = [[p, w] for p, w in pool['head']['picks'] if p != PID]
     json.dump(kit, open(kj, 'w'), indent=1)
     print('->', f'{KIT}/{BODY}.iqm', f'{KIT}/{PID}.iqm')
 

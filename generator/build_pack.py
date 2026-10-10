@@ -2192,7 +2192,7 @@ ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
 # more kit pieces on an ODST variant (model attachments 2, 3...) and which of Spiral's surfaces its helmet hides
-ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), (1,))}   # Spiral's visor stays: the Hellbringer helmet is an open shell
+ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), None)}   # the helmet's own amber lens in place of Spiral's helmet and visor
 # the Halo 2 ODSTs fight in Halo 2's rifle set, re-posed per gun (marine_h2_grips.py); the battle rifle keeps 'h2br'
 ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
@@ -2288,6 +2288,7 @@ vec4 ProcessTexel()
 # texture: it gets the ODSTs' visor shader, tinted by its own orange, over the ODST visor's cube map
 KIT_VISOR = 'mk_innie_visor_diff.png'
 KIT_VISOR_CUBE = 'mk_visor_cube.png'
+KIT_OWN_VISORS = ('mk_hellbringer_visor.png',)    # kit visors in their own colours (the Hellbringer's amber lens)
 
 def kit_visor_tint(src, dst, rgb):
     from PIL import Image
@@ -2307,7 +2308,7 @@ def kit_visors(pack, mdir):
     os.makedirs(f'{pack}/shaders', exist_ok=True)
     open(f'{pack}/shaders/hce_visor.fp', 'w').write(VISOR_SHADER)
     out = []
-    for name, tex in [(None, KIT_VISOR)] + list(KIT_VISOR_TINTS.items()):
+    for name, tex in [(None, KIT_VISOR)] + [(None, t) for t in KIT_OWN_VISORS if os.path.exists(f'{d}/{t}')] + list(KIT_VISOR_TINTS.items()):
         if name: kit_visor_tint(f'{d}/{KIT_VISOR}', f'{d}/{tex}', KIT_VISOR_COLOURS[name])
         out.append(f'material texture "models/{mdir}/MarineKit/{tex}"\n{{\n\tshader "shaders/hce_visor.fp"\n'
                    f'\ttexture tex_cube "models/{mdir}/MarineKit/{KIT_VISOR_CUBE}"\n}}')

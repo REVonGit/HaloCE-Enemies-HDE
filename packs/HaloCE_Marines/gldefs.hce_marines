@@ -33,6 +33,11 @@ material texture "models/hce/MarineKit/mk_innie_visor_diff.png"
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
 }
+material texture "models/hce/MarineKit/mk_hellbringer_visor.png"
+{
+	shader "shaders/hce_visor.fp"
+	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
+}
 material texture "models/hce/MarineKit/mk_visor_silver.png"
 {
 	shader "shaders/hce_visor.fp"

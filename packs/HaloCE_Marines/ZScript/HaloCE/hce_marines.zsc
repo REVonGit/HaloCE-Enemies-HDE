@@ -159,7 +159,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		if(x < 6) return "arms_gauntlets_gloves";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
 	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "h2_odst_helmet" || p == "h2_odst_body"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	String hce_kit[9];
@@ -9344,7 +9344,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		if(x < 4) return "";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
 	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "h2_odst_helmet" || p == "h2_odst_body"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	String hce_kit[9];
@@ -18756,6 +18756,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 	{
 		super.PostBeginPlay();
 		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/MarineKit", "helmet_hellbringer.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/MarineKit", "flamer_tank.iqm", 1, "", 'None');
 		A_ChangeModel('None', 3, "models/hce/MarineKit", "gas_mask.iqm", 1, "", 'None');
@@ -18764,6 +18765,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 	override void HCE_BloodHideClass()
 	{
 		A_ChangeModel('None', 7, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 7, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override void HCE_ShowGun(bool show)
 	{

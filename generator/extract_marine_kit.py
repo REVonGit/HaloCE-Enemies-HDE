@@ -64,6 +64,10 @@ CE = {
 FALLBACK = {'innie_cigar': 'innie_cigar.tif', 'visor': 'innie_visor_diff.tif', 'marine_hats': 'woodland_marine_hats.tif',
             'marine_helmet': 'woodland_marine_helmet.tif', 'marine_torso': 'marine_torso.tif', 'marine_body': 'woodland_marine_body.tif',
             'frag light': 'frag grenade.tga', 'h1_odst_visor': 'innie_visor_diff.tif'}
+# a piece's material drawn from another texture: the Hellbringer helmet's amber lens is the head add-ons sheet's
+# glasses lens, a half-transparent texel the engine's alpha test throws away; it gets the sheet's colour, opaque, as
+# its own texture (build_pack.kit_visors gives it the visor shader)
+MAT_OVERRIDE = {('helm_hellbringer', 'glasses'): 'mk_hellbringer_visor.png'}
 FACES = ('face_', 'eyes_')
 # blend object -> (piece id, slot). Slots: head (replaces the head), face, chest, back, shoulders, arms (replaces arms)
 PIECES = {
@@ -235,6 +239,9 @@ def main(only=None):
             mn = p['mats'][mi] if mi < len(p['mats']) else ''
             img = mimg.get(mn) or FALLBACK.get(mn)
             fn = tex.get(img) if img else None
+            if fn and (obj, mn) in MAT_OVERRIDE:
+                fn2 = MAT_OVERRIDE[(obj, mn)]
+                Image.open(os.path.join(od, fn)).convert('RGB').save(os.path.join(od, fn2)); fn = fn2
             if not fn: skipped.append(mn); continue
             t = p['tris'][p['tmat'] == mi][:, [0, 2, 1]]
             used = np.unique(t)

@@ -123,6 +123,12 @@ def superset(a, b):
     return None
 
 
+def union_lines(a, b):
+    """two packs' parts of one line-based lump (each pack's footsteps in sndinfo.steps): a, then b's lines a lacks"""
+    la = text(a).rstrip('\n').split('\n'); seen = {l.strip() for l in la}
+    return ('\n'.join(la + [l for l in text(b).split('\n') if l.strip() and l.strip() not in seen]) + '\n').encode()
+
+
 def pack_kind(z):
     """'standalone' (HCES_EnemyBase, no HDE needed), 'hde' (needs HDE + HCE_EnemyAPI) or None (voices etc.)"""
     for n in z.namelist():
@@ -168,6 +174,8 @@ def _merge(inputs, output, quiet, zips):
                     sup = superset(files[path], data)    # Core's file vs a bundle's copy of it (all of it or a part)
                     if sup is not None:
                         files[path] = sup; continue
+                    if low.startswith('sndinfo.'):        # sound definitions: one per line, so the packs' sets add up
+                        files[path] = union_lines(files[path], data); continue
                 root = '/' not in path and os.path.splitext(low)[1] in CONCAT_EXT
                 if root:
                     concat.setdefault(path, [(sources[path], files[path])]).append((name, data)); continue

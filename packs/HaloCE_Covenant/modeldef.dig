@@ -543,6 +543,55 @@ Model HCE_BruteMinorPlasmaRifle
 	FrameIndex HCEM A 8 0
 }
 
+Model HCE_BruteStalkerSpiker
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	SurfaceSkin 0 2 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	SurfaceSkin 0 8 "skins/hce_hidden.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/hce_hidden.png"
+	SurfaceSkin 0 11 "skins/hce_hidden.png"
+	SurfaceSkin 0 12 "skins/hce_hidden.png"
+	SurfaceSkin 0 13 "skins/hce_hidden.png"
+	SurfaceSkin 0 14 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 15 "skins/hce_hidden.png"
+	SurfaceSkin 0 16 "skins/hce_hidden.png"
+	SurfaceSkin 0 17 "skins/hce_hidden.png"
+	SurfaceSkin 0 18 "skins/hce_hidden.png"
+	SurfaceSkin 0 19 "skins/hce_hidden.png"
+	SurfaceSkin 0 28 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 30 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "w_spiker_body.png"
+	SurfaceSkin 0 25 "w_spiker_heat.png"
+	SurfaceSkin 0 26 "w_spiker_clip.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	SurfaceSkin 0 31 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_bulldog.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 8 0 "hce_hidden.png"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
 Model HCE_Drinol
 {
 	Path "models/hce_dig/Drinol"
@@ -746,6 +795,36 @@ Model HCE_EliteCommanderPulseCarbine
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_EliteHonorGuardPlasmaCarbine
+{
+	Path "models/hce_dig/EliteRifle"
+	Model 0 "EliteRifle_nohead.iqm"
+	SurfaceSkin 0 0 "skins/elitehonorguardplasmacarbine_eliterifle_0.png"
+	SurfaceSkin 0 1 "skins/elitehonorguardplasmacarbine_eliterifle_1.png"
+	SurfaceSkin 0 2 "skins/elitehonorguardplasmacarbine_eliterifle_2.png"
+	SurfaceSkin 0 3 "skins/elitehonorguardplasmacarbine_eliterifle_3.png"
+	SurfaceSkin 0 4 "skins/elitehonorguardplasmacarbine_eliterifle_4.png"
+	SurfaceSkin 0 5 "skins/elitehonorguardplasmacarbine_eliterifle_5.png"
+	SurfaceSkin 0 11 "skins/elitehonorguardplasmacarbine_eliterifle_0.png"
+	SurfaceSkin 0 12 "skins/elitehonorguardplasmacarbine_eliterifle_1.png"
+	SurfaceSkin 0 13 "skins/elitehonorguardplasmacarbine_eliterifle_5.png"
+	SurfaceSkin 0 14 "skins/elitehonorguardplasmacarbine_eliterifle_5.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 6 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 7 "w_cmt_carbine_lights.png"
+	SurfaceSkin 0 8 "w_cmt_carbine_icon.png"
+	SurfaceSkin 0 9 "w_cmt_carbine_meter.png"
+	SurfaceSkin 0 10 "w_cmt_carbine_purple.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_EliteMajorPlasmaCarbine
 {
 	Path "models/hce_dig/EliteRifle"
@@ -856,6 +935,36 @@ Model HCE_EliteMinorPulseCarbine
 	SurfaceSkin 0 8 "w_cmt_carbine_blue_icon.png"
 	SurfaceSkin 0 9 "w_cmt_carbine_blue_meter.png"
 	SurfaceSkin 0 10 "w_cmt_carbine_blue_purple.png"
+	SurfaceSkin 0 15 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteRangerPlasmaCarbine
+{
+	Path "models/hce_dig/EliteRifle"
+	Model 0 "EliteRifle_nohead.iqm"
+	SurfaceSkin 0 0 "skins/eliterangerplasmacarbine_eliterifle_0.png"
+	SurfaceSkin 0 1 "skins/eliterangerplasmacarbine_eliterifle_1.png"
+	SurfaceSkin 0 2 "skins/eliterangerplasmacarbine_eliterifle_2.png"
+	SurfaceSkin 0 3 "skins/eliterangerplasmacarbine_eliterifle_3.png"
+	SurfaceSkin 0 4 "skins/eliterangerplasmacarbine_eliterifle_4.png"
+	SurfaceSkin 0 5 "skins/eliterangerplasmacarbine_eliterifle_5.png"
+	SurfaceSkin 0 11 "skins/eliterangerplasmacarbine_eliterifle_0.png"
+	SurfaceSkin 0 12 "skins/eliterangerplasmacarbine_eliterifle_1.png"
+	SurfaceSkin 0 13 "skins/eliterangerplasmacarbine_eliterifle_5.png"
+	SurfaceSkin 0 14 "skins/eliterangerplasmacarbine_eliterifle_5.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 6 "w_cmt_carbine_gray.png"
+	SurfaceSkin 0 7 "w_cmt_carbine_lights.png"
+	SurfaceSkin 0 8 "w_cmt_carbine_icon.png"
+	SurfaceSkin 0 9 "w_cmt_carbine_meter.png"
+	SurfaceSkin 0 10 "w_cmt_carbine_purple.png"
 	SurfaceSkin 0 15 "hce_hidden.png"
 	SurfaceSkin 0 16 "hce_hidden.png"
 	SurfaceSkin 0 17 "hce_hidden.png"

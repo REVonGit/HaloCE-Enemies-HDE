@@ -369,25 +369,87 @@ Model HCE_EliteMinorPlasmaRifleRanged
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_EliteSpecopsBeamRifle
+Model HCE_EliteRangerNeedler
 {
-	Path "models/hce/EliteSpecial"
-	Model 0 "EliteSpecial.iqm"
-	SurfaceSkin 0 0 "skins/elitespecopsbeamrifle_elitespecial_0.png"
-	SurfaceSkin 0 1 "skins/elitespecopsbeamrifle_elitespecial_1.png"
-	SurfaceSkin 0 2 "skins/elitespecopsbeamrifle_elitespecial_2.png"
-	SurfaceSkin 0 3 "skins/elitespecopsbeamrifle_elitespecial_3.png"
-	SurfaceSkin 0 4 "skins/elitespecopsbeamrifle_elitespecial_4.png"
-	SurfaceSkin 0 5 "skins/elitespecopsbeamrifle_elitespecial_5.png"
-	SurfaceSkin 0 12 "skins/elitespecopsbeamrifle_elitespecial_0.png"
-	SurfaceSkin 0 13 "skins/elitespecopsbeamrifle_elitespecial_0.png"
-	SurfaceSkin 0 14 "skins/elitespecopsbeamrifle_elitespecial_2.png"
-	SurfaceSkin 0 15 "skins/elitespecopsbeamrifle_elitespecial_5.png"
-	SurfaceSkin 0 16 "skins/elitespecopsbeamrifle_elitespecial_5.png"
+	Path "models/hce/Elite"
+	Model 0 "Elite_nohead.iqm"
+	SurfaceSkin 0 0 "skins/eliterangerneedler_elite_0.png"
+	SurfaceSkin 0 1 "skins/eliterangerneedler_elite_1.png"
+	SurfaceSkin 0 2 "skins/eliterangerneedler_elite_2.png"
+	SurfaceSkin 0 3 "skins/eliterangerneedler_elite_3.png"
+	SurfaceSkin 0 4 "skins/eliterangerneedler_elite_4.png"
+	SurfaceSkin 0 5 "skins/eliterangerneedler_elite_5.png"
+	SurfaceSkin 0 12 "skins/eliterangerneedler_elite_0.png"
+	SurfaceSkin 0 13 "skins/eliterangerneedler_elite_1.png"
+	SurfaceSkin 0 14 "skins/eliterangerneedler_elite_5.png"
+	SurfaceSkin 0 15 "skins/eliterangerneedler_elite_5.png"
 	Path "models/hce/weapons"
 	SurfaceSkin 0 6 "hce_hidden.png"
 	SurfaceSkin 0 7 "hce_hidden.png"
-	SurfaceSkin 0 8 "w_h2_beam_rifle_0.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "w_needler_glow.png"
+	SurfaceSkin 0 10 "w_needler_1.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteRangerPlasmaRifle
+{
+	Path "models/hce/Elite"
+	Model 0 "Elite_nohead.iqm"
+	SurfaceSkin 0 0 "skins/eliterangerplasmarifle_elite_0.png"
+	SurfaceSkin 0 1 "skins/eliterangerplasmarifle_elite_1.png"
+	SurfaceSkin 0 2 "skins/eliterangerplasmarifle_elite_2.png"
+	SurfaceSkin 0 3 "skins/eliterangerplasmarifle_elite_3.png"
+	SurfaceSkin 0 4 "skins/eliterangerplasmarifle_elite_4.png"
+	SurfaceSkin 0 5 "skins/eliterangerplasmarifle_elite_5.png"
+	SurfaceSkin 0 12 "skins/eliterangerplasmarifle_elite_0.png"
+	SurfaceSkin 0 13 "skins/eliterangerplasmarifle_elite_1.png"
+	SurfaceSkin 0 14 "skins/eliterangerplasmarifle_elite_5.png"
+	SurfaceSkin 0 15 "skins/eliterangerplasmarifle_elite_5.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 16 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteHonorGuardEnergySword
+{
+	Path "models/hce/EliteSpecial"
+	Model 0 "EliteSpecial_nohead.iqm"
+	SurfaceSkin 0 0 "skins/elitehonorguardenergysword_elitespecial_0.png"
+	SurfaceSkin 0 1 "skins/elitehonorguardenergysword_elitespecial_1.png"
+	SurfaceSkin 0 2 "skins/elitehonorguardenergysword_elitespecial_2.png"
+	SurfaceSkin 0 3 "skins/elitehonorguardenergysword_elitespecial_3.png"
+	SurfaceSkin 0 4 "skins/elitehonorguardenergysword_elitespecial_4.png"
+	SurfaceSkin 0 5 "skins/elitehonorguardenergysword_elitespecial_5.png"
+	SurfaceSkin 0 12 "skins/elitehonorguardenergysword_elitespecial_0.png"
+	SurfaceSkin 0 13 "skins/elitehonorguardenergysword_elitespecial_0.png"
+	SurfaceSkin 0 14 "skins/elitehonorguardenergysword_elitespecial_2.png"
+	SurfaceSkin 0 15 "skins/elitehonorguardenergysword_elitespecial_5.png"
+	SurfaceSkin 0 16 "skins/elitehonorguardenergysword_elitespecial_5.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 6 "w_energy_sword_0.png"
+	SurfaceSkin 0 7 "w_energy_sword_glow.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
 	SurfaceSkin 0 10 "hce_hidden.png"
 	SurfaceSkin 0 11 "hce_hidden.png"
@@ -428,6 +490,70 @@ Model HCE_EliteSpecialShieldShell
 	SurfaceSkin 0 19 "hce_hidden.png"
 	Scale 82.8 82.8 99.4
 	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteHonorGuardPlasmaRifle
+{
+	Path "models/hce/EliteSpecial"
+	Model 0 "EliteSpecial_nohead.iqm"
+	SurfaceSkin 0 0 "skins/elitehonorguardplasmarifle_elitespecial_0.png"
+	SurfaceSkin 0 1 "skins/elitehonorguardplasmarifle_elitespecial_1.png"
+	SurfaceSkin 0 2 "skins/elitehonorguardplasmarifle_elitespecial_2.png"
+	SurfaceSkin 0 3 "skins/elitehonorguardplasmarifle_elitespecial_3.png"
+	SurfaceSkin 0 4 "skins/elitehonorguardplasmarifle_elitespecial_4.png"
+	SurfaceSkin 0 5 "skins/elitehonorguardplasmarifle_elitespecial_5.png"
+	SurfaceSkin 0 12 "skins/elitehonorguardplasmarifle_elitespecial_0.png"
+	SurfaceSkin 0 13 "skins/elitehonorguardplasmarifle_elitespecial_0.png"
+	SurfaceSkin 0 14 "skins/elitehonorguardplasmarifle_elitespecial_2.png"
+	SurfaceSkin 0 15 "skins/elitehonorguardplasmarifle_elitespecial_5.png"
+	SurfaceSkin 0 16 "skins/elitehonorguardplasmarifle_elitespecial_5.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteSpecopsBeamRifle
+{
+	Path "models/hce/EliteSpecial"
+	Model 0 "EliteSpecial.iqm"
+	SurfaceSkin 0 0 "skins/elitespecopsbeamrifle_elitespecial_0.png"
+	SurfaceSkin 0 1 "skins/elitespecopsbeamrifle_elitespecial_1.png"
+	SurfaceSkin 0 2 "skins/elitespecopsbeamrifle_elitespecial_2.png"
+	SurfaceSkin 0 3 "skins/elitespecopsbeamrifle_elitespecial_3.png"
+	SurfaceSkin 0 4 "skins/elitespecopsbeamrifle_elitespecial_4.png"
+	SurfaceSkin 0 5 "skins/elitespecopsbeamrifle_elitespecial_5.png"
+	SurfaceSkin 0 12 "skins/elitespecopsbeamrifle_elitespecial_0.png"
+	SurfaceSkin 0 13 "skins/elitespecopsbeamrifle_elitespecial_0.png"
+	SurfaceSkin 0 14 "skins/elitespecopsbeamrifle_elitespecial_2.png"
+	SurfaceSkin 0 15 "skins/elitespecopsbeamrifle_elitespecial_5.png"
+	SurfaceSkin 0 16 "skins/elitespecopsbeamrifle_elitespecial_5.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_h2_beam_rifle_0.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }

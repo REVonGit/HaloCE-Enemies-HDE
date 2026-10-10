@@ -48,6 +48,9 @@ BRUTE_RANKS = {
     'honor guard': dict(body=150, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
                         wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'honor_on'), ('sensors', 'honor_on'),
                               ('sh_armor', 'honor_on'), ('hg_arm', 'honor_on'), ('hg_legs', 'honor_on')}),
+    # the Stalker (Halo 3): a Major in active camo with the Spiker, no armour kit (its camo would show the pieces up)
+    'stalker': dict(body=150, variants=('major_bth',), weapons=(SPIKER,),
+                    wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
     'chieftain': dict(body=350, variants=('tartarus',), weapons=(HAMMER,),
                       wear={('body', 'default'), ('head', 'default'), ('helmet', 'honor_off'), ('helmet', 'tartarus'),
                             ('sensors', 'default'), ('sh_armor', 'skull'), ('hg_arm', 'honor_off'), ('hg_legs', 'honor_off')}),
@@ -160,7 +163,9 @@ def load_ai():
     # Elites with the plasma carbine: the CE plasma-rifle ranks re-armed (longer reach, same colours)
     A = bp.AI
     for src in [r'characters\elite\elite minor\elite minor plasma rifle', r'characters\elite\elite major\elite major plasma rifle',
-                r'characters\elite\elite specops\elite specops plasma rifle', r'characters\elite\elite commander\elite commander plasma rifle']:
+                r'characters\elite\elite specops\elite specops plasma rifle', r'characters\elite\elite commander\elite commander plasma rifle',
+                r'characters\elite\elite honor guard\elite honor guard plasma rifle', r'characters\elite\elite ranger\elite ranger plasma rifle']:
+        if src not in A['variants']: continue
         v = copy.deepcopy(A['variants'][src])
         v['unit_reference'] = ELITE_RIFLE
         rc = v['ranged_combat']
@@ -170,6 +175,7 @@ def load_ai():
         rc['maximum_firing_range'] = max(rc['maximum_firing_range'], 25.0)
         variants[src.replace('plasma rifle', 'plasma carbine')] = v
         actors[v['actor_reference']] = A['actors'][v['actor_reference']]
+        if 'honor guard' in src or 'ranger' in src: v['_late'] = True; continue    # Halo 2's ranks: the plasma carbine only
         # blue Pulse Carbine version of the same rank (added after the first add-on release)
         p = copy.deepcopy(v)
         p['ranged_combat']['reference'] = PULSE
@@ -237,6 +243,9 @@ def load_ai():
                 v['_late'] = True; v['_brute_rank'] = rank; v['_brute_variant'] = rd['variants'][fur % len(rd['variants'])]
                 if wref == CASTER:
                     v['_ov'] = dict(overlay='plasma_caster', overlay_idx=CASTER_IDX)
+                if rank == 'stalker':      # active camo (the Brutes' class flags replace the variant's: added on top)
+                    v['flags'] = v.get('flags', 0) | (1 << 4)
+                    v['_ov'] = dict(v.get('_ov') or {}, add_flags=['HCE_ActiveCamo'])
                 if rank == 'chieftain':
                     # brute_tartarus char: 350 body (his 1000-point overshield cut to a breakable 150), no grenades,
                     # leaps 2.5-6 WU at 50%, smashes with the hammer's gravity shockwave (brute_code)

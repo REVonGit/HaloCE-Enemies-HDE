@@ -97,6 +97,99 @@ def add_elite_heavy(variants):
 
 add_elite_heavy(AI['variants'])
 
+# Halo 2's Honor Guard and Ranger Elites (new), in Halo 2's armour worn over the Halo CE Elite (extract_h2_elite_kit.py:
+# the pieces carried bone by bone onto the CE skeleton, attached as models 1-3 riding its animation; ELITE_KIT_CODE).
+# The Honor Guard: the High Council's guard, the Commander's stats (Halo 2's elite_honor_guard char is a Major
+# underneath, but they guard the Prophets), the tall-crested ceremonial helmet and plates, a crimson harness; the plasma
+# rifle and the energy sword (the plasma carbine: build_digsite.py). The Ranger: Halo 2's EVA Elite, a Minor's stats
+# (its char's 30 body / 70 shield), the sealed helmet with its gold lens and the jump pack it hops about the fight on
+# (HCE_Jetpack, enemies_base.zsc HCE_TryJet), a pale steel harness; the plasma rifle and the needler.
+ELITE_KIT = f'{OUT}/models/EliteKit'
+HONOR_RED = (0.60, 0.13, 0.05)
+RANGER_STEEL = (0.72, 0.78, 0.86)
+ELITE_H2_ARMOUR = {   # new rank -> (Halo CE variant it copies per gun, colour, kit pieces at models 1.., extra flags)
+    'honor guard': ({'plasma rifle': 'characters\\elite\\elite commander\\elite commander plasma rifle',
+                     'energy sword': 'characters\\elite\\elite commander\\elite commander energy sword'},
+                    HONOR_RED, ('honor_helmet', 'honor_armor'), ()),
+    'ranger': ({'plasma rifle': 'characters\\elite\\elite minor\\elite minor plasma rifle',
+                'needler': 'characters\\elite\\elite minor\\elite minor needler'},
+               RANGER_STEEL, ('ranger_helmet', 'elite_jetpack'), ('HCE_Jetpack',)),
+}
+
+NOHEAD_BONES = ('bip01 head', 'frame mandible lower left', 'frame mandible lower right', 'frame mandible upper left',
+                'frame mandible upper right')
+
+def nohead_iqm(src, dst):
+    """a copy of a CE Elite model without its head (the helmet is part of its body surface): every body triangle whose
+    corners all follow the head or the mandibles is made degenerate in place, so the surfaces, their order, the
+    skeleton and the animations stay exactly as they are (the variants that wear Halo 2's helmets use it)"""
+    import struct
+    d = bytearray(open(src, 'rb').read())
+    h = struct.unpack_from('<16s27I', d, 0)
+    (num_text, ofs_text, num_meshes, ofs_meshes, num_va, num_vert, ofs_va, num_tri, ofs_tri, _adj,
+     num_joints, ofs_joints) = h[4:16]
+    txt = bytes(d[ofs_text:ofs_text + num_text])
+    def name(o): return txt[o:txt.index(b'\0', o)].decode('latin1')
+    jn = [name(struct.unpack_from('<I', d, ofs_joints + 48 * j)[0]) for j in range(num_joints)]
+    head = {j for j, n in enumerate(jn) if n in NOHEAD_BONES}
+    bi = bw = None
+    for k in range(num_va):
+        typ, _fl, fmt, size, off = struct.unpack_from('<5I', d, ofs_va + 20 * k)
+        if typ == 4: bi = np.frombuffer(bytes(d[off:off + num_vert * 4]), np.uint8).reshape(-1, 4)
+        if typ == 5: bw = np.frombuffer(bytes(d[off:off + num_vert * 4]), np.uint8).reshape(-1, 4)
+    dom = bi[np.arange(num_vert), bw.argmax(1)]
+    onhead = np.isin(dom, list(head))
+    tris = np.frombuffer(bytes(d[ofs_tri:ofs_tri + num_tri * 12]), np.uint32).reshape(-1, 3).copy()
+    cut = 0
+    for k in range(num_meshes):
+        mn, _mat, fv, nv, ft, nt = struct.unpack_from('<6I', d, ofs_meshes + 24 * k)
+        n = name(mn)
+        if n.startswith(('weapon_', 'gore.', 'jackal_shield')): continue
+        t = tris[ft:ft + nt]
+        drop = onhead[t].all(1)
+        t[drop] = t[drop][:, :1]
+        cut += int(drop.sum())
+    d[ofs_tri:ofs_tri + num_tri * 12] = tris.astype('<u4').tobytes()
+    open(dst, 'wb').write(bytes(d))
+    return cut
+
+def elite_kit_code(pieces, mdir='hce'):
+    """attach Halo 2's armour pieces (models 1..) to a CE Elite; a severed head takes its helmet (model 1) with it,
+    a severed arm its plates (the honor armour's limb surfaces)"""
+    kj = f'{ELITE_KIT}/EliteKit.json'
+    limbs = json.load(open(kj)).get('limbs', {}) if os.path.exists(kj) else {}
+    hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
+    att = ''.join(f'\t\tA_ChangeModel(\'None\', {k + 1}, "models/{mdir}/EliteKit", "{p}.iqm", {k + 1}, "", \'None\');\n' for k, p in enumerate(pieces))
+    sev = []
+    head = pieces[0]
+    if head in limbs:
+        sev.append('\t\tif(limb == HCE_LIMB_HEAD)\n\t\t{\n' + ''.join(f"\t\t\tA_ChangeModel('None', 1, \"\", 'None', {i}, {hid});\n" for i in range(len(limbs[head]))) + '\t\t}\n')
+    for k, p in enumerate(pieces):
+        names = limbs.get(p, [])
+        for L, lc in ((1, 'HCE_LIMB_LARM'), (2, 'HCE_LIMB_RARM')):
+            si = [i for i, n in enumerate(names) if n.endswith(f'_{L}')]
+            if si: sev.append(f'\t\tif(limb == {lc})\n\t\t{{\n' + ''.join(f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n" for i in si) + '\t\t}\n')
+    return ('\t// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): ' + ', '.join(pieces) + '\n'
+            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att + '\t}\n'
+            '\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{\n\t\tsuper.HCE_OnSever(limb, gunArm);\n' + ''.join(sev) + '\t}\n')
+
+def add_elite_h2_armour(variants):
+    import copy
+    if not os.path.exists(f'{ELITE_KIT}/EliteKit.json'): return
+    for rank, (srcs, rgb, pieces, extra) in ELITE_H2_ARMOUR.items():
+        for gun, src in srcs.items():
+            vn = f'characters\\elite\\elite {rank}\\elite {rank} {gun}'
+            if src not in variants or vn in variants: continue
+            v = copy.deepcopy(variants[src])
+            cl = copy.deepcopy(v.get('change_colors_list') or [{}])
+            cl[0].update(color_lower_bound=list(rgb), color_upper_bound=list(rgb))
+            v['change_colors_list'] = cl
+            v['_late'] = True
+            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces), add_flags=list(extra), nohead=True)
+            variants[vn] = v
+
+add_elite_h2_armour(AI['variants'])
+
 # Beam-rifle Spec Ops Elite (new): the Spec Ops plasma-rifle Elite's stats with Halo 2's beam rifle, in Halo 2's own
 # Elite rifle stance (h2_elite_anims.py), fighting from further back
 def add_beam_rifle_specops(variants):
@@ -798,7 +891,7 @@ def hue_lock(rgb, mask, color):
 # Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
 # armour, came out a muddy olive. Halo draws it with a bright specular sheen we can't, so the armour is re-baked as
 # a vibrant gold that keeps the armour's shading (dark creases stay darker, raised edges catch the light).
-VIVID = {'elite commander': (1.00, 0.78, 0.22)}
+VIVID = {'elite commander': (1.00, 0.78, 0.22), 'elite ranger': (0.72, 0.78, 0.86)}   # the Ranger: Halo 2's pale EVA steel
 UNDERSUIT = (0.30, 0.52, 0.52)
 
 def bake_vivid(char, mat, color, outpath):
@@ -1118,6 +1211,8 @@ def marine_kit_code(char, names, mdir, sis):
         d.append('\t\tName w = default.hce_dropWeapon;          // a weapon\'s own back piece, always\n')
         for wn, pid in wb.items():
             d.append(f'\t\tif(w == \'{wn}\') hce_kit[{SI["back"]}] = "{pid}";\n')
+    d.append('\t\tHCE_KitOverride();                       // a class\'s own kit (the Pilots\' heads, the radio operator\'s set)\n')
+    out.append('\tvirtual void HCE_KitOverride() {}\n')
     d.append('\t\tString h = hce_kit[0];\n'
              '\t\tif(h.Length() && HCE_KitShell(h) && !helmetFace) { h = ""; hce_kit[0] = ""; }     // a helmet shell only where Halo CE\'s helmet was\n'
              '\t\tif(h.Length())\n\t\t{\n'
@@ -1323,6 +1418,12 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
+        if char in ('Elite', 'EliteSpecial', 'EliteRifle') and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # headless, for Halo 2's helmets
+            nohead_iqm(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}_nohead.iqm')
+        if char.startswith('Elite') and mdir == 'hce' and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # Halo 2's Elite armour (the main pack's; the add-on's carbine Elites use it from there)
+            os.makedirs(f'{pack}/models/{mdir}/EliteKit', exist_ok=True)
+            for f in os.listdir(ELITE_KIT):
+                if f.endswith(('.iqm', '.png')): shutil.copy(f'{ELITE_KIT}/{f}', f'{pack}/models/{mdir}/EliteKit/{f}')
         if char.startswith('Marine') and os.path.exists(f'{MARINE_KIT}/MarineKit.json'):    # Elefant's Marine kit
             os.makedirs(f'{pack}/models/{mdir}/MarineKit', exist_ok=True)
             for f in os.listdir(MARINE_KIT):
@@ -1520,6 +1621,7 @@ def build(cfg=None):
             if 'flags' in ov: flags = list(ov['flags'])
             if weapon in LOBBED and 'HCE_Lobbed' not in flags: flags.append('HCE_Lobbed')
             if char.startswith('Elite') and shield > 0: flags.append('HCE_ShieldStun')   # hard-ping stun when the shield pops
+            flags += [f for f in ov.get('add_flags', ()) if f not in flags]
             flags = sorted(set(flags))
             # skins
             color = variant_color(v, b)
@@ -1684,7 +1786,8 @@ def build(cfg=None):
                                for l in arsenal_lines(char, first, meta, pack, mdir, oi)]
                 frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
-            md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
+            m0 = f'{char}_nohead.iqm' if ov.get('nohead') else f'{char}.iqm'
+            md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{m0}"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')
@@ -2162,6 +2265,98 @@ def add_marine_arsenal(variants):
 
 add_marine_arsenal(AI['variants'])
 
+# Pilots (new): Halo 2's Pelican crews, Marines in the flight helmet with its smoked visor over one of Halo 2's faces
+# (extract_h2_pilot.py: a whole head from the kit, the CE head hidden), nothing else of the kit but a sidearm or an
+# SMG; lighter on their feet than a rifleman and a little less tough (no armour)
+PILOT_FACES = ('smith', 'banks', 'dion', 'morgan', 'perez', 'walter')
+PILOT_GUNS = {'magnum': 'marine magnum', 'smg': 'marine smg'}
+PILOT_CODE = """
+	// a pilot (extract_h2_pilot.py): Halo 2's flight helmet over one of its faces, and none of the field kit
+	override void HCE_KitOverride()
+	{
+		static const String F[] = { %s };
+		for(int i = 0; i < hce_kit.Size(); i++) hce_kit[i] = "";
+		hce_kit[0] = "h2_pilot_" .. F[random[HCEKit](0, F.Size() - 1)];
+	}
+""" % ', '.join(f'"{f}"' for f in PILOT_FACES)
+# The radio operator (new): a Marine with the radio pack on his back. Once a fight is on (an enemy in sight) he
+# calls it in; some seconds later a fire team of three Marines comes up from behind him, out of the enemy's sight,
+# and joins in (Marines are allies: they fall in with the squad like any other). Once per operator.
+RADIO_TEAM = ('HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineBattleRifle', 'HCE_MarineShotgun',
+              'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMa37')
+RADIO_CODE = """
+	// the radio operator: the radio pack always, and one call for a fire team per fight
+	override void HCE_KitOverride()
+	{
+		hce_kit[3] = "radio_pack";
+		hce_kit[2] = "";
+	}
+	bool hce_radioCalled;
+	int hce_radioTics;
+	override void Tick()
+	{
+		super.Tick();
+		if(health <= 0 || IsFrozen()) return;
+		if(!hce_radioCalled && target && target.health > 0 && hce_canSee && !target.bFRIENDLY)
+		{
+			hce_radioCalled = true;
+			hce_radioTics = random[HCERadio](35 * 4, 35 * 7);
+			HCE_Say('JoinMe', 1.0, 70, true);
+		}
+		if(hce_radioTics > 0 && --hce_radioTics == 0) HCE_RadioTeam();
+	}
+	void HCE_RadioTeam()
+	{
+		static const Name T[] = { %s };
+		double away = target ? AngleTo(target) + 180 : angle + 180;
+		int n = 0;
+		for(int tries = 0; tries < 40 && n < 3; tries++)
+		{
+			double a = away + frandom[HCERadio](-70, 70);
+			double r = tries < 28 ? frandom[HCERadio](192, 448) : frandom[HCERadio](64, 160);
+			vector3 p = (pos.xy + AngleToVector(a, r), 0);
+			p.z = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+			if(abs(p.z - pos.z) > 96 || !level.IsPointInLevel(p)) continue;
+			class<Actor> c = (class<Actor>)(T[random[HCERadio](0, T.Size() - 1)]);
+			if(!c) continue;
+			let m = Actor.Spawn(c, p);
+			if(!m) continue;
+			if(!m.TestMobjLocation() || (tries < 28 && target && target.CheckSight(m)) || !m.CheckSight(self))
+			{
+				m.ClearCounters(); m.Destroy(); continue;
+			}
+			m.ClearCounters();
+			m.bFRIENDLY = bFRIENDLY;
+			m.angle = m.AngleTo(self);
+			if(target) m.target = target;
+			n++;
+			let h = HaloDoom_EnemyBase(m);
+			if(h && n == 1) h.HCE_Say('Acknowledge', 1.0, 70, true);
+		}
+	}
+""" % ', '.join(f"'{c}'" for c in RADIO_TEAM)
+
+def add_pilots_and_radio(variants):
+    import copy
+    for gun, src in PILOT_GUNS.items():
+        vn = f'characters\\marine\\marine pilot {gun}'
+        sv = variants.get('characters\\marine\\' + src)
+        if not sv or vn in variants: continue
+        v = copy.deepcopy(sv)
+        v['unit']['maximum_body_vitality'] = v['unit']['maximum_body_vitality'] * 0.85
+        v['_late'] = True
+        v['_ov'] = dict(v.get('_ov') or {}, code=PILOT_CODE)
+        variants[vn] = v
+    sv = variants.get('characters\\marine\\marine assault rifle')
+    vn = 'characters\\marine\\marine radio operator'
+    if sv and vn not in variants:
+        v = copy.deepcopy(sv)
+        v['_late'] = True
+        v['_ov'] = dict(v.get('_ov') or {}, code=RADIO_CODE, skin_as='HCE_MarineAssaultRifle')
+        variants[vn] = v
+
+add_pilots_and_radio(AI['variants'])
+
 # ODSTs (new): Spiral's Halo CE ODST (extract_odst.py: its own model on the Marine's skeleton and animations) with the
 # a50 ODSTs' loadouts -- the assault rifle (a Private and a Major) and the shotgun -- and Fire Team Raven, Connor Dawn's four
 # ODSTs in their own colours from a10: green with the shotgun, orange with the battle rifle, blue with the assault
@@ -2187,12 +2382,17 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     # the Hellbringer: an ODST flame trooper in Halo Wars 2's flamethrower helmet (Elefant's kit), with the fuel tank
     # on his back (ODST_EXTRAS)
     'marine odst hellbringer':         ('marine_armored flamethrower', None, 'helmet_hellbringer', 'red'),
+    # the Rocketeer (the enclosed helmet, the launcher's spare-rocket tube on his back) and the Sniper (the closed
+    # helmet, silver visor), on Spiral's body
+    'marine odst rocketeer':           ('marine_armored rocket launcher', None, 'helmet_enclosed'),
+    'marine odst sniper':              ('marine_armored sniper', None, 'helmet_closed', 'silver'),
 }
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
 # more kit pieces on an ODST variant (model attachments 2, 3...) and which of Spiral's surfaces its helmet hides
-ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), None)}   # the helmet's own amber lens in place of Spiral's helmet and visor
+ODST_EXTRAS = {'marine odst hellbringer': (('flamer_tank', 'gas_mask'), None),
+               'marine odst rocketeer': (('launcher_tube',), None)}   # the helmet's own amber lens in place of Spiral's helmet and visor
 # the Halo 2 ODSTs fight in Halo 2's rifle set, re-posed per gun (marine_h2_grips.py); the battle rifle keeps 'h2br'
 ODST_BODY_STANCE = {'assault rifle': 'h2ar', 'shotgun': 'h2shotgun', None: 'h2ar'}
 KIT_VISOR_SURF = 1                # the visor is surface 1 of each enclosed kit helmet
@@ -2290,7 +2490,7 @@ vec4 ProcessTexel()
 # texture: it gets the ODSTs' visor shader, tinted by its own orange, over the ODST visor's cube map
 KIT_VISOR = 'mk_innie_visor_diff.png'
 KIT_VISOR_CUBE = 'mk_visor_cube.png'
-KIT_OWN_VISORS = ('mk_hellbringer_visor.png',)    # kit visors in their own colours (the Hellbringer's amber lens)
+KIT_OWN_VISORS = ('mk_hellbringer_visor.png', 'mk_h2_pilot_visor.png')   # kit visors in their own colours (the Hellbringer's amber lens, the pilots' smoked visor)
 
 def kit_visor_tint(src, dst, rgb):
     from PIL import Image

@@ -2665,6 +2665,426 @@ class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 	}
 }
 
+// characters\elite\elite ranger\elite ranger needler
+class HCE_EliteRangerNeedler : HCE_EliteBase
+{
+	Default
+	{
+		Health 100;
+		Speed 8.1;
+		HaloDoom_EnemyBase.HCE_Type 0;
+		HaloDoom_EnemyBase.HCE_Variant "elite ranger needler";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 3.00, 4.00, 800;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 360, 480;
+		HaloDoom_EnemyBase.HCE_Burst 0.90, 1.30, 0.90, 1.30, 0.50, 0.70;
+		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -17.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 2, 0.00, 0.0, 0, 960, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.50, 0.30, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.50, 0.65, 0.00, 0.20, 0.10;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.76, 2.86, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
+		+HaloDoom_EnemyBase.HCE_Berserks
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Jetpack
+		+HaloDoom_EnemyBase.HCE_Leader
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle%0';
+		case HCE_A_ALERT: return 'alert pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch pistol move-front';
+		case HCE_A_FIRE: return 'stand pistol pp fire-1 baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_THROW: return 'stand pistol throw-grenade';
+		case HCE_A_DIVE_L: return 'stand pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand pistol evade-right';
+		case HCE_A_SURPRISE_F: return 'stand pistol surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand pistol surprise-back';
+		case HCE_A_BERSERK: return 'stand pistol berserk';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut baked', 's-ping front gut%1 baked', 's-ping front head baked' }; return o[random(0, 2)]; }
+		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_L: { static const Name o[] = { 's-ping left gut%0 baked', 's-ping left gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert pistol idle': return 70;
+		case 'crouch pistol idle': return 70;
+		case 'crouch pistol move-front': return 35;
+		case 'flaming pistol idle': return 37;
+		case 'h-kill back gut': return 63;
+		case 'h-kill front gut': return 51;
+		case 'h-ping back gut': return 40;
+		case 'h-ping back l-arm': return 42;
+		case 'h-ping back r-arm': return 32;
+		case 'h-ping front chest': return 40;
+		case 'h-ping front gut': return 38;
+		case 'h-ping front l-arm': return 43;
+		case 'h-ping front l-foot': return 69;
+		case 's-kill back gut': return 77;
+		case 's-kill front gut': return 77;
+		case 's-kill left gut': return 43;
+		case 's-kill right gut': return 49;
+		case 's-ping back gut%0 baked': return 6;
+		case 's-ping back gut%1 baked': return 24;
+		case 's-ping front gut baked': return 6;
+		case 's-ping front gut%1 baked': return 12;
+		case 's-ping front head baked': return 23;
+		case 's-ping left gut%0 baked': return 6;
+		case 's-ping left gut%1 baked': return 15;
+		case 's-ping right gut%0 baked': return 6;
+		case 's-ping right gut%1 baked': return 15;
+		case 'stand airborne-dead': return 49;
+		case 'stand landing-dead': return 47;
+		case 'stand pistol airborne': return 74;
+		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
+		case 'stand pistol dive-front': return 46;
+		case 'stand pistol dive-left': return 46;
+		case 'stand pistol dive-right': return 46;
+		case 'stand pistol evade-left': return 35;
+		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
+		case 'stand pistol idle%0': return 70;
+		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
+		case 'stand pistol melee': return 47;
+		case 'stand pistol move-back': return 30;
+		case 'stand pistol move-front': return 30;
+		case 'stand pistol move-left': return 30;
+		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
+		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
+		case 'stand pistol signal-attack': return 64;
+		case 'stand pistol surprise-back': return 30;
+		case 'stand pistol surprise-front': return 24;
+		case 'stand pistol throw-grenade': return 63;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
+		case 'stand pistol warn': return 33;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
+		return (0, 0, 0);
+	}
+	// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): ranger_helmet, elite_jetpack
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_helmet.iqm", 1, "", 'None');
+		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+	}
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		super.HCE_OnSever(limb, gunArm);
+		if(limb == HCE_LIMB_HEAD)
+		{
+			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+	}
+}
+
+// characters\elite\elite ranger\elite ranger plasma rifle
+class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
+{
+	Default
+	{
+		Health 100;
+		Speed 8.1;
+		HaloDoom_EnemyBase.HCE_Type 0;
+		HaloDoom_EnemyBase.HCE_Variant "elite ranger plasma rifle";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 5.00, 1.50, 1040;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -17.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 2, 0.00, 0.0, 0, 960, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.50, 0.30, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.50, 0.65, 0.00, 0.20, 0.10;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 4, 7, 4, 1.00, 1.78, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
+		+HaloDoom_EnemyBase.HCE_Berserks
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Jetpack
+		+HaloDoom_EnemyBase.HCE_Leader
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle%0';
+		case HCE_A_ALERT: return 'alert pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch pistol move-front';
+		case HCE_A_FIRE: return 'stand pistol pp fire-1 baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_THROW: return 'stand pistol throw-grenade';
+		case HCE_A_DIVE_L: return 'stand pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand pistol evade-right';
+		case HCE_A_SURPRISE_F: return 'stand pistol surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand pistol surprise-back';
+		case HCE_A_BERSERK: return 'stand pistol berserk';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut baked', 's-ping front gut%1 baked', 's-ping front head baked' }; return o[random(0, 2)]; }
+		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_L: { static const Name o[] = { 's-ping left gut%0 baked', 's-ping left gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert pistol idle': return 70;
+		case 'crouch pistol idle': return 70;
+		case 'crouch pistol move-front': return 35;
+		case 'flaming pistol idle': return 37;
+		case 'h-kill back gut': return 63;
+		case 'h-kill front gut': return 51;
+		case 'h-ping back gut': return 40;
+		case 'h-ping back l-arm': return 42;
+		case 'h-ping back r-arm': return 32;
+		case 'h-ping front chest': return 40;
+		case 'h-ping front gut': return 38;
+		case 'h-ping front l-arm': return 43;
+		case 'h-ping front l-foot': return 69;
+		case 's-kill back gut': return 77;
+		case 's-kill front gut': return 77;
+		case 's-kill left gut': return 43;
+		case 's-kill right gut': return 49;
+		case 's-ping back gut%0 baked': return 6;
+		case 's-ping back gut%1 baked': return 24;
+		case 's-ping front gut baked': return 6;
+		case 's-ping front gut%1 baked': return 12;
+		case 's-ping front head baked': return 23;
+		case 's-ping left gut%0 baked': return 6;
+		case 's-ping left gut%1 baked': return 15;
+		case 's-ping right gut%0 baked': return 6;
+		case 's-ping right gut%1 baked': return 15;
+		case 'stand airborne-dead': return 49;
+		case 'stand landing-dead': return 47;
+		case 'stand pistol airborne': return 74;
+		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
+		case 'stand pistol dive-front': return 46;
+		case 'stand pistol dive-left': return 46;
+		case 'stand pistol dive-right': return 46;
+		case 'stand pistol evade-left': return 35;
+		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
+		case 'stand pistol idle%0': return 70;
+		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
+		case 'stand pistol melee': return 47;
+		case 'stand pistol move-back': return 30;
+		case 'stand pistol move-front': return 30;
+		case 'stand pistol move-left': return 30;
+		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
+		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol signal-attack': return 64;
+		case 'stand pistol surprise-back': return 30;
+		case 'stand pistol surprise-front': return 24;
+		case 'stand pistol throw-grenade': return 63;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
+		case 'stand pistol warn': return 33;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
+		return (0, 0, 0);
+	}
+	// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): ranger_helmet, elite_jetpack
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_helmet.iqm", 1, "", 'None');
+		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+	}
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		super.HCE_OnSever(limb, gunArm);
+		if(limb == HCE_LIMB_HEAD)
+		{
+			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+	}
+}
+
 class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -2850,8 +3270,8 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 10.00; hce_errorAngle = 0.75; hce_maxRange = 1120; hce_projSpeed = 155.9;
-			hce_rangeMin = 480; hce_rangeMax = 720; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
-			hce_patShotsMin = 4; hce_patShotsMax = 7; hce_patInterval = 4; hce_patPauseMin = 0.68; hce_patPauseMax = 1.20; hce_patChargeTics = 0;
+			hce_rangeMin = 400; hce_rangeMax = 560; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_patShotsMin = 6; hce_patShotsMax = 11; hce_patInterval = 4; hce_patPauseMin = 0.68; hce_patPauseMax = 1.20; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
@@ -3228,6 +3648,439 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 	}
 }
 
+// characters\elite\elite honor guard\elite honor guard energy sword
+class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
+{
+	Default
+	{
+		Health 100;
+		Speed 9.3;
+		HaloDoom_EnemyBase.HCE_Type 0;
+		HaloDoom_EnemyBase.HCE_Variant "elite honor guard energy sword";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
+		HaloDoom_EnemyBase.HCE_Movement 6.06, 9.32, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.23;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 0, 32;
+		HaloDoom_EnemyBase.HCE_Burst 0.60, 1.20, 0.80, 1.80, 0.00, 1.00;
+		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -17.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 64, 151;
+		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.20, 0.80, 200;
+		HaloDoom_EnemyBase.HCE_Defensive 0.75, 0.80, 0.10, 0.30, 0.30;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 300, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_EnergySword", "None";
+		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
+		+HaloDoom_EnemyBase.HCE_Berserks
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Leader
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand sword idle';
+		case HCE_A_ALERT: return 'stand sword idle';
+		case HCE_A_MOVE_F: return 'stand sword move-front';
+		case HCE_A_MOVE_B: return 'stand sword move-back';
+		case HCE_A_MOVE_L: return 'stand sword move-left';
+		case HCE_A_MOVE_R: return 'stand sword move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch sword idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch sword move-front';
+		case HCE_A_FIRE: return 'stand pistol pp fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand sword melee%0', 'stand sword melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand sword throw-grenade';
+		case HCE_A_DIVE_L: return 'stand sword dive-left';
+		case HCE_A_DIVE_R: return 'stand sword dive-right';
+		case HCE_A_DIVE_F: return 'stand sword dive-front';
+		case HCE_A_EVADE_L: return 'stand sword evade-left';
+		case HCE_A_EVADE_R: return 'stand sword evade-right';
+		case HCE_A_SURPRISE_F: return 'stand sword surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand sword surprise-back';
+		case HCE_A_BERSERK: return 'stand sword berserk';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
+		case HCE_A_AIRBORNE: return 'stand sword airborne';
+		case HCE_A_LAND: return 'stand sword land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut baked', 's-ping front gut%1 baked', 's-ping front head baked' }; return o[random(0, 2)]; }
+		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_L: { static const Name o[] = { 's-ping left gut%0 baked', 's-ping left gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_TURN_L: return 'stand sword turn-left';
+		case HCE_A_TURN_R: return 'stand sword turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_LOW_IDLE: return 'stand sword low-idle';
+		case HCE_A_LOW_MOVE: return 'stand sword low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand rifle cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand rifle cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand rifle cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand rifle cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand rifle cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand rifle cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand rifle cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand rifle cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
+		case HCE_A_HOIST: return 'stand sword hoist';
+		case HCE_A_VAULT: return 'stand sword vault';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'crouch sword idle': return 70;
+		case 'crouch sword move-front': return 35;
+		case 'flaming pistol idle': return 37;
+		case 'h-kill back gut': return 63;
+		case 'h-kill front gut': return 51;
+		case 'h-ping back gut': return 40;
+		case 'h-ping back l-arm': return 42;
+		case 'h-ping back r-arm': return 32;
+		case 'h-ping front chest': return 40;
+		case 'h-ping front gut': return 38;
+		case 'h-ping front l-arm': return 43;
+		case 'h-ping front l-foot': return 69;
+		case 's-kill back gut': return 77;
+		case 's-kill front gut': return 77;
+		case 's-kill left gut': return 43;
+		case 's-kill right gut': return 49;
+		case 's-ping back gut%0 baked': return 6;
+		case 's-ping back gut%1 baked': return 24;
+		case 's-ping front gut baked': return 6;
+		case 's-ping front gut%1 baked': return 12;
+		case 's-ping front head baked': return 23;
+		case 's-ping left gut%0 baked': return 6;
+		case 's-ping left gut%1 baked': return 15;
+		case 's-ping right gut%0 baked': return 6;
+		case 's-ping right gut%1 baked': return 15;
+		case 'stand airborne-dead': return 49;
+		case 'stand landing-dead': return 47;
+		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol signal-attack': return 64;
+		case 'stand pistol warn': return 33;
+		case 'stand rifle cover-left-enter': return 24;
+		case 'stand rifle cover-left-exit': return 10;
+		case 'stand rifle cover-left-idle': return 104;
+		case 'stand rifle cover-left-open': return 2;
+		case 'stand rifle cover-left-peek': return 16;
+		case 'stand rifle cover-left-unpeek': return 16;
+		case 'stand rifle cover-right-enter': return 24;
+		case 'stand rifle cover-right-exit': return 10;
+		case 'stand rifle cover-right-idle': return 104;
+		case 'stand rifle cover-right-open': return 2;
+		case 'stand rifle cover-right-peek': return 16;
+		case 'stand rifle cover-right-unpeek': return 16;
+		case 'stand sword airborne': return 75;
+		case 'stand sword berserk': return 55;
+		case 'stand sword dive-front': return 47;
+		case 'stand sword dive-left': return 47;
+		case 'stand sword dive-right': return 47;
+		case 'stand sword evade-left': return 37;
+		case 'stand sword evade-right': return 36;
+		case 'stand sword hoist': return 65;
+		case 'stand sword idle': return 70;
+		case 'stand sword land-soft': return 47;
+		case 'stand sword low-idle': return 70;
+		case 'stand sword low-move': return 48;
+		case 'stand sword melee%0': return 33;
+		case 'stand sword melee%1': return 41;
+		case 'stand sword move-back': return 30;
+		case 'stand sword move-front': return 30;
+		case 'stand sword move-left': return 30;
+		case 'stand sword move-right': return 30;
+		case 'stand sword surprise-back': return 30;
+		case 'stand sword surprise-front': return 32;
+		case 'stand sword throw-grenade': return 63;
+		case 'stand sword turn-left': return 16;
+		case 'stand sword turn-right': return 16;
+		case 'stand sword vault': return 22;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand sword hoist': return (92.4, -0.0, 84.4);
+		case 'stand sword vault': return (71.4, -0.0, 1.8);
+		}
+		return (0, 0, 0);
+	}
+	// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): honor_helmet, honor_armor
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_helmet.iqm", 1, "", 'None');
+		A_ChangeModel('None', 2, "models/hce/EliteKit", "honor_armor.iqm", 2, "", 'None');
+	}
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		super.HCE_OnSever(limb, gunArm);
+		if(limb == HCE_LIMB_HEAD)
+		{
+			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		if(limb == HCE_LIMB_LARM)
+		{
+			A_ChangeModel('None', 2, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		if(limb == HCE_LIMB_RARM)
+		{
+			A_ChangeModel('None', 2, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+}
+
+// energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
+class HCE_EliteSpecialShieldShell : HCE_ShieldShell {}
+
+// characters\elite\elite honor guard\elite honor guard plasma rifle
+class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
+{
+	Default
+	{
+		Health 100;
+		Speed 8.1;
+		HaloDoom_EnemyBase.HCE_Type 0;
+		HaloDoom_EnemyBase.HCE_Variant "elite honor guard plasma rifle";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
+		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 10.00, 0.75, 1120;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 560;
+		HaloDoom_EnemyBase.HCE_Burst 2.50, 4.50, 0.50, 0.70, 0.00, 0.90;
+		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -17.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 3, 0.00, 0.0, 0, 960, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.20, 0.80, 200;
+		HaloDoom_EnemyBase.HCE_Defensive 0.75, 0.80, 0.10, 0.30, 0.30;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 200, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 6, 11, 4, 0.68, 1.20, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
+		+HaloDoom_EnemyBase.HCE_Berserks
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Leader
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_ShieldStun
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle%0';
+		case HCE_A_ALERT: return 'alert pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch pistol move-front';
+		case HCE_A_FIRE: return 'stand pistol pp fire-1 baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_THROW: return 'stand pistol throw-grenade';
+		case HCE_A_DIVE_L: return 'stand pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand pistol evade-right';
+		case HCE_A_SURPRISE_F: return 'stand pistol surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand pistol surprise-back';
+		case HCE_A_BERSERK: return 'stand pistol berserk';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut baked', 's-ping front gut%1 baked', 's-ping front head baked' }; return o[random(0, 2)]; }
+		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_L: { static const Name o[] = { 's-ping left gut%0 baked', 's-ping left gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
+		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert pistol idle': return 70;
+		case 'crouch pistol idle': return 70;
+		case 'crouch pistol move-front': return 35;
+		case 'flaming pistol idle': return 37;
+		case 'h-kill back gut': return 63;
+		case 'h-kill front gut': return 51;
+		case 'h-ping back gut': return 40;
+		case 'h-ping back l-arm': return 42;
+		case 'h-ping back r-arm': return 32;
+		case 'h-ping front chest': return 40;
+		case 'h-ping front gut': return 38;
+		case 'h-ping front l-arm': return 43;
+		case 'h-ping front l-foot': return 69;
+		case 's-kill back gut': return 77;
+		case 's-kill front gut': return 77;
+		case 's-kill left gut': return 43;
+		case 's-kill right gut': return 49;
+		case 's-ping back gut%0 baked': return 6;
+		case 's-ping back gut%1 baked': return 24;
+		case 's-ping front gut baked': return 6;
+		case 's-ping front gut%1 baked': return 12;
+		case 's-ping front head baked': return 23;
+		case 's-ping left gut%0 baked': return 6;
+		case 's-ping left gut%1 baked': return 15;
+		case 's-ping right gut%0 baked': return 6;
+		case 's-ping right gut%1 baked': return 15;
+		case 'stand airborne-dead': return 49;
+		case 'stand landing-dead': return 47;
+		case 'stand pistol airborne': return 74;
+		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
+		case 'stand pistol dive-front': return 46;
+		case 'stand pistol dive-left': return 46;
+		case 'stand pistol dive-right': return 46;
+		case 'stand pistol evade-left': return 35;
+		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
+		case 'stand pistol idle%0': return 70;
+		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
+		case 'stand pistol melee': return 47;
+		case 'stand pistol move-back': return 30;
+		case 'stand pistol move-front': return 30;
+		case 'stand pistol move-left': return 30;
+		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
+		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol signal-attack': return 64;
+		case 'stand pistol surprise-back': return 30;
+		case 'stand pistol surprise-front': return 24;
+		case 'stand pistol throw-grenade': return 63;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
+		case 'stand pistol warn': return 33;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
+		return (0, 0, 0);
+	}
+	// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): honor_helmet, honor_armor
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_helmet.iqm", 1, "", 'None');
+		A_ChangeModel('None', 2, "models/hce/EliteKit", "honor_armor.iqm", 2, "", 'None');
+	}
+	override void HCE_OnSever(int limb, bool gunArm)
+	{
+		super.HCE_OnSever(limb, gunArm);
+		if(limb == HCE_LIMB_HEAD)
+		{
+			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		if(limb == HCE_LIMB_LARM)
+		{
+			A_ChangeModel('None', 2, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		if(limb == HCE_LIMB_RARM)
+		{
+			A_ChangeModel('None', 2, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+	}
+}
+
 // characters\elite\elite specops\elite specops beam rifle
 class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 {
@@ -3421,9 +4274,6 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 		return (0, 0, 0);
 	}
 }
-
-// energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
-class HCE_EliteSpecialShieldShell : HCE_ShieldShell {}
 
 // characters\elite\elite specops\elite specops needler
 class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
@@ -8864,6 +9714,8 @@ class HCE_RandomElite : RandomSpawner
 		DropItem "HCE_EliteMinorNeedler", 255, 1;
 		DropItem "HCE_EliteMinorPlasmaRifle", 255, 1;
 		DropItem "HCE_EliteMinorPlasmaRifleRanged", 255, 1;
+		DropItem "HCE_EliteRangerNeedler", 255, 1;
+		DropItem "HCE_EliteRangerPlasmaRifle", 255, 1;
 	}
 }
 
@@ -8871,6 +9723,8 @@ class HCE_RandomEliteSpecial : RandomSpawner
 {
 	Default
 	{
+		DropItem "HCE_EliteHonorGuardEnergySword", 255, 1;
+		DropItem "HCE_EliteHonorGuardPlasmaRifle", 255, 1;
 		DropItem "HCE_EliteSpecopsBeamRifle", 255, 1;
 		DropItem "HCE_EliteSpecopsNeedler", 255, 1;
 		DropItem "HCE_EliteSpecopsPlasmaCaster", 255, 1;

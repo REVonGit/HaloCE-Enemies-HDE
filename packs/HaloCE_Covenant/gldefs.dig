@@ -55,6 +55,26 @@ material texture "models/hce_dig/weapons/w_energy_sword_glow.png"
 	speed 1.0
 	brightmap "models/hce_dig/brightmap_full.png"
 }
+HardwareShader Texture "models/hce_dig/Brute/skins/brute_major_bth_brute.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce_dig/Brute/skins/brute_major_bth_brute_hair.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce_dig/Brute/skins/brute_major_bth_brute_head.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce_dig/Brute/skins/hce_hidden.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
 brightmap texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_elitezealot_0.png"
 {
 	map "models/hce_dig/brightmap_full.png"

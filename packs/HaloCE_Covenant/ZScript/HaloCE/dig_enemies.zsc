@@ -2006,7 +2006,6 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -2509,7 +2508,6 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -3002,7 +3000,6 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -3495,7 +3492,6 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -3986,7 +3982,6 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -4475,7 +4470,6 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -4964,7 +4958,6 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -5458,7 +5451,6 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -5952,7 +5944,6 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -6446,7 +6437,6 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -6941,7 +6931,6 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();

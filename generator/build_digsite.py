@@ -729,7 +729,6 @@ def brute_code():
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
-	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();

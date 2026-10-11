@@ -1322,7 +1322,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	void HCE_GoBerserk(bool roar)
 	{
-		if(hce_action == HCE_ACT_KAMIKAZE) return;
+		if(hce_action == HCE_ACT_KAMIKAZE || hce_offArmLost) return;   // (the charge is on all fours)
 		hce_berserk = true;
 		hce_action = HCE_ACT_CHARGE;
 		HCE_Say('Berserk', roar ? 1.0 : 0.6, 35 * 2, roar);
@@ -2619,6 +2619,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool HCE_TryClimb(double ang, double rise, double top, bool overThing, Actor bm)
 	{
 		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
+		if(hce_offArmLost) return false;                  // hoists and vaults take both hands
 		vector2 dir = AngleToVector(ang, 1);
 		double fwdMin = radius * 2 + 12 + (overThing && bm ? bm.radius * 2 : 0);
 		vector2 far = pos.xy + dir * fwdMin;
@@ -5531,10 +5532,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
 	}
 	// ---- the last stand ----
-	// An Elite or Brute holding its gun in one hand (the pistol stance; a Brute's one-handed guns) that has its other
-	// arm shot off (the same hit, chance and size as for the gun arm) doesn't die of it: it drops to a crouch where it
-	// stands and fights on from there, never moving again, turning to aim and firing until it is killed. No grenades,
-	// no jumps, no berserk charge, no jump pack.
+	// An Elite holding its gun in one hand (the pistol stance) that has its other arm shot off (the same hit, chance
+	// and size as for the gun arm) doesn't die of it: it drops to a crouch where it stands and fights on from there,
+	// never moving again, turning to aim and firing until it is killed. No grenades, no jumps, no berserk charge, no
+	// jump pack. A one-handed Brute instead fights on as normal without that hand (HCE_LoseOffArm).
 	bool hce_lastStand;
 	bool hce_noFlinch;                    // never flinches when hit (the standalone packs' Ghost skull)
 	virtual bool HCE_OneHanded()
@@ -5556,7 +5557,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			|| kind == HCE_A_HPING_F || kind == HCE_A_HPING_B || (kind >= HCE_A_DIE_F && kind <= HCE_A_DIE_LAND)) return kind;
 		return HCE_A_CROUCH_IDLE;
 	}
-	// the kneeling pose of a body with no crouch of its own (Halo 2's Brutes: brute_laststand_anim.py)
+	// the kneeling pose of a body with no crouch of its own, for its last stand ('None': it crouches as usual)
 	virtual Name HCE_LastStandAnim() { return 'None'; }
 	bool HCE_LastStandCheck(int gl, int dealt)
 	{
@@ -5568,8 +5569,30 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return false;
 		if(!HCE_SeverLimb(off)) return false;
 		hce_brutality += 1;
-		HCE_StartLastStand();
+		if(brute) HCE_LoseOffArm();                  // a Brute fights on as before, without what took that hand
+		else HCE_StartLastStand();
 		return true;
+	}
+
+	// ---- one arm gone (the Brutes) ----
+	// A one-handed Brute that has its other arm shot off keeps fighting as it did, but nothing that takes that hand:
+	// no grenade throws, no climbing or vaulting (hoists and vaults take both hands), no berserk charge on all fours,
+	// and it only picks up guns it can fire one-handed.
+	bool hce_offArmLost;
+	void HCE_LoseOffArm()
+	{
+		hce_offArmLost = true;
+		hce_grenades = 0;
+		bHCE_Berserks = false;
+		if(hce_berserk) { hce_berserk = false; hce_action = HCE_ACT_FIGHT; }
+		hce_scavItem = null;
+		HCE_Say('PainHeavy', 1.0, 0, true);
+		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
+	}
+	static bool HCE_OneHandedGun(Name w)
+	{
+		return w == 'Halo_PlasmaRifle' || w == 'Halo_PlasmaPistol' || w == 'Halo_Needler' || w == 'Halo_Spiker'
+			|| w == 'Halo_Magnum' || w == 'Halo_Sidekick' || w == 'Halo_SMG';
 	}
 	void HCE_StartLastStand()
 	{
@@ -6009,7 +6032,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// a gun to carry: one of its loadouts, or its own gun back (the one its class is built around -- for Johnson
 	// the Stanchion, which no one else takes)
-	bool HCE_CanCarry(Name w) { return w != 'None' && (HCE_LoadoutIndex(w) >= 0 || (hce_hasLoadout && w == default.hce_dropWeapon)); }
+	bool HCE_CanCarry(Name w) { return w != 'None' && (!hce_offArmLost || HCE_OneHandedGun(w)) && (HCE_LoadoutIndex(w) >= 0 || (hce_hasLoadout && w == default.hce_dropWeapon)); }
 
 	virtual void HCE_OwnGunBack() {}       // pack classes with a second gun of their own reset it (Johnson's Magnum, Stacker's SMG)
 

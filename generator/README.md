@@ -24,7 +24,6 @@ python3 marine_h2_grips.py  # battle rifle at the cheek; the Halo 2 ODSTs' own s
 python3 extract_h2_elite_kit.py  # Halo 2's Honor Guard and Ranger armour and the jump pack on the CE Elite -> $HCE_OUT/models/EliteKit
 python3 extract_h2_pilot.py  # Halo 2's pilot heads (flight helmet over its faces) into the Marine kit (after extract_marine_kit.py)
 python3 extract_h2_jetpack_sound.py  # Halo 2's jump pack sounds (HCE_H2_SOUNDS: MCC's halo2 sound archives) -> $HCE_OUT/sounds/H2Jetpack
-python3 brute_laststand_anim.py   # the Brute's kneeling last-stand pose (after low_ready_anims.py)
 python3 extract_footsteps.py  # Halo 2's footsteps per race and surface -> $HCE_OUT/footsteps (split_factions.py ships them)
 python3 glow_colours.py    # each glowing Covenant material's Halo CE self-illumination colour -> $HCE_OUT/glow_colours.json
 python3 build_pack.py      # ZScript classes, MODELDEF, baked variant skins, MAPINFO -> $HCE_PACK
@@ -86,7 +85,6 @@ for f in core covenant flood sentinels marines; do (cd factions/$f && zip -r9 ..
 | `lib/texmath.py` | Texture maths shared by the extractors and `build_pack.py`: the height field from a bump map, normals rasterised into texture space, cube-map sampling and the baked cube-map reflection |
 | `extract_h2_jetpack_sound.py` | Halo 2's jump pack sounds (`sound\vehicles\jet_pack\jet_pack\in`, `loop`, `out` in `01b_spacestation.map`, Xbox ADPCM in MCC's `sounds_neutral.dat`: `HCE_H2_SOUNDS`) -> `$HCE_OUT/sounds/H2Jetpack`; `split_factions.py` ships them in the Covenant pack as `HCE/Jetpack/In`, `Loop` and `Out` |
 | `udb_icons.py` | Ultimate Doom Builder thing icons: every placeable enemy photographed in the engine (UZDoom under Xvfb: `HCE_UZDOOM`, `HCE_IWAD`, `HCE_HDE_PK3`, `HCE_GAME` the built packs, `HCE_COVERTEST`) in a booth painted flat magenta, keyed out and fitted to 80 pixels -> `$HCE_OUT/udb_icons`. `build_pack.py` writes each class's UDB editor keys (`//$Category`, `//$Title`, `//$Sprite`) and ships the icons as `HUxxA0` sprites in each faction's pack |
-| `brute_laststand_anim.py` | The Brute's kneeling last-stand pose (`crouch rifle last-stand`: the low crouch at the end of its forward dive, held), for one-handed Brutes that lose their other arm (Halo 2's Brutes have no crouch). Run after `low_ready_anims.py` |
 | `pack/bestiary_lore.txt` | The bestiary's lore, one entry per `[key]`: a class gets its rank's entry (the longest key in its class name) and its character's. `build_pack.py` writes each pack's `HCEBEST` lump from it (`bestiary_lump`) |
 | `pack/menudef.hce` | Options > Halo CE AI, Gore, Performance and Bestiary (hand-written; `split_factions.py` copies it into the core) |
 | `pack/ZScript/HaloCE/hce_variants.zsc`, `hce_bestiary.zsc` | Hand-written core code: `HCEVARS` variant definition lumps and the variant things (DoomEdNums 30900-30931), and the bestiary screen |

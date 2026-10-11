@@ -57,6 +57,10 @@ MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: fa
     'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},
     # the Grunts' two backs: Halo CE's regular methane tank and the rounded 'shellback' one, rolled per Grunt
     'Grunt': {'perm head and back': None}, 'GruntSpecOps': {'perm head and back': None},
+    # the Flood combat forms' head and arms with their '~damaged' permutations (Halo CE's torn stumps): the base parts
+    # hidden and the damaged ones shown when the limb comes off (gore_kit.py's swapped limbs)
+    'FloodHuman': {'head': None, 'left_arm': None, 'right_arm': None},
+    'FloodElite': {'head': None, 'left arm': None, 'right arm': None},
 }
 # bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
 # model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)
@@ -172,7 +176,9 @@ def extract(name, pid, sources, maps):
                      or next((p for p in r['perms'] if p['name'].startswith('base')), r['perms'][0])]
         for perm in perms:
             best = None
-            for gi in sorted(set(perm['geoms'])):
+            # a damaged permutation shares its lower levels of detail with the base one: its own geometry is the
+            # highest level (the last index), never the base's
+            for gi in ([perm['geoms'][-1]] if perm['name'].startswith('~') else sorted(set(perm['geoms']))):
                 g = model.geometry(gi)
                 nt = sum(len(p['tris']) for p in g)
                 if best is None or nt > best[0]: best = (nt, g)

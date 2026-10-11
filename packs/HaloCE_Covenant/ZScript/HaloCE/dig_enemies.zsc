@@ -3548,6 +3548,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 7, "", 'None', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -4035,6 +4037,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -4521,6 +4524,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -5007,6 +5011,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -5498,6 +5503,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -5989,6 +5995,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -6480,6 +6487,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
@@ -6972,6 +6980,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	}
 	override void HCE_BloodHideClass()
 	{
+		A_ChangeModel('None', 7, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);

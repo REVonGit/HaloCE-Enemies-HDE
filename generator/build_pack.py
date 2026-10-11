@@ -959,6 +959,8 @@ def gore_code(char, meta, mdir, sc):
     def stub_and_gib(x, ind):
         c = x['center']
         show = (f'{ind}HCE_ShowStumps(hce_severed | (1 << {{L}}));\n' if g.get('cap_model') else
+                ''.join(f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {si}, "", \'None\', CMDL_USESURFACESKIN);\n' for si in x['swap'])
+                if x.get('swap') else       # the limb's damaged permutation: back to its MODELDEF skin
                 f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {x["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n')
         return (show +
                 f'{ind}HCE_SpawnLimb({{L}}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{x["gib"]}\', {x.get("gib_stub", x["stub"])}, \'{g["tex"]}\', {x.get("rest", 0):.4f});\n')
@@ -980,6 +982,14 @@ def gore_code(char, meta, mdir, sc):
             out.append(stub_and_gib(d, '\t\t\t').replace('{L}', str(GORE_LIMBS[L])))
         out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
     out.append('\t\t}\n\t\treturn false;\n\t}\n')
+    swaps = sorted(si for d in g['limbs'].values() for si in d.get('swap', []))
+    if swaps:
+        # Halo CE's damaged permutations (gore_kit.py's swapped limbs): drawn with their skins in the MODELDEF, hidden
+        # from the first tic until their limb comes off
+        out.append('\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n'
+                   f'\t\tstatic const int D[] = {{ {", ".join(map(str, swaps))} }};\n'
+                   f'\t\tfor(int i = 0; i < D.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', D[i], "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n'
+                   '\t\tHCE_ResumeAnim();\n\t}\n')
     if g.get('cap_model'):
         # the stumps are a model of their own (gore_kit.py cap_model), attached at model slot cap_slot once a limb is off:
         # the severed limbs' stumps shown, the rest hidden
@@ -1663,7 +1673,7 @@ def build(cfg=None):
                 hit = sorted((k != wid_equipped, k) for k, a in ars.items() if a.get('wid') == wid_equipped)
                 if hit: ov = dict(ov, overlay=hit[0][1])
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
-            stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()} if not meta.get('gore', {}).get('cap_model') else set()
+            stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() if d.get('stub') is not None} if not meta.get('gore', {}).get('cap_model') else set()
             stubs |= {x['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() for x in d.get('variants', {}).values()}
             blood_hidden = []
             for si, mat in enumerate(meta['meshes']):
@@ -1785,7 +1795,9 @@ def build(cfg=None):
                     if not m: continue
                     pn = m.group(2)[:-4] + '_plain.png'
                     shutil.copy(f'{pack}/models/{mdir}/{char}/skins/{m.group(2)}', f'{pack}/models/{mdir}/{char}/skins/{pn}')
-                    plain.append(f"\t\tA_ChangeModel('None', 0, \"\", 'None', {m.group(1)}, \"models/{mdir}/{char}/skins\", '{pn}', CMDL_USESURFACESKIN);\n")
+                    line_ = f"A_ChangeModel('None', 0, \"\", 'None', {m.group(1)}, \"models/{mdir}/{char}/skins\", '{pn}', CMDL_USESURFACESKIN);\n"
+                    lsw = next((GORE_LIMBS[L] for L, d in (meta.get('gore') or {}).get('limbs', {}).items() if int(m.group(1)) in d.get('swap', [])), None)
+                    plain.append(f"\t\t{'' if lsw is None else f'if(hce_severed & (1 << {lsw})) '}{line_}")   # a damaged permutation: once its limb is off
                 if plain: extra += '\toverride void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader\n\t{\n' + ''.join(plain) + '\t}\n'
             zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n{editor_keys(cls, char, team[char], weapon=weapon)}\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
             if blade:

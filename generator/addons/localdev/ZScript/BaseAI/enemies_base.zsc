@@ -5505,6 +5505,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_ArmCheck(int dealt)
 	{
 		if(health <= 0 || dealt <= 0 || (hce_killKind != HCE_WK_DISMEMBER && hce_killKind != HCE_WK_LIMBS) || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
+		if(hce_team == HCE_TEAM_FLOOD) { HCE_FloodLimbCheck(dealt); return; }
 		int gl = HCE_GunLimb();
 		if(gl >= 0 && HCE_LastStandCheck(gl, dealt)) return;
 		if(gl < 0 || (hce_severed & (1 << gl)) || hce_struckLimb != gl || dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return;
@@ -5529,6 +5530,27 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_action = HCE_ACT_FLEE;
 		hce_panicTics = hce_bleedOut + 35 * 5;
 		HCE_Say('PainHeavy', 1.0, 0, true);
+		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
+	}
+	// ---- the Flood: limbs shot off, and it fights on ----
+	// A Flood combat form's head or arm, hit by a dismembering weapon for a sixth of its health or more, comes off half
+	// the time, and the form carries on as in Halo: headless, one-armed or armless, its torn stump showing (Halo CE's
+	// damaged permutations). The gun arm takes the gun with it (dropped as a pickup), and it fights on with its claws.
+	void HCE_FloodLimbCheck(int dealt)
+	{
+		int l = hce_struckLimb;
+		if(l < 0 || l == HCE_LIMB_BACK || (hce_severed & (1 << l)) || dealt < SpawnHealth() / 6 || frandom[HCEGore](0, 1) >= 0.5) return;
+		if(!HCE_SeverLimb(l)) return;
+		hce_brutality += 1;
+		if(l == HCE_GunLimb() && hce_projectile != 'None')
+		{
+			HCE_DropLoot();                                   // the gun falls with the arm
+			HCE_ShowGun(false);
+			hce_dropWeapon = 'None'; hce_projectile = 'None'; hce_grenades = 0;
+			HCE_StopFireLoop();
+			hce_shotsLeft = 0; hce_chargeTics = 0;
+		}
+		HCE_ResumeAnim();
 		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
 	}
 	// ---- the last stand ----

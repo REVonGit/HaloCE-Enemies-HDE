@@ -35,6 +35,9 @@ the shoulder however it is posed. The gib is cut from the arm's triangles as usu
 of its surfaces either: they are a model of their own (<Char>_stumps.iqm, json gore 'cap_model', on the same
 skeleton), attached at run time as model attachment 'cap_slot' once a limb comes off; its gibs carry their cap on
 the surface after the body's. Its guns' 2-triangle slivers are pruned.
+The Flood combat forms (GORE 'swap') need no cutting at all: Halo CE gives their head and arms a '~damaged'
+permutation, a torn stump in their damaged texture (extract_chars.MULTI_PERMS keeps both on surfaces of their own).
+HCE_SeverLimb hides the base parts and shows the damaged ones; the gib is the base parts, capped in that texture.
 Re-running keeps what later scripts added to the model: the animations (reload_anims.py, cover_anims.py ...) and
 json keys (marine_arsenal.py's 'arsenal').
 A pristine copy (<Char>_nogore.iqm / .json) is kept, so re-running starts from the extractor's output.
@@ -70,6 +73,12 @@ GORE = {
     # time), and its stumps are a model of their own (attachment 9: the kit uses 1-6, blood 7, a held gun 8)
     'Brute':        dict(style='bone', blood='161C40', prune=True, limbs={'head': 'head'}, cap_model=9,
                          collapse={'larm': 'l_upperarm', 'rarm': 'r_upperarm'}, cap_from='body.'),
+    # swapped limbs: Halo CE's own damage permutations (extract_chars.MULTI_PERMS): the region's base parts hidden, its
+    # '~damaged' parts (a torn stump, in the Flood's damaged texture) shown; the gun goes with the right arm
+    'FloodHuman':   dict(swap={'head': 'head', 'larm': 'left_arm', 'rarm': 'right_arm'}, gun='rarm',
+                         roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
+    'FloodElite':   dict(swap={'head': 'head', 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
+                         roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'Hunter':       dict(style='worm', blood='FF8C1A', limbs={'head': 'frame head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),  # the cannon arm, the shield arm
     'Drone':        dict(style='insect', blood='DDF0D2', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
     'SlugMan':      dict(style='worm', blood='FF8C1A', limbs={'head': 'Bip01 Head', 'larm': 'Bip01 L UpperArm', 'rarm': 'Bip01 R UpperArm'}),
@@ -693,6 +702,66 @@ def process(char):
           ', '.join(f"{L}: hide {len(g['surfaces'])} stub {g['stub']}" for L, g in gore.items()))
 
 
+def process_swap(char):
+    """swapped limbs (the Flood): no new surfaces; json gore per limb: the base parts (and the gun) to hide, the damaged
+    parts to show ('swap'), the gib (the base parts, capped in the damaged texture on the surface after the body's)"""
+    cfg = GORE[char]
+    od = f'{OUT}/models/{char}'
+    ip, jp = f'{od}/{char}.iqm', f'{od}/{char}.json'
+    if not os.path.exists(ip): print(char, 'missing'); return
+    meta = json.load(open(jp))
+    joints, meshes, _ = read_iqm(ip)
+    names = meta['mesh_names']
+    mw = list(meta.get('mesh_weapon') or []) + [None] * len(meshes)
+    W = world_bind(joints)
+    jidx = {j[0].lower(): i for i, j in enumerate(joints)}
+    gore, gtex = {}, None
+    n_body = len(meshes)
+    for L, region in cfg['swap'].items():
+        base = [i for i, n in enumerate(names) if n == f'{region}.__base']
+        dmg = [i for i, n in enumerate(names) if n == f'{region}.~damaged']
+        assert base and dmg, (char, region, names)
+        basemat = {meshes[i]['material'] for i in base}
+        gtex = gtex or next((meshes[i]['material'] for i in dmg if meshes[i]['material'] not in basemat), None)
+        hide = list(base) + ([i for i in range(len(meshes)) if mw[i]] if L == cfg.get('gun') else [])
+        root = jidx[cfg['roots'][L].lower()]
+        jp_ = np.array(W[root][0]); par = joints[root][1]
+        kids = [i for i, j in enumerate(joints) if j[1] == root]
+        out_dir = (np.mean([np.array(W[k][0]) for k in kids], 0) - jp_) if kids else jp_ - np.array(W[par][0])
+        out_dir /= max(np.linalg.norm(out_dir), 1e-6)
+        parts = [meshes[i] for i in base]
+        gcap = cap_mesh(boundary_loops(parts), jp_, -out_dir, root, 'gore')
+        P = np.concatenate([m['pos'] for m in parts])
+        ctr = P.mean(0)
+        Pa = np.concatenate([P] + ([gcap['pos']] if gcap is not None else []))
+        ev, evec = np.linalg.eigh(np.cov((Pa - ctr).T))
+        R = evec[:, ::-1].T
+        if np.linalg.det(R) < 0: R[1] *= -1
+        Q = (Pa - ctr) @ R.T
+        mid = (Q.min(0) + Q.max(0)) / 2
+        rest = float((Q[:, 2].max() - Q[:, 2].min()) / 2)
+        gm = []
+        for si in range(n_body + 1):
+            src = meshes[si] if si in base else gcap if si == n_body else None
+            if src is None:
+                gm.append(dict(name=names[si], material=meshes[si]['material'], pos=np.zeros((0, 3)), nrm=np.zeros((0, 3)), uv=np.zeros((0, 2)),
+                               bidx=np.zeros((0, 4), np.uint8), bw=np.zeros((0, 4), np.uint8), tris=np.zeros((0, 3), int)))
+                continue
+            n = len(src['pos'])
+            bidx = np.zeros((n, 4), np.uint8); bw = np.zeros((n, 4), np.uint8); bw[:, 0] = 255
+            gm.append(dict(name=names[si] if si < n_body else f'gore.{L}', material=src['material'] if si < n_body else f'gore_{char}.png',
+                           pos=(src['pos'] - ctr) @ R.T - mid, nrm=src['nrm'] @ R.T, uv=src['uv'], bidx=bidx, bw=bw, tris=src['tris']))
+        bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
+        gfile = f'{char}_gib_{L}.iqm'
+        write_iqm(f'{od}/{gfile}', joints, gm, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
+        gore[L] = dict(surfaces=hide, swap=dmg, stub=None, gib=gfile, gib_stub=n_body, center=[float(x) for x in ctr], rest=rest)
+    tex = f'gore_{char}.png'                      # the gib caps: the Flood's own damaged texture
+    shutil.copy(f'{od}/{gtex}', f'{od}/{tex}')
+    meta['gore'] = dict(limbs=gore, tex=tex)
+    json.dump(meta, open(jp, 'w'), indent=1)
+    print(f'{char:13s} swapped limbs ' + ', '.join(f"{L}: hide {len(g['surfaces'])} show {g['swap']}" for L, g in gore.items()))
+
+
 if __name__ == '__main__':
     for c in (sys.argv[1:] or GORE):
-        if c in GORE: process(c)
+        if c in GORE: (process_swap if GORE[c].get('swap') else process)(c)

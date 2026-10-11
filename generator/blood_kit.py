@@ -25,6 +25,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
 from hce_paths import OUT
+
 STAGE_HITS = (5, 7, 10)              # new hits per stage
 PUSH = 0.004                          # world units the overlay sits out from the skin
 TEX = 256                             # blood texture size
@@ -86,11 +87,12 @@ def process(char):
     meta = json.load(open(jp))
     joints, meshes, _ = read_iqm(f'{od}/{char}.iqm')
     mw = list(meta.get('mesh_weapon') or []) + [None] * len(meshes)
-    stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
+    g = meta.get('gore', {})
+    stubs = set() if g.get('cap_model') else {d['stub'] for d in g.get('limbs', {}).values() if d.get('stub') is not None}
     names = meta.get('mesh_names') or [m['name'] for m in meshes]
     def body(si, m):
         mat = m['material'].lower()
-        return not (mw[si] or si in stubs or 'shield' in mat or 'shield' in names[si] or mat.startswith('w_') or 'gore' in mat) and len(m['tris'])
+        return not (mw[si] or si in stubs or 'shield' in mat or 'shield' in names[si] or '~damaged' in names[si] or mat.startswith('w_') or 'gore' in mat) and len(m['tris'])
     body_ix = [si for si, m in enumerate(meshes) if body(si, m)]
     # hits on the body surface, area-weighted, same for every stage (cumulative)
     rng = np.random.default_rng(zlib.crc32(char.encode()))

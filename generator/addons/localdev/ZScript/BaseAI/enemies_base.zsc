@@ -4055,7 +4055,9 @@ class HaloDoom_EnemyBase : Actor abstract
 				let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
 					DeltaAngle(angle, aAng) + frandom(-err, err), DeltaAngle(pitch, aPit) + frandom(-err, err));
 				HCE_ScaleShot(shot);
-				if(shot && !shot.bNOGRAVITY) HCE_BallisticAim(shot, err);    // a round that drops: aimed up into an arc
+				// a round that drops: aimed up into an arc (not HDE's flames: they fly straight on their own heading, and
+				// lifted into an arc they went up at 45 degrees, over the target's head)
+				if(shot && !shot.bNOGRAVITY && !(shot is 'HaloFlames')) HCE_BallisticAim(shot, err);
 				if(shot)
 				{
 					String sn = shot.GetClassName();

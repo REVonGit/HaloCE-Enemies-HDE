@@ -154,18 +154,23 @@ def bulge(P, N, tris):
     return out
 
 
-# inset lights drawn in a light colour of their own rather than the torso map's white glyph panels (the Honor Guard's
-# amber), the whole texture glowing (its brightmap the glyphs' own light and shade)
-INSET_GLOW = {'honor_body': (1.0, 0.58, 0.18)}
+# Halo 2 draws the inset lights additively: only their glyphs glow, the rest of the light panel is see-through. Doom's
+# models alpha-test their textures, so the lights get a cut-out texture of their own: the glyph (where the torso map's
+# glyph panel is bright) opaque and glowing (brightmapped), the dark around it transparent. The Honor Guard's in amber
+# (rather than the panel's white), the Ranger's in their own green
+INSET_GLOW = {'honor_body': (1.0, 0.58, 0.18), 'ranger_body': None}
+INSET_CUT = 0.30          # the glyph: the panel's brightness above this (0..1)
 
 
 def inset_glow(src, rgb):
     from PIL import Image
+    from scipy import ndimage
     a = np.asarray(Image.open(f'{KIT}/{src}').convert('RGB'), float) / 255.0
-    lum = a.mean(axis=2, keepdims=True)
-    out = np.clip(np.array(rgb) * (0.25 + 1.2 * lum), 0, 1)
+    lum = a.max(axis=2, keepdims=True) if rgb is None else a.mean(axis=2, keepdims=True)
+    out = a if rgb is None else np.clip(np.array(rgb) * (0.25 + 1.2 * lum), 0, 1)
+    alpha = (ndimage.gaussian_filter(lum[..., 0], 0.6) > INSET_CUT).astype(np.uint8) * 255
     fn = src[:-4] + '_inset.png'
-    Image.fromarray((out * 255).astype(np.uint8)).save(f'{KIT}/{fn}')
+    Image.fromarray(np.dstack([(out * 255).astype(np.uint8), alpha])).save(f'{KIT}/{fn}')
     Image.fromarray((np.clip(0.35 + 0.65 * lum[..., 0], 0, 1) * 255).astype(np.uint8)).convert('RGB').save(f'{KIT}/{fn[:-4]}_bm.png')
     BRIGHT[fn] = f'{fn[:-4]}_bm.png'
     return fn

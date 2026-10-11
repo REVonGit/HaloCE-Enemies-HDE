@@ -2613,6 +2613,23 @@ ELITE_LENS_CUBE = 'ek_visor_cube.png'
 # texels stay fullbright in the dark; the cloaked skins are left out (their camo shader). The Elite kit's maps come with
 # their own (extract_h2_elite_kit.py: the Ranger's and the jump pack's lights, the Honor Guard's markings).
 GLOW_MIN = 0.3                # a material glows when its self-illumination reaches this somewhere
+GLOW_STRENGTH = 0.55          # how far toward fullbright a glowing texel goes (1 = fullbright)
+GLOW_SOFT = 1.0               # its edge feathered over this many texels
+KIT_GLOW_STRENGTH = 0.75      # the Halo 2 pieces' lights (the Ranger's, the jump pack's: coloured lamps), a little stronger
+_glow_colours = None
+
+def glow_tint(mat):
+    """Halo CE's self-illumination colour for a material (glow_colours.py: its shader's animation colours, the brighter
+    bound), or None when it is plain white (Halo lights the paint itself there) or unknown"""
+    global _glow_colours
+    if _glow_colours is None:
+        p = f'{OUT}/glow_colours.json'
+        _glow_colours = json.load(open(p)) if os.path.exists(p) else {}
+    d = _glow_colours.get(mat)
+    if not d: return None
+    c = max((d['lower'], d['upper']), key=sum)
+    if min(c) > 0.9 or max(c) < 0.05: return None
+    return [x / max(c) for x in c]           # its hue at full strength (the brightmap sets how bright)
 
 def glow_maps(pack, mdir, team, camo):
     out = []; made = {}
@@ -2627,16 +2644,32 @@ def glow_maps(pack, mdir, team, camo):
             if os.path.exists(mp):
                 g = np.asarray(Image.open(mp).convert('RGBA')).astype(np.float32)[..., 1] / 255.0
                 if g.max() >= GLOW_MIN:
+                    from scipy import ndimage
                     sz = Image.open(src).size
-                    bm = np.clip((g - 0.12) / 0.6, 0, 1)
+                    # a light given off, not a lamp pointed at the paint: partly fullbright (GLOW_STRENGTH), feathered
+                    # out at its edges, so the glow sits in the lit scene instead of punching a hard flat patch out of it
+                    bm = ndimage.gaussian_filter(np.clip((g - 0.12) / 0.6, 0, 1), GLOW_SOFT) * GLOW_STRENGTH
                     fn = f'models/{mdir}/{char}/{os.path.basename(src)[:-4]}_bm.png'
                     Image.fromarray((bm * 255).astype(np.uint8)).convert('RGB').resize(sz, Image.BILINEAR).save(f'{pack}/{fn}')
-                    made[mp] = fn
-        if made[mp]: out.append(f'brightmap texture "{rel}"\n{{\n\tmap "{made[mp]}"\n}}')
+                    made[mp] = (fn, np.asarray(Image.fromarray((np.clip((g - 0.12) / 0.6, 0, 1) * 255).astype(np.uint8)).resize(sz, Image.BILINEAR)).astype(np.float32) / 255.0)
+        if made[mp]:
+            fn, gm = made[mp]
+            tint = glow_tint(os.path.basename(src)[:-4])
+            if tint is not None:                  # Halo's own self-illumination colour, where it isn't plain white
+                im = Image.open(dst).convert('RGB')
+                c = np.asarray(im).astype(np.float32) / 255.0
+                k = gm[..., None] if gm.shape[:2] == c.shape[:2] else np.asarray(Image.fromarray((gm * 255).astype(np.uint8)).resize(im.size)).astype(np.float32)[..., None] / 255.0
+                glow = np.clip(c * np.array(tint, np.float32) * 1.25, 0, 1)        # Halo: the paint times the light's colour
+                Image.fromarray((np.clip(c * (1 - k) + glow * k, 0, 1) * 255).astype(np.uint8)).save(dst)
+            out.append(f'brightmap texture "{rel}"\n{{\n\tmap "{fn}"\n}}')
     d = f'{pack}/models/{mdir}/EliteKit'
     if os.path.isdir(d) and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):
         for tex, bm in json.load(open(f'{ELITE_KIT}/EliteKit.json')).get('brightmaps', {}).items():
             if os.path.exists(f'{d}/{tex}') and os.path.exists(f'{d}/{bm}'):
+                from scipy import ndimage                 # feathered and partly fullbright, as the Covenant's own
+                b = np.asarray(Image.open(f'{d}/{bm}').convert('L')).astype(np.float32) / 255.0
+                b = ndimage.gaussian_filter(b, GLOW_SOFT) * KIT_GLOW_STRENGTH
+                Image.fromarray((np.clip(b, 0, 1) * 255).astype(np.uint8)).convert('RGB').save(f'{d}/{bm}')
                 out.append(f'brightmap texture "models/{mdir}/EliteKit/{tex}"\n{{\n\tmap "models/{mdir}/EliteKit/{bm}"\n}}')
     return out
 

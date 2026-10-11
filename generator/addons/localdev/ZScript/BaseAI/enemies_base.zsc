@@ -106,9 +106,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
+		if(hce_vPending && hce_enabled && health > 0 && GetAge() >= 1) HCE_ApplyVariant();       // an HCEVARS variant
+		if(!hce_presetChecked && hce_enabled && health > 0 && GetAge() >= 1) HCE_PresetArm();   // HDE's weapon preset
 		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
 		else if(hce_enabled && health <= 0 && hce_burnHit && !default.bNOBLOOD) bNOBLOOD = false;   // a corpse after a fire hit
 		hce_burnHit = false;
+		if(hce_enabled && hce_lastStand && health > 0) { hce_crouch = true; hce_cvState = 0; }   // the last stand: down on one knee
 		if(hce_enabled && hce_noMove && health > 0)        // pinned to his spot (leatherneck): turns, aims and fights, never moves
 		{
 			if(!hce_anchored) { hce_anchor = pos.xy; hce_anchored = true; }
@@ -565,6 +568,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	int    hce_specialCount;
 	// Halo-style drops: the weapon in hand (HDE pickup class) and leftover grenades
 	Name   hce_dropWeapon, hce_dropGrenade;
+	Name   hce_armWeapon;               // a gun it is built with but never drops (a Hunter's arm cannon): HDE's weapon presets weigh it
 	Name   hce_voice;
 	int    hce_voiceTics, hce_tauntTics;
 
@@ -597,6 +601,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	Property HCE_FireLoop : hce_fireLoop;
 	Property HCE_Voices : hce_voiceSet;
 	Property HCE_Drops : hce_dropWeapon, hce_dropGrenade;
+	Property HCE_ArmWeapon : hce_armWeapon;
 	Property HCE_Kamikaze : hce_kamiChance;
 	Property HCE_Jump : hce_jumpHeight;
 
@@ -649,8 +654,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		if(hce_animLock > 0 && !force) return;
 		kind = HCE_GuardKind(kind);
+		if(hce_lastStand && health > 0) kind = HCE_LastStandKind(kind);
 		if(!restart && loop && kind == hce_curAnimKind && hce_curAnim != 'None') return;
 		Name n = HCE_AnimName(kind);
+		if(n == 'None' && kind == HCE_A_CROUCH_IDLE && hce_lastStand) n = HCE_LastStandAnim();   // a body that never crouches: its own pose
 		if(n == 'None')
 		{
 			// sensible fallbacks
@@ -726,10 +733,21 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	// Setup
 	// ------------------------------------------------------------------
+	// Performance: cheaper shading (hce_simpleshaders). Variants drawn with a custom shader on their whole body (the
+	// active camo) swap those surfaces for plain copies of the same textures (build_pack.py writes the override)
+	virtual void HCE_PlainShaders() {}
+	static bool HCE_SimpleShaders()
+	{
+		CVar cv = CVar.FindCVar("hce_simpleshaders");
+		return cv && cv.GetBool();
+	}
+	int hce_diedAt;                      // level.maptime it died (the garbage collector removes the oldest bodies first)
+
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
 		if(!hce_enabled) return;
+		if(HCE_SimpleShaders()) HCE_PlainShaders();
 		static const int prefs[] = { HCE_WK_CLOSE, HCE_WK_MID, HCE_WK_LONG };
 		hce_weaponPref = prefs[random(0, 2)];             // a regular Marine's liking: close, mid or long range
 		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0) HCE_RollName();
@@ -3928,7 +3946,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			hit.DamageMobj(self, self, dmg, 'Fire');
 		}
 		else { hce_beamVictim = null; hce_beamRamp = 1.0; }
-		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && hce_burstShot % 10 == 0 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && hce_burstShot % 10 == 0 && !hce_lastStand && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		hce_burstShot++;
 	}
 
@@ -4068,7 +4086,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			}
 		}
 		HCE_PlayFireSound(special);
-		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
+		if(hce_moveSpeed <= 0.1 && hce_cvState < HCE_CV_HIDE && !hce_lastStand && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		if(bHCE_ActiveCamo) A_SetRenderStyle(0.45, STYLE_Translucent);
 	}
 
@@ -4996,7 +5014,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		// flinches: a hard ping (h-ping) for a heavy hit -- a quarter of its health at once, a blast, a hard
 		// melee -- which also cuts a soft ping short; otherwise a chance of a soft ping (s-ping)
-		if(health > 0 && hce_leapState == 0 && hce_jumpState == 0 && hce_action != HCE_ACT_KAMIKAZE)
+		if(health > 0 && !hce_noFlinch && hce_leapState == 0 && hce_jumpState == 0 && hce_action != HCE_ACT_KAMIKAZE)
 		{
 			bool hard = frac >= 0.25 || (hce_blastHit && frac >= 0.08) || (mod == 'Melee' && frac >= 0.12);
 			// a hard hit cuts short anything but a swing / throw in progress, a dive or an earlier hard ping
@@ -5023,7 +5041,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Elites: when the energy shield pops they reel in a hard ping for its full length
 	virtual void HCE_OnShieldPop()
 	{
-		if(!bHCE_ShieldStun || health <= 0 || hce_leapState > 0 || hce_jumpState > 0 || hce_action == HCE_ACT_KAMIKAZE) return;
+		if(!bHCE_ShieldStun || hce_noFlinch || health <= 0 || hce_leapState > 0 || hce_jumpState > 0 || hce_action == HCE_ACT_KAMIKAZE) return;
 		int k = HCE_DirKind(HCE_A_HPING_F, HCE_A_HPING_B, HCE_A_HPING_F, HCE_A_HPING_F);
 		if(!HCE_HasAnim(k)) k = HCE_A_HPING_F;
 		if(!HCE_HasAnim(k)) return;
@@ -5069,7 +5087,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// burst with Nash's Gore Mod and the Halo gore patch loaded); it knows whose blood it is
 	static void HCE_BloodFx(Actor who, double x, double y, double z, double vx, double vy, double vz, double ang, int flags)
 	{
-		if(!who) return;
+		if(!who || !HCE_GoreRoll()) return;
 		bool ok; Actor b;
 		[ok, b] = who.A_SpawnItemEx(who.GetBloodType(0), x, y, z, vx, vy, vz, ang, flags);
 		if(b) b.target = who;
@@ -5096,6 +5114,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	virtual void HCE_Die()
 	{
+		hce_diedAt = level.maptime;
 		hce_burnDying = false; hce_bleedOut = 0;
 		if(hce_climbTics > 0) HCE_EndClimb(false);
 		hce_cvState = 0;
@@ -5340,8 +5359,26 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// the body vanishes in a burst of blood (and NashGore's gibs, when it's loaded)
+	// Performance: the gore budget (hce_gorescale, 0-1): each blood spurt, gib and gore puff is kept with this chance
+	static double HCE_GoreScale()
+	{
+		CVar cv = CVar.FindCVar("hce_gorescale");
+		return cv ? clamp(cv.GetFloat(), 0., 1.) : 1.;
+	}
+	static bool HCE_GoreRoll()
+	{
+		double g = HCE_GoreScale();
+		return g >= 1 || frandom[HCEGoreBudget](0, 1) < g;
+	}
+	static int HCE_GoreCount(int n)
+	{
+		double c = n * HCE_GoreScale();
+		return int(c) + (frandom[HCEGoreBudget](0, 1) < c - int(c) ? 1 : 0);
+	}
+
 	void HCE_GibBurst(int blood, int gibs)
 	{
+		gibs = HCE_GoreCount(gibs);
 		health = min(health, GetGibHealth() - 1);          // NashGore's own gib burst: meat, wall and ceiling splats
 		bInvisible = true;
 		A_SetRenderStyle(0, STYLE_None);
@@ -5468,6 +5505,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(health <= 0 || dealt <= 0 || (hce_killKind != HCE_WK_DISMEMBER && hce_killKind != HCE_WK_LIMBS) || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
 		int gl = HCE_GunLimb();
+		if(gl >= 0 && HCE_LastStandCheck(gl, dealt)) return;
 		if(gl < 0 || (hce_severed & (1 << gl)) || hce_struckLimb != gl || dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return;
 		bool small = (hce_type == 1 || hce_type == 2) && hce_team == HCE_TEAM_COVENANT;
 		if(!small)
@@ -5492,6 +5530,60 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('PainHeavy', 1.0, 0, true);
 		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
 	}
+	// ---- the last stand ----
+	// An Elite or Brute holding its gun in one hand (the pistol stance; a Brute's one-handed guns) that has its other
+	// arm shot off (the same hit, chance and size as for the gun arm) doesn't die of it: it drops to a crouch where it
+	// stands and fights on from there, never moving again, turning to aim and firing until it is killed. No grenades,
+	// no jumps, no berserk charge, no jump pack.
+	bool hce_lastStand;
+	bool hce_noFlinch;                    // never flinches when hit (the standalone packs' Ghost skull)
+	virtual bool HCE_OneHanded()
+	{
+		String idle = HCE_AnimName(HCE_A_IDLE);
+		if(idle.IndexOf("pistol") >= 0) return true;
+		String cn = GetClassName();
+		if(cn.IndexOf("Brute") >= 0)
+		{
+			static const Name one[] = { 'Halo_PlasmaRifle', 'Halo_PlasmaPistol', 'Halo_Needler', 'Halo_Spiker' };
+			for(int i = 0; i < one.Size(); i++) if(hce_dropWeapon == one[i]) return true;
+		}
+		return false;
+	}
+	// down on one knee for everything but flinches and deaths (no standing fire, vent, reload or turn animations)
+	int HCE_LastStandKind(int kind)
+	{
+		if(kind == HCE_A_PING_F || kind == HCE_A_PING_B || kind == HCE_A_PING_L || kind == HCE_A_PING_R
+			|| kind == HCE_A_HPING_F || kind == HCE_A_HPING_B || (kind >= HCE_A_DIE_F && kind <= HCE_A_DIE_LAND)) return kind;
+		return HCE_A_CROUCH_IDLE;
+	}
+	// the kneeling pose of a body with no crouch of its own (Halo 2's Brutes: brute_laststand_anim.py)
+	virtual Name HCE_LastStandAnim() { return 'None'; }
+	bool HCE_LastStandCheck(int gl, int dealt)
+	{
+		int off = gl == HCE_LIMB_RARM ? HCE_LIMB_LARM : gl == HCE_LIMB_LARM ? HCE_LIMB_RARM : -1;
+		if(off < 0 || hce_lastStand || hce_struckLimb != off || (hce_severed & (1 << off))) return false;
+		String cn = GetClassName();
+		bool elite = hce_type == 0 && hce_team == HCE_TEAM_COVENANT, brute = cn.IndexOf("Brute") >= 0;
+		if(!(elite || brute) || !HCE_OneHanded() || hce_projectile == 'None') return false;
+		if(dealt < SpawnHealth() * 0.2 || frandom[HCEGore](0, 1) >= 0.5) return false;
+		if(!HCE_SeverLimb(off)) return false;
+		hce_brutality += 1;
+		HCE_StartLastStand();
+		return true;
+	}
+	void HCE_StartLastStand()
+	{
+		hce_lastStand = true;
+		hce_noMove = true; hce_anchored = false;                   // held where it fell (the leatherneck pin)
+		hce_grenades = 0;
+		bHCE_Jetpack = false; bHCE_Berserks = false;
+		hce_berserk = false; hce_jumpState = 0; HCE_JetStop();
+		hce_cvState = 0; hce_scavItem = null;
+		hce_crouch = HCE_HasAnim(HCE_A_CROUCH_IDLE) || HCE_LastStandAnim() != 'None';
+		HCE_Say('PainHeavy', 1.0, 0, true);
+		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
+	}
+
 	bool HCE_BleedOutTick()
 	{
 		hce_stumpTics = max(hce_stumpTics, 35 * 4 - 2);      // the stump keeps pumping while it runs
@@ -5668,19 +5760,106 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual Name HCE_LoadoutAnim(int lo, int kind) { return 'None'; }
 	virtual int HCE_LoadoutAnimTics(Name anim) { return 0; }
 
+	// the map's shared resolver (HCE_ResolverHolder), or null without HaloDoom Evolved
+	static HCE_PickupResolver HCE_SharedResolver()
+	{
+		let it = ThinkerIterator.Create("HCE_ResolverHolder", STAT_INFO);
+		let h = HCE_ResolverHolder(it.Next());
+		if(!h)
+		{
+			h = new("HCE_ResolverHolder");
+			h.ChangeStatNum(STAT_INFO);
+			String rn = "HCE_HDEPickupResolver";              // looked up at run time: only the HDE packs have it
+			class<HCE_PickupResolver> rc = rn;
+			if(rc) h.resolver = HCE_PickupResolver(new(rc));
+		}
+		return h.resolver;
+	}
+
+	// HaloDoom Evolved's weapon preset (hce_presets): the Doom monster replacements skip enemies whose gun the preset
+	// doesn't spawn, an enemy placed with one re-arms with an allowed gun it can carry, and a gun it still holds that the
+	// preset leaves out drops as an allowed gun of the same power tier
+	static bool HCE_PresetsOn()
+	{
+		CVar cv = CVar.FindCVar("hce_presets");
+		return !cv || cv.GetBool();
+	}
+	static bool HCE_PresetAllows(Name w)
+	{
+		if(w == 'None' || w == '' || !HCE_PresetsOn()) return true;
+		let r = HCE_SharedResolver();
+		return !r || r.WeaponAllowed(w);
+	}
+	static Name HCE_PresetDrop(Name w)
+	{
+		if(HCE_PresetAllows(w)) return w;
+		let r = HCE_SharedResolver();
+		return r ? r.SubstituteWeapon(w) : w;
+	}
+
+	bool hce_presetChecked;
+
+	// ------------------------------------------------------------------
+	// Variant definitions (HCEVARS lumps, read by the core pack's HCE_VariantSpawner): an existing enemy class made
+	// tougher, faster, bigger or re-armed by a data file. The spawner sets these before the enemy's first tic; it applies
+	// them on that tic, after its own setup (so they stack with the health / shield options and Halo difficulty).
+	// ------------------------------------------------------------------
+	double hce_vHealth, hce_vShield, hce_vSpeed, hce_vDamage;
+	Name hce_vWeapon;
+	bool hce_vPending;
+
+	void HCE_SetVariant(double hp, double sh, double sp, double dmg, double sc, Name weap)
+	{
+		hce_vHealth = hp; hce_vShield = sh; hce_vSpeed = sp; hce_vDamage = dmg; hce_vWeapon = weap; hce_vPending = true;
+		if(sc > 0 && sc != 1)
+		{
+			A_SetScale(scale.x * sc, scale.y * sc);
+			A_SetSize(radius * sc, height * sc);
+		}
+	}
+
+	void HCE_ApplyVariant()
+	{
+		hce_vPending = false;
+		if(hce_vWeapon != 'None' && hce_vWeapon != '' && hce_vWeapon != hce_dropWeapon && HCE_CanCarry(hce_vWeapon)) HCE_EquipGun(hce_vWeapon);
+		if(hce_vHealth > 0 && hce_vHealth != 1)
+		{
+			StartHealth = max(1, int(SpawnHealth() * hce_vHealth));
+			health = StartHealth;
+		}
+		if(hce_vShield > 0 && hce_vShield != 1 && hce_shieldMax > 0)
+		{
+			hce_shieldMax *= hce_vShield;
+			let sp = ShieldProcessor(FindInventory("HCE_Shield"));
+			if(sp) { sp.maxShields = hce_shieldMax; sp.shields = hce_shieldMax; }
+		}
+		if(hce_vSpeed > 0 && hce_vSpeed != 1) { hce_runSpeed *= hce_vSpeed; hce_walkSpeed *= hce_vSpeed; Speed *= hce_vSpeed; }
+		if(hce_vDamage > 0 && hce_vDamage != 1) hce_damageMod = (hce_damageMod > 0 ? hce_damageMod : 1.0) * hce_vDamage;
+	}
+	// placed (or summoned) with a gun the preset leaves out: an allowed one it can carry instead, picked at random
+	void HCE_PresetArm()
+	{
+		hce_presetChecked = true;
+		if(!HCE_PresetsOn() || hce_dropWeapon == 'None' || HCE_PresetAllows(hce_dropWeapon) || !HCE_HasLoadouts()) return;
+		static const Name guns[] = { 'Halo_FuelRod', 'Halo_Needler', 'Halo_PlasmaRifle', 'Halo_PlasmaPistol',
+			'Halo_RocketLauncher', 'Halo_Hydra', 'Halo_SniperRifle', 'Halo_GPMG', 'Halo_GrenadeLauncher', 'Halo_Flamethrower',
+			'Halo_Shotgun', 'Halo_Bulldog', 'Halo_DBLShotgun', 'Halo_BattleRifle', 'Halo_DMR', 'Halo_Commando',
+			'Halo_MA5B', 'Halo_AssaultRifle', 'Halo_SMG', 'Halo_Magnum', 'Halo_Sidekick',
+			'Halo_BeamRifle', 'Halo_PlasmaCaster', 'Halo_Carbine', 'Halo_Spiker', 'Halo_PulseCarbine', 'Halo_NeedlerJavelin',
+			'Halo_StickyDetonator', 'Halo_EnergySword', 'Halo_GravityHammer' };
+		Array<Name> ok;
+		for(int i = 0; i < guns.Size(); i++)
+			if(guns[i] != hce_dropWeapon && HCE_CanCarry(guns[i]) && HCE_PresetAllows(guns[i])) ok.Push(guns[i]);
+		if(ok.Size()) HCE_EquipGun(ok[random[HCEPreset](0, ok.Size() - 1)]);
+	}
+
 	// the weapon class an actor on the ground gives (a weapon lying in the map, an HDE drop), or 'None'
 	Name HCE_GroundWeaponClass(Actor a)
 	{
 		if(!a) return 'None';
 		let w = Weapon(a);
 		if(w) return w.Owner ? 'None' : a.GetClassName();
-		if(!hce_resolverTried)
-		{
-			hce_resolverTried = true;
-			String rn = "HCE_HDEPickupResolver";              // looked up at run time: only the HDE packs have it
-			class<HCE_PickupResolver> rc = rn;
-			if(rc) hce_resolver = HCE_PickupResolver(new(rc));
-		}
+		if(!hce_resolverTried) { hce_resolverTried = true; hce_resolver = HCE_SharedResolver(); }
 		return hce_resolver ? hce_resolver.WeaponOf(a) : 'None';
 	}
 
@@ -5874,9 +6053,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_resurrected) return;            // a revived Flood form already dropped its gun
 		CVar cv = CVar.FindCVar("hce_dropweapons");
 		if(cv && !cv.GetBool()) return;
-		if(hce_dropWeapon != 'None' && hce_dropWeapon != '')
+		Name dw = HCE_PresetDrop(hce_dropWeapon);             // a gun the HDE preset leaves out: an allowed one of its tier
+		if(dw != 'None' && dw != '')
 		{
-			class<Actor> wc = (class<Actor>)(hce_dropWeapon);
+			class<Actor> wc = (class<Actor>)(dw);
 			if(wc) HCE_Toss(wc, hce_team == HCE_TEAM_COVENANT);      // the Covenant always leave their gun
 		}
 		if(hce_dropGrenade != 'None' && hce_dropGrenade != '' && hce_grenades > 0 && random(0, 1))
@@ -7049,4 +7229,15 @@ class HCE_PickupResolver play
 {
 	virtual Name WeaponOf(Actor a) { return 'None'; }
 	virtual bool FlashlightOn(Actor p) { return false; }      // HaloDoom Evolved's flashlight (hce_hde.zsc)
+	// HaloDoom Evolved's weapon presets (its game types: halodoom_gametype): whether the preset lets this gun spawn,
+	// and an allowed gun of the same power tier to drop in its place ('None': nothing). Everything is allowed without HDE.
+	virtual bool WeaponAllowed(Name w) { return true; }
+	virtual Name SubstituteWeapon(Name w) { return w; }
+}
+
+// One resolver per map, shared by every enemy and the replacement handler (HaloDoom_EnemyBase.HCE_Presets): it caches
+// the preset's weapon list, which HDE otherwise re-reads from its GTDEFS lumps on every call.
+class HCE_ResolverHolder : Thinker
+{
+	HCE_PickupResolver resolver;
 }

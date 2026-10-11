@@ -1,0 +1,180 @@
+// ============================================================================
+// hces_skulls.zsc -- Halo's skulls for the standalone packs (Options > Halo CE Skulls).
+//
+// HaloDoom Evolved has its own skulls; without it (the standalone packs, any player mod) these do the enemy side of
+// them. Each is a server CVar (hces_skull_<name>), read when an enemy spawns or dies, so turning one on or off takes
+// hold for enemies that appear after.
+//   Grunt Birthday Party  a headshot kill bursts into confetti, with a cheer (HDE's confetti and its pop)
+//   Grunt Funeral         Grunts explode when they die
+//   Zombie Funeral        the Flood (and Doom's zombies) explode when they die
+//   Mythic                enemies have twice the health and shields
+//   Thunderstorm          enemies come one rank up (Minor -> Major -> Ultra, where that rank exists)
+//   Anger                 enemies fire faster, with shorter pauses between bursts
+//   Catch                 enemies throw grenades twice as often
+//   Tough Luck            enemies always dive out of grenades and roll away from fire
+//   Ghost                 enemies don't flinch when hit
+//   Assassins             every enemy is cloaked in active camo
+//   Famine                enemies leave half the loot
+//   Bandana               players never run out of ammo
+// ============================================================================
+
+class HCES_SkullHandler : EventHandler
+{
+	static bool On(String n)
+	{
+		CVar cv = CVar.FindCVar("hces_skull_" .. n);
+		return cv && cv.GetBool();
+	}
+
+	Array<Actor> upgraded;                   // Thunderstorm: enemies it spawned (their own spawn event comes later: not upgraded again)
+
+	// Thunderstorm: the class one rank up, if the packs have it ('None' if not)
+	static Name RankUp(Name cls)
+	{
+		static const String ranks[] = { "Minor", "Major", "Ultra" };
+		String cn = cls;
+		for(int i = 0; i < ranks.Size() - 1; i++)
+		{
+			if(cn.IndexOf(ranks[i]) < 0) continue;
+			for(int j = i + 1; j < ranks.Size(); j++)
+			{
+				String up = cn;
+				up.Replace(ranks[i], ranks[j]);
+				class<Actor> uc = up;
+				if(uc) return up;
+			}
+			return 'None';
+		}
+		return 'None';
+	}
+
+	override void WorldThingSpawned(WorldEvent e)
+	{
+		let m = HCES_EnemyBase(e.Thing);
+		if(!m || !m.hce_enabled || m.bFRIENDLY) return;
+		int uk = upgraded.Find(m);
+		if(uk != upgraded.Size()) upgraded.Delete(uk);
+		else if(On("thunderstorm"))
+		{
+			Name up = RankUp(m.GetClassName());
+			if(up != 'None')
+			{
+				String us = up;
+				let n = HCES_EnemyBase(Actor.Spawn(us, m.pos, NO_REPLACE));
+				if(n)
+				{
+					upgraded.Push(n);
+					n.angle = m.angle; n.ChangeTid(m.tid); n.special = m.special;
+					for(int i = 0; i < 5; i++) n.args[i] = m.args[i];
+					n.bAMBUSH = m.bAMBUSH; n.bDORMANT = m.bDORMANT;
+					m.ClearCounters();
+					m.Destroy();
+					return;
+				}
+			}
+		}
+		if(On("mythic"))
+		{
+			m.hce_vHealth = 2; m.hce_vShield = 2; m.hce_vPending = true;   // doubled on its first tic, after its own setup
+		}
+		if(On("anger")) { m.hce_rateOfFire *= 1.5; m.hce_patPauseMin *= 0.5; m.hce_patPauseMax *= 0.5; }
+		if(On("catch")) { m.hce_grenadeChance = min(1.0, m.hce_grenadeChance * 2); m.hce_grenadeDelay *= 0.5; if(m.hce_grenades > 0) m.hce_grenades *= 2; }
+		if(On("toughluck")) { m.hce_grenadeDiveChance = 1.0; m.hce_evadeChance = 1.0; m.hce_coverDiveChance = 1.0; }
+		if(On("ghost")) m.hce_noFlinch = true;
+		if(On("assassins")) { m.bHCE_ActiveCamo = true; m.A_SetRenderStyle(0.12, STYLE_Translucent); }
+	}
+
+	override void WorldThingDied(WorldEvent e)
+	{
+		let v = e.Thing;
+		if(!v) return;
+		let m = HCES_EnemyBase(v);
+		if(m && m.hce_lastHeadshot && On("gruntbirthdayparty")) Confetti(v);
+		String cn = v.GetClassName();
+		bool grunt = cn.IndexOf("Grunt") >= 0;
+		bool zombie = cn.IndexOf("Flood") >= 0 || v is "Zombieman" || v is "ShotgunGuy" || v is "ChaingunGuy";
+		if((grunt && On("gruntfuneral")) || (zombie && On("zombiefuneral")))
+		{
+			let x = Actor.Spawn("HCES_Explosion", v.pos + (0, 0, v.height * 0.5));
+			v.A_StartSound("HCES/Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP);
+			v.A_Explode(60, 160, XF_HURTSOURCE, false, 0, 0, 0, "", 'Explosive');
+		}
+	}
+
+	static void Confetti(Actor v)
+	{
+		vector3 at = v.pos + (0, 0, v.height + 10);
+		int n = random[HCESConfetti](20, 40);
+		for(int i = 0; i < n; i++)
+		{
+			let cf = Actor.Spawn("HCES_Confetti", at);
+			if(!cf) continue;
+			if(i == 0) cf.A_StartSound("HCES/Halo/Skulls/ConfettiPop", CHAN_AUTO, CHANF_OVERLAP);
+			double a = frandom[HCESConfetti](0, 360), p = frandom[HCESConfetti](-20, -80);
+			cf.vel = (cos(a), sin(a), -sin(p) * 1.5) * frandom[HCESConfetti](6, 12);
+		}
+	}
+
+	override void WorldTick()
+	{
+		if(!(level.maptime % 35) && On("bandana"))
+		{
+			for(int i = 0; i < MAXPLAYERS; i++)
+			{
+				if(!playeringame[i] || !players[i].mo) continue;
+				for(let it = players[i].mo.Inv; it; it = it.Inv)
+					if(it is "Ammo" && it.Amount < it.MaxAmount) it.Amount = it.MaxAmount;
+			}
+		}
+	}
+}
+
+// Grunt Birthday Party's confetti (HaloDoom Evolved's SkullFX_Confetti)
+class HCES_Confetti : Actor
+{
+	double fallRate;
+	Default
+	{
+		Scale 0.1;
+		RenderStyle "Shaded";
+		+ROLLSPRITE
+		+BRIGHT
+		+NOINTERACTION
+		+NOBLOCKMAP
+	}
+	override void BeginPlay()
+	{
+		Super.BeginPlay();
+		SetShade(Color(255, random[HCESConfetti](40, 255), random[HCESConfetti](40, 255), random[HCESConfetti](40, 255)));
+		fallRate = frandom[HCESConfetti](0.2, 0.3);
+		scale.x *= frandom[HCESConfetti](0.9, 1.1);
+		scale.y *= frandom[HCESConfetti](0.5, 2.0);
+		roll = frandom[HCESConfetti](0, 360);
+	}
+	override void Tick()
+	{
+		if(isFrozen()) return;
+		if(pos.z <= floorz)
+		{
+			vel = (0, 0, 0); bFLATSPRITE = true; bBRIGHT = false;
+			SetOrigin((pos.xy, floorz), true);
+			alpha -= 0.007;
+			if(alpha <= 0) Destroy();
+			return;
+		}
+		if(vel.z < 0)
+		{
+			vel.xy += (cos(angle + 90), sin(angle + 90)) * (sin(GetAge() * 10) * 0.2);
+			roll += frandom[HCESConfetti](-0.3, 0.3);
+		}
+		vel *= 0.9;
+		vel.z -= GetGravity() * fallRate;
+		SetOrigin(level.Vec3Offset(pos, vel), true);
+	}
+	States
+	{
+	Spawn:
+		HCNF A 1;
+		Loop;
+	}
+}

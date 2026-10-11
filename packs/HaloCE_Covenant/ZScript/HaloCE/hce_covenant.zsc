@@ -562,6 +562,9 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 // characters\elite\elite commander\elite commander energy sword
 class HCE_EliteCommanderEnergySword : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Commander (Energy Sword)"
+	//$Sprite "HU0HA0"
 	Default
 	{
 		Health 100;
@@ -754,6 +757,9 @@ class HCE_EliteShieldShell : HCE_ShieldShell {}
 // characters\elite\elite commander\elite commander plasma rifle
 class HCE_EliteCommanderPlasmaRifle : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Commander (Plasma Rifle)"
+	//$Sprite "HU0JA0"
 	Default
 	{
 		Health 100;
@@ -945,6 +951,9 @@ class HCE_EliteCommanderPlasmaRifle : HCE_EliteBase
 // characters\elite\elite heavy\elite heavy fuel rod
 class HCE_EliteHeavyFuelRod : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Heavy (Fuel Rod)"
+	//$Sprite "HU0LA0"
 	Default
 	{
 		Health 125;
@@ -1135,6 +1144,9 @@ class HCE_EliteHeavyFuelRod : HCE_EliteBase
 // characters\elite\elite heavy\elite heavy needler
 class HCE_EliteHeavyNeedler : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Heavy (Needler)"
+	//$Sprite "HU0MA0"
 	Default
 	{
 		Health 125;
@@ -1328,6 +1340,9 @@ class HCE_EliteHeavyNeedler : HCE_EliteBase
 // characters\elite\elite heavy\elite heavy plasma rifle
 class HCE_EliteHeavyPlasmaRifle : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Heavy (Plasma Rifle)"
+	//$Sprite "HU0NA0"
 	Default
 	{
 		Health 125;
@@ -1519,6 +1534,9 @@ class HCE_EliteHeavyPlasmaRifle : HCE_EliteBase
 // characters\elite\elite major\elite major fuel rod
 class HCE_EliteMajorFuelRod : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Major (Fuel Rod)"
+	//$Sprite "HU0RA0"
 	Default
 	{
 		Health 100;
@@ -1709,6 +1727,9 @@ class HCE_EliteMajorFuelRod : HCE_EliteBase
 // characters\elite\elite major\elite major needler
 class HCE_EliteMajorNeedler : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Major (Needler)"
+	//$Sprite "HU0SA0"
 	Default
 	{
 		Health 100;
@@ -1902,6 +1923,9 @@ class HCE_EliteMajorNeedler : HCE_EliteBase
 // characters\elite\elite major\elite major plasma rifle
 class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Major (Plasma Rifle)"
+	//$Sprite "HU0UA0"
 	Default
 	{
 		Health 100;
@@ -2093,6 +2117,9 @@ class HCE_EliteMajorPlasmaRifle : HCE_EliteBase
 // characters\elite\elite minor\elite minor needler
 class HCE_EliteMinorNeedler : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Minor (Needler)"
+	//$Sprite "HU0WA0"
 	Default
 	{
 		Health 100;
@@ -2286,6 +2313,9 @@ class HCE_EliteMinorNeedler : HCE_EliteBase
 // characters\elite\elite minor\elite minor plasma rifle
 class HCE_EliteMinorPlasmaRifle : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Minor (Plasma Rifle)"
+	//$Sprite "HU0YA0"
 	Default
 	{
 		Health 100;
@@ -2477,6 +2507,9 @@ class HCE_EliteMinorPlasmaRifle : HCE_EliteBase
 // characters\elite\elite minor\elite minor plasma rifle ranged
 class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Minor Plasma Rifle Ranged"
+	//$Sprite "HU0ZA0"
 	Default
 	{
 		Health 100;
@@ -2668,6 +2701,9 @@ class HCE_EliteMinorPlasmaRifleRanged : HCE_EliteBase
 // characters\elite\elite ranger\elite ranger needler
 class HCE_EliteRangerNeedler : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Ranger (Needler)"
+	//$Sprite "HU11A0"
 	Default
 	{
 		Health 100;
@@ -2910,6 +2946,9 @@ class HCE_EliteRangerBodyShieldShell : HCE_ShieldShell {}
 // characters\elite\elite ranger\elite ranger plasma rifle
 class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Elite Ranger (Plasma Rifle)"
+	//$Sprite "HU13A0"
 	Default
 	{
 		Health 100;
@@ -3710,6 +3749,9 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 // characters\elite\elite honor guard\elite honor guard energy sword
 class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Honor Guard (Energy Sword)"
+	//$Sprite "HU0OA0"
 	Default
 	{
 		Health 100;
@@ -3951,6 +3993,9 @@ class HCE_EliteSpecialHonorBodyShieldShell : HCE_ShieldShell {}
 // characters\elite\elite honor guard\elite honor guard plasma rifle
 class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Honor Guard (Plasma Rifle)"
+	//$Sprite "HU0QA0"
 	Default
 	{
 		Health 100;
@@ -4188,6 +4233,9 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 // characters\elite\elite specops\elite specops beam rifle
 class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Spec Ops (Beam Rifle)"
+	//$Sprite "HU14A0"
 	Default
 	{
 		Health 125;
@@ -4382,6 +4430,9 @@ class HCE_EliteSpecopsBeamRifle : HCE_EliteSpecialBase
 // characters\elite\elite specops\elite specops needler
 class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Spec Ops (Needler)"
+	//$Sprite "HU15A0"
 	Default
 	{
 		Health 125;
@@ -4576,6 +4627,9 @@ class HCE_EliteSpecopsNeedler : HCE_EliteSpecialBase
 // characters\elite\elite specops\elite specops plasma caster
 class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Spec Ops (Plasma Caster)"
+	//$Sprite "HU17A0"
 	Default
 	{
 		Health 125;
@@ -4781,6 +4835,9 @@ class HCE_EliteSpecopsPlasmaCaster : HCE_EliteSpecialBase
 // characters\elite\elite specops\elite specops plasma rifle
 class HCE_EliteSpecopsPlasmaRifle : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Elite Spec Ops (Plasma Rifle)"
+	//$Sprite "HU18A0"
 	Default
 	{
 		Health 125;
@@ -4973,6 +5030,9 @@ class HCE_EliteSpecopsPlasmaRifle : HCE_EliteSpecialBase
 // characters\elite\elite stealth\stealth elite major energy sword
 class HCE_StealthEliteMajorEnergySword : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Stealth Elite Major (Energy Sword)"
+	//$Sprite "HU53A0"
 	Default
 	{
 		Health 45;
@@ -5173,6 +5233,20 @@ class HCE_StealthEliteMajorEnergySword : HCE_EliteSpecialBase
 	{
 		if(gunArm && hce_bladeActor) { hce_bladeActor.Destroy(); hce_bladeActor = null; }
 	}
+	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
+	{
+		A_ChangeModel('None', 0, "", 'None', 0, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_1_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_3_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_4_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/EliteSpecial/skins", 'stealthelitemajorenergysword_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+	}
 }
 
 class HCE_StealthEliteMajorEnergySwordBlade : HCE_BladeShell {}
@@ -5180,6 +5254,9 @@ class HCE_StealthEliteMajorEnergySwordBlade : HCE_BladeShell {}
 // characters\elite\elite stealth\stealth elite major plasma rifle
 class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Stealth Elite Major (Plasma Rifle)"
+	//$Sprite "HU54A0"
 	Default
 	{
 		Health 45;
@@ -5366,11 +5443,28 @@ class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 		}
 		return (0, 0, 0);
 	}
+	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
+	{
+		A_ChangeModel('None', 0, "", 'None', 0, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_1_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_3_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_4_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/EliteSpecial/skins", 'stealthelitemajorplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\elite\elite stealth\stealth elite plasma rifle
 class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Stealth Elite (Plasma Rifle)"
+	//$Sprite "HU55A0"
 	Default
 	{
 		Health 45;
@@ -5556,6 +5650,20 @@ class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 		case 'stand pistol vault': return (71.4, -0.0, 1.8);
 		}
 		return (0, 0, 0);
+	}
+	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
+	{
+		A_ChangeModel('None', 0, "", 'None', 0, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_1_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_3_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_4_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_2_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/EliteSpecial/skins", 'stealtheliteplasmarifle_elitespecial_5_plain.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -6015,6 +6123,9 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 // characters\grunt\grunt flee major needler
 class HCE_GruntFleeMajorNeedler : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Flee Major (Needler)"
+	//$Sprite "HU1YA0"
 	Default
 	{
 		Health 75;
@@ -6172,6 +6283,9 @@ class HCE_GruntFleeMajorNeedler : HCE_GruntBase
 // characters\grunt\grunt flee major plasma pistol
 class HCE_GruntFleeMajorPlasmaPistol : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Flee Major (Plasma Pistol)"
+	//$Sprite "HU1ZA0"
 	Default
 	{
 		Health 60;
@@ -6330,6 +6444,9 @@ class HCE_GruntFleeMajorPlasmaPistol : HCE_GruntBase
 // characters\grunt\grunt flee minor needler
 class HCE_GruntFleeMinorNeedler : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Flee Minor (Needler)"
+	//$Sprite "HU20A0"
 	Default
 	{
 		Health 45;
@@ -6488,6 +6605,9 @@ class HCE_GruntFleeMinorNeedler : HCE_GruntBase
 // characters\grunt\grunt flee minor plasma pistol
 class HCE_GruntFleeMinorPlasmaPistol : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Flee Minor (Plasma Pistol)"
+	//$Sprite "HU21A0"
 	Default
 	{
 		Health 30;
@@ -6646,6 +6766,9 @@ class HCE_GruntFleeMinorPlasmaPistol : HCE_GruntBase
 // characters\grunt\grunt major needler
 class HCE_GruntMajorNeedler : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Major (Needler)"
+	//$Sprite "HU23A0"
 	Default
 	{
 		Health 75;
@@ -6804,6 +6927,9 @@ class HCE_GruntMajorNeedler : HCE_GruntBase
 // characters\grunt\grunt major plasma pistol
 class HCE_GruntMajorPlasmaPistol : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Major (Plasma Pistol)"
+	//$Sprite "HU24A0"
 	Default
 	{
 		Health 60;
@@ -6962,6 +7088,9 @@ class HCE_GruntMajorPlasmaPistol : HCE_GruntBase
 // characters\grunt\grunt minor needler
 class HCE_GruntMinorNeedler : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Minor (Needler)"
+	//$Sprite "HU25A0"
 	Default
 	{
 		Health 45;
@@ -7120,6 +7249,9 @@ class HCE_GruntMinorNeedler : HCE_GruntBase
 // characters\grunt\grunt minor plasma pistol
 class HCE_GruntMinorPlasmaPistol : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Minor (Plasma Pistol)"
+	//$Sprite "HU26A0"
 	Default
 	{
 		Health 30;
@@ -7278,6 +7410,9 @@ class HCE_GruntMinorPlasmaPistol : HCE_GruntBase
 // characters\grunt\grunt ultra needler
 class HCE_GruntUltraNeedler : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Ultra (Needler)"
+	//$Sprite "HU2AA0"
 	Default
 	{
 		Health 100;
@@ -7436,6 +7571,9 @@ class HCE_GruntUltraNeedler : HCE_GruntBase
 // characters\grunt\grunt ultra plasma pistol
 class HCE_GruntUltraPlasmaPistol : HCE_GruntBase
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Grunt Ultra (Plasma Pistol)"
+	//$Sprite "HU2BA0"
 	Default
 	{
 		Health 80;
@@ -8052,6 +8190,9 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 // characters\grunt\grunt heavy fuel rod
 class HCE_GruntHeavyFuelRod : HCE_GruntSpecOpsBase
 {
+	//$Category "Halo CE/Covenant/Grunt Spec Ops"
+	//$Title "Grunt Heavy (Fuel Rod)"
+	//$Sprite "HU22A0"
 	Default
 	{
 		Health 75;
@@ -8194,6 +8335,9 @@ class HCE_GruntHeavyFuelRod : HCE_GruntSpecOpsBase
 // characters\grunt\grunt specops fuel rod
 class HCE_GruntSpecopsFuelRod : HCE_GruntSpecOpsBase
 {
+	//$Category "Halo CE/Covenant/Grunt Spec Ops"
+	//$Title "Grunt Spec Ops (Fuel Rod)"
+	//$Sprite "HU27A0"
 	Default
 	{
 		Health 75;
@@ -8336,6 +8480,9 @@ class HCE_GruntSpecopsFuelRod : HCE_GruntSpecOpsBase
 // characters\grunt\grunt specops fuel rod airdef
 class HCE_GruntSpecopsFuelRodAirdef : HCE_GruntSpecOpsBase
 {
+	//$Category "Halo CE/Covenant/Grunt Spec Ops"
+	//$Title "Grunt Spec Ops Fuel Rod Airdef"
+	//$Sprite "HU28A0"
 	Default
 	{
 		Health 75;
@@ -8478,6 +8625,9 @@ class HCE_GruntSpecopsFuelRodAirdef : HCE_GruntSpecOpsBase
 // characters\grunt\grunt specops needler
 class HCE_GruntSpecopsNeedler : HCE_GruntSpecOpsBase
 {
+	//$Category "Halo CE/Covenant/Grunt Spec Ops"
+	//$Title "Grunt Spec Ops (Needler)"
+	//$Sprite "HU29A0"
 	Default
 	{
 		Health 75;
@@ -8758,6 +8908,9 @@ class HCE_HunterBase : HaloDoom_EnemyBase abstract
 // characters\hunter\hunter
 class HCE_Hunter : HCE_HunterBase
 {
+	//$Category "Halo CE/Covenant/Hunter"
+	//$Title "Hunter"
+	//$Sprite "HU2CA0"
 	Default
 	{
 		Health 225;
@@ -8786,6 +8939,7 @@ class HCE_Hunter : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.20, 3.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Hunter";
+		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_FuelRod";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
 		+HaloDoom_EnemyBase.HCE_PairBond
@@ -8873,6 +9027,9 @@ class HCE_Hunter : HCE_HunterBase
 // characters\hunter\hunter major
 class HCE_HunterMajor : HCE_HunterBase
 {
+	//$Category "Halo CE/Covenant/Hunter"
+	//$Title "Hunter Major"
+	//$Sprite "HU2DA0"
 	Default
 	{
 		Health 350;
@@ -8901,6 +9058,7 @@ class HCE_HunterMajor : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.20, 3.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Hunter";
+		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_FuelRod";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
 		+HaloDoom_EnemyBase.HCE_PairBond
@@ -8988,6 +9146,9 @@ class HCE_HunterMajor : HCE_HunterBase
 // characters\hunter\hunter red
 class HCE_HunterRed : HCE_HunterBase
 {
+	//$Category "Halo CE/Covenant/Hunter"
+	//$Title "Hunter Red"
+	//$Sprite "HU2EA0"
 	Default
 	{
 		Health 225;
@@ -9104,6 +9265,9 @@ class HCE_HunterRed : HCE_HunterBase
 // characters\hunter\hunter white
 class HCE_HunterWhite : HCE_HunterBase
 {
+	//$Category "Halo CE/Covenant/Hunter"
+	//$Title "Hunter White"
+	//$Sprite "HU2FA0"
 	Default
 	{
 		Health 225;
@@ -9133,6 +9297,7 @@ class HCE_HunterWhite : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaCaster/Fire", "", "Halo/Weapons/PlasmaCaster/ChargedFire", "Halo/Weapons/PlasmaCaster/ChargeBegin";
 		HaloDoom_EnemyBase.HCE_SpecialShot "HCE_PlasmaCasterClusterScaled", 3;
 		HaloDoom_EnemyBase.HCE_Voices "Hunter";
+		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_PlasmaCaster";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
 		+HaloDoom_EnemyBase.HCE_Lobbed
@@ -9358,6 +9523,9 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 // characters\jackal\jackal minor plasma pistol
 class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 {
+	//$Category "Halo CE/Covenant/Jackal"
+	//$Title "Jackal Minor (Plasma Pistol)"
+	//$Sprite "HU2JA0"
 	Default
 	{
 		Health 50;
@@ -9652,6 +9820,9 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 // characters\jackal\jackal major needler
 class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 {
+	//$Category "Halo CE/Covenant/Jackal Major"
+	//$Title "Jackal Major (Needler)"
+	//$Sprite "HU2GA0"
 	Default
 	{
 		Health 75;
@@ -9805,6 +9976,9 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 
 class HCE_RandomElite : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Elite"
+	//$Title "Random Elite"
+	//$Sprite "HU0HA0"
 	Default
 	{
 		DropItem "HCE_EliteCommanderEnergySword", 255, 1;
@@ -9825,6 +9999,9 @@ class HCE_RandomElite : RandomSpawner
 
 class HCE_RandomEliteSpecial : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Elite Special"
+	//$Title "Random Elite Special"
+	//$Sprite "HU0OA0"
 	Default
 	{
 		DropItem "HCE_EliteHonorGuardEnergySword", 255, 1;
@@ -9841,6 +10018,9 @@ class HCE_RandomEliteSpecial : RandomSpawner
 
 class HCE_RandomGrunt : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Grunt"
+	//$Title "Random Grunt"
+	//$Sprite "HU1YA0"
 	Default
 	{
 		DropItem "HCE_GruntFleeMajorNeedler", 255, 1;
@@ -9858,6 +10038,9 @@ class HCE_RandomGrunt : RandomSpawner
 
 class HCE_RandomGruntSpecOps : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Grunt Spec Ops"
+	//$Title "Random Grunt Spec Ops"
+	//$Sprite "HU22A0"
 	Default
 	{
 		DropItem "HCE_GruntHeavyFuelRod", 255, 1;
@@ -9869,6 +10052,9 @@ class HCE_RandomGruntSpecOps : RandomSpawner
 
 class HCE_RandomHunter : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Hunter"
+	//$Title "Random Hunter"
+	//$Sprite "HU2CA0"
 	Default
 	{
 		DropItem "HCE_Hunter", 255, 1;
@@ -9880,6 +10066,9 @@ class HCE_RandomHunter : RandomSpawner
 
 class HCE_RandomJackal : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Jackal"
+	//$Title "Random Jackal"
+	//$Sprite "HU2JA0"
 	Default
 	{
 		DropItem "HCE_JackalMinorPlasmaPistol", 255, 1;
@@ -9888,6 +10077,9 @@ class HCE_RandomJackal : RandomSpawner
 
 class HCE_RandomJackalMajor : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Jackal Major"
+	//$Title "Random Jackal Major"
+	//$Sprite "HU2GA0"
 	Default
 	{
 		DropItem "HCE_JackalMajorNeedler", 255, 1;

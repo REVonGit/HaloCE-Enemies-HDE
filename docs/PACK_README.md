@@ -57,6 +57,9 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 * **Spawn every ODST:** `helljumpers` does the same with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven), as allies.
 * **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks) and Sergeants Johnson and Stacker, as allies, in the same lines. They don't move at all (no following, no squad orders, no dives): each turns, aims and fights from his spot. It's an alias for `netevent hce_spawnmarines`.
 * **Spawn every Marine, free to move:** `leatherneck2` spawns the same Marines in the same lines, but they aren't pinned: they join your squad, follow you, dive and take orders like any other Marine. It's an alias for `netevent hce_spawnmarines2`.
+* **Bestiary:** Options > Halo CE Bestiary (or the console command `hce_bestiary`) lists every enemy the loaded packs can place, with its picture, numbers and what it is (see [Bestiary](#bestiary)).
+* **Mapping:** Ultimate Doom Builder shows every placeable enemy by faction and kind, named and pictured (see [Mapping with Ultimate Doom Builder](#mapping-with-ultimate-doom-builder)).
+* **Your own variants:** a text lump named `HCEVARS` in any pk3 adds tougher, faster, bigger or re-armed versions of the enemies, placeable and mixed into the replacements, with no ZScript (see [Your own variants](#your-own-variants-hcevars)).
 * **Doom monsters are replaced automatically.** See the next section for what replaces what. To keep Doom's monsters, set `hce_keepdoommonsters 1`.
 
 | CVar | Default | Effect |
@@ -86,6 +89,11 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_corpseshoot` | 0.25 | Chance a Marine or Covenant soldier puts a few more rounds into an enemy it has just killed (guns that don't blow up only; 0 turns it off) |
 | `hce_tactics` | true | Squad tactics: Marine fire teams and battle drills, Covenant lances in echelons (see [Squad tactics](#squad-tactics)) |
 | `hce_patrols` | true | Idle enemies walk short patrols around where they were placed (or along a map's PatrolPoint route) |
+| `hce_presets` | true | **HaloDoom Evolved's weapon presets apply to the enemies too.** HDE's game type (its weapon preset) decides which guns spawn; with this on, a Doom monster is never replaced by an enemy whose gun the preset leaves out, an enemy placed with one re-arms with an allowed gun it can carry, and a gun it still holds drops as an allowed gun of the same power tier. Under the Halo CE game type, for example, no Red or White Hunters, Spiker Brutes or carbine Elites appear. Options > Halo CE AI > Follow HDE's weapon preset |
+| `hce_gorescale` | 1.0 | **Performance:** the share of blood spurts, gibs and gore puffs spawned (1 all, 0.5 half, 0 none) |
+| `hce_simpleshaders` | false | **Performance:** the active camo drawn as a plain faint body instead of its shimmer shader (for enemies that spawn after it is set) |
+| `hce_cleanup` | false | **Performance: garbage collector.** Every three seconds, the oldest enemy bodies, severed limbs and gore floor splats past the limits below fade out and are removed, a dozen at most a sweep, and never one a player can see or is standing near |
+| `hce_maxcorpses` / `hce_maxgibs` / `hce_maxgore` | 48 / 32 / 64 | Garbage collector: the bodies, severed heads and limbs, and Halo gore floor splats kept (-1 no limit) |
 | `hce_sleepinggrunts` | 0.3 | Chance that a Grunt placed in a map starts asleep (Grunts placed as deaf/ambush always do; 0 = never) |
 
 Marines are on the human team and fight Covenant and Flood alongside the player. Their stray shots can still hit you, as in Halo.
@@ -308,7 +316,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 
   White and Red are new. They're the regular Hunter with the arm cannon's weapon swapped for HDE's plasma caster (the `PlasmaCasterProj` / `PlasmaCasterClusterProj` grenades) or the flamethrower, and the blue armour recoloured. Both come in bonded pairs, and `HCE_RandomHunter` includes them. The Red Hunter is lethal up close: in testing it burned a player from full to 1 HP in about 4 seconds.
 * **Stuck Elites go berserk:** an Elite (or anything else that berserks: Flood combat forms, Hunters) stuck by a plasma grenade roars and charges whoever threw it, trying to take them down in the blast. If the thrower is unknown, it charges the nearest enemy in sight. Grunts and Jackals panic instead.
-* **Halo CE armour permutations:** Halo CE's models carry alternate armour that the Xbox campaign rolls at random; here each rank gets one. The **Spec Ops Elites** (and the stealth Elites, which share their model) wear the regular Elite's **curved, crescent-masked helmet** with the blunt armoured arms and double-pointed armoured legs, in dark Spec Ops colours. The **Spec Ops Grunts** carry the **shellback** (shrimp-back) tank. The **Major Jackals** wear the **armoured helmet**, and the Halo 2 Jackals wear it too: the helmet is cut out of Halo CE's armoured head and fitted to Halo 2's head bone, tinted with each rank's armour colour.
+* **Halo CE armour permutations:** Halo CE's models carry alternate armour that the Xbox campaign rolls at random; here each rank gets one. The **Spec Ops Elites** (and the stealth Elites, which share their model) wear the regular Elite's **curved, crescent-masked helmet** with the blunt armoured arms and double-pointed armoured legs, in dark Spec Ops colours. The **Spec Ops Grunts** carry the **shellback** (shrimp-back) tank. The **Major Jackals** wear the **armoured helmet**. The Halo 2 Jackals go bare-headed, as Halo 2 draws them.
 * **Energy sword:** the blade has its own shader: plasma streaks flowing up it, a white-hot core along its length, shimmering edges and sparks, and the whole blade breathing, drawn at full brightness (every sword Elite, the Ultra Zealot and the cloaked Stealth Majors' visible blades).
 * **Stealth Elites:** active camo flickers when shot or firing. A cloaked sword Elite's **energy sword blade stays visible**, glowing at full strength (a blade-only copy of the model plays the Elite's animations), as in Halo. The camo is their protection: they have **no energy shield** and a fragile body (45% of the tag's vitality, 45 health before `hce_nerf_health`).
 * **Grunt backs:** each Grunt (Spec Ops included) wears one of Halo CE's two backs, rolled when it spawns: the regular pointed methane tank or the rounded **shellback**, in its own textures from Halo CE (the second image of each Grunt bitmap, which Halo picks by permutation). Shot off, each back comes away as its own piece with its own stump.
@@ -626,7 +634,7 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 | Archvile | 10 / 12 / 15% | Commander carbine or pulse-carbine Elite |
 | **Cyberdemon** | **always** | Drinol boss (`HCE_BossCyberdemonDrinol`), unless `hce_digsite_spawns` is 0, which hands it back to the main pack's Hunter bosses |
 
-DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`).
+DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`). DoomEdNums 30900–30931 are the core pack's variant things, `HCE_Variant0` to `HCE_Variant31` (see [Your own variants](#your-own-variants-hcevars)).
 
 **License: keep this add-on private.** Digsite's README says its content is not open source and is licensed only for MCC mod projects. The Elites' carbine is CMT's and private too. Sources are listed in the pk3's `CREDITS.txt`.
 
@@ -719,6 +727,8 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 **Losing the gun arm while alive:** a dismembering weapon's hit on the arm holding the gun, taking a fifth of the enemy's health or more, takes the arm off half the time.
 * **Grunts and Jackals survive it:** they take a hard flinch, drop the gun, and run away in terror, bleeding from the stump, until they bleed out 5–9 seconds later.
 * **Anything else:** dies on the spot.
+
+**The last stand:** an Elite or Brute holding its gun in one hand (the Elites' pistol stance; a Brute's plasma rifle, plasma pistol, needler or Spiker) that has its *other* arm shot off the same way doesn't die of it. It drops to a crouch where it stands (the Brutes, which never crouch in Halo 2, kneel in the low crouch at the end of their forward dive) and fights on from there: it never moves again, turns to aim and fires until it is killed, with no grenades, jumps, berserk charge or jump pack. Its crouch makes it a smaller target.
 
 **Severed limbs:**
 * **The severed piece:** shot off, it pops outward from the body (an arm to its side, a Grunt's pack backwards, the head up and to one side) and comes to rest 2–3 feet out from the body's edge. A blast throws it by the explosion's impulse instead: out from the blast's centre, harder the bigger and closer the blast (a grenade at arm's length throws it well over 10 feet). It tumbles and trails blood, and moves like HaloDoom Evolved's spent casings: it spins, kicks off at a new angle each time it bounces, then eases over and lies flat on the floor. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
@@ -848,6 +858,45 @@ How brutally an Elite or Brute dies decides how long the squad it led takes to p
 
 * **Regrouping:** the squad's Grunts and Jackals can't regroup under anyone for 3 seconds plus 2.5 seconds per point. A clean body shot gives 3–5 seconds; a rocket gib (torn apart, which also takes the head and both arms) about 30.
 * **Panic:** each point also adds 8% to every member's chance to panic, and those that panic stay panicked for up to the same time (at most 12 seconds).
+
+## Bestiary
+
+Options > Halo CE Bestiary, or the console command `hce_bestiary`: every enemy the loaded packs can place, by faction and kind, the Flood and Sentinels only when their packs are loaded. Each entry has the enemy's picture (the one Ultimate Doom Builder shows), its health, shield, weapon, speed and DoomEdNum, and a few lines on what it is and how it fights. The card is drawn on HaloDoom Evolved's own lore panel, the one its weapon descriptions use. Variants from `HCEVARS` lumps are listed too, with what they change. Up and down move, left and right jump to the next kind, page up and down a page, Escape closes; the mouse wheel scrolls and a click picks an entry.
+
+## Mapping with Ultimate Doom Builder
+
+Load the packs as resources and every placeable enemy is in the thing browser under **Halo CE / Covenant, Flood, Sentinels or Marines (allies) / its kind**, titled with its rank and weapon ("Elite Minor (Plasma Rifle)") and pictured: each has a small picture of itself, taken in the engine (`udb_icons.py`) and shipped as a sprite in its faction's pack (`HUxxA0`), which the editor shows in the browser and on the map. The random spawners borrow their first pick's picture. It works through UDB's editor keys (`//$Category`, `//$Title`, `//$Sprite`) in the ZScript, so there's no configuration to install. The variant things are under **Halo CE / Variants (HCEVARS)**.
+
+## Your own variants (HCEVARS)
+
+New variants of the enemies from a text file, with no ZScript: put a lump named `HCEVARS` (a file `HCEVARS.txt` at the root of a pk3) in any loaded file. Every one loaded is read, in load order; a later block with the same number replaces an earlier one. Mistakes (an unknown key, a class that isn't loaded, a number out of range) are reported in the console when a map starts, with how many variants loaded.
+
+```
+variant 3                                  // its number, 0-31: the thing HCE_Variant3, DoomEdNum 30903
+{
+    name     "Zealot Bodyguard"            // shown in the bestiary
+    base     HCE_EliteCommanderEnergySword // the enemy class it is made from
+    health   1.5                           // x its health          (default 1)
+    shield   2                             // x its energy shield
+    speed    1.2                           // x its walk and run speed
+    damage   1.25                          // x the damage its weapon does
+    scale    1.1                           // x its size (model and collision)
+    weapon   Halo_PlasmaRifle              // a gun it can carry (one of its class's loadouts)
+    friendly false                         // true: an ally, like the Marines
+    replaces BaronOfHell 30                // a Baron of Hell becomes this variant 30% of the time (any number of lines)
+}
+```
+
+* **Placing them:** DoomEdNums **30900–30931** are the 32 variant things (`HCE_Variant0` … `HCE_Variant31`, UDB's Halo CE / Variants category); the thing's angle, tag, special, arguments, ambush and dormant flags pass to the enemy. A number with no variant defined spawns nothing.
+* **Replacements:** each `replaces` line gives a Doom monster a chance (percent) of becoming the variant instead of the usual pick; variants take their chances in number order.
+* **Changes** apply after the enemy's own setup, so they stack with the health and shield options and the Halo difficulty. The size changes the model and the collision box together. A weapon it can't carry is ignored.
+
+## Performance
+
+Options > Halo CE Performance:
+* **Gore amount** (`hce_gorescale`): the share of blood spurts, gibs and Halo gore puffs that spawn. Half halves the gore actors a firefight makes; none leaves only the bodies.
+* **Simple active camo** (`hce_simpleshaders`): the cloaked enemies (the stealth Elites, the Flood's stealth Elites) wear plain copies of their skins without the camo shader, so they show as a faint body. The other glowing surfaces stay as they are: the engine can't switch brightmaps or material shaders off from an option, and they cost little.
+* **Garbage collector** (`hce_cleanup`, off by default): every three seconds it fades out and removes the oldest enemy bodies past **Bodies kept** (`hce_maxcorpses`, 48), severed heads and limbs past **Severed limbs kept** (`hce_maxgibs`, 32) and Halo gore floor splats past **Gore splats kept** (`hce_maxgore`, 64). It never touches anything a player can see or is standing near, removes a dozen things at most a sweep, and leaves living enemies alone. In testing, 31 bodies out of sight were brought down to a limit of 10 in two sweeps.
 
 ## Not included / known limits
 

@@ -23,6 +23,7 @@ OUTDIR = os.environ.get('HCE_SA_OUT', os.path.join(HERE, 'standalone', 'out'))
 PK3DIR = os.environ.get('HCE_SA_PK3', HERE)
 LIB = os.path.join(HERE, 'standalone', 'hces_lib.zsc')
 LOOT = os.path.join(HERE, 'standalone', 'hces_loot.zsc')
+SKULLS = os.path.join(HERE, 'standalone', 'hces_skulls.zsc')
 VERSION = 'version "4.15.1"\n'
 PACKS = {'core': 'Core', 'covenant': 'Covenant', 'flood': 'Flood', 'sentinels': 'Sentinels', 'marines': 'Marines',
          'digsite': 'Enemies_Digsite'}
@@ -65,7 +66,7 @@ DROP_MAP = {
 }
 # sprites copied from HDE, renamed to unique HZ** names
 SPRITES = {'SX04': 'HZX4', 'FSH1': 'HZF1', 'IPF2': 'HZIP', 'SMOK': 'HZSM', 'L2NB': 'HZL2', 'FRAG': 'HZFG', 'PLGN': 'HZPG',
-           'XTH1': 'HZT1', 'XTH2': 'HZT2', 'FSP2': 'HZFP', 'FX58': 'HZ58'}
+           'XTH1': 'HZT1', 'XTH2': 'HZT2', 'FSP2': 'HZFP', 'FX58': 'HZ58', 'CNFT': 'HCNF'}
 MODELS = ['Models/Weapons/tracer.md3', 'Models/Weapons/tracer1.tga', 'Models/Weapons/plasma.md3',
           'Models/Weapons/plasma_core.md3', 'Models/Weapons/laser.png', 'Models/Weapons/needle_crystal.MD3',
           'Models/Weapons/needle_crystal.png', 'Models/Weapons/rocket.MD3', 'Models/Weapons/rocket.png',
@@ -210,6 +211,21 @@ class Sounds:
         return lines, files, missing
 
 
+# Halo's skulls, enemy side (hces_skulls.zsc; HaloDoom Evolved has its own): CVar suffix, menu name, what it does
+SKULL_LIST = [('gruntbirthdayparty', 'Grunt Birthday Party', 'Headshot kills burst into confetti.'),
+              ('gruntfuneral', 'Grunt Funeral', 'Grunts explode when they die.'),
+              ('zombiefuneral', 'Zombie Funeral', 'The Flood and zombies explode when they die.'),
+              ('mythic', 'Mythic', 'Enemies have twice the health and shields.'),
+              ('thunderstorm', 'Thunderstorm', 'Enemies come one rank up.'),
+              ('anger', 'Anger', 'Enemies fire faster and pause less.'),
+              ('catch', 'Catch', 'Enemies throw grenades twice as often.'),
+              ('toughluck', 'Tough Luck', 'Enemies always dodge.'),
+              ('ghost', 'Ghost', 'Enemies never flinch.'),
+              ('assassins', 'Assassins', 'Every enemy wears active camo.'),
+              ('famine', 'Famine', 'Enemies leave half the loot.'),
+              ('bandana', 'Bandana', 'Infinite ammo.')]
+
+
 # ---------------------------------------------------------------- build
 def standalone_defaults(t):
     """a plain Doom player has no energy shield: a slightly stronger default projectile nerf"""
@@ -226,6 +242,13 @@ def copytree_text(src, dst):
                 t = convert_text(open(p, errors='replace').read())
                 if low.startswith('cvarinfo'): t = standalone_defaults(t)
                 open(p, 'w').write(t)
+            elif low.startswith('menudef'):                 # HaloDoom Evolved's options mean nothing without HDE
+                t = open(p).read()
+                open(p, 'w').write(re.sub(HDE_ONLY_MENU, '', t))
+
+
+# menu lines for options that only work with HaloDoom Evolved (its weapon presets)
+HDE_ONLY_MENU = r'\tOption "Follow HDE\'s weapon preset".*\n\tStaticText "Enemies only carry guns the HaloDoom game type spawns.", 1\n'
 
 
 def model_and_light_defs(pack_texts, lib_par):
@@ -267,12 +290,17 @@ def build():
             open(os.path.join(zs_dir, 'hces_api.zsc'), 'w').write(api)
             shutil.copy(LIB, os.path.join(zs_dir, 'hces_lib.zsc'))
             shutil.copy(LOOT, os.path.join(zs_dir, 'hces_loot.zsc'))
+            shutil.copy(SKULLS, os.path.join(zs_dir, 'hces_skulls.zsc'))
             mi = open(os.path.join(dst, 'mapinfo.txt')).read()
-            mi = mi.replace('AddEventHandlers = "HCE_ReplaceHandler"', 'AddEventHandlers = "HCE_ReplaceHandler", "HCES_LootHandler"')
+            mi = mi.replace('AddEventHandlers = "HCE_ReplaceHandler"', 'AddEventHandlers = "HCE_ReplaceHandler", "HCES_LootHandler", "HCES_SkullHandler"')
             open(os.path.join(dst, 'mapinfo.txt'), 'w').write(mi)
             with open(os.path.join(dst, 'cvarinfo.txt'), 'a') as cf:
                 cf.write('server float hces_loot = 1.0;           // standalone loot: 0 = enemies drop nothing, 1 = balanced, 2 = generous\n'
-                         'server bool hces_loot_weapons = true;    // standalone loot: enemies can drop Doom weapons the player is missing\n')
+                         'server bool hces_loot_weapons = true;    // standalone loot: enemies can drop Doom weapons the player is missing\n'
+                         + ''.join(f'server bool hces_skull_{k} = false;    // skull: {d}\n' for k, _, d in SKULL_LIST))
+            with open(os.path.join(dst, 'menudef.hce'), 'a') as mf:      # Options > Halo CE Skulls
+                mf.write('\nAddOptionMenu "OptionsMenu"\n{\n\tSubmenu "Halo CE Skulls", "HCES_Skulls"\n}\n\nOptionMenu "HCES_Skulls"\n{\n\tTitle "Halo CE Skulls"\n'
+                         + ''.join(f'\tOption "{t}", "hces_skull_{k}", "OnOff"\n\tStaticText "{d}", 1\n' for k, t, d in SKULL_LIST) + '}\n')
             zt = open(os.path.join(dst, 'zscript.txt')).read()
             zt = zt.replace('// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.',
                             '// Standalone: carries the enemy API and the HDE-derived projectiles/effects; needs no other pk3.')
@@ -287,9 +315,9 @@ def build():
             hx = os.path.join(zs_dir, 'hce_hde.zsc')
             if os.path.exists(hx): os.remove(hx)
             zt = re.sub(r'(#include "ZScript/HaloCE/hce_projectiles.zsc")',
-                        '#include "ZScript/HaloCE/hces_api.zsc"\n#include "ZScript/HaloCE/hces_lib.zsc"\n#include "ZScript/HaloCE/hces_loot.zsc"\n\\1', zt)
+                        '#include "ZScript/HaloCE/hces_api.zsc"\n#include "ZScript/HaloCE/hces_lib.zsc"\n#include "ZScript/HaloCE/hces_loot.zsc"\n#include "ZScript/HaloCE/hces_skulls.zsc"\n\\1', zt)
             open(os.path.join(dst, 'zscript.txt'), 'w').write(zt)
-            texts += [api, lib]
+            texts += [api, lib, open(SKULLS).read()]
             # assets: models, sprites
             md_dir = os.path.join(dst, 'models', 'hces'); os.makedirs(md_dir, exist_ok=True)
             for m in MODELS:

@@ -114,6 +114,9 @@ def extract_sounds(m, od):
 # the head bone's axes; the Halo 2 head is a little larger and its snout sits further forward
 HELMET_SCALE, HELMET_OFFSET = 1.12, (0.012, 0.032, 0.0)
 from hce_paths import MAPS_DIR as CE_MAPS
+# The Halo 2 Jackals go bare-headed, as Halo 2 draws them: the helmet surface is kept (so every surface index the build
+# and gore_kit.py use stays as it was) but with no triangles. True puts Halo CE's helmet back on.
+CE_HELMET = False
 
 
 def add_ce_helmet(meshes, nodes, od, pid):
@@ -140,7 +143,7 @@ def add_ce_helmet(meshes, nodes, od, pid):
         r = h['multi'].convert('RGBA').split()[0]
         Image.merge('RGB', (r, Image.new('L', r.size, 0), Image.new('L', r.size, 0))).save(f'{od}/{pid}_jackal_helmet_mask.png')
     meshes.append(dict(name='helmet.jackal_helmet', material=f'{pid}_jackal_helmet.png', pos=pos, nrm=h['nrm'] @ R.T,
-                       uv=h['uv'], bidx=bidx, bw=bw, tris=h['tris']))
+                       uv=h['uv'], bidx=bidx, bw=bw, tris=h['tris'] if CE_HELMET else np.zeros((0, 3), int)))
 
 
 def extract_jackal(pid='H2Jackal'):

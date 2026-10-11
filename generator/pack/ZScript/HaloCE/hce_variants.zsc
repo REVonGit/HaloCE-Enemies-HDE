@@ -1,0 +1,367 @@
+// Variant definition files: new enemy variants from a text lump, no ZScript needed.
+//
+// Any loaded pk3 or wad can carry a lump named HCEVARS (a file HCEVARS.txt at the root of a pk3). Each block in it
+// defines a variant: one of the packs' enemy classes, tougher, faster, bigger or with another gun, placed in maps as its
+// own thing and, if asked, mixed into the Doom monster replacements. Every HCEVARS lump loaded is read, in load order;
+// a later block with the same number replaces an earlier one.
+//
+//   variant 3                                  // its number, 0-31: the thing HCE_Variant3, DoomEdNum 30903
+//   {
+//       name     "Zealot Bodyguard"            // shown in the bestiary and the console
+//       base     HCE_EliteCommanderEnergySword // the enemy class it is made from
+//       health   1.5                           // x its health          (default 1)
+//       shield   2                             // x its energy shield   (default 1)
+//       speed    1.2                           // x its walk and run speed
+//       damage   1.25                          // x the damage its weapon does
+//       scale    1.1                           // x its size (model and collision)
+//       weapon   Halo_PlasmaRifle              // a gun it can carry (one of its class's loadouts)
+//       friendly false                         // true: an ally, like the Marines
+//       replaces BaronOfHell 30                // a Baron of Hell becomes this variant 30% of the time (any number of lines)
+//   }
+//
+// DoomEdNums 30900-30931 are the 32 variant things (HCE_Variant0 .. HCE_Variant31); a number with no variant defined
+// spawns nothing. How many variants loaded is printed to the console when a map starts.
+
+class HCE_VariantDef
+{
+	int num;
+	String title;
+	Name base, weapon;
+	double health, shield, speed, damage, scale;
+	bool friendly;
+	Array<Name> claims;
+	Array<int> chance;
+}
+
+// reads every HCEVARS lump (HCE_ReplaceHandler keeps one per map)
+class HCE_VariantBook
+{
+	HCE_VariantDef defs[32];
+	int count;
+
+	bool quiet;                                    // (the bestiary reads them again: no second round of warnings)
+	static HCE_VariantBook Read(bool quiet = false)
+	{
+		let b = new("HCE_VariantBook");
+		b.quiet = quiet;
+		for(int lump = -1; (lump = Wads.FindLump("HCEVARS", lump + 1)) != -1;)
+			b.Parse(Wads.ReadLump(lump), Wads.GetLumpFullName(lump));
+		return b;
+	}
+
+	// words, quoted strings and braces, with // and /* */ comments left out
+	static void Tokens(String text, out Array<String> toks)
+	{
+		int n = text.Length(), i = 0;
+		while(i < n)
+		{
+			int c = text.ByteAt(i);
+			if(c <= 32) { i++; continue; }
+			if(c == 47 && i + 1 < n && text.ByteAt(i + 1) == 47) { while(i < n && text.ByteAt(i) != 10) i++; continue; }
+			if(c == 47 && i + 1 < n && text.ByteAt(i + 1) == 42)
+			{
+				i += 2;
+				while(i + 1 < n && !(text.ByteAt(i) == 42 && text.ByteAt(i + 1) == 47)) i++;
+				i += 2; continue;
+			}
+			if(c == 123 || c == 125 || c == 61 || c == 59) { if(c == 123 || c == 125) toks.Push(text.Mid(i, 1)); i++; continue; }
+			if(c == 34)
+			{
+				int j = i + 1;
+				while(j < n && text.ByteAt(j) != 34) j++;
+				toks.Push(text.Mid(i + 1, j - i - 1));
+				i = j + 1; continue;
+			}
+			int j = i;
+			while(j < n) { int d = text.ByteAt(j); if(d <= 32 || d == 123 || d == 125 || d == 61 || d == 59 || d == 34) break; j++; }
+			toks.Push(text.Mid(i, j - i));
+			i = j;
+		}
+	}
+
+	void Parse(String text, String from)
+	{
+		Array<String> t;
+		Tokens(text, t);
+		int i = 0;
+		while(i < t.Size())
+		{
+			String w = t[i].MakeLower();
+			if(w != "variant" || i + 2 >= t.Size() || t[i + 2] != "{") { i++; continue; }
+			int num = t[i + 1].ToInt();
+			if(num < 0 || num >= 32) { if(!quiet) Console.Printf("\cgHCEVARS (%s):\c- variant %s: numbers run 0-31", from, t[i + 1]); i++; continue; }
+			let d = new("HCE_VariantDef");
+			d.num = num; d.health = 1; d.shield = 1; d.speed = 1; d.damage = 1; d.scale = 1; d.weapon = 'None';
+			d.title = String.Format("Variant %d", num);
+			i += 3;
+			while(i < t.Size() && t[i] != "}")
+			{
+				String k = t[i].MakeLower();
+				String v = i + 1 < t.Size() ? t[i + 1] : "";
+				if(k == "name") d.title = v;
+				else if(k == "base") d.base = v;
+				else if(k == "weapon") d.weapon = v;
+				else if(k == "health") d.health = v.ToDouble();
+				else if(k == "shield") d.shield = v.ToDouble();
+				else if(k == "speed") d.speed = v.ToDouble();
+				else if(k == "damage") d.damage = v.ToDouble();
+				else if(k == "scale") d.scale = v.ToDouble();
+				else if(k == "friendly") { String lv = v.MakeLower(); d.friendly = lv == "true" || lv == "1" || lv == "yes"; }
+				else if(k == "replaces")
+				{
+					d.claims.Push(v);
+					d.chance.Push(i + 2 < t.Size() ? clamp(t[i + 2].ToInt(), 0, 100) : 100);
+					i += 3; continue;
+				}
+				else { if(!quiet) Console.Printf("\cgHCEVARS (%s):\c- variant %d: unknown key \"%s\"", from, num, t[i]); i++; continue; }
+				i += 2;
+			}
+			i++;
+			String bs = d.base;
+			class<HaloDoom_EnemyBase> bc = (class<HaloDoom_EnemyBase>)(bs);
+			if(!bc) { if(!quiet) Console.Printf("\cgHCEVARS (%s):\c- variant %d: \"%s\" is not one of the loaded enemies", from, num, d.base); continue; }
+			if(!defs[num]) count++;
+			defs[num] = d;
+		}
+	}
+}
+
+// the variant things: spawn the variant's base class here with its changes, then go
+class HCE_VariantSpawner : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOSECTOR
+		+DONTSPLASH
+		RenderStyle "None";
+	}
+	virtual int VariantNumber() { return -1; }
+
+	override void PostBeginPlay()
+	{
+		Super.PostBeginPlay();
+		let h = HCE_ReplaceHandler(EventHandler.Find("HCE_ReplaceHandler"));
+		let d = h && h.variants ? h.variants.defs[VariantNumber()] : null;
+		if(d)
+		{
+			String bs = d.base;
+			class<Actor> bc = bs;
+			let e = HaloDoom_EnemyBase(Spawn(bc, pos, NO_REPLACE));
+			if(e)
+			{
+				e.angle = angle;
+				e.ChangeTid(tid);
+				e.special = special;
+				for(int i = 0; i < 5; i++) e.args[i] = args[i];
+				e.bAMBUSH = bAMBUSH;
+				e.bDORMANT = bDORMANT;
+				if(d.friendly || bFRIENDLY) e.bFRIENDLY = true;
+				e.SetTag(d.title);
+				e.HCE_SetVariant(d.health, d.shield, d.speed, d.damage, d.scale, d.weapon);
+			}
+		}
+		ClearCounters();
+		Destroy();
+	}
+	States
+	{
+	Spawn:
+		TNT1 A -1;
+		Stop;
+	}
+}
+
+class HCE_Variant0 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 0"
+	override int VariantNumber() { return 0; }
+}
+class HCE_Variant1 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 1"
+	override int VariantNumber() { return 1; }
+}
+class HCE_Variant2 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 2"
+	override int VariantNumber() { return 2; }
+}
+class HCE_Variant3 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 3"
+	override int VariantNumber() { return 3; }
+}
+class HCE_Variant4 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 4"
+	override int VariantNumber() { return 4; }
+}
+class HCE_Variant5 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 5"
+	override int VariantNumber() { return 5; }
+}
+class HCE_Variant6 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 6"
+	override int VariantNumber() { return 6; }
+}
+class HCE_Variant7 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 7"
+	override int VariantNumber() { return 7; }
+}
+class HCE_Variant8 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 8"
+	override int VariantNumber() { return 8; }
+}
+class HCE_Variant9 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 9"
+	override int VariantNumber() { return 9; }
+}
+class HCE_Variant10 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 10"
+	override int VariantNumber() { return 10; }
+}
+class HCE_Variant11 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 11"
+	override int VariantNumber() { return 11; }
+}
+class HCE_Variant12 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 12"
+	override int VariantNumber() { return 12; }
+}
+class HCE_Variant13 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 13"
+	override int VariantNumber() { return 13; }
+}
+class HCE_Variant14 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 14"
+	override int VariantNumber() { return 14; }
+}
+class HCE_Variant15 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 15"
+	override int VariantNumber() { return 15; }
+}
+class HCE_Variant16 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 16"
+	override int VariantNumber() { return 16; }
+}
+class HCE_Variant17 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 17"
+	override int VariantNumber() { return 17; }
+}
+class HCE_Variant18 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 18"
+	override int VariantNumber() { return 18; }
+}
+class HCE_Variant19 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 19"
+	override int VariantNumber() { return 19; }
+}
+class HCE_Variant20 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 20"
+	override int VariantNumber() { return 20; }
+}
+class HCE_Variant21 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 21"
+	override int VariantNumber() { return 21; }
+}
+class HCE_Variant22 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 22"
+	override int VariantNumber() { return 22; }
+}
+class HCE_Variant23 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 23"
+	override int VariantNumber() { return 23; }
+}
+class HCE_Variant24 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 24"
+	override int VariantNumber() { return 24; }
+}
+class HCE_Variant25 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 25"
+	override int VariantNumber() { return 25; }
+}
+class HCE_Variant26 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 26"
+	override int VariantNumber() { return 26; }
+}
+class HCE_Variant27 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 27"
+	override int VariantNumber() { return 27; }
+}
+class HCE_Variant28 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 28"
+	override int VariantNumber() { return 28; }
+}
+class HCE_Variant29 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 29"
+	override int VariantNumber() { return 29; }
+}
+class HCE_Variant30 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 30"
+	override int VariantNumber() { return 30; }
+}
+class HCE_Variant31 : HCE_VariantSpawner
+{
+	//$Category "Halo CE/Variants (HCEVARS)"
+	//$Title "Variant 31"
+	override int VariantNumber() { return 31; }
+}

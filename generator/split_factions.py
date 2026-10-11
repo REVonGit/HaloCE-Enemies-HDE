@@ -77,72 +77,30 @@ def main():
     # ---------------- core
     core = f'{OUTDIR}/core'
     os.makedirs(f'{core}/ZScript/HaloCE')
-    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_handler.zsc', 'hce_hde.zsc'):
+    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_handler.zsc', 'hce_hde.zsc', 'hce_variants.zsc', 'hce_bestiary.zsc'):
         shutil.copy(f'{PACK}/ZScript/HaloCE/{f}', f'{core}/ZScript/HaloCE/{f}')
     for f in ('cvarinfo.txt', 'sndinfo.hce'):
         shutil.copy(f'{PACK}/{f}', f'{core}/{f}')
-    shutil.copytree(f'{PACK}/sprites', f'{core}/sprites')
+    shutil.copytree(f'{PACK}/sprites', f'{core}/sprites', ignore=shutil.ignore_patterns('udb'))   # (the UDB icons: per faction, below)
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
-        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel"\n}\n')
+        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
+    # the HCEVARS variant things (hce_variants.zsc): DoomEdNums 30900-30931
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel"\n}\n\n'
+        'DoomEdNums\n{\n' + ''.join(f'\t{30900 + n} = HCE_Variant{n}\n' for n in range(32)) + '}\n')
     # enemy laser tracers (HCE_EnemyLaser, in the API): HaloDoom Evolved's own beam model and texture
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
-    open(f'{core}/menudef.hce', 'w').write(
-        'AddOptionMenu "OptionsMenu"\n{\n\tSubmenu "Halo CE Gore", "HCE_GoreOptions"\n\tSubmenu "Halo CE AI", "HCE_AIOptions"\n}\n\n'
-        'OptionValue "HCE_Difficulty"\n{\n\t-1, "From the skill level"\n\t0, "Easy"\n\t1, "Normal"\n\t2, "Heroic"\n\t3, "Legendary"\n}\n\n'
-        'OptionMenu "HCE_AIOptions"\n{\n\tTitle "Halo CE AI"\n'
-        '\tOption "Halo difficulty", "hce_difficulty", "HCE_Difficulty"\n'
-        '\tStaticText "Halo CE\'s own difficulty table: damage, toughness, aim,", 1\n'
-        '\tStaticText "rate of fire, reactions and grenades.", 1\n'
-        '\tStaticText ""\n'
-        '\tStaticText "Behaviour", 1\n'
-        '\tOption "Fight from cover", "hce_cover", "OnOff"\n'
-        '\tOption "Squad tactics", "hce_tactics", "OnOff"\n'
-        '\tOption "Grunt and Jackal squads", "hce_squads", "OnOff"\n'
-        '\tOption "Jumping and climbing", "hce_jumping", "OnOff"\n'
-        '\tOption "Idle patrols", "hce_patrols", "OnOff"\n'
-        '\tOption "Search for lost targets", "hce_search", "OnOff"\n'
-        '\tOption "Dodge grenades", "hce_grenadedodge", "OnOff"\n'
-        '\tOption "Hunters in bonded pairs", "hce_hunterpairs", "OnOff"\n'
-        '\tOption "Marines turn on a traitor", "hce_betrayal", "OnOff"\n'
-        '\tOption "Drop weapons", "hce_dropweapons", "OnOff"\n'
-        '\tSlider "Shooting the dead", "hce_corpseshoot", 0, 1, 0.05, 2\n'
-        '\tSlider "Sleeping Grunts", "hce_sleepinggrunts", 0, 1, 0.05, 2\n'
-        '\tSlider "Most pursuers per target (0 = any)", "hce_maxpursuers", 0, 12, 1, 0\n'
-        '\tStaticText ""\n'
-        '\tStaticText "Balance", 1\n'
-        '\tSlider "Enemy weapon damage", "hce_enemydamage", 0.1, 3, 0.1, 1\n'
-        '\tSlider "Enemy projectile damage", "hce_nerf_projectiles", 0.1, 1.5, 0.05, 2\n'
-        '\tSlider "Enemy health", "hce_nerf_health", 0.1, 2, 0.05, 2\n'
-        '\tSlider "Enemy shields", "hce_nerf_shields", 0.1, 2, 0.05, 2\n'
-        '\tSlider "Enemy aim error", "hce_enemyspread", 0.5, 4, 0.05, 2\n'
-        '\tSlider "Enemy aim tracking", "hce_enemytracking", 1, 10, 0.5, 1\n'
-        '\tSlider "Pause between bursts", "hce_burstpause", 0.5, 3, 0.1, 1\n'
-        '\tSlider "Grenade frequency", "hce_grenadefreq", 0, 3, 0.1, 1\n'
-        '\tSlider "Gunfire hearing range", "hce_hearing", 256, 4096, 128, 0\n'
-        '\tStaticText ""\n'
-        '\tStaticText "Spawning", 1\n'
-        '\tOption "Keep Doom\'s monsters", "hce_keepdoommonsters", "OnOff"\n'
-        '\tSlider "Digsite enemy spawns", "hce_digsite_spawns", 0, 2, 0.1, 1\n}\n\n'
-        'OptionMenu "HCE_GoreOptions"\n{\n\tTitle "Halo CE Gore"\n'
-        '\tOption "Blood on bodies", "hce_bodyblood", "OnOff"\n'
-        '\tStaticText "Enemies get bloodier as they are hurt.", 1\n'
-        '\tStaticText ""\n'
-        '\tOption "Dismemberment", "hce_dismember", "OnOff"\n'
-        '\tStaticText "Hard kills can take heads and arms off.", 1\n'
-        '\tStaticText ""\n'
-        '\tOption "Halo blood with NashGore", "hce_halogore", "OnOff"\n'
-        '\tStaticText "With NashGore loaded: Halo CE / Halo 2 decals and bursts.", 1\n}\n')
+    shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'
                                           '// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST\n'
                                           'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
                                           'alias leatherneck2 "netevent hce_spawnmarines2"\nalias helljumpers "netevent hce_spawnodsts"\n'
+                                          'alias hce_bestiary "openmenu HCE_Bestiary"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on\n'
                                           '// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.\n'
                                           '// The rest stay bindable from the console (bind <key> hce_regroup, and so on)\n'
@@ -177,6 +135,21 @@ def main():
             f'#include "ZScript/HaloCE/hce_{fac}.zsc"\n')
         mblocks = [blocks[c] for c, _, _ in mine if c in blocks]
         open(f'{d}/modeldef.hce_{fac}', 'w').write('\n'.join(mblocks))
+        # this faction's bestiary entries and the lore they use (build_pack.bestiary_lump)
+        if os.path.exists(f'{PACK}/bestiary.txt'):
+            rows = [l.rstrip('\n').split('\t') for l in open(f'{PACK}/bestiary.txt') if l[:2] in ('E\t', 'L\t')]
+            ents = [r for r in rows if r[0] == 'E' and r[1] in fac_of and fac_of[r[1]] == fac]
+            keys = {k for r in ents for k in r[6].split(',')}
+            if ents:
+                open(f'{d}/hcebest.{fac}', 'w').write('// the Halo CE enemies bestiary (hce_bestiary.zsc)\n' + ''.join(
+                    '\t'.join(r) + '\n' for r in ents + [r for r in rows if r[0] == 'L' and r[1] in keys]))
+        # this faction's Ultimate Doom Builder icons (build_pack.ship_udb_icons: sprites/udb/HUxxA0.png)
+        import build_pack as _bp
+        for c, _, _ in mine:
+            spr = _bp.udb_sprites().get(c)
+            if spr and os.path.exists(f'{PACK}/sprites/udb/{spr}A0.png'):
+                os.makedirs(f'{d}/sprites/udb', exist_ok=True)
+                shutil.copy(f'{PACK}/sprites/udb/{spr}A0.png', f'{d}/sprites/udb/{spr}A0.png')
         # files the models reference
         need = set()
         for b in mblocks:

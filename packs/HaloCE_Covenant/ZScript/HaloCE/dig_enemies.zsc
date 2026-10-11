@@ -70,6 +70,9 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 // characters\blind_wolf\blind_wolf
 class HCE_BlindWolf : HCE_BlindWolfBase
 {
+	//$Category "Halo CE/Covenant/Blind Wolf"
+	//$Title "Blind Wolf"
+	//$Sprite "HU00A0"
 	Default
 	{
 		Health 90;
@@ -1559,6 +1562,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 // characters\brute\brute captain plasma caster
 class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Captain (Plasma Caster)"
+	//$Sprite "HU01A0"
 	Default
 	{
 		Health 200;
@@ -2000,6 +2006,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -2060,6 +2067,9 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 // characters\brute\brute captain plasma rifle
 class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Captain (Plasma Rifle)"
+	//$Sprite "HU02A0"
 	Default
 	{
 		Health 200;
@@ -2499,6 +2509,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -2549,6 +2560,9 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 // characters\brute\brute captain shotgun
 class HCE_BruteCaptainShotgun : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Captain (Shotgun)"
+	//$Sprite "HU03A0"
 	Default
 	{
 		Health 200;
@@ -2988,6 +3002,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -3038,6 +3053,9 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 // characters\brute\brute chieftain gravity hammer
 class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Chieftain (Gravity Hammer)"
+	//$Sprite "HU04A0"
 	Default
 	{
 		Health 350;
@@ -3477,6 +3495,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -3525,6 +3544,9 @@ class HCE_BruteShieldShell : HCE_ShieldShell {}
 // characters\brute\brute honor guard assault rifle
 class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Honor Guard (Assault Rifle)"
+	//$Sprite "HU05A0"
 	Default
 	{
 		Health 150;
@@ -3964,6 +3986,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -4010,6 +4033,9 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 // characters\brute\brute honor guard plasma rifle
 class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Honor Guard (Plasma Rifle)"
+	//$Sprite "HU06A0"
 	Default
 	{
 		Health 150;
@@ -4449,6 +4475,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -4495,6 +4522,9 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 // characters\brute\brute major shotgun
 class HCE_BruteMajorShotgun : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Major (Shotgun)"
+	//$Sprite "HU07A0"
 	Default
 	{
 		Health 150;
@@ -4934,6 +4964,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -4985,6 +5016,9 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 // characters\brute\brute major spiker
 class HCE_BruteMajorSpiker : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Major (Spiker)"
+	//$Sprite "HU08A0"
 	Default
 	{
 		Health 150;
@@ -5424,6 +5458,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -5475,6 +5510,9 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 // characters\brute\brute minor assault rifle
 class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Minor (Assault Rifle)"
+	//$Sprite "HU09A0"
 	Default
 	{
 		Health 175;
@@ -5914,6 +5952,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -5965,6 +6004,9 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 // characters\brute\brute minor plasma rifle
 class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Minor (Plasma Rifle)"
+	//$Sprite "HU0AA0"
 	Default
 	{
 		Health 175;
@@ -6404,6 +6446,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -6455,6 +6498,9 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 // characters\brute\brute stalker spiker
 class HCE_BruteStalkerSpiker : HCE_BruteBase
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Brute Stalker (Spiker)"
+	//$Sprite "HU0BA0"
 	Default
 	{
 		Health 150;
@@ -6895,6 +6941,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	bool HCE_HelmetFixed() { String cn = GetClassName(); return hce_chief || cn.IndexOf("HonorGuard") >= 0; }   // honor guard helmets are part of the armour
 	// the helmet takes the first head hit (it flies off instead): only a bare head can be headshot
 	override bool HCE_HeadProtected() { return !hce_helmetOff || HCE_HelmetFixed(); }
+	override Name HCE_LastStandAnim() { return 'crouch rifle last-stand'; }      // Brutes never crouch: their kneeling pose (brute_laststand_anim.py)
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -6940,6 +6987,32 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
+	{
+		A_ChangeModel('None', 0, "", 'None', 0, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_hair_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_head_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_hair_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/Brute/skins", 'brute_major_bth_brute_head_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden_plain.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -7015,6 +7088,9 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 // digsite\characters\drinol\00_mac\drinol
 class HCE_Drinol : HCE_DrinolBase
 {
+	//$Category "Halo CE/Covenant/Drinol"
+	//$Title "Drinol"
+	//$Sprite "HU0CA0"
 	Default
 	{
 		Health 320;
@@ -7751,6 +7827,9 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 // characters\drone\drone needler
 class HCE_DroneNeedler : HCE_DroneBase
 {
+	//$Category "Halo CE/Covenant/Drone"
+	//$Title "Drone (Needler)"
+	//$Sprite "HU0DA0"
 	Default
 	{
 		Health 30;
@@ -7853,6 +7932,9 @@ class HCE_DroneNeedler : HCE_DroneBase
 // characters\drone\drone plasma pistol
 class HCE_DronePlasmaPistol : HCE_DroneBase
 {
+	//$Category "Halo CE/Covenant/Drone"
+	//$Title "Drone (Plasma Pistol)"
+	//$Sprite "HU0EA0"
 	Default
 	{
 		Health 30;
@@ -7955,6 +8037,9 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 // characters\drone\drone plasma rifle
 class HCE_DronePlasmaRifle : HCE_DroneBase
 {
+	//$Category "Halo CE/Covenant/Drone"
+	//$Title "Drone (Plasma Rifle)"
+	//$Sprite "HU0FA0"
 	Default
 	{
 		Health 30;
@@ -8057,6 +8142,9 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 // characters\drone\drone spiker
 class HCE_DroneSpiker : HCE_DroneBase
 {
+	//$Category "Halo CE/Covenant/Drone"
+	//$Title "Drone (Spiker)"
+	//$Sprite "HU0GA0"
 	Default
 	{
 		Health 30;
@@ -8298,6 +8386,9 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 // characters\elite\elite commander\elite commander plasma carbine
 class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Commander (Plasma Carbine)"
+	//$Sprite "HU0IA0"
 	Default
 	{
 		Health 100;
@@ -8499,6 +8590,9 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite commander\elite commander pulse carbine
 class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Commander (Pulse Carbine)"
+	//$Sprite "HU0KA0"
 	Default
 	{
 		Health 100;
@@ -8691,6 +8785,9 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 // characters\elite\elite honor guard\elite honor guard plasma carbine
 class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Honor Guard (Plasma Carbine)"
+	//$Sprite "HU0PA0"
 	Default
 	{
 		Health 100;
@@ -8938,6 +9035,9 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite major\elite major plasma carbine
 class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Major (Plasma Carbine)"
+	//$Sprite "HU0TA0"
 	Default
 	{
 		Health 100;
@@ -9139,6 +9239,9 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite major\elite major pulse carbine
 class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Major (Pulse Carbine)"
+	//$Sprite "HU0VA0"
 	Default
 	{
 		Health 100;
@@ -9331,6 +9434,9 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 // characters\elite\elite minor\elite minor plasma carbine
 class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Minor (Plasma Carbine)"
+	//$Sprite "HU0XA0"
 	Default
 	{
 		Health 100;
@@ -9532,6 +9638,9 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite minor\elite minor pulse carbine
 class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Minor (Pulse Carbine)"
+	//$Sprite "HU10A0"
 	Default
 	{
 		Health 100;
@@ -9724,6 +9833,9 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 // characters\elite\elite ranger\elite ranger plasma carbine
 class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Ranger (Plasma Carbine)"
+	//$Sprite "HU12A0"
 	Default
 	{
 		Health 100;
@@ -9971,6 +10083,9 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite specops\elite specops plasma carbine
 class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Spec Ops (Plasma Carbine)"
+	//$Sprite "HU16A0"
 	Default
 	{
 		Health 125;
@@ -10173,6 +10288,9 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 // characters\elite\elite specops\elite specops pulse carbine
 class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Elite Spec Ops (Pulse Carbine)"
+	//$Sprite "HU19A0"
 	Default
 	{
 		Health 125;
@@ -10514,6 +10632,9 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 // characters\elite\elite ultra zealot\elite ultra zealot energy sword
 class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 {
+	//$Category "Halo CE/Covenant/Elite Zealot"
+	//$Title "Elite Ultra Zealot (Energy Sword)"
+	//$Sprite "HU1AA0"
 	Default
 	{
 		Health 130;
@@ -10789,6 +10910,9 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 // characters\engineer\engineer
 class HCE_Engineer : HCE_EngineerBase
 {
+	//$Category "Halo CE/Covenant/Engineer"
+	//$Title "Engineer"
+	//$Sprite "HU1BA0"
 	Default
 	{
 		Health 150;
@@ -11590,6 +11714,9 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 // objects\characters\jackal\jackal\jackal marksman plasma carbine
 class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Marksman (Plasma Carbine)"
+	//$Sprite "HU2HA0"
 	Default
 	{
 		Health 70;
@@ -11751,6 +11878,9 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 // objects\characters\jackal\jackal\jackal marksman pulse carbine
 class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Marksman (Pulse Carbine)"
+	//$Sprite "HU2IA0"
 	Default
 	{
 		Health 70;
@@ -11903,6 +12033,9 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 // objects\characters\jackal\jackal\jackal sniper beam rifle
 class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Sniper (Beam Rifle)"
+	//$Sprite "HU2KA0"
 	Default
 	{
 		Health 60;
@@ -12056,6 +12189,9 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 // objects\characters\jackal\jackal\jackal ultra plasma rifle
 class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Ultra (Plasma Rifle)"
+	//$Sprite "HU2LA0"
 	Default
 	{
 		Health 100;
@@ -12215,6 +12351,9 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 // objects\characters\jackal\jackal\jackal zealot spiker
 class HCE_JackalZealotSpiker : HCE_H2JackalBase
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Zealot (Spiker)"
+	//$Sprite "HU2MA0"
 	Default
 	{
 		Health 120;
@@ -12972,6 +13111,9 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 // digsite\characters\slug_man\slug_man major needler
 class HCE_SlugManMajorNeedler : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Needler)"
+	//$Sprite "HU4PA0"
 	Default
 	{
 		Health 135;
@@ -13126,6 +13268,9 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man major particle beam
 class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Particle Beam)"
+	//$Sprite "HU4QA0"
 	Default
 	{
 		Health 135;
@@ -13328,6 +13473,9 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man major plasma carbine
 class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Plasma Carbine)"
+	//$Sprite "HU4RA0"
 	Default
 	{
 		Health 135;
@@ -13490,6 +13638,9 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man major plasma pistol
 class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Plasma Pistol)"
+	//$Sprite "HU4SA0"
 	Default
 	{
 		Health 135;
@@ -13644,6 +13795,9 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man major plasma rifle
 class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Plasma Rifle)"
+	//$Sprite "HU4TA0"
 	Default
 	{
 		Health 135;
@@ -13798,6 +13952,9 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man major pulse carbine
 class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Major (Pulse Carbine)"
+	//$Sprite "HU4UA0"
 	Default
 	{
 		Health 135;
@@ -13951,6 +14108,9 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man minor needler
 class HCE_SlugManMinorNeedler : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Minor (Needler)"
+	//$Sprite "HU4VA0"
 	Default
 	{
 		Health 100;
@@ -14105,6 +14265,9 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man minor plasma carbine
 class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Minor (Plasma Carbine)"
+	//$Sprite "HU4WA0"
 	Default
 	{
 		Health 100;
@@ -14267,6 +14430,9 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man minor plasma rifle
 class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Minor (Plasma Rifle)"
+	//$Sprite "HU4XA0"
 	Default
 	{
 		Health 100;
@@ -14421,6 +14587,9 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man particle beam
 class HCE_SlugManParticleBeam : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man (Particle Beam)"
+	//$Sprite "HU4YA0"
 	Default
 	{
 		Health 100;
@@ -14623,6 +14792,9 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man plasma pistol
 class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man (Plasma Pistol)"
+	//$Sprite "HU4ZA0"
 	Default
 	{
 		Health 100;
@@ -14777,6 +14949,9 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man ultra particle beam
 class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Ultra (Particle Beam)"
+	//$Sprite "HU50A0"
 	Default
 	{
 		Health 180;
@@ -14979,6 +15154,9 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man ultra plasma carbine
 class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Ultra (Plasma Carbine)"
+	//$Sprite "HU51A0"
 	Default
 	{
 		Health 180;
@@ -15141,6 +15319,9 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 // digsite\characters\slug_man\slug_man ultra plasma rifle
 class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Slug Man Ultra (Plasma Rifle)"
+	//$Sprite "HU52A0"
 	Default
 	{
 		Health 180;
@@ -15364,6 +15545,9 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 // characters\thorn_beast\thorn_beast
 class HCE_ThornBeast : HCE_ThornBeastBase
 {
+	//$Category "Halo CE/Covenant/Thorn Beast"
+	//$Title "Thorn Beast"
+	//$Sprite "HU56A0"
 	Default
 	{
 		Health 350;
@@ -15459,6 +15643,9 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 
 class HCE_RandomDrinol : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Drinol"
+	//$Title "Random Drinol"
+	//$Sprite "HU0CA0"
 	Default
 	{
 		DropItem "HCE_Drinol", 255, 1;
@@ -15467,6 +15654,9 @@ class HCE_RandomDrinol : RandomSpawner
 
 class HCE_RandomEliteRifle : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Elite Rifle"
+	//$Title "Random Elite Rifle"
+	//$Sprite "HU0IA0"
 	Default
 	{
 		DropItem "HCE_EliteCommanderPlasmaCarbine", 255, 1;
@@ -15484,6 +15674,9 @@ class HCE_RandomEliteRifle : RandomSpawner
 
 class HCE_RandomEliteZealot : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Elite Zealot"
+	//$Title "Random Elite Zealot"
+	//$Sprite "HU1AA0"
 	Default
 	{
 		DropItem "HCE_EliteUltraZealotEnergySword", 255, 1;
@@ -15492,6 +15685,9 @@ class HCE_RandomEliteZealot : RandomSpawner
 
 class HCE_RandomSlugMan : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Slug Man"
+	//$Title "Random Slug Man"
+	//$Sprite "HU4PA0"
 	Default
 	{
 		DropItem "HCE_SlugManMajorNeedler", 255, 1;
@@ -15513,6 +15709,9 @@ class HCE_RandomSlugMan : RandomSpawner
 
 class HCE_RandomBlindWolf : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Blind Wolf"
+	//$Title "Random Blind Wolf"
+	//$Sprite "HU00A0"
 	Default
 	{
 		DropItem "HCE_BlindWolf", 255, 1;
@@ -15521,6 +15720,9 @@ class HCE_RandomBlindWolf : RandomSpawner
 
 class HCE_RandomThornBeast : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Thorn Beast"
+	//$Title "Random Thorn Beast"
+	//$Sprite "HU56A0"
 	Default
 	{
 		DropItem "HCE_ThornBeast", 255, 1;
@@ -15529,6 +15731,9 @@ class HCE_RandomThornBeast : RandomSpawner
 
 class HCE_RandomEngineer : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Engineer"
+	//$Title "Random Engineer"
+	//$Sprite "HU1BA0"
 	Default
 	{
 		DropItem "HCE_Engineer", 255, 1;
@@ -15537,6 +15742,9 @@ class HCE_RandomEngineer : RandomSpawner
 
 class HCE_RandomDrone : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Drone"
+	//$Title "Random Drone"
+	//$Sprite "HU0DA0"
 	Default
 	{
 		DropItem "HCE_DroneNeedler", 255, 1;
@@ -15548,6 +15756,9 @@ class HCE_RandomDrone : RandomSpawner
 
 class HCE_RandomBrute : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/Brute"
+	//$Title "Random Brute"
+	//$Sprite "HU01A0"
 	Default
 	{
 		DropItem "HCE_BruteCaptainPlasmaCaster", 255, 1;
@@ -15566,6 +15777,9 @@ class HCE_RandomBrute : RandomSpawner
 
 class HCE_RandomH2Jackal : RandomSpawner
 {
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Random H2 Jackal"
+	//$Sprite "HU2HA0"
 	Default
 	{
 		DropItem "HCE_JackalMarksmanPlasmaCarbine", 255, 1;

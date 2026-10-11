@@ -1311,6 +1311,107 @@ def loadout_code(char, prof, A):
     return '\n'.join(out)
 
 
+
+# ---------------- Ultimate Doom Builder: editor keys and thing icons
+# Every placeable class carries UDB's editor keys (//$Category, //$Title, //$Sprite), so mappers find the enemies in the
+# thing browser by faction and kind, named and pictured. The pictures are udb_icons.py's photos of each enemy
+# ($HCE_OUT/udb_icons), shipped as sprites HUxxA0 (xx: the class's place in icons.json, base 36) in its faction's pack.
+UDB_ICONS = f'{OUT}/udb_icons'
+UDB_CATEGORY = {'COVENANT': 'Covenant', 'FLOOD': 'Flood', 'SENTINEL': 'Sentinels', 'HUMAN': 'Marines (allies)'}
+_udb = None
+
+def udb_sprites():
+    """class -> its icon's sprite name (HUxx), from udb_icons.py's index (empty before it has run)"""
+    global _udb
+    if _udb is None:
+        ij = f'{UDB_ICONS}/icons.json'
+        names = sorted(json.load(open(ij))) if os.path.exists(ij) else []
+        digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        _udb = {c: 'HU' + digits[i // 36] + digits[i % 36] for i, c in enumerate(names)}
+    return _udb
+
+def words(name):
+    """'EliteMinorPlasmaRifle' -> 'Elite Minor Plasma Rifle'"""
+    return re.sub(r'(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])', ' ', name)
+
+def thing_title(cls, weapon=None):
+    """'HCE_EliteMinorPlasmaRifle' -> 'Elite Minor (Plasma Rifle)'"""
+    title = words(cls[4:] if cls.startswith('HCE_') else cls)
+    if weapon:
+        w = ' '.join(x.capitalize() for x in weapon.split())
+        if title.endswith(w) and title != w: title = f'{title[:-len(w)].strip()} ({w})'
+    return title.replace('Specops', 'Spec Ops')
+
+BESTIARY = []          # (class, team, character, title, sprite): every class editor_keys was written for (bestiary_lump)
+
+def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
+    """UDB editor keys for a placeable class (inside its class body, before Default)"""
+    title = title or thing_title(cls, weapon)
+    BESTIARY.append((cls, team, char, title, udb_sprites().get(sprite_of or cls, '')))
+    keys = [f'\t//$Category "Halo CE/{UDB_CATEGORY.get(team, "Other")}/{words(char)}"',
+            f'\t//$Title "{title or words(cls[4:] if cls.startswith("HCE_") else cls)}"']
+    spr = udb_sprites().get(sprite_of or cls)
+    if spr: keys.append(f'\t//$Sprite "{spr}A0"')
+    return '\n'.join(keys) + '\n'
+
+# ---------------- the bestiary (Options > Halo CE Bestiary: hce_bestiary.zsc)
+# Each pack carries an HCEBEST lump (hcebest.<pack>) of its own placeable enemies, tab-separated:
+#   E <class> <faction> <group> <title> <icon sprite or -> <lore keys, rank's first> <DoomEdNum>
+#   L <key> <lore text, paragraphs split by |>
+# The lore is pack/bestiary_lore.txt; a class gets the entry whose key is the longest found in its class name, else its
+# character's. Random spawners and the variant things are left out (the variants from HCEVARS are listed at run time).
+BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
+                  'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
+                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'MarineArmored': 'Armored Marine',
+                  'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
+
+def read_lore():
+    """pack/bestiary_lore.txt -> {key: text (paragraphs joined by |)}"""
+    lore, key, buf = {}, None, []
+    def flush():
+        if key: lore[key] = '|'.join(p.strip().replace('\n', ' ') for p in '\n'.join(buf).strip().split('\n\n') if p.strip())
+    for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pack', 'bestiary_lore.txt')):
+        if line.startswith('#'): continue
+        m = re.match(r'\[(\w+)\]\s*$', line)
+        if m: flush(); key, buf = m.group(1), []
+        else: buf.append(line.rstrip('\n'))
+    flush()
+    return lore
+
+# kinds named by the class rather than the body it's built on (the Honor Guard and Rangers wear Spec Ops / Elite bodies)
+BESTIARY_RANK_GROUP = (('HonorGuard', 'Honor Guard'), ('Ranger', 'Elite Ranger'), ('StealthElite', 'Stealth Elite'),
+                       ('BruteStalker', 'Brute Stalker'), ('Hellbringer', 'ODST Hellbringer'), ('MarinePilot', 'Pilot'))
+
+def bestiary_lump(classes, path):
+    """write the HCEBEST lump for these placeable classes ({class: DoomEdNum}, from BESTIARY) to path; returns how many.
+    An entry's lore is its rank's, then its character's (keys joined by commas)"""
+    lore = read_lore()
+    ents, keys = [], set()
+    for cls, team, char, title, spr in BESTIARY:
+        if cls not in classes or cls.startswith('HCE_Random'): continue
+        name = cls[4:]
+        key = max([k for k in lore if k in name], key=len, default='')
+        ks = [k for k in (key, char) if k in lore]
+        ks = list(dict.fromkeys(ks))
+        group = next((g for sub, g in BESTIARY_RANK_GROUP if sub in name), BESTIARY_GROUP.get(char, words(char)))
+        ents.append([UDB_CATEGORY.get(team, 'Other'), group, title, cls, spr or '-', ','.join(ks) or '-', str(classes[cls])])
+        keys.update(ks)
+    order = list(UDB_CATEGORY.values())
+    ents.sort(key=lambda e: (order.index(e[0]) if e[0] in order else 9, e[1], e[2]))
+    rows = ['\t'.join(['E', e[3], e[0], e[1], e[2], e[4], e[5], e[6]]) for e in ents]
+    rows += ['\t'.join(['L', k, lore[k]]) for k in sorted(keys)]
+    if rows: open(path, 'w').write('// the Halo CE enemies bestiary (hce_bestiary.zsc), generated by build_pack.py\n' + '\n'.join(rows) + '\n')
+    return len(ents)
+
+def ship_udb_icons(classes, sprites_dir):
+    """copy the icons of these classes into a pack's sprites folder as their HUxxA0 sprites"""
+    sp = udb_sprites()
+    have = [c for c in classes if c in sp]
+    if not have: return 0
+    os.makedirs(sprites_dir, exist_ok=True)
+    for c in have: shutil.copy(f'{UDB_ICONS}/{c}.png', f'{sprites_dir}/{sp[c]}A0.png')
+    return len(have)
+
 def build(cfg=None):
     cfg = cfg or MAIN
     char_of_unit, team, ai, pack, mdir = cfg['char_of_unit'], cfg['team'], cfg['ai'], cfg['pack'], cfg['mdir']
@@ -1502,6 +1603,8 @@ def build(cfg=None):
             if char == 'Hunter': dw = None if weapon == 'plasma caster' else dw     # the White Hunter's is its arm cannon
             dg = {2: 'PlasmaGrenades', 1: 'FragGrenades'}.get(gtype) if gcount else None
             if dw or dg: pat += f'\t\tHaloDoom_EnemyBase.HCE_Drops "{dw or "None"}", "{dg or "None"}";\n'
+            if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon) and not dw:   # the gun its arm is (HDE weapon presets: hce_presets)
+                pat += f'\t\tHaloDoom_EnemyBase.HCE_ArmWeapon "{HUNTER_ARM_WEAPON[weapon]}";\n'
             gmin, gmax = gc['grenade_range_lower_bound'] * S, (gc['grenade_range_upper_bound'] or 12) * S
             gvel = min(26, max(12, (b.get('grenade_velocity') or 0.2) * S / TICK))
             # perception
@@ -1659,7 +1762,17 @@ def build(cfg=None):
             animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)), msc)
             if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx
             if ov.get('stacker'): animtxt, jx = stacker_code(A, animtxt, char, meta, mdir); extra += jx
-            zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
+            if 'HCE_ActiveCamo' in flags:
+                # cheaper shading (hce_simpleshaders): plain copies of the camo skins, with no shader on them
+                plain = []
+                for line in skin_lines:
+                    m = re.match(r'\tSurfaceSkin 0 (\d+) "skins/(.*)"', line)
+                    if not m: continue
+                    pn = m.group(2)[:-4] + '_plain.png'
+                    shutil.copy(f'{pack}/models/{mdir}/{char}/skins/{m.group(2)}', f'{pack}/models/{mdir}/{char}/skins/{pn}')
+                    plain.append(f"\t\tA_ChangeModel('None', 0, \"\", 'None', {m.group(1)}, \"models/{mdir}/{char}/skins\", '{pn}', CMDL_USESURFACESKIN);\n")
+                if plain: extra += '\toverride void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader\n\t{\n' + ''.join(plain) + '\t}\n'
+            zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n{editor_keys(cls, char, team[char], weapon=weapon)}\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
             if blade:
                 zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')
                 bl = [f'\tSurfaceSkin 0 {si} "hce_hidden.png"' for si in range(len(meta['meshes']))]
@@ -1762,7 +1875,8 @@ def build(cfg=None):
         nonlocal ed
         weights = {c: 1 for c in lst}
         pz_ = '\n'.join(f'\t\tDropItem "{c}", 255, {weights[c]};' for c in lst)
-        zs.append(f'class HCE_Random{char} : RandomSpawner\n{{\n\tDefault\n\t{{\n{pz_}\n\t}}\n}}\n')
+        keys = editor_keys(f'HCE_Random{char}', char, team[char], f'Random {words(char)}', sprite_of=lst[0])
+        zs.append(f'class HCE_Random{char} : RandomSpawner\n{{\n{keys}\tDefault\n\t{{\n{pz_}\n\t}}\n}}\n')
         ednums.append((ed, f'HCE_Random{char}')); ed += 1
     for char, lst in sorted(spawners.items()):
         if char not in late_chars: spawner(char, lst)
@@ -1770,7 +1884,7 @@ def build(cfg=None):
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in md}
     for alias, (base, doom, hmul) in sorted(BOSS_ALIASES.items() if main else []):
         if base not in blocks: continue
-        m = re.search(r'class ' + base + r' : \w+\n\{\n\tDefault\n\t\{\n\t\tHealth (\d+);', '\n'.join(zs))
+        m = re.search(r'class ' + base + r' : \w+\n\{\n(?:\t//\$[^\n]*\n)*\tDefault\n\t\{\n\t\tHealth (\d+);', '\n'.join(zs))
         hp = int(int(m.group(1)) * hmul) if m else 100
         zs.append(f'// stands in for Doom\'s {doom}: CheckReplacee maps it back so A_BossDeath map specials fire\n'
                   f'class {alias} : {base}\n{{\n\tDefault\n\t{{\n\t\tHealth {hp};\n\t}}\n}}\n')
@@ -1829,6 +1943,12 @@ def build(cfg=None):
     open(f'{pack}/ZScript/HaloCE/{tg}_projectiles.zsc', 'w').write('\n'.join(pz))
     open(f'{pack}/modeldef.{tg}', 'w').write('\n'.join(md))
     ednums = pin_ednums(ednums)
+    if os.path.exists(f'{pack}/sprites/udb'): shutil.rmtree(f'{pack}/sprites/udb')
+    n_icons = ship_udb_icons([c for _, c in ednums], f'{pack}/sprites/udb')     # UDB thing icons (split_factions.py: per faction)
+    if n_icons: print(f'UDB icons: {n_icons} of {len(ednums)} placeable classes')
+    # the bestiary: the main pack's goes out per faction (split_factions.py), an add-on's in its own pack
+    best = f'{pack}/bestiary.txt' if main else f'{pack}/hcebest.{os.path.basename(pack.rstrip("/"))}'
+    print('bestiary:', bestiary_lump({c: n for n, c in ednums}, best), 'entries')
     mi = ['DoomEdNums', '{'] + [f'\t{n} = {c}' for n, c in ednums] + ['}', '', 'GameInfo', '{', f'\tAddEventHandlers = "{cfg["handler"]}"', '}', '']
     open(f'{pack}/mapinfo.txt', 'w').write('\n'.join(mi))
     json.dump(dict(ednums=ednums, spawners=spawners), open(f'{OUT}/{cfg["index"]}', 'w'), indent=1)

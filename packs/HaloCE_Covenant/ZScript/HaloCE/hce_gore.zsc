@@ -187,6 +187,7 @@ class HCE_HaloGoreHandler : EventHandler
 		double away = from ? from.AngleTo(v) : v.angle + 180;
 		// the puff sheet: Halo CE's human impact for the Marines, its Covenant one for the Covenant, the generic for beasts
 		class<HCE_GorePuff> pc = group == "Human" ? (class<HCE_GorePuff>)("HCE_GorePuffHuman") : group == "Beast" ? (class<HCE_GorePuff>)("HCE_GorePuff") : (class<HCE_GorePuff>)("HCE_GorePuffCov");
+		puffs = HaloDoom_EnemyBase.HCE_GoreCount(puffs); streaks = HaloDoom_EnemyBase.HCE_GoreCount(streaks);   // the gore budget (hce_gorescale)
 		for(int i = 0; i < puffs; i++)
 		{
 			let p = HCE_GorePuff(Actor.Spawn(pc, at, ALLOW_REPLACE));

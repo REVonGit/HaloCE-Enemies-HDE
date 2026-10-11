@@ -1,5 +1,5 @@
-// HaloDoom Evolved only (the standalone packs leave this file out): the weapon a dropped HDE gun gives, and whether
-// the player's flashlight is on. HDE turns
+// HaloDoom Evolved only (the standalone packs leave this file out): the weapon a dropped HDE gun gives, which guns
+// HDE's weapon preset spawns, and whether the player's flashlight is on. HDE turns
 // a dropped weapon into a WeaponPickupProxy that carries the weapon class; enemies and Marines that pick guns up
 // off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan) read it through this.
 class HCE_HDEPickupResolver : HCE_PickupResolver
@@ -9,6 +9,48 @@ class HCE_HDEPickupResolver : HCE_PickupResolver
 		let p = WeaponPickupProxy(a);
 		if(!p || !p.trueitem) return 'None';
 		return p.trueitem.GetClassName();
+	}
+
+	// HaloDoom Evolved's weapon presets (Options > HaloDoom > game type: halodoom_gametype, its GTDEFS game types). The
+	// preset's weapon list is read once per map (HaloDoom_EnemyBase.HCE_SharedResolver keeps this resolver for the map).
+	bool presetRead, presetAll;
+	Array<String> presetGuns;
+	void ReadPreset()
+	{
+		presetRead = true;
+		let gt = HaloMath.getCurrentGameType();
+		presetAll = !gt || (gt.flags & GameTypeInfo.DONTFILTERWEAPONS);
+		if(gt) presetGuns.Copy(gt.weaponClasses);
+	}
+
+	override bool WeaponAllowed(Name w)
+	{
+		if(!presetRead) ReadPreset();
+		if(presetAll) return true;
+		String low = w;
+		class<HaloGun> gc = low;
+		if(!gc) return true;                                  // not one of HDE's guns (none of the presets list it)
+		low = low.MakeLower();
+		return presetGuns.Find(low) != presetGuns.Size();
+	}
+
+	// an allowed HDE gun sharing a spawn tier with w, picked at random; 'None' when the preset has none of that tier
+	override Name SubstituteWeapon(Name w)
+	{
+		String sw = w;
+		class<HaloGun> gc = sw;
+		if(!gc) return w;
+		int tier = GetDefaultByType(gc).SpawnTier & ~HaloGun.P_ANY;
+		Array<Name> ok;
+		for(int i = 0; i < AllActorClasses.Size(); i++)
+		{
+			class<HaloGun> c = (class<HaloGun>)(AllActorClasses[i]);
+			if(!c || c.GetClassName() == 'HaloGun') continue;
+			let d = GetDefaultByType(c);
+			if(d.SpawnRarity == 0 || !(d.SpawnTier & tier)) continue;
+			if(WeaponAllowed(c.GetClassName())) ok.Push(c.GetClassName());
+		}
+		return ok.Size() ? ok[random[HCEPreset](0, ok.Size() - 1)] : 'None';
 	}
 
 	// HaloDoom Evolved's flashlight is on (enemies notice its beam: HCE_MissileTracker.Flashlight)

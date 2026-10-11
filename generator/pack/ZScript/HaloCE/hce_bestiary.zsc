@@ -1,0 +1,284 @@
+// The bestiary: Options > Halo CE Bestiary, or the console command hce_bestiary.
+//
+// Every enemy the loaded packs can place, by faction and kind: its picture (the Ultimate Doom Builder icon), the
+// numbers that matter (health, shield, weapon, speed, its DoomEdNum) and a few lines on what it is and how it
+// fights. The list comes from the packs' HCEBEST lumps (build_pack.bestiary_lump: only the factions loaded appear),
+// plus the variants any HCEVARS lump defines. With HaloDoom Evolved loaded, the card is drawn on HDE's own lore panel
+// (the one its weapons' descriptions use); without it, in the same layout in plain panels.
+//
+// Keys: up / down move, left / right jump a kind, page up / down jump a page, Escape closes. The mouse wheel scrolls
+// and a click picks an entry.
+
+class HCE_BestiaryEntry
+{
+	String cls, faction, group, title, sprite, loreKey, extra;
+	int ednum;
+}
+
+class HCE_BestiaryMenu : ListMenu
+{
+	Array<HCE_BestiaryEntry> entries;
+	Array<String> loreKeys, loreText;
+	Array<int> rows;                 // what each list row shows: an entry (>= 0) or a heading (-1 - its entry)
+	int sel, top;
+	Font fnt;
+	double fntScale;
+	TextureID panel;
+
+	// ---------------------------------------------------------------- data
+	override void Init(Menu parent, ListMenuDescriptor desc)
+	{
+		Super.Init(parent, desc);
+		Load();
+		fnt = Font.GetFont("HaloFont.fon2");
+		if(!fnt) fnt = NewSmallFont;
+		panel = TexMan.CheckForTexture("Graphics/UI/LoreTab/LoreTab.png", TexMan.Type_Any);
+		sel = 0;
+		while(sel < rows.Size() && rows[sel] < 0) sel++;
+	}
+
+	void Load()
+	{
+		for(int lump = -1; (lump = Wads.FindLump("HCEBEST", lump + 1)) != -1;)
+		{
+			Array<String> lines;
+			String data = Wads.ReadLump(lump);
+			data.Split(lines, "\n");
+			for(int i = 0; i < lines.Size(); i++)
+			{
+				Array<String> f;
+				lines[i].Split(f, "\t");
+				if(f.Size() >= 8 && f[0] == "E")
+				{
+					class<Actor> c = f[1];
+					if(!c) continue;
+					let e = new("HCE_BestiaryEntry");
+					e.cls = f[1]; e.faction = f[2]; e.group = f[3]; e.title = f[4]; e.sprite = f[5]; e.loreKey = f[6]; e.ednum = f[7].ToInt();
+					entries.Push(e);
+				}
+				else if(f.Size() >= 3 && f[0] == "L" && loreKeys.Find(f[1]) == loreKeys.Size()) { loreKeys.Push(f[1]); loreText.Push(f[2]); }
+			}
+		}
+		// the variants from HCEVARS lumps, after a variant's own base
+		let vb = HCE_VariantBook.Read(true);
+		for(int n = 0; n < 32; n++)
+		{
+			let d = vb.defs[n];
+			if(!d) continue;
+			let e = new("HCE_BestiaryEntry");
+			String bs = d.base;
+			e.cls = bs; e.faction = "Variants (HCEVARS)"; e.group = "Variants"; e.title = d.title; e.sprite = "-"; e.loreKey = "-";
+			e.ednum = 30900 + n;
+			for(int i = 0; i < entries.Size(); i++) if(entries[i].cls == bs) { e.sprite = entries[i].sprite; e.loreKey = entries[i].loreKey; break; }
+			e.extra = String.Format("Variant %d of %s: health x%.2f, shield x%.2f, speed x%.2f, damage x%.2f, size x%.2f%s%s.",
+				n, bs, d.health, d.shield, d.speed, d.damage, d.scale, d.weapon != 'None' ? ", with the " .. WeaponName(d.weapon) : "", d.friendly ? ", an ally" : "");
+			entries.Push(e);
+		}
+		// rows: a heading before each new faction / kind
+		String last = "";
+		for(int i = 0; i < entries.Size(); i++)
+		{
+			String h = entries[i].faction .. ": " .. entries[i].group;
+			if(h != last) { rows.Push(-1 - i); last = h; }
+			rows.Push(i);
+		}
+	}
+
+	static String WeaponName(Name w)
+	{
+		if(w == 'None' || w == '') return "none";
+		String ws = w;
+		class<Actor> wc = ws;
+		if(wc) { String t = GetDefaultByType(wc).GetTag(""); if(t.Length()) return t; }
+		ws.Replace("Halo_", "");
+		return ws;
+	}
+
+	// the lore under these keys (comma-separated: the rank's, then the character's), paragraphs split by |
+	String Lore(String keys)
+	{
+		Array<String> ks;
+		keys.Split(ks, ",");
+		String txt = "";
+		for(int i = 0; i < ks.Size(); i++)
+		{
+			int k = loreKeys.Find(ks[i]);
+			if(k < loreKeys.Size()) txt = txt .. (txt.Length() ? "|" : "") .. loreText[k];
+		}
+		return txt;
+	}
+
+	// ---------------------------------------------------------------- input
+	void Move(int d)
+	{
+		int step = d > 0 ? 1 : -1;
+		for(int n = abs(d); n > 0; n--)
+		{
+			int s = sel + step;
+			while(s >= 0 && s < rows.Size() && rows[s] < 0) s += step;        // over the headings
+			if(s < 0 || s >= rows.Size()) break;
+			sel = s;
+		}
+		MenuSound("menu/cursor");
+	}
+
+	void JumpGroup(int dir)
+	{
+		int s = sel + dir;
+		while(s >= 0 && s < rows.Size() && rows[s] >= 0) s += dir;            // to the heading
+		if(dir < 0) { s--; while(s >= 0 && rows[s] >= 0) s--; }                // the one before ours
+		s++;
+		if(s >= 0 && s < rows.Size() && rows[s] >= 0) { sel = s; MenuSound("menu/cursor"); }
+	}
+
+	override bool MenuEvent(int mkey, bool fromcontroller)
+	{
+		switch(mkey)
+		{
+		case MKEY_Up: Move(-1); return true;
+		case MKEY_Down: Move(1); return true;
+		case MKEY_PageUp: Move(-15); return true;
+		case MKEY_PageDown: Move(15); return true;
+		case MKEY_Left: JumpGroup(-1); return true;
+		case MKEY_Right: JumpGroup(1); return true;
+		case MKEY_Enter: return true;
+		}
+		return Super.MenuEvent(mkey, fromcontroller);
+	}
+
+	override bool OnUIEvent(UIEvent ev)
+	{
+		if(ev.type == UIEvent.Type_WheelUp) { Move(-3); return true; }
+		if(ev.type == UIEvent.Type_WheelDown) { Move(3); return true; }
+		return Super.OnUIEvent(ev);
+	}
+
+	override bool MouseEvent(int type, int x, int y)
+	{
+		if(type == MOUSE_Click)
+		{
+			double sc; vector2 o;
+			[sc, o] = Frame();
+			int r = int((y - o.y) / sc - LIST_Y) / ROW_H + top;
+			if((x - o.x) / sc < LIST_X + LIST_W && r >= 0 && r < rows.Size() && rows[r] >= 0) { sel = r; MenuSound("menu/cursor"); }
+			return true;
+		}
+		return Super.MouseEvent(type, x, y);
+	}
+
+	// ---------------------------------------------------------------- drawing (in a 1920 x 1080 frame, centred)
+	const LIST_X = 40; const LIST_Y = 110; const LIST_W = 520; const ROW_H = 30; const LIST_ROWS = 31;
+	const CARD_X = 600; const CARD_Y = 110; const CARD_W = 1280;     // the card: LoreTab's 1900 x 1400, scaled to this width
+
+	double, vector2 Frame()
+	{
+		double sc = min(Screen.GetWidth() / 1920.0, Screen.GetHeight() / 1080.0);
+		return sc, ((Screen.GetWidth() - 1920 * sc) / 2, (Screen.GetHeight() - 1080 * sc) / 2);
+	}
+
+	void Box(double sc, vector2 o, double x, double y, double w, double h, Color c, double a)
+	{
+		Screen.Dim(c, a, int(o.x + x * sc), int(o.y + y * sc), int(w * sc), int(h * sc));
+	}
+
+	void Text(double sc, vector2 o, String s, double x, double y, double px, int col = Font.CR_WHITE, double alpha = 1.0)
+	{
+		double f = px / fnt.GetHeight() * sc;
+		Screen.DrawText(fnt, col, o.x + x * sc, o.y + y * sc, s, DTA_ScaleX, f, DTA_ScaleY, f, DTA_Alpha, alpha);
+	}
+
+	// lines of text broken to fit w frame pixels at px pixels high
+	BrokenLines Wrap(String s, double w, double px)
+	{
+		return fnt.BreakLines(s, int(w / (px / fnt.GetHeight())));
+	}
+
+	override void Drawer()
+	{
+		double sc; vector2 o;
+		[sc, o] = Frame();
+		Screen.Dim(0, 0.75, 0, 0, Screen.GetWidth(), Screen.GetHeight());
+		Text(sc, o, "HALO CE BESTIARY", LIST_X, 40, 44, Font.CR_GOLD);
+		if(!rows.Size()) { Text(sc, o, "No Halo CE enemy packs are loaded.", LIST_X, 140, 28); return; }
+		// the list
+		if(sel < top) top = sel;
+		if(sel >= top + LIST_ROWS) top = sel - LIST_ROWS + 1;
+		if(top > 0 && rows[top] >= 0 && sel - top < 2) top = max(0, top - 1);
+		Box(sc, o, LIST_X - 10, LIST_Y - 8, LIST_W + 20, LIST_ROWS * ROW_H + 16, Color(255, 20, 40, 70), 0.6);
+		for(int r = top; r < rows.Size() && r < top + LIST_ROWS; r++)
+		{
+			double y = LIST_Y + (r - top) * ROW_H;
+			if(rows[r] < 0)
+			{
+				let e = entries[-1 - rows[r]];
+				Text(sc, o, e.faction .. ": " .. e.group, LIST_X, y + 4, 20, Font.CR_GOLD);
+				continue;
+			}
+			if(r == sel) Box(sc, o, LIST_X - 4, y, LIST_W + 8, ROW_H, Color(255, 60, 140, 220), 0.55);
+			Text(sc, o, entries[rows[r]].title, LIST_X + 16, y + 4, 22, r == sel ? Font.CR_WHITE : Font.CR_GRAY);
+		}
+		if(top > 0) Text(sc, o, "...", LIST_X + LIST_W - 40, LIST_Y - 30, 22, Font.CR_GRAY);
+		if(top + LIST_ROWS < rows.Size()) Text(sc, o, "...", LIST_X + LIST_W - 40, LIST_Y + LIST_ROWS * ROW_H + 4, 22, Font.CR_GRAY);
+		if(sel < 0 || sel >= rows.Size() || rows[sel] < 0) return;
+		DrawCard(sc, o, entries[rows[sel]]);
+	}
+
+	void DrawCard(double sc, vector2 o, HCE_BestiaryEntry e)
+	{
+		double k = CARD_W / 1900.0;                      // LoreTab's pixels -> the frame's
+		// the panel: HDE's lore tab, or its three boxes drawn plain
+		if(panel.IsValid())
+			Screen.DrawTexture(panel, false, o.x + CARD_X * sc, o.y + CARD_Y * sc, DTA_DestWidthF, CARD_W * sc,
+				DTA_DestHeightF, 1400 * k * sc, DTA_Alpha, 0.85, DTA_LeftOffset, 0, DTA_TopOffset, 0);   // (HDE centres it)
+		else
+		{
+			Box(sc, o, CARD_X, CARD_Y, CARD_W, 1400 * k, Color(255, 150, 150, 175), 0.55);
+			Box(sc, o, CARD_X + 205 * k, CARD_Y + 90 * k, 715 * k, 305 * k, Color(255, 45, 105, 165), 0.9);
+			Box(sc, o, CARD_X + 945 * k, CARD_Y + 90 * k, 775 * k, 310 * k, Color(255, 45, 105, 165), 0.9);
+			Box(sc, o, CARD_X + 205 * k, CARD_Y + 415 * k, 1515 * k, 645 * k, Color(255, 45, 105, 165), 0.9);
+		}
+		// top left: name and numbers
+		double x = CARD_X + 230 * k, y = CARD_Y + 110 * k, w = 670 * k;
+		let tl = Wrap(e.title, w, 30);
+		for(int i = 0; i < tl.Count() && i < 2; i++) Text(sc, o, tl.StringAt(i), x, y + i * 32, 30, Font.CR_WHITE);
+		y += min(tl.Count(), 2) * 32 + 10;
+		Array<String> stats;
+		class<HaloDoom_EnemyBase> ec = e.cls;
+		if(ec)
+		{
+			let d = GetDefaultByType(ec);
+			stats.Push(String.Format("Health  %d", d.Health));
+			if(d.hce_shieldMax > 0) stats.Push(String.Format("Shield  %d", int(d.hce_shieldMax)));
+			Name wn = d.hce_armWeapon != 'None' && d.hce_armWeapon != '' ? d.hce_armWeapon : d.hce_dropWeapon;
+			if(wn != 'None' && wn != '') stats.Push("Weapon  " .. WeaponName(wn));      // (the standalone packs' enemies drop no guns: the title names it)
+			stats.Push(String.Format("Speed  %.1f", d.hce_runSpeed));
+		}
+		stats.Push(String.Format("DoomEdNum  %d", e.ednum));
+		for(int i = 0; i < stats.Size(); i++) Text(sc, o, stats[i], x, y + i * 25, 22, Font.CR_GRAY);
+		// top right: the picture, fitted into the box
+		TextureID pic = e.sprite != "-" ? TexMan.CheckForTexture(e.sprite .. "A0", TexMan.Type_Sprite) : TexMan.CheckForTexture("", TexMan.Type_Any);
+		if(pic.IsValid())
+		{
+			vector2 ts = TexMan.GetScaledSize(pic);
+			double bw = 735 * k, bh = 270 * k;
+			double f = min(bw / max(1, ts.x), bh / max(1, ts.y));
+			double dx = CARD_X + 965 * k + (bw - ts.x * f) / 2, dy = CARD_Y + 110 * k + (bh - ts.y * f) / 2;
+			Screen.DrawTexture(pic, false, o.x + dx * sc, o.y + dy * sc, DTA_DestWidthF, ts.x * f * sc, DTA_DestHeightF, ts.y * f * sc,
+				DTA_LeftOffset, 0, DTA_TopOffset, 0);
+		}
+		// below: what it is
+		String lore = Lore(e.loreKey);
+		if(e.extra.Length()) lore = e.extra .. (lore.Length() ? "|" .. lore : "");
+		Array<String> paras;
+		lore.Split(paras, "|");
+		x = CARD_X + 235 * k; y = CARD_Y + 440 * k; w = 1450 * k;
+		double bottom = CARD_Y + 1040 * k;
+		for(int p = 0; p < paras.Size() && y < bottom; p++)
+		{
+			let bl = Wrap(paras[p], w, 26);
+			for(int i = 0; i < bl.Count() && y < bottom; i++) { Text(sc, o, bl.StringAt(i), x, y, 26, Font.CR_WHITE); y += 31; }
+			y += 12;
+		}
+		Text(sc, o, "Up / Down: browse    Left / Right: next kind    Page Up / Down: a page    Esc: close", CARD_X + 60, 1040, 20, Font.CR_GRAY, 0.8);
+	}
+}

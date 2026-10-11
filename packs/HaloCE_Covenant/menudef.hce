@@ -2,6 +2,8 @@ AddOptionMenu "OptionsMenu"
 {
 	Submenu "Halo CE Gore", "HCE_GoreOptions"
 	Submenu "Halo CE AI", "HCE_AIOptions"
+	Submenu "Halo CE Performance", "HCE_PerfOptions"
+	Submenu "Halo CE Bestiary", "HCE_Bestiary"
 }
 
 OptionValue "HCE_Difficulty"
@@ -48,6 +50,8 @@ OptionMenu "HCE_AIOptions"
 	StaticText ""
 	StaticText "Spawning", 1
 	Option "Keep Doom's monsters", "hce_keepdoommonsters", "OnOff"
+	Option "Follow HDE's weapon preset", "hce_presets", "OnOff"
+	StaticText "Enemies only carry guns the HaloDoom game type spawns.", 1
 	Slider "Digsite enemy spawns", "hce_digsite_spawns", 0, 2, 0.1, 1
 }
 
@@ -62,4 +66,27 @@ OptionMenu "HCE_GoreOptions"
 	StaticText ""
 	Option "Halo blood with NashGore", "hce_halogore", "OnOff"
 	StaticText "With NashGore loaded: Halo CE / Halo 2 decals and bursts.", 1
+}
+
+OptionMenu "HCE_PerfOptions"
+{
+	Title "Halo CE Performance"
+	Slider "Gore amount", "hce_gorescale", 0, 1, 0.05, 2
+	StaticText "Share of blood spurts, gibs and gore puffs spawned.", 1
+	StaticText ""
+	Option "Simple active camo", "hce_simpleshaders", "OnOff"
+	StaticText "Cloaked enemies drawn as a faint body without", 1
+	StaticText "the camo shimmer shader. Applies to newly spawned enemies.", 1
+	StaticText ""
+	Option "Garbage collector", "hce_cleanup", "OnOff"
+	StaticText "Removes the oldest bodies, limbs and gore splats past", 1
+	StaticText "the limits below. Never anything a player can see.", 1
+	Slider "Bodies kept", "hce_maxcorpses", 0, 256, 4, 0
+	Slider "Severed limbs kept", "hce_maxgibs", 0, 128, 4, 0
+	Slider "Gore splats kept", "hce_maxgore", 0, 256, 8, 0
+}
+
+ListMenu "HCE_Bestiary"
+{
+	Class "HCE_BestiaryMenu"
 }

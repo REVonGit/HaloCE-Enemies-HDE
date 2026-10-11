@@ -69,6 +69,9 @@ class HCE_FloodCarrierBase : HaloDoom_EnemyBase abstract
 // characters\floodcarrier\floodcarrier
 class HCE_Floodcarrier : HCE_FloodCarrierBase
 {
+	//$Category "Halo CE/Flood/Flood Carrier"
+	//$Title "Floodcarrier"
+	//$Sprite "HU1DA0"
 	Default
 	{
 		Health 50;
@@ -256,6 +259,9 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 // characters\floodcombat elite\floodcombat elite assault rifle
 class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Assault Rifle)"
+	//$Sprite "HU1EA0"
 	Default
 	{
 		Health 120;
@@ -385,6 +391,9 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite flame thrower
 class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite Flame Thrower"
+	//$Sprite "HU1FA0"
 	Default
 	{
 		Health 100;
@@ -515,6 +524,9 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite needler
 class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Needler)"
+	//$Sprite "HU1GA0"
 	Default
 	{
 		Health 120;
@@ -644,6 +656,9 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite pistol
 class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Pistol)"
+	//$Sprite "HU1HA0"
 	Default
 	{
 		Health 120;
@@ -773,6 +788,9 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite plasma pistol
 class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Plasma Pistol)"
+	//$Sprite "HU1IA0"
 	Default
 	{
 		Health 120;
@@ -902,6 +920,9 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite plasma rifle
 class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Plasma Rifle)"
+	//$Sprite "HU1JA0"
 	Default
 	{
 		Health 120;
@@ -1031,6 +1052,9 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite rocket launcher
 class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Rocket Launcher)"
+	//$Sprite "HU1KA0"
 	Default
 	{
 		Health 150;
@@ -1160,6 +1184,9 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite shotgun
 class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Shotgun)"
+	//$Sprite "HU1LA0"
 	Default
 	{
 		Health 120;
@@ -1289,6 +1316,9 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite sniper rifle
 class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite (Sniper Rifle)"
+	//$Sprite "HU1MA0"
 	Default
 	{
 		Health 300;
@@ -1418,6 +1448,9 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 // characters\floodcombat elite\floodcombat elite stealth unarmed
 class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite Stealth Unarmed"
+	//$Sprite "HU1NA0"
 	Default
 	{
 		Health 200;
@@ -1540,11 +1573,19 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 	{
 		return (0, 0, 0);
 	}
+	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
+	{
+		A_ChangeModel('None', 0, "", 'None', 0, "models/hce/FloodElite/skins", 'floodcombatelitestealthunarmed_floodelite_0_plain.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite/skins", 'floodcombatelitestealthunarmed_floodelite_1_plain.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // characters\floodcombat elite\floodcombat elite unarmed
 class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Floodcombat Elite Unarmed"
+	//$Sprite "HU1OA0"
 	Default
 	{
 		Health 100;
@@ -1746,6 +1787,9 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 // characters\floodcombat_human\floodcombat_human assault rifle
 class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Assault Rifle)"
+	//$Sprite "HU1PA0"
 	Default
 	{
 		Health 100;
@@ -1858,6 +1902,9 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human flame thrower
 class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human Flame Thrower"
+	//$Sprite "HU1QA0"
 	Default
 	{
 		Health 100;
@@ -1971,6 +2018,9 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human needler
 class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Needler)"
+	//$Sprite "HU1RA0"
 	Default
 	{
 		Health 100;
@@ -2083,6 +2133,9 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human pistol
 class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Pistol)"
+	//$Sprite "HU1SA0"
 	Default
 	{
 		Health 100;
@@ -2195,6 +2248,9 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human plasma pistol
 class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Plasma Pistol)"
+	//$Sprite "HU1TA0"
 	Default
 	{
 		Health 100;
@@ -2307,6 +2363,9 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human plasma rifle
 class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Plasma Rifle)"
+	//$Sprite "HU1UA0"
 	Default
 	{
 		Health 100;
@@ -2419,6 +2478,9 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human rocket launcher
 class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Rocket Launcher)"
+	//$Sprite "HU1VA0"
 	Default
 	{
 		Health 100;
@@ -2531,6 +2593,9 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human shotgun
 class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human (Shotgun)"
+	//$Sprite "HU1WA0"
 	Default
 	{
 		Health 100;
@@ -2643,6 +2708,9 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 // characters\floodcombat_human\floodcombat_human unarmed
 class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Floodcombat Human Unarmed"
+	//$Sprite "HU1XA0"
 	Default
 	{
 		Health 100;
@@ -2818,6 +2886,9 @@ class HCE_FloodInfectionBase : HaloDoom_EnemyBase abstract
 // characters\flood_infection\flood_infection
 class HCE_FloodInfection : HCE_FloodInfectionBase
 {
+	//$Category "Halo CE/Flood/Flood Infection"
+	//$Title "Flood Infection"
+	//$Sprite "HU1CA0"
 	Default
 	{
 		Health 3;
@@ -2951,6 +3022,9 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 
 class HCE_RandomFloodCarrier : RandomSpawner
 {
+	//$Category "Halo CE/Flood/Flood Carrier"
+	//$Title "Random Flood Carrier"
+	//$Sprite "HU1DA0"
 	Default
 	{
 		DropItem "HCE_Floodcarrier", 255, 1;
@@ -2959,6 +3033,9 @@ class HCE_RandomFloodCarrier : RandomSpawner
 
 class HCE_RandomFloodElite : RandomSpawner
 {
+	//$Category "Halo CE/Flood/Flood Elite"
+	//$Title "Random Flood Elite"
+	//$Sprite "HU1EA0"
 	Default
 	{
 		DropItem "HCE_FloodcombatEliteAssaultRifle", 255, 1;
@@ -2977,6 +3054,9 @@ class HCE_RandomFloodElite : RandomSpawner
 
 class HCE_RandomFloodHuman : RandomSpawner
 {
+	//$Category "Halo CE/Flood/Flood Human"
+	//$Title "Random Flood Human"
+	//$Sprite "HU1PA0"
 	Default
 	{
 		DropItem "HCE_FloodcombatHumanAssaultRifle", 255, 1;
@@ -2993,6 +3073,9 @@ class HCE_RandomFloodHuman : RandomSpawner
 
 class HCE_RandomFloodInfection : RandomSpawner
 {
+	//$Category "Halo CE/Flood/Flood Infection"
+	//$Title "Random Flood Infection"
+	//$Sprite "HU1CA0"
 	Default
 	{
 		DropItem "HCE_FloodInfection", 255, 1;

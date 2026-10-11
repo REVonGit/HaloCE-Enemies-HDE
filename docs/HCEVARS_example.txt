@@ -1,0 +1,31 @@
+// An example HCEVARS lump for the Halo CE enemy packs (see "Your own variants (HCEVARS)" in PACK_README.md).
+// Put a file named HCEVARS.txt at the root of a pk3 (or a lump named HCEVARS in a wad) and load it after the packs.
+
+// a tougher, bigger sword Commander that sometimes stands in for a Baron of Hell (thing 30900 in maps)
+variant 0
+{
+	name     "Zealot Bodyguard"
+	base     HCE_EliteCommanderEnergySword
+	health   1.5
+	shield   2
+	scale    1.1
+	replaces BaronOfHell 30
+}
+
+// a fast Grunt Major with a plasma pistol, mixed into the Imps now and then (thing 30901)
+variant 1
+{
+	name     "Grunt Runner"
+	base     HCE_GruntMajorNeedler
+	speed    1.4
+	weapon   Halo_PlasmaPistol
+	replaces DoomImp 10
+}
+
+// an allied Spec Ops Grunt, placed in maps as thing 30902
+variant 2
+{
+	name     "Friendly Grunt"
+	base     HCE_GruntSpecopsNeedler
+	friendly true
+}

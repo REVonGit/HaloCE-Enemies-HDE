@@ -78,7 +78,8 @@ class HCES_LootHandler : EventHandler
 		int tier = Tier(m);
 		// value from the enemy's unscaled toughness: Grunt ~1, Elite ~1.7, Brute ~3, Hunter / Chieftain ~6
 		double hp = GetDefaultByType(m.GetClass()).health + m.hce_shieldMax * 0.5;
-		points += clamp(hp / 60.0, 0.1, 6.0) * scale;
+		CVar fam = CVar.FindCVar("hces_skull_famine");       // the Famine skull (hces_skulls.zsc): half the loot
+		points += clamp(hp / 60.0, 0.1, 6.0) * scale * (fam && fam.GetBool() ? 0.5 : 1.0);
 
 		int drops = 0, maxDrops = 1 + tier;
 		// weapons first: they're rare, and a fight is easier once the player has the right gun

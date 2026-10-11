@@ -147,13 +147,24 @@ class HCE_ReplaceHandler : EventHandler
 	{
 		Array<String> opts; picks.Split(opts, " ", TOK_SKIPEMPTY);
 		Array<String> names; Array<int> weights; int total = 0;
-		for(int i = 0; i < opts.Size(); i++)
+		// HaloDoom Evolved's weapon preset (hce_presets): enemies whose gun it doesn't spawn are left out, unless that
+		// would leave none (then the whole list stays, and HaloDoom_EnemyBase.HCE_PresetArm re-arms what it can)
+		for(int pass = 0; pass < 2 && total <= 0; pass++)
 		{
-			Array<String> nw; opts[i].Split(nw, "*");
-			class<Actor> c = nw[0];
-			if(!c) continue;                                  // its faction pack isn't loaded
-			int w = nw.Size() > 1 ? nw[1].ToInt() : 1;
-			names.Push(nw[0]); weights.Push(w); total += w;
+			for(int i = 0; i < opts.Size(); i++)
+			{
+				Array<String> nw; opts[i].Split(nw, "*");
+				class<Actor> c = nw[0];
+				if(!c) continue;                                  // its faction pack isn't loaded
+				if(pass == 0)
+				{
+					class<HaloDoom_EnemyBase> ec = (class<HaloDoom_EnemyBase>)(c);
+					if(ec && !(HaloDoom_EnemyBase.HCE_PresetAllows(GetDefaultByType(ec).hce_dropWeapon)
+					        && HaloDoom_EnemyBase.HCE_PresetAllows(GetDefaultByType(ec).hce_armWeapon))) continue;
+				}
+				int w = nw.Size() > 1 ? nw[1].ToInt() : 1;
+				names.Push(nw[0]); weights.Push(w); total += w;
+			}
 		}
 		if(total <= 0) return null;
 		int r = random[HCERep](1, total);
@@ -163,6 +174,26 @@ class HCE_ReplaceHandler : EventHandler
 			if(r <= 0) return (class<Actor>)(names[i]);
 		}
 		return null;
+	}
+
+	HCE_VariantBook variants;           // the HCEVARS variant definitions loaded (hce_variants.zsc)
+
+	// the variant a Doom monster becomes, if one claims it this time (each takes its chance in number order)
+	HCE_VariantDef VariantFor(Name doom)
+	{
+		for(int n = 0; n < 32; n++)
+		{
+			let d = variants.defs[n];
+			if(!d) continue;
+			for(int r = 0; r < d.claims.Size(); r++)
+				if(d.claims[r] == doom && random[HCEVariant](1, 100) <= d.chance[r]) return d;
+		}
+		return null;
+	}
+
+	override void OnRegister()
+	{
+		variants = HCE_VariantBook.Read();
 	}
 
 	override void CheckReplacement(ReplaceEvent e)
@@ -179,6 +210,14 @@ class HCE_ReplaceHandler : EventHandler
 			}
 		}
 		if(KeepDoomMonsters()) return;
+		// HCEVARS variants that claim this Doom monster (hce_variants.zsc)
+		if(!variants) variants = HCE_VariantBook.Read();
+		let vd = VariantFor(rn);
+		if(vd)
+		{
+			class<Actor> vc = String.Format("HCE_Variant%d", vd.num);
+			if(vc) { e.Replacement = vc; return; }
+		}
 		for(int i = 0; i < RULES.Size(); i += 4)
 		{
 			if(rn != RULES[i]) continue;
@@ -284,10 +323,95 @@ class HCE_ReplaceHandler : EventHandler
 		}
 	}
 
+	// ------------------------------------------------------------------
+	// Garbage collector (Options > Halo CE Performance: hce_cleanup). Every three seconds: the oldest enemy bodies past
+	// hce_maxcorpses, severed limbs past hce_maxgibs and Halo gore floor splats past hce_maxgore fade out and are
+	// removed, never one a player can see (a few at a time, so nothing pops). Off by default.
+	// ------------------------------------------------------------------
+	static int CleanupLimit(String cvn, int def)
+	{
+		CVar cv = CVar.FindCVar(cvn);
+		return cv ? cv.GetInt() : def;
+	}
+
+	static bool PlayerSees(Actor a)
+	{
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo) continue;
+			let p = players[i].mo;
+			if(p.Distance3D(a) < 384) return true;               // close by: seen or about to be
+			if(p.Distance3D(a) < 3072 && p.CheckSight(a, SF_IGNOREVISIBILITY)) return true;
+		}
+		return false;
+	}
+
+	// fade out over half a second, then gone
+	static void FadeAway(Actor a)
+	{
+		if(!a) return;
+		let f = new("HCE_FadeAway");
+		f.who = a; f.step = max(0.04, a.alpha / 12.0);
+		a.bNOINTERACTION = true;
+	}
+
+	void Cleanup()
+	{
+		CVar on = CVar.FindCVar("hce_cleanup");
+		if(!on || !on.GetBool()) return;
+		int budget = 12;                                          // removals a sweep at most
+		// bodies, oldest first
+		int maxc = CleanupLimit("hce_maxcorpses", 48);
+		if(maxc >= 0)
+		{
+			Array<HaloDoom_EnemyBase> dead;
+			let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+			HaloDoom_EnemyBase e;
+			while(e = HaloDoom_EnemyBase(it.Next())) if(e.health <= 0 && !e.bNOINTERACTION) dead.Push(e);
+			int extra = dead.Size() - maxc;
+			while(extra > 0 && budget > 0 && dead.Size())
+			{
+				int oi = 0;
+				for(int i = 1; i < dead.Size(); i++) if(dead[i].hce_diedAt < dead[oi].hce_diedAt) oi = i;
+				let o = dead[oi]; dead.Delete(oi);
+				if(PlayerSees(o)) continue;
+				FadeAway(o); extra--; budget--;
+			}
+		}
+		// severed limbs and Halo gore splats, oldest (longest-lived) first
+		static const String kinds[] = { "HCE_LimbGib", "HCE_GoreFloorSplat" };
+		static const String limits[] = { "hce_maxgibs", "hce_maxgore" };
+		static const int defs[] = { 32, 64 };
+		for(int k = 0; k < kinds.Size() && budget > 0; k++)
+		{
+			int lim = CleanupLimit(limits[k], defs[k]);
+			class<Actor> kc = kinds[k];
+			if(lim < 0 || !kc) continue;
+			Array<Actor> all;
+			let it = ThinkerIterator.Create(kc);
+			Actor a;
+			while(a = Actor(it.Next())) if(!a.bNOINTERACTION || k == 1) all.Push(a);
+			int extra = all.Size() - lim;
+			while(extra > 0 && budget > 0 && all.Size())
+			{
+				int oi = 0;
+				for(int i = 1; i < all.Size(); i++) if(all[i].GetAge() > all[oi].GetAge()) oi = i;
+				let o = all[oi]; all.Delete(oi);
+				if(PlayerSees(o)) continue;
+				FadeAway(o); extra--; budget--;
+			}
+		}
+	}
+
 	override void WorldTick()
 	{
+		if(level.maptime % 105 == 52) Cleanup();
 		if(lateHunters.Size()) PairLateHunters();
-		if(level.maptime == 2) ReportUnreplaced();
+		if(level.maptime == 2)
+		{
+			ReportUnreplaced();
+			if(variants && variants.count) console.printf("\cdHalo CE enemies:\c- %d variants from HCEVARS.", variants.count);
+		}
 		for(int i = 0; i < toMarine.Size(); i++)
 		{
 			let h = toMarine[i];
@@ -679,5 +803,19 @@ class HCE_SquadWheel : EventHandler
 		double pa = atan2(wx, wy);
 		double px = cx + sin(pa) * pr, py = cy - cos(pa) * pr, ds = 3 * sc;
 		Screen.Dim(wSel >= 0 ? lit : ring, 0.85, int(px - ds), int(py - ds), int(ds * 2 + 1), int(ds * 2 + 1));
+	}
+}
+
+// the garbage collector's fade (HCE_ReplaceHandler.Cleanup): translucent, then removed
+class HCE_FadeAway : Thinker
+{
+	Actor who;
+	double step;
+	override void Tick()
+	{
+		if(!who) { Destroy(); return; }
+		double a = who.alpha - step;
+		if(a <= 0) { who.ClearCounters(); who.Destroy(); Destroy(); return; }
+		who.A_SetRenderStyle(a, STYLE_Translucent);
 	}
 }

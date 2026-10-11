@@ -111,3 +111,8 @@ material texture "models/hce/weapons/w_energy_sword_glow.png"
 	speed 1.0
 	brightmap "models/hce/brightmap_full.png"
 }
+material texture "models/hce/EliteKit/ek_ranger_lens.png"
+{
+	shader "shaders/hce_visor.fp"
+	texture tex_cube "models/hce/EliteKit/ek_visor_cube.png"
+}

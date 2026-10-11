@@ -84,6 +84,30 @@ def colour_map(m, hb, bms, out):
     print('   ', out, 'from', diff[0].split('\\')[-1], 'bump' if bump else '', 'detail' if det else '')
 
 
+LENS_BULGE = 1.6       # how far the lens normals lean out from each lens's centre (a domed glass for the visor shader)
+
+
+def bulge(P, N, tris):
+    """a flat lens's normals leaned outward from the centre of each separate lens (its connected triangles), as if the
+    glass were domed: the visor shader's cube-map reflection then sweeps across it instead of one flat colour"""
+    n = len(P); parent = list(range(n))
+    def f(x):
+        while parent[x] != x: parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+    for t in tris:
+        a, b, c = f(int(t[0])), f(int(t[1])), f(int(t[2])); parent[b] = a; parent[f(c)] = a
+    roots = np.array([f(i) for i in range(n)]); out = N.copy()
+    for r in set(roots.tolist()):
+        k = roots == r
+        if k.sum() < 3: continue
+        c = P[k].mean(0); rad = max(np.linalg.norm(P[k] - c, axis=1).max(), 1e-6)
+        avg = N[k].mean(0); avg /= max(np.linalg.norm(avg), 1e-6)
+        d = P[k] - c; d -= (d @ avg)[:, None] * avg                       # in the lens's own plane
+        v = avg + LENS_BULGE * d / rad
+        out[k] = v / np.linalg.norm(v, axis=1, keepdims=True)
+    return out
+
+
 def lens_texture():
     from PIL import Image
     t, b = np.array(LENS_RGB[0]), np.array(LENS_RGB[1])
@@ -161,6 +185,7 @@ def main():
             else:
                 mat = texture_for(R, mm['shader'])
             P, N, cb, w8 = retarget(mm, h2w, cew, tomap)
+            if mat == LENS: N = bulge(P, N, mm['tris'])
             tris = np.array(mm['tris'])[:, [0, 2, 1]]
             # one surface per limb (body, left arm, right arm), so a severed arm's plates can go with it
             limb = np.array([LIMB.get(J[cb[t[0], 0]][0], 0) for t in tris]) if pid in SPLIT else np.zeros(len(tris), int)

@@ -22,7 +22,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
-from h2_elite_anims import MAP01B, CACHE01B, MARINE, _qmul
+from h2_elite_anims import MAP01B, CACHE01B, MARINE
+from h2rig import qrot, h2_world, ce_world, node_world_pos, ce_head, ce_bones, bind_ancestors, retarget
+from texmath import height_from_normals, blur
+from h2map import shader_bitmaps
 try:
     from extract_chars import OUT
 except Exception:
@@ -45,72 +48,6 @@ BUMP_LIGHT = (-0.35, 0.45, 0.82)             # the light baked in from the bump 
 BUMP_AMBIENT = 0.45                          # the baked shade: ambient + (1 - ambient) * n.l
 SMOOTH = 0.3                                 # how much of the camo's fine speckle is evened out (0 = as it is)
 COLLAR_Z = 0.515                            # triangles wholly below this (the neck collar) are left off
-
-
-def qrot(q, v):
-    x, y, z, w = q
-    u = np.array([x, y, z]); return v + 2 * np.cross(u, np.cross(u, v) + w * v)
-
-
-def world(nodes, k):
-    t, q = np.array(nodes[k]['t'], float), np.array(nodes[k]['q'], float)
-    p = nodes[k].get('parent', -1)
-    while p is not None and p >= 0:
-        pt, pq = np.array(nodes[p]['t'], float), np.array(nodes[p]['q'], float)
-        t = pt + qrot(pq, t); q = _qmul(pq, q); p = nodes[p].get('parent', -1)
-    return t
-
-
-def ce_head(J):
-    names = [j[0] for j in J]
-    k = names.index('bip01 head')
-    t, q = np.array(J[k][2], float), np.array(J[k][3], float)
-    p = J[k][1]
-    while p >= 0:
-        t = np.array(J[p][2], float) + qrot(np.array(J[p][3], float), t); p = J[p][1]
-    return k, t
-
-
-def wq(chain):
-    """bind-pose world (t, q) of each joint from [(parent, t, q)]"""
-    out = []
-    for p, t, q in chain:
-        t, q = np.array(t, float), np.array(q, float)
-        if p is not None and p >= 0:
-            pt, pq = out[p]; t = pt + qrot(pq, t); q = _qmul(pq, q)
-        out.append((t, q / np.linalg.norm(q)))
-    return out
-
-
-def conj(q): return np.array([-q[0], -q[1], -q[2], q[3]])
-
-
-H2_UP = {'toe': 'foot', 'index': 'hand', 'ring': 'hand', 'thumb': 'hand'}   # Halo 2 bones the CE skeleton lacks
-
-
-def ce_bone_of(name, nodes, ce):
-    """the CE joint a Halo 2 node's vertices follow: its namesake, else the nearest ancestor that has one"""
-    k = [n['name'] for n in nodes].index(name)
-    while k is not None and k >= 0:
-        cn = 'bip01 ' + nodes[k]['name'].replace('_', ' ')
-        if cn in ce: return ce[cn]
-        k = nodes[k].get('parent', -1)
-    return ce['bip01 pelvis']
-
-
-def height_from_normals(n):
-    """the bump map's height field (Frankot-Chellappa: the surface whose slopes the normals give), zero mean"""
-    gx = -n[..., 0] / np.maximum(n[..., 2], 0.2); gy = n[..., 1] / np.maximum(n[..., 2], 0.2)
-    h, w = gx.shape
-    u, v = np.meshgrid(np.fft.fftfreq(w) * 2 * np.pi, np.fft.fftfreq(h) * 2 * np.pi)
-    d = u * u + v * v; d[0, 0] = 1
-    z = (-1j * u * np.fft.fft2(gx) - 1j * v * np.fft.fft2(gy)) / d; z[0, 0] = 0
-    return np.real(np.fft.ifft2(z))
-
-
-def blur(a, r):
-    from scipy import ndimage
-    return ndimage.gaussian_filter(a, r / 2.0, mode='wrap')
 
 
 def armor_texture(m, hb, bms):
@@ -159,18 +96,6 @@ def armor_texture(m, hb, bms):
     Image.fromarray(a).save(f'{KIT}/{ARMOR}')
 
 
-def shader_bitmaps(m, R, shader):
-    shs = [s for s in R['shaders'] if s and s.endswith('\\' + shader)]
-    bms = []
-    if shs:
-        sh = m.tag('shad', shs[0])['addr']
-        for pp in m.block(sh + 0x20, 0x7C)[:1]:
-            for b in m.block(pp + 4, 0xC):
-                t = m.u('I', b)[0]
-                if t in m.byid: bms.append(m.byid[t]['name'])
-    return bms
-
-
 def main():
     from h2map import H2Map, render_model
     import extract_h2_brute as hb
@@ -180,11 +105,10 @@ def main():
     J, M, A = read_iqm(f'{KIT}/helmet_closed.iqm')                 # the kit's skeleton and its bind animation
     alist = [dict(name=n, fps=30.0, loop=True, frames=fr) for n, fr in A.items()]
     ce = {j[0]: i for i, j in enumerate(J)}
-    cew = wq([(j[1], j[2], j[3]) for j in J])
-    h2w = wq([(n.get('parent', -1), n['t'], n['q']) for n in nodes])
-    tomap = [ce_bone_of(n['name'], nodes, ce) for n in nodes]
+    cew, h2w = ce_world(J), h2_world(nodes)
+    tomap, anc = ce_bones(nodes, ce), bind_ancestors(nodes, ce)
     bone, cehead = ce_head(J)
-    shift = cehead - world(nodes, [n['name'] for n in nodes].index('head'))
+    shift = cehead - node_world_pos(nodes, [n['name'] for n in nodes].index('head'))
     print('head offset Halo 2 -> CE', shift.round(4))
     src = hb.model_meshes(m, R, keep={('body', 'odst'), ('head', 'odst')})
     armor = next(mm['shader'] for mm in src if 'visor' not in mm['shader'])
@@ -193,27 +117,10 @@ def main():
     for mm in src:
         mat = VISOR if 'visor' in mm['shader'] else ARMOR
         pos = np.array(mm['pos'], float); nrm = np.array(mm['nrm'], float); tris = np.array(mm['tris'])
-        bi, bw = np.array(mm['bi']), np.array(mm['bw'], float)
         # the whole ODST: each vertex from its Halo 2 bones' bind poses to their CE bones', blended by its weights
-        P = np.zeros_like(pos); N = np.zeros_like(nrm)
-        cb = np.zeros_like(bi); cw = np.zeros_like(bw)
-        for v in range(len(pos)):
-            acc = {}
-            for k in range(bi.shape[1]):
-                w = bw[v, k]
-                if w <= 0: continue
-                h = int(bi[v, k]); c = tomap[h]
-                th, qh = h2w[h]; tc, qc = cew[c]
-                q = _qmul(qc, conj(qh))
-                P[v] += w * (tc + qrot(q, pos[v] - th)); N[v] += w * qrot(q, nrm[v])
-                acc[c] = acc.get(c, 0) + w
-            tot = sum(acc.values()) or 1
-            P[v] /= tot; N[v] /= max(np.linalg.norm(N[v]), 1e-6)
-            top = sorted(acc.items(), key=lambda x: -x[1])[:4]
-            for k, (c, w) in enumerate(top): cb[v, k] = c; cw[v, k] = w / tot
-        w8 = np.round(cw * 255).astype(int); w8[:, 0] += 255 - w8.sum(1)
+        P, N, cb, w8 = retarget(pos, nrm, mm['bi'], mm['bw'], h2w, cew, tomap, anc)
         body.append(dict(name=f'{mm["region"]}_{mm["shader"]}', material=mat, pos=P, nrm=N, uv=np.array(mm['uv'], float),
-                         bidx=cb.astype(np.uint8), bw=np.clip(w8, 0, 255).astype(np.uint8), tris=tris[:, [0, 2, 1]]))
+                         bidx=cb, bw=w8, tris=tris[:, [0, 2, 1]]))
         print('   body', mm['region'], mm['shader'], len(pos), 'verts', len(tris), 'tris')
         if mm['region'] != 'head': continue
         # the helmet alone, rigid on the CE head bone with its neck collar cut off (a kit piece of its own; no outfit rolls it)

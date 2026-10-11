@@ -3,7 +3,10 @@ import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
 import numpy as np
+from variants import *            # the variants' colours, ranks and looks: the tables a modder tunes (variants.py)
+from templates import template   # templates/: the ZScript and GLSL written into the pack as-is
 from PIL import Image
+from texmath import raster_normals, sample_cube, bake_reflection   # texture maths shared with the extractors
 
 from hce_paths import OUT, PACK
 S = 80.0                     # map units per Halo world unit
@@ -44,11 +47,7 @@ def add_fuel_rod_elite(variants):
 
 add_fuel_rod_elite(AI['variants'])
 
-# More Grunt ranks (new): Halo 2's Ultra (grunt_ultra: white armour, the toughest of the regular Grunts) with the
-# needler or the plasma pistol, and the Heavy (Halo 2's grunt_heavy, in Halo 3's green) with the fuel rod on the Spec
-# Ops body (the one with the fuel rod model). Ultras fight like Majors with a third more health; Heavies like the
-# Spec Ops fuel-rod Grunts.
-GRUNT_RANKS = {'ultra': ((0.86, 0.88, 0.92), (0.70, 0.72, 0.78)), 'heavy': ((0.30, 0.52, 0.14), (0.20, 0.38, 0.08))}
+# GRUNT_RANKS: variants.py
 def add_grunt_ranks(variants):
     import copy
     G = 'characters\\grunt\\grunt '
@@ -75,10 +74,7 @@ def add_grunt_ranks(variants):
 
 add_grunt_ranks(AI['variants'])
 
-# Elite Heavy (new): a green rank between the Major and the Commander, carrying heavier guns: the fuel rod (in Halo 2's
-# fuel-rod stance), the plasma rifle and the needler. 125 body and a 200-point shield (the Spec Ops Elite's), the
-# Major's combat data
-HEAVY_GREEN = (0.16, 0.36, 0.10)
+# HEAVY_GREEN: variants.py
 def add_elite_heavy(variants):
     import copy
     E = 'characters\\elite\\elite major\\elite major '
@@ -105,16 +101,9 @@ add_elite_heavy(AI['variants'])
 # (its char's 30 body / 70 shield), the sealed helmet with its gold lens and the jump pack it hops about the fight on
 # (HCE_Jetpack, enemies_base.zsc HCE_TryJet), a pale steel harness; the plasma rifle and the needler.
 ELITE_KIT = f'{OUT}/models/EliteKit'
-HONOR_RED = (0.60, 0.13, 0.05)
-RANGER_STEEL = (0.72, 0.78, 0.86)
-ELITE_H2_ARMOUR = {   # new rank -> (Halo CE variant it copies per gun, colour, kit pieces at models 1.., extra flags)
-    'honor guard': ({'plasma rifle': 'characters\\elite\\elite commander\\elite commander plasma rifle',
-                     'energy sword': 'characters\\elite\\elite commander\\elite commander energy sword'},
-                    HONOR_RED, ('honor_body',), ()),
-    'ranger': ({'plasma rifle': 'characters\\elite\\elite minor\\elite minor plasma rifle',
-                'needler': 'characters\\elite\\elite minor\\elite minor needler'},
-               RANGER_STEEL, ('ranger_body', 'elite_jetpack'), ('HCE_Jetpack',)),
-}
+# HONOR_RED: variants.py
+# RANGER_STEEL: variants.py
+# ELITE_H2_ARMOUR: variants.py
 
 SKIN_PAIRS = []      # (source texture, baked skin): skin_check.py's deep-fried check after each build
 
@@ -143,40 +132,31 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
         hide = f"\t\tfor(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', {{idx}}, \"\", 'None', BS[i], {hid});\n"
         body = ('\t\tstatic const int BS[] = { {HCE_BODY_SURFS} };\n' + hide.replace('{idx}', '0'))
         att = body + att
+    fire = json.load(open(kj)).get('jet_fire') if os.path.exists(kj) else None
+    if 'elite_jetpack' in pieces and fire:
+        # the pack's nozzles (its jet_fire markers, in the CE Elite's bind space) for HCE_JetExhaust, at this model's
+        # scale ({HCE_MODEL_SCALE}: filled in per model, as the body surfaces are; MODELDEF's height is 1.2 times it)
+        (x, y, z), (dx, dy, dz) = fire[0]['pos'], fire[0]['dir']
+        att += (f'\t\thce_jetNozzle = ({x}, {abs(y)}, {z * 1.2}) * {{HCE_MODEL_SCALE}};\n'
+                f'\t\thce_jetDir = ({dx}, {abs(dy)}, {dz});\n')
     out = ('\t// Halo 2 over the CE Elite (extract_h2_elite_kit.py): ' + ', '.join(pieces) + ('; the CE body hidden under it' if whole else '') + '\n'
            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att + '\t}\n'
            '\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{\n\t\tsuper.HCE_OnSever(limb, gunArm);\n' + ''.join(sev) + '\t}\n')
+    gibs = (json.load(open(kj)).get('gibs', {}) if os.path.exists(kj) else {}).get(pieces[0], {})
+    if whole and gibs:                    # its severed head and arms are its own pieces, not the CE Elite's
+        cases = ''.join(f'\t\tcase {lc}: path = "models/{mdir}/EliteKit"; model = \'{g["file"]}\'; stub = {g["stub"]}; tex = \'{g["tex"]}\'; break;\n'
+                        for limb, lc in (('head', 'HCE_LIMB_HEAD'), ('larm', 'HCE_LIMB_LARM'), ('rarm', 'HCE_LIMB_RARM'))
+                        for g in [gibs.get(limb)] if g)
+        out += ('\toverride void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)\n\t{\n'
+                '\t\tswitch(limb)\n\t\t{\n' + cases + '\t\t}\n\t}\n')
+    if whole:                             # its shield flare in the shape of the Halo 2 body (h2_shell_code)
+        out += f"\toverride Name HCE_ShellClass() {{ return 'HCE_{{HCE_CHAR}}{''.join(w.capitalize() for w in pieces[0].split('_'))}ShieldShell'; }}\n"
     if whole:
         out += ('\toverride void HCE_BloodHideClass()\n\t{\n\t\tsuper.HCE_BloodHideClass();\n\t\tstatic const int BS[] = { {HCE_BODY_SURFS} };\n'
                 + hide.replace('{idx}', '{HCE_BLOOD_IDX}') + '\t}\n')
     return out
 
-def bake_reflection(rgb, n, spec, faces, k=1.0):
-    """add_shine's reflection for a texture whose per-texel model-space normals are already known: the paint's relief
-    bends the normals, a view from the front reflects into the cube map, brighter toward grazing angles, added under
-    the specular mask (rgb, n: (H, W, 3); spec: (H, W) 0..1)"""
-    from scipy import ndimage
-    lum = ndimage.gaussian_filter(rgb.mean(axis=2), 1.2)
-    gy, gx = np.gradient(lum)
-    t1 = np.cross(n, np.array([0, 0, 1.0], np.float32)); t1 /= np.maximum(np.linalg.norm(t1, axis=2, keepdims=True), 1e-3)
-    t2 = np.cross(n, t1)
-    n = n + (gx[..., None] * t1 + gy[..., None] * t2) * 6.0
-    n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
-    view = np.array([-1.0, 0.0, -0.25], np.float32); view /= np.linalg.norm(view)
-    r = view - 2 * (n @ view)[..., None] * n
-    env = np.clip(sample_cube(faces, r) * 1.15, 0, 1) ** 1.35 * 1.7
-    fres = 0.75 + 0.5 * (1 - np.abs(n @ view)) ** 2
-    sp = spec * k
-    return np.clip(rgb * (1 - 0.3 * sp[..., None]) + env * (sp * fres)[..., None], 0, 1)
-
-# Halo 2's Ranger and its jump pack: their colour maps get the armour's cube-map reflection Halo 2 draws on them (its
-# shaders reflect a cube map under the colour map's alpha), as the Elites' painted armour does; the silver cube, gentle
-# texture -> (strength, which of the Elites' cube maps: 1 red, 3 silver)
-KIT_SHINE = {'ek_ranger_arms.png': (0.25, 3), 'ek_ranger_torso.png': (0.25, 3), 'ek_ranger_legs.png': (0.25, 3),
-             'ek_ranger_helmet.png': (0.25, 3),
-             'ek_elite_jetpack.png': (0.16, 3),      # skin_check: its wide specular mask glares above this
-             # the Honor Guard's Halo 2 Elite armour, crimson and gold, in the red rank's cube
-             'ek_torso.png': (0.3, 1), 'ek_arms.png': (0.3, 1), 'ek_legs.png': (0.3, 1), 'ek_elite_honor_armor.png': (0.25, 1)}
+# KIT_SHINE: variants.py
 
 def kit_shine(d):
     """bake KIT_SHINE's reflection into the pack's copies of the Elite kit's colour maps (d: its EliteKit folder)"""
@@ -197,6 +177,29 @@ def kit_shine(d):
         Image.fromarray((bake_reflection(rgb, n, spec, faces, k) * 255).astype(np.uint8)).save(f'{d}/{tex}')
         SKIN_PAIRS.append((f'{ELITE_KIT}/{tex}', f'{d}/{tex}'))
 
+def h2_shell_code(char, pieces, meta, pack, mdir, scs, shells):
+    """the energy-shield flare for a Halo 2 body worn over a CE Elite: the CE model with every surface hidden (it carries
+    the animation), the Halo 2 pieces over it as attachments, every surface of them the glowing shield texture. The
+    flare actor plays the Elite's animations (HCE_ApplyAnim), so the pieces move with it. Returns (ZScript, MODELDEF)"""
+    from iqm import read_iqm
+    name = f"HCE_{char}{''.join(w.capitalize() for w in pieces[0].split('_'))}ShieldShell"
+    if name in shells: return [], []
+    shells.add(name)
+    kit = f'{pack}/models/{mdir}/EliteKit'
+    bake_shell(SHELL_TINT[char], f'{kit}/ek_shieldshell.png')
+    lines = [f'\tPath "models/{mdir}/{char}"', f'\tModel 0 "{char}.iqm"', f'\tPath "models/{mdir}/weapons"']
+    lines += [f'\tSurfaceSkin 0 {i} "hce_hidden.png"' for i in range(len(meta.get('mesh_names') or meta['meshes']))]
+    lines += [f'\tPath "models/{mdir}/EliteKit"']
+    frames = ['\tFrameIndex HCEM A 0 0']
+    for k, p in enumerate(pieces):
+        n = len(read_iqm(f'{kit}/{p}.iqm')[1])
+        lines += [f'\tModel {k + 1} "{p}.iqm"'] + [f'\tSurfaceSkin {k + 1} {i} "ek_shieldshell.png"' for i in range(n)]
+        frames.append(f'\tFrameIndex HCEM A {k + 1} 0')
+    zs = [f'// energy-shield flare for the {pieces[0]} Elites: the Halo 2 body\'s shape\nclass {name} : HCE_ShieldShell {{}}\n']
+    md = [f'Model {name}\n{{\n' + '\n'.join(lines) + f'\n\tScale {scs:.1f} {scs:.1f} {scs * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n'
+          + '\n'.join(frames) + '\n}\n']
+    return zs, md
+
 def add_elite_h2_armour(variants):
     import copy
     if not os.path.exists(f'{ELITE_KIT}/EliteKit.json'): return
@@ -210,7 +213,7 @@ def add_elite_h2_armour(variants):
             v['change_colors_list'] = cl
             v['_late'] = True
             # Halo 2's whole Honor Guard or Ranger, worn in place of the CE Elite's body
-            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, whole=True), add_flags=list(extra))
+            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, whole=True), add_flags=list(extra), h2_pieces=list(pieces))
             variants[vn] = v
 
 add_elite_h2_armour(AI['variants'])
@@ -562,9 +565,7 @@ def variant_color(v, b):
         return [(a + d) / 2 for a, d in zip(c['color_lower_bound'], c['color_upper_bound'])]
     return None
 
-# Jackal energy shield colour by rank (Halo shows it through a translucent shader we can't use, so it's baked + brightmapped)
-SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'ultra': (1.00, 0.55, 0.10), 'major': (1.00, 0.30, 0.85),   # Ultra orange, Major pink
-               'zealot': (1.00, 0.84, 0.30)}   # Zealot (the Halo 2 Spiker Jackal): gold, the colour of Covenant zealots
+# SHIELD_TINT: variants.py
 SHIELD_MAT = {'Jackal': 'Jackal_5', 'JackalMajor': 'JackalMajor_5'}
 
 def bake_shield(char, mat, tint, outpath):
@@ -599,20 +600,11 @@ def bake_hunter(char, mat, mode, outpath):
     o = hue_lock(o, armour[..., 0].astype(np.float32), HUNTER_COLOURS[mode])
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
-HUNTER_COLOURS = {'red': (0.78, 0.13, 0.08), 'white': (0.86, 0.88, 0.93)}
-HUNTER_TONE = {'red': (0.14, 1.9), 'white': (0.08, 1.45)}     # base and gain of the paint's light (skin_check: lift)
+# HUNTER_COLOURS: variants.py
+# HUNTER_TONE: variants.py
 
-# Baked armour shine (Elites and Grunts): Halo CE draws their armour with a cube-map reflection under the
-# multipurpose map's specular mask (red channel on Xbox): the swirling liquid-metal sheen. Doom's renderer has no cube
-# maps, so the reflection is baked into the skin with Halo's own cube maps (extract_cubemaps.py): every armour texel
-# gets the model's surface normal there (the triangles rasterised into texture space, bind pose), nudged by the paint's
-# own relief, and reflects a view from the front into the cube map; the result is added under the specular mask. The
-# Elites' cube map follows their rank colour (blue, magenta, gold, silver); the Grunts wear the same ones (below).
-SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 1.0, 'GruntSpecOps': 1.0, 'Hunter': 0.55}
-# the Grunts wear the Elites' rank cube maps (gold for the orange Minors, red for the Majors, silver for Spec Ops) so their
-# armour reads like the Elites' painted skins; Halo CE gave them its dull 'cubemap dark gray'
-SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'elite', 'GruntSpecOps': 'elite', 'Hunter': 'elite'}
-# the Hunters too (blue in the Minor's blue cube, red in the red, white in the silver), under Halo CE's own specular mask
+# SHINE: variants.py
+# SHINE_CUBE: variants.py
 _normal_maps = {}
 
 def normal_map(char, mat, size):
@@ -627,34 +619,6 @@ def normal_map(char, mat, size):
     return N
 
 
-def raster_normals(meshes, matfile, size):
-    """(H, W, 3) normals per texel of the meshes using 'matfile' (gaps filled from the nearest covered texel)"""
-    from scipy import ndimage
-    W_, H_ = size
-    N = np.zeros((H_, W_, 3), np.float32); hit = np.zeros((H_, W_), bool)
-    for m in meshes:
-        if m['material'] != matfile or not len(m['tris']): continue
-        uv = m['uv'] % 1.0 * np.array([W_ - 1, H_ - 1]); nr = m['nrm']
-        for t in m['tris']:
-            p = uv[t]; n = nr[t]
-            x0, y0 = np.floor(p.min(0)).astype(int); x1, y1 = np.ceil(p.max(0)).astype(int)
-            if x1 - x0 > W_ * 0.6 or y1 - y0 > H_ * 0.6: continue        # wraps across the seam
-            xs, ys = np.meshgrid(np.arange(x0, x1 + 1), np.arange(y0, y1 + 1))
-            v0, v1 = p[1] - p[0], p[2] - p[0]
-            den = v0[0] * v1[1] - v1[0] * v0[1]
-            if abs(den) < 1e-9: continue
-            dx, dy = xs - p[0][0], ys - p[0][1]
-            b1 = (dx * v1[1] - v1[0] * dy) / den; b2 = (v0[0] * dy - dx * v0[1]) / den; b0 = 1 - b1 - b2
-            ins = (b0 >= -0.02) & (b1 >= -0.02) & (b2 >= -0.02)
-            xi, yi = xs[ins] % W_, ys[ins] % H_
-            N[yi, xi] = b0[ins, None] * n[0] + b1[ins, None] * n[1] + b2[ins, None] * n[2]
-            hit[yi, xi] = True
-    if hit.any():
-        _, (iy, ix) = ndimage.distance_transform_edt(~hit, return_indices=True)
-        N = N[iy, ix]
-    N /= np.maximum(np.linalg.norm(N, axis=2, keepdims=True), 1e-6)
-    return N
-
 _cubes = {}
 
 def cube_faces(name, index):
@@ -666,21 +630,6 @@ def cube_faces(name, index):
                        for f in range(6)] if os.path.exists(f'{d}/{index}_0.png') else None
     return _cubes[key]
 
-def sample_cube(faces, r):
-    """r (..., 3) directions -> colours (Direct3D cube face layout, Halo's axes)"""
-    ax = np.abs(r); out = np.zeros(r.shape, np.float32)
-    big = np.argmax(ax, -1); sgn = np.take_along_axis(r, big[..., None], -1)[..., 0] >= 0
-    x, y, z = r[..., 0], r[..., 1], r[..., 2]
-    for f, (axis, pos) in enumerate(((0, True), (0, False), (1, True), (1, False), (2, True), (2, False))):
-        sel = (big == axis) & (sgn == pos)
-        if not sel.any(): continue
-        ma = ax[..., axis][sel]
-        sc, tc = {0: (-z, -y) if pos else (z, -y), 1: (x, z) if pos else (x, -z), 2: (x, -y) if pos else (-x, -y)}[axis]
-        u = (sc[sel] / ma + 1) / 2; v = (tc[sel] / ma + 1) / 2
-        F = faces[f]; h, w = F.shape[:2]
-        out[sel] = F[np.clip((v * (h - 1)).astype(int), 0, h - 1), np.clip((u * (w - 1)).astype(int), 0, w - 1)]
-    return out
-
 # The Minor (blue) and Major (red) Elites wear hand-painted skins with Halo's cube-map shine baked in
 # (assets/elite_skins/<blue|red>/Elite_<k>.png, one per Elite material; any Elite-layout body: Elite, EliteRifle).
 # Halo's black Spec Ops armour reads as a hole against the dark undersuit, so the Spec Ops wear a vibrant dark
@@ -690,7 +639,7 @@ ELITE_LAYOUT = ('Elite', 'EliteRifle')
 
 # the Spec Ops body (EliteSpecial) shares three of its textures with the Elite: those take the purple-turned skins too
 SPECOPS_SHARED = {'0': '0', '3': '5', '5': '5'}
-MINOR_BLUE = (0.31, 0.30, 0.53)
+# MINOR_BLUE: variants.py
 
 def elite_skin(char, mat, color, outpath, specops=False):
     """write the hand-painted skin for this Elite rank's material; False when there is none"""
@@ -707,7 +656,7 @@ def elite_skin(char, mat, color, outpath, specops=False):
     im.save(outpath)
     return True
 
-HEAVY_HUE = 104          # the Elite Heavy's green (Halo 3's Heavy green), degrees
+# HEAVY_HUE: variants.py
 
 def heavy_green(im, char, mat):
     """the blue Minor skin's armour plates turned green, only where Halo's colour-change mask is (the armour): the
@@ -896,26 +845,25 @@ def copy_weapon_tex(src, dst):
     weapon_shine(name, Image.open(src)).save(dst)
 
 
-def bake_skin(char, mat, color, outpath):
+def bake_skin(char, mat, color, outpath, shine=1.0):
     src = Image.open(f'{OUT}/models/{char}/{mat}.png')
     if src.mode == 'RGBA' and np.asarray(src)[..., 3].min() < 128 and not os.path.exists(f'{OUT}/models/{char}/{mat}_multi.png'):
         src.save(outpath); return                 # a cutout (the Drones' wings): alpha kept, UZDoom alpha-tests it
     base = src.convert('RGB')
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if color is None or not os.path.exists(mp):
-        if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0, color) * 255).astype(np.uint8))
+        if char in SHINE: base = Image.fromarray((add_shine(char, mat, np.asarray(base).astype(np.float32) / 255.0, color, shine) * 255).astype(np.uint8))
         base.save(outpath); return
     mask = Image.open(mp).convert('RGBA').resize(base.size)
     b = np.asarray(base).astype(np.float32) / 255.0
     msk = np.asarray(mask).astype(np.float32)[..., 2:3] / 255.0   # Xbox: blue = colour change
     col = np.array(color, dtype=np.float32).reshape(1, 1, 3)
-    o = add_shine(char, mat, b * (1 - msk) + b * col * msk, color)
+    o = add_shine(char, mat, b * (1 - msk) + b * col * msk, color, shine)
     if char in HUE_LOCK: o = hue_lock(o, msk[..., 0], color)
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
-# the Grunts' armour keeps its rank colour's hue under the Elites' cube maps (the gold one would turn the orange
-# Minors yellow): the hue of the painted parts is pulled back to the rank colour, the reflection's brightness kept
-HUE_LOCK = ('Grunt', 'GruntSpecOps')
+# HUE_LOCK: variants.py
+# RANK_SHINE: variants.py
 
 def hue_lock(rgb, mask, color):
     import colorsys
@@ -928,12 +876,9 @@ def hue_lock(rgb, mask, color):
     hsv[..., 0] = (hh + d * w) % 256
     return np.asarray(Image.fromarray(hsv.astype(np.uint8), 'HSV').convert('RGB')).astype(np.float32) / 255.0
 
-# Elite Commander (the gold Elite): its tag colour is a dark ochre that, multiplied into the dark Elite Special
-# armour, came out a muddy olive. Halo draws it with a bright specular sheen we can't, so the armour is re-baked as
-# a vibrant gold that keeps the armour's shading (dark creases stay darker, raised edges catch the light).
-VIVID = {'elite commander': (1.00, 0.78, 0.22), 'elite ranger': (0.72, 0.78, 0.86)}   # the Ranger: Halo 2's pale EVA steel
-VIVID_SHINE = {'elite ranger': 0.35}     # how strong their armour's reflection is (on the pale steel the full one glared)
-UNDERSUIT = (0.30, 0.52, 0.52)
+# VIVID: variants.py
+# VIVID_SHINE: variants.py
+# UNDERSUIT: variants.py
 
 def bake_vivid(char, mat, color, outpath, shine=1.0):
     base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
@@ -975,8 +920,7 @@ def hand_mask(char, mat, size):
     m = m.filter(ImageFilter.MaxFilter(5)).filter(ImageFilter.GaussianBlur(1.5))
     return np.asarray(m).astype(np.float32) / 255.0
 
-# Energy-shield flare (the shell actor drawn additively over a shielded unit when it's hit): tint per character
-SHELL_TINT = {'Elite': (0.45, 0.70, 1.00), 'EliteSpecial': (0.45, 0.70, 1.00), 'Brute': (1.00, 0.78, 0.30)}
+# SHELL_TINT: variants.py
 
 def bake_shell(tint, outpath):
     """a shimmering energy texture: soft cells of light with bright sparks, in the shield's colour"""
@@ -992,67 +936,11 @@ def bake_shell(tint, outpath):
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
-SHIELD_SHADER = '''// Halo energy shield (Jackal gauntlets): the field drifts and folds over itself, a hex lattice shows through
-// with cells flickering on and off, bands of light sweep across it and the whole thing pulses
-vec4 ProcessTexel()
-{
-	vec2 uv = vTexCoord.st;
-	float t = timer;
-	vec4 c = getTexel(uv + vec2(t * 0.06, sin(t * 0.7) * 0.03));
-	vec4 c2 = getTexel(uv * 1.7 - vec2(t * 0.09, t * 0.04));
-	vec3 base = (c.rgb + c2.rgb) * 0.5;
-	vec2 h = uv * vec2(12.0, 20.0);
-	h.x += mod(floor(h.y), 2.0) * 0.5;
-	vec2 f = abs(fract(h) - 0.5);
-	float edge = smoothstep(0.36, 0.5, max(f.x * 1.15 + f.y * 0.6, f.y * 1.2));
-	float id = dot(floor(h), vec2(7.13, 3.71));
-	float flick = 0.5 + 0.5 * sin(t * 3.0 + id * 1.7);
-	float sweep = smoothstep(0.86, 1.0, sin(uv.y * 8.0 + uv.x * 3.0 - t * 2.6));
-	float pulse = 0.82 + 0.18 * sin(t * 4.5);
-	vec3 hue = base / max(0.001, max(base.r, max(base.g, base.b)));
-	vec3 col = base * pulse + hue * (edge * (0.35 + 0.55 * flick) * 0.6 + sweep * 0.45);
-	return vec4(min(col, vec3(1.0)), c.a);
-}
-'''
+SHIELD_SHADER = template('shaders/shield.fp')
 
-SWORD_SHADER = '''// Halo energy sword blade: plasma flowing up the blade in streaks, a white-hot core along its length, the edges
-// shimmering and the whole blade breathing; drawn fullbright
-vec4 ProcessTexel()
-{
-	vec2 uv = vTexCoord.st;
-	float t = timer;
-	vec4 c = getTexel(uv);
-	float w = sin(uv.y * 22.0 + t * 5.0) * 0.004 + sin(uv.y * 57.0 - t * 9.0) * 0.0025;
-	vec4 c2 = getTexel(uv + vec2(w, 0.0));
-	vec3 base = mix(c.rgb, c2.rgb, 0.6);
-	float lum = max(base.r, max(base.g, base.b));
-	vec3 hue = base / max(0.001, lum);
-	float flow = 0.5 + 0.5 * sin(uv.y * 40.0 - t * 7.0 + sin(uv.x * 9.0 + t * 2.0) * 1.5);
-	float streak = smoothstep(0.75, 1.0, flow);
-	float core = smoothstep(0.55, 0.95, lum);
-	float n = fract(sin(dot(floor(uv * vec2(48.0, 160.0)) + floor(t * 20.0), vec2(12.9898, 78.233))) * 43758.5453);
-	float spark = step(0.97, n) * (1.0 - core);
-	float breathe = 0.88 + 0.12 * sin(t * 3.3) + 0.05 * sin(t * 13.0);
-	vec3 col = base * breathe * (0.85 + 0.35 * flow) + hue * streak * 0.35 + vec3(core * 0.55) + hue * spark * 0.6;
-	return vec4(min(col, vec3(1.0)), c.a);
-}
-'''
+SWORD_SHADER = template('shaders/sword.fp')
 
-CAMO_SHADER = '''// Halo active camo: the body almost vanishes; slow bands of light ripple over it, with a fine sparkle
-vec4 ProcessTexel()
-{
-	vec2 uv = vTexCoord.st;
-	vec4 c = getTexel(uv);
-	float t = timer;
-	float w = sin(uv.y * 34.0 - t * 4.0 + sin(uv.x * 11.0 + t * 1.3) * 2.2);
-	float band = smoothstep(0.80, 1.0, w);
-	float n = fract(sin(dot(floor(uv * 64.0) + floor(t * 14.0), vec2(12.9898, 78.233))) * 43758.5453);
-	vec3 body = c.rgb * 0.35 + vec3(0.30, 0.36, 0.42);
-	vec3 col = mix(body, vec3(0.80, 0.92, 1.0), band);
-	float a = 0.30 + band * 0.70 + step(0.93, n) * 0.25;
-	return vec4(col, c.a * a);
-}
-'''
+CAMO_SHADER = template('shaders/camo.fp')
 
 # ---------------------------------------------------------------- generation
 GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2, 'back': 3}
@@ -1163,26 +1051,7 @@ STACKER_HEAD = 'head_marcus_cap-101'
 # (extract_chars.py). While a Marine's voice channel plays, the jaw flaps open and shut in a speech rhythm, opening
 # about its local +z axis (the chin down; up to 10 degrees), added on top of the animation (SetNamedBoneRotation,
 # SB_ADD: animation * this). jaw_weights.py gives the jaw a clean hinge, so only the lower lip and chin move
-LIP_CODE = """
-	int hce_lipPhase;
-	double hce_lipOpen;
-	override void Tick()
-	{
-		super.Tick();
-		if((level.maptime + hce_lipPhase) % 3) return;
-		double want = 0;
-		if(health > 0 && IsActorPlayingSound(CHAN_VOICE))
-		{
-			// syllables: two out-of-step waves, so the mouth opens irregularly, never wide for long
-			double t = (level.maptime + hce_lipPhase) * 9.0;
-			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
-		}
-		if(want == 0 && hce_lipOpen == 0) return;
-		hce_lipOpen = want;
-		double a = want * 10.0;
-		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
-	}
-"""
+LIP_CODE = template('zscript/lip.zs')
 
 
 MARINE_KIT = f'{OUT}/models/MarineKit'
@@ -1728,7 +1597,7 @@ def build(cfg=None):
                         bake_skin(char, matn, MINOR_BLUE, dst)
                         if char == 'GruntSpecOps': grunt_purple(char, matn, dst)
                         else: purple(Image.open(dst).convert('RGB')).save(dst)
-                    else: bake_skin(char, matn, color, dst)
+                    else: bake_skin(char, matn, color, dst, RANK_SHINE.get((char, v.get('_rank')), 1.0))
                 SKIN_PAIRS.append((f'{OUT}/models/{char}/{matn}.png', dst))        # skin_check: the bake against its source
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''
@@ -1760,7 +1629,8 @@ def build(cfg=None):
             if '{HCE_BODY_SURFS}' in extra:      # a whole Halo 2 body over this model: its own body surfaces (no guns, no gore)
                 mw = meta.get('mesh_weapon') or []
                 bsurf = [i for i, n in enumerate(meta.get('mesh_names') or []) if not n.startswith(('weapon_', 'gore.')) and not (mw[i] if i < len(mw) else None)]
-                extra = extra.replace('{HCE_BODY_SURFS}', ', '.join(map(str, bsurf)) or '-1').replace('{HCE_BLOOD_IDX}', str(BLOOD_IDX))
+                extra = extra.replace('{HCE_CHAR}', char).replace('{HCE_BODY_SURFS}', ', '.join(map(str, bsurf)) or '-1').replace('{HCE_BLOOD_IDX}', str(BLOOD_IDX))
+            extra = extra.replace('{HCE_MODEL_SCALE}', f'{S * msc:.1f}')
             if not char.startswith('Marine') and (ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
             if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov, pack)
@@ -1812,6 +1682,9 @@ def build(cfg=None):
                 scs = S * msc * 1.035
                 md.append(f'Model HCE_{char}ShieldShell\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
                           f'\n\tScale {scs:.1f} {scs:.1f} {scs * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+            if ov.get('h2_pieces') and char in SHELL_TINT and shield > 0:
+                sz_, sm_ = h2_shell_code(char, ov['h2_pieces'], meta, pack, mdir, S * msc * 1.035, shells)
+                zs += sz_; md += sm_
             if 'HCE_ActiveCamo' in flags:
                 for line in skin_lines:
                     m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
@@ -1969,78 +1842,8 @@ def build(cfg=None):
 # per-character extra ZScript (Flood corpse feeding, carrier pop, infection pop)
 BASE_CODE = {}       # char -> ZScript put in its abstract base class once (shared by all its variants)
 TYPE_CODE = {
-    'FloodInfection': '''
-	// infection forms hunt for dead humans / elites and reanimate them
-	override bool HCE_SeekCorpse()
-	{
-		if(++hce_actionTics < 20) return false;
-		hce_actionTics = 0;
-		let it = BlockThingsIterator.Create(self, 512);
-		Actor best = null; double bd = 1e9;
-		while(it.Next())
-		{
-			let c = HaloDoom_EnemyBase(it.thing);
-			if(!c || !c.bCORPSE || !c.hce_enabled || c.bHCE_Resurrects || c.hce_gibbed) continue;
-			if(c.hce_team != HCE_TEAM_HUMAN && c.hce_team != HCE_TEAM_COVENANT) continue;
-			if(c.hce_type != 0 && c.hce_type != 7) continue;   // elites and marines only
-			double d = Distance2D(c);
-			if(d < bd) { bd = d; best = c; }
-		}
-		if(!best) return false;
-		hce_feedTarget = best;
-		hce_action = HCE_ACT_FEED;
-		return true;
-	}
-	override void HCE_Feed()
-	{
-		let c = hce_feedTarget;
-		if(!c || !c.bCORPSE) { hce_action = HCE_ACT_IDLE; hce_feedTarget = null; return; }
-		if(Distance2D(c) > radius + c.radius + 4)
-		{
-			HCE_Move(AngleTo(c), hce_runSpeed);
-			A_SetAngle(AngleTo(c), SPF_INTERPOLATE);
-			HCE_Play(HCE_A_MOVE_F);
-			return;
-		}
-		if(hce_curAnimKind != HCE_A_FEED) { HCE_Play(HCE_A_FEED, true, true); hce_leapState = 0; hce_reviveTics = 35 * 3; return; }
-		if(--hce_reviveTics > 0) return;
-		Name nc = HaloDoom_EnemyBase(c).hce_type == 0 ? 'HCE_FloodcombatEliteUnarmed' : 'HCE_FloodcombatHumanUnarmed';
-		class<Actor> cc = (class<Actor>)(nc);
-		if(cc)
-		{
-			let f = Spawn(cc, c.pos, ALLOW_REPLACE);
-			if(f)
-			{
-				f.angle = c.angle;
-				let fe = HaloDoom_EnemyBase(f);
-				if(fe && fe.HCE_HasAnim(HCE_A_RESURRECT_F)) fe.HCE_PlayLocked(HCE_A_RESURRECT_F);
-				f.SetStateLabel("See");
-			}
-			c.Destroy();
-		}
-		Destroy();
-	}
-''',
-    'FloodCarrier': '''
-	// carrier pop: releases infection forms
-	override void HCE_OnDetonate()
-	{
-		Name n = 'HCE_FloodInfection';
-		class<Actor> ic = (class<Actor>)(n);
-		if(!ic) return;
-		int count = random(5, 9);
-		for(int i = 0; i < count; i++)
-		{
-			let f = Spawn(ic, pos + (frandom(-12, 12), frandom(-12, 12), height * 0.5), ALLOW_REPLACE);
-			if(f)
-			{
-				f.vel = (frandom(-5, 5), frandom(-5, 5), frandom(3, 7));
-				f.target = target;
-				f.SetStateLabel("See");
-			}
-		}
-	}
-''',
+    'FloodInfection': template('zscript/flood_infection.zs'),
+    'FloodCarrier': template('zscript/flood_carrier.zs'),
 }
 
 # Halo 2's beam rifle (extract_h2_jackal.py extracts it): the Sniper Jackal (build_digsite.py) and the Spec Ops Elite
@@ -2172,73 +1975,10 @@ LOBBED.add('grenade launcher')
 DROP_WEAPON.update({k: d[7] for k, d in MARINE_ARSENAL.items() if k not in DROP_WEAPON})
 DROP_WEAPON['stanchion'] = 'Halo_Stanchion'
 
-STICKY_CODE = """
-	// the sticky detonator's muzzle: the charge seated in it when loaded, the empty muzzle once fired, until it
-	// reloads (setting the charges off is the API's: HCE_StickyTick, for any Marine carrying one)
-	int hce_stickyReload;
-	override void HCE_OnShot(Actor shot)
-	{
-		super.HCE_OnShot(shot);
-		if(hce_hasLoadout) return;             // traded / picked up something else: not this gun any more
-		HCE_StickyFired();
-		hce_stickyReload = level.maptime + 45;
-	}
-	void HCE_StickyLoaded()
-	{
-%STICKY_LOADED%	}
-	void HCE_StickyFired()
-	{
-%STICKY_FIRED%	}
-	override void Tick()
-	{
-		super.Tick();
-		if(hce_stickyReload > 0 && level.maptime >= hce_stickyReload && health > 0) { hce_stickyReload = 0; if(!hce_hasLoadout) HCE_StickyLoaded(); }
-	}
-"""
+STICKY_CODE = template('zscript/sticky.zs')
 WEAPON_CODE['sticky detonator'] = STICKY_CODE
 
-STANCHION_CODE = """
-	// the Stanchion: 24 tics of aiming (the glint and the targeting laser, the charge-up sound), then one rail
-	// shot drawn with HDE's laser beam; it tears what it kills apart (HCE_StanchionRail, HCE_WeaponKind)
-	const HCE_RAIL_AIM = 24;
-	bool hce_cqc;
-	void HCE_FireRail()
-	{
-		if(!target) return;
-		vector3 ap = HCE_AimPoint();
-		double gz = height * 0.5 + hce_gunOffset.z;
-		vector3 from = Vec3Angle(hce_gunOffset.x, angle, gz);
-		vector3 diff = level.Vec3Diff(from, ap);
-		double ang = atan2(diff.y, diff.x);
-		double pit = -atan2(diff.z, diff.xy.Length());
-		FLineTraceData lt;
-		LineTrace(ang, hce_maxRange, pit, TRF_THRUSPECIES, gz, hce_gunOffset.x, 0, lt);
-		vector3 to = lt.HitType != TRACE_HitNone ? lt.HitLocation : from + (cos(ang) * cos(pit), sin(ang) * cos(pit), -sin(pit)) * hce_maxRange;
-		if(hce_burstShot < HCE_RAIL_AIM)
-		{
-			if(hce_burstShot == 0 && hce_chargeSound.Length() > 0) A_StartSound(hce_chargeSound, CHAN_WEAPON, CHANF_OVERLAP, 0.9);
-			HCE_SniperGlint(level.Vec3Diff(pos, from), hce_burstShot);
-			if(level.Vec3Diff(from, to).Length() >= 1) HCE_AimLaser(from, to);
-			hce_burstShot++;
-			return;
-		}
-		HCE_EnemyLaser.Flash(from, to, Color(255, 255, 70, 20), 3.0, 0.08);
-		HCE_EnemyLaser.Flash(from, to, Color(255, 255, 200, 120), 1.2, 0.12);
-		for(int i = 0; i < 12; i++)
-			A_SpawnParticle("FF9020", SPF_FULLBRIGHT, 14, 5, 0, to.x - pos.x, to.y - pos.y, to.z - pos.z, frandom(-2, 2), frandom(-2, 2), frandom(0, 3), 0, 0, -0.1, 1.0, -0.06);
-		Actor hit = lt.HitActor;
-		if(hit && hit != self && hit.bSHOOTABLE)
-			hit.DamageMobj(self, self, max(1, int(round(150 * hce_damageMod * HCE_DamageScale()))), 'Railgun');
-		HCE_PlayFireSound(false);
-		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
-		hce_burstShot++;
-	}
-	override void HCE_FireShot(bool special)
-	{
-		if(hce_cqc || hce_hasLoadout) { super.HCE_FireShot(special); return; }
-		HCE_FireRail();
-	}
-"""
+STANCHION_CODE = template('zscript/stanchion.zs')
 WEAPON_CODE['stanchion'] = STANCHION_CODE
 
 STACKER_CODE = """
@@ -2516,32 +2256,13 @@ SKIN_HOOK['MarineODST'] = odst_skin
 # off the surface normal), its cube face and texel looked up in the six faces laid side by side (Halo's axes, Direct3D
 # face layout), tinted by the visor's texture (its perpendicular / parallel tints, extract_odst.py) and brighter toward
 # grazing angles (Halo's fresnel blend), over the visor's own dark glass
-VISOR_SHADER = '''// Halo CE visor: a reflection cube map (six faces in a strip: +x -x +y -y +z -z), tinted, with fresnel
-vec4 ProcessTexel()
-{
-	vec4 tint = getTexel(vTexCoord.st);
-	vec3 n = normalize(vWorldNormal.xyz);
-	vec3 v = normalize(pixelpos.xyz - uCameraPos.xyz);
-	vec3 r = reflect(v, n);
-	vec3 h = vec3(r.x, r.z, r.y);                      // GL (x, up, y) -> Halo (x, y, up)
-	vec3 a = abs(h);
-	float face; float sc; float tc; float ma;
-	if(a.x >= a.y && a.x >= a.z) { ma = a.x; if(h.x > 0.0) { face = 0.0; sc = -h.z; tc = -h.y; } else { face = 1.0; sc = h.z; tc = -h.y; } }
-	else if(a.y >= a.z) { ma = a.y; if(h.y > 0.0) { face = 2.0; sc = h.x; tc = h.z; } else { face = 3.0; sc = h.x; tc = -h.z; } }
-	else { ma = a.z; if(h.z > 0.0) { face = 4.0; sc = h.x; tc = -h.y; } else { face = 5.0; sc = -h.x; tc = -h.y; } }
-	vec2 fuv = clamp(vec2(sc, tc) / max(ma, 0.0001) * 0.5 + 0.5, 0.002, 0.998);
-	vec3 env = texture(tex_cube, vec2((face + fuv.x) / 6.0, fuv.y)).rgb;
-	float fres = pow(1.0 - abs(dot(n, v)), 2.0);
-	vec3 col = tint.rgb * 0.25 + env * tint.rgb * (1.1 + 1.4 * fres) + env * env * 0.25 * fres;
-	return vec4(min(col, vec3(1.0)), 1.0);
-}
-'''
+VISOR_SHADER = template('shaders/visor.fp')
 
 # the Marine kit's enclosed helmets (helmet_closed, helmet_enclosed and the two ODST helmets) share one orange visor
 # texture: it gets the ODSTs' visor shader, tinted by its own orange, over the ODST visor's cube map
 KIT_VISOR = 'mk_innie_visor_diff.png'
 KIT_VISOR_CUBE = 'mk_visor_cube.png'
-KIT_OWN_VISORS = ('mk_hellbringer_visor.png', 'mk_h2_pilot_visor.png')   # kit visors in their own colours (the Hellbringer's amber lens, the pilots' smoked visor)
+# KIT_OWN_VISORS: variants.py
 
 def kit_visor_tint(src, dst, rgb):
     from PIL import Image
@@ -2570,15 +2291,10 @@ def kit_visors(pack, mdir):
 ELITE_LENSES = ('ek_ranger_lens.png',)   # Halo 2's Ranger's gold eye lenses (extract_h2_elite_kit.py)
 ELITE_LENS_CUBE = 'ek_visor_cube.png'
 
-# Self-illumination: Halo CE's multipurpose map keeps it in the green channel (Xbox: red specular, green self-illumination,
-# blue colour change). Every Covenant skin baked from a material that has some gets a brightmap of it (the Elites' and
-# Hunters' inset lights, the Grunts' and Jackals' glowing panels, the Engineer's and Slug Man's lights), so those
-# texels stay fullbright in the dark; the cloaked skins are left out (their camo shader). The Elite kit's maps come with
-# their own (extract_h2_elite_kit.py: the Ranger's and the jump pack's lights, the Honor Guard's markings).
-GLOW_MIN = 0.3                # a material glows when its self-illumination reaches this somewhere
-GLOW_STRENGTH = 0.55          # how far toward fullbright a glowing texel goes (1 = fullbright)
-GLOW_SOFT = 1.0               # its edge feathered over this many texels
-KIT_GLOW_STRENGTH = 0.75      # the Halo 2 pieces' lights (the Ranger's, the jump pack's: coloured lamps), a little stronger
+# GLOW_MIN: variants.py
+# GLOW_STRENGTH: variants.py
+# GLOW_SOFT: variants.py
+# KIT_GLOW_STRENGTH: variants.py
 _glow_colours = None
 
 def glow_tint(mat):

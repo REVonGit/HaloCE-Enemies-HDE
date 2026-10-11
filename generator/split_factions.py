@@ -41,6 +41,8 @@ CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands
 # Brutes, the Flood's combat forms as the body they were)
 from build_pack import OUT as _OUT
 STEPS = f'{_OUT}/footsteps'
+# Halo 2's jump pack (extract_h2_jetpack_sound.py): the Elite Rangers' HCE/Jetpack/In, Loop and Out
+JETPACK = f'{_OUT}/sounds/H2Jetpack'
 STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
@@ -63,6 +65,9 @@ def main():
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
             m = re.fullmatch(r'HCE_(\w+)ShieldShell', cls)
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
+            if cls.endswith('BodyShieldShell'):          # a Halo 2 body's flare (HCE_<char><piece>ShieldShell): its Elite's pack
+                ch = max((c for c in TEAM if cls.startswith(f'HCE_{c}')), key=len, default=None)
+                if ch: char_of[cls] = ch
             m = re.fullmatch(r'(HCE_\w+)Blade', cls)              # a cloaked sword Elite's blade copy: its Elite's pack
             if m and m.group(1) in char_of: char_of[cls] = char_of[m.group(1)]
     fac_of = {c: FACTION[TEAM[ch]] for c, ch in char_of.items()}
@@ -275,6 +280,15 @@ def main():
                         out.append(f'{ids[-1]} "{dst}"')
                     out.append(f'$random HCE/Step/{st}/{key} {{ {" ".join(ids)} }}')
             open(f'{d}/sndinfo.steps', 'w').write('\n'.join(out) + '\n')
+        if fac == 'covenant' and os.path.exists(f'{JETPACK}/loop.ogg'):
+            os.makedirs(f'{d}/sounds/hce_jetpack', exist_ok=True)
+            out = ["// Halo 2's jump pack (extract_h2_jetpack_sound.py): the Elite Rangers (HCE_TryJet, HCE_JumpTick)"]
+            for leaf in ('in', 'loop', 'out'):
+                shutil.copy(f'{JETPACK}/{leaf}.ogg', f'{d}/sounds/hce_jetpack/{leaf}.ogg')
+                out.append(f'HCE/Jetpack/{leaf.capitalize()} "sounds/hce_jetpack/{leaf}.ogg"')
+            out += ['$volume HCE/Jetpack/Loop 0.7', '$rolloff HCE/Jetpack/In 200 1400', '$rolloff HCE/Jetpack/Loop 200 1200',
+                    '$rolloff HCE/Jetpack/Out 200 1200']
+            open(f'{d}/sndinfo.jetpack', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{GORE}/decaldef.hcegore'):
             # NashGore patch: Halo CE / Halo 2 blood decals and bursts (extract_halo_gore.py, hce_gore.zsc)
             shutil.copy(f'{PACK}/ZScript/HaloCE/hce_gore.zsc', f'{d}/ZScript/HaloCE/hce_gore.zsc')

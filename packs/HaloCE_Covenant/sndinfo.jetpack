@@ -1,0 +1,8 @@
+// Halo 2's jump pack (extract_h2_jetpack_sound.py): the Elite Rangers (HCE_TryJet, HCE_JumpTick)
+HCE/Jetpack/In "sounds/hce_jetpack/in.ogg"
+HCE/Jetpack/Loop "sounds/hce_jetpack/loop.ogg"
+HCE/Jetpack/Out "sounds/hce_jetpack/out.ogg"
+$volume HCE/Jetpack/Loop 0.7
+$rolloff HCE/Jetpack/In 200 1400
+$rolloff HCE/Jetpack/Loop 200 1200
+$rolloff HCE/Jetpack/Out 200 1200

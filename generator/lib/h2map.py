@@ -140,6 +140,18 @@ def render_model(m, name):
                              parts=tris_all, nmap=nmap))
     return dict(nodes=nodes, shaders=shaders, regions=regions, sections=sections)
 
+def shader_bitmaps(m, R, shader):
+    """the bitmap tag names a render model's shader samples (its first pass), by the shader's short name"""
+    shs = [s for s in R['shaders'] if s and s.endswith('\\' + shader)]
+    bms = []
+    if shs:
+        sh = m.tag('shad', shs[0])['addr']
+        for pp in m.block(sh + 0x20, 0x7C)[:1]:
+            for b in m.block(pp + 4, 0xC):
+                t = m.u('I', b)[0]
+                if t in m.byid: bms.append(m.byid[t]['name'])
+    return bms
+
 def sound_chunks(m, name):
     """[(perm name, codec(rate, enc, comp), [(bank, file offset, size, pcm bytes)])] for a snd! tag (MCC gestalt)"""
     g = [t for t in m.tags if t['cls'] == 'ugh!'][0]['addr']

@@ -17,11 +17,15 @@ sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, 'lib'))   # read
 from iqm import read_iqm, write_iqm
 from h2_elite_anims import MAP01B, CACHE01B, MARINE
 import extract_h2_odst as eo
+from h2rig import ce_head, node_world_pos
+from h2map import shader_bitmaps
 import extract_h2_elite_kit as ek
 KIT = eo.KIT
 FACES = ('smith', 'banks', 'dion', 'morgan', 'perez', 'walter')
 VISOR = 'mk_h2_pilot_visor.png'
 VISOR_RGB = ((0.42, 0.30, 0.16), (0.10, 0.07, 0.05))   # smoked amber, lighter at the brow
+TEETH_WHITE = 225                                        # the teeth's white (0-255)
+TEETH_SHADE = 0.6                                        # how much of Halo 2's teeth shading darkens it
 
 
 def main():
@@ -33,8 +37,8 @@ def main():
     nodes = R['nodes']
     J, _, A = read_iqm(f'{KIT}/helmet_closed.iqm')
     alist = [dict(name=n, fps=30.0, loop=True, frames=fr) for n, fr in A.items()]
-    bone, cehead = eo.ce_head(J)
-    shift = cehead - eo.world(nodes, [n['name'] for n in nodes].index('head'))
+    bone, cehead = ce_head(J)
+    shift = cehead - node_world_pos(nodes, [n['name'] for n in nodes].index('head'))
     ek.KIT = KIT                                   # its colour maps go into the Marine kit
     t, b = np.array(VISOR_RGB[0]), np.array(VISOR_RGB[1])
     y = np.linspace(0, 1, 64)[:, None, None]
@@ -43,7 +47,14 @@ def main():
     def tex(shader):
         if shader not in done:
             fn = f'mk_h2_{shader}.png'
-            ek.colour_map(m, hb, eo.shader_bitmaps(m, R, shader), fn)
+            ek.colour_map(m, hb, shader_bitmaps(m, R, shader), fn)
+            if shader == 'teeth':                  # Halo 2's teeth map is their shading over a white base: white teeth, shaded by it
+                a = np.asarray(Image.open(f'{KIT}/{fn}').convert('RGB'), float)
+                a = a / max(np.percentile(a.mean(axis=2), 99), 1)
+                a = np.clip(TEETH_WHITE * (1 - TEETH_SHADE + TEETH_SHADE * a), 0, 255)
+                Image.fromarray(a.astype(np.uint8)).save(f'{KIT}/{fn}')
+            for extra in ('_spec.png', '_bm.png'):    # the Elite kit's reflection and glow masks: nothing in the Marine kit uses them
+                if os.path.exists(f'{KIT}/{fn[:-4]}{extra}'): os.remove(f'{KIT}/{fn[:-4]}{extra}')
             done[shader] = fn
         return done[shader]
     kj = f'{KIT}/MarineKit.json'

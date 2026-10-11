@@ -2865,6 +2865,8 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_body.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
+		hce_jetDir = (-0.807, 0.174, -0.565);
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -2884,6 +2886,16 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
+	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
+	{
+		switch(limb)
+		{
+		case HCE_LIMB_HEAD: path = "models/hce/EliteKit"; model = 'ranger_body_gib_head.iqm'; stub = 27; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_LARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_larm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_rarm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
+		}
+	}
+	override Name HCE_ShellClass() { return 'HCE_EliteRangerBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -2891,6 +2903,9 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 7, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
+
+// energy-shield flare for the ranger_body Elites: the Halo 2 body's shape
+class HCE_EliteRangerBodyShieldShell : HCE_ShieldShell {}
 
 // characters\elite\elite ranger\elite ranger plasma rifle
 class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
@@ -3090,6 +3105,8 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_body.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
+		hce_jetDir = (-0.807, 0.174, -0.565);
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -3109,6 +3126,16 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
+	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
+	{
+		switch(limb)
+		{
+		case HCE_LIMB_HEAD: path = "models/hce/EliteKit"; model = 'ranger_body_gib_head.iqm'; stub = 27; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_LARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_larm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_rarm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
+		}
+	}
+	override Name HCE_ShellClass() { return 'HCE_EliteRangerBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -3896,6 +3923,16 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
+	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
+	{
+		switch(limb)
+		{
+		case HCE_LIMB_HEAD: path = "models/hce/EliteKit"; model = 'honor_body_gib_head.iqm'; stub = 28; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_LARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_larm.iqm'; stub = 27; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_rarm.iqm'; stub = 26; tex = 'gore_Elite.png'; break;
+		}
+	}
+	override Name HCE_ShellClass() { return 'HCE_EliteSpecialHonorBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -3907,6 +3944,9 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 
 // energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
 class HCE_EliteSpecialShieldShell : HCE_ShieldShell {}
+
+// energy-shield flare for the honor_body Elites: the Halo 2 body's shape
+class HCE_EliteSpecialHonorBodyShieldShell : HCE_ShieldShell {}
 
 // characters\elite\elite honor guard\elite honor guard plasma rifle
 class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
@@ -4127,6 +4167,16 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
+	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
+	{
+		switch(limb)
+		{
+		case HCE_LIMB_HEAD: path = "models/hce/EliteKit"; model = 'honor_body_gib_head.iqm'; stub = 28; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_LARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_larm.iqm'; stub = 27; tex = 'gore_Elite.png'; break;
+		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_rarm.iqm'; stub = 26; tex = 'gore_Elite.png'; break;
+		}
+	}
+	override Name HCE_ShellClass() { return 'HCE_EliteSpecialHonorBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();

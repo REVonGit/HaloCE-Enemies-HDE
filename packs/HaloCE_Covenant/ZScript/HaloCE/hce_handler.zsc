@@ -235,11 +235,40 @@ class HCE_ReplaceHandler : EventHandler
 			if((class<Actor>)(mn)) toMarine.Push(h);
 			return;
 		}
-		if(!h.bHCE_PairBond || h.bFRIENDLY || level.maptime > 1) return;
+		if(!h.bHCE_PairBond || h.bFRIENDLY) return;
 		CVar cv = CVar.FindCVar("hce_hunterpairs");
 		if(!cv || !cv.GetBool()) return;
+		// one that turns up later (a spawner, a replaced monster, a summon) is looked at next tic, once whatever
+		// spawned it alongside has spawned too: only a Hunter still on its own gets a brother
+		if(level.maptime > 1) { lateHunters.Push(h); return; }
 		let it = BlockThingsIterator.Create(h, 256);
 		while(it.Next()) if(it.thing != h && it.thing.GetClass() == h.GetClass()) return;
+		SpawnBrother(h);
+	}
+
+	Array<HaloDoom_EnemyBase> lateHunters;
+
+	void PairLateHunters()
+	{
+		for(int i = 0; i < lateHunters.Size(); i++)
+		{
+			let h = lateHunters[i];
+			if(!h || h.health <= 0 || h.hce_bondMate) continue;
+			bool mate = false;
+			let it = BlockThingsIterator.Create(h, 512);
+			while(it.Next())
+			{
+				let e = HaloDoom_EnemyBase(it.thing);
+				if(e && e != h && e.bHCE_PairBond && !e.hce_bondMate && e.health > 0 && e.hce_team == h.hce_team && e.bFRIENDLY == h.bFRIENDLY) { mate = true; break; }
+			}
+			if(!mate) SpawnBrother(h);
+		}
+		lateHunters.Clear();
+	}
+
+	// a bonded brother beside it (bond rage), at the first spot around it with room
+	void SpawnBrother(HaloDoom_EnemyBase h)
+	{
 		for(int a = 0; a < 360; a += 45)
 		{
 			vector3 p = h.Vec3Angle(h.radius * 3, h.angle + 90 + a);
@@ -257,6 +286,7 @@ class HCE_ReplaceHandler : EventHandler
 
 	override void WorldTick()
 	{
+		if(lateHunters.Size()) PairLateHunters();
 		if(level.maptime == 2) ReportUnreplaced();
 		for(int i = 0; i < toMarine.Size(); i++)
 		{
@@ -372,6 +402,7 @@ class HCE_SpawnAllHandler : EventHandler
 		HaloDoom_EnemyBase m;
 		while(m = HaloDoom_EnemyBase(it.Next()))
 			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
+		for(int i = 0; i < squad.Size(); i++) squad[i].hce_orderPlayer = pl;     // the player who gave the order leads them (co-op)
 		if(line[o].Length() > 0) pl.A_StartSound(line[o], CHAN_VOICE, CHANF_DEFAULT, 1.0, ATTN_NONE);
 		if(o <= 2)
 		{

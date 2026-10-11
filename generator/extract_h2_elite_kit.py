@@ -23,8 +23,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, 'lib'))   # readers and writers live in lib/
 from iqm import read_iqm, write_iqm
-from h2_elite_anims import MAP01B, CACHE01B, _qmul
-from extract_h2_odst import qrot, wq, conj, ce_bone_of, height_from_normals, blur, shader_bitmaps
+from h2_elite_anims import MAP01B, CACHE01B
+from h2rig import qmul, qrot, h2_world, ce_world, ce_bones, bind_ancestors, retarget
+from texmath import height_from_normals, blur
+from h2map import shader_bitmaps
 try:
     from extract_chars import OUT
 except Exception:
@@ -184,41 +186,38 @@ def lens_texture():
     Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).save(f'{KIT}/{LENS}')
 
 
-ANC = {}     # id(h2w) -> per Halo 2 node, the node whose bind pose its vertices are carried from (itself, or the
-             # nearest ancestor the CE skeleton has: Halo 2's jaw, lip, brow, eye and finger bones go rigidly with the
-             # head or hand, as they are in the bind pose, rather than being moved onto the head's own frame)
+GIB_PAD = 24              # surfaces left empty at the front of a gib: the dead Elite's MODELDEF skins its own surfaces by
+                          # index (the gib takes its model slot), so the Halo 2 pieces sit past every CE Elite's (18-20)
+GIB_LIMBS = (('head', 3), ('larm', 1), ('rarm', 2))
 
 
-def ancestors(nodes, ce):
-    out = []
-    for k in range(len(nodes)):
-        j = k
-        while j is not None and j >= 0 and 'bip01 ' + nodes[j]['name'].replace('_', ' ') not in ce: j = nodes[j].get('parent', -1)
-        out.append(j if j is not None and j >= 0 else 0)
+def make_gibs(J, bind, meta):
+    """the Halo 2 bodies' severed pieces: each limb's surfaces of the piece (its _1/_2/_3 meshes), moved to the limb's
+    centre as the CE gibs are (gore_kit.py: the piece tumbles about it), with the CE gib's gore cap on the cut. The
+    API's HCE_GibOverride makes a severed limb fly off as these (build_pack.elite_kit_code)"""
+    import shutil
+    ce = json.load(open(f'{OUT}/models/Elite/Elite.json'))['gore']
+    shutil.copy(f'{OUT}/models/Elite/{ce["tex"]}', f'{KIT}/{ce["tex"]}')
+    out = {}
+    for pid in sorted(SPLIT):
+        if not os.path.exists(f'{KIT}/{pid}.iqm'): continue
+        _, pm, _ = read_iqm(f'{KIT}/{pid}.iqm')
+        for limb, L in GIB_LIMBS:
+            g = ce['limbs'][limb]
+            c = np.array(g['center'])
+            _, cm, _ = read_iqm(f'{OUT}/models/Elite/{g["gib"]}')
+            pad = [dict(name=f'pad_{i}', material=pm[0]['material'], pos=np.zeros((3, 3)), nrm=np.tile([0, 0, 1.0], (3, 1)),
+                        uv=np.zeros((3, 2)), bidx=np.zeros((3, 4), np.uint8), bw=np.tile(np.array([255, 0, 0, 0], np.uint8), (3, 1)),
+                        tris=np.zeros((0, 3), int)) for i in range(GIB_PAD)]
+            body = [dict(m_, pos=m_['pos'] - c) for m_ in pm if m_['name'].endswith(f'_{L}') and len(m_['tris'])]
+            if not body: continue
+            cap = [m_ for m_ in cm if m_['name'].startswith('gore.') and len(m_['tris'])]
+            meshes = pad + body + cap
+            fn = f'{pid}_gib_{limb}.iqm'
+            write_iqm(f'{KIT}/{fn}', J, meshes, bind)
+            out.setdefault(pid, {})[limb] = dict(file=fn, stub=GIB_PAD + len(body) if cap else -1, tex=ce['tex'])
+            print(f'  {fn}: {sum(len(m_["tris"]) for m_ in body)} tris + cap')
     return out
-
-
-def retarget(mm, h2w, cew, tomap, pre=None):
-    """vertices from their Halo 2 bones' bind poses to the CE bones' (pre: a transform into the model's space first)"""
-    pos = np.array(mm['pos'], float); nrm = np.array(mm['nrm'], float)
-    if pre is not None: pos, nrm = pre(pos, nrm)
-    bi, bw = np.array(mm['bi']), np.array(mm['bw'], float)
-    P = np.zeros_like(pos); N = np.zeros_like(nrm); cb = np.zeros((len(pos), 4), int); cw = np.zeros((len(pos), 4))
-    for v in range(len(pos)):
-        acc = {}
-        for k in range(bi.shape[1]):
-            w = bw[v, k]
-            if w <= 0: continue
-            h = int(bi[v, k]); c = tomap[h]
-            th, qh = h2w[ANC[id(h2w)][h]] if id(h2w) in ANC else h2w[h]; tc, qc = cew[c]
-            q = _qmul(qc, conj(qh))
-            P[v] += w * (tc + qrot(q, pos[v] - th)); N[v] += w * qrot(q, nrm[v])
-            acc[c] = acc.get(c, 0) + w
-        tot = sum(acc.values()) or 1
-        P[v] /= tot; N[v] /= max(np.linalg.norm(N[v]), 1e-6)
-        for k, (c, w) in enumerate(sorted(acc.items(), key=lambda x: -x[1])[:4]): cb[v, k] = c; cw[v, k] = w / tot
-    w8 = np.round(cw * 255).astype(int); w8[:, 0] += 255 - w8.sum(1)
-    return P, N, cb.astype(np.uint8), np.clip(w8, 0, 255).astype(np.uint8)
 
 
 def main():
@@ -229,7 +228,7 @@ def main():
     J, _, _ = read_iqm(f'{OUT}/models/Elite/Elite.iqm')
     bind = [dict(name='bind', fps=30.0, loop=True, frames=[[(j[2], j[3], (1.0, 1.0, 1.0)) for j in J]])]
     ce = {j[0]: i for i, j in enumerate(J)}
-    cew = wq([(j[1], j[2], j[3]) for j in J])
+    cew = ce_world(J)
     meta = dict(pieces={})
     tex_done = {}
     def texture_for(R, shader, tint=None):
@@ -240,9 +239,8 @@ def main():
         return tex_done[shader]
     for pid, (tag, keep, skip) in PIECES.items():
         R = render_model(m, tag); nodes = R['nodes']
-        h2w = wq([(n.get('parent', -1), n['t'], n['q']) for n in nodes])
-        tomap = [ce_bone_of(n['name'], nodes, ce) for n in nodes]
-        ANC[id(h2w)] = ancestors(nodes, ce)
+        h2w = h2_world(nodes)
+        tomap, anc = ce_bones(nodes, ce), bind_ancestors(nodes, ce)
         meshes = []
         for mm in hb.model_meshes(m, R, keep=keep):
             if mm['shader'] in skip: continue
@@ -253,7 +251,7 @@ def main():
                 if pid in INSET_GLOW: mat = inset_glow(mat, INSET_GLOW[pid])
             else:
                 mat = texture_for(R, mm['shader'], PIECE_TINT.get(pid))
-            P, N, cb, w8 = retarget(mm, h2w, cew, tomap)
+            P, N, cb, w8 = retarget(mm['pos'], mm['nrm'], mm['bi'], mm['bw'], h2w, cew, tomap, anc)
             if mat == LENS: N = bulge(P, N, mm['tris'])
             tris = np.array(mm['tris'])[:, [0, 2, 1]]
             # one surface per limb (body, left arm, right arm, head), so a severed limb's pieces can go with it
@@ -268,7 +266,7 @@ def main():
         meta['pieces'][pid] = dict(file=pid + '.iqm', tris=int(sum(len(x['tris']) for x in meshes)))
     # the jump pack: a one-node model placed by the Ranger's 'jetpack' marker (upper spine), bound to the CE spine1
     R = render_model(m, RANGER); nodes = R['nodes']; names = [n['name'] for n in nodes]
-    h2w = wq([(n.get('parent', -1), n['t'], n['q']) for n in nodes])
+    h2w = h2_world(nodes); tomap = ce_bones(nodes, ce)
     a = m.tag('mode', RANGER)['addr']; mk = None
     for g in m.block(a + 0x58, 0xC):
         if m.sid(m.u('I', g)[0]) != 'jetpack': continue
@@ -277,7 +275,7 @@ def main():
     node, mt, mq = mk
     nt, nq = h2w[node]
     def place(pos, nrm):
-        q = _qmul(nq, mq)
+        q = qmul(nq, mq)
         return np.array([nt + qrot(nq, mt + qrot(mq, p)) for p in pos]), np.array([qrot(q, n) for n in nrm])
     JP = render_model(m, JETPACK)
     meshes = []
@@ -286,12 +284,25 @@ def main():
         if mm['shader'] not in tex_done:
             colour_map(m, hb, shader_bitmaps(m, JP, mm['shader']), f'ek_{mm["shader"]}.png', tint=JETPACK_TINT); tex_done[mm['shader']] = f'ek_{mm["shader"]}.png'
         mm = dict(mm, bi=np.full((len(mm['pos']), 4), node), bw=np.tile([1.0, 0, 0, 0], (len(mm['pos']), 1)))
-        P, N, cb, w8 = retarget(mm, h2w, cew, [ce_bone_of(n['name'], nodes, ce) for n in nodes], pre=place)
+        P, N, cb, w8 = retarget(*place(np.array(mm['pos'], float), np.array(mm['nrm'], float)), mm['bi'], mm['bw'], h2w, cew, tomap)
         meshes.append(dict(name=mm['shader'], material=texture_for(JP, mm['shader']), pos=P, nrm=N, uv=np.array(mm['uv'], float),
                            bidx=cb, bw=w8, tris=np.array(mm['tris'])[:, [0, 2, 1]]))
         print(f'  elite_jetpack: {mm["shader"]} {len(P)} verts, on {names[node]} -> {J[cb[0, 0]][0]}')
     write_iqm(f'{KIT}/elite_jetpack.iqm', J, meshes, bind)
+    # its nozzles: the pack's two 'jet_fire' markers (the exhaust's origin and its +x the way it blows), carried to the
+    # CE Elite's bind space as the pack is; build_pack hands them to HCE_JetExhaust (in model units: x forward, y left, z up)
+    fire = []
+    for g in m.block(m.tag('mode', JETPACK)['addr'] + 0x58, 0xC):
+        if m.sid(m.u('I', g)[0]) != 'jet_fire': continue
+        for k in m.block(g + 4, 0x24):
+            t = np.array(m.u('3f', k + 4)); q = np.array(m.u('4f', k + 0x10))
+            fire.append((t, qrot(q, np.array([1.0, 0, 0]))))
+    P, N, _, _ = retarget(*place(np.array([f[0] for f in fire], float), np.array([f[1] for f in fire], float)), np.full((len(fire), 4), node),
+                          np.tile([1.0, 0, 0, 0], (len(fire), 1)), h2w, cew, tomap)
+    meta['jet_fire'] = [dict(pos=[round(float(v), 4) for v in p], dir=[round(float(v), 3) for v in n]) for p, n in zip(P, N)]
+    print('  jet_fire:', meta['jet_fire'])
     meta['pieces']['elite_jetpack'] = dict(file='elite_jetpack.iqm', tris=int(sum(len(x['tris']) for x in meshes)))
+    meta['gibs'] = make_gibs(J, bind, meta)
     meta['spec'] = SPEC; meta['brightmaps'] = BRIGHT
     for f in ('ranger_helmet.iqm', 'honor_helmet.iqm', 'honor_armor.iqm'):   # the earlier pieces, before each had its body
         if os.path.exists(f'{KIT}/{f}'): os.remove(f'{KIT}/{f}')

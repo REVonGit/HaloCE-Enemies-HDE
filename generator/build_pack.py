@@ -113,7 +113,7 @@ ELITE_H2_ARMOUR = {   # new rank -> (Halo CE variant it copies per gun, colour, 
                     HONOR_RED, ('honor_helmet', 'honor_armor'), ()),
     'ranger': ({'plasma rifle': 'characters\\elite\\elite minor\\elite minor plasma rifle',
                 'needler': 'characters\\elite\\elite minor\\elite minor needler'},
-               RANGER_STEEL, ('ranger_helmet', 'elite_jetpack'), ('HCE_Jetpack',)),
+               RANGER_STEEL, ('ranger_body', 'elite_jetpack'), ('HCE_Jetpack',)),
 }
 
 SKIN_PAIRS = []      # (source texture, baked skin): skin_check.py's deep-fried check after each build
@@ -155,66 +155,81 @@ def nohead_iqm(src, dst):
     open(dst, 'wb').write(bytes(d))
     return cut
 
-def elite_kit_code(pieces, mdir='hce', skins=()):
-    """attach Halo 2's armour pieces (models 1..) to a CE Elite; a severed head takes its helmet (model 1) with it,
-    a severed arm its plates (the honor armour's limb surfaces)"""
+def elite_kit_code(pieces, mdir='hce', whole=False):
+    """attach Halo 2's pieces (models 1..) to a CE Elite. Pieces cut by limb (extract_h2_elite_kit.SPLIT: surfaces named
+    _1 left arm, _2 right arm, _3 head) lose that limb's surfaces when it is severed; a helmet piece that isn't cut
+    (the Honor Guard's, models 1) goes whole with the head. whole: a whole body (the Ranger's) worn in place of the CE
+    Elite's, whose body surfaces are hidden on the model and its blood overlay ({HCE_BODY_SURFS}: filled in per model
+    by build_pack when the class is written)"""
     kj = f'{ELITE_KIT}/EliteKit.json'
     limbs = json.load(open(kj)).get('limbs', {}) if os.path.exists(kj) else {}
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
     att = ''.join(f'\t\tA_ChangeModel(\'None\', {k + 1}, "models/{mdir}/EliteKit", "{p}.iqm", {k + 1}, "", \'None\');\n' for k, p in enumerate(pieces))
-    for p, mesh, tex in skins:          # a piece's surface in another skin (the Ranger's helmet in its body's material)
-        si = limbs.get(p, []).index(mesh) if mesh in limbs.get(p, []) else -1
-        if si >= 0 and p in pieces:
-            att += f'\t\tA_ChangeModel(\'None\', {pieces.index(p) + 1}, "", \'None\', {si}, "models/{mdir}/EliteKit", \'{tex}\', CMDL_USESURFACESKIN);\n'
     sev = []
-    head = pieces[0]
-    if head in limbs:
-        sev.append('\t\tif(limb == HCE_LIMB_HEAD)\n\t\t{\n' + ''.join(f"\t\t\tA_ChangeModel('None', 1, \"\", 'None', {i}, {hid});\n" for i in range(len(limbs[head]))) + '\t\t}\n')
-    for k, p in enumerate(pieces):
-        names = limbs.get(p, [])
-        for L, lc in ((1, 'HCE_LIMB_LARM'), (2, 'HCE_LIMB_RARM')):
-            si = [i for i, n in enumerate(names) if n.endswith(f'_{L}')]
-            if si: sev.append(f'\t\tif(limb == {lc})\n\t\t{{\n' + ''.join(f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n" for i in si) + '\t\t}\n')
-    return ('\t// Halo 2 armour over the CE Elite (extract_h2_elite_kit.py): ' + ', '.join(pieces) + '\n'
-            '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att + '\t}\n'
-            '\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{\n\t\tsuper.HCE_OnSever(limb, gunArm);\n' + ''.join(sev) + '\t}\n')
+    for L, lc in ((1, 'HCE_LIMB_LARM'), (2, 'HCE_LIMB_RARM'), (3, 'HCE_LIMB_HEAD')):
+        lines = []
+        for k, p in enumerate(pieces):
+            names = limbs.get(p, [])
+            split = any(n[-2:] in ('_1', '_2', '_3') for n in names)
+            if split: si = [i for i, n in enumerate(names) if n.endswith(f'_{L}')]
+            else: si = list(range(len(names))) if (L == 3 and k == 0 and not whole) else []
+            lines += [f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n" for i in si]
+        if lines: sev.append(f'\t\tif(limb == {lc})\n\t\t{{\n' + ''.join(lines) + '\t\t}\n')
+    body = ''
+    if whole:
+        hide = f"\t\tfor(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', {{idx}}, \"\", 'None', BS[i], {hid});\n"
+        body = ('\t\tstatic const int BS[] = { {HCE_BODY_SURFS} };\n' + hide.replace('{idx}', '0'))
+        att = body + att
+    out = ('\t// Halo 2 over the CE Elite (extract_h2_elite_kit.py): ' + ', '.join(pieces) + ('; the CE body hidden under it' if whole else '') + '\n'
+           '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att + '\t}\n'
+           '\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{\n\t\tsuper.HCE_OnSever(limb, gunArm);\n' + ''.join(sev) + '\t}\n')
+    if whole:
+        out += ('\toverride void HCE_BloodHideClass()\n\t{\n\t\tsuper.HCE_BloodHideClass();\n\t\tstatic const int BS[] = { {HCE_BODY_SURFS} };\n'
+                + hide.replace('{idx}', '{HCE_BLOOD_IDX}') + '\t}\n')
+    return out
 
-RANGER_HELMET_SKIN = 'ek_ranger_helmet_steel.png'
-RANGER_HELMET_TONE = 0.72
-
-def ranger_helmet_skin(dst):
-    """the Ranger's helmet in the same material as its body (bake_vivid + add_shine): Halo 2's helmet paint, its
-    light and shade kept, turned the Ranger's steel with the vivid ranks' highlight, then the Elites' rank cube-map
-    reflection baked in from the helmet's own normals (rasterised from the model into its texture), the paint's relief
-    bending it as on the body"""
-    from iqm import read_iqm
+def bake_reflection(rgb, n, spec, faces, k=1.0):
+    """add_shine's reflection for a texture whose per-texel model-space normals are already known: the paint's relief
+    bends the normals, a view from the front reflects into the cube map, brighter toward grazing angles, added under
+    the specular mask (rgb, n: (H, W, 3); spec: (H, W) 0..1)"""
     from scipy import ndimage
-    color = VIVID['elite ranger']
-    _, meshes, _ = read_iqm(f'{ELITE_KIT}/ranger_helmet.iqm')
-    base = Image.open(f'{ELITE_KIT}/ek_ranger_helmet.png').convert('RGB')
-    b = np.asarray(base).astype(np.float32) / 255.0
-    # Halo 2's helmet paint is a lot lighter than the CE body's: brought down to the body's (RANGER_HELMET_TONE) before
-    # the recolour, or the vivid ranks' highlight and the reflection wash it out (skin_check: glare, lift)
-    lum = b.mean(axis=2, keepdims=True) * RANGER_HELMET_TONE
-    col = np.array(color, np.float32).reshape(1, 1, 3)
-    rgb = np.clip(col * (0.12 + 1.15 * lum) + np.clip(lum - 0.62, 0, 1) * 0.8, 0, 1)      # bake_vivid's armour
-    faces = cube_faces(SHINE_CUBE['Elite'], cube_index('Elite', color))
-    if faces is not None:
-        W_, H_ = base.size
-        n = raster_normals(meshes, 'ek_ranger_helmet.png', (W_, H_)).copy()
-        lm = ndimage.gaussian_filter(rgb.mean(axis=2), 1.2)                                 # add_shine, the helmet's normals
-        gy, gx = np.gradient(lm)
-        t1 = np.cross(n, np.array([0, 0, 1.0], np.float32)); t1 /= np.maximum(np.linalg.norm(t1, axis=2, keepdims=True), 1e-3)
-        t2 = np.cross(n, t1)
-        n = n + (gx[..., None] * t1 + gy[..., None] * t2) * 6.0
-        n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
-        view = np.array([-1.0, 0.0, -0.25], np.float32); view /= np.linalg.norm(view)
-        r = view - 2 * (n @ view)[..., None] * n
-        env = np.clip(sample_cube(faces, r) * 1.15, 0, 1) ** 1.35 * 1.7
-        fres = 0.75 + 0.5 * (1 - np.abs(n @ view)) ** 2
-        spec = np.clip((lum[..., 0] - 0.08) * 4, 0, 1) * VIVID_SHINE['elite ranger']     # bare dark seals and vents stay dull
-        rgb = np.clip(rgb * (1 - 0.3 * spec[..., None]) + env * (spec * SHINE['Elite'] * fres)[..., None], 0, 1)
-    Image.fromarray((rgb * 255).astype(np.uint8)).save(dst)
+    lum = ndimage.gaussian_filter(rgb.mean(axis=2), 1.2)
+    gy, gx = np.gradient(lum)
+    t1 = np.cross(n, np.array([0, 0, 1.0], np.float32)); t1 /= np.maximum(np.linalg.norm(t1, axis=2, keepdims=True), 1e-3)
+    t2 = np.cross(n, t1)
+    n = n + (gx[..., None] * t1 + gy[..., None] * t2) * 6.0
+    n /= np.maximum(np.linalg.norm(n, axis=2, keepdims=True), 1e-6)
+    view = np.array([-1.0, 0.0, -0.25], np.float32); view /= np.linalg.norm(view)
+    r = view - 2 * (n @ view)[..., None] * n
+    env = np.clip(sample_cube(faces, r) * 1.15, 0, 1) ** 1.35 * 1.7
+    fres = 0.75 + 0.5 * (1 - np.abs(n @ view)) ** 2
+    sp = spec * k
+    return np.clip(rgb * (1 - 0.3 * sp[..., None]) + env * (sp * fres)[..., None], 0, 1)
+
+# Halo 2's Ranger and its jump pack: their colour maps get the armour's cube-map reflection Halo 2 draws on them (its
+# shaders reflect a cube map under the colour map's alpha), as the Elites' painted armour does; the silver cube, gentle
+KIT_SHINE = {'ek_ranger_arms.png': 0.25, 'ek_ranger_torso.png': 0.25, 'ek_ranger_legs.png': 0.25, 'ek_ranger_helmet.png': 0.25,
+             'ek_elite_jetpack.png': 0.16}     # skin_check: its wide specular mask glares above this
+KIT_SHINE_CUBE = 3            # the Elites' silver cube map
+
+def kit_shine(d):
+    """bake KIT_SHINE's reflection into the pack's copies of the Elite kit's colour maps (d: its EliteKit folder)"""
+    from iqm import read_iqm
+    meta = json.load(open(f'{ELITE_KIT}/EliteKit.json'))
+    specs = meta.get('spec', {})
+    faces = cube_faces('elite', KIT_SHINE_CUBE)
+    if faces is None: return
+    meshes = []
+    for f in sorted(os.listdir(d)):
+        if f.endswith('.iqm'): meshes += read_iqm(f'{d}/{f}')[1]
+    for tex, k in KIT_SHINE.items():
+        if tex not in specs or not os.path.exists(f'{d}/{tex}'): continue
+        im = Image.open(f'{ELITE_KIT}/{tex}').convert('RGB')
+        rgb = np.asarray(im).astype(np.float32) / 255.0
+        spec = np.asarray(Image.open(f'{ELITE_KIT}/{specs[tex]}').convert('L').resize(im.size)).astype(np.float32) / 255.0
+        n = raster_normals(meshes, tex, im.size).copy()
+        Image.fromarray((bake_reflection(rgb, n, spec, faces, k) * 255).astype(np.uint8)).save(f'{d}/{tex}')
+        SKIN_PAIRS.append((f'{ELITE_KIT}/{tex}', f'{d}/{tex}'))
 
 def add_elite_h2_armour(variants):
     import copy
@@ -228,8 +243,8 @@ def add_elite_h2_armour(variants):
             cl[0].update(color_lower_bound=list(rgb), color_upper_bound=list(rgb))
             v['change_colors_list'] = cl
             v['_late'] = True
-            skins = (('ranger_helmet', 'helmet_ranger_helmet_0', RANGER_HELMET_SKIN),) if rank == 'ranger' else ()
-            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, skins=skins), add_flags=list(extra), nohead=True)
+            whole = rank == 'ranger'          # the Ranger: Halo 2's whole body; the Honor Guard: armour over the headless CE Elite
+            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, whole=whole), add_flags=list(extra), nohead=not whole)
             variants[vn] = v
 
 add_elite_h2_armour(AI['variants'])
@@ -599,14 +614,27 @@ def bake_hunter(char, mat, mode, outpath):
     hsv = np.asarray(im.convert('HSV')).astype(np.float32)
     rgb = np.asarray(im).astype(np.float32) / 255.0
     h, sv, v = hsv[..., 0] * 360 / 255, hsv[..., 1] / 255, hsv[..., 2] / 255
-    armour = ((h > 185) & (h < 265) & (sv > 0.22))[..., None]
+    # the blue paint, as a soft mask: a ramp in from the edges of the blue hues and from low saturation, smoothed, so the
+    # shield rims and plate edges (blue near the cut-off) don't flip texel by texel between recoloured and not
+    from scipy import ndimage
+    hue_in = np.clip(np.minimum(h - 175, 275 - h) / 20.0, 0, 1)
+    sat_in = np.clip((sv - 0.10) / 0.14, 0, 1)
+    armour = np.clip(ndimage.gaussian_filter(hue_in * sat_in, 1.2) * 1.25, 0, 1)[..., None]
     lum = (0.3 * rgb[..., 0] + 0.59 * rgb[..., 1] + 0.11 * rgb[..., 2])[..., None]
-    if mode == 'white':
-        new = np.clip(lum * 2.1 + 0.08, 0, 1) * np.array([0.93, 0.95, 1.0])
-    else:  # red
-        new = np.clip(lum * 2.3, 0, 1) * np.array([1.0, 0.16, 0.10])
-    o = np.where(armour, new, rgb)
+    # the colour laid on as the Elites' rank colours are (bake_vivid): the paint's light and shade kept, a highlight on
+    # the edges, not a flat fill at full saturation; then the same cube-map armour reflection as the Elites (add_shine,
+    # Halo CE's Hunter specular mask), in the rank's own cube map, its hue held to the armour colour (hue_lock)
+    col = np.array(HUNTER_COLOURS[mode], np.float32).reshape(1, 1, 3)
+    a0, a1 = HUNTER_TONE[mode]
+    new = np.clip(col * (a0 + a1 * lum) + np.clip(lum - 0.42, 0, 1) * 0.55, 0, 1)
+    o = rgb * (1 - armour) + new * armour
+    # the rank's cube map on the recoloured armour; the cannon, the worms and the rest keep the blue Hunter's
+    o = add_shine(char, mat, o, HUNTER_COLOURS[mode]) * armour + add_shine(char, mat, o, None) * (1 - armour)
+    o = hue_lock(o, armour[..., 0].astype(np.float32), HUNTER_COLOURS[mode])
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
+HUNTER_COLOURS = {'red': (0.78, 0.13, 0.08), 'white': (0.86, 0.88, 0.93)}
+HUNTER_TONE = {'red': (0.14, 1.9), 'white': (0.08, 1.45)}     # base and gain of the paint's light (skin_check: lift)
 
 # Baked armour shine (Elites and Grunts): Halo CE draws their armour with a cube-map reflection under the
 # multipurpose map's specular mask (red channel on Xbox): the swirling liquid-metal sheen. Doom's renderer has no cube
@@ -614,10 +642,11 @@ def bake_hunter(char, mat, mode, outpath):
 # gets the model's surface normal there (the triangles rasterised into texture space, bind pose), nudged by the paint's
 # own relief, and reflects a view from the front into the cube map; the result is added under the specular mask. The
 # Elites' cube map follows their rank colour (blue, magenta, gold, silver); the Grunts wear the same ones (below).
-SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 1.0, 'GruntSpecOps': 1.0}
+SHINE = {'Elite': 1.0, 'EliteSpecial': 1.0, 'EliteRifle': 1.0, 'Grunt': 1.0, 'GruntSpecOps': 1.0, 'Hunter': 0.55}
 # the Grunts wear the Elites' rank cube maps (gold for the orange Minors, red for the Majors, silver for Spec Ops) so their
 # armour reads like the Elites' painted skins; Halo CE gave them its dull 'cubemap dark gray'
-SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'elite', 'GruntSpecOps': 'elite'}
+SHINE_CUBE = {'Elite': 'elite', 'EliteSpecial': 'elite', 'EliteRifle': 'elite', 'Grunt': 'elite', 'GruntSpecOps': 'elite', 'Hunter': 'elite'}
+# the Hunters too (blue in the Minor's blue cube, red in the red, white in the silver), under Halo CE's own specular mask
 _normal_maps = {}
 
 def normal_map(char, mat, size):
@@ -1469,10 +1498,8 @@ def build(cfg=None):
         if char.startswith('Elite') and mdir == 'hce' and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # Halo 2's Elite armour (the main pack's; the add-on's carbine Elites use it from there)
             os.makedirs(f'{pack}/models/{mdir}/EliteKit', exist_ok=True)
             for f in os.listdir(ELITE_KIT):
-                if f.endswith(('.iqm', '.png')): shutil.copy(f'{ELITE_KIT}/{f}', f'{pack}/models/{mdir}/EliteKit/{f}')
-            if not os.path.exists(f'{pack}/models/{mdir}/EliteKit/{RANGER_HELMET_SKIN}'):
-                ranger_helmet_skin(f'{pack}/models/{mdir}/EliteKit/{RANGER_HELMET_SKIN}')
-            SKIN_PAIRS.append((f'{ELITE_KIT}/ek_ranger_helmet.png', f'{pack}/models/{mdir}/EliteKit/{RANGER_HELMET_SKIN}'))
+                if f.endswith(('.iqm', '.png')) and not f.endswith('_spec.png'): shutil.copy(f'{ELITE_KIT}/{f}', f'{pack}/models/{mdir}/EliteKit/{f}')
+            kit_shine(f'{pack}/models/{mdir}/EliteKit')
         if char.startswith('Marine') and os.path.exists(f'{MARINE_KIT}/MarineKit.json'):    # Elefant's Marine kit
             os.makedirs(f'{pack}/models/{mdir}/MarineKit', exist_ok=True)
             for f in os.listdir(MARINE_KIT):
@@ -1766,6 +1793,10 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
+            if '{HCE_BODY_SURFS}' in extra:      # a whole Halo 2 body over this model: its own body surfaces (no guns, no gore)
+                mw = meta.get('mesh_weapon') or []
+                bsurf = [i for i, n in enumerate(meta.get('mesh_names') or []) if not n.startswith(('weapon_', 'gore.')) and not (mw[i] if i < len(mw) else None)]
+                extra = extra.replace('{HCE_BODY_SURFS}', ', '.join(map(str, bsurf)) or '-1').replace('{HCE_BLOOD_IDX}', str(BLOOD_IDX))
             if not char.startswith('Marine') and (ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
             if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov, pack)
@@ -1926,6 +1957,7 @@ def build(cfg=None):
     Image.new('RGB', (8, 8), (255, 255, 255)).save(full)
     for t in sorted(set(brightmaps)):
         gl.append(f'brightmap texture "{t}"\n{{\n\tmap "models/{mdir}/brightmap_full.png"\n}}')
+    gl += glow_maps(pack, mdir, cfg['team'], set(camo))
     # Jackal energy shields: the baked rank-coloured field animated by a shader (a drifting field, a hex lattice whose
     # cells flicker, light sweeping over it, a pulse), drawn fullbright
     if shield_tex:
@@ -2574,6 +2606,39 @@ def kit_visors(pack, mdir):
 
 ELITE_LENSES = ('ek_ranger_lens.png',)   # Halo 2's Ranger's gold eye lenses (extract_h2_elite_kit.py)
 ELITE_LENS_CUBE = 'ek_visor_cube.png'
+
+# Self-illumination: Halo CE's multipurpose map keeps it in the green channel (Xbox: red specular, green self-illumination,
+# blue colour change). Every Covenant skin baked from a material that has some gets a brightmap of it (the Elites' and
+# Hunters' inset lights, the Grunts' and Jackals' glowing panels, the Engineer's and Slug Man's lights), so those
+# texels stay fullbright in the dark; the cloaked skins are left out (their camo shader). The Elite kit's maps come with
+# their own (extract_h2_elite_kit.py: the Ranger's and the jump pack's lights, the Honor Guard's markings).
+GLOW_MIN = 0.3                # a material glows when its self-illumination reaches this somewhere
+
+def glow_maps(pack, mdir, team, camo):
+    out = []; made = {}
+    for src, dst in SKIN_PAIRS:
+        if not dst.startswith(pack + '/'): continue
+        rel = os.path.relpath(dst, pack)
+        char = os.path.basename(os.path.dirname(src))
+        if team.get(char) != 'COVENANT' or rel in camo: continue
+        mp = src[:-4] + '_multi.png'
+        if mp not in made:
+            made[mp] = None
+            if os.path.exists(mp):
+                g = np.asarray(Image.open(mp).convert('RGBA')).astype(np.float32)[..., 1] / 255.0
+                if g.max() >= GLOW_MIN:
+                    sz = Image.open(src).size
+                    bm = np.clip((g - 0.12) / 0.6, 0, 1)
+                    fn = f'models/{mdir}/{char}/{os.path.basename(src)[:-4]}_bm.png'
+                    Image.fromarray((bm * 255).astype(np.uint8)).convert('RGB').resize(sz, Image.BILINEAR).save(f'{pack}/{fn}')
+                    made[mp] = fn
+        if made[mp]: out.append(f'brightmap texture "{rel}"\n{{\n\tmap "{made[mp]}"\n}}')
+    d = f'{pack}/models/{mdir}/EliteKit'
+    if os.path.isdir(d) and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):
+        for tex, bm in json.load(open(f'{ELITE_KIT}/EliteKit.json')).get('brightmaps', {}).items():
+            if os.path.exists(f'{d}/{tex}') and os.path.exists(f'{d}/{bm}'):
+                out.append(f'brightmap texture "models/{mdir}/EliteKit/{tex}"\n{{\n\tmap "models/{mdir}/EliteKit/{bm}"\n}}')
+    return out
 
 def elite_lens_visors(pack, mdir):
     """the Ranger's eye lenses get the visors' cube-map reflection (VISOR_SHADER, tinted by the lens's own gold, over

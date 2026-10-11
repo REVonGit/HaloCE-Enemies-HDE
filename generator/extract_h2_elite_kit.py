@@ -9,7 +9,8 @@ The pieces are model attachments riding the CE Elite's own animation (build_pack
 
     honor_guard.iqm    the Honor Guard's helmet (its tall crest) and its ceremonial plates on the shoulders, arms and
                        legs (the Elite's 'helmet: honor' and 'hg: honor' permutations, with their inset lights)
-    ranger_helmet.iqm  the Ranger's sealed EVA helmet and its lens (elite_ranger's 'helmet' region and lens)
+    ranger_body.iqm    the whole Ranger (elite_ranger's body and helmet regions: EVA suit, plates, helmet, head, gold
+                       lenses and inset lights), cut by limb; worn in place of the CE Elite's body
     elite_jetpack.iqm  the Ranger's jump pack, where the Ranger's 'jetpack' marker puts it on the upper spine
 
 Textures: Halo 2's colour maps with its bump maps' shading and its detail maps baked in (Doom lights models flat).
@@ -33,10 +34,15 @@ JETPACK = r'objects\characters\elite\elite_jetpack\elite_jetpack'
 PIECES = {
     'honor_helmet': (ELITE, {('helmet', 'honor'), ('head', 'base')}, ()),     # Halo 2's Elite head under it (the CE head is cut away)
     'honor_armor': (ELITE, {('hg', 'honor')}, ()),
-    'ranger_helmet': (RANGER, {('helmet', 'base'), ('body', 'base')}, ('ranger_arms', 'ranger_torso', 'ranger_legs', 'inset_lights')),
+    'ranger_body': (RANGER, {('helmet', 'base'), ('body', 'base')}, ()),     # the whole Ranger, worn in place of the CE body
 }
-SPLIT = {'honor_armor'}              # pieces cut into surfaces by limb: 0 body, 1 left arm, 2 right arm
+SPLIT = {'honor_armor', 'ranger_body'}   # pieces cut into surfaces by limb: 0 body, 1 left arm, 2 right arm, 3 head
 LIMB = {f'bip01 {s} {b}': (1 if s == 'l' else 2) for s in 'lr' for b in ('clavicle', 'upperarm', 'forearm', 'hand')}
+LIMB.update({b: 3 for b in ('bip01 head', 'frame mandible lower left', 'frame mandible lower right', 'frame mandible upper left',
+                            'frame mandible upper right')})
+# the jump pack's colour-change areas (its change_color map) take the Ranger's own blue-grey, as Halo 2 tints them
+JETPACK_TINT = (0.17, 0.20, 0.26)     # dark gunmetal, as Halo 2 draws the Rangers' packs (its chrome from build_pack.kit_shine)
+GLOW_GREEN = 'ranger_torso'   # its inset-light glyphs (the green panels the lights' shader samples) glow as well
 LENS = 'ek_ranger_lens.png'
 LENS_RGB = ((0.95, 0.72, 0.30), (0.42, 0.22, 0.06))     # the Ranger's gold lens: top and bottom of its gradient
 BUMP_LIGHT = (-0.35, 0.45, 0.82)
@@ -47,11 +53,16 @@ DIRT = 0.25
 LIFT = 1.15
 ILLUM_LIFT = 0.6                # the inset markings' self-illumination, baked
 ILLUM_ADD = 40
+EMIT_GAIN = 1.25                # a coloured light map's colours, drawn this bright where they glow
 SKIP = ('bump', 'default_', 'color_', 'detail', 'illum', 'change_color', 'color_change', 'cube', 'reflection', 'multiplicative',
         'dirt', 'exhaust', 'carapace', 'glassy', 'noise')
 
 
-def colour_map(m, hb, bms, out):
+SPEC = {}      # colour map -> its specular mask (EliteKit.json 'spec')
+BRIGHT = {}    # colour map -> its brightmap (EliteKit.json 'brightmaps')
+
+
+def colour_map(m, hb, bms, out, tint=None):
     """Halo 2's colour map with its bump shading, crevice grime and detail map baked in"""
     from PIL import Image
     diff = [n for n in bms if not any(x in n.split('\\')[-1] for x in SKIP)]
@@ -75,12 +86,37 @@ def colour_map(m, hb, bms, out):
         d = np.tile(d, (DETAIL_TILES + 1, DETAIL_TILES + 1))[:H, :W, None] / 255.0 * 2
         a = a * (1 + DETAIL_MIX * (d - 1))
     ill = [n for n in bms if n.split('\\')[-1].endswith('_illum')]
-    if ill:                                           # the glowing markings (Doom has no glow pass here): lifted
-        g = np.asarray(hb.bitmap(m, ill[0]).convert('L').resize((W, H), Image.LANCZOS), float)[..., None] / 255.0
-        a = a * (1 + ILLUM_LIFT * g) + ILLUM_ADD * g * np.array([1.0, 0.25, 0.15])
+    if ill:                                           # the glowing parts (Doom has no glow pass here)
+        ic = np.asarray(hb.bitmap(m, ill[0]).convert('RGB').resize((W, H), Image.LANCZOS), float)
+        g = ic.max(axis=2, keepdims=True) / 255.0
+        lit = g[..., 0] > 0.2
+        sat = ((ic.max(axis=2) - ic.min(axis=2)) / np.maximum(ic.max(axis=2), 1))[lit].mean() if lit.any() else 0
+        if sat > 0.3:                                 # a coloured light map (the jump pack's green and cyan): its own colours, lit
+            a = a * (1 - g) + np.clip(ic * EMIT_GAIN, 0, 255) * g
+        else:                                         # a grey mask (the honour armour's markings): the paint lifted, warm
+            a = a * (1 + ILLUM_LIFT * g) + ILLUM_ADD * g * np.array([1.0, 0.25, 0.15])
+    cc = [n for n in bms if n.split('\\')[-1].endswith('_change_color')]
+    if cc and tint is not None:                       # Halo 2's colour change: the masked areas take the unit's colour
+        k = np.asarray(hb.bitmap(m, cc[0]).convert('RGB').resize((W, H), Image.LANCZOS), float)[..., :1] / 255.0
+        lum = a.mean(axis=2, keepdims=True)
+        a = a * (1 - k) + lum * np.array(tint) * 1.6 * k
     im = Image.fromarray(np.clip(a * LIFT, 0, 255).astype(np.uint8))
     if max(im.size) > 512: im.thumbnail((512, 512), Image.LANCZOS)
     im.save(f'{KIT}/{out}')
+    stem = out[:-4]
+    # Halo 2's specular mask (the colour map's alpha): where build_pack bakes the armour's cube-map reflection
+    sp = np.asarray(hb.bitmap(m, diff[0]).convert('RGBA').split()[3].resize(im.size, Image.LANCZOS), float)
+    if sp.max() > 8 and sp.min() < 250: Image.fromarray(sp.astype(np.uint8)).save(f'{KIT}/{stem}_spec.png'); SPEC[out] = f'{stem}_spec.png'
+    # what glows: Halo 2's self-illumination map, and the inset lights' green glyphs where they sample this map
+    glow = np.zeros(im.size[::-1])
+    il = [n for n in bms if n.split('\\')[-1].endswith(('_illum', '_illumination', '_self_illum'))]
+    if il: glow = np.maximum(glow, np.asarray(hb.bitmap(m, il[0]).convert('L').resize(im.size, Image.LANCZOS), float) / 255.0)
+    if stem == f'ek_{GLOW_GREEN}':
+        c = np.asarray(im, float)
+        glow = np.maximum(glow, np.clip((c[..., 1] - np.maximum(c[..., 0], c[..., 2]) - 40) / 60.0, 0, 1))
+    if glow.max() > 0.15:
+        Image.fromarray(np.clip(glow * 255 * 1.4, 0, 255).astype(np.uint8)).convert('RGB').save(f'{KIT}/{stem}_bm.png')
+        BRIGHT[out] = f'{stem}_bm.png'
     print('   ', out, 'from', diff[0].split('\\')[-1], 'bump' if bump else '', 'detail' if det else '')
 
 
@@ -181,15 +217,16 @@ def main():
             if 'lens' in mm['shader']:
                 lens_texture(); mat = LENS
             elif 'inset_lights' in mm['shader']:
-                continue                                   # the lights' own shader samples the body's map: left off
+                if pid != 'ranger_body': continue         # the lights' own shader samples the body's map
+                mat = texture_for(R, 'ranger_torso')       # the Ranger's: its torso map's green glyphs, drawn bright
             else:
                 mat = texture_for(R, mm['shader'])
             P, N, cb, w8 = retarget(mm, h2w, cew, tomap)
             if mat == LENS: N = bulge(P, N, mm['tris'])
             tris = np.array(mm['tris'])[:, [0, 2, 1]]
-            # one surface per limb (body, left arm, right arm), so a severed arm's plates can go with it
+            # one surface per limb (body, left arm, right arm, head), so a severed limb's pieces can go with it
             limb = np.array([LIMB.get(J[cb[t[0], 0]][0], 0) for t in tris]) if pid in SPLIT else np.zeros(len(tris), int)
-            for L in range(3):
+            for L in range(4):
                 if not (limb == L).any() and L > 0: continue
                 meshes.append(dict(name=f'{mm["region"]}_{mm["shader"]}_{L}', material=mat, pos=P, nrm=N, uv=np.array(mm['uv'], float),
                                    bidx=cb, bw=w8, tris=tris[limb == L]))
@@ -214,6 +251,8 @@ def main():
     meshes = []
     for mm in hb.model_meshes(m, JP):
         if 'exhaust' in mm['shader']: continue
+        if mm['shader'] not in tex_done:
+            colour_map(m, hb, shader_bitmaps(m, JP, mm['shader']), f'ek_{mm["shader"]}.png', tint=JETPACK_TINT); tex_done[mm['shader']] = f'ek_{mm["shader"]}.png'
         mm = dict(mm, bi=np.full((len(mm['pos']), 4), node), bw=np.tile([1.0, 0, 0, 0], (len(mm['pos']), 1)))
         P, N, cb, w8 = retarget(mm, h2w, cew, [ce_bone_of(n['name'], nodes, ce) for n in nodes], pre=place)
         meshes.append(dict(name=mm['shader'], material=texture_for(JP, mm['shader']), pos=P, nrm=N, uv=np.array(mm['uv'], float),
@@ -221,6 +260,9 @@ def main():
         print(f'  elite_jetpack: {mm["shader"]} {len(P)} verts, on {names[node]} -> {J[cb[0, 0]][0]}')
     write_iqm(f'{KIT}/elite_jetpack.iqm', J, meshes, bind)
     meta['pieces']['elite_jetpack'] = dict(file='elite_jetpack.iqm', tris=int(sum(len(x['tris']) for x in meshes)))
+    meta['spec'] = SPEC; meta['brightmaps'] = BRIGHT
+    for f in ('ranger_helmet.iqm',):                  # the Ranger's earlier helmet-only piece, before it had its body
+        if os.path.exists(f'{KIT}/{f}'): os.remove(f'{KIT}/{f}')
     json.dump(meta, open(f'{KIT}/EliteKit.json', 'w'), indent=1)
     print('->', KIT, sorted(meta['pieces']))
 

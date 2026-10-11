@@ -157,6 +157,7 @@ def main():
     ed = re.findall(r'^\t(\d+) = (\w+)$', open(f'{PACK}/mapinfo.txt').read(), re.M)
     gl = open(f'{PACK}/gldefs.hce').read()
     bms = re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "[^"]+"\n\}', gl)
+    bmap = dict(re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "([^"]+)"\n\}', gl))   # each texture's own brightmap (the full one or a glow map)
     camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
     shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
     swords = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_sword.fp"', gl)
@@ -211,7 +212,12 @@ def main():
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
             if mybms or myshields or myswords:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
-                out += [f'brightmap texture "{t}"\n{{\n\tmap "models/hce/brightmap_full.png"\n}}' for t in mybms]
+                for t in mybms:
+                    bm = bmap.get(t, 'models/hce/brightmap_full.png')
+                    if not bm.endswith('brightmap_full.png'):
+                        os.makedirs(os.path.dirname(f'{d}/{bm}'), exist_ok=True); shutil.copy(f'{PACK}/{bm}', f'{d}/{bm}')
+                    else: bm = 'models/hce/brightmap_full.png'
+                    out.append(f'brightmap texture "{t}"\n{{\n\tmap "{bm}"\n}}')
             if mycamo:
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_camo.fp', f'{d}/shaders/hce_camo.fp')

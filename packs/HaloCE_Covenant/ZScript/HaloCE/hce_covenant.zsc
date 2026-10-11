@@ -3866,30 +3866,41 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 		}
 		return (0, 0, 0);
 	}
-	// Halo 2 over the CE Elite (extract_h2_elite_kit.py): honor_helmet, honor_armor
+	// Halo 2 over the CE Elite (extract_h2_elite_kit.py): honor_body; the CE body hidden under it
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
-		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_helmet.iqm", 1, "", 'None');
-		A_ChangeModel('None', 2, "models/hce/EliteKit", "honor_armor.iqm", 2, "", 'None');
+		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
+		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_body.iqm", 1, "", 'None');
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
 		super.HCE_OnSever(limb, gunArm);
 		if(limb == HCE_LIMB_LARM)
 		{
-			A_ChangeModel('None', 2, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
-			A_ChangeModel('None', 2, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
-			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
+	}
+	override void HCE_BloodHideClass()
+	{
+		super.HCE_BloodHideClass();
+		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
+		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 7, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 }
@@ -4086,30 +4097,41 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 		}
 		return (0, 0, 0);
 	}
-	// Halo 2 over the CE Elite (extract_h2_elite_kit.py): honor_helmet, honor_armor
+	// Halo 2 over the CE Elite (extract_h2_elite_kit.py): honor_body; the CE body hidden under it
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
-		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_helmet.iqm", 1, "", 'None');
-		A_ChangeModel('None', 2, "models/hce/EliteKit", "honor_armor.iqm", 2, "", 'None');
+		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
+		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_body.iqm", 1, "", 'None');
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
 		super.HCE_OnSever(limb, gunArm);
 		if(limb == HCE_LIMB_LARM)
 		{
-			A_ChangeModel('None', 2, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
-			A_ChangeModel('None', 2, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
-			A_ChangeModel('None', 1, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
+	}
+	override void HCE_BloodHideClass()
+	{
+		super.HCE_BloodHideClass();
+		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
+		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 7, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 

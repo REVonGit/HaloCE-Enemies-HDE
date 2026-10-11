@@ -110,50 +110,13 @@ RANGER_STEEL = (0.72, 0.78, 0.86)
 ELITE_H2_ARMOUR = {   # new rank -> (Halo CE variant it copies per gun, colour, kit pieces at models 1.., extra flags)
     'honor guard': ({'plasma rifle': 'characters\\elite\\elite commander\\elite commander plasma rifle',
                      'energy sword': 'characters\\elite\\elite commander\\elite commander energy sword'},
-                    HONOR_RED, ('honor_helmet', 'honor_armor'), ()),
+                    HONOR_RED, ('honor_body',), ()),
     'ranger': ({'plasma rifle': 'characters\\elite\\elite minor\\elite minor plasma rifle',
                 'needler': 'characters\\elite\\elite minor\\elite minor needler'},
                RANGER_STEEL, ('ranger_body', 'elite_jetpack'), ('HCE_Jetpack',)),
 }
 
 SKIN_PAIRS = []      # (source texture, baked skin): skin_check.py's deep-fried check after each build
-
-NOHEAD_BONES = ('bip01 head', 'frame mandible lower left', 'frame mandible lower right', 'frame mandible upper left',
-                'frame mandible upper right')
-
-def nohead_iqm(src, dst):
-    """a copy of a CE Elite model without its head (the helmet is part of its body surface): every body triangle whose
-    corners all follow the head or the mandibles is made degenerate in place, so the surfaces, their order, the
-    skeleton and the animations stay exactly as they are (the variants that wear Halo 2's helmets use it)"""
-    import struct
-    d = bytearray(open(src, 'rb').read())
-    h = struct.unpack_from('<16s27I', d, 0)
-    (num_text, ofs_text, num_meshes, ofs_meshes, num_va, num_vert, ofs_va, num_tri, ofs_tri, _adj,
-     num_joints, ofs_joints) = h[4:16]
-    txt = bytes(d[ofs_text:ofs_text + num_text])
-    def name(o): return txt[o:txt.index(b'\0', o)].decode('latin1')
-    jn = [name(struct.unpack_from('<I', d, ofs_joints + 48 * j)[0]) for j in range(num_joints)]
-    head = {j for j, n in enumerate(jn) if n in NOHEAD_BONES}
-    bi = bw = None
-    for k in range(num_va):
-        typ, _fl, fmt, size, off = struct.unpack_from('<5I', d, ofs_va + 20 * k)
-        if typ == 4: bi = np.frombuffer(bytes(d[off:off + num_vert * 4]), np.uint8).reshape(-1, 4)
-        if typ == 5: bw = np.frombuffer(bytes(d[off:off + num_vert * 4]), np.uint8).reshape(-1, 4)
-    dom = bi[np.arange(num_vert), bw.argmax(1)]
-    onhead = np.isin(dom, list(head))
-    tris = np.frombuffer(bytes(d[ofs_tri:ofs_tri + num_tri * 12]), np.uint32).reshape(-1, 3).copy()
-    cut = 0
-    for k in range(num_meshes):
-        mn, _mat, fv, nv, ft, nt = struct.unpack_from('<6I', d, ofs_meshes + 24 * k)
-        n = name(mn)
-        if n.startswith(('weapon_', 'gore.', 'jackal_shield')): continue
-        t = tris[ft:ft + nt]
-        drop = onhead[t].all(1)
-        t[drop] = t[drop][:, :1]
-        cut += int(drop.sum())
-    d[ofs_tri:ofs_tri + num_tri * 12] = tris.astype('<u4').tobytes()
-    open(dst, 'wb').write(bytes(d))
-    return cut
 
 def elite_kit_code(pieces, mdir='hce', whole=False):
     """attach Halo 2's pieces (models 1..) to a CE Elite. Pieces cut by limb (extract_h2_elite_kit.SPLIT: surfaces named
@@ -208,22 +171,25 @@ def bake_reflection(rgb, n, spec, faces, k=1.0):
 
 # Halo 2's Ranger and its jump pack: their colour maps get the armour's cube-map reflection Halo 2 draws on them (its
 # shaders reflect a cube map under the colour map's alpha), as the Elites' painted armour does; the silver cube, gentle
-KIT_SHINE = {'ek_ranger_arms.png': 0.25, 'ek_ranger_torso.png': 0.25, 'ek_ranger_legs.png': 0.25, 'ek_ranger_helmet.png': 0.25,
-             'ek_elite_jetpack.png': 0.16}     # skin_check: its wide specular mask glares above this
-KIT_SHINE_CUBE = 3            # the Elites' silver cube map
+# texture -> (strength, which of the Elites' cube maps: 1 red, 3 silver)
+KIT_SHINE = {'ek_ranger_arms.png': (0.25, 3), 'ek_ranger_torso.png': (0.25, 3), 'ek_ranger_legs.png': (0.25, 3),
+             'ek_ranger_helmet.png': (0.25, 3),
+             'ek_elite_jetpack.png': (0.16, 3),      # skin_check: its wide specular mask glares above this
+             # the Honor Guard's Halo 2 Elite armour, crimson and gold, in the red rank's cube
+             'ek_torso.png': (0.3, 1), 'ek_arms.png': (0.3, 1), 'ek_legs.png': (0.3, 1), 'ek_elite_honor_armor.png': (0.25, 1)}
 
 def kit_shine(d):
     """bake KIT_SHINE's reflection into the pack's copies of the Elite kit's colour maps (d: its EliteKit folder)"""
     from iqm import read_iqm
     meta = json.load(open(f'{ELITE_KIT}/EliteKit.json'))
     specs = meta.get('spec', {})
-    faces = cube_faces('elite', KIT_SHINE_CUBE)
-    if faces is None: return
     meshes = []
     for f in sorted(os.listdir(d)):
         if f.endswith('.iqm'): meshes += read_iqm(f'{d}/{f}')[1]
-    for tex, k in KIT_SHINE.items():
+    for tex, (k, cube) in KIT_SHINE.items():
         if tex not in specs or not os.path.exists(f'{d}/{tex}'): continue
+        faces = cube_faces('elite', cube)
+        if faces is None: continue
         im = Image.open(f'{ELITE_KIT}/{tex}').convert('RGB')
         rgb = np.asarray(im).astype(np.float32) / 255.0
         spec = np.asarray(Image.open(f'{ELITE_KIT}/{specs[tex]}').convert('L').resize(im.size)).astype(np.float32) / 255.0
@@ -243,8 +209,8 @@ def add_elite_h2_armour(variants):
             cl[0].update(color_lower_bound=list(rgb), color_upper_bound=list(rgb))
             v['change_colors_list'] = cl
             v['_late'] = True
-            whole = rank == 'ranger'          # the Ranger: Halo 2's whole body; the Honor Guard: armour over the headless CE Elite
-            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, whole=whole), add_flags=list(extra), nohead=not whole)
+            # Halo 2's whole Honor Guard or Ranger, worn in place of the CE Elite's body
+            v['_ov'] = dict(v.get('_ov') or {}, code=elite_kit_code(pieces, whole=True), add_flags=list(extra))
             variants[vn] = v
 
 add_elite_h2_armour(AI['variants'])
@@ -1493,8 +1459,6 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
-        if char in ('Elite', 'EliteSpecial', 'EliteRifle') and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # headless, for Halo 2's helmets
-            nohead_iqm(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}_nohead.iqm')
         if char.startswith('Elite') and mdir == 'hce' and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # Halo 2's Elite armour (the main pack's; the add-on's carbine Elites use it from there)
             os.makedirs(f'{pack}/models/{mdir}/EliteKit', exist_ok=True)
             for f in os.listdir(ELITE_KIT):
@@ -1867,8 +1831,7 @@ def build(cfg=None):
                                for l in arsenal_lines(char, first, meta, pack, mdir, oi)]
                 frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
-            m0 = f'{char}_nohead.iqm' if ov.get('nohead') else f'{char}.iqm'
-            md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{m0}"\n' + '\n'.join(skin_lines) +
+            md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')

@@ -958,13 +958,17 @@ def gore_code(char, meta, mdir, sc):
     perms = body_perms(meta)
     def stub_and_gib(x, ind):
         c = x['center']
-        return (f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {x["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n'
-                f'{ind}HCE_SpawnLimb({{L}}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{x["gib"]}\', {x["stub"]}, \'{g["tex"]}\', {x.get("rest", 0):.4f});\n')
+        show = (f'{ind}HCE_ShowStumps(hce_severed | (1 << {{L}}));\n' if g.get('cap_model') else
+                f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {x["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n')
+        return (show +
+                f'{ind}HCE_SpawnLimb({{L}}, ({c[0]:.4f}, {c[1]:.4f}, {c[2]:.4f}), {sc:.2f}, "models/{mdir}/{char}", \'{x["gib"]}\', {x.get("gib_stub", x["stub"])}, \'{g["tex"]}\', {x.get("rest", 0):.4f});\n')
     for L, d in g['limbs'].items():
         gun = any(si < len(mw) and mw[si] for si in d['surfaces'])
         out.append(f'\t\tcase {GORE_LIMBS[L]}:\n')
         for si in d['surfaces']:
             out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
+        if d.get('bone'):                          # a collapsed limb (gore_kit.py: the Brute's arms): its bone scaled to
+            out.append(f'\t\t\tif(bDECOUPLEDANIMATIONS) SetNamedBoneScaling(\'{d["bone"]}\', (0, 0, 0), SB_REPLACE, 0);\n')   # nothing, and all it carries
         vs = d.get('variants')
         if vs and perms:
             # one stump and gib per permutation (the Grunts' two backs): the one this enemy wears
@@ -976,6 +980,15 @@ def gore_code(char, meta, mdir, sc):
             out.append(stub_and_gib(d, '\t\t\t').replace('{L}', str(GORE_LIMBS[L])))
         out.append(f'\t\t\tHCE_OnSever({GORE_LIMBS[L]}, {"true" if gun else "false"});\n\t\t\treturn true;\n')
     out.append('\t\t}\n\t\treturn false;\n\t}\n')
+    if g.get('cap_model'):
+        # the stumps are a model of their own (gore_kit.py cap_model), attached at model slot cap_slot once a limb is off:
+        # the severed limbs' stumps shown, the rest hidden
+        cs, cm = g['cap_slot'], g['cap_model']
+        out.append('\tvoid HCE_ShowStumps(int sev)\n\t{\n')
+        for L, d in g['limbs'].items():
+            out.append(f'\t\tif(sev & (1 << {GORE_LIMBS[L]})) A_ChangeModel(\'None\', {cs}, "models/{mdir}/{char}", \'{cm}\', {d["stub"]}, "models/{mdir}/{char}", \'{g["tex"]}\', CMDL_USESURFACESKIN);\n'
+                       f'\t\telse A_ChangeModel(\'None\', {cs}, "models/{mdir}/{char}", \'{cm}\', {d["stub"]}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
+        out.append('\t}\n')
     # limb centres in map units (hit location: which limb a shot struck) and the arm holding the gun
     out.append('\toverride vector3 HCE_LimbOffset(int limb)\n\t{\n\t\tswitch(limb)\n\t\t{\n')
     for L, d in g['limbs'].items():
@@ -1446,6 +1459,8 @@ def build(cfg=None):
                 for gib in {d['gib']} | {v['gib'] for v in (d.get('variants') or {}).values()}:
                     shutil.copy(f'{OUT}/models/{char}/{gib}', f'{pack}/models/{mdir}/{char}/{gib}')
             shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["tex"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["tex"]}')
+            if meta['gore'].get('cap_model'):     # the stumps' own model (the Brute's: attached when a limb comes off)
+                shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["cap_model"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["cap_model"]}')
         if meta.get('blood'):                      # blood on the body (blood_kit.py): overlay models and textures
             for f in meta['blood']['models'] + meta['blood']['textures']: shutil.copy(f'{OUT}/models/{char}/{f}', f'{pack}/models/{mdir}/{char}/{f}')
             Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/{char}/hce_noblood.png')
@@ -1648,7 +1663,7 @@ def build(cfg=None):
                 hit = sorted((k != wid_equipped, k) for k, a in ars.items() if a.get('wid') == wid_equipped)
                 if hit: ov = dict(ov, overlay=hit[0][1])
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
-            stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()}
+            stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values()} if not meta.get('gore', {}).get('cap_model') else set()
             stubs |= {x['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() for x in d.get('variants', {}).values()}
             blood_hidden = []
             for si, mat in enumerate(meta['meshes']):

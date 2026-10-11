@@ -27,7 +27,16 @@ so no surface index the packs already use moves). Then:
   the gib model and the limb's centre (Halo units, model space); 'tex' the gore texture. build_pack.py turns it into
   HCE_SeverLimb (the API's HCE_Dismember picks the limbs on a hard kill).
 Surfaces: UZDoom draws at most 32 per model. A stray triangle or two of a limb stays on the body; a surface left empty
-gives its slot to the limb; the Brute (29 surfaces) loses only its head, and its guns' 2-triangle slivers are pruned.
+gives its slot to the limb. The Brute (29 surfaces) has no room to split its arms off: its arms are 'collapsed'
+limbs instead. They stay on the body's surfaces and HCE_SeverLimb scales the arm's bone to nothing at run time
+(UZDoom's SetNamedBoneScaling), which draws in everything the arm carries, fur, armour-kit pieces and the gun
+included. Its stump's rim runs round the skin the collapse moves and keeps that skin's own bone weights, so it closes
+the shoulder however it is posed. The gib is cut from the arm's triangles as usual. The Brute's stumps take none
+of its surfaces either: they are a model of their own (<Char>_stumps.iqm, json gore 'cap_model', on the same
+skeleton), attached at run time as model attachment 'cap_slot' once a limb comes off; its gibs carry their cap on
+the surface after the body's. Its guns' 2-triangle slivers are pruned.
+Re-running keeps what later scripts added to the model: the animations (reload_anims.py, cover_anims.py ...) and
+json keys (marine_arsenal.py's 'arsenal').
 A pristine copy (<Char>_nogore.iqm / .json) is kept, so re-running starts from the extractor's output.
 """
 import os as _os, sys as _sys
@@ -57,7 +66,10 @@ GORE = {
     'JackalMajor':  dict(blood='4A2A9A', style='bone', spv3='jackal_new', limbs={'head': 'bip01 head', 'larm': 'bip01 l clavicle', 'rarm': 'bip01 r clavicle'}),
     # kitbashed
     'H2Jackal':     dict(style='bone', blood='4A2A9A', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
-    'Brute':        dict(style='bone', blood='161C40', prune=True, limbs={'head': 'head'}),   # 32-surface limit: head only
+    # the Brute is at UZDoom's 32 surfaces: its arms aren't split off but collapsed (their bone scaled to nothing at run
+    # time), and its stumps are a model of their own (attachment 9: the kit uses 1-6, blood 7, a held gun 8)
+    'Brute':        dict(style='bone', blood='161C40', prune=True, limbs={'head': 'head'}, cap_model=9,
+                         collapse={'larm': 'l_upperarm', 'rarm': 'r_upperarm'}, cap_from='body.'),
     'Hunter':       dict(style='worm', blood='FF8C1A', limbs={'head': 'frame head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),  # the cannon arm, the shield arm
     'Drone':        dict(style='insect', blood='DDF0D2', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
     'SlugMan':      dict(style='worm', blood='FF8C1A', limbs={'head': 'Bip01 Head', 'larm': 'Bip01 L UpperArm', 'rarm': 'Bip01 R UpperArm'}),
@@ -229,17 +241,18 @@ def sub_mesh(m, tris):
                 bidx=m['bidx'][used], bw=m['bw'][used], tris=remap[tris])
 
 
-def boundary_loops(parts):
-    """cut edges of a limb: edges (by rounded position) used by exactly one of its triangles, chained into loops"""
+def boundary_loops(parts, skins=None):
+    """cut edges of a limb: edges (by rounded position) used by exactly one of its triangles, chained into loops
+    ('skins': a list filled with each loop's vertex bone indices and weights)"""
     key = {}
-    pts = []
-    def vid(p):
+    pts, sk = [], []
+    def vid(p, b):
         k = tuple(np.round(p * 2000).astype(int))
-        if k not in key: key[k] = len(pts); pts.append(p)
+        if k not in key: key[k] = len(pts); pts.append(p); sk.append(b)
         return key[k]
     cnt = {}
     for m in parts:
-        ids = [vid(p) for p in m['pos']]
+        ids = [vid(p, (m['bidx'][i], m['bw'][i])) for i, p in enumerate(m['pos'])]
         for t in m['tris']:
             a, b, c = ids[t[0]], ids[t[1]], ids[t[2]]
             for e in ((a, b), (b, c), (c, a)):
@@ -256,7 +269,9 @@ def boundary_loops(parts):
             nxt = [n for n in adj[cur] if n != prev and n not in seen]
             if not nxt: break
             prev, cur = cur, nxt[0]; seen.add(cur); loop.append(cur)
-        if len(loop) >= 3: loops.append(np.array([pts[i] for i in loop]))
+        if len(loop) >= 3:
+            loops.append(np.array([pts[i] for i in loop]))
+            if skins is not None: skins.append([sk[i] for i in loop])
     return loops
 
 
@@ -295,6 +310,60 @@ def cap_mesh(loops, joint_pos, outward, bone, material, dome=0.25):
     bw = np.zeros((n, 4), np.uint8); bw[:, 0] = 255
     T = np.array(T)[:, [0, 2, 1]]                 # the packs' winding (like the extractors')
     return dict(name='', material=material, pos=P, nrm=np.array(N), uv=np.array(UV), bidx=bidx, bw=bw, tris=T)
+
+
+COLLAPSE_EDGE = 0.15
+
+
+def limb_frac(m, bones):
+    """per vertex: its weight on these bones (0-1)"""
+    on = np.isin(m['bidx'], list(bones))
+    return (m['bw'].astype(float) * on).sum(1) / np.maximum(1, m['bw'].astype(float).sum(1))
+
+
+def collapsed_cap(loops, skins, limb_bones, J, outward, par, material, near_to, clear=None, dome=0.35):
+    """stump for a collapsed limb (its bones scaled to nothing at run time, every vertex they carry drawn in to the
+    limb's joint J): the cut loop's vertices keep their own bone weights, so the cap's rim follows the body's edge
+    exactly as it is drawn in; the apex (on the limb's parent bone) sits past the joint, over the collapsed limb"""
+    P, N, UV, T, BI, BW = [], [], [], [], [], []
+    if not loops: return None
+    near = min(np.linalg.norm(l.mean(0) - near_to) for l in loops)
+    lb = np.array(sorted(limb_bones))
+    for loop, sk in zip(loops, skins):
+        if np.linalg.norm(loop.mean(0) - near_to) > near * 1.6 + 0.02: continue
+        # where the rim is drawn to: the weights on the limb's bones pull a vertex onto J
+        f = limb_frac(dict(bidx=np.array([b for b, _ in sk]), bw=np.array([w for _, w in sk])), limb_bones)
+        rim = loop * (1 - f[:, None]) + J * f[:, None]
+        c = rim.mean(0)
+        r = np.linalg.norm(rim - c, axis=1).mean()
+        if r < 1e-4: continue
+        reach = (J - c) @ outward
+        if clear is not None and len(clear):      # past whatever is left of the limb inside the rim
+            inside = clear[np.linalg.norm((clear - c) - np.outer((clear - c) @ outward, outward), axis=1) < r * 1.2]
+            if len(inside): reach = max(reach, ((inside - c) @ outward).max())
+        apex = c + outward * max(r * dome, reach + r * 0.15)
+        ax = np.cross(outward, [0, 0, 1.0])
+        if np.linalg.norm(ax) < 1e-3: ax = np.cross(outward, [0, 1.0, 0])
+        ax /= np.linalg.norm(ax); ay = np.cross(outward, ax)
+        base = len(P)
+        P.append(apex); N.append(outward); UV.append((0.5, 0.5))
+        BI.append((par, 0, 0, 0)); BW.append((255, 0, 0, 0))
+        for p, q, (bi, bw) in zip(loop, rim, sk):
+            d = q - c
+            P.append(p); n = outward * 0.6 + d / max(np.linalg.norm(d), 1e-6) * 0.4; N.append(n / np.linalg.norm(n))
+            UV.append((0.5 + 0.42 * (d @ ax) / r, 0.5 + 0.42 * (d @ ay) / r))
+            BI.append(tuple(bi)); BW.append(tuple(bw))
+        n = len(loop)
+        for i in range(n):
+            a, b = base + 1 + i, base + 1 + (i + 1) % n
+            tri = [base, a, b]
+            fn = np.cross(rim[i] - apex, rim[(i + 1) % n] - apex)
+            if fn @ outward < 0: tri = [base, b, a]
+            T.append(tri)
+    if not T: return None
+    T = np.array(T)[:, [0, 2, 1]]
+    return dict(name='', material=material, pos=np.array(P), nrm=np.array(N), uv=np.array(UV),
+                bidx=np.array(BI, np.uint8), bw=np.array(BW, np.uint8), tris=T)
 
 
 def spv3_region(spv, region):
@@ -362,7 +431,7 @@ def mesh_islands(m):
 
 def perm_of(name):
     """the permutation a surface belongs to (extract_chars.MULTI_PERMS: 'region.perm'), None for the rest"""
-    if not name or name.startswith('gore.') or '.' not in name: return None
+    if not name or not name.startswith('perm ') or '.' not in name: return None
     return name.split('.', 1)[1]
 
 
@@ -375,8 +444,18 @@ def process(char):
     meta = json.load(open(jp))
     if 'gore' not in meta or not os.path.exists(pi):          # fresh extractor output: keep it
         shutil.copy(ip, pi); shutil.copy(jp, pj)
-    meta = json.load(open(pj))
+    later = {}                                   # animations added after us (reload_anims.py, cover_anims.py ...): kept
+    if 'gore' in meta:
+        _, _, cur = read_iqm(ip)
+        later = {n: (fr, meta.get('anims', {}).get(n)) for n, fr in cur.items()}
+    added = {k: v for k, v in meta.items() if k not in ('gore', 'blood')}   # what later scripts added (marine_arsenal.py's
+    meta = json.load(open(pj))                                              # 'arsenal' ...): kept
+    for k, v in added.items(): meta.setdefault(k, v)
     joints, meshes, anims = read_iqm(pi)
+    for n, (fr, inf) in later.items():
+        if n in anims: continue
+        anims[n] = fr
+        if inf is not None: meta.setdefault('anims', {})[n] = inf
     n0 = len(meshes)
     names = list(meta.get('mesh_names') or [m['name'] for m in meshes])
     mesh_weapon = list(meta.get('mesh_weapon') or [None] * n0)
@@ -385,7 +464,13 @@ def process(char):
         keep = [i for i, m in enumerate(meshes) if not (mesh_weapon[i] and len(m['tris']) <= 4)]
         assert meta.get('shield_surface') is None or meta['shield_surface'] == keep.index(meta['shield_surface'])
         meshes = [meshes[i] for i in keep]; names = [names[i] for i in keep]; mesh_weapon = [mesh_weapon[i] for i in keep]
+    if cfg.get('drop_slivers'):                # armour placeholders of a triangle or two (an empty permutation) likewise
+        keep = [i for i, m in enumerate(meshes) if mesh_weapon[i] or len(m['tris']) > cfg['drop_slivers']]
+        meshes = [meshes[i] for i in keep]; names = [names[i] for i in keep]; mesh_weapon = [mesh_weapon[i] for i in keep]
     limbs = {L: subtree(joints, r) for L, r in cfg['limbs'].items()}
+    collapse = cfg.get('collapse', {})
+    roots = dict(cfg['limbs'], **collapse)
+    limbs.update({L: subtree(joints, r) for L, r in collapse.items()})
     regions = {}                                   # region limbs: points of SPV3's region, KD-searched
     if cfg.get('regions'):
         from scipy.spatial import cKDTree
@@ -395,6 +480,7 @@ def process(char):
     W = world_bind(joints)
     jidx = {j[0].lower(): i for i, j in enumerate(joints)}
     gore = {L: dict(surfaces=[], parts=[]) for L in list(limbs) + list(regions)}
+    cparts = {L: [] for L in collapse}           # a collapsed limb's triangles, per surface (its gib; the body keeps them)
     new = []
     for si, m in enumerate(meshes):
         dom = dominant(m)
@@ -425,6 +511,9 @@ def process(char):
             for L in gore:
                 if (lab == L).sum() > len(lab) * 0.5: gore[L]['surfaces'].append(si)
             continue
+        for L in collapse:                         # a collapsed limb stays on its surfaces
+            if (lab == L).any(): cparts[L].append((si, sub_mesh(m, m['tris'][lab == L]), names[si]))
+            lab[lab == L] = ''
         for L in gore:                             # a stray triangle or two isn't worth a surface: it stays put
             if 0 < (lab == L).sum() < 4: lab[lab == L] = ''
         Ls = [L for L in gore if (lab == L).any()]
@@ -438,6 +527,7 @@ def process(char):
                 meshes[si] = nm; gore[L]['surfaces'].append(si); gore[L]['parts'].append(si)
             else: new.append((L, si, nm))
         if keep: meshes[si] = sub_mesh(m, m['tris'][lab == ''])
+    n_body = len(meshes)                           # (the stumps and limb copies come after)
     for L, si, nm in new:
         meshes.append(nm); names.append(names[si]); mesh_weapon.append(None)
         gore[L]['surfaces'].append(len(meshes) - 1); gore[L]['parts'].append(len(meshes) - 1)
@@ -455,20 +545,22 @@ def process(char):
     # for each, the parts outside any permutation in all of them; HCE_SeverLimb picks by the permutation rolled
     jobs = []
     for L in gore:
+        if L in collapse:                         # (its parts: (surface, triangles) pairs, not whole surfaces)
+            jobs.append((L, None, [(si, pm) for si, pm, _ in cparts[L]])); continue
         prm = sorted({perm_of(names[i]) for i in gore[L]['parts']} - {None})
-        if len(prm) <= 1: jobs.append((L, None, list(gore[L]['parts'])))
-        else: jobs += [(L, q, [i for i in gore[L]['parts'] if perm_of(names[i]) in (None, q)]) for q in prm]
+        if len(prm) <= 1: jobs.append((L, None, [(i, meshes[i]) for i in gore[L]['parts']]))
+        else: jobs += [(L, q, [(i, meshes[i]) for i in gore[L]['parts'] if perm_of(names[i]) in (None, q)]) for q in prm]
     gibs_cap = {}
     for L, q, part_ids in jobs:
         if L in regions:                          # a region limb: from its bone out to the region's centre
             root = jidx[regions[L][2].lower()]; par = root
             bone = np.array(W[root][0]); ctr_ = regions[L][1]
             out_dir = ctr_ - bone
-            Pp = np.concatenate([meshes[i]['pos'] for i in part_ids]) if part_ids else ctr_[None]
+            Pp = np.concatenate([pm['pos'] for _, pm in part_ids]) if part_ids else ctr_[None]
             jp_ = Pp[np.argmin((Pp - bone) @ (out_dir / max(np.linalg.norm(out_dir), 1e-6)))]   # where it meets the body
             pp = bone
         else:
-            root = jidx[cfg['limbs'][L].lower()]
+            root = jidx[roots[L].lower()]
             jp_ = np.array(W[root][0]); par = joints[root][1]
             pp = np.array(W[par][0]) if par >= 0 else jp_ - np.array([0, 0, 0.1])
             kids = [i for i, j in enumerate(joints) if j[1] == root]
@@ -478,15 +570,34 @@ def process(char):
                 out_dir = jp_ - pp                    # from the body into the limb
             if np.linalg.norm(out_dir) < 1e-5: out_dir = jp_ - pp
         out_dir /= max(np.linalg.norm(out_dir), 1e-6)
-        parts = [meshes[i] for i in part_ids]
-        loops = boundary_loops(parts)
+        parts = [pm for _, pm in part_ids]
+        skins = []
+        loops = boundary_loops(parts, skins)
+        if L in collapse:
+            # the stump's rim: round the skin the collapse moves (the skin surfaces' triangles with a corner more than
+            # COLLAPSE_EDGE on the limb's bones), not the limb's own edge, which is drawn deep into the shoulder; the
+            # dome clears every vertex the collapse leaves near the joint (fur and armour included)
+            zone, clear = [], []
+            for si, m in enumerate(meshes[:n_body]):
+                if mesh_weapon[si] or not len(m['tris']): continue
+                f = limb_frac(m, limbs[L])
+                if names[si].startswith(cfg.get('cap_from', '')):
+                    hit = (f[m['tris']] > COLLAPSE_EDGE).any(1)
+                    if hit.any(): zone.append(sub_mesh(m, m['tris'][hit]))
+                moved = f > 0.01
+                clear.append(m['pos'][moved] * (1 - f[moved, None]) + jp_ * f[moved, None])
+            cut_skins = []
+            cut = boundary_loops(zone, cut_skins)
+            clear = np.concatenate(clear) if clear else np.zeros((0, 3))
         if L in regions and loops:            # a region limb (the Grunts' pack): only the cut where it meets the body,
             from scipy.spatial import cKDTree # not the open rims of its own parts (its inset lights) floating once gone
             keepP = np.concatenate([m['pos'] for i, m in enumerate(meshes) if not mesh_weapon[i] and len(m['pos'])
                                     and not any(i in gore[o]['parts'] for o in gore)])
             kk = cKDTree(keepP)
             loops = [lp for lp in loops if np.mean(kk.query(np.asarray(lp))[0] < 0.01) > 0.5]
-        if L in stumps and len(stumps[L]['tris']) >= 6:
+        if L in collapse:
+            st = collapsed_cap(cut, cut_skins, limbs[L], jp_, out_dir, par if par >= 0 else root, tex, jp_, clear)
+        elif L in stumps and len(stumps[L]['tris']) >= 6:
             st = dict(stumps[L]); st['material'] = tex
             if gim is None:                               # SPV3's UVs only fit SPV3's texture
                 rr = max(0.02, np.linalg.norm(st['pos'] - jp_, axis=1).max() * 0.8)
@@ -525,7 +636,7 @@ def process(char):
     # its centre sits above the floor once it has landed
     for L, q, part_ids in jobs:
         gcap, stub = gibs_cap[(L, q)]
-        P = np.concatenate([meshes[i]['pos'] for i in part_ids]) if part_ids else np.zeros((1, 3))
+        P = np.concatenate([pm['pos'] for _, pm in part_ids]) if part_ids else np.zeros((1, 3))
         ctr = P.mean(0)
         Pa = np.concatenate([P] + ([gcap['pos']] if gcap is not None else []))
         ev, evec = np.linalg.eigh(np.cov((Pa - ctr).T) if len(Pa) > 3 else np.eye(3))
@@ -535,8 +646,10 @@ def process(char):
         mid = (Q.min(0) + Q.max(0)) / 2
         rest = float((Q[:, 2].max() - Q[:, 2].min()) / 2)
         gm = []
-        for si, m in enumerate(meshes):
-            if si in part_ids: src = m
+        own = dict(part_ids)
+        if cfg.get('cap_model'): stub = len(meshes) - len(jobs)      # (the stumps leave the body: the cap goes after it)
+        for si, m in enumerate(meshes[:stub + 1] if cfg.get('cap_model') else meshes):
+            if si in own: src = own[si]
             elif si == stub and gcap is not None: src = dict(gcap, name=names[si])
             else:
                 gm.append(dict(name=names[si], material=m['material'], pos=np.zeros((0, 3)), nrm=np.zeros((0, 3)), uv=np.zeros((0, 2)),
@@ -549,17 +662,32 @@ def process(char):
         bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
         gfile = f'{char}_gib_{L}.iqm' if q is None else f'{char}_gib_{L}_{q}.iqm'
         write_iqm(f'{od}/{gfile}', joints, gm, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
-        rec = dict(stub=stub, gib=gfile, center=[float(x) for x in ctr], rest=rest)
+        rec = dict(stub=gibs_cap[(L, q)][1], gib=gfile, center=[float(x) for x in ctr], rest=rest)
+        if cfg.get('cap_model'): rec['gib_stub'] = stub
+        if L in collapse: rec['bone'] = joints[jidx[collapse[L].lower()]][0]
         if q is not None: gore[L].setdefault('variants', {})[q] = rec
         if q is None or 'stub' not in gore[L]: gore[L].update(rec)          # (the first permutation's as the default)
     for L in gore: gore[L].pop('parts', None)
-    assert len(meshes) <= 32, f'{char}: {len(meshes)} surfaces (UZDoom draws at most 32)'
+    extra = {}
+    if cfg.get('cap_model'):
+        # the stumps as a model of their own, attached at run time (model attachment cfg['cap_model']), so they take
+        # none of the body's 32 surfaces; the gibs keep their caps where they are (each gib's own surface list)
+        recs = [r for d in gore.values() for r in [d] + list(d.get('variants', {}).values())]
+        stubs = sorted({r['stub'] for r in recs})
+        assert stubs == list(range(len(meshes) - len(stubs), len(meshes))), stubs   # (appended last)
+        cfile = f'{char}_stumps.iqm'
+        write_iqm(f'{od}/{cfile}', joints, [meshes[i] for i in stubs],
+                  [dict(name='bind', fps=30.0, loop=True, frames=[[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]])])
+        for r in recs: r['stub'] = stubs.index(r['stub'])
+        meshes, names, mesh_weapon = meshes[:stubs[0]], names[:stubs[0]], mesh_weapon[:stubs[0]]
+        extra = dict(cap_model=cfile, cap_slot=cfg['cap_model'])
+    assert len(meshes) <= 32, f'{char}: {len(meshes)} surfaces (UZDoom draws at most 32): {names}'
     info = meta.get('anims', {})
     alist = [dict(name=n, fps=30.0, loop=bool(info.get(n, {}).get('loop', True)), frames=[[(t, q, s) for t, q, s in f] for f in fr])
              for n, fr in anims.items()]
     size = write_iqm(ip, joints, meshes, alist)
     meta.update(meshes=[m['material'] for m in meshes], mesh_names=names, mesh_weapon=mesh_weapon, iqm_bytes=size,
-                gore=dict(limbs=gore, tex=tex))
+                gore=dict(limbs=gore, tex=tex, **extra))
     json.dump(meta, open(jp, 'w'), indent=1)
     print(f'{char:13s} surfaces {n0} -> {len(meshes)}  limbs ' +
           ', '.join(f"{L}: hide {len(g['surfaces'])} stub {g['stub']}" for L, g in gore.items()))

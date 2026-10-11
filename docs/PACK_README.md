@@ -730,7 +730,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 
 **The last stand:** an Elite holding its gun in one hand (the pistol stance) that has its *other* arm shot off the same way doesn't die of it. It drops to a crouch where it stands and fights on from there: it never moves again, turns to aim and fires until it is killed, with no grenades, jumps, berserk charge or jump pack. Its crouch makes it a smaller target.
 
-**One arm gone (Brutes):** a Brute holding a one-handed gun (plasma rifle, plasma pistol, needler or Spiker) that loses its other arm fights on as normal, minus everything that takes that hand: no grenade throws, no climbing or vaulting, no berserk charge on all fours, and it only picks up guns it can fire one-handed. (Halo 2's Brute model has no room for severable arms yet, so for now only its head comes off.)
+**One arm gone (Brutes):** a Brute holding a one-handed gun (plasma rifle, plasma pistol, needler or Spiker) that loses its other arm fights on as normal, minus everything that takes that hand: no grenade throws, no climbing or vaulting, no berserk charge on all fours, and it only picks up guns it can fire one-handed. A Brute holding a gun in both hands keeps its other arm while it lives (it comes off once the Brute is dead).
 
 **Severed limbs:**
 * **The severed piece:** shot off, it pops outward from the body (an arm to its side, a Grunt's pack backwards, the head up and to one side) and comes to rest 2–3 feet out from the body's edge. A blast throws it by the explosion's impulse instead: out from the blast's centre, harder the bigger and closer the blast (a grenade at arm's length throws it well over 10 feet). It tumbles and trails blood, and moves like HaloDoom Evolved's spent casings: it spins, kicks off at a new angle each time it bounces, then eases over and lies flat on the floor. It wears the enemy's own rank colours and armour, with a gore cap on the cut end, and fades after about 30 seconds on the floor.
@@ -750,7 +750,7 @@ The stump texture is the gore Tropical Thunder 98 made for the XAM Campaign Over
 * **The others:** recoloured to their blood. Brutes are navy, Hunters and Slug Men orange, and Drones a pale ichor.
 * **Kitbashed caps:** these put the bone end in the middle of the cut. Hunters, Slug Men and Drones have no bones, so theirs show flesh only.
 
-Limbs don't come off the Flood, Marines, Engineers or the beasts, but the gibbing weapons still burst their bodies apart. Sentinels (machines) and infection forms (which pop) are never gibbed. Brutes lose only their head, because their model is already at UZDoom's 32-surface limit. Turn it off with `hce_dismember 0`.
+Limbs don't come off the Flood, Marines, Engineers or the beasts, but the gibbing weapons still burst their bodies apart. Sentinels (machines) and infection forms (which pop) are never gibbed. Brutes lose their head and both arms. Their model is at UZDoom's 32-surface limit, so a Brute's arm isn't cut away like the others': it is drawn in to the shoulder, and its fur, armour-kit pieces and gun go with it, under a gore stump. Turn it off with `hce_dismember 0`.
 
 ## Burning
 

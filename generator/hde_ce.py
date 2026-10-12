@@ -38,8 +38,12 @@ class Source:
             if not pf: break
             pb = B.block(pf); sz = B.get('PackedFile', pb.off, 'size'); db = B.block(B.get('PackedFile', pb.off, 'data'))
             im = Image.open(io.BytesIO(B.d[db.off:db.off + sz])).convert('RGBA' if alpha else 'RGB')
-            while max(im.size) > s.maxres: im = im.resize((im.size[0] // 2, im.size[1] // 2), Image.BILINEAR)
-            res = np.asarray(im).astype(np.float32) / 255
+            # shrink colour and alpha apart: PIL resizes RGBA premultiplied, which blacks out the colour wherever the
+            # alpha is 0 (Halo 5 colour maps keep only their lights' mask in alpha, near 0 everywhere else)
+            chans = list(im.split())
+            while max(chans[0].size) > s.maxres:
+                chans = [c.resize((c.size[0] // 2, c.size[1] // 2), Image.BILINEAR) for c in chans]
+            res = np.stack([np.asarray(c) for c in chans], -1).astype(np.float32) / 255
             break
         s._imgs[key] = res
         return res

@@ -79,3 +79,20 @@ def read_jms(text):
         TM[i] = int(nxt()); T[i] = [int(x) for x in nxt().split()]
     return dict(version=ver, nodes=nodes, materials=mats, markers=markers, pos=P * U, nrm=N, uv=UV, bidx=BI, bw=BW,
                 tri_mat=TM, tris=T)
+
+
+def read_jma(text):
+    """a Halo 2 animation source (JMA/JMM/JMO/JMR/JMT/JMZ, version 16395): frame rate, node names and parents, and per
+    frame per node its translation (world units), rotation (x, y, z, w as stored) and scale"""
+    if isinstance(text, bytes): text = text.decode('latin1')
+    toks = [l.strip() for l in text.replace('\r', '').split('\n') if l.strip() and not l.strip().startswith(';')]
+    ver, _chk, nf, fps, _na, _actor, nn = int(toks[0]), toks[1], int(toks[2]), int(toks[3]), toks[4], toks[5], int(toks[6])
+    names, parents = [], []
+    p = 7
+    for _ in range(nn): names.append(toks[p]); parents.append(int(toks[p + 1])); p += 2
+    T = np.zeros((nf, nn, 3)); Q = np.zeros((nf, nn, 4)); S = np.ones((nf, nn))
+    for f in range(nf):
+        for k in range(nn):
+            T[f, k] = [float(x) for x in toks[p].split()]; Q[f, k] = [float(x) for x in toks[p + 1].split()]
+            S[f, k] = float(toks[p + 2]); p += 3
+    return dict(version=ver, fps=fps, names=names, parents=parents, t=T * U, q=Q, s=S)

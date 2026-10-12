@@ -152,6 +152,8 @@ def main():
     shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
     swords = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_sword.fp"', gl)
     visors = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "([^"]+)"', gl)
+    # the Sentinel Knights' energy cores (build_pack.knight_skin): the core shader, its brightmap and cube map
+    cores = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "([^"]+)"\n\ttexture tex_cube "([^"]+)"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -213,7 +215,8 @@ def main():
         myshields = [t for t in shields if t in need]
         myswords = [t for t in swords if t in need]
         myvisors = [(t, c) for t, c in visors if t in need]
-        if mybms or mycamo or myshields or myswords or myvisors:
+        mycores = [(t, b, c) for t, b, c in cores if t in need]
+        if mybms or mycamo or myshields or myswords or myvisors or mycores:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
             if mybms or myshields or myswords:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
@@ -241,6 +244,13 @@ def main():
                 for t, c in myvisors:
                     os.makedirs(os.path.dirname(f'{d}/{c}'), exist_ok=True); shutil.copy(f'{PACK}/{c}', f'{d}/{c}')
                     out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "{c}"\n}}')
+            if mycores:                        # the Sentinel Knights' cores: the energy shader, brightmap and cube map
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_core.fp', f'{d}/shaders/hce_core.fp')
+                for t, b, c in mycores:
+                    for f in (b, c):
+                        os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True); shutil.copy(f'{PACK}/{f}', f'{d}/{f}')
+                    out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "{b}"\n\ttexture tex_cube "{c}"\n}}')
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'

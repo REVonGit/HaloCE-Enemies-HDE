@@ -116,7 +116,7 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
 | Lost Soul | Flood infection form |
 | Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills. With the Digsite add-on (or in a bundle), always Halo 2 Drones |
-| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9% |
+| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills) |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
 | Pain Elemental | Flood Carrier (Flood pack); the Digsite add-on makes it the Engineer instead |
@@ -147,7 +147,7 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 
 **Boss levels still work.** Barons, Mancubi, Arachnotrons, the Cyberdemon and the Spider Mastermind are replaced by dedicated stand-in classes (`HCE_Boss*`). The pack's `CheckReplacee` maps each one back to its Doom boss, and every Halo enemy calls `A_BossDeath` when it dies. So E1M8's Barons, MAP07's Mancubus and Arachnotron triggers and the Cyberdemon/Spider exits fire as usual. Verified on MAP07: killing the Hunter "Mancubi" lowered the tag-666 walls.
 
-**Drops.** Halo enemies drop the weapon they carried as an HDE pickup (`Halo_PlasmaPistol`, `Halo_Needler`, `Halo_PlasmaRifle`, `Halo_FuelRod`, `Halo_MA5B`, …), so the replaced zombies' clip and shotgun drops still turn into ammo. **The Covenant always drop the weapon they carry**, energy swords included (as HDE's Energy Sword): their gun lands just beside the body, clear of HDE's rule that deletes half of all enemy-dropped guns. Flood and Marines still go through that rule. Grunts and Elites with grenades left may also drop plasma grenades, and Marines frag grenades. Hunters (their fuel-rod cannon is part of the arm) and Sentinels drop nothing. Turn drops off with `hce_dropweapons 0`.
+**Drops.** Halo enemies drop the weapon they carried as an HDE pickup (`Halo_PlasmaPistol`, `Halo_Needler`, `Halo_PlasmaRifle`, `Halo_FuelRod`, `Halo_MA5B`, …), so the replaced zombies' clip and shotgun drops still turn into ammo. **The Covenant always drop the weapon they carry**, energy swords included (as HDE's Energy Sword): their gun lands just beside the body, clear of HDE's rule that deletes half of all enemy-dropped guns. Flood and Marines still go through that rule. Grunts and Elites with grenades left may also drop plasma grenades, and Marines frag grenades. Hunters (their fuel-rod cannon is part of the arm) and Sentinels drop nothing; Sentinel Knights drop HDE's Light Rifle, Scattershot or Binary Rifle. Turn drops off with `hce_dropweapons 0`.
 
 ## The Marine arsenal
 
@@ -602,6 +602,24 @@ Set the three `hce_nerf_*` CVars to 1 for the original Halo numbers. They are ne
 
 Halo weapon damage is used almost 1:1. HDE's own guns already use Halo-like values (Assault Rifle 10 vs HDE 6, plasma rifle 12–14 vs 12, sniper 101 vs 128), and enemy health is Halo's body vitality, with shields given through HDE's `ShieldProcessor`. Halo's Marines really are fragile (12 body + 24 shield), so expect them to die fast, as in the game. Approximations where Halo uses physics or scripted damage: Hunter melee 80, Carrier burst 40, infection-form nibble.
 
+## Sentinel Knights (Sentinels pack)
+
+The Forerunner **Sentinel Knight** from blackandfan's Halo 2 tag pack (H2EK-Tags): its model, 97-bone skeleton, textures and 39 full-body animations, converted from the pack's source files (`extract_sentinel_knight.py`). Its missing right forearm is a **Forerunner arm gun**: the Light Rifle, Scattershot, Binary Rifle or Suppressor from Halo Infinite (`HDE_promethian_weapons.blend`, `promethean_ce.py`), with the blend's materials baked into its texture, recoloured to match the Knight's own colouring per rank. The gun's lights keep their blend colours (blue, violet, green, blue) and glow. Its left forearm is its blade.
+
+* **Ranks** (health and shield from the tag pack's character tags, colours from the biped's change colours): **Minor** 200 health, 50 shield, grey plates; **Major** 300 / 100, grey; **Commander** 400 / 150, gold. The shield flares pale blue when hit.
+* **Core:** the ball at the chest is an energy core drawn with its own shader: plasma bands drifting through it, a pulse, a hot white rim and the room reflected in its glassy shell, always fully lit. Its colour is rolled when the Knight spawns: a cold one for grey Knights (cyan, ice blue, violet, teal), a warm one for gold commanders (orange, amber, red, gold).
+* **Arm guns:** each fires Forerunner hard-light bolts (HaloDoom Evolved's Scattershot bolt, in the gun's light colour, with an arc of hard-light lightning where it lands):
+  * **Light Rifle**: three-round bursts of fast blue bolts, mid to long range.
+  * **Scattershot**: six violet bolts at once that bounce off walls, close range.
+  * **Suppressor**: long automatic strings of small bolts.
+  * **Binary Rifle**: one heavy, very fast green bolt every few seconds, from long range.
+  The Light Rifle, Scattershot and Binary Rifle drop HaloDoom Evolved's own when the Knight dies; the Suppressor (which HDE doesn't have) drops nothing.
+* **Phase:** with its shield down and under fire, or to close in on a target far away, a Knight sinks into the ground in a burst of hard light (untouchable from halfway down) and rises out of it somewhere else, 160-400 units from its target and in sight of it, at most every 6-10 seconds.
+* **Combat:** runs, strafes, dives and evades, melee (its blade, five swings), berserks when badly hurt, taunts; flinches front, back and sides. It falls when it dies.
+* **Doom monsters:** Hell Knights sometimes become Sentinel Knights (Minors on the easier skills, Majors and Commanders on the harder ones).
+
+Classes `HCE_SentinelKnight{Minor,Major,Commander}{LightRifle,Scattershot,BinaryRifle,Suppressor}` (DoomEdNums 30353-30364) and `HCE_RandomSentinelKnight` (30365). Machines: no blood, no dismemberment.
+
 ## Digsite add-on
 
 More enemies from the [Digsite](https://github.com/digsite/h1) source assets, plus the Engineer (from Ruby's Rebalance), the Blind Wolf and the Thorn Beast (SOI_7's) from SPV3, Halo 2's Drones and Brutes, and Shigure's Ultra Zealot. It ships inside `HaloCE_Covenant.pk3`.
@@ -670,7 +688,7 @@ The enemies work with [Nash's Gore Mod](https://github.com/poperigby/nashgore) (
 | Engineers (Huragok) | reddish pink |
 | Flood (all forms) | brownish green |
 | Marines | red |
-| Sentinels | none (machines) |
+| Sentinels, Sentinel Knights | none (machines) |
 | Drinol, Blind Wolf, Thorn Beast | dark reds |
 
 **Gibbing only from the heavy weapons:** only the weapons listed under [Dismemberment](#dismemberment) tear a body apart. Anything else leaves it whole, however hard it hits.
@@ -1090,6 +1108,19 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30350 | `HCE_MarinePilotMagnum` |
 | 30351 | `HCE_MarinePilotSmg` |
 | 30352 | `HCE_MarineRadioOperator` |
+| 30353 | `HCE_SentinelKnightMinorLightRifle` |
+| 30354 | `HCE_SentinelKnightMinorScattershot` |
+| 30355 | `HCE_SentinelKnightMinorBinaryRifle` |
+| 30356 | `HCE_SentinelKnightMinorSuppressor` |
+| 30357 | `HCE_SentinelKnightMajorLightRifle` |
+| 30358 | `HCE_SentinelKnightMajorScattershot` |
+| 30359 | `HCE_SentinelKnightMajorBinaryRifle` |
+| 30360 | `HCE_SentinelKnightMajorSuppressor` |
+| 30361 | `HCE_SentinelKnightCommanderLightRifle` |
+| 30362 | `HCE_SentinelKnightCommanderScattershot` |
+| 30363 | `HCE_SentinelKnightCommanderBinaryRifle` |
+| 30364 | `HCE_SentinelKnightCommanderSuppressor` |
+| 30365 | `HCE_RandomSentinelKnight` |
 | 30400 | `HCE_Drinol` |
 | 30401 | `HCE_EliteCommanderPlasmaCarbine` |
 | 30402 | `HCE_EliteMajorPlasmaCarbine` |
@@ -1192,6 +1223,8 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 
 * **Gore:** the gore stumps and gore textures are by Tropical Thunder 98, from the XAM Campaign Overhaul.
 * **Halo 2 Elite shoulder stumps:** Hunterunt's Restored Gore features Halo 2.
+* **Sentinel Knight:** blackandfan's Halo 2 tag pack (H2EK-Tags): the Knight's model, textures, animations and tags.
+* **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Engineer:** from Halo CE Ruby's Rebalance.

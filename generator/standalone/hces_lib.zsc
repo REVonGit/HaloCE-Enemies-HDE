@@ -956,3 +956,30 @@ class HCES_PlasmaCasterCluster : HCES_PlasmaGrenade
 		}
 	}
 }
+
+// ---------------------------------------------------------------- Forerunner hard light (the Sentinel Knights' arm guns)
+// a bolt drawn as a stream of particles in its gun's light colour (the regular packs use HDE's Scattershot bolt)
+class HCES_Hardlight : HCES_SlowProjectile
+{
+	Color hl;
+	Property LightColor : hl;
+	Default { Speed 40; RenderStyle "Add"; DamageType "Plasma"; HCES_Hardlight.LightColor "0061FF"; }
+	States
+	{
+	Spawn:
+		HCEM A 1 Bright { HCES_Math.Particles(self, hl, 3, 3, 8, (2, 2, 2)); }
+		Loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1 { HCES_Math.Particles(self, hl, 20, 3, 8, (6, 6, 6)); }
+		Stop;
+	}
+}
+class HCES_HardlightBlue : HCES_Hardlight { }
+class HCES_HardlightGreen : HCES_Hardlight { Default { HCES_Hardlight.LightColor "00FF4C"; } }
+class HCES_HardlightCyan : HCES_Hardlight { Default { HCES_Hardlight.LightColor "0096FF"; } }
+class HCES_HardlightViolet : HCES_Hardlight
+{
+	Default { HCES_Hardlight.LightColor "9100F9"; BounceType "Doom"; BounceCount 3; +BOUNCEONWALLS; +BOUNCEONFLOORS; +BOUNCEONCEILINGS; -BOUNCEONACTORS; }
+}

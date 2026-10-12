@@ -53,6 +53,9 @@ CLASS_MAP = {
     'HCE_PlasmaCasterScaled': 'HCES_PlasmaCasterProj', 'HCE_PlasmaCasterClusterScaled': 'HCES_PlasmaCasterCluster',
     'HCE_PlasmaCasterMiniScaled': 'HCES_PlasmaCasterMini', 'HCE_FragGrenade': 'HCES_FragGrenade',
     'HCE_PlasmaGrenade': 'HCES_PlasmaGrenade',
+    # the Sentinel Knights' hard-light bolts (build_pack.HARDLIGHT_CODE: HDE's Scattershot bolt) -> hces_lib's own
+    'HCE_HardlightBlue': 'HCES_HardlightBlue', 'HCE_HardlightGreen': 'HCES_HardlightGreen',
+    'HCE_HardlightCyan': 'HCES_HardlightCyan', 'HCE_HardlightViolet': 'HCES_HardlightViolet',
 }
 # HDE weapon / grenade pickups: nothing in the standalone packs -- hces_loot.zsc hands out weapons, ammo,
 # health and armor by what the player needs instead (the old one-to-one map is kept for reference)
@@ -63,6 +66,7 @@ DROP_MAP = {
     'Halo_RocketLauncher': 'RocketAmmo', 'Halo_PlasmaCaster': 'RocketAmmo', 'Halo_MA5B': 'Clip', 'Halo_Magnum': 'Clip', 'Halo_SniperRifle': 'Clip',
     'Halo_Spiker': 'Clip', 'Halo_Shotgun': 'Shell', 'Halo_GravityHammer': 'None', 'Halo_EnergySword': 'None',
     'PlasmaGrenades': 'None', 'FragGrenades': 'None',
+    'Halo_LightRifle': 'Cell', 'Halo_ScatterShot': 'Shell', 'Halo_BinaryRifle': 'Cell',
 }
 # sprites copied from HDE, renamed to unique HZ** names
 SPRITES = {'SX04': 'HZX4', 'FSH1': 'HZF1', 'IPF2': 'HZIP', 'SMOK': 'HZSM', 'L2NB': 'HZL2', 'FRAG': 'HZFG', 'PLGN': 'HZPG',
@@ -130,6 +134,8 @@ def convert_text(t):
     t = re.sub(r'(?s)\t\tHaloBullet\.PostBeginPlay\(\);[^\n]*\n.*?SetShade\(col\);\n', '\t\tsuper.PostBeginPlay();\n', t)
     t = re.sub(r'(?s)// the core.s HCE_LitePlasma / HCE_LitePlasmaSmoke, repeated here.*?(?=// Pulse Carbine bolts for the Elites)', '', t)
     t = re.sub(r'(?s)// the core.s HCE_NerfMixin, repeated here.*?\nmixin class HCE_DigNerfMixin\n\{.*?\n\}\n', '', t)
+    # the regular core's hard-light bolt classes are built on HDE's Scattershot bolt: dropped here (hces_lib has its own)
+    t = re.sub(r'(?s)\n// Forerunner hard light \(the Sentinel Knights.*?\nclass HCE_HardlightViolet : HCE_Hardlight\n\{.*?\n\}\n', '\n', t)
     t = wordmap(t, CLASS_MAP)
     t = re.sub(r'"(' + '|'.join(DROP_MAP) + r')"', lambda m: '"None"' if DROP_TO_NONE else f'"{DROP_MAP[m.group(1)]}"', t)
     t = re.sub(r'(?<!HCES/)\b(Halo|Shield)/', r'HCES/\1/', t)          # HDE sound names -> our copies

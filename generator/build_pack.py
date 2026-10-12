@@ -2,6 +2,7 @@
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
+import json, os, re, math, shutil, glob, zipfile, sys, copy
 import numpy as np
 from variants import *            # the variants' colours, ranks and looks: the tables a modder tunes (variants.py)
 from templates import template   # templates/: the ZScript and GLSL written into the pack as-is
@@ -335,6 +336,42 @@ if os.path.exists(_sp):
         _cm = _S3['bipeds'][_u].get('collision_model')
         if _cm and _cm in _S3['collisions']: AI['collisions'][_cm] = _S3['collisions'][_cm]
 
+# Sentinel Knights (extract_sentinel_knight.py: blackandfan's Halo 2 tag pack, with the Halo Infinite Forerunner arm guns of
+# promethean_ce.py as their right forearms): in the Sentinels pack. Three ranks from the tag pack's character tags (normal
+# body / shield vitality) and the biped's change colours (grey minors and majors, gold commanders), each with every gun.
+# Their combat data starts from the CE Elite Major's (re-statted here), the pistol stance (one arm gun)
+KNIGHT = r'objects\characters\sentinel_knight\sentinel_knight'
+KNIGHT_JSON = f'{OUT}/models/SentinelKnight/SentinelKnight.json'
+KNIGHT_RANKS = {'minor': dict(body=200, shield=50), 'major': dict(body=300, shield=100), 'commander': dict(body=400, shield=150)}
+# gun -> (weapon tag path, combat range min, max (WU), the gun's surface name)
+KNIGHT_GUNS = {'light rifle': (r'weapons\light rifle\light rifle', 3.0, 22.0, 'light_rifle'),
+               'scattershot': (r'weapons\scattershot\scattershot', 1.0, 6.0, 'scattershot'),
+               'binary rifle': (r'weapons\binary rifle\binary rifle', 8.0, 40.0, 'binary_rifle'),
+               'suppressor': (r'weapons\suppressor\suppressor', 2.0, 14.0, 'suppressor')}
+KNIGHT_ORDER = [f'HCE_SentinelKnight{r.capitalize()}{"".join(w.capitalize() for w in g.split())}' for r in KNIGHT_RANKS for g in KNIGHT_GUNS] \
+    + ['HCE_RandomSentinelKnight']
+if os.path.exists(KNIGHT_JSON):
+    _base = AI['variants'][r'characters\elite\elite major\elite major plasma rifle']
+    CHAR_OF_UNIT[KNIGHT] = 'SentinelKnight'; TEAM['SentinelKnight'] = 'SENTINEL'
+    AI['actors'][KNIGHT] = copy.deepcopy(AI['actors'][_base['actor_reference']])
+    _kb = copy.deepcopy(AI['bipeds'][_base['unit_reference']])
+    _kb.update(collision_height_standing=0.95, collision_radius=0.32); _kb['change_colors_list'] = []
+    AI['bipeds'][KNIGHT] = _kb
+    for _r, _rd in KNIGHT_RANKS.items():
+        for _g, (_ref, _lo, _hi, _surf) in KNIGHT_GUNS.items():
+            _v = copy.deepcopy(_base)
+            _v['unit_reference'] = KNIGHT; _v['actor_reference'] = KNIGHT
+            _v['unit'] = dict(_v['unit'], maximum_body_vitality=float(_rd['body']), maximum_shield_vitality=float(_rd['shield']))
+            _v['ranged_combat']['reference'] = _ref
+            _v['ranged_combat'].update(combat_range_lower_bound=_lo, combat_range_upper_bound=_hi, maximum_firing_range=max(_hi * 1.6, 12.0))
+            _v['items']['grenades_lower_bound'] = 0; _v['items']['grenades_upper_bound'] = 0
+            _v['grenade_combat']['throw_grenade_chance'] = 0.0
+            _v['change_colors'] = None; _v['change_colors_list'] = []
+            _v['_rank'] = _r; _v['_late'] = True; _v['_knight_gun'] = _surf
+            _v['_ov'] = dict(pellets=6) if _g == 'scattershot' else {}
+            if _r == 'commander': _v['_ov']['code'] = '\toverride int HCE_KnightPalette() { return 1; }    // warm core colours\n'
+            AI['variants'][f'{KNIGHT} {_r} {_g}'] = _v
+
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
 WEAPONS = {
     'plasma pistol':    ('HCE_PlasmaPistolBolt', 'HaloPlasma_Proj', 18, 0.83),
@@ -349,7 +386,86 @@ WEAPONS = {
     'rocket launcher':  ('HCE_Rocket', 'HCE_RocketScaled', None, 0.4),
     'flamethrower':     ('HCE_Flame', 'HaloFlames', None, 0.33),
     'plasma caster':    ('HCE_PlasmaCasterGrenade', 'HCE_PlasmaCasterScaled', None, 0.28),   # White Hunter (HDE weapon)
+    # the Sentinel Knights' Forerunner arm guns: hard-light bolts (HDE's Scattershot bolt, in each gun's light colour;
+    # HARDLIGHT_CODE). The Light Rifle fires three-round bursts, the Scattershot six bouncing bolts, the Binary Rifle one
+    # heavy bolt, the Suppressor long automatic strings
+    'light rifle':      ('HCE_LightRifleBolt', 'HCE_HardlightBlue', 18, 6.0),
+    'scattershot':      ('HCE_ScattershotBolt', 'HCE_HardlightViolet', 9, 2.4),
+    'binary rifle':     ('HCE_BinaryRifleBolt', 'HCE_HardlightGreen', 90, 16.0),
+    'suppressor':       ('HCE_SuppressorBolt', 'HCE_HardlightCyan', 8, 4.0),
 }
+# hard-light bolt bases (in the core, with the projectiles): HDE's Scattershot bolt; only the Scattershot's keep its bounce
+HARDLIGHT_CODE = '''
+// Forerunner hard light (the Sentinel Knights' arm guns): HaloDoom Evolved's Scattershot bolt sprite and burst,
+// recoloured per gun, with a trail sized to the bolt (HDE's trail is fixed for its own big Scattershot ball)
+class HCE_Hardlight : HaloSlowProjectile
+{
+	Color hce_burst;
+	class<LightningBiri> hce_arc;
+	Property Burst : hce_burst;
+	Property Arc : hce_arc;
+	Default
+	{
+		RenderStyle "Add";
+		Alpha 1.0;
+		Scale 0.009;
+		DamageType "Plasma";
+		+ROLLSPRITE;
+		+INTERPOLATEANGLES;
+		HCE_Hardlight.Burst "Blue";
+		HCE_Hardlight.Arc "LightRifle_Lightning";
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(level.isFrozen() || !bMISSILE) return;
+		A_SetRoll(roll + 5, SPF_INTERPOLATE);
+		let tr = Spawn("HCE_HardlightTrail", pos);
+		if(tr) { tr.translation = translation; tr.A_SetScale(scale.x * 0.9); }
+	}
+	States
+	{
+	Spawn:
+		ELBL AB 2 Bright A_JumpIf(!bMISSILE, "Death");
+		loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1
+		{
+			HaloMath.ParticlesFX(self, hce_burst, 20, 3, 8);
+			for(int i = 0; i < 3; i++)
+				BiriBiri.DoLightning(pos, (angle + frandom(-60, 60) + 180, pitch + frandom(-35, 35)), hce_arc, 20, 0.5, 20.0, 10.0, 30, 0);
+		}
+		stop;
+	}
+}
+class HCE_HardlightTrail : CheapActor
+{
+	Default { RenderStyle "Add"; Alpha 0.8; +ROLLSPRITE; +NOGRAVITY; }
+	override void Tick()
+	{
+		super.Tick();
+		A_SetRoll(roll + 5, SPF_INTERPOLATE);
+		A_SetScale(scale.x * 0.88);
+		alpha *= 0.85;
+		if(alpha <= 0.05) Destroy();
+	}
+	States { Spawn: ELBL AB 2 Bright; loop; }
+}
+class HCE_HardlightBlue : HCE_Hardlight { Default { Translation "0:255=@64[0,97,255]"; } }
+class HCE_HardlightGreen : HCE_Hardlight { Default { Scale 0.014; Translation "0:255=@64[0,255,76]"; HCE_Hardlight.Burst "Green"; HCE_Hardlight.Arc "BinaryRifle_Lightning"; } }
+class HCE_HardlightCyan : HCE_Hardlight { Default { Scale 0.007; Translation "0:255=@64[0,150,255]"; HCE_Hardlight.Burst "LightBlue"; } }
+class HCE_HardlightViolet : HCE_Hardlight
+{
+	Default
+	{
+		Scale 0.010; Translation "0:255=@64[145,0,249]"; HCE_Hardlight.Burst "Purple"; HCE_Hardlight.Arc "ScatterShot_PurpleLightning";
+		BounceType "Doom"; BounceCount 3; +BOUNCEONWALLS; +BOUNCEONFLOORS; +BOUNCEONCEILINGS; -BOUNCEONACTORS;
+	}
+}
+'''
+SLOW_PROJ = {'HCE_HardlightBlue', 'HCE_HardlightGreen', 'HCE_HardlightCyan', 'HCE_HardlightViolet'}
 FIRE_CODE = {'plasma pistol': 'pp', 'plasma rifle': 'pr', 'needler': 'ne', 'fuel rod': 'fr', 'hunter fuel rod': 'fr',
              'assault rifle': 'ar', 'shotgun': 'sg', 'pistol': 'hp', 'sniper rifle': 'sr'}
 # Fire patterns (Doom-paced; Halo's per-variant numbers only stretch them):
@@ -370,6 +486,10 @@ PATTERNS = {
     'flamethrower':    (18, 30, 2, 1.2, 2.0, 0, True, 2.5, 4.5),
     'sentinel beam':   (20, 35, 1, 1.0, 1.8, 0, False, 1.0, 1.0),
     'plasma caster':   (1, 2, 18, 2.4, 3.4, 30, False, 2.0, 0.1),   # lobbed; charged = 3-grenade cluster
+    'light rifle':     (3, 3, 5, 1.2, 2.0, 0, False, 1.0, 0.3),    # three-round bursts
+    'scattershot':     (1, 1, 1, 1.4, 2.2, 0, False, 2.0, 0.1),
+    'binary rifle':    (1, 1, 1, 3.0, 4.2, 0, False, 1.0, 0.1),
+    'suppressor':      (8, 14, 3, 1.0, 1.6, 0, True, 1.0, 2.0),
 }
 # HDE SNDINFO names: fire, fire bass, special (overcharge / loop end), charge (overcharge / loop start), looping
 W = 'Halo/Weapons/'
@@ -387,12 +507,17 @@ FIRE_SOUNDS = {
     'flamethrower':    (W + 'Flamer/Fire/Loop', '', W + 'Flamer/Fire/End', W + 'Flamer/Fire/Start', True),
     'plasma caster':   (W + 'PlasmaCaster/Fire', '', W + 'PlasmaCaster/ChargedFire', W + 'PlasmaCaster/ChargeBegin', False),
     'sentinel beam':   (W + 'SentinelBeam/Fire/Loop', '', W + 'SentinelBeam/Fire/End', W + 'SentinelBeam/Fire/Begin', True),
+    'light rifle':     (W + 'LightRifle/Fire', W + 'LightRifle/Fire/Bass', '', '', False),
+    'scattershot':     (W + 'ScatterShot/Fire', W + 'ScatterShot/Fire/Bass', '', '', False),
+    'binary rifle':    (W + 'BinaryRifle/Fire', W + 'BinaryRifle/Fire/Bass', '', '', False),
+    'suppressor':      (W + 'LightRifle/Fire', '', '', '', False),
 }
 # Halo-style drops: HDE Local_DEV pickup classes (Covenant always drop theirs, the energy sword included -- HDE has
 # one to pick up; Hunters' fuel rod arms and Sentinels drop nothing)
 DROP_WEAPON = {'energy sword': 'Halo_EnergySword', 'plasma pistol': 'Halo_PlasmaPistol', 'plasma rifle': 'Halo_PlasmaRifle', 'needler': 'Halo_Needler',
                'fuel rod': 'Halo_FuelRod', 'assault rifle': 'Halo_MA5B', 'pistol': 'Halo_Magnum', 'shotgun': 'Halo_Shotgun',
-               'sniper rifle': 'Halo_SniperRifle', 'rocket launcher': 'Halo_RocketLauncher', 'flamethrower': 'Halo_Flamethrower'}
+               'sniper rifle': 'Halo_SniperRifle', 'rocket launcher': 'Halo_RocketLauncher', 'flamethrower': 'Halo_Flamethrower',
+               'light rifle': 'Halo_LightRifle', 'scattershot': 'Halo_ScatterShot', 'binary rifle': 'Halo_BinaryRifle'}
 # Doom boss stand-ins: unique subclasses so CheckReplacee can map them back to the Doom boss
 # (A_BossDeath map specials: E1M8/E4M6 Barons, MAP07 Mancubi/Arachnotrons, Cyberdemon/Spider levels)
 BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
@@ -1942,6 +2067,7 @@ def build(cfg=None):
             zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
     pz = ['// Enemy projectiles: HDE visuals, Halo CE impact damage']
+    if main and any(w in projectiles_used for w in KNIGHT_GUNS): pz.append(HARDLIGHT_CODE)
     done = set()
     for wn in sorted(projectiles_used):
         pc, base_cls, dmg, sp = WEAPONS[wn]
@@ -1949,7 +2075,7 @@ def build(cfg=None):
         done.add(pc)
         body = ''
         if dmg is not None:
-            prop = 'HaloSlowProjectile' if base_cls in ('HaloNeedler_Proj', 'HaloRocketProj', 'HaloSpiker_Bullet', 'HCE_NeedleScaled', 'HCE_RocketScaled') else 'HaloProjectile'
+            prop = 'HaloSlowProjectile' if base_cls in ('HaloNeedler_Proj', 'HaloRocketProj', 'HaloSpiker_Bullet', 'HCE_NeedleScaled', 'HCE_RocketScaled') or base_cls in SLOW_PROJ else 'HaloProjectile'
             body = f'\t\t{prop}.BaseDamage {dmg};\n'
         # HDE projectiles (not grenades / fuel rods / flames) re-apply the enemy damage nerf when they hit
         mix = f'\tmixin {cfg.get("nerf_mixin", "HCE_NerfMixin")};\n' if base_cls not in NO_NERF_MIXIN else ''
@@ -2021,6 +2147,7 @@ def build(cfg=None):
     # the Marine kit's enclosed helmets: the same reflection on their orange visor
     gl += kit_visors(pack, mdir)
     gl += elite_lens_visors(pack, mdir)
+    gl += EXTRA_GL
     tg = cfg['tag']
     open(f'{pack}/gldefs.{tg}', 'w').write('\n'.join(gl) + '\n')
     # HCEM A: placeholder sprite. Models draw instead, but the map spawner rejects actors whose sprite
@@ -2074,8 +2201,8 @@ BEAMRIFLE_CODE = ''
 MAIN_WEAPONS = set(WEAPONS)
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
             handler='HCE_ReplaceHandler', index='pack_index.json',
-            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM],
-            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER)
+            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else []),
+            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
@@ -2473,6 +2600,72 @@ def odst_skin(cls, v, si, mat, meta, skin_dir):
     if not os.path.exists(f'{skin_dir}/{fn.lower()}'): shutil.copy(f'{OUT}/models/MarineODST/{fn}', f'{skin_dir}/{fn.lower()}')
     return fn.lower()
 SKIN_HOOK['MarineODST'] = odst_skin
+
+# ---------------------------------------------------------------- the Sentinel Knights
+# their skins (extract_sentinel_knight.py baked them per rank), the arm gun the variant carries (the other three hidden),
+# brightmaps for their lights, and their core: the energy shader (templates/shaders/core.fp: plasma bands, a pulse, a hot
+# rim, the room in its shell from the visor's cube map), its colour rolled at spawn from the rank's palette (BASE_CODE)
+EXTRA_GL = []          # GLDEFS entries the skin hooks add (written with the rest)
+CORE_SHADER = template('shaders/core.fp')
+KNIGHT_CORE_PALETTE = {'minor': 0, 'major': 0, 'commander': 1}     # 0 cold, 1 warm (HCE_KnightPalette)
+
+
+def knight_skin(cls, v, si, mat, meta, skin_dir):
+    src = f'{OUT}/models/SentinelKnight'
+    name = meta['mesh_names'][si]; rank = v.get('_rank', 'minor')
+    os.makedirs(skin_dir, exist_ok=True)
+    rel = skin_dir[skin_dir.index('models/'):]
+    def ship(fn):
+        if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{src}/{fn}', f'{skin_dir}/{fn}')
+        bm = fn[:-4] + '_bm.png'
+        if os.path.exists(f'{src}/{bm}'):
+            if not os.path.exists(f'{skin_dir}/{bm}'): shutil.copy(f'{src}/{bm}', f'{skin_dir}/{bm}')
+            return bm
+        return None
+    if name.startswith('gun_'):
+        if name != f'gun_{v.get("_knight_gun")}':
+            hid = f'{skin_dir}/hce_hidden.png'
+            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+            return 'hce_hidden.png'
+        fn = f'w_sk_{name[4:]}_0_{rank}.png'
+    elif name == 'Core':
+        pal = meta['cores']['warm' if KNIGHT_CORE_PALETTE.get(rank) else 'cold']
+        cube = f'{skin_dir}/core_cube.png'
+        if not os.path.exists(cube): shutil.copy(f'{MARINE_KIT}/{KIT_VISOR_CUBE}', cube)
+        pack = skin_dir[:skin_dir.index('/models/')]
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_core.fp', 'w').write(CORE_SHADER)
+        for c in pal:
+            bm = ship(f'core_{c}.png')
+            e = (f'material texture "{rel}/core_{c}.png"\n{{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "{rel}/{bm}"\n'
+                 f'\ttexture tex_cube "{rel}/core_cube.png"\n}}')
+            if e not in EXTRA_GL: EXTRA_GL.append(e)
+        return f'core_{pal[0]}.png'
+    else:
+        fn = f'{name}_{rank}.png'
+    bm = ship(fn)
+    if bm:
+        e = f'brightmap texture "{rel}/{fn}"\n{{\n\tmap "{rel}/{bm}"\n}}'
+        if e not in EXTRA_GL: EXTRA_GL.append(e)
+    return fn
+
+
+def knight_code(meta, mdir):
+    """the Knights' shared ZScript (templates/zscript/sentinel_knight.zs) with their core surface, skin folder and the
+    phase animations' lengths filled in"""
+    tics = lambda n: max(1, int(round(meta['anims'][n]['frames'] / TICK)))
+    return (template('zscript/sentinel_knight.zs').replace('{CORE}', str(meta['mesh_names'].index('Core')))
+            .replace('{SKINS}', f'models/{mdir}/SentinelKnight/skins')
+            .replace('{OUT_TICS}', str(tics('knight phase-out'))).replace('{IN_TICS}', str(tics('knight phase-in'))))
+
+
+if os.path.exists(KNIGHT_JSON):
+    SKIN_HOOK['SentinelKnight'] = knight_skin
+    BASE_CODE['SentinelKnight'] = knight_code(json.load(open(KNIGHT_JSON)), 'hce')
+    NO_BLOOD.add('SentinelKnight')
+    SHELL_TINT['SentinelKnight'] = (0.55, 0.85, 1.00)
+    CHAR_OVERRIDES['SentinelKnight'] = dict(stance='pistol', height_fixed=84, radius_fixed=30, melee=(110, 45), speed=7.0,
+                                            flags=['HCE_Surprise', 'HCE_Evades', 'HCE_Berserks'])
 
 # Halo CE's visor shader (shader_model with a reflection cube map): the reflection direction per pixel (the view ray
 # off the surface normal), its cube face and texel looked up in the six faces laid side by side (Halo's axes, Direct3D

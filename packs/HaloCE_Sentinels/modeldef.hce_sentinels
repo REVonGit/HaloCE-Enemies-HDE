@@ -57,3 +57,249 @@ Model HCE_SentinelShieldedMajor
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
+
+Model HCE_SentinelKnightCommanderBinaryRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_commander.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_commander.png"
+	SurfaceSkin 0 2 "skins/Monitor_commander.png"
+	SurfaceSkin 0 3 "skins/core_orange.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/w_sk_binary_rifle_0_commander.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightShieldShell
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/shieldshell.png"
+	SurfaceSkin 0 1 "skins/shieldshell.png"
+	SurfaceSkin 0 2 "skins/shieldshell.png"
+	SurfaceSkin 0 3 "skins/shieldshell.png"
+	SurfaceSkin 0 4 "skins/shieldshell.png"
+	SurfaceSkin 0 5 "skins/shieldshell.png"
+	SurfaceSkin 0 6 "skins/shieldshell.png"
+	SurfaceSkin 0 7 "skins/shieldshell.png"
+	Scale 82.8 82.8 99.4
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightCommanderLightRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_commander.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_commander.png"
+	SurfaceSkin 0 2 "skins/Monitor_commander.png"
+	SurfaceSkin 0 3 "skins/core_orange.png"
+	SurfaceSkin 0 4 "skins/w_sk_light_rifle_0_commander.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightCommanderScattershot
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_commander.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_commander.png"
+	SurfaceSkin 0 2 "skins/Monitor_commander.png"
+	SurfaceSkin 0 3 "skins/core_orange.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/w_sk_scattershot_0_commander.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightCommanderSuppressor
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_commander.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_commander.png"
+	SurfaceSkin 0 2 "skins/Monitor_commander.png"
+	SurfaceSkin 0 3 "skins/core_orange.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/w_sk_suppressor_0_commander.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMajorBinaryRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_major.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_major.png"
+	SurfaceSkin 0 2 "skins/Monitor_major.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/w_sk_binary_rifle_0_major.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMajorLightRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_major.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_major.png"
+	SurfaceSkin 0 2 "skins/Monitor_major.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/w_sk_light_rifle_0_major.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMajorScattershot
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_major.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_major.png"
+	SurfaceSkin 0 2 "skins/Monitor_major.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/w_sk_scattershot_0_major.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMajorSuppressor
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_major.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_major.png"
+	SurfaceSkin 0 2 "skins/Monitor_major.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/w_sk_suppressor_0_major.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMinorBinaryRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_minor.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_minor.png"
+	SurfaceSkin 0 2 "skins/Monitor_minor.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/w_sk_binary_rifle_0_minor.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMinorLightRifle
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_minor.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_minor.png"
+	SurfaceSkin 0 2 "skins/Monitor_minor.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/w_sk_light_rifle_0_minor.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMinorScattershot
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_minor.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_minor.png"
+	SurfaceSkin 0 2 "skins/Monitor_minor.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/w_sk_scattershot_0_minor.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelKnightMinorSuppressor
+{
+	Path "models/hce/SentinelKnight"
+	Model 0 "SentinelKnight.iqm"
+	SurfaceSkin 0 0 "skins/Knight_minor.png"
+	SurfaceSkin 0 1 "skins/SuperSentinel_minor.png"
+	SurfaceSkin 0 2 "skins/Monitor_minor.png"
+	SurfaceSkin 0 3 "skins/core_cyan.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/w_sk_suppressor_0_minor.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}

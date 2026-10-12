@@ -1,0 +1,133 @@
+// Halo CE enemies, sentinels: glowing surfaces
+brightmap texture "models/hce/SentinelKnight/skins/Knight_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/Knight_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/SuperSentinel_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/SuperSentinel_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/Monitor_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/Monitor_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_scattershot_0_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_scattershot_0_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_commander.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_suppressor_0_commander_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/Knight_major.png"
+{
+	map "models/hce/SentinelKnight/skins/Knight_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/SuperSentinel_major.png"
+{
+	map "models/hce/SentinelKnight/skins/SuperSentinel_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/Monitor_major.png"
+{
+	map "models/hce/SentinelKnight/skins/Monitor_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_major.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_major.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_scattershot_0_major.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_scattershot_0_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_major.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_suppressor_0_major_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/Knight_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/Knight_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/SuperSentinel_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/SuperSentinel_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/Monitor_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/Monitor_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_binary_rifle_0_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_light_rifle_0_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_scattershot_0_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_scattershot_0_minor_bm.png"
+}
+brightmap texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor.png"
+{
+	map "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor_bm.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_orange.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_orange_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_amber.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_amber_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_red.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_red_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_gold.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_gold_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_cyan.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_cyan_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_ice.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_ice_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_violet.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_violet_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}
+material texture "models/hce/SentinelKnight/skins/core_teal.png"
+{
+	shader "shaders/hce_core.fp"
+	brightmap "models/hce/SentinelKnight/skins/core_teal_bm.png"
+	texture tex_cube "models/hce/SentinelKnight/skins/core_cube.png"
+}

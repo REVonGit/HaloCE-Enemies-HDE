@@ -1,4 +1,74 @@
 // Enemy projectiles: HDE visuals, Halo CE impact damage
+
+// Forerunner hard light (the Sentinel Knights' arm guns): HaloDoom Evolved's Scattershot bolt sprite and burst,
+// recoloured per gun, with a trail sized to the bolt (HDE's trail is fixed for its own big Scattershot ball)
+class HCE_Hardlight : HaloSlowProjectile
+{
+	Color hce_burst;
+	class<LightningBiri> hce_arc;
+	Property Burst : hce_burst;
+	Property Arc : hce_arc;
+	Default
+	{
+		RenderStyle "Add";
+		Alpha 1.0;
+		Scale 0.009;
+		DamageType "Plasma";
+		+ROLLSPRITE;
+		+INTERPOLATEANGLES;
+		HCE_Hardlight.Burst "Blue";
+		HCE_Hardlight.Arc "LightRifle_Lightning";
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(level.isFrozen() || !bMISSILE) return;
+		A_SetRoll(roll + 5, SPF_INTERPOLATE);
+		let tr = Spawn("HCE_HardlightTrail", pos);
+		if(tr) { tr.translation = translation; tr.A_SetScale(scale.x * 0.9); }
+	}
+	States
+	{
+	Spawn:
+		ELBL AB 2 Bright A_JumpIf(!bMISSILE, "Death");
+		loop;
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 1
+		{
+			HaloMath.ParticlesFX(self, hce_burst, 20, 3, 8);
+			for(int i = 0; i < 3; i++)
+				BiriBiri.DoLightning(pos, (angle + frandom(-60, 60) + 180, pitch + frandom(-35, 35)), hce_arc, 20, 0.5, 20.0, 10.0, 30, 0);
+		}
+		stop;
+	}
+}
+class HCE_HardlightTrail : CheapActor
+{
+	Default { RenderStyle "Add"; Alpha 0.8; +ROLLSPRITE; +NOGRAVITY; }
+	override void Tick()
+	{
+		super.Tick();
+		A_SetRoll(roll + 5, SPF_INTERPOLATE);
+		A_SetScale(scale.x * 0.88);
+		alpha *= 0.85;
+		if(alpha <= 0.05) Destroy();
+	}
+	States { Spawn: ELBL AB 2 Bright; loop; }
+}
+class HCE_HardlightBlue : HCE_Hardlight { Default { Translation "0:255=@64[0,97,255]"; } }
+class HCE_HardlightGreen : HCE_Hardlight { Default { Scale 0.014; Translation "0:255=@64[0,255,76]"; HCE_Hardlight.Burst "Green"; HCE_Hardlight.Arc "BinaryRifle_Lightning"; } }
+class HCE_HardlightCyan : HCE_Hardlight { Default { Scale 0.007; Translation "0:255=@64[0,150,255]"; HCE_Hardlight.Burst "LightBlue"; } }
+class HCE_HardlightViolet : HCE_Hardlight
+{
+	Default
+	{
+		Scale 0.010; Translation "0:255=@64[145,0,249]"; HCE_Hardlight.Burst "Purple"; HCE_Hardlight.Arc "ScatterShot_PurpleLightning";
+		BounceType "Doom"; BounceCount 3; +BOUNCEONWALLS; +BOUNCEONFLOORS; +BOUNCEONCEILINGS; -BOUNCEONACTORS;
+	}
+}
+
 class HCE_ARBullet : HaloMAB_Bullet
 {
 	mixin HCE_NerfMixin;
@@ -21,6 +91,15 @@ class HCE_H2BeamShot : HCE_BeamPuff
 {
 	Default
 	{
+	}
+}
+
+class HCE_BinaryRifleBolt : HCE_HardlightGreen
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 90;
 	}
 }
 
@@ -94,6 +173,15 @@ class HCE_HydraMissile : HydraMissile
 {
 	Default
 	{
+	}
+}
+
+class HCE_LightRifleBolt : HCE_HardlightBlue
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 18;
 	}
 }
 
@@ -185,6 +273,15 @@ class HCE_Rocket : HCE_RocketScaled
 	}
 }
 
+class HCE_ScattershotBolt : HCE_HardlightViolet
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 9;
+	}
+}
+
 class HCE_ShotgunPellet : HaloShotgun_Bullet
 {
 	mixin HCE_NerfMixin;
@@ -243,6 +340,15 @@ class HCE_StickyDetCharge : HaloStickyDetProj
 {
 	Default
 	{
+	}
+}
+
+class HCE_SuppressorBolt : HCE_HardlightCyan
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 8;
 	}
 }
 

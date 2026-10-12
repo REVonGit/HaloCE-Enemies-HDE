@@ -20,6 +20,7 @@ brightmap (_bm).
 """
 import os, sys, json
 import numpy as np
+from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.join(HERE, 'lib'))   # readers and writers live in lib/
 from iqm import read_iqm, write_iqm
@@ -194,8 +195,48 @@ def lens_texture():
 STUMP_ROOTS = {1: ('bip01 l clavicle', 'bip01 l upperarm'), 2: ('bip01 r clavicle', 'bip01 r upperarm'), 3: ('bip01 neck', 'bip01 head')}
 
 
-def add_stumps(pid, J, meshes, meta):
-    """the piece's surfaces + a 'stump.<L>' cap surface per limb (meta['stumps'][pid]: {limb: surface index})"""
+# Hunterunt's "Restored Gore features Halo 2": Halo 2's Elite with the shoulder stumps its 'destroyed' l_arm / r_arm
+# permutations were meant to have (its gore_elite.render_model, whose JMS source the tag keeps), textured with the gore
+# disc of Halo 2's multiplayer first-person Elite arms (elite_fp_arms, in MCC's shared.map + textures.dat)
+H2_GORE = os.environ.get('HCE_H2_GORE', 'Restored_Gore_features_Halo_2.zip')   # Hunterunt's mod, as downloaded
+H2_SHARED = os.environ.get('HCE_H2_SHARED', 'shared.map')                       # MCC Halo 2's shared.map (h2_maps_win64_dx11)
+FP_ARMS = r'objects\characters\elite\fp_arms\bitmaps\elite_fp_arms'
+GORE_ARM_TEX = 'ek_gore_arm.png'
+GORE_REGION = {1: 'l_arm', 2: 'r_arm'}
+
+
+def hunterunt_stumps(rig):
+    """{limb: mesh} of Hunterunt's shoulder stumps carried onto the CE Elite (rig: the Halo 2 Elite's nodes, h2w, cew,
+    tomap, anc), and their texture written to the kit; {} without the mod or shared.map"""
+    if not (os.path.exists(H2_GORE) and os.path.exists(H2_SHARED)): return {}
+    import zipfile
+    from h2jms import read_jms, tag_sources
+    from h2map import H2Map, mcc_bitmap
+    import extract_h2_brute as hb
+    z = zipfile.ZipFile(H2_GORE)
+    tmp = f'{KIT}/_gore_elite.render_model'
+    open(tmp, 'wb').write(z.read(next(n for n in z.namelist() if n.endswith('gore_elite/gore_elite.render_model'))))
+    j = read_jms(tag_sources(tmp)[0]); os.remove(tmp)
+    sm = H2Map(H2_SHARED, os.path.join(os.path.dirname(os.path.abspath(H2_SHARED)), 'shared.map.dec'))
+    mcc_bitmap(sm, FP_ARMS, hb.TEXTURES).convert('RGB').resize((512, 512), Image.LANCZOS).save(f'{KIT}/{GORE_ARM_TEX}')
+    nodes, h2w, cew, tomap, anc = rig
+    byname = {n['name']: i for i, n in enumerate(nodes)}
+    remap = np.array([byname.get(n['name'][2:] if n['name'].startswith('b_') else n['name'], 0) for n in j['nodes']])
+    out = {}
+    for L, region in GORE_REGION.items():
+        k = next((k for k, m_ in enumerate(j['materials']) if m_['perm'] == 'destroyed' and m_['region'] == region), None)
+        if k is None: continue
+        T = j['tris'][j['tri_mat'] == k]; vs = np.unique(T); inv = {v: i for i, v in enumerate(vs)}
+        P, N, cb, w8 = retarget(j['pos'][vs], j['nrm'][vs], remap[j['bidx'][vs]], j['bw'][vs], h2w, cew, tomap, anc)
+        tris = np.array([[inv[a], inv[b], inv[c]] for a, b, c in T])[:, [0, 2, 1]]
+        out[L] = dict(name=f'stump.{L}', material=GORE_ARM_TEX, pos=P, nrm=N, uv=j['uv'][vs] * [1, -1] + [0, 1],
+                      bidx=cb, bw=w8, tris=tris)
+    return out
+
+
+def add_stumps(pid, J, meshes, meta, rig=None):
+    """the piece's surfaces + a 'stump.<L>' cap surface per limb (meta['stumps'][pid]: {limb: surface index}): Hunterunt's
+    shoulder stumps where his mod and shared.map are there, kitbashed caps otherwise (and always at the neck)"""
     import shutil
     from gore_kit import boundary_loops, cap_mesh, cap_uv_to_spv3, world_bind
     ce = json.load(open(f'{OUT}/models/Elite/Elite.json'))['gore']
@@ -203,7 +244,14 @@ def add_stumps(pid, J, meshes, meta):
     W = world_bind(J)
     idx = {j[0].lower(): i for i, j in enumerate(J)}
     out = list(meshes)
+    authored = hunterunt_stumps(rig) if rig else {}
     for L, (root, toward) in STUMP_ROOTS.items():
+        if L in authored:
+            meta.setdefault('stumps', {}).setdefault(pid, {})[str(L)] = len(out)
+            meta.setdefault('stump_tex', {}).setdefault(pid, {})[str(L)] = GORE_ARM_TEX
+            out.append(authored[L])
+            print(f'  {pid}: stump {L}: Hunterunt\'s, {len(authored[L]["tris"])} tris')
+            continue
         parts = [m_ for m_ in meshes if m_['name'].endswith(f'_{L}') and len(m_['tris'])]
         if not parts: continue
         r = idx[root]; par = J[r][1]
@@ -297,7 +345,7 @@ def main():
                                    bidx=cb, bw=w8, tris=tris[limb == L]))
             meta.setdefault('limbs', {})[pid] = [m_['name'] for m_ in meshes]
             print(f'  {pid}: {mm["region"]}:{mm["perm"]} {mm["shader"]} {len(P)} verts {len(mm["tris"])} tris')
-        if pid in SPLIT: meshes = add_stumps(pid, J, meshes, meta)
+        if pid in SPLIT: meshes = add_stumps(pid, J, meshes, meta, (nodes, h2w, cew, tomap, anc))
         write_iqm(f'{KIT}/{pid}.iqm', J, meshes, bind)
         meta['pieces'][pid] = dict(file=pid + '.iqm', tris=int(sum(len(x['tris']) for x in meshes)))
     # the jump pack: a one-node model placed by the Ranger's 'jetpack' marker (upper spine), bound to the CE spine1

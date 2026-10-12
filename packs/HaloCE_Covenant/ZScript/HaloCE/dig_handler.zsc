@@ -31,9 +31,9 @@ class HCE_DigsiteHandler : EventHandler
 		// Baron of Hell: some become Brute Chieftains (Tartarus's look, gravity hammer); still a Baron for boss deaths
 		"BaronOfHell",    "0.20 0.25 0.30", "HCE_BruteChieftainGravityHammer*1",
 		// Cacodemon (flying): always Halo 2 Drones while this add-on is loaded
-		"Cacodemon",      "1 1 1",          "HCE_DronePlasmaPistol*4 HCE_DroneNeedler*3 HCE_DronePlasmaRifle*2 HCE_DroneSpiker*1",
+		"Cacodemon",      "1 1 1",          "HCE_DronePlasmaPistol*8 HCE_DroneNeedler*6 HCE_DronePlasmaRifle*4 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*2 HCE_DroneMajorNeedler*2 HCE_DroneUltraNeedler*1 HCE_DroneUltraPlasmaRifle*1 HCE_DroneCaptainPlasmaPistol*1 HCE_DroneCaptainPlasmaRifle*1 HCE_DroneCaptainMajorNeedler*1",
 		// Lost Soul (small flying swarmer): Halo 2 Drones
-		"LostSoul",       "0.60 0.65 0.70", "HCE_DronePlasmaPistol*3 HCE_DroneNeedler*2 HCE_DronePlasmaRifle*1 HCE_DroneSpiker*1",
+		"LostSoul",       "0.60 0.65 0.70", "HCE_DronePlasmaPistol*6 HCE_DroneNeedler*4 HCE_DronePlasmaRifle*2 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*1 HCE_DroneMajorNeedler*1",
 		// Pain Elemental: always the Engineer while this add-on is loaded (a harmless floater that bursts
 		// into charged plasma grenades when killed)
 		"PainElemental",  "1 1 1",          "HCE_Engineer*1",

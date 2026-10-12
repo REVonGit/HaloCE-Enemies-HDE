@@ -133,7 +133,7 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
             lines += [f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n" for i in si]
             st = stumps.get(p, {}).get(str(L))
             if st is not None:                  # its own stump shows; the CE Elite's, inside it, stays hidden
-                lines.append(f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {st}, \"models/{mdir}/EliteKit\", '{kmeta.get('gore_tex', 'gore_Elite.png')}', CMDL_USESURFACESKIN);\n")
+                lines.append(f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {st}, \"models/{mdir}/EliteKit\", '{kmeta.get('stump_tex', {}).get(p, {}).get(str(L)) or kmeta.get('gore_tex', 'gore_Elite.png')}', CMDL_USESURFACESKIN);\n")
                 if whole:
                     lines.append(f"\t\t\tA_ChangeModel('None', 0, \"\", 'None', {{HCE_STUB_{L}}}, {hid});\n")
         if lines: sev.append(f'\t\tif(limb == {lc})\n\t\t{{\n' + ''.join(lines) + '\t\t}\n')

@@ -22,10 +22,14 @@ class H2Map:
         s.H = struct.unpack_from('<I', s.hdr, 0x10)[0] - 0x380          # tag index header == tag address base
         _, _, tptr, s.scen, s.glob, _, tcount = struct.unpack_from('<7I', s.b, s.H)
         names_off = struct.unpack_from('<I', s.hdr, 0x24)[0] - 0x380
-        p = names_off; s.tags = []; s.byid = {}; s.by = {}
+        # names: the file table's index (one offset into the name buffer per tag; shared.map leaves gaps, so the
+        # names can't be read one after another)
+        idx_off = struct.unpack_from('<I', s.hdr, 0x2C)[0] - 0x380
+        s.tags = []; s.byid = {}; s.by = {}
         for i in range(tcount):
             c, tid, a, sz = struct.unpack_from('<4sIII', s.b, s.H + tptr + i * 16)
-            e = s.b.index(b'\0', p); n = s.b[p:e].decode('latin1'); p = e + 1
+            p = names_off + struct.unpack_from('<i', s.b, idx_off + 4 * i)[0]
+            e = s.b.index(b'\0', p); n = s.b[p:e].decode('latin1')
             t = dict(cls=c[::-1].decode('latin1'), id=tid, addr=a, size=sz, name=n)
             s.tags.append(t); s.byid[tid] = t; s.by[(t['cls'], n)] = t
         # string ids

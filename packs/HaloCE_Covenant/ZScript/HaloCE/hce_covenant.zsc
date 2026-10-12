@@ -2913,13 +2913,13 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		if(limb == HCE_LIMB_LARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
@@ -3165,13 +3165,13 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		if(limb == HCE_LIMB_LARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
@@ -3972,14 +3972,14 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
@@ -4228,14 +4228,14 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'ek_gore_arm.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)

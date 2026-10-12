@@ -753,7 +753,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 | Race | What comes off | Stump |
 |---|---|---|
 | Elites, Jackals (Halo CE) | head, either arm | Tropical Thunder 98's stump models |
-| Honor Guard and Ranger Elites (Halo 2 bodies) | head (with the neck), either arm | kitbashed caps at the base of the neck and the shoulders |
+| Honor Guard and Ranger Elites (Halo 2 bodies) | head (with the neck), either arm | Hunterunt's Halo 2 shoulder stumps (Restored Gore features Halo 2) on the gore of Halo 2's first-person Elite arms; a kitbashed cap at the base of the neck |
 | Grunts (Halo CE) | head, either arm, the methane pack, regular or shellback (as in SPV3) | Tropical Thunder 98's stump models |
 | Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
 | Brutes | head, either arm (the arm drawn in to the shoulder) | kitbashed caps (their own model), a raised wound over the shoulder |
@@ -1191,6 +1191,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 ## Credits
 
 * **Gore:** the gore stumps and gore textures are by Tropical Thunder 98, from the XAM Campaign Overhaul.
+* **Halo 2 Elite shoulder stumps:** Hunterunt's Restored Gore features Halo 2.
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Engineer:** from Halo CE Ruby's Rebalance.

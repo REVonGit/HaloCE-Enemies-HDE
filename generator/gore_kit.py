@@ -79,6 +79,13 @@ GORE = {
                          roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'FloodElite':   dict(swap={'head': 'head', 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
                          roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
+    # Ruby's Rebalance's Flood hosts (extract_spv3.py): the head limb takes the host's own head ('corpse head') too
+    **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left_arm', 'rarm': 'right_arm'}, gun='rarm',
+               roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
+       for c in ('FloodODST', 'FloodMarine', 'FloodArmored')},
+    **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
+               roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
+       for c in ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')},
     # the XAM Campaign Overhaul's Flood Grunt (extract_spv3.py): no head bone of its own (the infection sits on the stump of
     # the neck), so its arms only
     'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'frame upperarm left', 'rarm': 'frame upperarm right'}),
@@ -720,10 +727,11 @@ def process_swap(char):
     jidx = {j[0].lower(): i for i, j in enumerate(joints)}
     gore, gtex = {}, None
     n_body = len(meshes)
-    for L, region in cfg['swap'].items():
-        base = [i for i, n in enumerate(names) if n == f'{region}.__base']
-        dmg = [i for i, n in enumerate(names) if n == f'{region}.~damaged']
-        assert base and dmg, (char, region, names)
+    for L, regions in cfg['swap'].items():
+        regions = [regions] if isinstance(regions, str) else regions
+        base = [i for i, n in enumerate(names) if any(n.startswith(r + '.') and n != f'{r}.~damaged' for r in regions)]
+        dmg = [i for i, n in enumerate(names) if any(n == f'{r}.~damaged' for r in regions)]
+        assert base and dmg, (char, regions, names)
         basemat = {meshes[i]['material'] for i in base}
         gtex = gtex or next((meshes[i]['material'] for i in dmg if meshes[i]['material'] not in basemat), None)
         hide = list(base) + ([i for i in range(len(meshes)) if mw[i]] if L == cfg.get('gun') else [])

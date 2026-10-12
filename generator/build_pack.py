@@ -291,6 +291,40 @@ TEAM = {'Grunt': 'COVENANT', 'GruntSpecOps': 'COVENANT', 'Jackal': 'COVENANT', '
         'FloodCarrier': 'FLOOD', 'FloodElite': 'FLOOD', 'FloodHuman': 'FLOOD', 'Sentinel': 'SENTINEL',
         'Marine': 'HUMAN', 'MarineArmored': 'HUMAN', 'MarineODST': 'HUMAN'}
 
+# Flood forms from SPV3 maps (extract_spv3.py -> spv3_ai.json), in the Flood pack with the Halo CE Flood: the XAM Campaign
+# Overhaul's Flood Grunt (Tropical Thunder 98) and Ruby's Rebalance's Flood hosts (mynameislol), from their c40 maps
+SPV3_FLOOD = {r'characters\flood grunt\flood grunt': 'FloodGrunt',
+              r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',
+              r'characters\floodcombat_marine\floodcombat_marine': 'FloodMarine',
+              r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored',
+              r'characters\floodcombat elite new\armored\floodcombat elite armored': 'FloodEliteArmored',
+              r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
+              r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra'}
+# their DoomEdNums, in this order after everything released before them (the Flood Grunt keeps the number it shipped with)
+SPV3_FLOOD_ORDER = (
+    ['HCE_FloodGrunt', 'HCE_RandomFloodGrunt',
+     'HCE_FloodcombatOdstAssaultRifle', 'HCE_FloodcombatOdstShotgun', 'HCE_FloodcombatOdstSniperRifle', 'HCE_RandomFloodODST',
+     'HCE_FloodcombatHumanUnarmoredAssaultRifle', 'HCE_FloodcombatHumanUnarmoredPistol', 'HCE_FloodcombatHumanUnarmoredUnarmed', 'HCE_RandomFloodMarine',
+     'HCE_FloodcombatHumanArmoredAssaultRifle', 'HCE_FloodcombatHumanArmoredPistol', 'HCE_FloodcombatHumanArmoredShotgun',
+     'HCE_FloodcombatHumanArmoredRocketLauncher', 'HCE_FloodcombatHumanArmoredSniperRifle', 'HCE_FloodcombatHumanArmoredUnarmed', 'HCE_RandomFloodArmored']
+    + [f'HCE_FloodcombatElite{r}{w}' for r in ('Minor', 'Major') for w in ('Needler', 'PlasmaPistol', 'PlasmaRifle', 'Unarmed')]
+    + ['HCE_RandomFloodEliteArmored', 'HCE_FloodcombatEliteCommanderEnergySword', 'HCE_FloodcombatEliteUltraFuelRod',
+       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra'])
+_sp = f'{OUT}/spv3_ai.json'
+if os.path.exists(_sp):
+    _S3 = json.load(open(_sp))
+    for _u, _c in SPV3_FLOOD.items():
+        if _u not in _S3['bipeds'] or not os.path.exists(f'{OUT}/models/{_c}/{_c}.json'): continue
+        CHAR_OF_UNIT[_u] = _c; TEAM[_c] = 'FLOOD'
+        AI['bipeds'][_u] = _S3['bipeds'][_u]
+        for _k, _v in _S3['variants'].items():
+            if _v['unit_reference'] != _u: continue
+            _v['_late'] = True
+            AI['variants'][_k] = _v
+            AI['actors'][_v['actor_reference']] = _S3['actors'][_v['actor_reference']]
+        _cm = _S3['bipeds'][_u].get('collision_model')
+        if _cm and _cm in _S3['collisions']: AI['collisions'][_cm] = _S3['collisions'][_cm]
+
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
 WEAPONS = {
     'plasma pistol':    ('HCE_PlasmaPistolBolt', 'HaloPlasma_Proj', 18, 0.83),
@@ -370,7 +404,12 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
           'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
           'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff'}
+          'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
+          # the Flood (extract_spv3.flood_sounds, shipped in the Flood pack by split_factions.py): the combat forms' growls,
+          # the infection forms' squeals and the carriers' gurgles; the Flood Grunt bursts like a carrier
+          'FloodHuman': 'Flood', 'FloodElite': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
+          'FloodEliteArmored': 'Flood', 'FloodEliteCommander': 'Flood', 'FloodEliteUltra': 'Flood',
+          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodCarrier'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
@@ -388,7 +427,8 @@ BLOOD = {
     'Brute': '161C40',                                                    # Jiralhanae (Halo 2): dark navy blue / black
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
-    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
+    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
+    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
@@ -402,6 +442,9 @@ def blood_props(char):
     # Halo blood with NashGore loaded (hce_core.zsc HCE_HaloBlood; the Flood keep NashGore's own)
     bt = '' if char.startswith('Flood') else '\t\tBloodType "HCE_HaloBlood";\n'
     return f'\t\tBloodColor "{c[0:2]} {c[2:4]} {c[4:6]}";\n' + bt
+
+# Ruby's Rebalance's armoured Flood Elites (build_digsite.py) keep their rank's change colour on the armour
+FLOOD_RANKED = ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')
 
 def cname(s):
     s = s.split('\\')[-1]
@@ -1385,7 +1428,10 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 # character's. Random spawners and the variant things are left out (the variants from HCEVARS are listed at run time).
 BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
-                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)', 'MarineArmored': 'Armored Marine',
+                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
+                  'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
+                  'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
+                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'MarineArmored': 'Armored Marine',
                   'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
 
 def read_lore():
@@ -1664,7 +1710,7 @@ def build(cfg=None):
             color = variant_color(v, b)
             # Flood: the change colour covers nearly the whole body on Xbox and turns them green;
             # the base maps already carry the right flesh/fatigue/armour colours
-            if char.startswith('Flood'): color = None
+            if char.startswith('Flood') and char not in FLOOD_RANKED: color = None
             skin_lines = []; weapon_lines = []
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
             if not ov.get('overlay') and meta.get('hand_frame') and wid_equipped:
@@ -1712,7 +1758,7 @@ def build(cfg=None):
                         skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{r}"')
                         continue
                 fn = f'{ov.get("skin_as", cls)[4:].lower()}_{matn.lower()}.png'     # arsenal Marines share their AR twin's
-                if char.startswith('Flood') and 'HCE_ActiveCamo' not in flags:
+                if char.startswith('Flood') and char not in FLOOD_RANKED and 'HCE_ActiveCamo' not in flags:
                     fn = f'{char.lower()}_{matn.lower()}.png'      # the Flood's skins are the same for every gun: one copy
                 dst = f'{pack}/models/{mdir}/{char}/skins/{fn}'
                 if not os.path.exists(dst):
@@ -1993,6 +2039,7 @@ BASE_CODE = {}       # char -> ZScript put in its abstract base class once (shar
 TYPE_CODE = {
     'FloodInfection': template('zscript/flood_infection.zs'),
     'FloodCarrier': template('zscript/flood_carrier.zs'),
+    'FloodGrunt': template('zscript/flood_grunt.zs'),      # bursts like a carrier, a smaller one: 2-4 infection forms
 }
 
 # Halo 2's beam rifle (extract_h2_jackal.py extracts it): the Sniper Jackal (build_digsite.py) and the Spec Ops Elite
@@ -2012,8 +2059,19 @@ BEAMRIFLE_CODE = ''
 
 MAIN_WEAPONS = set(WEAPONS)
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
-            handler='HCE_ReplaceHandler', index='pack_index.json')
-CHAR_OVERRIDES = {}   # per-character tweaks (used by add-on packs: see build_digsite.py)
+            handler='HCE_ReplaceHandler', index='pack_index.json',
+            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM],
+            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER)
+CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
+    # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
+    # letting out a few infection forms (TYPE_CODE)
+    'FloodGrunt': dict(stance='unarmed', melee=(36, 18), flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Explodes']),
+    # Ruby's Flood Elite Commander: the sword in Ruby's own sword melee and dives
+    'FloodEliteCommander': dict(stance='pistol', anims={'MELEE': ['stand sword melee%0', 'stand sword melee%1'],
+                                                       'DIVE_F': ['stand sword dive-front'], 'DIVE_L': ['stand sword dive-left'],
+                                                       'DIVE_R': ['stand sword dive-right'], 'EVADE_L': ['stand sword evade-left'],
+                                                       'EVADE_R': ['stand sword evade-right']}),
+}
 WEAPON_CODE = {}      # extra ZScript for every variant carrying a weapon
 SPECIAL_FIRE = {}     # weapon -> chance a burst becomes the charged special shot
 WEAPON_SKIN = {}      # weapon -> {weapon surface texture: replacement} (recoloured variants of one mesh)

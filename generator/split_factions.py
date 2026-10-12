@@ -43,6 +43,24 @@ from build_pack import OUT as _OUT
 STEPS = f'{_OUT}/footsteps'
 # Halo 2's jump pack (extract_h2_jetpack_sound.py): the Elite Rangers' HCE/Jetpack/In, Loop and Out
 JETPACK = f'{_OUT}/sounds/H2Jetpack'
+# the Flood's voices (build_pack.VOICES): event -> the sound sets it draws from (extract_spv3.flood_sounds' index keys)
+FLOOD_SOUNDS = f'{_OUT}/sounds/Flood'
+_GROWL = ['flood_flood_idle_combat', 'flood_new_combat']
+FLOOD_EVENTS = {
+    'Flood': {'Alert': _GROWL, 'FoundFoe': _GROWL, 'HeardGunfire': _GROWL, 'Taunt': _GROWL, 'KillPlayer': _GROWL,
+              'Idle': ['flood_flood_idle_noncombat', 'flood_new_noncombat'],
+              'Charge': ['flood_new_berserk', 'flood_leap'], 'Berserk': ['flood_new_berserk'], 'Advance': ['flood_new_berserk'],
+              'Melee': ['flood_melee', 'flood_new_melee'],
+              'Pain': ['flood_pain', 'flood_new_pain'], 'PainMed': ['flood_pain', 'flood_new_pain'], 'PainHeavy': ['flood_new_pain'],
+              'Wounded': ['flood_new_pain'], 'OnFire': ['flood_combat_elite_stand_pistol_onfire', 'flood_new_pain'],
+              'Stuck': ['flood_new_pain'], 'Death': ['flood_death', 'flood_new_death'], 'DeathHard': ['flood_new_death']},
+    'FloodInfection': {'Alert': ['infection_move'], 'Taunt': ['infection_move'], 'Charge': ['infection_move'],
+                       'Melee': ['infection_stand_unarmed_melee'], 'Feed': ['infection_stand_unarmed_feeding'],
+                       'Death': ['infection_die'], 'DeathHard': ['infection_die'], 'Pop': ['infection_die']},
+    'FloodCarrier': {'Alert': ['carrier_idle', 'carrier_idle_27'], 'Taunt': ['carrier_idle', 'carrier_idle_27'],
+                     'Idle': ['carrier_idle'], 'Death': ['carrier_carrier_die'], 'DeathHard': ['carrier_carrier_die'],
+                     'Pop': ['carrier_carrier_boom']},
+}
 STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
@@ -253,6 +271,24 @@ def main():
                         out.append(f'{ids[-1]} "{dst}"')
                     out.append(f'$random HCE/Step/{st}/{key} {{ {" ".join(ids)} }}')
             open(f'{d}/sndinfo.steps', 'w').write('\n'.join(out) + '\n')
+        if fac == 'flood' and os.path.exists(f'{FLOOD_SOUNDS}/index.json'):
+            idx = json.load(open(f'{FLOOD_SOUNDS}/index.json'))
+            os.makedirs(f'{d}/sounds/hce_flood', exist_ok=True)
+            out = ["// the Flood's voices and effects (extract_spv3.flood_sounds: Halo CE's and Ruby's Rebalance's, from its c40):",
+                   "// HCE/<voice>/<event> as HCE_Say plays them, and each form's Pop (HCE_PopSound)"]
+            ids = {}
+            for key, files in sorted(idx.items()):
+                k = re.sub(r'\W+', '_', key)
+                for n, fn in enumerate(files):
+                    shutil.copy(f'{FLOOD_SOUNDS}/{fn}', f'{d}/sounds/hce_flood/{fn}')
+                    ids.setdefault(key, []).append(f'HCE/FloodSnd/{k}/{n}')
+                    out.append(f'{ids[key][-1]} "sounds/hce_flood/{fn}"')
+            for voice, events in FLOOD_EVENTS.items():
+                for ev, keys in events.items():
+                    pick = [i for key in keys for i in ids.get(key, [])]
+                    if pick: out.append(f'$random HCE/{voice}/{ev} {{ {" ".join(pick)} }}')
+            out += ['$volume HCE/FloodCarrier/Pop 0.9', '$rolloff HCE/FloodCarrier/Pop 200 1600']
+            open(f'{d}/sndinfo.flood', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{JETPACK}/loop.ogg'):
             os.makedirs(f'{d}/sounds/hce_jetpack', exist_ok=True)
             out = ["// Halo 2's jump pack (extract_h2_jetpack_sound.py): the Elite Rangers (HCE_TryJet, HCE_JumpTick)"]

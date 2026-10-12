@@ -1107,26 +1107,6 @@ Model HCE_Engineer
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_FloodGrunt
-{
-	Path "models/hce_dig/FloodGrunt"
-	Model 0 "FloodGrunt.iqm"
-	SurfaceSkin 0 0 "skins/floodgrunt_floodgrunt_0.png"
-	SurfaceSkin 0 1 "skins/floodgrunt_floodgrunt_1.png"
-	SurfaceSkin 0 2 "skins/floodgrunt_floodgrunt_2.png"
-	SurfaceSkin 0 3 "skins/floodgrunt_floodgrunt_3.png"
-	SurfaceSkin 0 4 "skins/floodgrunt_floodgrunt_0.png"
-	SurfaceSkin 0 5 "skins/floodgrunt_floodgrunt_0.png"
-	Path "models/hce_dig/weapons"
-	SurfaceSkin 0 6 "hce_hidden.png"
-	SurfaceSkin 0 7 "hce_hidden.png"
-	Scale 80 80 96
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_JackalMarksmanPlasmaCarbine
 {
 	Path "models/hce_dig/H2Jackal"

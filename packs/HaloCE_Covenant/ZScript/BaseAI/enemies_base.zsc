@@ -4880,11 +4880,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual bool HCE_SeekCorpse() { return false; }
 	virtual void HCE_Feed() {}
 
+	virtual Sound HCE_PopSound() { return "HCE/FloodPop"; }   // the Flood's own: the carrier's boom, the infection form's squelch
 	void HCE_Detonate()
 	{
 		if(health <= 0 && hce_detonated) return;
 		hce_detonated = true;
-		A_StartSound("HCE/FloodPop", CHAN_BODY, CHANF_OVERLAP);
+		A_StartSound(HCE_PopSound(), CHAN_BODY, CHANF_OVERLAP);
 		A_Explode(int(max(10, hce_meleeDamage)), int(radius * 3 + 32), XF_NOTMISSILE, true, int(radius * 2));
 		for(int i = 0; i < 24; i++)
 			A_SpawnParticle("B8A060", 0, random(20, 40), random(3, 6), frandom(0, 360), 0, 0, height * 0.5, frandom(-3, 3), frandom(-3, 3), frandom(0, 4), 0, 0, -0.2);

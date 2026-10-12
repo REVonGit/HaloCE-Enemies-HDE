@@ -49,3 +49,4 @@
 		}
 		Destroy();
 	}
+	override Sound HCE_PopSound() { return "HCE/FloodInfection/Pop"; }

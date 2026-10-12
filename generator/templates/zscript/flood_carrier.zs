@@ -17,3 +17,4 @@
 			}
 		}
 	}
+	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }

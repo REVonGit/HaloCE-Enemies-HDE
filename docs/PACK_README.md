@@ -341,6 +341,16 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
   * Combat forms leap and fire whatever weapon they carry. Dead combat forms can be revived.
   * **XAM skins:** the human and Elite combat forms wear the XAM Campaign Overhaul's Flood skins (Tropical Thunder 98; SPV3's c40 map): raw, reddish flesh on the human forms and purple on the Elite forms, with matching torn-stump textures. They're painted for Halo CE's own meshes, so the models are unchanged.
+  * **Sounds:** the Flood growl, shriek and gurgle with Halo CE's own Flood sounds and Ruby's Rebalance's extra set (from its c40): the combat forms' alerts, taunts, berserk roars, melee, pain and deaths; the infection forms' skittering, attacks and deaths; the carriers' gurgles and their bursting boom (the Flood Grunt's too). They ship in the Flood pack.
+  * **Flood Grunt (new, XAM Campaign Overhaul):** an Unggoy taken by the Flood, its body swollen around a sack of infection forms (Tropical Thunder 98's model, skins and 23 animations, from SPV3's c40). It has Halo CE's carrier AI (50 health, no gun): it rushes in, claws (about 18 a hit), and **bursts when it dies, letting out 2–4 infection forms**. Either arm can be shot off. One Lost Soul in five to eight becomes one (by skill). `HCE_FloodGrunt` 30459, `HCE_RandomFloodGrunt` 30460.
+  * **Ruby's Rebalance's Flood hosts (new):** from Ruby's Rebalance by mynameislol (its c40 map): each its own model, skins, damaged stumps, animations and stats. Each also has its own head, the host's ('corpse head'), which comes off with the Flood's.
+    - **Flood ODST** (150 health): assault rifle, shotgun or sniper rifle (`HCE_FloodcombatOdst*`).
+    - **Flood Marine**, unarmoured: assault rifle, pistol or unarmed (`HCE_FloodcombatHumanUnarmored*`).
+    - **Flood Armored Marine**: assault rifle, pistol, shotgun, rocket launcher, sniper rifle or unarmed (`HCE_FloodcombatHumanArmored*`).
+    - **Shielded Flood Elites**, Minor (45 body, 70 shield, blue armour) and Major (45 body, 100 shield, red armour): needler, plasma pistol, plasma rifle or unarmed (`HCE_FloodcombatEliteMinor*`, `HCE_FloodcombatEliteMajor*`).
+    - **Flood Elite Commander** (300 body, 300 shield, gold armour): the energy sword, swung with Ruby's own sword animations (`HCE_FloodcombatEliteCommanderEnergySword`).
+    - **Flood Elite Ultra** (125 body, 100 shield, white armour): the fuel rod (`HCE_FloodcombatEliteUltraFuelRod`).
+    - They join the Flood among the Pinkies (the unarmed hosts, the Commander on hard) and the Wolfenstein SS (the armed hosts, the shielded Elites and the Ultra on hard). DoomEdNums 30461–30488, with `HCE_RandomFloodODST`, `HCE_RandomFloodMarine`, `HCE_RandomFloodArmored`, `HCE_RandomFloodEliteArmored`, `HCE_RandomFloodEliteCommander` and `HCE_RandomFloodEliteUltra`.
 * **Sentinels:** hover at Halo's flying height and fire a hitscan beam.
 * **Deaths:** directional (front/back/left/right) soft and hard death animations, airborne deaths, and Halo's flinch ("ping") animations by hit direction.
 * **Flinches:** a heavy hit plays a **hard ping** (h-ping) every time: a quarter of its health in one hit, a blast, or a hard melee. It cuts short a soft flinch, a landing or a taunt, though not a swing, throw, dive or an earlier hard ping. Lighter hits have a chance of a soft ping (s-ping).
@@ -604,7 +614,6 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 | `HCE_DronePlasmaPistol` | **Halo 2's Drone** (Yanme'e), ripped from MCC's `01b_spacestation.map` (Cairo Station): model, 32-bone skeleton, 36 animations (flight idle and four-way flight, wall perching, take-off/landing, fire, flinches, falling deaths) its real textures (from MCC's `textures.dat`, with the Drone shader's look baked in: the bump map's relief, the olive-green shell and its glossy olive-gold sheen, see-through wings) and 219 sounds: 149 dialogue lines from `sounds_en.dat`, plus its wing buzz, wing whooshes, wall-cling, claw and body-fall effects from `sounds_neutral.dat` (Halo 2 MCC stores them as raw Opus; the tools wrap them as Ogg). It holds a one-handed Covenant gun in its claw (see below), has 30 health and no shield (from its Halo 2 character tag), and is 48 tall with radius 22. Behaviour:<br>• **Darting flight:** swarm-style zig-zags above its target at changing heights, firing plasma pistol bursts.<br>• **Dodges:** when hit there's a 50% chance it darts sideways, at most every 4 s (its tag's evasion values).<br>• **Wall perching:** it flies to a nearby wall and clings with its back to it, firing from there (3–6 s in combat, 8–20 s when idle), and leaves early if you get within 96 units.<br>• **Swarm scatter:** when a drone dies, others within 400 units scatter in panic.<br>• **Falling death:** it falls out of the air and lands dead.<br>• **Sounds:** its wings buzz while it flies, it whooshes on dodges and darts, clicks when it grabs a wall, and thuds when it lands dead.<br>**Weapons:** the plasma pistol (`HCE_DronePlasmaPistol`, 30420), the **needler** (`HCE_DroneNeedler`, 30438), the CE **plasma rifle** (`HCE_DronePlasmaRifle`, 30439) and the **Spiker** (`HCE_DroneSpiker`, 30440), each dropping its HDE pickup. Cacodemons and Lost Souls become a mix of all four, mostly pistols and needlers; `HCE_RandomDrone` (30421) picks any. The antennae are cut out of their card by the shader's alpha, as Halo 2 draws them. |
 | `HCE_EliteUltraZealotEnergySword` | **Ultra Zealot** (new), Shigure's Zealot Elite on the Halo CE Elite (`extract_ultra_zealot.py`): the crested Zealot helmet and ornament, the Zealot torso and Reach-style arm plates, and a **diamond energy arm shield** on its left forearm, with Halo CE's energy sword in its right hand.<br>• **Colours:** Halo Reach's Field Marshal, pushed richer: a deep crimson-maroon armour over the teal undersuit, dark gauntlets, Reach-blue inset lights (drawn bright), and a blue shield animated like the Jackals' energy shields.<br>• **Stance:** it stands and walks like every sword Elite. Taking cover, and for two seconds after a bullet or bolt hits it, it raises its guard: SPV3's shield Elite's stance (the Elite Vanguard animations by Masterz1337 and Ruby of Blue, from a30), the shield arm held out in front as it stands, walks and crouches. Its melee, dives, evades and grenade throws are the shield Elite's.<br>• **Stats:** the gold sword Elite's build made tougher (130 body, 400 shield), sword charges and berserk as the sword Elites do. Severing its left arm takes the shield with it. Drops HDE's energy sword. DoomEdNum 30455, `HCE_RandomEliteZealot` 30432. |
 | `HCE_Engineer` | The Engineer from Halo CE Ruby's Rebalance, extracted from SPV3's b30 map (model, texture, 25 animations, health, dialogue). **Replaces every Pain Elemental** while the add-on is loaded; without it, Pain Elementals become Flood Carriers if the Flood pack is loaded. It carries **no weapon and never fights**: it treats nothing as an enemy, even whoever shoots it, and just drifts around, sometimes pausing in mid-air. It's a support unit rather than a combatant.<br>• **Overshields (Halo 3's Engineer ability):** every second it overshields the allies within 420 units that are fighting and in its sight, with a pink tether to each.<br>&nbsp;&nbsp;– Shielded allies are topped up 20% of their maximum a second, up to 1.5× their maximum.<br>&nbsp;&nbsp;– Unshielded allies (Grunts, Jackals, Hunters) get a small 40-point shield of their own (scaled by `hce_nerf_shields`).<br>&nbsp;&nbsp;– Out of its reach for 4 s, or when it dies, the gift goes away: overshields drop back to their maximum and given shields vanish.<br>&nbsp;&nbsp;– It drifts toward the fight, keeping 200–300 units from the ally it's shielding.<br>&nbsp;&nbsp;– In testing, a Grunt next to it got a 20-point shield and an Elite went to 60 of 50. **Kill the Engineer first.** It's still tough to pop (150 body plus a 200 recharging shield), and **when it dies it bursts and sprays 4–6 charged Plasma Caster shots** (HDE's `PlasmaCasterClusterProj`). Each one sticks to what it hits, arms for two seconds, then explodes and throws two mini-bolts, so don't kill it next to yourself. Its dialogue (idle, surprise, pain) and explosion sound come from the map. 70 tall, radius 26 (1.25× scale). Was `HCE_EngineerMajorPlasmaPistol`; same DoomEdNum, 30418. |
-| `HCE_FloodGrunt` | **Flood Grunt** (new), from the XAM Campaign Overhaul (Tropical Thunder 98; SPV3's c40 map and its `bitmaps.map`): an Unggoy taken by the Flood, its body swollen around a sack of infection forms, with its own model, skins and 23 animations. It has Halo CE's carrier AI (50 health, no gun): it rushes in, claws (about 18 a hit), and **bursts when it dies, letting out 2–4 infection forms** (the Flood pack's; none without it). Either arm can be shot off. Replaces 15–25% of Lost Souls while the add-on is loaded (by skill). DoomEdNum 30459, `HCE_RandomFloodGrunt` 30460. |
 | `HCE_ThornBeast` | The Thorn Beast, created by SOI_7, extracted from SPV3's a30 map: a slow, tough melee brute in the Hell Knight mix. It has health 350 and heavy swipes of about 45, and walks at speed 6 (its animation stride is 4.3). Shrunk to 70% (67 tall, radius 36). It plays its own sounds from the map: idle growls as alert and taunt, melee roars, minor and major pain, death, and footsteps while it walks. |
 | `HCE_Elite{Minor,Major,Specops,Commander}PulseCarbine` | The same Elite ranks with a **blue Pulse Carbine** (the CMT carbine re-tinted blue, with blue lights) that fires like HDE's Pulse Carbine: bursts of 3–5 slow, accelerating plasma bolts (8 base damage each) that home on the Elite's target. They never re-target onto allies. They drop HDE's Pulse Carbine. |
 | `HCE_BlindWolf` | The Blind Wolf, created by SOI_7, extracted from SPV3's a30 map (model, texture, 18 animations, stats). It's a Pinky-style melee charger, health 90: it runs you down, bites for about 22, and pounces from up to 300 units using its leap-start, leap-airborne and leap-melee animations. It uses the new Blind Wolf sounds (alert, howl, bite, pain, death, idle) from the REVonGit/HaloDoomEnemies-Proto fork. |
@@ -636,7 +645,7 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 | Archvile | 10 / 12 / 15% | Commander carbine or pulse-carbine Elite |
 | **Cyberdemon** | **always** | Drinol boss (`HCE_BossCyberdemonDrinol`), unless `hce_digsite_spawns` is 0, which hands it back to the main pack's Hunter bosses |
 
-DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. The Flood Grunt is `HCE_FloodGrunt` 30459 and `HCE_RandomFloodGrunt` 30460. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`). DoomEdNums 30900–30931 are the core pack's variant things, `HCE_Variant0` to `HCE_Variant31` (see [Your own variants](#your-own-variants-hcevars)).
+DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`). DoomEdNums 30900–30931 are the core pack's variant things, `HCE_Variant0` to `HCE_Variant31` (see [Your own variants](#your-own-variants-hcevars)).
 
 **License: keep this add-on private.** Digsite's README says its content is not open source and is licensed only for MCC mod projects. The Elites' carbine is CMT's and private too. Sources are listed in the pk3's `CREDITS.txt`.
 
@@ -747,7 +756,7 @@ Covenant enemies can lose their head or arms, or be torn apart, depending on the
 | Grunts (Halo CE) | head, either arm, the methane pack, regular or shellback (as in SPV3) | Tropical Thunder 98's stump models |
 | Halo 2 Jackals, Drones, Hunters, Slug Men | head, either arm (a Hunter's cannon arm or shield arm) | kitbashed caps |
 | Brutes | head, either arm (the arm drawn in to the shoulder) | kitbashed caps (their own model) |
-| Flood combat forms (human, Elite) | head, either arm | Halo CE's own damaged permutations |
+| Flood combat forms (human, Elite, and Ruby's Rebalance's hosts) | head, either arm | their own damaged permutations |
 | Flood Grunt | either arm | kitbashed caps |
 
 The stump texture is the gore Tropical Thunder 98 made for the XAM Campaign Overhaul (as SPV3 ships it), wet ropy flesh with a bone end:
@@ -1139,12 +1148,43 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30456 | `HCE_BruteStalkerSpiker` |
 | 30457 | `HCE_EliteHonorGuardPlasmaCarbine` |
 | 30458 | `HCE_EliteRangerPlasmaCarbine` |
+| 30459 | `HCE_FloodGrunt` |
+| 30460 | `HCE_RandomFloodGrunt` |
+| 30461 | `HCE_FloodcombatOdstAssaultRifle` |
+| 30462 | `HCE_FloodcombatOdstShotgun` |
+| 30463 | `HCE_FloodcombatOdstSniperRifle` |
+| 30464 | `HCE_RandomFloodODST` |
+| 30465 | `HCE_FloodcombatHumanUnarmoredAssaultRifle` |
+| 30466 | `HCE_FloodcombatHumanUnarmoredPistol` |
+| 30467 | `HCE_FloodcombatHumanUnarmoredUnarmed` |
+| 30468 | `HCE_RandomFloodMarine` |
+| 30469 | `HCE_FloodcombatHumanArmoredAssaultRifle` |
+| 30470 | `HCE_FloodcombatHumanArmoredPistol` |
+| 30471 | `HCE_FloodcombatHumanArmoredShotgun` |
+| 30472 | `HCE_FloodcombatHumanArmoredRocketLauncher` |
+| 30473 | `HCE_FloodcombatHumanArmoredSniperRifle` |
+| 30474 | `HCE_FloodcombatHumanArmoredUnarmed` |
+| 30475 | `HCE_RandomFloodArmored` |
+| 30476 | `HCE_FloodcombatEliteMinorNeedler` |
+| 30477 | `HCE_FloodcombatEliteMinorPlasmaPistol` |
+| 30478 | `HCE_FloodcombatEliteMinorPlasmaRifle` |
+| 30479 | `HCE_FloodcombatEliteMinorUnarmed` |
+| 30480 | `HCE_FloodcombatEliteMajorNeedler` |
+| 30481 | `HCE_FloodcombatEliteMajorPlasmaPistol` |
+| 30482 | `HCE_FloodcombatEliteMajorPlasmaRifle` |
+| 30483 | `HCE_FloodcombatEliteMajorUnarmed` |
+| 30484 | `HCE_RandomFloodEliteArmored` |
+| 30485 | `HCE_FloodcombatEliteCommanderEnergySword` |
+| 30486 | `HCE_FloodcombatEliteUltraFuelRod` |
+| 30487 | `HCE_RandomFloodEliteCommander` |
+| 30488 | `HCE_RandomFloodEliteUltra` |
 
 ## Credits
 
 * **Gore:** the gore stumps and gore textures are by Tropical Thunder 98, from the XAM Campaign Overhaul.
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Engineer:** from Halo CE Ruby's Rebalance.
+* **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
 * **Blind Wolf and Thorn Beast:** created by SOI_7.
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's.
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).

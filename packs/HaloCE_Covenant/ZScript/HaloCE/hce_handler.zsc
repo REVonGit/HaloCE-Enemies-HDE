@@ -441,7 +441,8 @@ class HCE_ReplaceHandler : EventHandler
 // "leatherneck" ("netevent hce_spawnmarines") does the same with only the Marines (every human-team class: both
 // bodies, every gun, Sergeant Johnson), pinned to their spots; "leatherneck2" ("netevent hce_spawnmarines2") spawns the
 // same Marines free to move: they join the squad, follow and take orders like any other.
-// They don't patrol while idle. Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
+// Except leatherneck2's, they are display dummies with no AI (HCE_DummyTick): they stand still in their idle animation,
+// never fight or move, and are there to look at and to test the gore on. Marines come out as allies, as they always do. Blocked spots are retried further ahead, then behind the
 // player, then anywhere free nearby.
 class HCE_SpawnAllHandler : EventHandler
 {
@@ -678,7 +679,9 @@ class HCE_SpawnAllHandler : EventHandler
 			mo.angle = mo.AngleTo(pl);
 			let en = HaloDoom_EnemyBase(mo);
 			// no idle patrols: they hold their place in the line (leatherneck2's Marines move as they please)
-			if(en) { en.hce_standStill = !free; en.hce_noMove = marines && !free; en.hce_lineupLook = looks[i] + 1; }
+			// display dummies, no AI: they stand in the line to be looked at and shot (leatherneck2's Marines are the
+			// real thing, free to move, follow and take orders)
+			if(en) { en.hce_standStill = !free; en.hce_noMove = !free; en.hce_dummy = !free; en.hce_lineupLook = looks[i] + 1; }
 			made++;
 		}
 		Console.Printf("%s: %d %s spawned%s", cmd, made, odsts ? "ODSTs" : marines ? "Marines" : "enemies", blocked ? String.Format(", %d had no room", blocked) : "");

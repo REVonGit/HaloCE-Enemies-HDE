@@ -11,4 +11,4 @@
 			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
 		}
 	}
-	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override Sound HCE_PopSound() { return "HCE/FloodGrunt/Pop"; }

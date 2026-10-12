@@ -133,6 +133,21 @@ SOUNDS = {'ThornBeast': ('a30', [r'sound\sfx\impulse\thornbeast']),
           # the XAM Campaign Overhaul's own Flood sounds (its c40): the human and Elite forms' idle growls, the Flood Grunt's attack
           'FloodXAM': ('c40', [r'sound\sfx2\characters\flood', r'sound\sfx2\impacts\flood flesh impact'])}
 
+
+SPV3_SOUNDS = os.environ.get('HCE_SPV3_SOUNDS', 'sounds.map')   # SPV3's sounds.map (or the stem of its .001 ... pieces)
+
+def split_read(path, off, n, chunk=104857600):
+    """bytes from a file, whole or split into numbered pieces (<path>.001, .002 ...: 100 MB each)"""
+    if os.path.exists(path):
+        with open(path, 'rb') as f: f.seek(off); return f.read(n)
+    out = b''
+    while n > 0:
+        k, o = divmod(off, chunk)
+        with open(f'{path}.{k + 1:03d}', 'rb') as f: f.seek(o); b = f.read(min(n, chunk - o))
+        if not b: raise EOFError(off)
+        out += b; off += len(b); n -= len(b)
+    return out
+
 def export_sounds(pid, out_dir, full=False):
     """every snd! under SOUNDS[pid] -> out_dir/<tag>_<n>.ogg; returns {tag basename: [files]} (full: keyed by the tag's
     folder and name, 'flood_new_pain', for sets whose tag names repeat across folders)"""
@@ -150,7 +165,10 @@ def export_sounds(pid, out_dir, full=False):
         for pr in S.block('pitch_ranges', 'sound_pitch_range'):
             for k, pm in enumerate(pr.block('permutations', 'sound_permutation')):
                 sz, fl, fo = m.u('iii', pm.addr + 64)
-                data = m.d[fo:fo + sz]
+                if fl & 1:                     # kept in SPV3's shared sounds.map
+                    try: data = split_read(SPV3_SOUNDS, fo, sz)
+                    except (OSError, EOFError): continue
+                else: data = m.d[fo:fo + sz]
                 fn = f'{base.replace(" ", "_")}_{k}.ogg'
                 ch = 2 if S['encoding'] == 1 else 1
                 rate = 44100 if S['sample_rate'] == 1 else 22050

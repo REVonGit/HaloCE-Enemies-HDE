@@ -46,20 +46,29 @@ JETPACK = f'{_OUT}/sounds/H2Jetpack'
 # the Flood's voices (build_pack.VOICES): event -> the sound sets it draws from (extract_spv3.flood_sounds' index keys)
 FLOOD_SOUNDS = f'{_OUT}/sounds/Flood'
 _GROWL = ['flood_flood_idle_combat', 'flood_new_combat']
+def _combat(idle):
+    """a Flood combat form's voice (Halo CE's flood set, Ruby's flood_new set, the XAM idle growl of its race)"""
+    return {'Alert': _GROWL, 'FoundFoe': _GROWL, 'HeardGunfire': _GROWL, 'Taunt': _GROWL + [idle], 'KillPlayer': _GROWL,
+            'Idle': ['flood_flood_idle_noncombat', 'flood_new_noncombat', idle],
+            'Charge': ['flood_new_berserk', 'flood_leap'], 'Berserk': ['flood_new_berserk'], 'Advance': ['flood_new_berserk'],
+            'Melee': ['flood_melee', 'flood_new_melee'],
+            'Pain': ['flood_pain', 'flood_new_pain'], 'PainMed': ['flood_pain', 'flood_new_pain'], 'PainHeavy': ['flood_new_pain'],
+            'Wounded': ['flood_new_pain'], 'OnFire': ['flood_combat_elite_stand_pistol_onfire', 'flood_new_pain'],
+            'Stuck': ['flood_new_pain'], 'Death': ['flood_death', 'flood_new_death'], 'DeathHard': ['flood_new_death']}
+_CARRIER = {'Alert': ['carrier_idle', 'carrier_idle_27'], 'Taunt': ['carrier_idle', 'carrier_idle_27'],
+            'Idle': ['carrier_idle'], 'Death': ['carrier_carrier_die'], 'DeathHard': ['carrier_carrier_die'],
+            'Pop': ['carrier_carrier_boom']}
 FLOOD_EVENTS = {
-    'Flood': {'Alert': _GROWL, 'FoundFoe': _GROWL, 'HeardGunfire': _GROWL, 'Taunt': _GROWL, 'KillPlayer': _GROWL,
-              'Idle': ['flood_flood_idle_noncombat', 'flood_new_noncombat'],
-              'Charge': ['flood_new_berserk', 'flood_leap'], 'Berserk': ['flood_new_berserk'], 'Advance': ['flood_new_berserk'],
-              'Melee': ['flood_melee', 'flood_new_melee'],
-              'Pain': ['flood_pain', 'flood_new_pain'], 'PainMed': ['flood_pain', 'flood_new_pain'], 'PainHeavy': ['flood_new_pain'],
-              'Wounded': ['flood_new_pain'], 'OnFire': ['flood_combat_elite_stand_pistol_onfire', 'flood_new_pain'],
-              'Stuck': ['flood_new_pain'], 'Death': ['flood_death', 'flood_new_death'], 'DeathHard': ['flood_new_death']},
+    'Flood': _combat('human_idle'),
+    'FloodElite': _combat('elite_idle'),
     'FloodInfection': {'Alert': ['infection_move'], 'Taunt': ['infection_move'], 'Charge': ['infection_move'],
                        'Melee': ['infection_stand_unarmed_melee'], 'Feed': ['infection_stand_unarmed_feeding'],
-                       'Death': ['infection_die'], 'DeathHard': ['infection_die'], 'Pop': ['infection_die']},
-    'FloodCarrier': {'Alert': ['carrier_idle', 'carrier_idle_27'], 'Taunt': ['carrier_idle', 'carrier_idle_27'],
-                     'Idle': ['carrier_idle'], 'Death': ['carrier_carrier_die'], 'DeathHard': ['carrier_carrier_die'],
-                     'Pop': ['carrier_carrier_boom']},
+                       'Death': ['infection_die', 'infection_form_death'], 'DeathHard': ['infection_die', 'infection_form_death'],
+                       'Pop': ['infection_die', 'infection_form_death']},
+    'FloodCarrier': _CARRIER,
+    # the XAM Flood Grunt: its own attack shriek, and the carrier's gurgles and burst
+    'FloodGrunt': dict(_CARRIER, Alert=['grunt_attack'], Charge=['grunt_attack'], Melee=['grunt_attack'], Berserk=['grunt_attack'],
+                       Taunt=['grunt_attack', 'carrier_idle']),
 }
 STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
@@ -287,7 +296,7 @@ def main():
                 for ev, keys in events.items():
                     pick = [i for key in keys for i in ids.get(key, [])]
                     if pick: out.append(f'$random HCE/{voice}/{ev} {{ {" ".join(pick)} }}')
-            out += ['$volume HCE/FloodCarrier/Pop 0.9', '$rolloff HCE/FloodCarrier/Pop 200 1600']
+            out += ['$volume HCE/FloodCarrier/Pop 0.9', '$rolloff HCE/FloodCarrier/Pop 200 1600', '$rolloff HCE/FloodGrunt/Pop 200 1400']
             open(f'{d}/sndinfo.flood', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{JETPACK}/loop.ogg'):
             os.makedirs(f'{d}/sounds/hce_jetpack', exist_ok=True)

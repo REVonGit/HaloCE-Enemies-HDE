@@ -1208,7 +1208,7 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 5, 9, 3, 0.80, 1.40, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/MA5B/Fire", "Halo/Weapons/MA5B/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_MA5B", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1342,7 +1342,7 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FirePattern 18, 30, 2, 1.20, 2.00, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Flamer/Fire/Loop", "", "Halo/Weapons/Flamer/Fire/End", "Halo/Weapons/Flamer/Fire/Start";
 		HaloDoom_EnemyBase.HCE_FireLoop true;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Flamethrower", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1475,7 +1475,7 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1608,7 +1608,7 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 3, 9, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Mag_MD6/Fire", "Halo/Weapons/Mag_MD6/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Magnum", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1741,7 +1741,7 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.92, 1.58, 28;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaPistol/Fire", "Halo/Weapons/PlasmaPistol/Fire/Bass", "Halo/Weapons/PlasmaPistol/Fire/Charged", "Halo/Weapons/PlasmaPistol/Charge/Start";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -1874,7 +1874,7 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 11, 4, 1.00, 1.78, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2007,7 +2007,7 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 3.20, 4.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/RocketLauncher/Fire", "", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_RocketLauncher", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2140,7 +2140,7 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.40, 2.00, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Shotgun/Fire", "Halo/Weapons/Shotgun/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Shotgun", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2273,7 +2273,7 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.60, 3.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sniper/Fire", "Halo/Weapons/Sniper/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SniperRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2404,7 +2404,7 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Feign 0.40, 2.5;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		+HaloDoom_EnemyBase.HCE_ActiveCamo
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2546,7 +2546,7 @@ class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_Feign 0.40, 2.5;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_Resurrects
@@ -2823,7 +2823,7 @@ class HCE_FloodcombatEliteMajorNeedler : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -2956,7 +2956,7 @@ class HCE_FloodcombatEliteMajorPlasmaPistol : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.92, 1.58, 28;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaPistol/Fire", "Halo/Weapons/PlasmaPistol/Fire/Bass", "Halo/Weapons/PlasmaPistol/Fire/Charged", "Halo/Weapons/PlasmaPistol/Charge/Start";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -3089,7 +3089,7 @@ class HCE_FloodcombatEliteMajorPlasmaRifle : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 11, 4, 1.00, 1.78, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -3220,7 +3220,7 @@ class HCE_FloodcombatEliteMajorUnarmed : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_Feign 0.40, 2.5;
 		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_Resurrects
@@ -3352,7 +3352,7 @@ class HCE_FloodcombatEliteMinorNeedler : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -3485,7 +3485,7 @@ class HCE_FloodcombatEliteMinorPlasmaPistol : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.92, 1.58, 28;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaPistol/Fire", "Halo/Weapons/PlasmaPistol/Fire/Bass", "Halo/Weapons/PlasmaPistol/Fire/Charged", "Halo/Weapons/PlasmaPistol/Charge/Start";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -3618,7 +3618,7 @@ class HCE_FloodcombatEliteMinorPlasmaRifle : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 11, 4, 1.00, 1.78, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -3749,7 +3749,7 @@ class HCE_FloodcombatEliteMinorUnarmed : HCE_FloodEliteArmoredBase
 		HaloDoom_EnemyBase.HCE_Feign 0.40, 2.5;
 		HaloDoom_EnemyBase.HCE_Shield 70, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_Resurrects
@@ -4022,7 +4022,7 @@ class HCE_FloodcombatEliteCommanderEnergySword : HCE_FloodEliteCommanderBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 300, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_EnergySword", "None";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
@@ -4309,7 +4309,7 @@ class HCE_FloodcombatEliteUltraFuelRod : HCE_FloodEliteUltraBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.95, 2.55, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodElite";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_FuelRod", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -4549,7 +4549,7 @@ class HCE_FloodGrunt : HCE_FloodGruntBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "FloodCarrier";
+		HaloDoom_EnemyBase.HCE_Voices "FloodGrunt";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Explodes
@@ -4626,7 +4626,7 @@ class HCE_FloodGrunt : HCE_FloodGruntBase
 			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
 		}
 	}
-	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override Sound HCE_PopSound() { return "HCE/FloodGrunt/Pop"; }
 }
 
 class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract

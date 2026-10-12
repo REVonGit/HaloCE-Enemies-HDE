@@ -406,10 +406,11 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
           'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
           # the Flood (extract_spv3.flood_sounds, shipped in the Flood pack by split_factions.py): the combat forms' growls,
-          # the infection forms' squeals and the carriers' gurgles; the Flood Grunt bursts like a carrier
-          'FloodHuman': 'Flood', 'FloodElite': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
-          'FloodEliteArmored': 'Flood', 'FloodEliteCommander': 'Flood', 'FloodEliteUltra': 'Flood',
-          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodCarrier'}
+          # the infection forms' squeals and the carriers' gurgles, and the XAM Campaign Overhaul's own (human and Elite idles,
+          # the Flood Grunt's attack)
+          'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
+          'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
+          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)

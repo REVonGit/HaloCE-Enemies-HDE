@@ -46,10 +46,10 @@ JETPACK = f'{_OUT}/sounds/H2Jetpack'
 # the Flood's voices (build_pack.VOICES): event -> the sound sets it draws from (extract_spv3.flood_sounds' index keys)
 FLOOD_SOUNDS = f'{_OUT}/sounds/Flood'
 _GROWL = ['flood_flood_idle_combat', 'flood_new_combat']
-def _combat(idle):
-    """a Flood combat form's voice (Halo CE's flood set, Ruby's flood_new set, the XAM idle growl of its race)"""
-    return {'Alert': _GROWL, 'FoundFoe': _GROWL, 'HeardGunfire': _GROWL, 'Taunt': _GROWL + [idle], 'KillPlayer': _GROWL,
-            'Idle': ['flood_flood_idle_noncombat', 'flood_new_noncombat', idle],
+def _combat():
+    """a Flood combat form's voice (Halo CE's flood set and Ruby's flood_new set)"""
+    return {'Alert': _GROWL, 'FoundFoe': _GROWL, 'HeardGunfire': _GROWL, 'Taunt': _GROWL, 'KillPlayer': _GROWL,
+            'Idle': ['flood_flood_idle_noncombat', 'flood_new_noncombat'],
             'Charge': ['flood_new_berserk', 'flood_leap'], 'Berserk': ['flood_new_berserk'], 'Advance': ['flood_new_berserk'],
             'Melee': ['flood_melee', 'flood_new_melee'],
             'Pain': ['flood_pain', 'flood_new_pain'], 'PainMed': ['flood_pain', 'flood_new_pain'], 'PainHeavy': ['flood_new_pain'],
@@ -59,8 +59,8 @@ _CARRIER = {'Alert': ['carrier_idle', 'carrier_idle_27'], 'Taunt': ['carrier_idl
             'Idle': ['carrier_idle'], 'Death': ['carrier_carrier_die'], 'DeathHard': ['carrier_carrier_die'],
             'Pop': ['carrier_carrier_boom']}
 FLOOD_EVENTS = {
-    'Flood': _combat('human_idle'),
-    'FloodElite': _combat('elite_idle'),
+    'Flood': _combat(),
+    'FloodElite': _combat(),
     'FloodInfection': {'Alert': ['infection_move'], 'Taunt': ['infection_move'], 'Charge': ['infection_move'],
                        'Melee': ['infection_stand_unarmed_melee'], 'Feed': ['infection_stand_unarmed_feeding'],
                        'Death': ['infection_die', 'infection_form_death'], 'DeathHard': ['infection_die', 'infection_form_death'],

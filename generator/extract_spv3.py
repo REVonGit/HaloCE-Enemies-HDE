@@ -130,8 +130,10 @@ SOUNDS = {'ThornBeast': ('a30', [r'sound\sfx\impulse\thornbeast']),
           'Flood': ('c40r', [r'sound\dialog\flood', r'sound\dialog\flood_new', r'sound\sfx\impulse\flood\infection',
                              r'sound\sfx\impulse\flood\carrier', r'sound\sfx\impulse\impacts\flood_limbs',
                              r'sound\sfx\impulse\animations\flood_combat_human', r'sound\sfx\impulse\animations\flood_combat_elite']),
-          # the XAM Campaign Overhaul's own Flood sounds (its c40): the human and Elite forms' idle growls, the Flood Grunt's attack
-          'FloodXAM': ('c40', [r'sound\sfx2\characters\flood', r'sound\sfx2\impacts\flood flesh impact'])}
+          # the XAM Campaign Overhaul's own Flood sounds (its c40): the infection forms' death squeal, the Flood Grunt's attack
+          # (not its human and Elite idles: they don't fit the Flood's voices)
+          'FloodXAM': ('c40', [r'sound\sfx2\characters\flood\infection_form', r'sound\sfx2\characters\flood\grunt',
+                               r'sound\sfx2\impacts\flood flesh impact'])}
 
 
 SPV3_SOUNDS = os.environ.get('HCE_SPV3_SOUNDS', 'sounds.map')   # SPV3's sounds.map (or the stem of its .001 ... pieces)

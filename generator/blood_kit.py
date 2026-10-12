@@ -26,6 +26,7 @@ sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
 from hce_paths import OUT
 
+OUT = os.environ.get('HCE_OUT', os.path.join(HERE, 'out'))
 STAGE_HITS = (5, 7, 10)              # new hits per stage
 PUSH = 0.004                          # world units the overlay sits out from the skin
 TEX = 256                             # blood texture size

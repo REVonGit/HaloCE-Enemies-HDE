@@ -388,7 +388,7 @@ BLOOD = {
     'Brute': '161C40',                                                    # Jiralhanae (Halo 2): dark navy blue / black
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
-    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
+    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
@@ -1385,7 +1385,7 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 # character's. Random spawners and the variant things are left out (the variants from HCEVARS are listed at run time).
 BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
-                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'MarineArmored': 'Armored Marine',
+                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)', 'MarineArmored': 'Armored Marine',
                   'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
 
 def read_lore():
@@ -1712,6 +1712,8 @@ def build(cfg=None):
                         skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{r}"')
                         continue
                 fn = f'{ov.get("skin_as", cls)[4:].lower()}_{matn.lower()}.png'     # arsenal Marines share their AR twin's
+                if char.startswith('Flood') and 'HCE_ActiveCamo' not in flags:
+                    fn = f'{char.lower()}_{matn.lower()}.png'      # the Flood's skins are the same for every gun: one copy
                 dst = f'{pack}/models/{mdir}/{char}/skins/{fn}'
                 if not os.path.exists(dst):
                     vivid = next((c for k, c in VIVID.items() if k in vname), None)

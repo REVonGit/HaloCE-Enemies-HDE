@@ -62,7 +62,7 @@ class HCE_Sentinel : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel"
-	//$Sprite "HU4IA0"
+	//$Sprite "HU4JA0"
 	Default
 	{
 		Health 80;
@@ -142,7 +142,7 @@ class HCE_SentinelMajor : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Major"
-	//$Sprite "HU4KA0"
+	//$Sprite "HU4LA0"
 	Default
 	{
 		Health 120;
@@ -222,7 +222,7 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Defensive"
-	//$Sprite "HU4JA0"
+	//$Sprite "HU4KA0"
 	Default
 	{
 		Health 80;
@@ -302,7 +302,7 @@ class HCE_SentinelShielded : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded"
-	//$Sprite "HU4LA0"
+	//$Sprite "HU4MA0"
 	Default
 	{
 		Health 60;
@@ -382,7 +382,7 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded Major"
-	//$Sprite "HU4MA0"
+	//$Sprite "HU4NA0"
 	Default
 	{
 		Health 80;
@@ -461,7 +461,7 @@ class HCE_RandomSentinel : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Random Sentinel"
-	//$Sprite "HU4IA0"
+	//$Sprite "HU4JA0"
 	Default
 	{
 		DropItem "HCE_Sentinel", 255, 1;

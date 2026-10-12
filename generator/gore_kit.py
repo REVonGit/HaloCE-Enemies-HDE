@@ -79,6 +79,9 @@ GORE = {
                          roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'FloodElite':   dict(swap={'head': 'head', 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
                          roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
+    # the XAM Campaign Overhaul's Flood Grunt (extract_spv3.py): no head bone of its own (the infection sits on the stump of
+    # the neck), so its arms only
+    'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'frame upperarm left', 'rarm': 'frame upperarm right'}),
     'Hunter':       dict(style='worm', blood='FF8C1A', limbs={'head': 'frame head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),  # the cannon arm, the shield arm
     'Drone':        dict(style='insect', blood='DDF0D2', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
     'SlugMan':      dict(style='worm', blood='FF8C1A', limbs={'head': 'Bip01 Head', 'larm': 'Bip01 L UpperArm', 'rarm': 'Bip01 R UpperArm'}),
@@ -94,7 +97,7 @@ GORE_TEX = {'Elite': ('jackal gore', False, True), 'EliteSpecial': ('jackal gore
             'Grunt': ('grunt_gore', False, True), 'GruntSpecOps': ('grunt_gore', False, True),
             'Jackal': ('jackal gore', False, True), 'JackalMajor': ('jackal gore', False, True), 'H2Jackal': ('jackal gore', False, True),
             'Brute': ('jackal gore', True, True), 'Hunter': ('grunt_gore', True, False), 'SlugMan': ('grunt_gore', True, False),
-            'Drone': ('grunt_gore', True, False)}
+            'Drone': ('grunt_gore', True, False), 'FloodGrunt': ('grunt_gore', True, True)}
 SPV3_MODEL = {'elite_new': r'characters\elite_new\elite_new', 'grunt_new': r'characters\grunt_new\grunt_new',
               'jackal_new': r'characters\jackal_new\jackal_new'}
 

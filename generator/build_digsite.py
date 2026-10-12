@@ -827,6 +827,21 @@ def zealot_skin(cls, v, si, mat, meta, skin_dir):
     Image.fromarray(hsv.astype(np.uint8), 'HSV').convert('RGB').save(dst)
     return fn
 
+# the Flood Grunt bursts like a carrier, a smaller one: 2-4 infection forms (the Flood pack's; none without it)
+FLOOD_GRUNT_CODE = """	override void HCE_OnDetonate()
+	{
+		Name n = 'HCE_FloodInfection';
+		class<Actor> ic = (class<Actor>)(n);
+		if(!ic) return;
+		int count = random(2, 4);
+		for(int i = 0; i < count; i++)
+		{
+			let f = Spawn(ic, pos + (frandom(-8, 8), frandom(-8, 8), height * 0.5), ALLOW_REPLACE);
+			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
+		}
+	}
+"""
+
 def configure():
     W = bp.W
     bp.WEAPONS['plasma carbine'] = ('HCE_CarbineRound', 'HaloCarbine_Bullet', 15, 6.0)   # HDE's green carbine round
@@ -888,6 +903,7 @@ def configure():
         bp.SHELL_TINT['EliteZealot'] = bp.SHELL_TINT['Elite']
         bp.VOICES['EliteZealot'] = 'Elite_Dogmatic,Elite_Loose'
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
+    bp.TYPE_CODE['FloodGrunt'] = FLOOD_GRUNT_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
     bp.WEAPON_CODE['particle beam'] = BEAM_CODE
@@ -920,6 +936,9 @@ def configure():
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'H2Jackal': dict(stance='pistol'),
         'Drone': dict(stance='pistol', flying=True, radius_fixed=22, height_fixed=48, shield=0, speed=9.5, flags=['HCE_Flying']),
+        # the XAM Campaign Overhaul's Flood Grunt (c40): Halo CE's carrier AI in an Unggoy body. It runs at you, claws,
+        # and bursts when it dies, letting out a few infection forms (FLOOD_GRUNT_CODE)
+        'FloodGrunt': dict(stance='unarmed', melee=(36, 18), flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Explodes']),
         'BlindWolf': dict(stance='unarmed', health=90, melee=(30, 22),
                           flags=['HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps'], leap=(48, 300, 0.7, 14.0)),
     })
@@ -932,10 +951,11 @@ def build():
     cou = {r'digsite\characters\drinol\00_mac\drinol': 'Drinol', r'digsite\characters\slug_man\slug_man': 'SlugMan',
            ELITE_RIFLE: 'EliteRifle', r'characters\blind_wolf\blind_wolf': 'BlindWolf',
            r'characters\thorn_beast\thorn_beast': 'ThornBeast', r'characters\engineer\engineer': 'Engineer',
+           r'characters\flood grunt\flood grunt': 'FloodGrunt',
            DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal', ULTRA_ZEALOT: 'EliteZealot'}
-    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT'}
+    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT', 'FloodGrunt': 'FLOOD'}
     cfg = dict(char_of_unit=cou, team=team, ai=ai, pack=PACK, mdir='hce_dig', tag='dig', ed0=30400, main=False,
-               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal'],
+               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal', 'FloodGrunt'],
                late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf', 'HCE_ThornBeast', 'HCE_RandomThornBeast',
                            'HCE_EliteMinorPulseCarbine', 'HCE_EliteMajorPulseCarbine', 'HCE_EliteSpecopsPulseCarbine',
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
@@ -943,7 +963,7 @@ def build():
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
                            'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
                            'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster',
-                           'HCE_EliteUltraZealotEnergySword'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_EliteUltraZealotEnergySword', 'HCE_FloodGrunt'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     zj = f'{bp.OUT}/models/EliteZealot/EliteZealot.json'

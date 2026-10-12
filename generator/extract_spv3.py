@@ -16,6 +16,9 @@ MAPS = {
             {r'characters\blind_wolf\blind_wolf': 'BlindWolf', r'characters\thorn_beast\thorn_beast': 'ThornBeast'}),
     'b30': (os.environ.get('HCE_SPV3_B30', 'b30_1.map'),
             {r'characters\engineer\engineer': 'Engineer'}),
+    # the XAM Campaign Overhaul's c40 (Tropical Thunder 98): its Flood Grunt, an Unggoy combat form (claws, no gun)
+    'c40': (os.environ.get('HCE_XAM_C40', 'c40_1.map'),
+            {r'characters\flood grunt\flood grunt': 'FloodGrunt'}),
 }
 OUT = ec.OUT
 
@@ -27,6 +30,23 @@ def run(only=None):
         for k in ai: ai[k].update(sub[k])
     json.dump(ai, open(f'{OUT}/spv3_ai.json', 'w'), indent=1, default=str)
     return ai
+
+def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
+    """a PC map's bitmap: pixels kept in the shared bitmaps.map (flag 0x100: external; HCE_SPV3_BITMAPS, see
+    gore_kit.py) read from there, the rest from the map itself"""
+    t = m.byid.get(tag_id) if isinstance(m, PCMap) else None
+    if t and t['cls'] == 'bitm':
+        c, p = m.reflexive(t['data'] + 0x60)
+        if index < c:
+            _, w, h, _, typ, fmt, fl, _, _, _, _, poff, psz = m.u('4s6h2h2hiii', p + index * 0x30)[:13]
+            if typ == 0 and fl & 0x100:
+                from bitmaps import decode
+                from gore_kit import _bitmaps_read
+                try: return decode(_bitmaps_read(poff, psz), 0, w, h, fmt, fl)
+                except Exception: return None
+    return _orig(m, tag_id, index)
+ec.bitmap_image = pc_bitmap_image
+
 
 def run_map(MAP, CHARS, only=None):
     m = PCMap(MAP)

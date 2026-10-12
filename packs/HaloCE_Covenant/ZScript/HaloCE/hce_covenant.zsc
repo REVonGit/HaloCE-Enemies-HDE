@@ -2901,6 +2901,9 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_body.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+		A_ChangeModel('None', 1, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
 		hce_jetDir = (-0.807, 0.174, -0.565);
 	}
@@ -2910,16 +2913,22 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		if(limb == HCE_LIMB_LARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
 			A_ChangeModel('None', 1, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 14, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
 	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
@@ -3144,6 +3153,9 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "ranger_body.iqm", 1, "", 'None');
 		A_ChangeModel('None', 2, "models/hce/EliteKit", "elite_jetpack.iqm", 2, "", 'None');
+		A_ChangeModel('None', 1, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
 		hce_jetDir = (-0.807, 0.174, -0.565);
 	}
@@ -3153,16 +3165,22 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		if(limb == HCE_LIMB_LARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 12, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
 			A_ChangeModel('None', 1, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 14, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
 	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
@@ -3942,6 +3960,9 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_body.iqm", 1, "", 'None');
+		A_ChangeModel('None', 1, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -3951,11 +3972,15 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
@@ -3963,6 +3988,8 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 20, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
 	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)
@@ -4189,6 +4216,9 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 		static const int BS[] = { 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16 };
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "models/hce/EliteKit", "honor_body.iqm", 1, "", 'None');
+		A_ChangeModel('None', 1, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 1, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -4198,11 +4228,15 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 18, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_RARM)
 		{
 			A_ChangeModel('None', 1, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 19, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 		if(limb == HCE_LIMB_HEAD)
 		{
@@ -4210,6 +4244,8 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 			A_ChangeModel('None', 1, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 1, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 1, "", 'None', 20, "models/hce/EliteKit", 'gore_Elite.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		}
 	}
 	override void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)

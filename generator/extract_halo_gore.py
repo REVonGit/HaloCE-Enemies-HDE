@@ -223,20 +223,23 @@ def main():
         own = smears.get(sp)
         files = own or smears['Elite']
         tint = None
-        if not own:                                   # the species' blood colour: the mean of its own splats
-            px = []
+        if not own:                                   # the species' blood colour: its own splats' (alpha-weighted mean colour),
+            px, wt = [], []                           # so its skids match the splats and pools it leaves
             for dn in groups.get(f'HCEGore_{sp}', []):
                 if 'glow' in dn: continue
                 a = np.asarray(Image.open(f'{gdir}/{dn[5:]}.png').convert('RGBA')).astype(float).reshape(-1, 4)
-                px.append(a[a[:, 3] > 128, :3])
-            if px: tint = np.concatenate(px).mean(0) / 255
+                px.append((a[:, :3] * a[:, 3:]).sum(0)); wt.append(a[:, 3].sum())
+            if px and sum(wt) > 0: tint = np.sum(px, 0) / sum(wt) / 255
         n = 0
         for f in files:
             im = Image.open(f'{gdir}/{f}').convert('RGBA')
             if tint is not None:
+                # the smear's shading (its luminance about its own alpha-weighted mean) on the species' colour
                 a = np.asarray(im).astype(float) / 255
                 lum = a[..., :3].mean(-1, keepdims=True)
-                rgb = np.clip(tint * (0.55 + 0.9 * lum / max(1e-3, lum[a[..., 3] > 0.5].mean())), 0, 1)
+                w = a[..., 3:]
+                mean_l = max(1e-3, float((lum * w).sum() / max(1e-6, w.sum())))
+                rgb = np.clip(tint * (0.7 + 0.6 * lum / mean_l), 0, 1)
                 im = Image.fromarray((np.dstack([rgb, a[..., 3:]]) * 255).astype(np.uint8), 'RGBA')
             png_grab(f'{sdir}/HK{code}{chr(65 + n)}0.png', im, im.size[0] // 2, im.size[1] // 2)
             n += 1

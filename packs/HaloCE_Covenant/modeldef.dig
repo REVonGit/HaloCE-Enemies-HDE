@@ -536,10 +536,10 @@ Model HCE_BruteStalkerSpiker
 {
 	Path "models/hce_dig/Brute"
 	Model 0 "Brute.iqm"
-	SurfaceSkin 0 0 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 0 "skins/brute_stalker_major_bth_brute.png"
 	SurfaceSkin 0 1 "skins/hce_hidden.png"
-	SurfaceSkin 0 2 "skins/brute_major_bth_brute_hair.png"
-	SurfaceSkin 0 3 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 2 "skins/brute_stalker_major_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_stalker_major_bth_brute_head.png"
 	SurfaceSkin 0 4 "skins/hce_hidden.png"
 	SurfaceSkin 0 5 "skins/hce_hidden.png"
 	SurfaceSkin 0 6 "skins/hce_hidden.png"
@@ -550,14 +550,14 @@ Model HCE_BruteStalkerSpiker
 	SurfaceSkin 0 11 "skins/hce_hidden.png"
 	SurfaceSkin 0 12 "skins/hce_hidden.png"
 	SurfaceSkin 0 13 "skins/hce_hidden.png"
-	SurfaceSkin 0 14 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 14 "skins/brute_stalker_major_bth_brute.png"
 	SurfaceSkin 0 15 "skins/hce_hidden.png"
 	SurfaceSkin 0 16 "skins/hce_hidden.png"
 	SurfaceSkin 0 17 "skins/hce_hidden.png"
 	SurfaceSkin 0 18 "skins/hce_hidden.png"
 	SurfaceSkin 0 19 "skins/hce_hidden.png"
-	SurfaceSkin 0 28 "skins/brute_major_bth_brute_hair.png"
-	SurfaceSkin 0 29 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 28 "skins/brute_stalker_major_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_stalker_major_bth_brute_head.png"
 	SurfaceSkin 0 30 "skins/hce_hidden.png"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 0 20 "hce_hidden.png"
@@ -589,6 +589,229 @@ Model HCE_Drinol
 	SurfaceSkin 0 2 "skins/drinol_drinol_1.png"
 	SurfaceSkin 0 3 "skins/drinol_drinol_2.png"
 	Scale 50 50 60
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneShieldShell
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/shieldshell.png"
+	SurfaceSkin 0 1 "skins/shieldshell.png"
+	SurfaceSkin 0 2 "skins/shieldshell.png"
+	SurfaceSkin 0 3 "skins/shieldshell.png"
+	SurfaceSkin 0 4 "skins/shieldshell.png"
+	SurfaceSkin 0 12 "skins/shieldshell.png"
+	SurfaceSkin 0 13 "skins/shieldshell.png"
+	SurfaceSkin 0 14 "skins/shieldshell.png"
+	SurfaceSkin 0 15 "skins/shieldshell.png"
+	SurfaceSkin 0 16 "skins/shieldshell.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 82.8 82.8 99.4
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneCaptainMajorNeedler
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_captain_major_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_captain_major_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronecaptainmajorneedler_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronecaptainmajorneedler_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_captain_major_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_captain_major_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "w_needler_glow.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneCaptainMajorPlasmaRifle
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_captain_major_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_captain_major_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronecaptainmajorplasmarifle_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronecaptainmajorplasmarifle_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_captain_major_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_captain_major_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_captain_major_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneCaptainPlasmaPistol
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_captain_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_captain_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronecaptainplasmapistol_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronecaptainplasmapistol_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_captain_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_captain_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneCaptainPlasmaRifle
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_captain_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_captain_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronecaptainplasmarifle_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronecaptainplasmarifle_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_captain_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_captain_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_captain_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneMajorNeedler
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_major_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_major_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronemajorneedler_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronemajorneedler_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_major_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_major_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "w_needler_glow.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneMajorPlasmaPistol
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_major_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_major_drone_2.png"
+	SurfaceSkin 0 3 "skins/dronemajorplasmapistol_drone_3.png"
+	SurfaceSkin 0 4 "skins/dronemajorplasmapistol_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_major_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_major_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_major_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "w_plasma_pistol_0.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
 	BaseFrame
@@ -713,6 +936,70 @@ Model HCE_DroneSpiker
 	SurfaceSkin 0 9 "w_spiker_body.png"
 	SurfaceSkin 0 10 "w_spiker_heat.png"
 	SurfaceSkin 0 11 "w_spiker_clip.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneUltraNeedler
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_ultra_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_ultra_drone_2.png"
+	SurfaceSkin 0 3 "skins/droneultraneedler_drone_3.png"
+	SurfaceSkin 0 4 "skins/droneultraneedler_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_ultra_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_ultra_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "w_needler_glow.png"
+	SurfaceSkin 0 7 "w_needler_1.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
+	SurfaceSkin 0 17 "hce_hidden.png"
+	SurfaceSkin 0 18 "hce_hidden.png"
+	SurfaceSkin 0 19 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DroneUltraPlasmaRifle
+{
+	Path "models/hce_dig/Drone"
+	Model 0 "Drone.iqm"
+	SurfaceSkin 0 0 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 1 "skins/drone_ultra_drone_1.png"
+	SurfaceSkin 0 2 "skins/drone_ultra_drone_2.png"
+	SurfaceSkin 0 3 "skins/droneultraplasmarifle_drone_3.png"
+	SurfaceSkin 0 4 "skins/droneultraplasmarifle_drone_4.png"
+	SurfaceSkin 0 12 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 13 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 14 "skins/drone_ultra_drone_0.png"
+	SurfaceSkin 0 15 "skins/drone_ultra_drone_2.png"
+	SurfaceSkin 0 16 "skins/drone_ultra_drone_2.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "w_plasma_rifle_0.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	SurfaceSkin 0 11 "hce_hidden.png"
 	SurfaceSkin 0 17 "hce_hidden.png"
 	SurfaceSkin 0 18 "hce_hidden.png"
 	SurfaceSkin 0 19 "hce_hidden.png"

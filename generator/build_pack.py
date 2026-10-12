@@ -117,6 +117,11 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
     limbs = json.load(open(kj)).get('limbs', {}) if os.path.exists(kj) else {}
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
     att = ''.join(f'\t\tA_ChangeModel(\'None\', {k + 1}, "models/{mdir}/EliteKit", "{p}.iqm", {k + 1}, "", \'None\');\n' for k, p in enumerate(pieces))
+    kmeta = json.load(open(kj)) if os.path.exists(kj) else {}
+    stumps = kmeta.get('stumps', {})
+    # the Halo 2 bodies' own stumps (extract_h2_elite_kit.add_stumps): hidden until their limb comes off
+    att += ''.join(f"\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n"
+                   for k, p in enumerate(pieces) for i in stumps.get(p, {}).values())
     sev = []
     for L, lc in ((1, 'HCE_LIMB_LARM'), (2, 'HCE_LIMB_RARM'), (3, 'HCE_LIMB_HEAD')):
         lines = []
@@ -126,6 +131,11 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
             if split: si = [i for i, n in enumerate(names) if n.endswith(f'_{L}')]
             else: si = list(range(len(names))) if (L == 3 and k == 0 and not whole) else []
             lines += [f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {i}, {hid});\n" for i in si]
+            st = stumps.get(p, {}).get(str(L))
+            if st is not None:                  # its own stump shows; the CE Elite's, inside it, stays hidden
+                lines.append(f"\t\t\tA_ChangeModel('None', {k + 1}, \"\", 'None', {st}, \"models/{mdir}/EliteKit\", '{kmeta.get('gore_tex', 'gore_Elite.png')}', CMDL_USESURFACESKIN);\n")
+                if whole:
+                    lines.append(f"\t\t\tA_ChangeModel('None', 0, \"\", 'None', {{HCE_STUB_{L}}}, {hid});\n")
         if lines: sev.append(f'\t\tif(limb == {lc})\n\t\t{{\n' + ''.join(lines) + '\t\t}\n')
     body = ''
     if whole:
@@ -1807,6 +1817,9 @@ def build(cfg=None):
                 mw = meta.get('mesh_weapon') or []
                 bsurf = [i for i, n in enumerate(meta.get('mesh_names') or []) if not n.startswith(('weapon_', 'gore.')) and not (mw[i] if i < len(mw) else None)]
                 extra = extra.replace('{HCE_CHAR}', char).replace('{HCE_BODY_SURFS}', ', '.join(map(str, bsurf)) or '-1').replace('{HCE_BLOOD_IDX}', str(BLOOD_IDX))
+                gl = (meta.get('gore') or {}).get('limbs', {})
+                for L, nm in ((1, 'larm'), (2, 'rarm'), (3, 'head')):       # the CE Elite's own stumps (hidden under a Halo 2 body's)
+                    extra = extra.replace(f'{{HCE_STUB_{L}}}', str(gl.get(nm, {}).get('stub', -1)))
             extra = extra.replace('{HCE_MODEL_SCALE}', f'{S * msc:.1f}')
             if not char.startswith('Marine') and (ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
@@ -1877,7 +1890,7 @@ def build(cfg=None):
             if 'HCE_ActiveCamo' in flags:
                 for line in skin_lines:
                     m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
-                    if m: camo.append(f'models/{mdir}/{char}/{m.group(1)}')
+                    if m and 'hce_hidden' not in m.group(1): camo.append(f'models/{mdir}/{char}/{m.group(1)}')
             if weapon_lines: skin_lines += [f'\tPath "models/{mdir}/weapons"'] + weapon_lines
             frames = '\tFrameIndex HCEM A 0 0'
             if ov.get('overlay'):
@@ -1949,7 +1962,7 @@ def build(cfg=None):
     late_chars = cfg.get('late_chars', [])      # characters added after a release: numbered after everything else
     def spawner(char, lst):
         nonlocal ed
-        weights = {c: 1 for c in lst}
+        weights = {c: RANDOM_WEIGHTS.get(c, 1) for c in lst}
         pz_ = '\n'.join(f'\t\tDropItem "{c}", 255, {weights[c]};' for c in lst)
         keys = editor_keys(f'HCE_Random{char}', char, team[char], f'Random {words(char)}', sprite_of=lst[0])
         zs.append(f'class HCE_Random{char} : RandomSpawner\n{{\n{keys}\tDefault\n\t{{\n{pz_}\n\t}}\n}}\n')
@@ -2076,6 +2089,7 @@ CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see bu
 WEAPON_CODE = {}      # extra ZScript for every variant carrying a weapon
 SPECIAL_FIRE = {}     # weapon -> chance a burst becomes the charged special shot
 WEAPON_SKIN = {}      # weapon -> {weapon surface texture: replacement} (recoloured variants of one mesh)
+RANDOM_WEIGHTS = {}   # class -> its weight in its character's random spawner (default 1)
 SKIN_HOOK = {}        # char -> f(cls, v, si, mat, meta, skin_dir) -> skin file name (or None for the default bake)
 BERSERK_ANIMS = {}    # char -> {kind: [names]} used instead of the normal table while hce_berserk is set
 LOBBED = {'plasma caster'}   # weapons fired in an arc

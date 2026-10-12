@@ -341,46 +341,60 @@ def limb_frac(m, bones):
 
 
 def collapsed_cap(loops, skins, limb_bones, J, outward, par, material, near_to, clear=None, dome=0.35):
-    """stump for a collapsed limb (its bones scaled to nothing at run time, every vertex they carry drawn in to the
-    limb's joint J): the cut loop's vertices keep their own bone weights, so the cap's rim follows the body's edge
-    exactly as it is drawn in; the apex (on the limb's parent bone) sits past the joint, over the collapsed limb"""
+    """stump for a collapsed limb (its bones scaled to nothing at run time, every vertex they carry drawn in towards the
+    limb's joint J): a drum over the cut. Its rim is the cut loop's own vertices with their own bone weights, so it
+    follows the body's edge however that is drawn in; its wall rises straight out (on the limb's parent bone) to clear
+    the skin the collapse leaves bunched up over the shoulder, and a low dome closes it, the bone end in the middle"""
     P, N, UV, T, BI, BW = [], [], [], [], [], []
     if not loops: return None
     near = min(np.linalg.norm(l.mean(0) - near_to) for l in loops)
-    lb = np.array(sorted(limb_bones))
     for loop, sk in zip(loops, skins):
         if np.linalg.norm(loop.mean(0) - near_to) > near * 1.6 + 0.02: continue
-        # where the rim is drawn to: the weights on the limb's bones pull a vertex onto J
+        # where the rim is drawn to: the weights on the limb's bones pull a vertex towards J
         f = limb_frac(dict(bidx=np.array([b for b, _ in sk]), bw=np.array([w for _, w in sk])), limb_bones)
         rim = loop * (1 - f[:, None]) + J * f[:, None]
         c = rim.mean(0)
         r = np.linalg.norm(rim - c, axis=1).mean()
         if r < 1e-4: continue
-        reach = (J - c) @ outward
-        if clear is not None and len(clear):      # past whatever is left of the limb inside the rim
-            inside = clear[np.linalg.norm((clear - c) - np.outer((clear - c) @ outward, outward), axis=1) < r * 1.2]
-            if len(inside): reach = max(reach, ((inside - c) @ outward).max())
-        apex = c + outward * max(r * dome, reach + r * 0.15)
+        # the heights (along 'outward', from the rim's centre) the drum must clear: whatever the collapse leaves inside
+        # its footprint, the wall at the outer part of it, the dome over the middle
+        wall, top = 0.0, (J - c) @ outward
+        if clear is not None and len(clear):
+            rel = clear - c
+            ht = rel @ outward
+            lat = np.linalg.norm(rel - np.outer(ht, outward), axis=1)
+            inside = lat < r * 1.15
+            if inside.any():
+                top = max(top, ht[inside].max())
+                outer = inside & (lat > r * 0.55)
+                if outer.any(): wall = max(0.0, ht[outer].max())
+        wall += r * 0.06
+        top = max(top + r * 0.12, wall + r * dome * 0.5)
         ax = np.cross(outward, [0, 0, 1.0])
         if np.linalg.norm(ax) < 1e-3: ax = np.cross(outward, [0, 1.0, 0])
         ax /= np.linalg.norm(ax); ay = np.cross(outward, ax)
-        base = len(P)
-        P.append(apex); N.append(outward); UV.append((0.5, 0.5))
-        BI.append((par, 0, 0, 0)); BW.append((255, 0, 0, 0))
-        for p, q, (bi, bw) in zip(loop, rim, sk):
-            d = q - c
-            P.append(p); n = outward * 0.6 + d / max(np.linalg.norm(d), 1e-6) * 0.4; N.append(n / np.linalg.norm(n))
-            UV.append((0.5 + 0.42 * (d @ ax) / r, 0.5 + 0.42 * (d @ ay) / r))
-            BI.append(tuple(bi)); BW.append(tuple(bw))
         n = len(loop)
+        base = len(P)
+        P.append(c + outward * top); N.append(outward); UV.append((0.5, 0.5))           # the apex
+        BI.append((par, 0, 0, 0)); BW.append((255, 0, 0, 0))
+        for p, q, (bi, bw) in zip(loop, rim, sk):                                    # the rim (the skin's own weights)
+            d = q - c; dn = d / max(np.linalg.norm(d), 1e-6)
+            P.append(p); N.append(dn)
+            UV.append((0.5 + 0.46 * (d @ ax) / r, 0.5 + 0.46 * (d @ ay) / r))
+            BI.append(tuple(bi)); BW.append(tuple(bw))
+        for q in rim:                                                                # the wall's top ring
+            d = q - c; dn = d / max(np.linalg.norm(d), 1e-6)
+            P.append(c + d * 1.18 + outward * wall); nn = outward * 0.5 + dn * 0.5; N.append(nn / np.linalg.norm(nn))
+            UV.append((0.5 + 0.38 * (d @ ax) / r, 0.5 + 0.38 * (d @ ay) / r))
+            BI.append((par, 0, 0, 0)); BW.append((255, 0, 0, 0))
+        R0, R1 = base + 1, base + 1 + n
         for i in range(n):
-            a, b = base + 1 + i, base + 1 + (i + 1) % n
-            tri = [base, a, b]
-            fn = np.cross(rim[i] - apex, rim[(i + 1) % n] - apex)
-            if fn @ outward < 0: tri = [base, b, a]
-            T.append(tri)
+            k = (i + 1) % n
+            T += [[R0 + i, R0 + k, R1 + k], [R0 + i, R1 + k, R1 + i], [base, R1 + i, R1 + k]]
     if not T: return None
-    T = np.array(T)[:, [0, 2, 1]]
+    T = np.array(T)
+    # both faces: the rim follows skin the collapse folds and turns, so the cap is seen from whichever side faces out
+    T = np.concatenate([T, T[:, [0, 2, 1]]])
     return dict(name='', material=material, pos=np.array(P), nrm=np.array(N), uv=np.array(UV),
                 bidx=np.array(BI, np.uint8), bw=np.array(BW, np.uint8), tris=T)
 
@@ -596,18 +610,25 @@ def process(char):
             # the stump's rim: round the skin the collapse moves (the skin surfaces' triangles with a corner more than
             # COLLAPSE_EDGE on the limb's bones), not the limb's own edge, which is drawn deep into the shoulder; the
             # dome clears every vertex the collapse leaves near the joint (fur and armour included)
-            zone, clear = [], []
+            zone, clear, facing = [], [], []
             for si, m in enumerate(meshes[:n_body]):
                 if mesh_weapon[si] or not len(m['tris']): continue
                 f = limb_frac(m, limbs[L])
                 if names[si].startswith(cfg.get('cap_from', '')):
                     hit = (f[m['tris']] > COLLAPSE_EDGE).any(1)
-                    if hit.any(): zone.append(sub_mesh(m, m['tris'][hit]))
+                    if hit.any():
+                        zone.append(sub_mesh(m, m['tris'][hit]))
+                        facing.append((m['nrm'] * f[:, None]).sum(0))   # which way the moved skin faces
                 moved = f > 0.01
                 clear.append(m['pos'][moved] * (1 - f[moved, None]) + jp_ * f[moved, None])
             cut_skins = []
             cut = boundary_loops(zone, cut_skins)
             clear = np.concatenate(clear) if clear else np.zeros((0, 3))
+            # the stump faces out of the body at the shoulder: from the limb's grandparent bone (the spine) through
+            # its joint, not down the arm's bind pose
+            gp = joints[par][1] if par >= 0 else -1
+            cap_dir = jp_ - np.array(W[gp][0]) if gp >= 0 else (np.sum(facing, 0) if facing else out_dir)
+            cap_dir = cap_dir / max(np.linalg.norm(cap_dir), 1e-6)
         if L in regions and loops:            # a region limb (the Grunts' pack): only the cut where it meets the body,
             from scipy.spatial import cKDTree # not the open rims of its own parts (its inset lights) floating once gone
             keepP = np.concatenate([m['pos'] for i, m in enumerate(meshes) if not mesh_weapon[i] and len(m['pos'])
@@ -615,7 +636,7 @@ def process(char):
             kk = cKDTree(keepP)
             loops = [lp for lp in loops if np.mean(kk.query(np.asarray(lp))[0] < 0.01) > 0.5]
         if L in collapse:
-            st = collapsed_cap(cut, cut_skins, limbs[L], jp_, out_dir, par if par >= 0 else root, tex, jp_, clear)
+            st = collapsed_cap(cut, cut_skins, limbs[L], jp_, cap_dir, par if par >= 0 else root, tex, jp_, clear)
         elif L in stumps and len(stumps[L]['tris']) >= 6:
             st = dict(stumps[L]); st['material'] = tex
             if gim is None:                               # SPV3's UVs only fit SPV3's texture

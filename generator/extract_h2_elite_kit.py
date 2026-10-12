@@ -44,7 +44,9 @@ PIECES = {
 }
 SPLIT = {'honor_body', 'ranger_body'}   # pieces cut into surfaces by limb: 0 body, 1 left arm, 2 right arm, 3 head
 LIMB = {f'bip01 {s} {b}': (1 if s == 'l' else 2) for s in 'lr' for b in ('clavicle', 'upperarm', 'forearm', 'hand')}
-LIMB.update({b: 3 for b in ('bip01 head', 'frame mandible lower left', 'frame mandible lower right', 'frame mandible upper left',
+# the head limb takes the neck too: decapitated, a Halo 2 body loses its whole neck and the stump closes the cut at its
+# base (STUMP_ROOTS)
+LIMB.update({b: 3 for b in ('bip01 head', 'bip01 neck', 'bip01 neck1', 'frame mandible lower left', 'frame mandible lower right', 'frame mandible upper left',
                             'frame mandible upper right')})
 # the jump pack's colour-change areas (its change_color map) take the Ranger's own blue-grey, as Halo 2 tints them
 JETPACK_TINT = (0.17, 0.20, 0.26)     # dark gunmetal, as Halo 2 draws the Rangers' packs (its chrome from build_pack.kit_shine)
@@ -186,6 +188,39 @@ def lens_texture():
     Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).save(f'{KIT}/{LENS}')
 
 
+# stumps on the Halo 2 bodies' own cuts (the CE Elite's are inside them, too small and too low): per limb, its cut
+# through the piece closed with a domed cap in the CE Elite's gore (SPV3's purple, the bone end in the middle), hidden
+# until the limb comes off (build_pack.elite_kit_code)
+STUMP_ROOTS = {1: ('bip01 l clavicle', 'bip01 l upperarm'), 2: ('bip01 r clavicle', 'bip01 r upperarm'), 3: ('bip01 neck', 'bip01 head')}
+
+
+def add_stumps(pid, J, meshes, meta):
+    """the piece's surfaces + a 'stump.<L>' cap surface per limb (meta['stumps'][pid]: {limb: surface index})"""
+    import shutil
+    from gore_kit import boundary_loops, cap_mesh, cap_uv_to_spv3, world_bind
+    ce = json.load(open(f'{OUT}/models/Elite/Elite.json'))['gore']
+    shutil.copy(f'{OUT}/models/Elite/{ce["tex"]}', f'{KIT}/{ce["tex"]}')
+    W = world_bind(J)
+    idx = {j[0].lower(): i for i, j in enumerate(J)}
+    out = list(meshes)
+    for L, (root, toward) in STUMP_ROOTS.items():
+        parts = [m_ for m_ in meshes if m_['name'].endswith(f'_{L}') and len(m_['tris'])]
+        if not parts: continue
+        r = idx[root]; par = J[r][1]
+        jp = np.array(W[r][0])
+        tip = np.array(W[idx[toward]][0]) if toward else jp + (jp - np.array(W[par][0]))
+        out_dir = tip - np.array(W[par][0]); out_dir /= max(np.linalg.norm(out_dir), 1e-6)
+        cap = cap_mesh(boundary_loops(parts), jp, out_dir, par, ce['tex'], dome=0.3)
+        if cap is None: continue
+        cap['uv'] = cap_uv_to_spv3(cap['uv'], True)
+        cap['name'] = f'stump.{L}'                      # (not '_{L}': the limb's own surfaces end so)
+        meta.setdefault('stumps', {}).setdefault(pid, {})[str(L)] = len(out)
+        out.append(cap)
+        print(f'  {pid}: stump {L}: {len(cap["tris"])} tris')
+    meta['gore_tex'] = ce['tex']
+    return out
+
+
 GIB_PAD = 24              # surfaces left empty at the front of a gib: the dead Elite's MODELDEF skins its own surfaces by
                           # index (the gib takes its model slot), so the Halo 2 pieces sit past every CE Elite's (18-20)
 GIB_LIMBS = (('head', 3), ('larm', 1), ('rarm', 2))
@@ -262,6 +297,7 @@ def main():
                                    bidx=cb, bw=w8, tris=tris[limb == L]))
             meta.setdefault('limbs', {})[pid] = [m_['name'] for m_ in meshes]
             print(f'  {pid}: {mm["region"]}:{mm["perm"]} {mm["shader"]} {len(P)} verts {len(mm["tris"])} tris')
+        if pid in SPLIT: meshes = add_stumps(pid, J, meshes, meta)
         write_iqm(f'{KIT}/{pid}.iqm', J, meshes, bind)
         meta['pieces'][pid] = dict(file=pid + '.iqm', tris=int(sum(len(x['tris']) for x in meshes)))
     # the jump pack: a one-node model placed by the Ranger's 'jetpack' marker (upper spine), bound to the CE spine1

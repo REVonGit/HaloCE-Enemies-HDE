@@ -214,6 +214,18 @@ def load_ai():
             dv = copy.deepcopy(jv)
             dv['ranged_combat']['reference'] = wref
             variants[DRONE + ' ' + key] = dv
+        # Halo 2's Drone ranks (extract_h2_drone_ranks.py: Ruby of Blue's rank tags): the Minors above are the plain
+        # Drones; each other rank gets its legendary body/shield and its plate colour (drone_skin), with two loadouts
+        for rank, guns in DRONE_RANKS.items():
+            rd = drone_ranks().get(rank)
+            if not rd: continue
+            for wref in guns:
+                dv = copy.deepcopy(jv)
+                dv['ranged_combat']['reference'] = wref
+                dv['unit'] = dict(dv['unit'], maximum_body_vitality=float(rd['body']), maximum_shield_vitality=float(rd['shield']))
+                dv['_rank'] = rank
+                if rd['shield'] > 0: dv['_ov'] = dict(shield=int(rd['shield']))
+                variants[f'{DRONE} {rank.replace("_", " ")} {wref.split(chr(92))[-1]}'] = dv
         actors[DRONE] = copy.deepcopy(A['actors'][r'characters\jackal\jackal minor'])
         jb = copy.deepcopy(A['bipeds'][r'characters\jackal\jackal'])
         jb.update(collision_height_standing=0.55, collision_radius=0.27, flying_velocity=2.6)
@@ -411,6 +423,42 @@ def drone_sounds():
         lines.append(f'$random HCE/Drone/{e} {{ {" ".join(ids)} }}')
     return lines
 
+# Drone ranks past the Minor: their loadouts (Halo 2's Drones fly with plasma pistols and needlers; the officers
+# bring plasma rifles)
+DRONE_RANKS = {'major': (r'weapons\plasma pistol\plasma pistol', r'weapons\needler\needler'),
+               'ultra': (r'weapons\needler\needler', CE_PR),
+               'captain': (r'weapons\plasma pistol\plasma pistol', CE_PR),
+               'captain_major': (r'weapons\needler\needler', CE_PR)}
+DRONE_SHELL = (1.00, 0.62, 0.22)       # the Captains' shield flare: the amber of the Drones' eyes
+
+
+def drone_ranks():
+    j = f'{bp.OUT}/models/Drone/Drone.json'
+    return (json.load(open(j)).get('ranks') or {}) if os.path.exists(j) else {}
+
+
+def drone_skin(cls, v, si, mat, meta, skin_dir):
+    """a ranked Drone's skin: the plain bake with its exoskeleton plates (the rank tags' change-colour map) in the
+    rank's colour, shaded by the skin under them"""
+    rank = v.get('_rank'); rd = drone_ranks().get(rank)
+    matn = mat[:-4] if mat.endswith('.png') else mat
+    mp = f'{bp.OUT}/models/Drone/Drone_rank_mask.png'
+    if not rd or rank == 'minor' or matn not in ('Drone_0', 'Drone_1', 'Drone_2') or not os.path.exists(mp): return None
+    fn = f'drone_{rank}_{matn.lower()}.png'
+    dst = f'{skin_dir}/{fn}'
+    if os.path.exists(dst): return fn
+    os.makedirs(skin_dir, exist_ok=True)
+    bp.bake_skin('Drone', matn, None, dst)
+    im = Image.open(dst).convert('RGB')
+    d = np.asarray(im).astype(np.float64) / 255.0
+    m = np.asarray(Image.open(mp).convert('L').resize(im.size)).astype(np.float64)[..., None] / 255.0
+    lum = d.mean(2, keepdims=True)
+    ref = lum[m[..., 0] > 0.5].mean() if (m > 0.5).any() else 0.5
+    tint = lum / max(ref, 1e-3) * 0.75 * np.array(rd['colour'])
+    Image.fromarray((np.clip(d * (1 - m) + tint * m, 0, 1) * 255).astype(np.uint8)).save(dst)
+    return fn
+
+
 def brute_skin(cls, v, si, mat, meta, skin_dir):
     """per-rank Brute skins: hide the armour pieces a rank doesn't wear, bake the variant's fur change colours"""
     names = meta.get('mesh_names')
@@ -423,7 +471,8 @@ def brute_skin(cls, v, si, mat, meta, skin_dir):
         if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
         return 'hce_hidden.png'
     var = v['_brute_variant']
-    fn = f'brute_{var}_{shader}.png'
+    # the Stalker's skins are its own copies: the camo shader goes on its textures, never on the Majors' it shares
+    fn = f'brute_{"stalker_" if v["_brute_rank"] == "stalker" else ""}{var}_{shader}.png'
     dst = f'{skin_dir}/{fn}'
     if os.path.exists(dst): return fn
     src = f'{OUT}/models/Brute/Brute_{shader}.png'
@@ -669,6 +718,16 @@ def brute_code():
 			hce_prevLeap = hce_leapState;
 		}
 		if(hce_fallTics > 0 && --hce_fallTics == 0) A_StartSound("HCE/Brute/BodyFall", CHAN_BODY, CHANF_OVERLAP, 0.9);
+		// the Stalker's eye: a red glint on its head that its camo doesn't hide, flaring now and then
+		if(bHCE_ActiveCamo && health > 0 && !(hce_severed & 1) && !isFrozen())
+		{
+			vector3 h = HCE_LimbOffset(HCE_LIMB_HEAD);
+			vector2 fw = AngleToVector(angle), lf = AngleToVector(angle + 90);
+			vector3 at = (fw * (h.x + radius * 0.35) + lf * h.y, h.z * 0.98);
+			double fl = (level.maptime % 70 < 6) ? 2.0 : 1.0 + 0.2 * sin(level.maptime * 24.0);
+			A_SpawnParticle("FF2010", SPF_FULLBRIGHT, 2, 5.0 * fl, 0, at.x, at.y, at.z, 0, 0, 0, 0, 0, 0, 0.95);
+			A_SpawnParticle("FF9080", SPF_FULLBRIGHT, 2, 2.0 * fl, 0, at.x, at.y, at.z, 0, 0, 0, 0, 0, 0, 1.0);
+		}
 		if(health > 0 && !isFrozen())
 		{
 			// footfalls: the API's HCE_StepTick (Halo 2's Brute footsteps by surface, extract_footsteps.py)
@@ -890,6 +949,10 @@ def configure():
         bp.VOICES['EliteZealot'] = 'Elite_Dogmatic,Elite_Loose'
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
+    bp.SKIN_HOOK['Drone'] = drone_skin
+    # a swarm is mostly Minors: they come up three times as often as each ranked loadout
+    bp.RANDOM_WEIGHTS.update({c: 3 for c in ('HCE_DronePlasmaPistol', 'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker')})
+    bp.SHELL_TINT['Drone'] = DRONE_SHELL
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
     bp.WEAPON_CODE['particle beam'] = BEAM_CODE
     bp.WEAPON_CODE['plasma carbine'] = CARBINE_CODE
@@ -944,7 +1007,10 @@ def build():
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
                            'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
                            'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster',
-                           'HCE_EliteUltraZealotEnergySword'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_EliteUltraZealotEnergySword',
+                           'HCE_DroneMajorPlasmaPistol', 'HCE_DroneMajorNeedler', 'HCE_DroneUltraNeedler', 'HCE_DroneUltraPlasmaRifle',
+                           'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
+                           'HCE_DroneCaptainMajorPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     zj = f'{bp.OUT}/models/EliteZealot/EliteZealot.json'

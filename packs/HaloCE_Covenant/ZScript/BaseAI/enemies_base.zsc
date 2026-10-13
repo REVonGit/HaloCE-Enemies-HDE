@@ -4272,11 +4272,30 @@ class HaloDoom_EnemyBase : Actor abstract
 	// One line at a time per actor, plus nearby allies hold their tongue
 	// for a moment so a squad doesn't talk over itself.
 	// ------------------------------------------------------------------
+	// callouts a whole group would make at once (a grenade, an enemy behind them, an order): one of them, picked at
+	// random, says it for the group (HCE_Callouts)
+	static bool HCE_GroupCallout(Name ev)
+	{
+		static const Name G[] = { 'EnemyGrenade', 'Behind', 'Charge', 'FallBack', 'Advance', 'JoinMe', 'Cover', 'Uncovered',
+			'FoundFoe', 'HeardGunfire', 'Investigate', 'SearchStart', 'KeepWatch', 'LeaderDead', 'ManDown', 'Regroup',
+			'Flee', 'Alert', 'Kamikaze', 'Sniper', 'Sword', 'UpThere', 'DownThere', 'SearchClear', 'SearchFail' };
+		for(int i = 0; i < G.Size(); i++) if(G[i] == ev) return true;
+		return false;
+	}
+
 	virtual void HCE_Say(Name ev, double chance = 1.0, int cooldown = 70, bool force = false)
 	{
 		if(hce_voice == 'None' || hce_voice == '') return;
 		if(!force && level.maptime < hce_voiceTics) return;
 		if(frandom(0, 1) > chance) return;
+		if(HCE_GroupCallout(ev)) { HCE_Callouts.Claim(self, ev, cooldown, force); return; }
+		HCE_SayNow(ev, cooldown, force);
+	}
+
+	void HCE_SayNow(Name ev, int cooldown, bool force)
+	{
+		if(health <= 0 && ev != 'Death' && ev != 'DeathHard') return;
+		if(HCE_CVarF('hce_debugvoice', 0) > 0) Console.Printf("HCEVOICE t%d %s %s", level.maptime, GetClassName(), ev);
 		String snd = String.Format("HCE/%s/%s", hce_voice, ev);
 		A_StartSound(snd, CHAN_VOICE, force ? 0 : CHANF_NOSTOP, 1.0, 0.6);   // dialogue carries further than ATTN_NORM
 		hce_voiceTics = level.maptime + max(cooldown, 35);
@@ -7339,4 +7358,61 @@ class HCE_PickupResolver play
 class HCE_ResolverHolder : Thinker
 {
 	HCE_PickupResolver resolver;
+}
+
+
+// One voice per group callout: every member of a team that would call out the same thing near the same spot in the
+// same tic (all of them seeing the grenade land) is a candidate; one of them, chosen evenly at random (reservoir
+// sampling over the candidates), says it on the next tic, and the same callout from that team near there is spent for
+// a few seconds after.
+class HCE_Callouts : Thinker
+{
+	const RANGE = 768;
+	const QUIET = 35 * 4;
+	Array<HaloDoom_EnemyBase> who;
+	Array<int> team, at, count, cool;
+	Array<Name> ev;
+	Array<double> px, py, pz;
+	Array<bool> force, done;
+
+	static HCE_Callouts Get()
+	{
+		let it = ThinkerIterator.Create("HCE_Callouts", STAT_DEFAULT);
+		let c = HCE_Callouts(it.Next());
+		if(!c) c = new("HCE_Callouts");
+		return c;
+	}
+
+	static void Claim(HaloDoom_EnemyBase e, Name what, int cooldown, bool frc)
+	{
+		let c = Get();
+		for(int i = 0; i < c.who.Size(); i++)
+		{
+			if(c.ev[i] != what || c.team[i] != e.hce_team) continue;
+			if((e.pos - (c.px[i], c.py[i], c.pz[i])).Length() > RANGE) continue;
+			if(c.done[i]) return;                                  // someone just said it
+			c.count[i]++;
+			if(random[HCECall](1, c.count[i]) == 1) { c.who[i] = e; c.cool[i] = cooldown; c.force[i] = frc; }
+			return;
+		}
+		c.who.Push(e); c.team.Push(e.hce_team); c.at.Push(level.maptime); c.count.Push(1); c.cool.Push(cooldown);
+		c.ev.Push(what); c.px.Push(e.pos.x); c.py.Push(e.pos.y); c.pz.Push(e.pos.z); c.force.Push(frc); c.done.Push(false);
+	}
+
+	override void Tick()
+	{
+		for(int i = who.Size() - 1; i >= 0; i--)
+		{
+			if(!done[i] && level.maptime > at[i])
+			{
+				done[i] = true;
+				if(who[i] && !who[i].bDestroyed) who[i].HCE_SayNow(ev[i], cool[i], force[i]);
+			}
+			if(level.maptime - at[i] > QUIET)
+			{
+				who.Delete(i); team.Delete(i); at.Delete(i); count.Delete(i); cool.Delete(i); ev.Delete(i);
+				px.Delete(i); py.Delete(i); pz.Delete(i); force.Delete(i); done.Delete(i);
+			}
+		}
+	}
 }

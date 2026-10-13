@@ -111,6 +111,8 @@ Each Doom monster becomes the Halo CE enemy with the closest role, toughness and
 
 **Energy shields:** a shield shows only when it is hit (its flare: the body's glowing copy for the Covenant, the hard-light bubble for the shielded Sentinels), and fails like glass: it shatters into shards in a flash of its colour. Only the player's own shield is heard recharging.
 
+**One voice per callout:** when a group would all call out the same thing at once (a grenade landing among them, an enemy behind them, an order, a man down), one of them, picked at random, says it for the group; the same callout from that side near there stays quiet for 4 seconds.
+
 If Doom monsters are left on a map, the console says how many and why at map start. That happens when `hce_keepdoommonsters` is on, or when another mod loaded after this pack replaces them first. Monsters with no loaded faction to become aren't counted. (Older builds used `hce_replacemonsters`, which your ini may still hold as `false`; it's ignored now.) The rank mix shifts with the skill level (easy = skills 1–2, normal = 3, hard = 4–5). Each spawn rolls its own pick.
 
 Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. Types are listed most likely first, with the measured share at normal skill (600 rolls each). Easy skills favour the first entries; hard skills shift weight toward the later, stronger ones.

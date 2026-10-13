@@ -39,6 +39,19 @@ def shard_texture(path):
     im.save(path)
 
 
+def glow_texture(path):
+    """a soft white glow (a bright heart fading out to nothing): the Covenant muzzle flashes' and plasma bolts' halos,
+    drawn as textured particles so they are round whatever the player's particle style"""
+    import numpy as np
+    from PIL import Image
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    S = 64
+    y, x = np.mgrid[0:S, 0:S]; r = np.hypot(x - (S - 1) / 2, y - (S - 1) / 2) / (S / 2)
+    a = np.clip(1 - r, 0, 1) ** 2.2 * 0.85 + np.clip(1 - r * 3.0, 0, 1) ** 1.5 * 0.15
+    im = np.zeros((S, S, 4), np.uint8); im[..., :3] = 255; im[..., 3] = (np.clip(a, 0, 1) * 255).astype(np.uint8)
+    Image.fromarray(im, 'RGBA').save(path)
+
+
 def chunks(text):
     """split a generated ZScript file into (class name, parent, text) pieces (leading // comments kept)"""
     out = []
@@ -177,6 +190,7 @@ def main():
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
     shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
     shard_texture(f'{core}/graphics/HCESHARD.png')                  # the shield's glass shards (HCE_ShieldShatter)
+    glow_texture(f'{core}/graphics/HCEGLOW.png')                    # the Covenant muzzle flashes' and bolts' glow
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'
@@ -209,6 +223,7 @@ def main():
     camo = re.findall(r'HardwareShader Texture "([^"]+)"', gl)
     shields = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_shield.fp"', gl)
     swords = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_sword.fp"', gl)
+    bubbles = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_bubble.fp"', gl)
     visors = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "([^"]+)"', gl)
     # the Sentinel Knights' energy cores (build_pack.knight_skin): the core shader, its brightmap and cube map
     cores = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "([^"]+)"\n\ttexture tex_cube "([^"]+)"', gl)
@@ -272,11 +287,12 @@ def main():
         mycamo = [t for t in camo if t in need]
         myshields = [t for t in shields if t in need]
         myswords = [t for t in swords if t in need]
+        mybubbles = [t for t in bubbles if t in need]
         myvisors = [(t, c) for t, c in visors if t in need]
         mycores = [(t, b, c) for t, b, c in cores if t in need]
-        if mybms or mycamo or myshields or myswords or myvisors or mycores:
+        if mybms or mycamo or myshields or myswords or myvisors or mycores or mybubbles:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
-            if mybms or myshields or myswords:
+            if mybms or myshields or myswords or mybubbles:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
                 for t in mybms:
                     bm = bmap.get(t, 'models/hce/brightmap_full.png')
@@ -292,6 +308,10 @@ def main():
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_shield.fp', f'{d}/shaders/hce_shield.fp')
                 out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in myshields]
+            if mybubbles:                      # the Sentinels' shield bubbles
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_bubble.fp', f'{d}/shaders/hce_bubble.fp')
+                out += [f'material texture "{t}"\n{{\n\tshader "shaders/hce_bubble.fp"\n\tspeed 1.0\n\tbrightmap "models/hce/brightmap_full.png"\n}}' for t in mybubbles]
             if myswords:                       # the energy sword's blade
                 os.makedirs(f'{d}/shaders', exist_ok=True)
                 shutil.copy(f'{PACK}/shaders/hce_sword.fp', f'{d}/shaders/hce_sword.fp')

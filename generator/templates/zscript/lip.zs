@@ -1,4 +1,4 @@
-	const HCE_JAW_SHUT = -10.0;            // degrees about the jaw hinge from its bind pose (negative: closing)
+	// HCE_JawShut(): degrees about the jaw hinge from its bind pose to shut (negative: closing), per face; build_pack.jaw_shut writes it beside this
 	int hce_lipPhase;
 	double hce_lipOpen;
 	override void Tick()
@@ -15,7 +15,7 @@
 		// set every third tic, not only on a change: a model change (the kit, a picked-up gun) can drop the override
 		hce_lipOpen = want;
 		// the heads' bind pose leaves the jaw some 10 degrees open (the mouth hanging): at rest it is held shut
-		// (HCE_JAW_SHUT), and speech opens it from there
-		double a = HCE_JAW_SHUT + want * 14.0;
+		// (HCE_JawShut), and speech opens it from there
+		double a = HCE_JawShut() + want * 14.0;
 		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}

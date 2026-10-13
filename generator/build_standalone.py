@@ -97,7 +97,7 @@ LIGHT_OF = {'HCES_PlasmaPistolBolt': 'HCES_GreenLight', 'HCES_ChargedPlasma': 'H
 LIGHT_DEFS = '''pointlight HCES_GreenLight { color 0.1 1.0 0.3 size 40 }
 pointlight HCES_GreenLightBig { color 0.1 1.0 0.3 size 72 }
 pointlight HCES_BlueLight { color 0.2 0.5 1.0 size 40 }
-pointlight HCES_PinkLight { color 0.9 0.2 1.0 size 24 }
+pointlight HCES_PinkLight { color 1.0 0.25 0.75 size 24 }
 pointlight HCES_YellowLight { color 1.0 0.85 0.3 size 16 }
 pointlight HCES_OrangeLight { color 1.0 0.55 0.15 size 48 }
 '''

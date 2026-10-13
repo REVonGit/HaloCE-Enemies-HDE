@@ -1244,6 +1244,7 @@ def bake_shell(tint, outpath):
 
 # Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
 SHIELD_SHADER = template('shaders/shield.fp')
+BUBBLE_SHADER = template('shaders/bubble.fp')
 
 SWORD_SHADER = template('shaders/sword.fp')
 
@@ -1481,6 +1482,39 @@ def marine_kit_code(char, names, mdir, sis):
     return ''.join(out + d), '\t\tif(!hce_johnsonArms) HCE_DressKit(HCE_HELMET_FACE[hce_face] != 0);\n'
 
 
+def jaw_shut(char, heads):
+    """per face, the jaw rotation (degrees, negative closing) that shuts its mouth: the gap at the bind pose between its
+    lower lip (the front of the jaw-weighted vertices on the midline) and the upper lip just above it, seen from the jaw's hinge, and 1.5
+    degrees more so the lips meet. Faces without a jaw (or no gap) get a small closing turn"""
+    from iqm import read_iqm
+    import preview as pv
+    joints, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
+    names = [j[0] for j in joints]
+    if 'bip01 ponytail1' not in names: return [-10.0] * len(heads)
+    J = names.index('bip01 ponytail1')
+    W = pv.world([j[1] for j in joints], [(j[2], j[3]) for j in joints])
+    piv = np.asarray(W[J][0])
+    mn = json.load(open(f'{OUT}/models/{char}/{char}.json'))['mesh_names']
+    out = []
+    for h in heads:
+        P = [m['pos'] for i, m in enumerate(meshes) if mn[i] == f'head.{h}']
+        Wj = [(m['bw'] * (m['bidx'] == J)).sum(1) / 255.0 for i, m in enumerate(meshes) if mn[i] == f'head.{h}']
+        if not P: out.append(-6.0); continue
+        P = np.concatenate(P); Wj = np.concatenate(Wj)
+        mid = np.abs(P[:, 1] - piv[1]) < 0.006                      # the midline: the corners of the mouth curl up
+        jaw, other = P[(Wj > 0.5) & mid], P[(Wj < 0.1) & mid]
+        if len(jaw) < 3 or not len(other): out.append(-6.0); continue
+        def ang(Q): return np.degrees(np.arctan2(Q[:, 2] - piv[2], Q[:, 0] - piv[0]))
+        lo = jaw[jaw[:, 0] > jaw[:, 0].max() - 0.012]                # the lower lip
+        a_lo = ang(lo).max(); top = lo[np.argmax(ang(lo))]
+        up = other[(other[:, 0] > top[0] - 0.0025)]                  # its front edge (not the inside of the mouth)
+        up = up[ang(up) > a_lo]                                      # the upper lip just above it
+        if not len(up): out.append(-6.0); continue
+        a_up = ang(up).min()
+        out.append(-float(np.clip(a_up - a_lo + 1.5, 3.0, 12.0)))
+    return out
+
+
 def marine_code(meta, mdir, char='Marine'):
     """Halo CE's Marine cosmetics, rolled per Marine (extract_chars.MULTI_PERMS): a random face (bare heads, boonie
     hats, bandanas, caps, helmets), sleeves rolled down on some, the battle-damaged vest on some Armored Marines.
@@ -1528,7 +1562,10 @@ def marine_code(meta, mdir, char='Marine'):
     jk = next((k for k, h in enumerate(heads) if 'johnson' in h), -1)
     sk = next((k for k, h in enumerate(heads) if h == STACKER_HEAD), -1)
     others = [k for k in range(len(heads)) if k not in (jk, sk)]
-    return (LIP_CODE + '\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
+    shut = jaw_shut(char, heads)
+    jaw_fn = ('\tstatic const double HCE_JAW_SHUT_FACE[] = { ' + ', '.join(f'{x:.1f}' for x in shut) + ' };   // jaw_shut, per face\n'
+              '\tdouble HCE_JawShut() { return hce_face >= 0 && hce_face < HCE_JAW_SHUT_FACE.Size() ? HCE_JAW_SHUT_FACE[hce_face] : -10.0; }\n')
+    return (LIP_CODE + jaw_fn + '\t// Halo CE\'s Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant\n'
             '\t// Johnson\'s face (with his own voice and sleeves) is his alone: only HCE_SgtJohnson wears it\n'
             f'\tconst HCE_JOHNSON_FACE = {jk};\n\tconst HCE_STACKER_FACE = {sk};\n'
             f'\tstatic const int HCE_HELMET_FACE[] = {{ {", ".join(helmet_face)} }};\n' + kit_fns +
@@ -1756,7 +1793,7 @@ def build(cfg=None):
     if os.path.exists(f'{pack}/models'): shutil.rmtree(f'{pack}/models')
     os.makedirs(f'{pack}/ZScript/HaloCE', exist_ok=True)
     metas = {c: json.load(open(f'{OUT}/models/{c}/{c}.json')) for c in set(char_of_unit.values())}
-    zs = []; md = []; ednums = []; spawners = {}; late = []; brightmaps = []; shells = set(); camo = []; shield_tex = []
+    zs = []; md = []; ednums = []; spawners = {}; late = []; brightmaps = []; shells = set(); camo = []; shield_tex = []; bubbles = []
     projectiles_used = set()
     ed = cfg['ed0']
     # ---------------- per character base classes
@@ -1831,13 +1868,20 @@ def build(cfg=None):
             # the Covenant's): the body's model with only its shield surface drawn, in the hard-light lattice
             fn = 'bubble_shell.png'
             bubble = f'{pack}/models/{mdir}/{char}/skins/{fn}'
-            hex_lattice(SHIELD_TINT['sentinel_minor'], bubble, n=512, cells=10, width=0.05)
+            # the shield's colour, flat: BUBBLE_SHADER draws the film, the lattice and the shimmer over it
+            # (its size in texels / 4 is the lattice's cell count across the surface's UVs: cells about 12 map units wide)
+            ext = max(np.array(meta['bounds'][1]) - np.array(meta['bounds'][0])) * S * msc * 3.0
+            ncell = int(np.clip(ext / 12, 6, 60))
+            Image.new('RGB', (ncell * 4, max(4, ncell * 8 // 3)), tuple(int(c * 255) for c in SHIELD_TINT['sentinel_minor'])).save(bubble)
+            bubbles.append(f'models/{mdir}/{char}/skins/{fn}')
             sl = [f'\tSurfaceSkin 0 {i} "skins/{fn if i == meta["shield_surface"] else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
             hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
             if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
             zs.append(f'// the {char}s\' shield bubble flare\nclass HCE_{char}BubbleShell : HCE_ShieldShell {{}}\n')
             md.append(f'Model HCE_{char}BubbleShell\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
-                      f'\n\tScale {S * msc:.1f} {S * msc:.1f} {S * msc * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+                      f'\n\tScale {S * msc:.1f} {S * msc:.1f} {S * msc * 1.2:.1f}'
+                      + (f'\n\tZOffset {-meta["bounds"][0][2] * S * msc * 1.2:.0f}' if ov.get('lift') else '')     # as the body's (lift)
+                      + '\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if char_of_unit.get(v['unit_reference']) != char: continue      # every unit drawn as this body
@@ -2287,6 +2331,12 @@ def build(cfg=None):
         open(f'{pack}/shaders/hce_shield.fp', 'w').write(SHIELD_SHADER)
         for t in sorted(set(shield_tex)):
             gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
+    # the Sentinels' shield bubbles (their flares): a shimmering see-through film
+    if bubbles:
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_bubble.fp', 'w').write(BUBBLE_SHADER)
+        for t in sorted(set(bubbles)):
+            gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_bubble.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
     # the energy sword's blade: plasma streaming up it, a white-hot core, shimmering edges (fullbright)
     if swords:
         os.makedirs(f'{pack}/shaders', exist_ok=True)
@@ -2963,10 +3013,10 @@ for _c in GALAP_CHARS:
     if _gm.get('shield_surface') is not None:
         BASE_CODE[_c] = bubble_code(_c)
     _r = max(12, min(48, int(_gm['collision_radius'] * S * 0.6)))
-    CHAR_OVERRIDES[_c] = dict(stance='fixed', flying=True, radius_fixed=_r, height_fixed=max(24, _r * 2))
+    CHAR_OVERRIDES[_c] = dict(stance='fixed', flying=True, radius_fixed=_r, height_fixed=max(24, _r * 2), lift=True)   # built round their middle: raised so they hover clear of the floor
 if 'SentinelCrawler' in GALAP_CHARS:
     # the Crawler walks (Galap's crawling set: idle, move, turns, a melee lunge) and keeps its beam
-    CHAR_OVERRIDES['SentinelCrawler'] = dict(stance='unarmed', radius_fixed=24, height_fixed=24, melee=(64, 20), speed=8.0)
+    CHAR_OVERRIDES['SentinelCrawler'] = dict(stance='unarmed', radius_fixed=24, height_fixed=24, melee=(64, 20), speed=8.0, lift=True)
 
 if os.path.exists(CONSTRUCTOR_JSON):
     SKIN_HOOK['SentinelConstructor'] = lambda cls, v, si, mat, meta, skin_dir: copy_skin('SentinelConstructor', mat, skin_dir)

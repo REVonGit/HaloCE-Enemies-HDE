@@ -95,6 +95,42 @@ brightmap texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor.png"
 {
 	map "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor_bm.png"
 }
+material texture "models/hce/Sentinel/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelDragoon/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelGold/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelOnyx/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelSoldier/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelWarden/skins/bubble_shell.png"
+{
+	shader "shaders/hce_bubble.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+}
 material texture "models/hce/SentinelKnight/skins/core_orange.png"
 {
 	shader "shaders/hce_core.fp"

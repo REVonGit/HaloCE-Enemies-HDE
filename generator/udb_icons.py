@@ -1,6 +1,8 @@
 """Thing icons for Ultimate Doom Builder: a picture of every placeable enemy, taken in the engine -> $HCE_OUT/udb_icons
 
     python3 udb_icons.py          # after the packs are built (build_addons.sh); needs UZDoom, Xvfb and ImageMagick
+    python3 udb_icons.py --missing    # only the classes without a picture yet (new enemies), the rest kept
+    python3 udb_icons.py --only Sentinel   # take these again (class names containing the word), the rest kept
 
 Every class with a DoomEdNum (the faction packs' and the Digsite add-on's MAPINFO) is spawned in turn in the test
 map's annex (tests/make_covertest.py), three-quarters on to the camera, and photographed from a little above. The
@@ -38,6 +40,7 @@ class HCE_IconShoot : EventHandler
 {
 	static const String CLS[] = { %s };
 	Actor cur;
+	double cury;
 	// the annex painted one flat key colour at full light (walls, floor, ceiling): everything else in a photo is the enemy
 	void PaintBooth(Sector sec)
 	{
@@ -62,7 +65,7 @@ class HCE_IconShoot : EventHandler
 		if(t == 2) { pl.angle = 90; pl.bNOGRAVITY = true; }
 		if(t == 4) PaintBooth(pl.CurSector);                    // (moved into the annex on tic 2)
 		// the camera level with the enemy's middle, looking a little down at it from far enough to frame it whole
-		double camz = cur ? max(0, cur.height * 0.62 - pl.player.viewheight) : 0;
+		double camz = cur ? max(0, cur.pos.z - cur.floorz + cur.height * 0.62 - pl.player.viewheight) : 0;
 		if(t >= 2) { pl.SetOrigin((2340, 930, camz), false); pl.vel = (0, 0, 0); pl.pitch = 6; }
 		int k = (t - 45) / %d, ph = (t - 45) %% %d;
 		if(t < 45 || k >= CLS.Size() + 1) return;
@@ -74,10 +77,11 @@ class HCE_IconShoot : EventHandler
 			if(!c) { Console.PrintfEx(PRINT_NONOTIFY, "HCEICON missing %%d", k); return; }
 			let d = GetDefaultByType(c);
 			double dist = max(150, d.height * 2.1 + d.radius);
-			cur = Actor.Spawn(c, (2340, 930 + dist, 0), NO_REPLACE);
+			if(CLS[k].IndexOf("Sentinel") >= 0) dist = max(220, dist * 1.6);   // models well beyond their boxes (Galap's): the crop fits them
+			cur = Actor.Spawn(c, (2340, 930 + dist, 0), NO_REPLACE); cury = 930 + dist;
 			if(cur) { cur.angle = 240; cur.bFRIENDLY = false; }      // (not a squad Marine: no name tag over him)
 		}
-		if(cur) { cur.vel.xy = (0, 0); cur.angle = 240; cur.SetOrigin((2340, cur.pos.y, cur.floorz), true); cur.A_SetRenderStyle(1, STYLE_Normal); }   // cloaked ones shown uncloaked
+		if(cur) { cur.vel.xy = (0, 0); cur.angle = 240; cur.SetOrigin((2340, cury, cur.floorz), true); cur.A_SetRenderStyle(1, STYLE_Normal); }   // held on its spot (an ally walks up to the camera), cloaked ones shown uncloaked
 		if(ph == %d && cur) Console.PrintfEx(PRINT_NONOTIFY, "HCEICON shot %%d", k);
 	}
 }
@@ -113,7 +117,7 @@ def shoot(classes, tmp):
     game = subprocess.Popen(['stdbuf', '-oL', '-eL', UZDOOM, '-iwad', IWAD, '-nosound', '-skill', '3', '-file'] + files +
                             ['-width', '640', '-height', '400', '+vid_fullscreen', '0', '+sv_cheats', '1', '+map', 'COVERTST',
                              '+god', '+notarget', '+r_drawplayersprites', '0', '+screenblocks', '12', '+crosshair', '0',
-                             '+hce_cover', '0', '+hce_patrols', '0', '+hce_hunterpairs', '0', '+hce_simpleshaders', '1'], stdout=log, stderr=subprocess.STDOUT, env=env)
+                             '+hce_cover', '0', '+hce_sentinelallies', '0', '+hce_patrols', '0', '+hce_hunterpairs', '0', '+hce_simpleshaders', '1'], stdout=log, stderr=subprocess.STDOUT, env=env)
     shots, seen = {}, set()
     t0 = time.time()
     try:
@@ -135,12 +139,14 @@ def shoot(classes, tmp):
     return shots
 
 
-def cut_out(fn):
+def cut_out(fn, sentinel=False):
     """a booth photo -> the enemy alone (RGBA, fitted into ICON), or None for a failed photo"""
     A = np.asarray(Image.open(fn).convert('RGB'), np.int32)
     if A.mean() < 8: return None                                # a black frame (the screenshot came too early)
     r, g, b = A[..., 0], A[..., 1], A[..., 2]
     bgk = (r > 150) & (b > 150) & (g < 110) & (np.abs(r - b) < 70)     # the booth, lit or tinted a little by the enemy's lights
+    if sentinel:                                                 # the pink targeting ring the Sentinels' beams draw (no part of them)
+        bgk |= (r > 150) & (g < 90) & (b > 50) & (r > b + 30)
     if bgk.mean() < 0.3: return None                             # not the booth
     mask = ~bgk
     mask[:6] = False; mask[-6:] = False                          # the window's edges
@@ -149,20 +155,32 @@ def cut_out(fn):
     x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
     im = Image.fromarray(np.dstack([A, mask * 255]).astype(np.uint8)[y0:y1, x0:x1], 'RGBA')
     im.thumbnail((ICON, ICON), Image.LANCZOS)
+    m = max(im.size)
+    if m < ICON * 0.75:                                          # a small one (photographed from far off): enlarged a little
+        k = min(2.5, ICON * 0.75 / m)
+        im = im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS)
     return im
 
 
 def main():
     classes = [c for _, c in placeable() if not c.startswith('HCE_Random')]
     od = f'{OUT}/udb_icons'
-    if os.path.exists(od): shutil.rmtree(od)
-    os.makedirs(od)
+    index = {}
+    only = sys.argv[sys.argv.index('--only') + 1] if '--only' in sys.argv else None
+    if (only or '--missing' in sys.argv) and os.path.exists(f'{od}/icons.json'):
+        index = {c: f for c, f in json.load(open(f'{od}/icons.json')).items() if c in classes and os.path.exists(f'{od}/{f}')}
+        if only:
+            index = {c: f for c, f in index.items() if only not in c}
+            classes = [c for c in classes if only in c or c in index]
+    else:
+        if os.path.exists(od): shutil.rmtree(od)
+        os.makedirs(od)
     tmp = tempfile.mkdtemp()
-    index, todo = {}, list(classes)
+    todo = [c for c in classes if c not in index]
     for attempt in range(3):                                     # the photos that failed, again
         if not todo: break
         for c, fn in shoot(todo, tmp).items():
-            im = cut_out(fn)
+            im = cut_out(fn, 'Sentinel' in c)
             if im is None: continue
             im.save(f'{od}/{c}.png'); index[c] = f'{c}.png'
         todo = [c for c in classes if c not in index]

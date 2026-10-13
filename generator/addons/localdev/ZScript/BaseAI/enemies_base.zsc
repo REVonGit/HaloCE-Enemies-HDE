@@ -751,7 +751,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		// the Sentinels fight for the player unless hce_sentinelallies is off (Options > Halo CE AI)
 		if(hce_team == HCE_TEAM_SENTINEL && HCE_CVarF('hce_sentinelallies', 1) > 0)
 		{
-			hce_team = HCE_TEAM_HUMAN; hce_sentinelAlly = true; bFRIENDLY = true;
+			// and they keep with the player like a Marine squad: a place in the formation, and the squad orders (hold,
+			// follow, regroup, the fire orders) as the Marines take them
+			hce_team = HCE_TEAM_HUMAN; hce_sentinelAlly = true; bFRIENDLY = true; bHCE_FollowPlayer = true;
 			if(bCOUNTKILL) { bCOUNTKILL = false; level.total_monsters--; }      // an ally is not a kill to make
 		}
 		static const int prefs[] = { HCE_WK_CLOSE, HCE_WK_MID, HCE_WK_LONG };
@@ -3200,7 +3202,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(e.HCE_IsJohnson()) hce_inspired = true;
 		}
 		// the last Marine standing, the player far off: it ducks into cover and panics instead of fighting
-		if(target && !hce_betrayed && !hce_inspired && !HCE_IsJohnson() && friends == 0 && hce_action == HCE_ACT_FIGHT
+		if(target && !hce_betrayed && !hce_inspired && !HCE_IsJohnson() && !hce_sentinelAlly && friends == 0 && hce_action == HCE_ACT_FIGHT
 			&& level.maptime > hce_cowerCooldown && (!pl || pl.health <= 0 || Distance2D(pl) > 768))
 		{
 			hce_action = HCE_ACT_COVER;
@@ -4094,6 +4096,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				// a round that drops: aimed up into an arc (not HDE's flames: they fly straight on their own heading, and
 				// lifted into an arc they went up at 45 degrees, over the target's head)
 				if(shot && !shot.bNOGRAVITY && !(shot is 'HaloFlames')) HCE_BallisticAim(shot, err);
+				if(shot && i == 0) HCE_MuzzleFlash(shot);
 				if(shot)
 				{
 					String sn = shot.GetClassName();
@@ -4114,6 +4117,45 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the carbine traces its round's path); HCE_HeldBeam keeps a beam on from one tic to the next.
 	// ------------------------------------------------------------------
 	virtual void HCE_OnShot(Actor shot) {}
+
+	// Halo CE's Covenant muzzle flash: a burst of the bolt's own colour at the gun (a soft bloom, a few sparks thrown
+	// forward, a moment of light on the walls). Human rounds have their own (HCE_MuzzleColor 0: none here)
+	virtual Color HCE_MuzzleColor(Actor shot)
+	{
+		String n = shot.GetClassName();
+		if(n.IndexOf("Needle") >= 0) return Color(255, 255, 70, 200);                                     // needler pink
+		if(n.IndexOf("PlasmaRifle") >= 0 || n.IndexOf("Pulse") >= 0) return Color(255, 70, 160, 255);      // plasma rifle blue
+		if(n.IndexOf("PlasmaPistol") >= 0 || n.IndexOf("ChargedPlasma") >= 0 || n == "HaloPlasma_Proj")
+			return Color(255, 60, 255, 110);                                                                // plasma pistol green
+		if(n.IndexOf("FuelRod") >= 0) return Color(255, 120, 255, 40);
+		if(n.IndexOf("Spike") >= 0) return Color(255, 255, 140, 40);
+		return 0;
+	}
+	// a soft round glow of colour c at 'at' (+ off), as a textured particle (the core's HCEGLOW: round whatever the
+	// player's particle style); without the texture a plain particle
+	static void HCE_Glow(Actor at, Color c, int life, double size, vector3 off = (0, 0, 0), vector3 vel = (0, 0, 0), double alpha = 1.0, double grow = 0)
+	{
+		TextureID g = TexMan.CheckForTexture("HCEGLOW", TexMan.Type_Any);
+		if(g.IsValid()) at.A_SpawnParticleEx(c, g, STYLE_Add, SPF_FULLBRIGHT, life, size, 0, off.x, off.y, off.z, vel.x, vel.y, vel.z, 0, 0, 0, alpha, -1, grow);
+		else at.A_SpawnParticle(c, SPF_FULLBRIGHT, life, size * 0.4, 0, off.x, off.y, off.z, vel.x, vel.y, vel.z, 0, 0, 0, alpha, -1, grow * 0.4);
+	}
+	void HCE_MuzzleFlash(Actor shot)
+	{
+		Color c = HCE_MuzzleColor(shot);
+		if(c == 0) return;
+		vector3 at = shot.pos;
+		vector3 dir = (AngleToVector(angle), 0);
+		if(shot.vel.Length() > 0) dir = shot.vel.Unit();
+		HCE_Glow(shot, c, 5, 34, alpha: 0.95, grow: -5);                       // the bloom
+		HCE_Glow(shot, "FFFFFF", 3, 12, alpha: 1.0, grow: -3);                // its white heart
+		for(int i = 0; i < 5; i++)
+		{
+			vector3 v = dir * frandom(3, 7) + (frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(-1.5, 1.5));
+			HCE_Glow(shot, c, random(5, 9), frandom(4, 7), vel: v, grow: -0.5);
+		}
+		let l = HCE_MuzzleLight(Spawn('HCE_MuzzleLight', at));
+		if(l) l.col = c;
+	}
 	HCE_EnemyLaser hce_beamOuter, hce_beamCore, hce_aimBeam;
 
 	// the thin, harmless targeting laser of a beam weapon taking aim
@@ -7271,6 +7313,19 @@ class HCE_LimbGib : Actor
 // laser's colour, stretched from the muzzle to where it stops), fired by an enemy. A flash fades at once
 // (the carbine's trail: 'fade' alpha a tic); a held beam stays while its gun keeps calling Hold, then fades
 // and spreads (the beam rifle's turn-off).
+// the muzzle flash's light: a moment of the bolt's colour on the walls, shrinking over three tics
+class HCE_MuzzleLight : Actor
+{
+	Color col;
+	Default { +NOINTERACTION; +NOBLOCKMAP; RenderStyle "None"; }
+	override void Tick()
+	{
+		if(GetAge() >= 3) { Destroy(); return; }
+		A_AttachLight('flash', DynamicLight.PointLight, col, int(72 - GetAge() * 20), 0);
+		super.Tick();
+	}
+}
+
 class HCE_EnemyLaser : Actor
 {
 	Default

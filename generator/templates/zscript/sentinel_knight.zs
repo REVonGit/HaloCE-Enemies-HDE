@@ -198,16 +198,17 @@
 			}
 	}
 
-	// ---- death (Halo 4): the Knight convulses, glitching, and burns away into hard-light embers in its core's colour rising off it; nothing is
+	// ---- death (Halo 4): the Knight's own death animation (it twitches and comes apart, its pieces jittering loose) as it
+	// burns away into hard-light embers in its core's colour rising off it; nothing is
 	// left behind but the guns it drops
-	const HCE_DISSOLVE_TICS = 56;
+	const HCE_DISSOLVE_TICS = 105;          // the death animation's length (90 frames at 30 fps)
 	int hce_dissolve;
 	override void HCE_Die()
 	{
 		super.HCE_Die();
 		hce_airPhase = 0;                                     // no fall-and-land: it dies where it stands
 		vel = (0, 0, 0);
-		HCE_ApplyAnim('stand airborne-dead', 3, true); hce_curAnim = 'stand airborne-dead'; hce_curAnimKind = -1;
+		HCE_ApplyAnim('stand landing-dead', 8, false); hce_curAnim = 'stand landing-dead'; hce_curAnimKind = -1;
 		hce_animLock = HCE_DISSOLVE_TICS + 10;
 		hce_dissolve = 1;
 		bSHOOTABLE = false; bSOLID = false;
@@ -220,7 +221,7 @@
 		color core = hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
 		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
 		// embers: from the parts still there (the top first, burning down), rising and fading
-		int n = 3 + int(f * 7);
+		int n = 1 + int(f * 8);
 		for(int i = 0; i < n; i++)
 		{
 			double z = height * frandom(0, 1 - f * 0.6);
@@ -229,10 +230,10 @@
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
 		}
 		// the glitch: it flickers and jolts, more as it goes
-		double a = clamp(1.0 - f * 1.05, 0, 1);
-		if(random(0, 9) < 1 + int(f * 5)) a *= frandom(0.15, 0.6);
-		A_SetRenderStyle(a, STYLE_Translucent);
-		if(random(0, 4) == 0) A_SetAngle(angle + frandom(-6, 6) * (0.3 + f), SPF_INTERPOLATE);
+		// whole while it falls apart, then fading and flickering out over the second half
+		double a = clamp(1.0 - (f - 0.45) / 0.5, 0, 1);
+		if(f > 0.45 && random(0, 9) < 1 + int(f * 4)) a *= frandom(0.2, 0.7);
+		A_SetRenderStyle(a, a < 1 ? STYLE_Translucent : STYLE_Normal);
 		if(++hce_dissolve > HCE_DISSOLVE_TICS)
 		{
 			for(int i = 0; i < 20; i++)                               // the last of it scatters

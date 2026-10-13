@@ -32,6 +32,7 @@ server bool hce_cleanup = false;       // performance: garbage collector, remove
 server int hce_maxcorpses = 48;        // garbage collector: enemy bodies kept (-1 no limit)
 server int hce_maxgibs = 32;           // garbage collector: severed heads and limbs kept (-1 no limit)
 server int hce_maxgore = 64;           // garbage collector: Halo gore floor splats kept (-1 no limit)
+server int hce_floodlevel = 1;           // the level the Flood first appears on (MAPxx = xx, ExMy = (x-1)*9+y); before it, other enemies take their places
 
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3

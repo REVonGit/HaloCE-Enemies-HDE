@@ -70,6 +70,44 @@ FLOOD_EVENTS = {
     'FloodGrunt': dict(_CARRIER, Alert=['grunt_attack'], Charge=['grunt_attack'], Melee=['grunt_attack'], Berserk=['grunt_attack'],
                        Taunt=['grunt_attack', 'carrier_idle']),
 }
+# the Sentinel Knights' voice (REV's lines, 'Kill Brute 3.ogg' -> HCE/SentinelKnight/KillBrute), shipped in the Sentinels
+# pack and played by the Knight's HCE_Say (sentinel_knight.zs), which turns a sighting or a kill into the line for that
+# kind of target. Each line is downmixed to mono so it comes from the Knight. Line set -> the events it plays for: the
+# player is spotted by his HDE Spartan class (SpotSpartanII/III/IV: that class's lines, weighted twice, and the plain
+# Player (Enemy) ones; SpotPlayer for Doom's marine)
+KNIGHT_VOICES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_voices')
+KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Brute': ['KillBrute'],
+                'Kill Combat Form': ['KillCombatForm'], 'Kill Elite': ['KillElite'], 'Kill Flood (Generic)': ['KillFlood'],
+                'Kill Grunt': ['KillGrunt'], 'Kill Heavy Unit': ['KillHeavy'], 'Kill Human': ['KillHuman'],
+                'Kill Jackal': ['KillJackal'], 'Level start (First flood level)': ['FirstFlood'],
+                'Plasma Stuck': ['PlasmaStuck'], 'Sanitize dead Flood': ['SanitizeFlood'], 'Search': ['Search'],
+                'Spot Covenant': ['SpotCovenant'], 'Spot Drinol': ['SpotDrinol'], 'Spot Flood': ['SpotFlood'],
+                'Spot Grenade': ['SpotGrenade'], 'Spot Human (Enemy)': ['SpotHuman'], 'Spot Hunter': ['SpotHunter'],
+                'Spot Player (Ally)': ['SpotPlayerAlly'],
+                'Spot Player (Enemy)': ['SpotPlayer', 'SpotSpartanII', 'SpotSpartanIII', 'SpotSpartanIV'],
+                'Spot Player Spartan II (Enemy)': ['SpotSpartanII'] * 2, 'Spot Player Spartan III (Enemy)': ['SpotSpartanIII'] * 2,
+                'Spot Player Spartan IV (Enemy)': ['SpotSpartanIV'] * 2}
+
+
+def knight_voice(d):
+    """the Knights' lines -> d/sounds/hce_knight (mono) and d/sndinfo.knight"""
+    import subprocess
+    os.makedirs(f'{d}/sounds/hce_knight', exist_ok=True)
+    out = ["// the Sentinel Knights' voice (REV): HCE/SentinelKnight/<event> as the Knight's HCE_Say plays them"]
+    ev = {}
+    for fn in sorted(os.listdir(KNIGHT_VOICES)):
+        m = re.match(r'(.+?)(?: (\d+))?\.ogg$', fn)
+        if not m or m.group(1) not in KNIGHT_LINES: continue
+        leaf = re.sub(r'\W+', '_', m.group(1).lower()).strip('_') + (f'_{m.group(2)}' if m.group(2) else '')
+        dst = f'sounds/hce_knight/{leaf}.ogg'
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{KNIGHT_VOICES}/{fn}', '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5',
+                        f'{d}/{dst}'], check=True)
+        out.append(f'HCE/KnightSnd/{leaf} "{dst}"')
+        for e in KNIGHT_LINES[m.group(1)]: ev.setdefault(e, []).append(f'HCE/KnightSnd/{leaf}')
+    for e, ids in sorted(ev.items()): out.append(f'$random HCE/SentinelKnight/{e} {{ {" ".join(ids)} }}')
+    open(f'{d}/sndinfo.knight', 'w').write('\n'.join(out) + '\n')
+
+
 STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
@@ -290,6 +328,8 @@ def main():
                         out.append(f'{ids[-1]} "{dst}"')
                     out.append(f'$random HCE/Step/{st}/{key} {{ {" ".join(ids)} }}')
             open(f'{d}/sndinfo.steps', 'w').write('\n'.join(out) + '\n')
+        if fac == 'sentinels' and os.path.isdir(KNIGHT_VOICES) and any('SentinelKnight' in c for c, _, _ in mine):
+            knight_voice(d)
         if fac == 'flood' and os.path.exists(f'{FLOOD_SOUNDS}/index.json'):
             idx = json.load(open(f'{FLOOD_SOUNDS}/index.json'))
             os.makedirs(f'{d}/sounds/hce_flood', exist_ok=True)

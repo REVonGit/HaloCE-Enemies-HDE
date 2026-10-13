@@ -513,7 +513,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	// somewhere else, around its target. It phases when its shield is down and it is under fire, or to close in on a
 	// target far away; never more often than every 6-10 s
 	bool hce_coreSet, hce_debugPhase;
-	int hce_phase, hce_phaseTics, hce_phaseNext, hce_hurtAt;
+	int hce_phase, hce_phaseTics, hce_phaseNext, hce_hurtAt, hce_phaseOff;
 
 	override void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
 	{
@@ -574,12 +574,150 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 		return false;
 	}
 
+	// ---- its voice (HCE/SentinelKnight/<line>, the Sentinels pack's sndinfo.knight): the generic events HCE_Say gets
+	// become the Knight's lines for what it is looking at; the events it has no line for (pain, death...) stay silent
+	bool hce_allyGreeted, hce_saidFirstFlood;
+	int hce_carrierWarnAt;
+
+	// what a Knight sees or kills, by class: 0 nothing it has a line for, 1 a Flood combat form, 2 an infection form,
+	// 3 a carrier (or the Flood Grunt, which bursts the same way), 4 an Elite, 5 a Grunt, 6 a Jackal, 7 a Brute,
+	// 8 other Covenant, 9 a Hunter, 10 a human, 11 a player, 12 a Doom monster, 13 a big one, 14 a Drinol (the Digsite's
+	// war beasts)
+	static int HCE_KnightKind(Actor a)
+	{
+		if(!a) return 0;
+		if(a.player) return 11;
+		String c = a.GetClassName(); c = c.MakeLower();
+		if(c.IndexOf("drinol") >= 0) return 14;
+		if(c.IndexOf("flood") >= 0)
+			return c.IndexOf("carrier") >= 0 || c.IndexOf("floodgrunt") >= 0 ? 3 : c.IndexOf("infection") >= 0 ? 2 : 1;
+		if(c.IndexOf("hunter") >= 0) return 9;
+		if(c.IndexOf("elite") >= 0 || c.IndexOf("zealot") >= 0) return 4;
+		if(c.IndexOf("grunt") >= 0) return 5;
+		if(c.IndexOf("jackal") >= 0) return 6;
+		if(c.IndexOf("brute") >= 0) return 7;
+		if(c.IndexOf("drone") >= 0 || c.IndexOf("bugger") >= 0 || c.IndexOf("engineer") >= 0 || c.IndexOf("prophet") >= 0) return 8;
+		if(HCE_TeamOf(a) == HCE_TEAM_HUMAN || c.IndexOf("marine") >= 0 || c.IndexOf("odst") >= 0 || c.IndexOf("zombie") >= 0
+			|| c == "shotgunguy" || c == "chaingunguy" || c == "wolfensteinss") return 10;
+		if(a.bISMONSTER) return a.SpawnHealth() >= 1000 ? 13 : 12;
+		return 0;
+	}
+
+	// on the level the Flood first appears on (hce_floodlevel), the first Knight to meet it says so
+	bool HCE_FirstFloodLine()
+	{
+		if(HCE_ReplaceHandler.LevelIndex() != HCE_ReplaceHandler.FloodLevel()) return false;
+		let it = ThinkerIterator.Create('HCE_SentinelKnightBase');
+		HCE_SentinelKnightBase k;
+		while(k = HCE_SentinelKnightBase(it.Next())) if(k.hce_saidFirstFlood) return false;
+		hce_saidFirstFlood = true;
+		return true;
+	}
+
+	// the player by the Spartan class he plays (HaloDoom Evolved's HaloSpartan_II, _III and _IV; Doom's marine and
+	// anything else: the plain lines)
+	static Name HCE_SpartanLine(Actor a)
+	{
+		for(class<Object> c = a.GetClass(); c; c = c.GetParentClass())
+		{
+			Name n = c.GetClassName();
+			if(n == 'HaloSpartan_II') return 'SpotSpartanII';
+			if(n == 'HaloSpartan_III') return 'SpotSpartanIII';
+			if(n == 'HaloSpartan_IV') return 'SpotSpartanIV';
+		}
+		return 'SpotPlayer';
+	}
+
+	Name HCE_SpotLine(Actor a)
+	{
+		switch(HCE_KnightKind(a))
+		{
+		case 11: return bFRIENDLY ? 'SpotPlayerAlly' : HCE_SpartanLine(a);
+		case 1: case 2: return HCE_FirstFloodLine() ? 'FirstFlood' : 'SpotFlood';
+		case 3: return Distance3D(a) < 400 ? 'CarrierBlow' : HCE_FirstFloodLine() ? 'FirstFlood' : 'SpotFlood';
+		case 4: case 5: case 6: case 7: case 8: return 'SpotCovenant';
+		case 9: return 'SpotHunter';
+		case 10: return 'SpotHuman';
+		case 14: return 'SpotDrinol';
+		}
+		return 'None';
+	}
+
+	Name HCE_KillLine(Actor a)
+	{
+		switch(HCE_KnightKind(a))
+		{
+		case 1: return random(0, 2) == 0 ? 'SanitizeFlood' : random(0, 1) ? 'KillCombatForm' : 'KillFlood';
+		case 2: case 3: return random(0, 2) == 0 ? 'SanitizeFlood' : 'KillFlood';
+		case 4: return 'KillElite';
+		case 5: return 'KillGrunt';
+		case 6: return 'KillJackal';
+		case 7: return 'KillBrute';
+		case 9: case 13: case 14: return 'KillHeavy';
+		case 10: case 11: return 'KillHuman';
+		}
+		return 'None';
+	}
+
+	override void HCE_Say(Name ev, double chance, int cooldown, bool force)   // (an override takes no defaults: callers here pass all four)
+	{
+		Name line = 'None';
+		switch(ev)
+		{
+		case 'Alert': case 'FoundFoe': case 'Sword': case 'Sniper': case 'UpThere': case 'DownThere':
+			line = HCE_SpotLine(target); break;
+		case 'KillPlayer': line = 'KillHuman'; break;
+		case 'Taunt':                  // (said when its target falls, and as chatter between bursts: only the kills get a line)
+			if(target && target.health <= 0) { line = HCE_KillLine(target); chance = max(chance, 0.6); }
+			break;
+		case 'EnemyGrenade': line = 'SpotGrenade'; break;
+		case 'Stuck': line = 'PlasmaStuck'; break;
+		case 'SearchStart': case 'SearchFail': case 'SearchClear': case 'Investigate': case 'HeardGunfire': case 'KeepWatch':
+			line = 'Search'; break;
+		case 'CarrierBlow': case 'SpotPlayerAlly': line = ev; break;
+		}
+		if(line == 'None') return;
+		if(hce_debugPhase) Console.Printf("HCEVOICE %s %s -> %s (%s)", GetClassName(), ev, line, target ? target.GetClassName() : 'none');
+		super.HCE_Say(line, chance, cooldown, force);
+	}
+
+	// a carrier form close by, or (a friendly Knight) the player
+	void HCE_KnightWatch()
+	{
+		if(hce_phase != 0 || (level.maptime + hce_phaseOff) % 15) return;
+		if(level.maptime >= hce_carrierWarnAt)
+		{
+			let it = BlockThingsIterator.Create(self, 260);
+			while(it.Next())
+			{
+				Actor a = it.thing;
+				if(a == self || a.health <= 0 || !a.bISMONSTER || Distance3D(a) > 260 || HCE_KnightKind(a) != 3 || !CheckSight(a)) continue;
+				HCE_Say('CarrierBlow', 1.0, 35 * 3, false);
+				hce_carrierWarnAt = level.maptime + 35 * 8;
+				break;
+			}
+		}
+		if(bFRIENDLY && !hce_allyGreeted)
+			for(int i = 0; i < MAXPLAYERS; i++)
+			{
+				if(!playeringame[i] || !players[i].mo || Distance3D(players[i].mo) > 400 || !CheckSight(players[i].mo)) continue;
+				hce_allyGreeted = true;
+				HCE_Say('SpotPlayerAlly', 1.0, 35 * 3, true);
+				break;
+			}
+	}
+
 	override void Tick()
 	{
 		super.Tick();
 		if(isFrozen()) return;
-		if(!hce_coreSet && GetAge() >= 1) { hce_coreSet = true; HCE_KnightCore(); }
+		if(!hce_coreSet && GetAge() >= 1)
+		{
+			hce_coreSet = true; HCE_KnightCore();
+			hce_phaseOff = random(0, 14);
+		}
 		if(health <= 0) { hce_phase = 0; return; }
+		HCE_KnightWatch();
 		if(hce_phase == 0)
 		{
 			if(!target || level.maptime < hce_phaseNext || hce_dummy) return;      // (it phases out of a flinch too)
@@ -665,6 +803,7 @@ class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.25, 3.15, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BinaryRifle/Fire", "Halo/Weapons/BinaryRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_BinaryRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -783,6 +922,7 @@ class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 5, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "Halo/Weapons/LightRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_LightRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -898,6 +1038,7 @@ class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.05, 1.65, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/ScatterShot/Fire", "Halo/Weapons/ScatterShot/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_ScatterShot", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1013,6 +1154,7 @@ class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 10, 3, 0.75, 1.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Surprise
@@ -1127,6 +1269,7 @@ class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.25, 3.15, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BinaryRifle/Fire", "Halo/Weapons/BinaryRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_BinaryRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1241,6 +1384,7 @@ class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 5, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "Halo/Weapons/LightRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_LightRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1355,6 +1499,7 @@ class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.05, 1.65, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/ScatterShot/Fire", "Halo/Weapons/ScatterShot/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_ScatterShot", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1469,6 +1614,7 @@ class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 10, 3, 0.75, 1.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Surprise
@@ -1582,6 +1728,7 @@ class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.25, 3.15, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BinaryRifle/Fire", "Halo/Weapons/BinaryRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_BinaryRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1696,6 +1843,7 @@ class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 5, 0.90, 1.50, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "Halo/Weapons/LightRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_LightRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1810,6 +1958,7 @@ class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.05, 1.65, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/ScatterShot/Fire", "Halo/Weapons/ScatterShot/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_ScatterShot", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -1924,6 +2073,7 @@ class HCE_SentinelKnightMinorSuppressor : HCE_SentinelKnightBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 6, 10, 3, 0.75, 1.20, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/LightRifle/Fire", "", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "SentinelKnight";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Surprise

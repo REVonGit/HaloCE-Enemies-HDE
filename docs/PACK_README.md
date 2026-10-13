@@ -65,6 +65,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | CVar | Default | Effect |
 |---|---|---|
 | `hce_keepdoommonsters` | false | Leave Doom's monsters alone (Doom's scripted marines are still replaced) |
+| `hce_floodlevel` | 1 | The level the Flood first appears on (see [Replacing Doom's monsters](#replacing-dooms-monsters)) |
 | `hce_hunterpairs` | true | A lone Hunter spawns with its bond brother, including one that turns up mid-map (a monster spawner's, a summon) |
 | `hce_nerf_projectiles` | 0.4 (standalone: 0.3) | **Enemy projectile nerf.** Covers everything an enemy fires or throws: bullets, plasma, needles, spikes, rockets, fuel rods, grenades, Plasma Caster shots, beams, and their blasts and fuel-rod toxic clouds. Melee is untouched, and Marines' shots are not affected |
 | `hce_nerf_health` | 0.6 | Enemy health multiplier (Marines unaffected) |
@@ -101,6 +102,8 @@ Marines are on the human team and fight Covenant and Flood alongside the player.
 ## Replacing Doom's monsters
 
 Each Doom monster becomes the Halo CE enemy with the closest role, toughness and threat.
+
+**When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls and Pain Elementals from the Cacodemon's (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
 
 If Doom monsters are left on a map, the console says how many and why at map start. That happens when `hce_keepdoommonsters` is on, or when another mod loaded after this pack replaces them first. Monsters with no loaded faction to become aren't counted. (Older builds used `hce_replacemonsters`, which your ini may still hold as `false`; it's ignored now.) The rank mix shifts with the skill level (easy = skills 1–2, normal = 3, hard = 4–5). Each spawn rolls its own pick.
 
@@ -616,6 +619,12 @@ The Forerunner **Sentinel Knight** from blackandfan's Halo 2 tag pack (H2EK-Tags
   The Light Rifle, Scattershot and Binary Rifle drop HaloDoom Evolved's own when the Knight dies; the Suppressor (which HDE doesn't have) drops nothing.
 * **Phase:** with its shield down and under fire, or to close in on a target far away, a Knight sinks into the ground in a burst of hard light (untouchable from halfway down) and rises out of it somewhere else, 160-400 units from its target and in sight of it, at most every 6-10 seconds.
 * **Combat:** runs, strafes, dives and evades, melee (its blade, five swings), berserks when badly hurt, taunts; flinches front, back and sides. It falls when it dies.
+* **Voice** (REV's lines; the Sentinels pack's `sndinfo.knight`, events `HCE/SentinelKnight/<line>`): a Knight calls out what it spots and what it kills, by kind:
+  * **Spotting:** the player by his HaloDoom Evolved Spartan class (Spartan-II, -III or -IV lines, or the plain ones for Doom's marine; a friendly Knight greets him instead), the Covenant, Hunters, the Flood, humans, the Digsite's Drinol, a grenade landing near it.
+  * **On the first Flood level** (`hce_floodlevel`), the first Knight to meet the Flood gives its level-start line.
+  * **A carrier form** in sight within about 8 m (or spotted close): its warning that the carrier is about to blow.
+  * **Kills:** Elites, Grunts, Jackals, Brutes, humans and the player, Flood combat forms, the Flood in general (or its line about sanitizing the dead), Hunters, the Drinol and other heavy units.
+  * Also: stuck by a plasma grenade, searching. It says nothing when hurt or dying.
 * **Doom monsters:** Hell Knights sometimes become Sentinel Knights (Minors on the easier skills, Majors and Commanders on the harder ones).
 
 Classes `HCE_SentinelKnight{Minor,Major,Commander}{LightRifle,Scattershot,BinaryRifle,Suppressor}` (DoomEdNums 30353-30364) and `HCE_RandomSentinelKnight` (30365). Machines: no blood, no dismemberment.
@@ -1224,6 +1233,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Gore:** the gore stumps and gore textures are by Tropical Thunder 98, from the XAM Campaign Overhaul.
 * **Halo 2 Elite shoulder stumps:** Hunterunt's Restored Gore features Halo 2.
 * **Sentinel Knight:** blackandfan's Halo 2 tag pack (H2EK-Tags): the Knight's model, textures, animations and tags.
+* **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).

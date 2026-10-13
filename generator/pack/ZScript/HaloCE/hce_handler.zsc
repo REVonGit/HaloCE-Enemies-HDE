@@ -140,6 +140,30 @@ class HCE_ReplaceHandler : EventHandler
 		return cv && cv.GetBool();
 	}
 
+	// the Flood's arrival (hce_floodlevel): the level a map counts as (MAPxx -> xx, ExMy -> (x - 1) * 9 + y, otherwise
+	// its level number), and whether the Flood is out yet on this one
+	static int LevelIndex()
+	{
+		String m = level.mapname.MakeUpper();
+		if(m.Left(3) == "MAP") { int n = m.Mid(3).ToInt(); if(n > 0) return n; }
+		if(m.Length() == 4 && m.Left(1) == "E" && m.Mid(2, 1) == "M") return (m.Mid(1, 1).ToInt() - 1) * 9 + m.Mid(3, 1).ToInt();
+		return max(1, level.levelnum);
+	}
+
+	static int FloodLevel()
+	{
+		CVar cv = CVar.FindCVar("hce_floodlevel");
+		return cv ? max(1, cv.GetInt()) : 1;
+	}
+
+	static bool FloodOut() { return LevelIndex() >= FloodLevel(); }
+
+	// before the Flood is out, the Doom monsters only the Flood stood in for draw from another monster's list instead
+	static const String PRE_FLOOD[] =
+	{
+		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"
+	};
+
 	static int SkillTier()
 	{
 		int sk = G_SkillPropertyInt(SKILLP_ACSReturn);   // 0 = ITYTD ... 4 = Nightmare
@@ -150,6 +174,7 @@ class HCE_ReplaceHandler : EventHandler
 	{
 		Array<String> opts; picks.Split(opts, " ", TOK_SKIPEMPTY);
 		Array<String> names; Array<int> weights; int total = 0;
+		bool flood = FloodOut();
 		// HaloDoom Evolved's weapon preset (hce_presets): enemies whose gun it doesn't spawn are left out, unless that
 		// would leave none (then the whole list stays, and HaloDoom_EnemyBase.HCE_PresetArm re-arms what it can)
 		for(int pass = 0; pass < 2 && total <= 0; pass++)
@@ -159,6 +184,7 @@ class HCE_ReplaceHandler : EventHandler
 				Array<String> nw; opts[i].Split(nw, "*");
 				class<Actor> c = nw[0];
 				if(!c) continue;                                  // its faction pack isn't loaded
+				if(!flood && nw[0].IndexOf("Flood") >= 0) continue;   // the Flood isn't out yet on this level
 				if(pass == 0)
 				{
 					class<HaloDoom_EnemyBase> ec = (class<HaloDoom_EnemyBase>)(c);
@@ -225,6 +251,11 @@ class HCE_ReplaceHandler : EventHandler
 		{
 			if(rn != RULES[i]) continue;
 			class<Actor> rc = PickWeighted(RULES[i + 1 + SkillTier()]);
+			if(!rc && !FloodOut())
+				for(int k = 0; k < PRE_FLOOD.Size(); k += 2)
+					if(rn == PRE_FLOOD[k])
+						for(int j = 0; j < RULES.Size(); j += 4)
+							if(RULES[j] == PRE_FLOOD[k + 1]) { rc = PickWeighted(RULES[j + 1 + SkillTier()]); break; }
 			if(rc) e.Replacement = rc;
 			return;
 		}

@@ -1073,8 +1073,6 @@ class HaloDoom_EnemyBase : Actor abstract
 			return hce_team == HCE_TEAM_HUMAN && other.bISMONSTER && !other.bFRIENDLY;
 		}
 		if(t == hce_team) return false;
-		if(hce_team == HCE_TEAM_SENTINEL && t == HCE_TEAM_COVENANT) return false;
-		if(hce_team == HCE_TEAM_COVENANT && t == HCE_TEAM_SENTINEL) return false;
 		return true;
 	}
 

@@ -2663,6 +2663,7 @@ if os.path.exists(KNIGHT_JSON):
     SKIN_HOOK['SentinelKnight'] = knight_skin
     BASE_CODE['SentinelKnight'] = knight_code(json.load(open(KNIGHT_JSON)), 'hce')
     NO_BLOOD.add('SentinelKnight')
+    VOICES['SentinelKnight'] = 'SentinelKnight'          # REV's lines (split_factions.knight_voice, the Knight's HCE_Say)
     SHELL_TINT['SentinelKnight'] = (0.55, 0.85, 1.00)
     CHAR_OVERRIDES['SentinelKnight'] = dict(stance='pistol', height_fixed=84, radius_fixed=30, melee=(110, 45), speed=7.0,
                                             flags=['HCE_Surprise', 'HCE_Evades', 'HCE_Berserks'])

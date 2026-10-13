@@ -3,6 +3,7 @@
 	// somewhere else, around its target. It phases when its shield is down and it is under fire, or to close in on a
 	// target far away; never more often than every 6-10 s
 	bool hce_coreSet, hce_debugPhase;
+	color hce_coreCol;                     // the core's colour (its embers when it dies)
 	int hce_phase, hce_phaseTics, hce_phaseNext, hce_hurtAt, hce_phaseOff;
 
 	override void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
@@ -19,19 +20,19 @@
 		{
 			switch(random(0, 3))
 			{
-			case 0: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_orange.png', CMDL_USESURFACESKIN); break;
-			case 1: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_amber.png', CMDL_USESURFACESKIN); break;
-			case 2: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_red.png', CMDL_USESURFACESKIN); break;
-			default: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_gold.png', CMDL_USESURFACESKIN); break;
+			case 0: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_orange.png', CMDL_USESURFACESKIN); hce_coreCol = "FF8519"; break;
+			case 1: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_amber.png', CMDL_USESURFACESKIN); hce_coreCol = "FFC238"; break;
+			case 2: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_red.png', CMDL_USESURFACESKIN); hce_coreCol = "FF421F"; break;
+			default: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_gold.png', CMDL_USESURFACESKIN); hce_coreCol = "FFE073"; break;
 			}
 			return;
 		}
 		switch(random(0, 3))
 		{
-		case 0: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_cyan.png', CMDL_USESURFACESKIN); break;
-		case 1: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_ice.png', CMDL_USESURFACESKIN); break;
-		case 2: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_violet.png', CMDL_USESURFACESKIN); break;
-		default: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_teal.png', CMDL_USESURFACESKIN); break;
+		case 0: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_cyan.png', CMDL_USESURFACESKIN); hce_coreCol = "33D9FF"; break;
+		case 1: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_ice.png', CMDL_USESURFACESKIN); hce_coreCol = "73A6FF"; break;
+		case 2: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_violet.png', CMDL_USESURFACESKIN); hce_coreCol = "9461FF"; break;
+		default: A_ChangeModel('None', 0, "", 'None', {CORE}, "{SKINS}", 'core_teal.png', CMDL_USESURFACESKIN); hce_coreCol = "1FF2B8"; break;
 		}
 	}
 
@@ -197,8 +198,54 @@
 			}
 	}
 
+	// ---- death (Halo 4): the Knight convulses, glitching, and burns away into hard-light embers in its core's colour rising off it; nothing is
+	// left behind but the guns it drops
+	const HCE_DISSOLVE_TICS = 56;
+	int hce_dissolve;
+	override void HCE_Die()
+	{
+		super.HCE_Die();
+		hce_airPhase = 0;                                     // no fall-and-land: it dies where it stands
+		vel = (0, 0, 0);
+		HCE_ApplyAnim('stand airborne-dead', 3, true); hce_curAnim = 'stand airborne-dead'; hce_curAnimKind = -1;
+		hce_animLock = HCE_DISSOLVE_TICS + 10;
+		hce_dissolve = 1;
+		bSHOOTABLE = false; bSOLID = false;
+		A_StartSound("Halo/Weapons/BinaryRifle/Zoom/IN", CHAN_7, CHANF_OVERLAP, 1.0, ATTN_NORM, 0.6);
+	}
+
+	void HCE_DissolveTick()
+	{
+		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
+		color core = hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
+		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
+		// embers: from the parts still there (the top first, burning down), rising and fading
+		int n = 3 + int(f * 7);
+		for(int i = 0; i < n; i++)
+		{
+			double z = height * frandom(0, 1 - f * 0.6);
+			A_SpawnParticle(random(0, 3) ? core : hot, SPF_FULLBRIGHT, random(18, 32), frandom(1.5, 4), 0,
+				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z,
+				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
+		}
+		// the glitch: it flickers and jolts, more as it goes
+		double a = clamp(1.0 - f * 1.05, 0, 1);
+		if(random(0, 9) < 1 + int(f * 5)) a *= frandom(0.15, 0.6);
+		A_SetRenderStyle(a, STYLE_Translucent);
+		if(random(0, 4) == 0) A_SetAngle(angle + frandom(-6, 6) * (0.3 + f), SPF_INTERPOLATE);
+		if(++hce_dissolve > HCE_DISSOLVE_TICS)
+		{
+			for(int i = 0; i < 20; i++)                               // the last of it scatters
+				A_SpawnParticle(core, SPF_FULLBRIGHT, 24, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
+					frandom(0, height * 0.6), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
+			if(hce_shellActor) hce_shellActor.Destroy();
+			Destroy();
+		}
+	}
+
 	override void Tick()
 	{
+		if(hce_dissolve > 0 && !isFrozen()) { HCE_DissolveTick(); if(bDestroyed) return; }
 		super.Tick();
 		if(isFrozen()) return;
 		if(!hce_coreSet && GetAge() >= 1)

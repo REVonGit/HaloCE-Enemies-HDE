@@ -2542,8 +2542,53 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 			}
 	}
 
+	// ---- death (Halo 4): the Knight convulses, glitching, and burns away into hard-light embers rising off it; nothing is
+	// left behind but the guns it drops
+	const HCE_DISSOLVE_TICS = 56;
+	int hce_dissolve;
+	override void HCE_Die()
+	{
+		super.HCE_Die();
+		hce_airPhase = 0;                                     // no fall-and-land: it dies where it stands
+		vel = (0, 0, 0);
+		HCE_ApplyAnim('stand airborne-dead', 3, true); hce_curAnim = 'stand airborne-dead'; hce_curAnimKind = -1;
+		hce_animLock = HCE_DISSOLVE_TICS + 10;
+		hce_dissolve = 1;
+		bSHOOTABLE = false; bSOLID = false;
+		A_StartSound("Halo/Weapons/BinaryRifle/Zoom/IN", CHAN_7, CHANF_OVERLAP, 1.0, ATTN_NORM, 0.6);
+	}
+
+	void HCE_DissolveTick()
+	{
+		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
+		bool warm = HCE_KnightPalette() == 1;
+		// embers: from the parts still there (the top first, burning down), rising and fading
+		int n = 3 + int(f * 7);
+		for(int i = 0; i < n; i++)
+		{
+			double z = height * frandom(0, 1 - f * 0.6);
+			A_SpawnParticle(random(0, 3) ? "FF9A30" : (warm ? "FFE0A0" : "A0F0FF"), SPF_FULLBRIGHT, random(18, 32), frandom(1.5, 4), 0,
+				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z,
+				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
+		}
+		// the glitch: it flickers and jolts, more as it goes
+		double a = clamp(1.0 - f * 1.05, 0, 1);
+		if(random(0, 9) < 1 + int(f * 5)) a *= frandom(0.15, 0.6);
+		A_SetRenderStyle(a, STYLE_Translucent);
+		if(random(0, 4) == 0) A_SetAngle(angle + frandom(-6, 6) * (0.3 + f), SPF_INTERPOLATE);
+		if(++hce_dissolve > HCE_DISSOLVE_TICS)
+		{
+			for(int i = 0; i < 20; i++)                               // the last of it scatters
+				A_SpawnParticle("FFB040", SPF_FULLBRIGHT, 24, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
+					frandom(0, height * 0.6), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
+			if(hce_shellActor) hce_shellActor.Destroy();
+			Destroy();
+		}
+	}
+
 	override void Tick()
 	{
+		if(hce_dissolve > 0 && !isFrozen()) { HCE_DissolveTick(); if(bDestroyed) return; }
 		super.Tick();
 		if(isFrozen()) return;
 		if(!hce_coreSet && GetAge() >= 1)

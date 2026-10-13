@@ -71,6 +71,13 @@ H2J_JSON = f'{bp.OUT}/models/H2Jackal/H2Jackal.json'
 H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (Halo 3's long-range Jackals)
 # armour change colours per rank (primary, secondary, tertiary): Ultra and Sniper take the Halo 2 major / minor
 # biped colours; the Zealot is a custom gold with pale trim
+# the Halo 2 Jackals' outfit rendered like Halo CE's Jackal (h2jackal_skin): its suit in CE's dark navy leather with the
+# rank colour tinting it (k: how much), its plates in CE's beige steel, Halo's silver cube reflection on them
+# (rank: (how much, how bright)); the tint is the rank's tertiary change colour, its vivid one (Halo 2's suit shader takes
+# only the primary, a pale orange or steel blue that turns muddy on the dark leather): red for Majors, deep blue for Minors
+H2J_SUIT, H2J_PLATE = (0.18, 0.19, 0.22), (0.52, 0.47, 0.45)
+H2J_SUIT_TINT = {'default': (0.55, 0.45), 'zealot': (0.8, 0.62)}
+bp.SHINE['H2Jackal'] = 0.3; bp.SHINE_CUBE['H2Jackal'] = 'elite'
 H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
@@ -311,16 +318,16 @@ def load_ai():
             mk['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=40.0)
             mk['items']['grenades_lower_bound'] = 0; mk['items']['grenades_upper_bound'] = 0
             variants[H2JACKAL + f'\\jackal marksman {key}'] = mk
-        # helmeted Jackals (IanLacksMods' Characters+: extract_h2_jackal.plus_meshes), classes of their own: the Major
-        # in Halo CE's helmet (the CE Major's health and shield, its pink shield; the plasma rifle, the one one-handed
-        # gun the model carries), and the Sniper and Marksmen in Halo 3's sniper helmet with its glowing lenses
+        # helmets (IanLacksMods' Characters+: extract_h2_jackal.plus_meshes): only helmeted Jackals carry the long guns,
+        # so the Sniper and the Marksmen wear Halo 3's sniper helmet with its glowing lenses; and a Major of its own in
+        # Halo CE's helmet (the CE Major's health and shield, its pink shield; the plasma rifle, the one one-handed gun
+        # the model carries). The bare-headed Ultra and Zealot keep the quills. (The helmeted copies of the Sniper and
+        # Marksmen released briefly as 30498-30500 are gone; ednum_pins.json keeps those numbers retired.)
         if json.load(open(H2J_JSON)).get('helmet_cells'):
+            for key in ('sniper beam rifle', 'marksman plasma carbine', 'marksman pulse carbine'):
+                variants[H2JACKAL + f'\\jackal {key}']['_helmet'] = 'sniper'
             mj = h2j(A['variants'][r'characters\jackal\jackal major needler'], 'major', 75, 250, CE_PR, _helmet='ce')
             variants[H2JACKAL + '\\jackal major helmet plasma rifle'] = mj
-            for key in ('sniper beam rifle', 'marksman plasma carbine', 'marksman pulse carbine'):
-                hv = copy.deepcopy(variants[H2JACKAL + f'\\jackal {key}']); hv['_helmet'] = 'sniper'
-                r, w = key.split(' ', 1)
-                variants[H2JACKAL + f'\\jackal {r} helmet {w}'] = hv
     # The Ultra Zealot (Shigure's Zealot Elite, extract_ultra_zealot.py): the gold Elite's sword build made tougher,
     # a diamond energy shield on its left arm; armour in a Field Marshal crimson-maroon with blue lights
     zs = A['variants'].get(r'characters\elite\elite commander\elite commander energy sword')
@@ -551,14 +558,30 @@ def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
     if os.path.exists(dst): return fn
     cols = H2J_COLOURS.get(rank, 'minor')
     if isinstance(cols, str): cols = meta['change_colors'][cols]
+    tint = np.array(cols[2] if len(cols) > 2 and cols[2] is not None else cols[0], np.float64)   # the vivid tertiary
     im = Image.open(src).convert('RGB')
     rgb = np.asarray(im).astype(np.float64) / 255.0
     mk = np.asarray(Image.open(mp).convert('RGB').resize(im.size)).astype(np.float64) / 255.0
-    for ch, col in enumerate(cols[:3]):                   # red / green / blue mask = primary / secondary / tertiary
-        if col is None: continue
-        m_ = mk[..., ch:ch + 1]
-        rgb = rgb * (1 - m_) + rgb * np.array(col) * 1.5 * m_
-    Image.fromarray((np.clip(rgb, 0, 1) * 255).astype(np.uint8)).save(dst)
+    m = np.clip(mk.max(2), 0, 1)[..., None]               # the change-colour areas: the suit; the rest: the plates
+    L = rgb.mean(2, keepdims=True)
+    def detail(sel):                                      # the texture's shading, about 1 over the region
+        w = sel[..., 0]
+        return L / max(float((L[..., 0] * w).sum() / max(w.sum(), 1)), 1e-3)
+    # the suit as Halo CE's Jackal wears it: dark navy leather, its folds kept; the rank colour tints it
+    k, bright = H2J_SUIT_TINT.get(rank, H2J_SUIT_TINT['default'])
+    tone = np.array(H2J_SUIT) * (1 - k) + tint * bright * k
+    suit = tone * detail(m) ** 1.6
+    # the plates: CE's beige steel, keeping some of their own colour
+    pm = (1 - m)[..., 0] > 0.5
+    pmean = rgb[pm].mean(0) if pm.any() else rgb.reshape(-1, 3).mean(0)
+    plate = rgb * (np.array(H2J_PLATE) / np.maximum(pmean, 1e-3)) * 0.6 + rgb * 0.4
+    out = suit * m + plate * (1 - m)
+    # Halo's reflection on them (build_pack.add_shine): the silver Elite cube, full on the plates, a dull sheen on the suit
+    multi = f'{bp.OUT}/models/H2Jackal/H2Jackal_{shader}_multi.png'
+    spec = (1 - m[..., 0]) * 0.6 + m[..., 0] * 0.12
+    Image.fromarray((np.dstack([spec, np.zeros_like(spec), m[..., 0], np.ones_like(spec)]) * 255).astype(np.uint8), 'RGBA').save(multi)
+    out = bp.add_shine('H2Jackal', f'H2Jackal_{shader}', out.astype(np.float32), (0.5, 0.5, 0.5), 1.0)
+    Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
     return fn
 
 def h2jackal_code():
@@ -1046,8 +1069,7 @@ def build():
                            'HCE_DroneMajorPlasmaPistol', 'HCE_DroneMajorNeedler', 'HCE_DroneUltraNeedler', 'HCE_DroneUltraPlasmaRifle',
                            'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
                            'HCE_DroneCaptainMajorPlasmaRifle',
-                           'HCE_JackalMajorHelmetPlasmaRifle', 'HCE_JackalSniperHelmetBeamRifle', 'HCE_JackalMarksmanHelmetPlasmaCarbine',
-                           'HCE_JackalMarksmanHelmetPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_JackalMajorHelmetPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     if H2J_BRIGHT:                               # the H2 sniper helmet's lenses glow

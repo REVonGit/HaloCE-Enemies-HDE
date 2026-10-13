@@ -2348,6 +2348,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	// somewhere else, around its target. It phases when its shield is down and it is under fire, or to close in on a
 	// target far away; never more often than every 6-10 s
 	bool hce_coreSet, hce_debugPhase;
+	color hce_coreCol;                     // the core's colour (its embers when it dies)
 	int hce_phase, hce_phaseTics, hce_phaseNext, hce_hurtAt, hce_phaseOff;
 
 	override void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
@@ -2364,19 +2365,19 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 		{
 			switch(random(0, 3))
 			{
-			case 0: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_orange.png', CMDL_USESURFACESKIN); break;
-			case 1: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_amber.png', CMDL_USESURFACESKIN); break;
-			case 2: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_red.png', CMDL_USESURFACESKIN); break;
-			default: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_gold.png', CMDL_USESURFACESKIN); break;
+			case 0: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_orange.png', CMDL_USESURFACESKIN); hce_coreCol = "FF8519"; break;
+			case 1: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_amber.png', CMDL_USESURFACESKIN); hce_coreCol = "FFC238"; break;
+			case 2: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_red.png', CMDL_USESURFACESKIN); hce_coreCol = "FF421F"; break;
+			default: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_gold.png', CMDL_USESURFACESKIN); hce_coreCol = "FFE073"; break;
 			}
 			return;
 		}
 		switch(random(0, 3))
 		{
-		case 0: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_cyan.png', CMDL_USESURFACESKIN); break;
-		case 1: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_ice.png', CMDL_USESURFACESKIN); break;
-		case 2: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_violet.png', CMDL_USESURFACESKIN); break;
-		default: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_teal.png', CMDL_USESURFACESKIN); break;
+		case 0: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_cyan.png', CMDL_USESURFACESKIN); hce_coreCol = "33D9FF"; break;
+		case 1: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_ice.png', CMDL_USESURFACESKIN); hce_coreCol = "73A6FF"; break;
+		case 2: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_violet.png', CMDL_USESURFACESKIN); hce_coreCol = "9461FF"; break;
+		default: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/SentinelKnight/skins", 'core_teal.png', CMDL_USESURFACESKIN); hce_coreCol = "1FF2B8"; break;
 		}
 	}
 
@@ -2542,7 +2543,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 			}
 	}
 
-	// ---- death (Halo 4): the Knight convulses, glitching, and burns away into hard-light embers rising off it; nothing is
+	// ---- death (Halo 4): the Knight convulses, glitching, and burns away into hard-light embers in its core's colour rising off it; nothing is
 	// left behind but the guns it drops
 	const HCE_DISSOLVE_TICS = 56;
 	int hce_dissolve;
@@ -2561,13 +2562,14 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	void HCE_DissolveTick()
 	{
 		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
-		bool warm = HCE_KnightPalette() == 1;
+		color core = hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
+		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
 		// embers: from the parts still there (the top first, burning down), rising and fading
 		int n = 3 + int(f * 7);
 		for(int i = 0; i < n; i++)
 		{
 			double z = height * frandom(0, 1 - f * 0.6);
-			A_SpawnParticle(random(0, 3) ? "FF9A30" : (warm ? "FFE0A0" : "A0F0FF"), SPF_FULLBRIGHT, random(18, 32), frandom(1.5, 4), 0,
+			A_SpawnParticle(random(0, 3) ? core : hot, SPF_FULLBRIGHT, random(18, 32), frandom(1.5, 4), 0,
 				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z,
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
 		}
@@ -2579,7 +2581,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 		if(++hce_dissolve > HCE_DISSOLVE_TICS)
 		{
 			for(int i = 0; i < 20; i++)                               // the last of it scatters
-				A_SpawnParticle("FFB040", SPF_FULLBRIGHT, 24, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
+				A_SpawnParticle(core, SPF_FULLBRIGHT, 24, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
 					frandom(0, height * 0.6), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
 			if(hce_shellActor) hce_shellActor.Destroy();
 			Destroy();

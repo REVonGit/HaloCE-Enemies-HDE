@@ -129,9 +129,12 @@ def render_model(m, name):
             nm = np.array(nmap + [0] * 256)
             bi = nm[np.clip(bi, 0, 255)]
         tris_all = []
+        # a triangle list when the index count is three per triangle and every part divides by three (a strip's count
+        # can match by chance: one of the Sentinel Enforcer's sections)
+        is_list = len(idx) == tc * 3 and all(p['count'] % 3 == 0 for p in parts)
         for p in parts:
             seg = idx[p['start']:p['start'] + p['count']]
-            tl = strip_to_tris(seg) if len(idx) != tc * 3 else seg.reshape(-1, 3).astype(np.int32)
+            tl = seg.reshape(-1, 3).astype(np.int32) if is_list else strip_to_tris(seg)
             tris_all.append((p['shader'], tl))
         cb = m.block(s + 0x1C, 0x38) or m.block(a + 0x14, 0x38)
         if cb:

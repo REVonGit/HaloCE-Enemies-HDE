@@ -2,7 +2,21 @@ Model HCE_Sentinel
 {
 	Path "models/hce/Sentinel"
 	Model 0 "Sentinel.iqm"
-	SurfaceSkin 0 0 "skins/sentinel_sentinel_0.png"
+	SurfaceSkin 0 0 "skins/sentinel_minor_body.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelEliminator
+{
+	Path "models/hce/Sentinel"
+	Model 0 "Sentinel.iqm"
+	SurfaceSkin 0 0 "skins/sentinel_captain_body.png"
+	SurfaceSkin 0 1 "skins/sentinel_captain_bubble.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -14,7 +28,8 @@ Model HCE_SentinelMajor
 {
 	Path "models/hce/Sentinel"
 	Model 0 "Sentinel.iqm"
-	SurfaceSkin 0 0 "skins/sentinelmajor_sentinel_0.png"
+	SurfaceSkin 0 0 "skins/sentinel_captain_body.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -26,7 +41,8 @@ Model HCE_SentinelDefensive
 {
 	Path "models/hce/Sentinel"
 	Model 0 "Sentinel.iqm"
-	SurfaceSkin 0 0 "skins/sentineldefensive_sentinel_0.png"
+	SurfaceSkin 0 0 "skins/sentinel_minor_body.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -38,7 +54,8 @@ Model HCE_SentinelShielded
 {
 	Path "models/hce/Sentinel"
 	Model 0 "Sentinel.iqm"
-	SurfaceSkin 0 0 "skins/sentinelshielded_sentinel_0.png"
+	SurfaceSkin 0 0 "skins/sentinel_minor_body.png"
+	SurfaceSkin 0 1 "skins/sentinel_minor_bubble.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -50,8 +67,39 @@ Model HCE_SentinelShieldedMajor
 {
 	Path "models/hce/Sentinel"
 	Model 0 "Sentinel.iqm"
-	SurfaceSkin 0 0 "skins/sentinelshieldedmajor_sentinel_0.png"
+	SurfaceSkin 0 0 "skins/sentinel_captain_body.png"
+	SurfaceSkin 0 1 "skins/sentinel_captain_bubble.png"
 	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelConstructor
+{
+	Path "models/hce/SentinelConstructor"
+	Model 0 "SentinelConstructor.iqm"
+	SurfaceSkin 0 0 "skins/sentinelconstructor_body.png"
+	Scale 200 200 240
+	ZOffset 23
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelEnforcer
+{
+	Path "models/hce/SentinelEnforcer"
+	Model 0 "SentinelEnforcer.iqm"
+	SurfaceSkin 0 0 "skins/sentinelenforcer_body.png"
+	SurfaceSkin 0 1 "skins/sentinelenforcer_hover.png"
+	SurfaceSkin 0 2 "skins/sentinelenforcer_eye.png"
+	SurfaceSkin 0 3 "skins/enforcer_shield.png"
+	SurfaceSkin 0 4 "skins/enforcer_shield.png"
+	Scale 48 48 58
+	ZOffset 58
 	UseActorPitch
 	UseActorRoll
 	BaseFrame

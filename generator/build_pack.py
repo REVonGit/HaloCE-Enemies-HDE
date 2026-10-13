@@ -372,6 +372,67 @@ if os.path.exists(KNIGHT_JSON):
             if _r == 'commander': _v['_ov']['code'] = '\toverride int HCE_KnightPalette() { return 1; }    // warm core colours\n'
             AI['variants'][f'{KNIGHT} {_r} {_g}'] = _v
 
+# Halo 2's Sentinels (extract_h2_sentinels.py, 06b_floodzone): the Aggressor's model stands in for the Halo CE Sentinel's
+# (same classes, numbers and stats; the rank colours Halo 2's biped gives: minor steel blue, captain gold; the shielded
+# ranks wear its shield bubble while their shield holds), plus the Eliminator (Halo 2's shielded Aggressor with the
+# heavier beam: 120 body, 60 shield, the CE Sentinels' two-to-one scale of Halo 2's 60 / 30) and the Enforcer (600 body,
+# Halo 2's normal vitality; two energy shields across its front, the needler's hard-light bolts, rocket salvoes, the
+# grapple at close range; scaled to 0.6 to fit Doom's corridors)
+SENTINEL_JSON = f'{OUT}/models/Sentinel/Sentinel.json'
+H2_SENTINEL = os.path.exists(SENTINEL_JSON) and json.load(open(SENTINEL_JSON)).get('source') == 'h2'
+SENTINEL_RANKS = {r'characters\sentinel\sentinel': 'sentinel_minor', r'characters\sentinel\sentinel major': 'sentinel_captain',
+                  r'characters\sentinel\sentinel_defensive': 'sentinel_minor', r'characters\sentinel\sentinel_shielded': 'sentinel_minor',
+                  r'characters\sentinel\sentinel_shielded major': 'sentinel_captain'}
+ENFORCER = r'objects\characters\sentinel_enforcer\sentinel_enforcer'
+ENFORCER_JSON = f'{OUT}/models/SentinelEnforcer/SentinelEnforcer.json'
+SENTINEL_ORDER = ['HCE_SentinelEliminator', 'HCE_SentinelEnforcer', 'HCE_SentinelConstructor']
+NO_RANDOM = {'SentinelEnforcer', 'SentinelConstructor'}     # one class each: no random spawner
+CONSTRUCTOR = r'objects\characters\sentinel_constructor\sentinel_constructor'
+CONSTRUCTOR_JSON = f'{OUT}/models/SentinelConstructor/SentinelConstructor.json'
+SENTINEL_BUBBLE = "\toverride bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble\n"
+if H2_SENTINEL:
+    for _k, _r in SENTINEL_RANKS.items():
+        if _k in AI['variants']: AI['variants'][_k]['_rank'] = _r
+    for _k in (r'characters\sentinel\sentinel_shielded', r'characters\sentinel\sentinel_shielded major'):
+        if _k in AI['variants']: AI['variants'][_k]['_ov'] = dict(AI['variants'][_k].get('_ov') or {}, code=SENTINEL_BUBBLE)
+    _v = copy.deepcopy(AI['variants'][r'characters\sentinel\sentinel_shielded major'])
+    _v['unit'] = dict(_v['unit'], maximum_body_vitality=120.0, maximum_shield_vitality=60.0)
+    _v['ranged_combat']['weapon_damage_modifier'] = 1.75
+    _v['_rank'] = 'sentinel_captain'; _v['_late'] = True; _v['_ov'] = dict(code=SENTINEL_BUBBLE)
+    AI['variants'][r'characters\sentinel\sentinel eliminator'] = _v
+if os.path.exists(ENFORCER_JSON):
+    _base = AI['variants'][r'characters\sentinel\sentinel']
+    CHAR_OF_UNIT[ENFORCER] = 'SentinelEnforcer'; TEAM['SentinelEnforcer'] = 'SENTINEL'
+    AI['actors'][ENFORCER] = copy.deepcopy(AI['actors'][_base['actor_reference']])
+    _eb = copy.deepcopy(AI['bipeds'][_base['unit_reference']]); _eb['change_colors_list'] = []
+    AI['bipeds'][ENFORCER] = _eb
+    _v = copy.deepcopy(_base)
+    _v['unit_reference'] = ENFORCER; _v['actor_reference'] = ENFORCER
+    _v['unit'] = dict(_v['unit'], maximum_body_vitality=600.0, maximum_shield_vitality=0.0)
+    _v['ranged_combat']['reference'] = r'weapons\enforcer needler\enforcer needler'
+    _v['ranged_combat'].update(combat_range_lower_bound=4.0, combat_range_upper_bound=20.0, maximum_firing_range=32.0)
+    _v['change_colors'] = None; _v['change_colors_list'] = []
+    _v['items']['grenades_lower_bound'] = 0; _v['items']['grenades_upper_bound'] = 0
+    _v['grenade_combat']['throw_grenade_chance'] = 0.0
+    _v['_rank'] = 'enforcer'; _v['_late'] = True
+    AI['variants'][r'objects\characters\sentinel_enforcer\sentinel enforcer'] = _v      # -> HCE_SentinelEnforcer
+# the Constructor: Halo 2's little builder drone in the Lost Souls' place (30 body, no shield, no gun: it darts and welds)
+if os.path.exists(CONSTRUCTOR_JSON):
+    _base = AI['variants'][r'characters\sentinel\sentinel']
+    CHAR_OF_UNIT[CONSTRUCTOR] = 'SentinelConstructor'; TEAM['SentinelConstructor'] = 'SENTINEL'
+    AI['actors'][CONSTRUCTOR] = copy.deepcopy(AI['actors'][_base['actor_reference']])
+    _cb = copy.deepcopy(AI['bipeds'][_base['unit_reference']]); _cb['change_colors_list'] = []
+    AI['bipeds'][CONSTRUCTOR] = _cb
+    _v = copy.deepcopy(_base)
+    _v['unit_reference'] = CONSTRUCTOR; _v['actor_reference'] = CONSTRUCTOR
+    _v['unit'] = dict(_v['unit'], maximum_body_vitality=30.0, maximum_shield_vitality=0.0)
+    _v['ranged_combat']['reference'] = None
+    _v['change_colors'] = None; _v['change_colors_list'] = []
+    _v['items']['grenades_lower_bound'] = 0; _v['items']['grenades_upper_bound'] = 0
+    _v['grenade_combat']['throw_grenade_chance'] = 0.0
+    _v['_rank'] = 'constructor'; _v['_late'] = True
+    AI['variants'][r'objects\characters\sentinel_constructor\sentinel constructor'] = _v   # -> HCE_SentinelConstructor
+
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
 WEAPONS = {
     'plasma pistol':    ('HCE_PlasmaPistolBolt', 'HaloPlasma_Proj', 18, 0.83),
@@ -393,6 +454,7 @@ WEAPONS = {
     'scattershot':      ('HCE_ScattershotBolt', 'HCE_HardlightViolet', 9, 2.4),
     'binary rifle':     ('HCE_BinaryRifleBolt', 'HCE_HardlightGreen', 90, 16.0),
     'suppressor':       ('HCE_SuppressorBolt', 'HCE_HardlightCyan', 8, 4.0),
+    'enforcer needler': ('HCE_EnforcerNeedle', 'HCE_HardlightCyan', 6, 3.0),     # the Sentinel Enforcer's needle bolts
 }
 # hard-light bolt bases (in the core, with the projectiles): HDE's Scattershot bolt; only the Scattershot's keep its bounce
 HARDLIGHT_CODE = '''
@@ -490,6 +552,7 @@ PATTERNS = {
     'scattershot':     (1, 1, 1, 1.4, 2.2, 0, False, 2.0, 0.1),
     'binary rifle':    (1, 1, 1, 3.0, 4.2, 0, False, 1.0, 0.1),
     'suppressor':      (8, 14, 3, 1.0, 1.6, 0, True, 1.0, 2.0),
+    'enforcer needler': (10, 16, 2, 1.4, 2.4, 0, True, 1.0, 2.0),   # long strings from both arms
 }
 # HDE SNDINFO names: fire, fire bass, special (overcharge / loop end), charge (overcharge / loop start), looping
 W = 'Halo/Weapons/'
@@ -511,6 +574,7 @@ FIRE_SOUNDS = {
     'scattershot':     (W + 'ScatterShot/Fire', W + 'ScatterShot/Fire/Bass', '', '', False),
     'binary rifle':    (W + 'BinaryRifle/Fire', W + 'BinaryRifle/Fire/Bass', '', '', False),
     'suppressor':      (W + 'LightRifle/Fire', '', '', '', False),
+    'enforcer needler': (W + 'LightRifle/Fire', '', '', '', False),
 }
 # Halo-style drops: HDE Local_DEV pickup classes (Covenant always drop theirs, the energy sword included -- HDE has
 # one to pick up; Hunters' fuel rod arms and Sentinels drop nothing)
@@ -2031,8 +2095,10 @@ def build(cfg=None):
                                for l in arsenal_lines(char, first, meta, pack, mdir, oi)]
                 frames += f'\n\tFrameIndex HCEM A {oi} 0'
             sc = S * msc
+            # 'lift': a model built round its middle (the Sentinel Enforcer's hull) raised so its underside sits at the actor's feet
+            zoff = f'\n\tZOffset {-meta["bounds"][0][2] * sc * 1.2:.0f}' if ov.get('lift') else ''
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
-                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
+                      f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}{zoff}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')
             if team[char] in PICKUP_TEAMS and dw and weapon and weapon not in PICKUP_SKIP and (marine or weapon not in WEAPON_CODE and weapon != 'plasma caster' and (dw in COVENANT_GUNS or char == 'Brute')) and \
@@ -2062,12 +2128,12 @@ def build(cfg=None):
                 continue
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
-            if not ov.get('unique'): spawners.setdefault(char, []).append(cls)
+            if not ov.get('unique') and char not in NO_RANDOM: spawners.setdefault(char, []).append(cls)
         if len(prof) > 1:              # more than its own gun to choose from
             zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
     pz = ['// Enemy projectiles: HDE visuals, Halo CE impact damage']
-    if main and any(w in projectiles_used for w in KNIGHT_GUNS): pz.append(HARDLIGHT_CODE)
+    if main and any(w in projectiles_used for w in list(KNIGHT_GUNS) + ['enforcer needler']): pz.append(HARDLIGHT_CODE)
     done = set()
     for wn in sorted(projectiles_used):
         pc, base_cls, dmg, sp = WEAPONS[wn]
@@ -2201,8 +2267,9 @@ BEAMRIFLE_CODE = ''
 MAIN_WEAPONS = set(WEAPONS)
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
             handler='HCE_ReplaceHandler', index='pack_index.json',
-            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else []),
-            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER)
+            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
+                       + [c for c in ('SentinelEnforcer', 'SentinelConstructor') if c in TEAM],
+            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
@@ -2667,6 +2734,110 @@ if os.path.exists(KNIGHT_JSON):
     SHELL_TINT['SentinelKnight'] = (0.55, 0.85, 1.00)
     CHAR_OVERRIDES['SentinelKnight'] = dict(stance='pistol', height_fixed=84, radius_fixed=30, melee=(110, 45), speed=7.0,
                                             flags=['HCE_Surprise', 'HCE_Evades', 'HCE_Berserks'])
+
+# ---------------------------------------------------------------- Halo 2's Sentinels
+# the Aggressor's body in its rank's change colour with the Elites' cube reflection on its metal (minor: steel blue under
+# the silver cube, captain: gold under the gold); its shield bubble (the shielded ranks only) and the Enforcer's shields
+# are see-through hex lattices in the shield colour (hex_lattice), fully lit, as are the Enforcer's hover jets and eye
+SENTINEL_CC = {'sentinel_minor': 'minor', 'sentinel_captain': 'captain'}
+SENTINEL_LOOK = {'sentinel_captain': (0.7, 0.35)}     # rank: (how much of its colour, how much reflection): the gold glared
+ENFORCER_SHIELD_HP = 260
+
+
+def full_bright(skin_dir, fn):
+    rel = skin_dir[skin_dir.index('models/'):]
+    mdir = rel.split('/')[1]
+    e = f'brightmap texture "{rel}/{fn}"\n{{\n\tmap "models/{mdir}/brightmap_full.png"\n}}'
+    if e not in EXTRA_GL: EXTRA_GL.append(e)
+    pack = skin_dir[:skin_dir.index('/models/')]
+    bf = f'{pack}/models/{mdir}/brightmap_full.png'
+    if not os.path.exists(bf): os.makedirs(os.path.dirname(bf), exist_ok=True); Image.new('RGB', (8, 8), (255, 255, 255)).save(bf)
+
+
+def hex_lattice(tint, path, n=128, cells=4, width=0.09):
+    """an energy shield we can see through: a hex lattice in the shield's colour, its cells cut out (UZDoom alpha-tests
+    model skins; a surface can't be blended on its own), the edges brighter where the noise of Halo's shield map runs"""
+    y, x = np.mgrid[0:n, 0:n].astype(np.float32) / n * cells
+    # hex grid: distance to the nearest cell centre against the second nearest gives the edges
+    pts = []
+    for i in range(-1, cells + 2):
+        for j in range(-1, cells * 2 + 2):
+            pts.append((i + (0.5 if j % 2 else 0.0), j * 0.866))          # rows of a hex grid, every other one offset
+    pts = np.array(pts, np.float32)
+    d = np.sqrt((x[..., None] - pts[:, 0]) ** 2 + (y[..., None] - pts[:, 1]) ** 2)
+    d.sort(axis=2)
+    edge = (d[..., 1] - d[..., 0]) < width
+    col = np.array(tint, np.float32)
+    rgb = np.clip(col * 0.85 + 0.25, 0, 1) * np.ones((n, n, 3), np.float32)
+    a = np.where(edge, 255, 0).astype(np.uint8)
+    Image.fromarray(np.dstack([(rgb * 255).astype(np.uint8), a]), 'RGBA').save(path)
+
+
+def copy_skin(char, mat, skin_dir):
+    os.makedirs(skin_dir, exist_ok=True)
+    fn = mat.lower()
+    if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{OUT}/models/{char}/{mat}', f'{skin_dir}/{fn}')
+    return fn
+
+
+def h2sentinel_skin(cls, v, si, mat, meta, skin_dir):
+    name = meta['mesh_names'][si]
+    rank = v.get('_rank', 'sentinel_minor')
+    os.makedirs(skin_dir, exist_ok=True)
+    if name.startswith('shield.'):
+        if (v.get('_ov') or {}).get('code') != SENTINEL_BUBBLE:
+            hid = f'{skin_dir}/hce_hidden.png'
+            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+            return 'hce_hidden.png'
+        fn = f'{rank}_bubble.png'
+        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT[rank], f'{skin_dir}/{fn}', cells=8, width=0.08)
+        full_bright(skin_dir, fn)
+        return fn
+    if not name.startswith('body.'): return None
+    fn = f'{rank}_body.png'; dst = f'{skin_dir}/{fn}'
+    if not os.path.exists(dst):
+        col = (meta.get('change_colors') or {}).get(SENTINEL_CC.get(rank, 'minor'), [None])[0]
+        k = SENTINEL_LOOK.get(rank, (1.0, 1.0))
+        if col: col = [c * k[0] + 0.8 * (1 - k[0]) for c in col]       # toward pale metal: the gold read as paint
+        bake_skin('Sentinel', 'Sentinel_body', col, dst, k[1])
+    return fn
+
+
+def enforcer_skin(cls, v, si, mat, meta, skin_dir):
+    name = meta['mesh_names'][si]
+    os.makedirs(skin_dir, exist_ok=True)
+    if name.startswith('shield_'):
+        fn = 'enforcer_shield.png'
+        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT['enforcer'], f'{skin_dir}/{fn}', cells=6, width=0.07)
+        full_bright(skin_dir, fn)
+        return fn
+    fn = mat.lower()
+    if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{OUT}/models/SentinelEnforcer/{mat}', f'{skin_dir}/{fn}')
+    if name.startswith(('eye.', 'hover.')): full_bright(skin_dir, fn)
+    return fn
+
+
+if H2_SENTINEL:
+    _sm = json.load(open(SENTINEL_JSON))
+    SKIN_HOOK['Sentinel'] = h2sentinel_skin
+    SHINE['Sentinel'] = 0.6; SHINE_CUBE['Sentinel'] = 'elite'
+    if _sm.get('shield_surface') is not None:
+        BASE_CODE['Sentinel'] = template('zscript/sentinel_h2.zs').replace('{SURF}', str(_sm['shield_surface'])).replace('{MDIR}', 'hce')
+if os.path.exists(ENFORCER_JSON):
+    _em = json.load(open(ENFORCER_JSON))
+    SKIN_HOOK['SentinelEnforcer'] = enforcer_skin
+    NO_BLOOD.add('SentinelEnforcer')
+    BASE_CODE['SentinelEnforcer'] = (template('zscript/sentinel_enforcer.zs').replace('{SL}', str(_em['shield_surfaces']['left']))
+                                     .replace('{SR}', str(_em['shield_surfaces']['right'])).replace('{SHP}', str(ENFORCER_SHIELD_HP))
+                                     .replace('{MDIR}', 'hce'))
+    CHAR_OVERRIDES['SentinelEnforcer'] = dict(stance='fixed', flying=True, scale=0.6, height_fixed=96, radius_fixed=48,
+                                              melee=(170, 50), speed=4.0, shield=0, lift=True)
+if os.path.exists(CONSTRUCTOR_JSON):
+    SKIN_HOOK['SentinelConstructor'] = lambda cls, v, si, mat, meta, skin_dir: copy_skin('SentinelConstructor', mat, skin_dir)
+    NO_BLOOD.add('SentinelConstructor')
+    BASE_CODE['SentinelConstructor'] = template('zscript/sentinel_constructor.zs')
+    CHAR_OVERRIDES['SentinelConstructor'] = dict(stance='fixed', flying=True, scale=2.5, height_fixed=32, radius_fixed=16,
+                                                 melee=(72, 12), speed=9.0, shield=0, lift=True)
 
 # Halo CE's visor shader (shader_model with a reflection cube map): the reflection direction per pixel (the view ray
 # off the surface normal), its cube face and texel looked up in the six faces laid side by side (Halo's axes, Direct3D

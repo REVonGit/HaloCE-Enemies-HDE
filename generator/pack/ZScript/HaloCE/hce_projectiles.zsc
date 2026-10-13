@@ -139,6 +139,15 @@ class HCE_DBLShotgunPellet : HaloDBLShotgun_Bullet
 	}
 }
 
+class HCE_EnforcerNeedle : HCE_HardlightCyan
+{
+	mixin HCE_NerfMixin;
+	Default
+	{
+		HaloSlowProjectile.BaseDamage 6;
+	}
+}
+
 class HCE_Flame : HaloFlames
 {
 	Default

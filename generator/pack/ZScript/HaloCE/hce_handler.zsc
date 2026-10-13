@@ -45,13 +45,14 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1",
 			"HCE_StealthElitePlasmaRifle*4 HCE_StealthEliteMajorPlasmaRifle*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorEnergySword*1",
 			"HCE_StealthElitePlasmaRifle*3 HCE_StealthEliteMajorPlasmaRifle*3 HCE_StealthEliteMajorEnergySword*2 HCE_FloodcombatEliteStealthUnarmed*2",
-		// Lost Soul (flying kamikaze): infection forms, now and then the XAM Flood Grunt (it bursts into more of them)
-		"LostSoul",         "HCE_FloodInfection*7 HCE_FloodGrunt*1", "HCE_FloodInfection*5 HCE_FloodGrunt*1", "HCE_FloodInfection*4 HCE_FloodGrunt*1",
+		// Lost Soul (flying kamikaze): Halo 2's Constructors (darting, welding drones) and infection forms, now and then the XAM
+		// Flood Grunt (it bursts into more of them); before the Flood is out, the Constructors alone
+		"LostSoul",         "HCE_SentinelConstructor*12 HCE_FloodInfection*7 HCE_FloodGrunt*1", "HCE_SentinelConstructor*10 HCE_FloodInfection*5 HCE_FloodGrunt*1", "HCE_SentinelConstructor*9 HCE_FloodInfection*4 HCE_FloodGrunt*1",
 		// Cacodemon (tough flyer): Sentinels of every kind
 		"Cacodemon",
 			"HCE_Sentinel*4 HCE_SentinelDefensive*2 HCE_SentinelShielded*1",
-			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1",
-			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_Sentinel*1",
+			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1 HCE_SentinelEliminator*1 HCE_SentinelEnforcer*1",
+			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_SentinelEliminator*2 HCE_SentinelEnforcer*2 HCE_Sentinel*1",
 		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major and Heavy Elites; and Sentinel
 		// Knights (Sentinels pack), more of them and their commanders on the harder skills
 		"HellKnight",
@@ -161,7 +162,7 @@ class HCE_ReplaceHandler : EventHandler
 	// before the Flood is out, the Doom monsters only the Flood stood in for draw from another monster's list instead
 	static const String PRE_FLOOD[] =
 	{
-		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"
+		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"   // (Lost Souls: the Constructors cover them when loaded)
 	};
 
 	static int SkillTier()

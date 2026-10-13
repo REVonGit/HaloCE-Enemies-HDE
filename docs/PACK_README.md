@@ -103,7 +103,7 @@ Marines are on the human team and fight Covenant and Flood alongside the player.
 
 Each Doom monster becomes the Halo CE enemy with the closest role, toughness and threat.
 
-**When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls and Pain Elementals from the Cacodemon's (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
+**When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls become Constructors only, and Pain Elementals draw from the Cacodemon's mix (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
 
 If Doom monsters are left on a map, the console says how many and why at map start. That happens when `hce_keepdoommonsters` is on, or when another mod loaded after this pack replaces them first. Monsters with no loaded faction to become aren't counted. (Older builds used `hce_replacemonsters`, which your ini may still hold as `false`; it's ignored now.) The rank mix shifts with the skill level (easy = skills 1–2, normal = 3, hard = 4–5). Each spawn rolls its own pick.
 
@@ -117,8 +117,8 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Imp | Major Grunts 55%, Minor Jackal 15%, Minor needler Grunt 14%, Major (needler) Jackal 7%, Minor Elite 7% (Spec-Ops Grunts on hard) |
 | Pinky | unarmed Flood Human 41% / Flood Elite 40%, shotgun Flood 18% |
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
-| Lost Soul | Flood infection form |
-| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills. With the Digsite add-on (or in a bundle), always Halo 2 Drones |
+| Lost Soul | Halo 2 Constructors (mostly), Flood infection forms, now and then the Flood Grunt |
+| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills; Eliminators and Enforcers on normal and hard. With the Digsite add-on (or in a bundle), most become Halo 2 Drones |
 | Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills) |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
@@ -607,6 +607,20 @@ Set the three `hce_nerf_*` CVars to 1 for the original Halo numbers. They are ne
 
 Halo weapon damage is used almost 1:1. HDE's own guns already use Halo-like values (Assault Rifle 10 vs HDE 6, plasma rifle 12–14 vs 12, sniper 101 vs 128), and enemy health is Halo's body vitality, with shields given through HDE's `ShieldProcessor`. Halo's Marines really are fragile (12 body + 24 shield), so expect them to die fast, as in the game. Approximations where Halo uses physics or scripted damage: Hunter melee 80, Carrier burst 40, infection-form nibble.
 
+## Halo 2 Sentinels (Sentinels pack)
+
+Halo 2's Sentinels, ripped from MCC's `06b_floodzone.map` (Quarantine Zone) by `extract_h2_sentinels.py`: models, real textures (MCC's `textures.dat`), skeletons and animations.
+
+* **The Sentinel (Halo 2's Aggressor) replaces Halo CE's.** The five CE classes (`HCE_Sentinel`, `HCE_SentinelMajor`, `HCE_SentinelDefensive`, `HCE_SentinelShielded`, `HCE_SentinelShieldedMajor`) keep their names, DoomEdNums (30260–30264) and stats, and wear Halo 2's model.
+  * **Colours:** Halo 2's rank colours. The Sentinel, Defensive and Shielded are steel blue (under the silver cube reflection); the two Majors are gold.
+  * **Shield bubble:** the Shielded, the Shielded Major and the Eliminator wear Halo 2's shield bubble, drawn as a glowing see-through hex lattice in the shield's colour (pale blue or amber). It vanishes when the shield pops and returns when it recharges. The others keep Halo CE's unseen shield.
+  * **Animations:** its idle and eight flinches (Halo 2's overlays, laid over the idle). Halo 2's Sentinels break apart rather than having a death animation, so a tumble and a landing were made from the idle for the fall.
+* **Eliminator (new, `HCE_SentinelEliminator`, 30366):** Halo 2's heavy Aggressor: gold, with the shield bubble, 120 health and 60 shield, and a beam that does 1.75× the damage.
+* **Enforcer (new, `HCE_SentinelEnforcer`, 30367):** Halo 2's heavy Sentinel, 600 health (Halo 2's normal vitality), scaled to 0.6 to fit Doom's corridors. It floats on its hover jets, its eye and jets lit.
+  * **Shields:** two energy shields across its front (cyan hex lattices) stop everything fired from within 65° of where it faces. Each holds 260 damage; worn out, it winks out and comes back after 10 s, and a scratched one recovers 4 s after the last hit. Flank it: its sides and back are bare.
+  * **Attacks:** long strings of needle bolts from both arms (cyan hard light), a salvo of four homing hard-light rockets every 6–10 s that burst where they land, and its grapple (50 damage) for anyone in reach.
+* **Constructor (new, `HCE_SentinelConstructor`, 30368):** Halo 2's little builder drone, in the Lost Souls' place: 30 health. Every 2–4 s it darts at its target and rams it (3–24, a Lost Soul's bite), and in reach it welds with an arc of its cutting beam (6–16).
+
 ## Sentinel Knights (Sentinels pack)
 
 The Forerunner **Sentinel Knight** from blackandfan's Halo 2 tag pack (H2EK-Tags): its model, 97-bone skeleton, textures and 39 full-body animations, converted from the pack's source files (`extract_sentinel_knight.py`). Its missing right forearm is a **Forerunner arm gun**: the Light Rifle, Scattershot, Binary Rifle or Suppressor from Halo Infinite (`HDE_promethian_weapons.blend`, `promethean_ce.py`), with the blend's materials baked into its texture, recoloured to match the Knight's own colouring per rank. The gun's lights keep their blend colours (blue, violet, green, blue) and glow. Its left forearm is its blade.
@@ -660,8 +674,8 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 | ZombieMan | 6 / 8 / 10% | plasma-pistol Slug Man |
 | ShotgunGuy, DoomImp | 5–10% | plasma-pistol Slug Man, Minor carbine Elite |
 | ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite, carbine and pulse-carbine Jackal Marksmen |
-| Cacodemon | **always** | Halo 2 Drone |
-| LostSoul | 60 / 65 / 70% | Halo 2 Drone |
+| Cacodemon | 65 / 60 / 55% | Halo 2 Drone (the rest: the core pack's Sentinels) |
+| LostSoul | 20 / 25 / 30% | Halo 2 Drone (the rest: mostly Constructors) |
 | HellKnight (after the Thorn Beast roll) | 25 / 30 / 35% | Brute Minors (plasma rifle, assault rifle) and Majors (Spiker, shotgun) |
 | Revenant (rolls first) | 20 / 25 / 30% | shotgun and plasma-rifle Captains, Spiker Majors, assault-rifle Honor Guards |
 | BaronOfHell | 20 / 25 / 30% | **Brute Chieftain** (still counts as a Baron, so E1M8-style boss exits work) |
@@ -1132,6 +1146,9 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30363 | `HCE_SentinelKnightCommanderBinaryRifle` |
 | 30364 | `HCE_SentinelKnightCommanderSuppressor` |
 | 30365 | `HCE_RandomSentinelKnight` |
+| 30366 | `HCE_SentinelEliminator` |
+| 30367 | `HCE_SentinelEnforcer` |
+| 30368 | `HCE_SentinelConstructor` |
 | 30400 | `HCE_Drinol` |
 | 30401 | `HCE_EliteCommanderPlasmaCarbine` |
 | 30402 | `HCE_EliteMajorPlasmaCarbine` |
@@ -1238,6 +1255,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight:** blackandfan's Halo 2 tag pack (H2EK-Tags): the Knight's model, textures, animations and tags.
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
+* **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).

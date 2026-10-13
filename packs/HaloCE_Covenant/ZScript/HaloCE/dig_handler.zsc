@@ -1,5 +1,5 @@
 // Digsite add-on: mixes Slug Men, carbine Elites, the SPV3 creatures and Halo 2's Drones and Brutes into the
-// Doom monster replacements (Cacodemons always become Drones);
+// Doom monster replacements (most Cacodemons become Drones);
 // the Drinol appears only as the Cyberdemon boss; Brute Chieftains take some Barons' places.
 // Each rule rolls a chance per Doom monster (easy | normal | hard); a hit picks from the weighted list and
 // marks the replacement final, so it wins whichever order the main pack's handler runs in.
@@ -30,10 +30,10 @@ class HCE_DigsiteHandler : EventHandler
 		"Archvile",       "0.10 0.12 0.15", "HCE_EliteCommanderPlasmaCarbine*1 HCE_EliteCommanderPulseCarbine*1",
 		// Baron of Hell: some become Brute Chieftains (Tartarus's look, gravity hammer); still a Baron for boss deaths
 		"BaronOfHell",    "0.20 0.25 0.30", "HCE_BruteChieftainGravityHammer*1",
-		// Cacodemon (flying): always Halo 2 Drones while this add-on is loaded
-		"Cacodemon",      "1 1 1",          "HCE_DronePlasmaPistol*8 HCE_DroneNeedler*6 HCE_DronePlasmaRifle*4 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*2 HCE_DroneMajorNeedler*2 HCE_DroneUltraNeedler*1 HCE_DroneUltraPlasmaRifle*1 HCE_DroneCaptainPlasmaPistol*1 HCE_DroneCaptainPlasmaRifle*1 HCE_DroneCaptainMajorNeedler*1",
-		// Lost Soul (small flying swarmer): Halo 2 Drones
-		"LostSoul",       "0.60 0.65 0.70", "HCE_DronePlasmaPistol*6 HCE_DroneNeedler*4 HCE_DronePlasmaRifle*2 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*1 HCE_DroneMajorNeedler*1",
+		// Cacodemon (flying): mostly Halo 2 Drones while this add-on is loaded (the rest the core pack's Sentinels)
+		"Cacodemon",      "0.65 0.60 0.55", "HCE_DronePlasmaPistol*8 HCE_DroneNeedler*6 HCE_DronePlasmaRifle*4 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*2 HCE_DroneMajorNeedler*2 HCE_DroneUltraNeedler*1 HCE_DroneUltraPlasmaRifle*1 HCE_DroneCaptainPlasmaPistol*1 HCE_DroneCaptainPlasmaRifle*1 HCE_DroneCaptainMajorNeedler*1",
+		// Lost Soul (small flying swarmer): now and then Halo 2 Drones (mostly the core pack's Constructors)
+		"LostSoul",       "0.20 0.25 0.30", "HCE_DronePlasmaPistol*6 HCE_DroneNeedler*4 HCE_DronePlasmaRifle*2 HCE_DroneSpiker*2 HCE_DroneMajorPlasmaPistol*1 HCE_DroneMajorNeedler*1",
 		// Pain Elemental: always the Engineer while this add-on is loaded (a harmless floater that bursts
 		// into charged plasma grenades when killed)
 		"PainElemental",  "1 1 1",          "HCE_Engineer*1",

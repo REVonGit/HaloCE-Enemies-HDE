@@ -47,7 +47,10 @@ KIT_SHINE = {'ek_ranger_arms.png': (0.25, 3), 'ek_ranger_torso.png': (0.25, 3), 
 
 # Jackal energy shield colour by rank (Halo shows it through a translucent shader we can't use, so it's baked + brightmapped)
 SHIELD_TINT = {'minor': (0.20, 0.35, 1.00), 'ultra': (1.00, 0.55, 0.10), 'major': (1.00, 0.30, 0.85),   # Ultra orange, Major pink
-               'zealot': (1.00, 0.84, 0.30)}   # Zealot (the Halo 2 Spiker Jackal): gold, the colour of Covenant zealots
+               'zealot': (1.00, 0.84, 0.30),   # Zealot (the Halo 2 Spiker Jackal): gold, the colour of Covenant zealots
+               # Halo 2's Sentinels: the Aggressors' shield bubble (pale blue for the steel minors, amber for the gold
+               # captains) and the Enforcer's two shields (cyan)
+               'sentinel_minor': (0.45, 0.75, 1.00), 'sentinel_captain': (1.00, 0.72, 0.25), 'enforcer': (0.35, 0.85, 1.00)}
 
 # the red and white Hunters' armour (build_pack.bake_hunter)
 HUNTER_COLOURS = {'red': (0.78, 0.13, 0.08), 'white': (0.86, 0.88, 0.93)}

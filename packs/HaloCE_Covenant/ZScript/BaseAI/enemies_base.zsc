@@ -748,6 +748,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		Super.PostBeginPlay();
 		if(!hce_enabled) return;
 		if(HCE_SimpleShaders()) HCE_PlainShaders();
+		// the Sentinels fight for the player unless hce_sentinelallies is off (Options > Halo CE AI)
+		if(hce_team == HCE_TEAM_SENTINEL && HCE_CVarF('hce_sentinelallies', 1) > 0)
+		{
+			hce_team = HCE_TEAM_HUMAN; hce_sentinelAlly = true; bFRIENDLY = true;
+			if(bCOUNTKILL) { bCOUNTKILL = false; level.total_monsters--; }      // an ally is not a kill to make
+		}
 		static const int prefs[] = { HCE_WK_CLOSE, HCE_WK_MID, HCE_WK_LONG };
 		hce_weaponPref = prefs[random(0, 2)];             // a regular Marine's liking: close, mid or long range
 		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0) HCE_RollName();
@@ -767,7 +773,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_shieldMax > 0 && !bHCE_FrontShield)
 		{
 			A_SetupShield(hce_shieldMax, max(1, hce_shieldStun) * 35, max(1, int(max(1, hce_shieldRecharge) * 35 / max(0.1, HCE_D(HCE_D_RECHARGE)))),
-				"Shield/Explode", "", "Shield/Regenerate", "HCE_Shield");
+				"Shield/Explode", "", "", "HCE_Shield");     // no recharge sound: only the player's own shield is heard filling
 		}
 		if(bHCE_FrontShield)
 		{
@@ -3003,9 +3009,16 @@ class HaloDoom_EnemyBase : Actor abstract
 	// overlay, with Halo CE's health bar). Rolled at spawn from the lists below; Johnson and Stacker have their own.
 	// ------------------------------------------------------------------
 	String hce_rankName;
+	bool hce_sentinelAlly;                 // a Sentinel on the player's side (hce_sentinelallies)
 
 	virtual void HCE_RollName()
 	{
+		if(hce_sentinelAlly)                 // not a Marine's name: a Sentinel's designation
+		{
+			String l = "ABCDEFGH";
+			hce_rankName = String.Format("Sentinel %d-%s%d", random(100, 999), l.Mid(random(0, 7), 1), random(1, 9));
+			return;
+		}
 		static const String first[] = { "George", "James", "Michael", "Robert", "David", "William", "Richard", "Joseph",
 			"Thomas", "Charles", "Daniel", "Matthew", "Anthony", "Mark", "Paul", "Steven", "Andrew", "Kenneth", "Joshua",
 			"Kevin", "Brian", "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan", "Jacob", "Gary", "Nicholas",
@@ -6728,8 +6741,10 @@ class HCE_Shield : ShieldProcessor
 		+NOINTERACTION
 		RenderStyle "None";
 	}
+	bool hce_started;
 	override void DisplayShields()
 	{
+		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
 		if(prevShields > 0 && shields <= 0) OnShieldBreak();
 		let e = HaloDoom_EnemyBase(Owner);
 		if(e && e.hce_shellActor)
@@ -6770,7 +6785,12 @@ class HCE_Shield : ShieldProcessor
 		if(e) e.HCE_OnShieldPop();
 		if(e && e.hce_shellActor) { e.hce_shellActor.alpha = 1.0; e.hce_shellActor.bInvisible = false; }
 		Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP);
-		for(int i = 0; i < 30; i++)
+		// the shield shatters like glass: HCE_ShieldShatter (core pack) throws the shards; without it, sparks
+		Name sn = 'HCE_ShieldShatter';
+		class<Actor> sc = (class<Actor>)(sn);
+		let sh = sc ? Actor.Spawn(sc, Owner.pos, NO_REPLACE) : null;
+		if(sh) sh.master = Owner;
+		else for(int i = 0; i < 30; i++)
 			Owner.A_SpawnParticle("9FC8FF", SPF_FULLBRIGHT, 18, frandom(3, 6), 0, 0, 0, Owner.height * 0.6,
 				frandom(-4, 4), frandom(-4, 4), frandom(-2, 4), 0, 0, -0.1);
 	}

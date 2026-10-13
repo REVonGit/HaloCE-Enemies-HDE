@@ -48,20 +48,9 @@ class HCE_SentinelBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -70,6 +59,9 @@ class HCE_SentinelBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the Sentinels' shield bubble flare
+class HCE_SentinelBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel\sentinel
 class HCE_Sentinel : HCE_SentinelBase
@@ -1374,20 +1366,9 @@ class HCE_SentinelDragoonBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelDragoonBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -1396,6 +1377,9 @@ class HCE_SentinelDragoonBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the SentinelDragoons' shield bubble flare
+class HCE_SentinelDragoonBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel dragoon ally\sentinel dragoon ally
 class HCE_SentinelDragoonAlly : HCE_SentinelDragoonBase
@@ -1844,20 +1828,9 @@ class HCE_SentinelGoldBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelGoldBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -1866,6 +1839,9 @@ class HCE_SentinelGoldBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the SentinelGolds' shield bubble flare
+class HCE_SentinelGoldBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel gold major\sentinel gold major
 class HCE_SentinelGoldMajor : HCE_SentinelGoldBase
@@ -4391,20 +4367,9 @@ class HCE_SentinelOnyxBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelOnyxBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -4413,6 +4378,9 @@ class HCE_SentinelOnyxBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the SentinelOnyxs' shield bubble flare
+class HCE_SentinelOnyxBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel onyx\sentinel onyx
 class HCE_SentinelOnyx : HCE_SentinelOnyxBase
@@ -4678,20 +4646,9 @@ class HCE_SentinelSoldierBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelSoldierBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -4700,6 +4657,9 @@ class HCE_SentinelSoldierBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the SentinelSoldiers' shield bubble flare
+class HCE_SentinelSoldierBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel soldier ally\sentinel soldier ally
 class HCE_SentinelSoldierAlly : HCE_SentinelSoldierBase
@@ -4912,20 +4872,9 @@ class HCE_SentinelWardenBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	// ---- Halo 2's Sentinel (extract_h2_sentinels.py): the shielded ranks (HCE_HasBubble) wear Halo 2's shield bubble
-	// (surface 1) while their shield holds; the others keep Halo CE's unseen shield
-	int hce_bubble;
+	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
-
-	override void Tick()
-	{
-		super.Tick();
-		if(isFrozen()) return;
-		int st = (health > 0 && HCE_HasBubble() && hce_shieldMax > 0 && HCE_ShieldUp()) ? 1 : 2;
-		if(st == hce_bubble) return;
-		hce_bubble = st;
-		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", st == 1 ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
+	override Name HCE_ShellClass() { return HCE_HasBubble() ? 'HCE_SentinelWardenBubbleShell' : 'None'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -4934,6 +4883,9 @@ class HCE_SentinelWardenBase : HaloDoom_EnemyBase abstract
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
 	}
 }
+
+// the SentinelWardens' shield bubble flare
+class HCE_SentinelWardenBubbleShell : HCE_ShieldShell {}
 
 // characters\sentinel warden\sentinel warden
 class HCE_SentinelWarden : HCE_SentinelWardenBase

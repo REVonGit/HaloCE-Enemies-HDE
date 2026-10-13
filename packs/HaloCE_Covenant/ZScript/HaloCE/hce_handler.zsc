@@ -165,6 +165,12 @@ class HCE_ReplaceHandler : EventHandler
 		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"   // (Lost Souls: the Constructors cover them when loaded)
 	};
 
+	// with the Sentinels allied (hce_sentinelallies), the monsters only Sentinels stood in for take another row's
+	static const String ALLY_FALLBACK[] =
+	{
+		"Cacodemon", "HellKnight", "LostSoul", "DoomImp", "PainElemental", "HellKnight"
+	};
+
 	static int SkillTier()
 	{
 		int sk = G_SkillPropertyInt(SKILLP_ACSReturn);   // 0 = ITYTD ... 4 = Nightmare
@@ -176,6 +182,8 @@ class HCE_ReplaceHandler : EventHandler
 		Array<String> opts; picks.Split(opts, " ", TOK_SKIPEMPTY);
 		Array<String> names; Array<int> weights; int total = 0;
 		bool flood = FloodOut();
+		CVar sa = CVar.FindCVar("hce_sentinelallies");
+		bool allies = sa && sa.GetBool();
 		// HaloDoom Evolved's weapon preset (hce_presets): enemies whose gun it doesn't spawn are left out, unless that
 		// would leave none (then the whole list stays, and HaloDoom_EnemyBase.HCE_PresetArm re-arms what it can)
 		for(int pass = 0; pass < 2 && total <= 0; pass++)
@@ -186,6 +194,7 @@ class HCE_ReplaceHandler : EventHandler
 				class<Actor> c = nw[0];
 				if(!c) continue;                                  // its faction pack isn't loaded
 				if(!flood && nw[0].IndexOf("Flood") >= 0) continue;   // the Flood isn't out yet on this level
+				if(allies && nw[0].IndexOf("Sentinel") >= 0) continue;   // Sentinels on the player's side don't stand in for monsters
 				if(pass == 0)
 				{
 					class<HaloDoom_EnemyBase> ec = (class<HaloDoom_EnemyBase>)(c);
@@ -257,6 +266,12 @@ class HCE_ReplaceHandler : EventHandler
 					if(rn == PRE_FLOOD[k])
 						for(int j = 0; j < RULES.Size(); j += 4)
 							if(RULES[j] == PRE_FLOOD[k + 1]) { rc = PickWeighted(RULES[j + 1 + SkillTier()]); break; }
+			// a row of Sentinels only, with the Sentinels on the player's side: another row's enemies stand in
+			if(!rc)
+				for(int k = 0; k < ALLY_FALLBACK.Size(); k += 2)
+					if(rn == ALLY_FALLBACK[k])
+						for(int j = 0; j < RULES.Size(); j += 4)
+							if(RULES[j] == ALLY_FALLBACK[k + 1]) { rc = PickWeighted(RULES[j + 1 + SkillTier()]); break; }
 			if(rc) e.Replacement = rc;
 			return;
 		}

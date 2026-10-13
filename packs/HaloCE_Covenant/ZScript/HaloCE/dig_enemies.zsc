@@ -12404,10 +12404,9 @@ class HCE_Engineer : HCE_EngineerBase
 			let sh = ShieldProcessor(e.FindInventory("ShieldProcessor", true));
 			if(!sh)
 			{
-				sh = e.A_SetupShield(40 * HCE_ShieldScale(), 35 * 3, 35 * 2, "Shield/Explode", "", "Shield/Regenerate", "HCE_Shield");
+				sh = e.A_SetupShield(40 * HCE_ShieldScale(), 35 * 3, 35 * 2, "Shield/Explode", "", "", "HCE_Shield");
 				if(!sh) continue;
 				given = true;
-				e.A_StartSound("Shield/Regenerate", CHAN_AUTO, CHANF_OVERLAP, 0.7);
 			}
 			else if(sh.shields < sh.maxshields * 1.5)
 				sh.shields = min(sh.maxshields * 1.5, max(sh.shields, 0) + sh.maxshields * 0.2);

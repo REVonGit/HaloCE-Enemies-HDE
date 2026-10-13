@@ -53,6 +53,8 @@ OptionMenu "HCE_AIOptions"
 	Slider "Flood appears from level", "hce_floodlevel", 1, 32, 1, 0
 	StaticText "MAPxx counts as xx, ExMy as (x-1)*9+y. Earlier levels", 1
 	StaticText "get Covenant and Sentinels in the Flood's places.", 1
+	Option "Sentinels fight for you", "hce_sentinelallies", "OnOff"
+	StaticText "Off: they are hostile, as in Halo CE.", 1
 	Option "Follow HDE's weapon preset", "hce_presets", "OnOff"
 	StaticText "Enemies only carry guns the HaloDoom game type spawns.", 1
 	Slider "Digsite enemy spawns", "hce_digsite_spawns", 0, 2, 0.1, 1

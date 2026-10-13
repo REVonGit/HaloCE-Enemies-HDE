@@ -1826,6 +1826,18 @@ def build(cfg=None):
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
+        if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:
+            # the Sentinels' shield bubble as a flare (HCE_ShieldShell: unseen until a hit lights it, then fading, like
+            # the Covenant's): the body's model with only its shield surface drawn, in the hard-light lattice
+            fn = 'bubble_shell.png'
+            bubble = f'{pack}/models/{mdir}/{char}/skins/{fn}'
+            hex_lattice(SHIELD_TINT['sentinel_minor'], bubble, n=512, cells=10, width=0.05)
+            sl = [f'\tSurfaceSkin 0 {i} "skins/{fn if i == meta["shield_surface"] else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
+            hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
+            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+            zs.append(f'// the {char}s\' shield bubble flare\nclass HCE_{char}BubbleShell : HCE_ShieldShell {{}}\n')
+            md.append(f'Model HCE_{char}BubbleShell\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
+                      f'\n\tScale {S * msc:.1f} {S * msc:.1f} {S * msc * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if char_of_unit.get(v['unit_reference']) != char: continue      # every unit drawn as this body
@@ -2859,19 +2871,26 @@ def copy_skin(char, mat, skin_dir):
     return fn
 
 
+BUBBLE_CHARS = set()          # Sentinel bodies with a shield bubble surface: their shield flare is the bubble
+
+
+def bubble_code(char):
+    """the shielded ranks (HCE_HasBubble) flare their bubble when hit (HCE_<char>BubbleShell); the body's own bubble
+    surface stays hidden"""
+    BUBBLE_CHARS.add(char)
+    return ("\t// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails\n"
+            "\tvirtual bool HCE_HasBubble() { return false; }\n"
+            f"\toverride Name HCE_ShellClass() {{ return HCE_HasBubble() ? 'HCE_{char}BubbleShell' : 'None'; }}\n")
+
+
 def h2sentinel_skin(cls, v, si, mat, meta, skin_dir):
     name = meta['mesh_names'][si]
     rank = v.get('_rank', 'sentinel_minor')
     os.makedirs(skin_dir, exist_ok=True)
-    if name.startswith('shield.'):
-        if (v.get('_ov') or {}).get('code') != SENTINEL_BUBBLE:
-            hid = f'{skin_dir}/hce_hidden.png'
-            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
-            return 'hce_hidden.png'
-        fn = f'{rank}_bubble.png'
-        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT[rank], f'{skin_dir}/{fn}', cells=8, width=0.08)
-        full_bright(skin_dir, fn)
-        return fn
+    if name.startswith('shield.'):              # drawn by the bubble flare (bubble_code), never on the body
+        hid = f'{skin_dir}/hce_hidden.png'
+        if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+        return 'hce_hidden.png'
     if not name.startswith('body.'): return None
     fn = f'{rank}_body.png'; dst = f'{skin_dir}/{fn}'
     if not os.path.exists(dst):
@@ -2901,7 +2920,7 @@ if H2_SENTINEL:
     SKIN_HOOK['Sentinel'] = h2sentinel_skin
     SHINE['Sentinel'] = 0.6; SHINE_CUBE['Sentinel'] = 'elite'
     if _sm.get('shield_surface') is not None:
-        BASE_CODE['Sentinel'] = template('zscript/sentinel_h2.zs').replace('{SURF}', str(_sm['shield_surface'])).replace('{MDIR}', 'hce')
+        BASE_CODE['Sentinel'] = bubble_code('Sentinel')
 if os.path.exists(ENFORCER_JSON):
     _em = json.load(open(ENFORCER_JSON))
     SKIN_HOOK['SentinelEnforcer'] = enforcer_skin
@@ -2916,28 +2935,33 @@ def galap_skin(cls, v, si, mat, meta, skin_dir):
     as it is; the rest the default bake (Halo CE's Sentinel metal in the variant's change colour)"""
     name = meta['mesh_names'][si]
     os.makedirs(skin_dir, exist_ok=True)
-    if name.startswith('shield.'):
-        if SENTINEL_BUBBLE not in ((v.get('_ov') or {}).get('code') or ''):
-            if not os.path.exists(f'{skin_dir}/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{skin_dir}/hce_hidden.png')
-            return 'hce_hidden.png'
-        fn = 'galap_bubble.png'
-        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT['sentinel_minor'], f'{skin_dir}/{fn}', cells=12, width=0.065)   # Galap's shields are big: a finer lattice
-        full_bright(skin_dir, fn)
-        return fn
-    if mat.endswith('_gold.png'):
-        fn = mat.lower()
-        if not os.path.exists(f'{skin_dir}/{fn}'): bake_skin(meta['id'], mat[:-4], None, f'{skin_dir}/{fn}', 0.8)
-        return fn
-    return None
+    if name.startswith('shield.'):              # drawn by the bubble flare (bubble_code), never on the body
+        if not os.path.exists(f'{skin_dir}/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{skin_dir}/hce_hidden.png')
+        return 'hce_hidden.png'
+    # Forerunner metal: Halo CE's Sentinel sheet (or the Gold's) as it is, its metal (the multipurpose map's red) given a
+    # soft cool steel sheen. No baked cube-map reflection: on these flat-shaded bodies it broke up into iridescent facets
+    fn = mat.lower()
+    dst = f'{skin_dir}/{fn}'
+    if not os.path.exists(dst):
+        src = f'{OUT}/models/{meta["id"]}/{mat}'
+        base = Image.open(src).convert('RGB')
+        a = np.asarray(base).astype(np.float32) / 255
+        mp = src[:-4] + '_multi.png'
+        m = np.asarray(Image.open(mp).convert('RGB').resize(base.size)).astype(np.float32)[..., 0:1] / 255 if os.path.exists(mp) else np.zeros(a.shape[:2] + (1,))
+        tint = np.array([1.0, 0.92, 0.6]) if mat.endswith('_gold.png') else np.array([0.88, 0.93, 1.04])
+        lum = a.mean(2, keepdims=True)
+        sheen = np.clip(lum * tint * 1.08 + 0.05 * tint, 0, 1)
+        out = a * (1 - 0.45 * m) + sheen * 0.45 * m
+        Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
+    return fn
 
 
 for _c in GALAP_CHARS:
     _gm = json.load(open(f'{OUT}/models/{_c}/{_c}.json'))
     SKIN_HOOK[_c] = galap_skin
     NO_BLOOD.add(_c)
-    SHINE[_c] = 0.5; SHINE_CUBE[_c] = 'elite'
     if _gm.get('shield_surface') is not None:
-        BASE_CODE[_c] = template('zscript/sentinel_h2.zs').replace('{SURF}', str(_gm['shield_surface'])).replace('{MDIR}', 'hce')
+        BASE_CODE[_c] = bubble_code(_c)
     _r = max(12, min(48, int(_gm['collision_radius'] * S * 0.6)))
     CHAR_OVERRIDES[_c] = dict(stance='fixed', flying=True, radius_fixed=_r, height_fixed=max(24, _r * 2))
 if 'SentinelCrawler' in GALAP_CHARS:

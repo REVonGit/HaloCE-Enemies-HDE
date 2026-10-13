@@ -67,6 +67,7 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 |---|---|---|
 | `hce_keepdoommonsters` | false | Leave Doom's monsters alone (Doom's scripted marines are still replaced) |
 | `hce_floodlevel` | 1 | The level the Flood first appears on (see [Replacing Doom's monsters](#replacing-dooms-monsters)) |
+| `hce_sentinelallies` | true | The Sentinels fight for the player (Options > Halo CE AI > *Sentinels fight for you*); off, they are hostile as in Halo CE |
 | `hce_hunterpairs` | true | A lone Hunter spawns with its bond brother, including one that turns up mid-map (a monster spawner's, a summon) |
 | `hce_nerf_projectiles` | 0.4 (standalone: 0.3) | **Enemy projectile nerf.** Covers everything an enemy fires or throws: bullets, plasma, needles, spikes, rockets, fuel rods, grenades, Plasma Caster shots, beams, and their blasts and fuel-rod toxic clouds. Melee is untouched, and Marines' shots are not affected |
 | `hce_nerf_health` | 0.6 | Enemy health multiplier (Marines unaffected) |
@@ -105,6 +106,10 @@ Marines are on the human team and fight Covenant and Flood alongside the player.
 Each Doom monster becomes the Halo CE enemy with the closest role, toughness and threat.
 
 **When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls become Constructors only, and Pain Elementals draw from the Cacodemon's mix (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
+
+**Sentinels on your side:** by default every Sentinel (Halo CE's and Halo 2's Sentinels, Enforcers, Constructors, Knights and Galap's) fights for the player: allied, named by a Sentinel designation instead of a rank, and not counted as a kill to make. While they are allies they don't stand in for Doom's monsters: monsters only Sentinels replaced draw from another mix instead (Cacodemons and Pain Elementals from the Hell Knight's, Lost Souls from the Imp's). *Sentinels fight for you* (`hce_sentinelallies`) off makes them hostile again, as in Halo CE.
+
+**Energy shields:** a shield shows only when it is hit (its flare: the body's glowing copy for the Covenant, the hard-light bubble for the shielded Sentinels), and fails like glass: it shatters into shards in a flash of its colour. Only the player's own shield is heard recharging.
 
 If Doom monsters are left on a map, the console says how many and why at map start. That happens when `hce_keepdoommonsters` is on, or when another mod loaded after this pack replaces them first. Monsters with no loaded faction to become aren't counted. (Older builds used `hce_replacemonsters`, which your ini may still hold as `false`; it's ignored now.) The rank mix shifts with the skill level (easy = skills 1–2, normal = 3, hard = 4–5). Each spawn rolls its own pick.
 

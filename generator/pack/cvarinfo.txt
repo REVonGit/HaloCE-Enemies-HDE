@@ -1,4 +1,5 @@
 server bool hce_keepdoommonsters = false;  // true = leave Doom's monsters alone (Doom marines are still replaced)
+server bool hce_sentinelallies = true;    // the Sentinels fight for the player (off: they are hostile, as in Halo CE)
 server bool hce_hunterpairs = true;        // hunters spawn as bonded pairs
 server float hce_enemydamage = 1.0;        // scale for Halo enemy weapon damage (multiplies with hce_nerf_projectiles)
 server float hce_nerf_projectiles = 0.4;   // enemy projectile nerf: bullets, plasma, needles, rockets, grenades and their blasts (melee untouched; allies unaffected)

@@ -24,6 +24,21 @@ TITLE = {'covenant': 'Covenant: Grunts, Jackals, Elites, Hunters', 'flood': 'Flo
          'sentinels': 'Sentinels', 'marines': 'Marines'}
 VERSION = 'version "4.15.1"\n'
 
+
+def shard_texture(path):
+    """a shard of glass: an irregular pale sliver, brighter at its edges, transparent around it"""
+    from PIL import Image, ImageDraw, ImageFilter
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    S = 64
+    im = Image.new('RGBA', (S, S), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    pts = [(30, 2), (58, 40), (36, 61), (8, 47), (20, 22)]
+    d.polygon(pts, fill=(170, 215, 255, 150))
+    d.line(pts + [pts[0]], fill=(235, 248, 255, 255), width=3)
+    d.line([(30, 2), (36, 61)], fill=(220, 240, 255, 200), width=1)       # a crack across it
+    im = im.filter(ImageFilter.GaussianBlur(0.6))
+    im.save(path)
+
+
 def chunks(text):
     """split a generated ZScript file into (class name, parent, text) pieces (leading // comments kept)"""
     out = []
@@ -130,6 +145,8 @@ def main():
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
             m = re.fullmatch(r'HCE_(\w+)ShieldShell', cls)
             if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
+            m = re.fullmatch(r'HCE_(\w+)BubbleShell', cls)             # a Sentinel's shield bubble flare
+            if m and m.group(1) in TEAM: char_of[cls] = m.group(1)
             if cls.endswith('BodyShieldShell'):          # a Halo 2 body's flare (HCE_<char><piece>ShieldShell): its Elite's pack
                 ch = max((c for c in TEAM if cls.startswith(f'HCE_{c}')), key=len, default=None)
                 if ch: char_of[cls] = ch
@@ -159,6 +176,7 @@ def main():
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
     shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
+    shard_texture(f'{core}/graphics/HCESHARD.png')                  # the shield's glass shards (HCE_ShieldShatter)
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'

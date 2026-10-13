@@ -444,6 +444,58 @@ if os.path.exists(CONSTRUCTOR_JSON):
     _v['_rank'] = 'constructor'; _v['_late'] = True
     AI['variants'][r'objects\characters\sentinel_constructor\sentinel constructor'] = _v   # -> HCE_SentinelConstructor
 
+# Galap's Sentinels (extract_galap_sentinels.py -> galap_ai.json): custom Halo CE Sentinels, each its own body, with
+# the stats of Galap's actor variants. Their guns: Galap's Sentinel needler is the Enforcer's hard-light needles, the
+# blue beam and the Beam Gunner's the Sentinel beam, the Lancer's incinerator a flamethrower. The shielded ones wear
+# the hard-light shield lattice while it holds (sentinel_h2.zs); the ally variants fight on the player's side.
+GALAP_AI = f'{OUT}/galap_ai.json'
+GALAP_WEAPONS = {'sentinel_needler': r'weapons\enforcer needler\enforcer needler', 'sentinel_beam_blue': r'characters\sentinel\sentinel',
+                 'sentinel_beam_gunner': r'characters\sentinel\sentinel', 'sentinel': r'characters\sentinel\sentinel',
+                 'sentinel_incinerator': r'weapons\flamethrower\flamethrower'}
+# Galap's variant -> the pack's name (cname: HCE_<words>)
+GALAP_NAMES = {'sentinel_soldier': 'sentinel soldier', 'sentinel_soldier_ally': 'sentinel soldier ally',
+               'sentinel_dragoon': 'sentinel dragoon', 'sentinel_dragoon_ally': 'sentinel dragoon ally',
+               'sentinel_gold': 'sentinel gold', 'sentinel_gold_major': 'sentinel gold major',
+               'sentinel_gold_shielded': 'sentinel gold shielded', 'sentinel_gold_shielded major': 'sentinel gold shielded major',
+               'sentinel_onyx': 'sentinel onyx', 'sentinel_warden': 'sentinel warden', 'sentinel_protector': 'sentinel protector',
+               'sentinel_lancer': 'sentinel lancer', 'sentinel_interceptor': 'sentinel interceptor', 'sentinelmarauder': 'sentinel marauder',
+               'sentinel_crawler': 'sentinel crawler', 'sentinel_beam_gunner_small': 'sentinel beam gunner',
+               'sentinel_beam_gunner': 'sentinel beam gunner heavy', 'sentinel_beam_gunner_heavy': 'sentinel beam gunner turret',
+               'sentinel_beam_gunner_ally': 'sentinel beam gunner ally', 'sentinel_beam_gunner_ally_heavy': 'sentinel beam gunner ally heavy'}
+GALAP_ORDER = ['HCE_' + ''.join(w.capitalize() for w in n.split()) for n in GALAP_NAMES.values()]
+GALAP_CHARS = set()
+if os.path.exists(GALAP_AI):
+    _G = json.load(open(GALAP_AI))
+    _base = AI['variants'][r'characters\sentinel\sentinel']
+    for _u, _c in _G['unit_char'].items():
+        if _u not in _G['bipeds'] or not os.path.exists(f'{OUT}/models/{_c}/{_c}.json'): continue
+        CHAR_OF_UNIT[_u] = _c; TEAM[_c] = 'SENTINEL'; GALAP_CHARS.add(_c)
+        _b = copy.deepcopy(AI['bipeds'][_base['unit_reference']]); _b.update({k: v for k, v in _G['bipeds'][_u].items() if v is not None})
+        _b['change_colors_list'] = _G['bipeds'][_u].get('change_colors_list') or []
+        AI['bipeds'][_u] = _b
+    for _k, _v in _G['variants'].items():
+        _leaf = _k.split('\\')[-1]
+        if _v['unit_reference'] not in CHAR_OF_UNIT or _leaf not in GALAP_NAMES: continue
+        _v = copy.deepcopy(_v)
+        _ar = _v['actor_reference']
+        AI['actors'][_ar] = _G['actors'].get(_ar) or AI['actors'].get(_ar) or copy.deepcopy(AI['actors'][_base['actor_reference']])
+        _w = (_v['ranged_combat'].get('reference') or 'sentinel').split('\\')[-1]
+        _v['ranged_combat']['reference'] = GALAP_WEAPONS.get(_w, r'characters\sentinel\sentinel')
+        for _f in ('items', 'grenade_combat'):
+            if not isinstance(_v.get(_f), dict): _v[_f] = copy.deepcopy(_base[_f])
+        _v['items']['grenades_lower_bound'] = 0; _v['items']['grenades_upper_bound'] = 0
+        _v['grenade_combat']['throw_grenade_chance'] = 0.0
+        if not _v['unit'].get('maximum_body_vitality'): _v['unit'] = dict(_v['unit'], maximum_body_vitality=60.0 if 'heavy' in GALAP_NAMES[_leaf] else 35.0)
+        _v['_late'] = True; _v['_rank'] = 'sentinel_minor'
+        _v['_ov'] = dict(ally=True) if 'ally' in GALAP_NAMES[_leaf] else {}
+        _code = ''
+        if (_v['unit'].get('maximum_shield_vitality') or 0) > 0: _code += SENTINEL_BUBBLE
+        if 'ally' in GALAP_NAMES[_leaf]:       # on the human team, it would roll a Marine's name: a Monitor's designation instead
+            _code += ('\toverride void HCE_RollName() { String l = "ABCDEFGH"; hce_rankName = String.Format("Sentinel %d-%s%d", '
+                      'random(100, 999), l.Mid(random(0, 7), 1), random(1, 9)); }\n')
+        if _code: _v['_ov']['code'] = _code
+        AI['variants'][rf'characters\{GALAP_NAMES[_leaf]}\{GALAP_NAMES[_leaf]}'] = _v
+
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
 WEAPONS = {
     'plasma pistol':    ('HCE_PlasmaPistolBolt', 'HaloPlasma_Proj', 18, 0.83),
@@ -645,6 +697,7 @@ BLOOD = {
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
 }
 NO_BLOOD = {'Sentinel'}
+SENTINEL_LIKE = {'Sentinel'} | (GALAP_CHARS - {'SentinelCrawler'})     # flying Sentinel bodies: the fixed stance, hovering, the beam
 
 def blood_props(char):
     if char in NO_BLOOD: return '\t\t+NOBLOOD\n'
@@ -1707,7 +1760,10 @@ def build(cfg=None):
     projectiles_used = set()
     ed = cfg['ed0']
     # ---------------- per character base classes
+    based = set()
     for unit, char in sorted(char_of_unit.items(), key=lambda x: x[1]):
+        if char in based: continue                 # several units on one body (Galap's allies): one base class
+        based.add(char)
         meta = metas[char]
         b = ai['bipeds'][unit]
         ov = CHAR_OVERRIDES.get(char, {})
@@ -1740,7 +1796,7 @@ def build(cfg=None):
             if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
         h = max(meta['bounds'][1][2] - max(0, meta['bounds'][0][2]), b.get('collision_height_standing') or 0.3)
         r = b.get('collision_radius') or 0.2
-        flying = char == 'Sentinel' or ov.get('flying', False)
+        flying = char in SENTINEL_LIKE or ov.get('flying', False)
         height = int(round((b.get('collision_height_standing') or h) * S)) if not flying else int(h * S * 0.8)
         if char == 'FloodInfection': height = int(h * S)
         radius = int(round(max(r, 0.12) * S))
@@ -1772,7 +1828,7 @@ def build(cfg=None):
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
-            if v['unit_reference'] != unit: continue
+            if char_of_unit.get(v['unit_reference']) != char: continue      # every unit drawn as this body
             ov = dict(CHAR_OVERRIDES.get(char, {}), **v.get('_ov', {}))     # per-variant overrides (add-ons)
             a = ai['actors'][v['actor_reference']]
             rc = v['ranged_combat']; gc = v['grenade_combat']; un = v['unit']
@@ -1784,7 +1840,7 @@ def build(cfg=None):
             # stance used for animations
             if ov.get('stance'): w = ov['stance'].get(weapon, ov['stance'].get(None)) if isinstance(ov['stance'], dict) else ov['stance']
             elif char in ('Hunter', 'FloodInfection', 'FloodCarrier'): w = 'unarmed'
-            elif char == 'Sentinel': w = 'fixed'
+            elif char in SENTINEL_LIKE: w = 'fixed'
             elif (char.startswith('Grunt') or char.startswith('Elite')) and weapon and 'fuel rod' in weapon: w = 'missle'
             elif char.startswith('Elite') and weapon == 'energy sword': w = 'sword'
             elif char.startswith('Elite') and weapon == 'beam rifle': w = 'rifle'
@@ -1798,11 +1854,11 @@ def build(cfg=None):
                 table[k] = [n for n in names if n in A.names]
             mv = (table.get('MOVE_F') or [None])[0]
             run = A.speed(mv) if mv else 0
-            if run < 1.5: run = {'Sentinel': 6.0, 'FloodInfection': 7.0}.get(char, 5.0)
+            if run < 1.5: run = 6.0 if char in SENTINEL_LIKE else {'FloodInfection': 7.0}.get(char, 5.0)
             run = min(run, 14)
             run *= msc                     # scaled-down model: scaled-down stride
             if 'speed' in ov: run = ov['speed']
-            if char == 'Sentinel':
+            if char in SENTINEL_LIKE and 'speed' not in ov:
                 run = max(4.0, (b.get('flying_velocity') or 2.25) / 30 * S / TICK)
             walk = run * 0.65
             lmv = (table.get('LOW_MOVE') or [None])[0]
@@ -1830,7 +1886,7 @@ def build(cfg=None):
             if ov.get('spread') is not None: err = ov['spread']
             if not rof: rof = {'fuel rod': 0.6, 'hunter fuel rod': 0.7, 'rocket launcher': 0.4, 'needler': 6, 'plasma pistol': 4, 'sniper rifle': 0.6}.get(weapon, 3)
             if weapon in ('fuel rod', 'hunter fuel rod', 'rocket launcher', 'sniper rifle'): rof = min(rof, 0.8)
-            beam = char == 'Sentinel'
+            beam = char in SENTINEL_LIKE and weapon == 'sentinel'
             if beam: rof = 30; err = 0.6
             bg = rc['burst_geometry']
             bmin, bmax = bg['burst_duration_lower_bound'] or 0.6, bg['burst_duration_upper_bound'] or 1.2
@@ -1911,7 +1967,7 @@ def build(cfg=None):
             if t == 'flood': flags += ['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Resurrects']
             if t == 'infection': flags += ['HCE_Swarm', 'HCE_Leaps', 'HCE_Explodes']
             if t == 'carrier': flags += ['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Explodes']
-            if char == 'Sentinel': flags += ['HCE_Surprise', 'HCE_Evades', 'HCE_Flying', 'HCE_Beam']
+            if char in SENTINEL_LIKE: flags += ['HCE_Surprise', 'HCE_Evades', 'HCE_Flying'] + (['HCE_Beam'] if beam else [])
             if a['flags'] >> 19 & 1 or weapon == 'energy sword': flags.append('HCE_AlwaysBerserk')
             if v['flags'] >> 4 & 1 or v['flags'] >> 5 & 1: flags.append('HCE_ActiveCamo')
             if not gtype and 'HCE_ThrowsGrenades' in flags: flags.remove('HCE_ThrowsGrenades')
@@ -1992,6 +2048,7 @@ def build(cfg=None):
                 SKIN_PAIRS.append((f'{OUT}/models/{char}/{matn}.png', dst))        # skin_check: the bake against its source
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''
+            if ov.get('ally'): friendly = '\t\t+FRIENDLY\n\t\tHaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;\n'   # fights on the player's side
             props = f'''\t\tHealth {body};
 {friendly}\t\tSpeed {run:.1f};
 \t\tHaloDoom_EnemyBase.HCE_Type {atype};
@@ -2014,7 +2071,7 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_Defensive {df['shield_fraction_hide']:.2f}, {df['shield_fraction_emerge_attack']:.2f}, {mvp['cover_dive_chance']:.2f}, {mvp['grenade_dive_chance']:.2f}, {mvp['cover_emerge_chance']:.2f};
 \t\tHaloDoom_EnemyBase.HCE_Feign {b.get('feign_death_chance') or 0:.2f}, {b.get('feign_death_time') or 0:.1f};
 \t\tHaloDoom_EnemyBase.HCE_Shield {shield:.0f}, {min(5.0, coll.get('shield_stun_time') or 3):.1f}, {min(6.0, coll.get('shield_recharge_time') or 4):.1f};
-\t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char == 'Sentinel' or ov.get('flying') else 0};
+\t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char in SENTINEL_LIKE or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
             if '{HCE_BODY_SURFS}' in extra:      # a whole Halo 2 body over this model: its own body surfaces (no guns, no gore)
@@ -2150,7 +2207,7 @@ def build(cfg=None):
                 continue
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
-            if not ov.get('unique') and char not in NO_RANDOM: spawners.setdefault(char, []).append(cls)
+            if not ov.get('unique') and not ov.get('ally') and char not in NO_RANDOM: spawners.setdefault(char, []).append(cls)
         if len(prof) > 1:              # more than its own gun to choose from
             zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
@@ -2291,7 +2348,7 @@ MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', 
             handler='HCE_ReplaceHandler', index='pack_index.json',
             late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
                        + [c for c in ('SentinelEnforcer', 'SentinelConstructor') if c in TEAM],
-            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER)
+            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER + GALAP_ORDER)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
@@ -2854,6 +2911,39 @@ if os.path.exists(ENFORCER_JSON):
                                      .replace('{MDIR}', 'hce'))
     CHAR_OVERRIDES['SentinelEnforcer'] = dict(stance='fixed', flying=True, scale=0.6, height_fixed=96, radius_fixed=48,
                                               melee=(170, 50), speed=4.0, shield=0, lift=True)
+def galap_skin(cls, v, si, mat, meta, skin_dir):
+    """Galap's Sentinels: the shield surface the hard-light lattice (shielded variants) or hidden; the Gold's own gold
+    as it is; the rest the default bake (Halo CE's Sentinel metal in the variant's change colour)"""
+    name = meta['mesh_names'][si]
+    os.makedirs(skin_dir, exist_ok=True)
+    if name.startswith('shield.'):
+        if SENTINEL_BUBBLE not in ((v.get('_ov') or {}).get('code') or ''):
+            if not os.path.exists(f'{skin_dir}/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{skin_dir}/hce_hidden.png')
+            return 'hce_hidden.png'
+        fn = 'galap_bubble.png'
+        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT['sentinel_minor'], f'{skin_dir}/{fn}', cells=12, width=0.065)   # Galap's shields are big: a finer lattice
+        full_bright(skin_dir, fn)
+        return fn
+    if mat.endswith('_gold.png'):
+        fn = mat.lower()
+        if not os.path.exists(f'{skin_dir}/{fn}'): bake_skin(meta['id'], mat[:-4], None, f'{skin_dir}/{fn}', 0.8)
+        return fn
+    return None
+
+
+for _c in GALAP_CHARS:
+    _gm = json.load(open(f'{OUT}/models/{_c}/{_c}.json'))
+    SKIN_HOOK[_c] = galap_skin
+    NO_BLOOD.add(_c)
+    SHINE[_c] = 0.5; SHINE_CUBE[_c] = 'elite'
+    if _gm.get('shield_surface') is not None:
+        BASE_CODE[_c] = template('zscript/sentinel_h2.zs').replace('{SURF}', str(_gm['shield_surface'])).replace('{MDIR}', 'hce')
+    _r = max(12, min(48, int(_gm['collision_radius'] * S * 0.6)))
+    CHAR_OVERRIDES[_c] = dict(stance='fixed', flying=True, radius_fixed=_r, height_fixed=max(24, _r * 2))
+if 'SentinelCrawler' in GALAP_CHARS:
+    # the Crawler walks (Galap's crawling set: idle, move, turns, a melee lunge) and keeps its beam
+    CHAR_OVERRIDES['SentinelCrawler'] = dict(stance='unarmed', radius_fixed=24, height_fixed=24, melee=(64, 20), speed=8.0)
+
 if os.path.exists(CONSTRUCTOR_JSON):
     SKIN_HOOK['SentinelConstructor'] = lambda cls, v, si, mat, meta, skin_dir: copy_skin('SentinelConstructor', mat, skin_dir)
     NO_BLOOD.add('SentinelConstructor')

@@ -76,6 +76,66 @@ Model HCE_SentinelShieldedMajor
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_SentinelBeamGunnerAllyHeavy
+{
+	Path "models/hce/SentinelBeamGunner"
+	Model 0 "SentinelBeamGunner.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbeamgunnerallyheavy_sentinelbeamgunner_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelBeamGunnerAlly
+{
+	Path "models/hce/SentinelBeamGunner"
+	Model 0 "SentinelBeamGunner.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbeamgunnerally_sentinelbeamgunner_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelBeamGunnerHeavy
+{
+	Path "models/hce/SentinelBeamGunner"
+	Model 0 "SentinelBeamGunner.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbeamgunnerheavy_sentinelbeamgunner_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelBeamGunnerTurret
+{
+	Path "models/hce/SentinelBeamGunner"
+	Model 0 "SentinelBeamGunner.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbeamgunnerturret_sentinelbeamgunner_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelBeamGunner
+{
+	Path "models/hce/SentinelBeamGunner"
+	Model 0 "SentinelBeamGunner.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbeamgunner_sentinelbeamgunner_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_SentinelConstructor
 {
 	Path "models/hce/SentinelConstructor"
@@ -83,6 +143,44 @@ Model HCE_SentinelConstructor
 	SurfaceSkin 0 0 "skins/sentinelconstructor_body.png"
 	Scale 200 200 240
 	ZOffset 23
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelCrawler
+{
+	Path "models/hce/SentinelCrawler"
+	Model 0 "SentinelCrawler.iqm"
+	SurfaceSkin 0 0 "skins/sentinelcrawler_sentinelcrawler_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelDragoonAlly
+{
+	Path "models/hce/SentinelDragoon"
+	Model 0 "SentinelDragoon.iqm"
+	SurfaceSkin 0 0 "skins/sentineldragoonally_sentineldragoon_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelDragoon
+{
+	Path "models/hce/SentinelDragoon"
+	Model 0 "SentinelDragoon.iqm"
+	SurfaceSkin 0 0 "skins/sentineldragoon_sentineldragoon_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
 	BaseFrame
@@ -100,6 +198,70 @@ Model HCE_SentinelEnforcer
 	SurfaceSkin 0 4 "skins/enforcer_shield.png"
 	Scale 48 48 58
 	ZOffset 58
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelGoldMajor
+{
+	Path "models/hce/SentinelGold"
+	Model 0 "SentinelGold.iqm"
+	SurfaceSkin 0 0 "skins/sentinelgold_gold.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelGoldShieldedMajor
+{
+	Path "models/hce/SentinelGold"
+	Model 0 "SentinelGold.iqm"
+	SurfaceSkin 0 0 "skins/sentinelgold_gold.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelGoldShielded
+{
+	Path "models/hce/SentinelGold"
+	Model 0 "SentinelGold.iqm"
+	SurfaceSkin 0 0 "skins/sentinelgold_gold.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelGold
+{
+	Path "models/hce/SentinelGold"
+	Model 0 "SentinelGold.iqm"
+	SurfaceSkin 0 0 "skins/sentinelgold_gold.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelInterceptor
+{
+	Path "models/hce/SentinelInterceptor"
+	Model 0 "SentinelInterceptor.iqm"
+	SurfaceSkin 0 0 "skins/sentinelinterceptor_sentinelinterceptor_metal.png"
+	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
 	BaseFrame
@@ -345,6 +507,94 @@ Model HCE_SentinelKnightMinorSuppressor
 	SurfaceSkin 0 5 "skins/hce_hidden.png"
 	SurfaceSkin 0 6 "skins/hce_hidden.png"
 	SurfaceSkin 0 7 "skins/w_sk_suppressor_0_minor.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelLancer
+{
+	Path "models/hce/SentinelLancer"
+	Model 0 "SentinelLancer.iqm"
+	SurfaceSkin 0 0 "skins/sentinellancer_sentinellancer_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelMarauder
+{
+	Path "models/hce/SentinelMarauder"
+	Model 0 "SentinelMarauder.iqm"
+	SurfaceSkin 0 0 "skins/sentinelmarauder_sentinelmarauder_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelOnyx
+{
+	Path "models/hce/SentinelOnyx"
+	Model 0 "SentinelOnyx.iqm"
+	SurfaceSkin 0 0 "skins/sentinelonyx_sentinelonyx_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelProtector
+{
+	Path "models/hce/SentinelProtector"
+	Model 0 "SentinelProtector.iqm"
+	SurfaceSkin 0 0 "skins/sentinelprotector_sentinelprotector_metal.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelSoldierAlly
+{
+	Path "models/hce/SentinelSoldier"
+	Model 0 "SentinelSoldier.iqm"
+	SurfaceSkin 0 0 "skins/sentinelsoldierally_sentinelsoldier_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelSoldier
+{
+	Path "models/hce/SentinelSoldier"
+	Model 0 "SentinelSoldier.iqm"
+	SurfaceSkin 0 0 "skins/sentinelsoldier_sentinelsoldier_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelWarden
+{
+	Path "models/hce/SentinelWarden"
+	Model 0 "SentinelWarden.iqm"
+	SurfaceSkin 0 0 "skins/sentinelwarden_sentinelwarden_metal.png"
+	SurfaceSkin 0 1 "skins/galap_bubble.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll

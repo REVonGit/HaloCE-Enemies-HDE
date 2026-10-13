@@ -1257,6 +1257,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
+* **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder, Crawler and Beam Gunner (models, textures, animations and AI tags) are by Galap.
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
@@ -1268,5 +1269,6 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
 * **ODSTs:** the Halo CE ODST model and textures by Spiral.
 * **Fire Team Raven:** the Fire Team Raven ODST models by Connor Dawn.
+* **Marine flamethrower animations:** by The Fluffers (with thanks to Spiral, as the Fluffers asked).
 * **Halo assets:** property of Microsoft / 343 Industries / Bungie, used under the Game Content Usage Rules (non-commercial).
 * HaloDoom Evolved team (HDE and the enemy API base); Lewisk3/HaloDoomEnemies (voice files); the CMT Covenant carbine and the Halo 3 Spiker port authors; the Digsite source release.

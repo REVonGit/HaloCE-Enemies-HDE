@@ -9,6 +9,7 @@ crouches, dives, evades, surprise, flinches and deaths, with the fire overlays b
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import json, os, pickle, shutil, sys
 import numpy as np
 from PIL import Image
@@ -79,7 +80,7 @@ def anim_plan():
 
 
 def bitmap(m, name):
-    return mcc_bitmap(m, name, TEXTURES) if os.path.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
+    return mcc_bitmap(m, name, TEXTURES) if splitfile.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
 
 
 def find_bitmap(m, short, under='objects\\characters\\jackal'):
@@ -101,8 +102,8 @@ def extract_beam_rifle(m, wid='h2_beam_rifle'):
 
 def extract_sounds(m, od):
     """the shield popping (jackal_shield_death) -> sounds/shield_pop_N.ogg"""
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     out = []
     os.makedirs(f'{od}/sounds', exist_ok=True)
     for i, data in enumerate(tag_oggs(m, r'sound\characters\jackal\jackal_shield_death', files) or []):

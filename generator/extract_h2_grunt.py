@@ -11,6 +11,7 @@ HCE_VOICE_SRC/Grunt_Crazy) are skipped. build_voices.py reads voice_extra/ after
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import glob, json, os, subprocess, sys
 import glob, json, os, re, shutil, subprocess, sys
 import numpy as np
@@ -119,8 +120,8 @@ def same_line(a, b):
 
 def main():
     m = H2Map(MAP08A, CACHE08A)
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     have = [envelope(p) for p in sorted(glob.glob(os.path.join(SRC, 'Grunt_Crazy', '*.ogg')))]
     base_have = list(have)
     od = os.path.join(OUT, 'Grunt_Crazy')

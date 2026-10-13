@@ -164,6 +164,15 @@ def tex_png(kd, src, od, tint=None):
         im = Image.open(f'{OUT}/models/Brute/Brute_{src[6:]}.png').convert('RGB')
     else:
         im = Image.open(os.path.join(kd, src)).convert('RGB')
+    mpf = os.path.join(kd, src.replace('_diffuse', '_multipurpose'))
+    if src.startswith(KH + 'armour_') and os.path.exists(mpf):
+        # the King Hit plates' flat grey fields: worn metal baked in under their multipurpose map's metal mask (blue)
+        from wornmetal import wear
+        # at twice the sheet's size, so the wear is finer than the paint (the sheets are 512 over a whole Brute)
+        im = im.resize((im.size[0] * 2, im.size[1] * 2), Image.LANCZOS)
+        a = np.asarray(im).astype(np.float64) / 255.0
+        mk = np.asarray(Image.open(mpf).convert('RGBA').resize(im.size)).astype(np.float64)[..., 2] / 255.0
+        im = Image.fromarray((wear(a, mk, seed=base) * 255).astype(np.uint8))
     if tint:
         a = np.asarray(im).astype(np.float64) / 255.0
         mp = os.path.join(kd, H3 + 'minor_major_armor_cc.tif')
@@ -198,6 +207,11 @@ def main():
     for pid in sorted(need):
         obj, slot = by_id[pid]
         p = brute_kit.fill_weights(K.piece(obj, nodes), body)
+        if slot == 'helmet':
+            # a helmet rides the head alone: some of the kit's (the King Hit chieftain's, the bighorn's) carry weights
+            # on the spine and shoulders, so the helmet stayed put while the head turned under it
+            p['bi'] = np.zeros_like(p['bi']); p['bi'][:, 0] = nodes.index('head')
+            p['bw'] = np.zeros_like(p['bw']); p['bw'][:, 0] = 1.0
         mats = sorted(set(p['tmat'].tolist()))
         tinted = any(MATERIALS.get(p['mats'][mi] if mi < len(p['mats']) else '', ('', False))[1] for mi in mats)
         tints = sorted(need[pid]) if tinted else [None]

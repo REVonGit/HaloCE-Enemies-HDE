@@ -162,9 +162,11 @@ def main():
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'
-                                          '// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST\n'
+                                          '// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST, "reclaimer" one of every\n'
+                                          '// Sentinel\n'
                                           'alias punkassbitches "netevent hce_spawnall"\nalias leatherneck "netevent hce_spawnmarines"\n'
                                           'alias leatherneck2 "netevent hce_spawnmarines2"\nalias helljumpers "netevent hce_spawnodsts"\n'
+                                          'alias reclaimer "netevent hce_spawnsentinels"\n'
                                           'alias hce_bestiary "openmenu HCE_Bestiary"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on\n'
                                           '// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.\n'

@@ -470,6 +470,8 @@ class HCE_ReplaceHandler : EventHandler
 
 // Console command "punkassbitches" (KEYCONF alias for "netevent hce_spawnall"): spawns one of every Halo CE enemy
 // class that's loaded (every pack and add-on), side by side in lines in front of the player, facing them.
+// "reclaimer" ("netevent hce_spawnsentinels") with only the Sentinels (every Sentinel-team class: the Halo CE and Halo 2
+// Sentinels, Enforcers, Constructors, Knights).
 // "helljumpers" ("netevent hce_spawnodsts") with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven).
 // "leatherneck" ("netevent hce_spawnmarines") does the same with only the Marines (every human-team class: both
 // bodies, every gun, Sergeant Johnson), pinned to their spots; "leatherneck2" ("netevent hce_spawnmarines2") spawns the
@@ -633,11 +635,13 @@ class HCE_SpawnAllHandler : EventHandler
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if(e.Name == "hce_squad") { SquadOrder(e); return; }
-		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines" && e.Name != "hce_spawnmarines2" && e.Name != "hce_spawnodsts") return;
+		if(e.Name != "hce_spawnall" && e.Name != "hce_spawnmarines" && e.Name != "hce_spawnmarines2" && e.Name != "hce_spawnodsts"
+			&& e.Name != "hce_spawnsentinels") return;
+		bool sentinels = e.Name == "hce_spawnsentinels";          // reclaimer: only the Sentinels
 		bool odsts = e.Name == "hce_spawnodsts";                  // helljumpers: only the ODSTs
 		bool free = e.Name == "hce_spawnmarines2";                // leatherneck2: the Marines, free to move
 		bool marines = odsts || free || e.Name == "hce_spawnmarines";
-		String cmd = odsts ? "helljumpers" : free ? "leatherneck2" : marines ? "leatherneck" : "punkassbitches";
+		String cmd = sentinels ? "reclaimer" : odsts ? "helljumpers" : free ? "leatherneck2" : marines ? "leatherneck" : "punkassbitches";
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
 		// every concrete enemy class, sorted by name so ranks and weapons of a species stand together
@@ -653,6 +657,11 @@ class HCE_SpawnAllHandler : EventHandler
 				let d = HaloDoom_EnemyBase(GetDefaultByType(c));
 				if(!d || d.hce_team != HCE_TEAM_HUMAN) continue;
 				if(odsts && n.IndexOf("Odst") < 0) continue;
+			}
+			if(sentinels)
+			{
+				let d = HaloDoom_EnemyBase(GetDefaultByType(c));
+				if(!d || d.hce_team != HCE_TEAM_SENTINEL) continue;
 			}
 			names.Push(n);
 		}
@@ -672,7 +681,7 @@ class HCE_SpawnAllHandler : EventHandler
 			looks.Push(0);
 			for(int k = 1; k < n; k++) { names.Insert(i + 1, names[i]); looks.Insert(i + 1, k); i++; }
 		}
-		if(names.Size() == 0) { Console.Printf("%s: no Halo CE %s loaded", cmd, odsts ? "ODSTs" : marines ? "Marines" : "enemies"); return; }
+		if(names.Size() == 0) { Console.Printf("%s: no Halo CE %s loaded", cmd, sentinels ? "Sentinels" : odsts ? "ODSTs" : marines ? "Marines" : "enemies"); return; }
 		// lines across the player's view, starting 160 units ahead: each enemy its own width apart, a new line
 		// every 640 units of width (128 further on), so they fit an ordinary room
 		vector2 fwd = Actor.AngleToVector(pl.angle, 1), across = Actor.AngleToVector(pl.angle - 90, 1);

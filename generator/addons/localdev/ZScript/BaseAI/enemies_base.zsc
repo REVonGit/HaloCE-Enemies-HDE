@@ -1048,6 +1048,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual Name HCE_GunHandBone() { return 'bip01 r hand'; }
 	virtual int HCE_ShieldSurface() { return 5; }
 	virtual Name HCE_ShellClass() { return 'None'; }
+	virtual void HCE_DressShell(Actor s) {}        // packs: give the shield flare this variant's look (hidden surfaces, armour pieces)
+	virtual void HCE_DressShellVariant(Actor s) {} // packs: the surfaces this one variant's MODELDEF hides
 
 	// ------------------------------------------------------------------
 	// Teams
@@ -5150,7 +5152,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!HCE_HasAnim(k)) k = HCE_HasAnim(HCE_A_DIE_F) ? HCE_A_DIE_F : HCE_A_DIE_HARD_F;
 		HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
 		HCE_StopFireLoop();
-		HCE_Say(hard || thrown ? 'DeathHard' : 'Death', 1.0, 0, true);   // voices without a hard set alias it to Death
+		// no death cry from a body torn apart or shattered, a headshot kill, or one whose head came off
+		if(!hce_gibbed && !hce_lastHeadshot && !(hce_severed & (1 << HCE_LIMB_HEAD)))
+			HCE_Say(hard || thrown ? 'DeathHard' : 'Death', 1.0, 0, true);   // voices without a hard set alias it to Death
 		hce_animLock = 0; hce_leapState = 0;
 		if(bHCE_Flying) { bNOGRAVITY = false; bFLOAT = false; }
 		if(bHCE_ActiveCamo) A_SetRenderStyle(1.0, STYLE_Normal);

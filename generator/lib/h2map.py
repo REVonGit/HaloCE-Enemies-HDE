@@ -189,7 +189,8 @@ def mcc_bitmap(m, name, texfile, index=0):
     from bitmaps import decode
     e = m.block(m.tag('bitm', name)['addr'] + 0x44, 0xA8)[index]
     w, h = m.u('hh', e + 4); fmt = m.u('h', e + 0xC)[0]; off = m.u('I', e + 0x38)[0]
-    with open(texfile, 'rb') as f:
+    import splitfile                     # textures.dat whole or in its numbered pieces
+    with splitfile.open(texfile) as f:
         f.seek(off); cnt = struct.unpack('<i', f.read(4))[0]
         segs = struct.unpack('<%di' % cnt, f.read(4 * cnt)); out = b''
         for sz in segs:

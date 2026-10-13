@@ -5,6 +5,7 @@ reads them all (from variants import *); build_digsite.py adds its own entries t
     GRUNT_RANKS, HEAVY_GREEN, HEAVY_HUE        new Grunt and Elite ranks and their armour colours
     HONOR_RED, RANGER_STEEL, ELITE_H2_ARMOUR   the Honor Guard and Ranger Elites in Halo 2's armour
     SHIELD_TINT, SHELL_TINT                    Jackal shields and the shield flare by rank / character
+    GRUNT_SHIELDS                              the shielded Grunt ranks
     HUNTER_COLOURS, HUNTER_TONE                the red and white Hunters
     SHINE, SHINE_CUBE, RANK_SHINE, KIT_SHINE   the cube-map reflection baked into armour (and how strong)
     VIVID, VIVID_SHINE, UNDERSUIT, MINOR_BLUE, HUE_LOCK   rank recolours
@@ -91,7 +92,11 @@ VIVID_SHINE = {'elite ranger': 0.35}     # how strong their armour's reflection 
 UNDERSUIT = (0.30, 0.52, 0.52)
 
 # Energy-shield flare (the shell actor drawn additively over a shielded unit when it's hit): tint per character
-SHELL_TINT = {'Elite': (0.45, 0.70, 1.00), 'EliteSpecial': (0.45, 0.70, 1.00), 'Brute': (1.00, 0.78, 0.30)}
+SHELL_TINT = {'Elite': (0.45, 0.70, 1.00), 'EliteSpecial': (0.45, 0.70, 1.00), 'Brute': (1.00, 0.78, 0.30),
+              'Grunt': (0.45, 0.70, 1.00), 'GruntSpecOps': (0.45, 0.70, 1.00)}
+
+# Grunts with an energy shield (new): the Ultras and the Spec Ops (build_pack.add_grunt_shields), rank -> shield points
+GRUNT_SHIELDS = {'ultra': 60.0, 'specops': 60.0}
 
 KIT_OWN_VISORS = ('mk_hellbringer_visor.png', 'mk_h2_pilot_visor.png')   # kit visors in their own colours (the Hellbringer's amber lens, the pilots' smoked visor)
 

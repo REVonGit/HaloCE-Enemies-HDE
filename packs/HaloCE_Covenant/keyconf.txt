@@ -1,10 +1,12 @@
 // Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,
 // "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same
-// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST
+// Marines free to move (they follow you and take orders), "helljumpers" one of every ODST, "reclaimer" one of every
+// Sentinel
 alias punkassbitches "netevent hce_spawnall"
 alias leatherneck "netevent hce_spawnmarines"
 alias leatherneck2 "netevent hce_spawnmarines2"
 alias helljumpers "netevent hce_spawnodsts"
+alias reclaimer "netevent hce_spawnsentinels"
 alias hce_bestiary "openmenu HCE_Bestiary"
 
 // squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on

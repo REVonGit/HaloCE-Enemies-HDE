@@ -8,3 +8,14 @@ generator/Commando_HDE.blend1
 generator/Hydra_HDE.blend
 generator/Plasma_Caster_HDE.blend
 generator/Stickybomb.blend
+# the generator's working data (the build writes these next to its code; tracked files under them stay tracked)
+generator/out/
+generator/pack/
+generator/addons/
+generator/factions/
+generator/voices/
+generator/standalone/out/
+generator/sketchfab/
+generator/cmt_carbine/
+generator/*.blend
+generator/*.blend1

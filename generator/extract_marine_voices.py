@@ -13,6 +13,7 @@ build_voices.py's (Alert, Taunt, Pain Nrml ...); a set without one borrows a rel
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import glob, hashlib, json, os, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -140,8 +141,8 @@ def h2_lines(tmp):
     want = {h2: v for v, (_, h2) in VOICES.items() if h2}
     leaves = {l for _, h2l in PLAN.values() for l in h2l}
     m = H2Map(H2_MAP, H2_CACHE)
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     out = {}
     for t in m.tags:
         if t['cls'] != 'snd!' or not t['name'].startswith('sound\\dialog\\combat\\'): continue

@@ -621,6 +621,7 @@ def kit_code():
     out_cases = ''.join(f'\t\t\tcase {i}: return "{o}";\n' for i, o in enumerate(outfits) if o)
     keep_cases = ''.join(f'\t\t\tcase {i}: return {k};\n' for i, k in enumerate(keep) if k)
     hide = ''.join(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {i}, "models/hce_dig/Brute/skins", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for i in armour)
+    shell_hide = ''.join(f'\t\t\tsh.A_ChangeModel(\'None\', 0, "", \'None\', {i}, "models/hce_dig/Brute/skins", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n' for i in armour)
     n = len(kit['slots'])
     return f'''
 	// ---- armour kit (extract_brute_kit.py): each Minor / Major / Captain rolls its own helmet, chest, shoulder,
@@ -628,6 +629,21 @@ def kit_code():
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {{1-{n}}} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{{
+{shell_hide}		}}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}}
+	}}
 	static String HCE_KitPool(int i)
 	{{
 		switch(i)
@@ -707,6 +723,7 @@ def kit_code():
 {hide}		}}
 		for(int s = 0; s < {n}; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}}
@@ -1081,6 +1098,7 @@ def build():
             for f in sorted(glob.glob(f'{PACK}/models/hce_dig/EliteZealot/skins/*_{g.lower()}.png')):
                 gl.append(f'brightmap texture "{f[len(PACK) + 1:]}"\n{{\n\tmap "models/hce_dig/brightmap_full.png"\n}}')
         if gl: open(f'{PACK}/gldefs.dig', 'a').write('\n'.join(gl) + '\n')
+    src = os.path.join(HERE, 'digsite_src')
     for f in ('dig_handler.zsc', 'dig_boss.zsc', 'dig_pulse.zsc', 'dig_brute.zsc'):
         shutil.copy(f'{src}/{f}', f'{PACK}/ZScript/HaloCE/{f}')
     for f in ('zscript.txt', 'cvarinfo.txt', 'CREDITS.txt'):

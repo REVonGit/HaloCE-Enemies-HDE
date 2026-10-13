@@ -1793,6 +1793,37 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -1915,6 +1946,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -2071,6 +2103,11 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 			A_ChangeModel('None', 8, "", 'None', 0, "models/hce_dig/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -2304,6 +2341,37 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -2426,6 +2494,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -2572,6 +2641,11 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -2805,6 +2879,37 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -2927,6 +3032,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -3073,6 +3179,11 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -3306,6 +3417,37 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -3428,6 +3570,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -3574,6 +3717,11 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 2, 4, 5, 8, 10, 12, 15, 16, 17, 28 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -3805,6 +3953,37 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -3927,6 +4106,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -4073,6 +4253,11 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 6, 7, 8, 9, 11, 13, 14, 16, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -4302,6 +4487,37 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -4424,6 +4640,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -4570,6 +4787,11 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 6, 7, 8, 9, 11, 13, 14, 16, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -4799,6 +5021,37 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -4921,6 +5174,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -5067,6 +5321,11 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -5301,6 +5560,37 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -5423,6 +5713,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -5569,6 +5860,11 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -5803,6 +6099,37 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -5925,6 +6252,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -6071,6 +6399,11 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -6305,6 +6638,37 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -6427,6 +6791,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -6573,6 +6938,11 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -6808,6 +7178,37 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	// Tartarus's look or wears one of the kit's chieftain sets. Pieces are model attachments {1-6} riding the
 	// Brute's own bones; their textures are named in the piece models.
 	String hce_kitHelmet;
+	Array<String> hce_kitPick;                // the pieces worn, slot by slot (the shield flare wears them too)
+	bool hce_kitChief;
+	override void HCE_DressShell(Actor sh)
+	{
+		super.HCE_DressShell(sh);
+		if(hce_kitChief)
+		{
+			sh.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			sh.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/Brute/skins", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		}
+		for(int s = 0; s < hce_kitPick.Size(); s++)
+		{
+			if(hce_kitPick[s].Length() == 0) continue;
+			sh.A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", hce_kitPick[s], s + 1, "", 'None');
+			for(int k = 0; k < 8; k++) sh.A_ChangeModel('None', s + 1, "", 'None', k, "models/hce_dig/Brute/skins", 'shieldshell.png', CMDL_USESURFACESKIN);
+		}
+	}
 	static String HCE_KitPool(int i)
 	{
 		switch(i)
@@ -6930,6 +7331,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		}
 		for(int s = 0; s < 6; s++)
 			if(pick[s].Length() > 0) A_ChangeModel('None', s + 1, "models/hce_dig/BruteKit", pick[s], s + 1, "", 'None');
+		hce_kitPick.Copy(pick); hce_kitChief = r == 3;
 		hce_kitHelmet = pick[0];
 		if(hce_kitHelmet.Length() == 0 && r < 3) hce_helmetOff = true;     // bare-headed: nothing to knock off
 	}
@@ -7076,6 +7478,11 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -9949,6 +10356,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		A_ChangeModel('None', 1, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -11010,6 +11418,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		A_ChangeModel('None', 1, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
 		hce_jetDir = (-0.807, 0.174, -0.565);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{

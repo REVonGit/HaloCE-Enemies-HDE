@@ -1252,6 +1252,45 @@ Model HCE_GruntUltraNeedler
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_GruntShieldShell
+{
+	Path "models/hce/Grunt"
+	Model 0 "Grunt.iqm"
+	SurfaceSkin 0 0 "skins/shieldshell.png"
+	SurfaceSkin 0 1 "skins/shieldshell.png"
+	SurfaceSkin 0 2 "skins/shieldshell.png"
+	SurfaceSkin 0 3 "skins/shieldshell.png"
+	SurfaceSkin 0 4 "skins/shieldshell.png"
+	SurfaceSkin 0 5 "skins/shieldshell.png"
+	SurfaceSkin 0 6 "skins/shieldshell.png"
+	SurfaceSkin 0 10 "skins/shieldshell.png"
+	SurfaceSkin 0 11 "skins/shieldshell.png"
+	SurfaceSkin 0 12 "skins/shieldshell.png"
+	SurfaceSkin 0 13 "skins/shieldshell.png"
+	SurfaceSkin 0 14 "skins/shieldshell.png"
+	SurfaceSkin 0 15 "skins/shieldshell.png"
+	SurfaceSkin 0 16 "skins/shieldshell.png"
+	SurfaceSkin 0 17 "skins/shieldshell.png"
+	SurfaceSkin 0 18 "skins/shieldshell.png"
+	SurfaceSkin 0 19 "skins/shieldshell.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	Scale 82.8 82.8 99.4
+	UseActorPitch
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_GruntUltraPlasmaPistol
 {
 	Path "models/hce/Grunt"
@@ -1368,6 +1407,45 @@ Model HCE_GruntSpecopsFuelRod
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_GruntSpecOpsShieldShell
+{
+	Path "models/hce/GruntSpecOps"
+	Model 0 "GruntSpecOps.iqm"
+	SurfaceSkin 0 0 "skins/shieldshell.png"
+	SurfaceSkin 0 1 "skins/shieldshell.png"
+	SurfaceSkin 0 2 "skins/shieldshell.png"
+	SurfaceSkin 0 3 "skins/shieldshell.png"
+	SurfaceSkin 0 4 "skins/shieldshell.png"
+	SurfaceSkin 0 5 "skins/shieldshell.png"
+	SurfaceSkin 0 6 "skins/shieldshell.png"
+	SurfaceSkin 0 10 "skins/shieldshell.png"
+	SurfaceSkin 0 11 "skins/shieldshell.png"
+	SurfaceSkin 0 12 "skins/shieldshell.png"
+	SurfaceSkin 0 13 "skins/shieldshell.png"
+	SurfaceSkin 0 14 "skins/shieldshell.png"
+	SurfaceSkin 0 15 "skins/shieldshell.png"
+	SurfaceSkin 0 16 "skins/shieldshell.png"
+	SurfaceSkin 0 17 "skins/shieldshell.png"
+	SurfaceSkin 0 18 "skins/shieldshell.png"
+	SurfaceSkin 0 19 "skins/shieldshell.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	Scale 82.8 82.8 99.4
+	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }

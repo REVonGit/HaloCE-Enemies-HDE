@@ -13,6 +13,7 @@ the Chief's, played softer. split_factions.py ships each set in the packs whose 
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import os, sys, json, shutil
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -42,8 +43,8 @@ def main():
             except ValueError as e:
                 print('  ', tn, e)
         return None
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     od = f'{OUT}/footsteps'
     if os.path.exists(od): shutil.rmtree(od)
     idx = {}

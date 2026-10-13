@@ -4,6 +4,7 @@ build_pack.py looks for; overlays (fire, soft flinches) are baked onto the fligh
 Textures come from MCC's textures.dat when HCE_H2_TEXTURES points at it, otherwise placeholder skins."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import sys, os, json, pickle, struct
 import numpy as np
 from PIL import Image
@@ -114,7 +115,7 @@ def bake_bugger(im, bump):
 
 def drone_texture(m, kind):
     """the Drone shader's colour map from MCC's textures.dat (HCE_H2_TEXTURES), baked (bake_bugger); None without it"""
-    if not (TEXTURES and os.path.exists(TEXTURES)): return None
+    if not (TEXTURES and splitfile.exists(TEXTURES)): return None
     from h2map import mcc_bitmap
     # which bitmap each Drone shader samples (its postprocess bitmap list); the wings keep their alpha cutout
     src = {'wings': 'bugger_wings'}.get(kind, 'bugger')
@@ -252,7 +253,7 @@ def extract_drone_sounds(pid='Drone'):
     files = {}
     for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat')):
         p = os.path.join(SOUNDS_DIR, fn)
-        if os.path.exists(p): files[k] = open(p, 'rb')
+        if splitfile.exists(p): files[k] = splitfile.open(p)
     od = f'{OUT}/sounds/{pid}'; os.makedirs(od, exist_ok=True)
     idx = {}; missing = set()
     for n in [t['name'] for t in m.tags if t['cls'] == 'snd!' and 'bugger' in t['name'] and t['name'].startswith('sound\\')]:

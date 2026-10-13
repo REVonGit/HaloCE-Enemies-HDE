@@ -75,6 +75,16 @@ def add_grunt_ranks(variants):
 
 add_grunt_ranks(AI['variants'])
 
+# GRUNT_SHIELDS: variants.py. The Ultras and the Spec Ops Grunts carry an energy shield (with the shield flare on
+# their own bodies); the Heavies, made from the Spec Ops, don't
+def add_grunt_shields(variants):
+    for vn, v in variants.items():
+        if not vn.startswith('characters\\grunt\\grunt '): continue
+        rank = v.get('_rank') or vn.split('\\')[-1].split(' ')[1]
+        if rank in GRUNT_SHIELDS: v['unit'] = dict(v['unit'], maximum_shield_vitality=GRUNT_SHIELDS[rank])
+
+add_grunt_shields(AI['variants'])
+
 # HEAVY_GREEN: variants.py
 def add_elite_heavy(variants):
     import copy
@@ -151,7 +161,8 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
         att += (f'\t\thce_jetNozzle = ({x}, {abs(y)}, {z * 1.2}) * {{HCE_MODEL_SCALE}};\n'
                 f'\t\thce_jetDir = ({dx}, {abs(dy)}, {dz});\n')
     out = ('\t// Halo 2 over the CE Elite (extract_h2_elite_kit.py): ' + ', '.join(pieces) + ('; the CE body hidden under it' if whole else '') + '\n'
-           '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att + '\t}\n'
+           '\toverride void PostBeginPlay()\n\t{\n\t\tsuper.PostBeginPlay();\n' + att
+           + '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)\n\t}\n'
            '\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{\n\t\tsuper.HCE_OnSever(limb, gunArm);\n' + ''.join(sev) + '\t}\n')
     gibs = (json.load(open(kj)).get('gibs', {}) if os.path.exists(kj) else {}).get(pieces[0], {})
     if whole and gibs:                    # its severed head and arms are its own pieces, not the CE Elite's
@@ -1278,7 +1289,9 @@ def perm_code(meta, mdir):
             f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n'
             '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)\n\t}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tsuper.HCE_BloodHideClass();\n'
-            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n'
+            '\toverride void HCE_DressShell(Actor s)       // the shield flare wears the same permutation\n\t{\n\t\tsuper.HCE_DressShell(s);\n'
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
 
 
 def gun_code(meta, mdir, slot=None):
@@ -1315,8 +1328,10 @@ STACKER_HEAD = 'head_marcus_cap-101'
 
 # Lip-sync: Halo CE moved the Marines' jaw ('bip01 ponytail1') with their dialogue; the animations hold it shut
 # (extract_chars.py). While a Marine's voice channel plays, the jaw flaps open and shut in a speech rhythm, opening
-# about its local +z axis (the chin down; up to 10 degrees), added on top of the animation (SetNamedBoneRotation,
-# SB_ADD: animation * this). jaw_weights.py gives the jaw a clean hinge, so only the lower lip and chin move
+# about its local +z axis (the chin down), added on top of the animation (SetNamedBoneRotation, SB_ADD: animation *
+# this). The heads' bind pose has the mouth hanging some 10 degrees open, so at rest the jaw is held 10 degrees shut
+# (HCE_JAW_SHUT) and speech opens it up to 4 past the bind. jaw_weights.py gives the jaw a clean hinge, so only the
+# lower lip and chin move
 LIP_CODE = template('zscript/lip.zs')
 
 
@@ -2013,6 +2028,13 @@ def build(cfg=None):
             if not char.startswith('Marine') and (ov.get('unique') or weapon in WEAPON_CODE or weapon in PICKUP_SKIP):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
             if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov, pack)
+            # the shield flare is one model per body: it hides what this variant's MODELDEF hides (another rank's
+            # armour, the Knights' other guns), so its shape is this variant's
+            shell_hid = sorted({int(m.group(1)) for l in skin_lines for m in [re.match(r'\tSurfaceSkin 0 (\d+) "[^"]*hce_hidden[^"]*"', l)] if m})
+            if char in SHELL_TINT and shell_hid:
+                extra += ('\toverride void HCE_DressShellVariant(Actor s)\n\t{\n'
+                          f'\t\tstatic const int H[] = {{ {", ".join(map(str, shell_hid))} }};\n'
+                          f'\t\tfor(int i = 0; i < H.Size(); i++) s.A_ChangeModel(\'None\', 0, "", \'None\', H[i], "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n\t}}\n')
             if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon):
                 extra += f'\toverride Name HCE_LimbReplacement(int limb) {{ if(limb != HCE_LIMB_RARM) return \'None\'; return "{HUNTER_ARM_WEAPON[weapon]}"; }}\n'
             if '%STICKY_LOADED%' in extra:

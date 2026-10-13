@@ -8,10 +8,12 @@ same alien tongue.
   as they are (Xbox ADPCM -> Vorbis).
 * Halo 2: sound\\dialog\\combat\\elite_loose\\* from 08a_deltacliffs.map + sounds_en.dat (HCE_H2_MAP08 /
   HCE_H2_SOUNDS), reversed with a short fade at the (new) end so it doesn't stop on a click.
+Screams (SCREAMS: the deaths, pain, burning and whimpers) carry no words, so Halo 2's are kept the right way round.
 The REPLACE marker tells build_voices.py to use these lines instead of the main source's Elite_Loose set.
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import glob, hashlib, json, os, subprocess, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -108,6 +110,9 @@ def ce_lines(tmp):
             found[suf] = wavs
     return found
 
+# the involuntary cries: Halo 2's play forwards (no words to disguise)
+SCREAMS = {'Death', 'Death Xtr', 'Pain Nrml', 'Pain Med', 'Pain Xtr', 'On Fire', 'Stuck'}
+
 
 def h2_lines(tmp):
     """{Halo 2 tag leaf: [ogg paths]}"""
@@ -115,8 +120,8 @@ def h2_lines(tmp):
     from h2map import H2Map
     want = {leaf for _, h2 in PLAN.values() for leaf, _ in h2}
     m = H2Map(MAP08A, CACHE08A)
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     out = {}
     for t in m.tags:
         if t['cls'] != 'snd!' or not t['name'].startswith(H2_PREFIX): continue
@@ -157,8 +162,9 @@ def main():
                 if d < 0.15: continue
                 used_h2.add(p); n += 1; took += 1
                 fade = min(0.06, d * 0.2)
-                ogg_from_wav(p, os.path.join(od, f'{cat} {n}.ogg'), f'areverse,afade=t=out:st={d - fade:.3f}:d={fade:.3f}')
-            rep.append(f'H2 {leaf} reversed:{took}')
+                rev = '' if cat in SCREAMS else 'areverse,'
+                ogg_from_wav(p, os.path.join(od, f'{cat} {n}.ogg'), f'{rev}afade=t=out:st={d - fade:.3f}:d={fade:.3f}')
+            rep.append(f'H2 {leaf}{"" if cat in SCREAMS else " reversed"}:{took}')
         report[cat] = rep
     open(os.path.join(od, 'REPLACE'), 'w').write('build_voices.py: use these lines instead of the main source set\n')
     json.dump(report, open(os.path.join(od, 'sources.json'), 'w'), indent=1)

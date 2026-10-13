@@ -11,6 +11,7 @@ only these two categories. (Marines: extract_marine_voices.py; Elite_Loose: extr
 extract_h2_grunt.py; Brutes: build_digsite.BRUTE_EVENTS.)"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import glob, os, sys, tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -58,8 +59,8 @@ def main():
     from tags import HMap, tag
     from halosound import xbox_adpcm, to_wav
     m = H2Map(MAP08A, CACHE08A)
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     full = {}                                    # (voice, leaf) -> tag name (the voices file their lines in subfolders)
     for t in m.tags:
         if t['cls'] == 'snd!' and t['name'].startswith('sound\\dialog\\combat\\'):

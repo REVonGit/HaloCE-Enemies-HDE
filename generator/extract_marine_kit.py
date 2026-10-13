@@ -136,7 +136,7 @@ POOLS = {
         shoulders=(0.25, [('pads_small', 3), ('pads_medium', 2), ('pads_long', 1)]),
         arms=(0.2, [('arms_gloves', 3), ('arms_gauntlets', 1), ('arms_gauntlets_gloves', 2)])),
     'MarineArmored': dict(
-        head=(0.35, [('helmet_tilted', 2), ('helmet_strapped', 3), ('helmet_fred', 3), ('helmet_marcus', 3),
+        head=(0.35, [('helmet_strapped', 5), ('helmet_fred', 3), ('helmet_marcus', 3),
                      ('helmet_closed', 1), ('helmet_enclosed', 1), ('helmet_hellbringer', 1), ('helmet_marcus_balaclava', 2),
                      ('helmet_matt_balaclava', 2), ('helmet_shiek_balaclava', 2)]),
         face=(0.4, [('headset_mic', 3), ('headset_mic_b', 3), ('headset_boom', 2), ('hud_eyepiece', 3), ('hud_eyepiece_tilted', 2),
@@ -231,6 +231,16 @@ def main(only=None):
     for obj, (pid, slot) in PIECES.items():
         if only and pid not in only: continue
         p = brute_kit.fill_weights(merged_piece(K, obj, nodes) if isinstance(obj, tuple) else K.piece(obj, nodes), body)
+        if slot == 'head':
+            # headgear rides the head: the kit's weights put the rims and chin guards partly on the spine and the jaw,
+            # so helmets slid askew and a chin guard stretched out below the helmet as the head moved. A whole head
+            # with a face keeps its jaw (lip-sync); everything else goes to the head bone
+            jn = [j[0] for j in joints]; H, J = jn.index('bip01 head'), jn.index('bip01 ponytail1')
+            jaw = pid not in SHELLS and pid not in ENCLOSED
+            wj = (p['bw'] * (p['bi'] == J)).sum(1) if jaw else np.zeros(len(p['bw']))
+            bi = np.zeros_like(p['bi']); bw = np.zeros_like(p['bw'])
+            bi[:, 0] = H; bi[:, 1] = J; bw[:, 0] = p['bw'].sum(1) - wj; bw[:, 1] = wj
+            p['bi'], p['bw'] = bi, bw
         uv = p['uv'].copy(); uv[:, 1] = 1.0 - uv[:, 1]
         bi = p['bi'].astype(np.uint8); bw = np.round(p['bw'] * 255).astype(np.uint8)
         bw[:, 0] += (255 - bw.sum(1).astype(int)).astype(np.uint8)

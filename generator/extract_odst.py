@@ -26,6 +26,22 @@ from iqm import read_iqm, write_iqm
 
 A50 = os.environ.get('HCE_SPV3_A50', 'a50_1.map')                  # SPV3's a50
 A10 = os.environ.get('HCE_SPV3_A10', 'a10_1.map')                  # SPV3's a10 (Fire Team Raven)
+# SPV3's a10 in numbered pieces (a10_1.map.001, .002 ...; HCE_SPV3_A10_PARTS: their path with {:03d} for the number):
+# joined into HCE_SPV3_A10 the first time Fire Team Raven is extracted
+A10_PARTS = os.environ.get('HCE_SPV3_A10_PARTS', A10 + '.{:03d}')
+
+
+def ensure_a10():
+    """join the split SPV3 a10 into A10 if it isn't there yet (566 MB, only when Fire Team Raven is rebuilt)"""
+    if os.path.exists(A10) or not os.path.exists(A10_PARTS.format(1)): return
+    tmp = A10 + '.part'
+    with open(tmp, 'wb') as out:
+        i = 1
+        while os.path.exists(A10_PARTS.format(i)):
+            with open(A10_PARTS.format(i), 'rb') as f:
+                while (b := f.read(1 << 24)): out.write(b)
+            i += 1
+    os.replace(tmp, A10)
 PID = 'MarineODST'
 BODY = 'characters\\marine_odst\\odst'
 RAVEN = {'green': 'characters\\marine_odst\\raven_green\\odst green',
@@ -104,6 +120,7 @@ def main():
     # Fire Team Raven: the same model in each one's own textures, matched by surface
     raven = {}
     for colour, biped in RAVEN.items():
+        ensure_a10()
         if not os.path.exists(A10): print('no', A10, ': no Fire Team Raven'); break
         rdir, _ = extract_spv3(A10, biped)
         _, RM, _ = read_iqm(f'{rdir}/{PID}.iqm')

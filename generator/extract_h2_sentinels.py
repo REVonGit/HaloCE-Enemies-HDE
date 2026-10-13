@@ -56,7 +56,8 @@ def texture(m, name, size=None):
     """an MCC bitmap (RGBA) or, when textures.dat doesn't reach it, plain grey"""
     try:
         im = mcc_bitmap(m, name, TEXTURES)
-    except Exception:
+    except Exception as e:
+        if e.__class__.__name__ == 'MissingPart': print('  ', e)      # a piece of a split textures.dat to fetch
         missing.append(name); im = Image.new('RGBA', (64, 64), (128, 128, 132, 255))
     return im.resize(size, Image.LANCZOS) if size and im.size != size else im
 
@@ -306,7 +307,9 @@ FORCE = os.environ.get('HCE_H2_SENTINELS_FORCE') == '1'      # build them even w
 def reachable(m, names):
     for n in names:
         try: mcc_bitmap(m, n, TEXTURES)
-        except Exception: return False
+        except Exception as e:
+            if e.__class__.__name__ == 'MissingPart': print('  ', e)
+            return False
     return True
 
 

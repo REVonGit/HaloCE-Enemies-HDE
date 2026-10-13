@@ -65,7 +65,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/Marine", 'Marine_blood3.iqm'); break;
 		}
 	}
-
+	const HCE_JAW_SHUT = -10.0;            // degrees about the jaw hinge from its bind pose (negative: closing)
 	int hce_lipPhase;
 	double hce_lipOpen;
 	override void Tick()
@@ -79,9 +79,11 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 			double t = (level.maptime + hce_lipPhase) * 9.0;
 			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
 		}
-		if(want == 0 && hce_lipOpen == 0) return;
+		// set every third tic, not only on a change: a model change (the kit, a picked-up gun) can drop the override
 		hce_lipOpen = want;
-		double a = want * 10.0;
+		// the heads' bind pose leaves the jaw some 10 degrees open (the mouth hanging): at rest it is held shut
+		// (HCE_JAW_SHUT), and speech opens it from there
+		double a = HCE_JAW_SHUT + want * 14.0;
 		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
@@ -159,8 +161,8 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		if(x < 6) return "arms_gauntlets_gloves";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
-	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter"; }
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];
@@ -9957,7 +9959,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 3: A_ChangeModel('None', 7, "models/hce/MarineArmored", 'MarineArmored_blood3.iqm'); break;
 		}
 	}
-
+	const HCE_JAW_SHUT = -10.0;            // degrees about the jaw hinge from its bind pose (negative: closing)
 	int hce_lipPhase;
 	double hce_lipOpen;
 	override void Tick()
@@ -9971,9 +9973,11 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 			double t = (level.maptime + hce_lipPhase) * 9.0;
 			want = clamp(0.25 + 0.55 * abs(sin(t)) * (0.6 + 0.4 * abs(sin(t * 0.37 + 40))) + frandom[HCELip](-0.1, 0.15), 0, 1);
 		}
-		if(want == 0 && hce_lipOpen == 0) return;
+		// set every third tic, not only on a change: a model change (the kit, a picked-up gun) can drop the override
 		hce_lipOpen = want;
-		double a = want * 10.0;
+		// the heads' bind pose leaves the jaw some 10 degrees open (the mouth hanging): at rest it is held shut
+		// (HCE_JAW_SHUT), and speech opens it from there
+		double a = HCE_JAW_SHUT + want * 14.0;
 		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, sin(a / 2), cos(a / 2)), SB_ADD, 3);
 	}
 	// Halo CE's Marine cosmetics, rolled per Marine: face and headgear, sleeves, the damaged vest. Sergeant
@@ -9987,7 +9991,6 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		if(frandom[HCEKit](0, 1) >= 0.35) return "";
 		int x = random[HCEKit](0, 19);
-		if(x < 2) return "helmet_tilted";
 		if(x < 5) return "helmet_strapped";
 		if(x < 8) return "helmet_fred";
 		if(x < 11) return "helmet_marcus";
@@ -10099,8 +10102,8 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		if(x < 4) return "";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
-	static bool HCE_KitEnclosed(String p) { return p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter"; }
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];

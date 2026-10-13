@@ -7,6 +7,7 @@ plasma rifle, assault rifle and shotgun, the Spiker (cmt_weapon.py spiker) and H
 08b carries Tartarus's hammer stance (combat:melee / berserk:melee) on top of the regular Brute animations."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
+import splitfile        # MCC's big data files, whole or in their numbered pieces
 import sys, os, json, pickle, shutil
 import numpy as np
 from PIL import Image
@@ -108,7 +109,7 @@ def anim_plan():
     return ren, ovl
 
 def bitmap(m, name):
-    return mcc_bitmap(m, name, TEXTURES) if os.path.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
+    return mcc_bitmap(m, name, TEXTURES) if splitfile.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
 
 def find_bitmap(m, short):
     names = [t['name'] for t in m.tags if t['cls'] == 'bitm' and t['name'].endswith('\\' + short)]
@@ -366,8 +367,8 @@ CACHE08A = os.environ.get('HCE_H2_CACHE08') or None
 def extract_brute_sounds(pid='Brute'):
     """Brute dialogue + effects from 08a (its Brute dialogue set is fuller than 08b's)"""
     maps = [H2Map(MAP08A, CACHE08A)]
-    files = {k: open(os.path.join(SOUNDS_DIR, fn), 'rb') for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
-             if os.path.exists(os.path.join(SOUNDS_DIR, fn))}
+    files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
+             if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}
     od = f'{OUT}/sounds/{pid}'
     if os.path.exists(od): shutil.rmtree(od)
     idx = {}

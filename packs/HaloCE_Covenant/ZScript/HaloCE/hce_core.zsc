@@ -317,10 +317,25 @@ class HCE_ShieldShell : Actor
 		Stop;
 	}
 
+	bool hce_dressed;
 	override void Tick()
 	{
 		if(!master || master.health <= 0) { Destroy(); return; }
 		if(isFrozen()) return;
+		let e = HaloDoom_EnemyBase(master);
+		if(!hce_dressed && e)
+		{
+			// once the enemy has dressed itself (its permutation, armour pieces): the same look, and its animation
+			// where it is now (the flare's own first animation can come before its model is set up)
+			hce_dressed = true;
+			e.HCE_DressShell(self); e.HCE_DressShellVariant(self);
+			if(e.hce_curAnim != 'None')
+			{
+				int len = max(1, int(e.HCE_AnimTics(e.hce_curAnim) * 30.0 / 35.0));
+				int f = int((level.maptime - e.hce_animStartTic) * 30.0 / 35.0);
+				SetAnimation(e.hce_curAnim, -1, e.hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, e.hce_curLoop ? SAF_LOOP : 0);
+			}
+		}
 		SetOrigin(master.pos, true);
 		angle = master.angle; pitch = master.pitch; roll = master.roll;
 		scale = master.scale;

@@ -1446,6 +1446,11 @@ class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // energy-shield flare for the SentinelKnights: the same model, every surface the glowing shield texture
@@ -1565,6 +1570,11 @@ class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 5, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight commander scattershot
@@ -1681,6 +1691,11 @@ class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight commander suppressor
@@ -1796,6 +1811,11 @@ class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight major binary rifle
@@ -1910,6 +1930,11 @@ class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2026,6 +2051,11 @@ class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 5, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight major scattershot
@@ -2141,6 +2171,11 @@ class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight major suppressor
@@ -2254,6 +2289,11 @@ class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2370,6 +2410,11 @@ class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight minor light rifle
@@ -2484,6 +2529,11 @@ class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 5, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 
@@ -2600,6 +2650,11 @@ class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 6, 7 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 }
 
 // objects\characters\sentinel_knight\sentinel_knight minor suppressor
@@ -2713,6 +2768,11 @@ class HCE_SentinelKnightMinorSuppressor : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 }
 

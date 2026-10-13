@@ -6,7 +6,7 @@ import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, sys, shutil
 SRC = os.environ.get('HCE_VOICE_SRC', 'HaloDoomEnemies/Sounds')
-OUT = os.environ.get('HCE_VOICE_OUT', 'voices')
+OUT = os.environ.get('HCE_VOICE_OUT', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voices'))
 # extra lines added on top of the main source, same layout (<Voice>/<Category> N.ogg): extract_h2_grunt.py
 EXTRA = os.environ.get('HCE_VOICE_EXTRA', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voice_extra'))
 
@@ -60,7 +60,13 @@ FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 
             'DownThere': 'Alert', 'FallBack': 'Flee', 'Advance': 'Regroup'}
 
 def main():
-    if os.path.exists(OUT): shutil.rmtree(OUT)
+    # incremental: a line whose source file is unchanged keeps its copy in OUT (louden_voices.py has levelled it in
+    # place; copying it again would mean levelling every line again). .sources.json: OUT path -> source sha1
+    import hashlib, json
+    rec_path = os.path.join(OUT, '.sources.json')
+    first = not os.path.exists(rec_path)                # an OUT from before the record: its copies are trusted
+    rec = {} if first else json.load(open(rec_path))
+    made = set(); new_rec = {}
     lines = ['// Halo CE enemy dialogue (sound files from Lewisk3/HaloDoomEnemies).',
              '// Logical names HCE/<Voice>/<Event> are played by HaloDoom_EnemyBase.HCE_Say().', '']
     total = 0
@@ -80,7 +86,11 @@ def main():
             n = sum(len(v) for v in events.values())
             dst = f'sounds/hce_voice/{vname.lower()}/{ev0.lower()}_{n:02d}.ogg'
             os.makedirs(os.path.join(OUT, os.path.dirname(dst)), exist_ok=True)
-            shutil.copy(os.path.join(vdir, fn), os.path.join(OUT, dst))
+            src_f = os.path.join(vdir, fn)
+            h = hashlib.sha1(open(src_f, 'rb').read()).hexdigest()
+            if not (os.path.exists(os.path.join(OUT, dst)) and (first or rec.get(dst) == h)):
+                shutil.copy(src_f, os.path.join(OUT, dst))
+            new_rec[dst] = h; made.add(dst)
             total += 1
             for ev in CAT[cat]:
                 events.setdefault(ev, []).append(dst)
@@ -97,6 +107,13 @@ def main():
             while fb and fb not in events and k < 5: fb, k = FALLBACK.get(fb), k + 1   # a chain: Thanks -> Acknowledge -> Regroup
             if fb in events: lines.append(f'$alias HCE/{vname}/{ev} HCE/{vname}/{fb}')
         lines.append('')
+    # lines no longer made go
+    sd = os.path.join(OUT, 'sounds')
+    for dp, _, fs in os.walk(sd):
+        for f in fs:
+            rel = os.path.relpath(os.path.join(dp, f), OUT)
+            if rel not in made: os.remove(os.path.join(dp, f))
+    json.dump(new_rec, open(rec_path, 'w'), indent=0, sort_keys=True)
     open(os.path.join(OUT, 'sndinfo.voices'), 'w').write('\n'.join(lines))
     print(total, 'files')
 

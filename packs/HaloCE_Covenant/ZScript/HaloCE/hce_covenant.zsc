@@ -2906,6 +2906,7 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		A_ChangeModel('None', 1, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
 		hce_jetDir = (-0.807, 0.174, -0.565);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -3158,6 +3159,7 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		A_ChangeModel('None', 1, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		hce_jetNozzle = (-0.1561, 0.0816, 0.67944) * 80.0;
 		hce_jetDir = (-0.807, 0.174, -0.565);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -3963,6 +3965,7 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 		A_ChangeModel('None', 1, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -4219,6 +4222,7 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 		A_ChangeModel('None', 1, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 1, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)
 	}
 	override void HCE_OnSever(int limb, bool gunArm)
 	{
@@ -5754,6 +5758,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	override Name HCE_ShellClass() { return 'HCE_GruntShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -5910,6 +5915,11 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_BloodHideClass();
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressShell(Actor s)       // the shield flare wears the same permutation
+	{
+		super.HCE_DressShell(s);
+		for(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_Needler, Halo_PlasmaPistol
 	override bool HCE_HasLoadouts() { return true; }
@@ -7472,7 +7482,7 @@ class HCE_GruntUltraNeedler : HCE_GruntBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
 		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.60, 0.60, 0.30;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
@@ -7604,6 +7614,9 @@ class HCE_GruntUltraNeedler : HCE_GruntBase
 	}
 }
 
+// energy-shield flare for the Grunts: the same model, every surface the glowing shield texture
+class HCE_GruntShieldShell : HCE_ShieldShell {}
+
 // characters\grunt\grunt ultra plasma pistol
 class HCE_GruntUltraPlasmaPistol : HCE_GruntBase
 {
@@ -7633,7 +7646,7 @@ class HCE_GruntUltraPlasmaPistol : HCE_GruntBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
 		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.60, 0.60, 0.30;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.85, 1.46, 28;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaPistol/Fire", "Halo/Weapons/PlasmaPistol/Fire/Bass", "Halo/Weapons/PlasmaPistol/Fire/Charged", "Halo/Weapons/PlasmaPistol/Charge/Start";
@@ -7816,6 +7829,7 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	override Name HCE_ShellClass() { return 'HCE_GruntSpecOpsShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -7972,6 +7986,11 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_BloodHideClass();
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressShell(Actor s)       // the shield flare wears the same permutation
+	{
+		super.HCE_DressShell(s);
+		for(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_FuelRod, Halo_Needler
 	override bool HCE_HasLoadouts() { return true; }
@@ -8397,7 +8416,7 @@ class HCE_GruntSpecopsFuelRod : HCE_GruntSpecOpsBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
 		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.30, 0.80, 0.50;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 3.12, 4.08, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
@@ -8513,6 +8532,9 @@ class HCE_GruntSpecopsFuelRod : HCE_GruntSpecOpsBase
 	}
 }
 
+// energy-shield flare for the GruntSpecOpss: the same model, every surface the glowing shield texture
+class HCE_GruntSpecOpsShieldShell : HCE_ShieldShell {}
+
 // characters\grunt\grunt specops fuel rod airdef
 class HCE_GruntSpecopsFuelRodAirdef : HCE_GruntSpecOpsBase
 {
@@ -8542,7 +8564,7 @@ class HCE_GruntSpecopsFuelRodAirdef : HCE_GruntSpecOpsBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
 		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.30, 0.80, 0.50;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.08, 2.72, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
@@ -8687,7 +8709,7 @@ class HCE_GruntSpecopsNeedler : HCE_GruntSpecOpsBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
 		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.30, 0.80, 0.50;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_Shield 60, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";

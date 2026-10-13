@@ -71,7 +71,7 @@ H2J_JSON = f'{bp.OUT}/models/H2Jackal/H2Jackal.json'
 H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (Halo 3's long-range Jackals)
 # armour change colours per rank (primary, secondary, tertiary): Ultra and Sniper take the Halo 2 major / minor
 # biped colours; the Zealot is a custom gold with pale trim
-H2J_COLOURS = {'ultra': 'major', 'sniper': 'minor', 'marksman': 'major',
+H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
 # Slug Man ranks: health and aim (error-angle multiplier) and the armour colour repainted over the skin (slug_skin)
@@ -270,6 +270,7 @@ def load_ai():
         # human guns a Brute would take (the one Covenant race that uses them): loadouts only, no classes -- what a Brute
         # can pick up off the ground, drawn as overlay models in its overlay slot (marine_arsenal.brute_overlays)
         src = variants.get(f'{BRUTE} minor assault rifle')
+        bmeta = json.load(open(OUT + '/models/Brute/Brute.json'))
         for key, (ovl, *_r) in bp.MARINE_ARSENAL.items():
             if not src or ovl not in BRUTE_HUMAN_GUNS or ovl not in (bmeta.get('arsenal') or {}): continue
             lo, hi, mx = _r[1], _r[2], _r[3]
@@ -310,6 +311,16 @@ def load_ai():
             mk['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=40.0)
             mk['items']['grenades_lower_bound'] = 0; mk['items']['grenades_upper_bound'] = 0
             variants[H2JACKAL + f'\\jackal marksman {key}'] = mk
+        # helmeted Jackals (IanLacksMods' Characters+: extract_h2_jackal.plus_meshes), classes of their own: the Major
+        # in Halo CE's helmet (the CE Major's health and shield, its pink shield; the plasma rifle, the one one-handed
+        # gun the model carries), and the Sniper and Marksmen in Halo 3's sniper helmet with its glowing lenses
+        if json.load(open(H2J_JSON)).get('helmet_cells'):
+            mj = h2j(A['variants'][r'characters\jackal\jackal major needler'], 'major', 75, 250, CE_PR, _helmet='ce')
+            variants[H2JACKAL + '\\jackal major helmet plasma rifle'] = mj
+            for key in ('sniper beam rifle', 'marksman plasma carbine', 'marksman pulse carbine'):
+                hv = copy.deepcopy(variants[H2JACKAL + f'\\jackal {key}']); hv['_helmet'] = 'sniper'
+                r, w = key.split(' ', 1)
+                variants[H2JACKAL + f'\\jackal {r} helmet {w}'] = hv
     # The Ultra Zealot (Shigure's Zealot Elite, extract_ultra_zealot.py): the gold Elite's sword build made tougher,
     # a diamond energy shield on its left arm; armour in a Field Marshal crimson-maroon with blue lights
     zs = A['variants'].get(r'characters\elite\elite commander\elite commander energy sword')
@@ -493,13 +504,37 @@ def brute_skin(cls, v, si, mat, meta, skin_dir):
     (out if has_a else out.convert('RGB')).save(dst)
     return fn
 
+H2J_BRIGHT = []          # helmet skins with lit parts (the sniper helmet's lenses): (skin file, its brightmap)
+
+
+def h2jackal_helmet(kind, meta, skin_dir):
+    """the helmet surface's atlas (extract_h2_jackal.plus_meshes) with only one cell left opaque: 'hair' (the quills,
+    bare-headed ranks), 'ce' (Halo CE's helmet) or 'sniper' (Halo 3's, its lenses lit by the atlas's brightmap)"""
+    fn = f'h2jackal_helmet_{kind}.png'; dst = f'{skin_dir}/{fn}'
+    if not os.path.exists(dst):
+        im = Image.open(f'{bp.OUT}/models/H2Jackal/H2Jackal_helmet_atlas.png').convert('RGBA')
+        a = np.asarray(im).copy(); h, w = a.shape[0] // 2, a.shape[1] // 2
+        cx, cy = meta['helmet_cells'][kind]
+        keep = np.zeros(a.shape[:2], bool); keep[cy * h:(cy + 1) * h, cx * w:(cx + 1) * w] = True
+        a[~keep, 3] = 0
+        Image.fromarray(a).save(dst)
+    if kind == 'sniper':
+        bm = f'{skin_dir}/h2jackal_helmet_sniper_bm.png'
+        shutil.copy(f'{bp.OUT}/models/H2Jackal/H2Jackal_helmet_atlas_bm.png', bm)
+        if (dst, bm) not in H2J_BRIGHT: H2J_BRIGHT.append((dst, bm))
+    return fn
+
+
 def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
-    """Halo 2 Jackal skins: armour change colours per rank; the Sniper carries no shield (its surfaces hidden)"""
+    """Halo 2 Jackal skins: armour change colours per rank; the Sniper carries no shield (its surfaces hidden); the
+    helmet surface shows the class's helmet (v['_helmet']: 'ce', 'sniper') or, bare-headed, the quills"""
     names = meta.get('mesh_names')
     if not names or not mat.startswith('H2Jackal_'): return None
     nm = names[si]
     os.makedirs(skin_dir, exist_ok=True)
     rank = v.get('_rank')
+    if nm == 'helmet.jackal_helmet' and meta.get('helmet_cells'):
+        return h2jackal_helmet(v.get('_helmet') or 'hair', meta, skin_dir)
     if nm.startswith('shield.') and rank in H2J_NO_SHIELD:
         hid = f'{skin_dir}/hce_hidden.png'
         if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
@@ -1010,9 +1045,13 @@ def build():
                            'HCE_EliteUltraZealotEnergySword',
                            'HCE_DroneMajorPlasmaPistol', 'HCE_DroneMajorNeedler', 'HCE_DroneUltraNeedler', 'HCE_DroneUltraPlasmaRifle',
                            'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
-                           'HCE_DroneCaptainMajorPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_DroneCaptainMajorPlasmaRifle',
+                           'HCE_JackalMajorHelmetPlasmaRifle', 'HCE_JackalSniperHelmetBeamRifle', 'HCE_JackalMarksmanHelmetPlasmaCarbine',
+                           'HCE_JackalMarksmanHelmetPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
+    if H2J_BRIGHT:                               # the H2 sniper helmet's lenses glow
+        open(f'{PACK}/gldefs.dig', 'a').write(''.join(f'brightmap texture "{f[len(PACK) + 1:]}"\n{{\n\tmap "{b[len(PACK) + 1:]}"\n}}\n' for f, b in H2J_BRIGHT))
     zj = f'{bp.OUT}/models/EliteZealot/EliteZealot.json'
     if os.path.exists(zj):                       # the Ultra Zealot's inset lights glow
         gl = []

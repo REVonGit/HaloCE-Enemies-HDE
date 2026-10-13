@@ -93,7 +93,8 @@ def process(char):
     names = meta.get('mesh_names') or [m['name'] for m in meshes]
     def body(si, m):
         mat = m['material'].lower()
-        return not (mw[si] or si in stubs or 'shield' in mat or 'shield' in names[si] or '~damaged' in names[si] or mat.startswith('w_') or 'gore' in mat) and len(m['tris'])
+        return not (mw[si] or si in stubs or 'shield' in mat or 'shield' in names[si] or '~damaged' in names[si] or mat.startswith('w_') or 'gore' in mat
+                    or '_atlas' in mat) and len(m['tris'])       # (an atlas whose parts come and go per class, the H2 Jackal's helmets: no blood)
     body_ix = [si for si, m in enumerate(meshes) if body(si, m)]
     # hits on the body surface, area-weighted, same for every stage (cumulative)
     rng = np.random.default_rng(zlib.crc32(char.encode()))

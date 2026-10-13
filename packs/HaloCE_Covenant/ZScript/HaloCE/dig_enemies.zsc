@@ -12166,7 +12166,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(0, (0.0715, -0.0001, 0.6408), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_head.iqm', 27, 'gore_H2Jackal.png', 0.0547);
+			HCE_SpawnLimb(0, (0.0903, 0.0033, 0.6346), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_head.iqm', 27, 'gore_H2Jackal.png', 0.0515);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
@@ -12183,7 +12183,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(1, (0.0918, 0.1815, 0.4110), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_larm.iqm', 28, 'gore_H2Jackal.png', 0.0299);
+			HCE_SpawnLimb(1, (0.0951, 0.1777, 0.4162), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_larm.iqm', 28, 'gore_H2Jackal.png', 0.0291);
 			HCE_OnSever(1, true);
 			return true;
 		case 2:
@@ -12192,7 +12192,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
-			HCE_SpawnLimb(2, (0.0926, -0.1815, 0.4108), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_rarm.iqm', 29, 'gore_H2Jackal.png', 0.0301);
+			HCE_SpawnLimb(2, (0.0951, -0.1777, 0.4162), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_rarm.iqm', 29, 'gore_H2Jackal.png', 0.0291);
 			HCE_OnSever(2, false);
 			return true;
 		}
@@ -12202,9 +12202,9 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	{
 		switch(limb)
 		{
-		case 0: return (5.7, -0.0, 61.5);
-		case 1: return (7.3, 14.5, 39.5);
-		case 2: return (7.4, -14.5, 39.4);
+		case 0: return (7.2, 0.3, 60.9);
+		case 1: return (7.6, 14.2, 40.0);
+		case 2: return (7.6, -14.2, 40.0);
 		}
 		return (0, 0, -1000);
 	}
@@ -12233,7 +12233,6 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 7, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 7, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 7, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 7, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 7, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			break;
 		case 1:
@@ -12289,9 +12288,9 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	void HCE_ApplyLoadout1()
 	{
 		{
-			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 5.00; hce_errorAngle = 0.25; hce_maxRange = 1200; hce_projSpeed = 155.9;
+			hce_projectile = 'HCE_PlasmaRifleBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 8.00; hce_errorAngle = 0.25; hce_maxRange = 1200; hce_projSpeed = 155.9;
 			hce_rangeMin = 200; hce_rangeMax = 560; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
-			hce_patShotsMin = 4; hce_patShotsMax = 7; hce_patInterval = 4; hce_patPauseMin = 1.00; hce_patPauseMax = 1.78; hce_patChargeTics = 0;
+			hce_patShotsMin = 5; hce_patShotsMax = 9; hce_patInterval = 4; hce_patPauseMin = 0.70; hce_patPauseMax = 1.24; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
@@ -12452,8 +12451,6 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
-		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -12500,11 +12497,6 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
-		case HCE_A_RELOAD: return 'stand pistol reload-1';
-		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
-		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
-		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -12551,8 +12543,6 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
-		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -12599,11 +12589,6 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
-		case HCE_A_RELOAD: return 'stand pistol reload-1';
-		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
-		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
-		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -12640,18 +12625,13 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
-		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
-		case 'stand pistol low-idle': return 70;
-		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
-		case 'stand pistol overheat': return 71;
-		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 28;
 		case 'stand pistol surprise-front': return 33;
@@ -12666,10 +12646,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
-		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
-		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -12685,21 +12663,167 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// objects\characters\jackal\jackal\jackal marksman plasma carbine
-class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
+// objects\characters\jackal\jackal\jackal major helmet plasma rifle
+class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
-	//$Title "Jackal Marksman (Plasma Carbine)"
-	//$Sprite "HU34A0"
+	//$Title "Jackal Major Helmet (Plasma Rifle)"
+	Default
+	{
+		Health 75;
+		Speed 9.0;
+		HaloDoom_EnemyBase.HCE_Type 1;
+		HaloDoom_EnemyBase.HCE_Variant "jackal major helmet plasma rifle";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 8.00, 0.25, 1200;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
+		HaloDoom_EnemyBase.HCE_Burst 1.00, 1.25, 0.50, 0.90, 0.20, 0.80;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
+		HaloDoom_EnemyBase.HCE_Panic 0.80, 0.20, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.10, 0.75, 0.00, 0.60, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 250, 5.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 9, 4, 0.70, 1.24, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Jackal";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_FrontShield
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand pistol idle';
+		case HCE_A_ALERT: return 'stand pistol idle';
+		case HCE_A_MOVE_F: return 'stand pistol move-front';
+		case HCE_A_MOVE_B: return 'stand pistol move-back';
+		case HCE_A_MOVE_L: return 'stand pistol move-left';
+		case HCE_A_MOVE_R: return 'stand pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch pistol move-front';
+		case HCE_A_FLEE: return 'flee pistol move-front';
+		case HCE_A_FIRE: return 'stand pistol fire-1 pr baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_DIVE_L: return 'stand pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand pistol evade-right';
+		case HCE_A_SURPRISE_F: return 'stand pistol surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand pistol surprise-back';
+		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
+		case HCE_A_AIRBORNE: return 'stand pistol airborne';
+		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_PING_F: return 's-ping front gut baked';
+		case HCE_A_PING_B: return 's-ping back gut baked';
+		case HCE_A_PING_L: return 's-ping left gut baked';
+		case HCE_A_PING_R: return 's-ping right gut baked';
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front r-hand' }; return o[random(0, 2)]; }
+		case HCE_A_HPING_B: return 'h-ping back gut';
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
+		case HCE_A_TURN_L: return 'stand pistol turn-left';
+		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'crouch pistol idle': return 70;
+		case 'crouch pistol move-front': return 42;
+		case 'flee pistol move-front': return 23;
+		case 'h-kill back gut': return 49;
+		case 'h-kill front gut': return 41;
+		case 'h-ping back gut': return 38;
+		case 'h-ping front chest': return 41;
+		case 'h-ping front gut': return 28;
+		case 'h-ping front r-hand': return 44;
+		case 's-kill back gut': return 93;
+		case 's-kill front gut': return 82;
+		case 's-kill left gut': return 46;
+		case 's-kill right gut': return 46;
+		case 's-ping back gut baked': return 7;
+		case 's-ping front gut baked': return 6;
+		case 's-ping left gut baked': return 7;
+		case 's-ping right gut baked': return 10;
+		case 'stand airborne-dead': return 85;
+		case 'stand landing-dead': return 24;
+		case 'stand pistol airborne': return 72;
+		case 'stand pistol celebrate': return 60;
+		case 'stand pistol dive-front': return 50;
+		case 'stand pistol dive-left': return 50;
+		case 'stand pistol dive-right': return 50;
+		case 'stand pistol evade-left': return 32;
+		case 'stand pistol evade-right': return 32;
+		case 'stand pistol fire-1 pr baked': return 7;
+		case 'stand pistol idle': return 70;
+		case 'stand pistol land-soft': return 28;
+		case 'stand pistol melee': return 57;
+		case 'stand pistol move-back': return 24;
+		case 'stand pistol move-front': return 23;
+		case 'stand pistol move-left': return 23;
+		case 'stand pistol move-right': return 23;
+		case 'stand pistol signal-attack': return 77;
+		case 'stand pistol surprise-back': return 28;
+		case 'stand pistol surprise-front': return 33;
+		case 'stand pistol turn-left': return 16;
+		case 'stand pistol turn-right': return 16;
+		case 'stand pistol warn': return 50;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+
+	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
+	override Name HCE_ShieldBone() { return 'shield'; }
+	override Name HCE_GunHandBone() { return 'l_hand'; }
+	override int HCE_ShieldSurface() { return 10; }
+}
+
+// objects\characters\jackal\jackal\jackal marksman helmet plasma carbine
+class HCE_JackalMarksmanHelmetPlasmaCarbine : HCE_H2JackalBase
+{
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Marksman Helmet (Plasma Carbine)"
 	Default
 	{
 		Health 70;
 		Speed 9.0;
 		HaloDoom_EnemyBase.HCE_Type 1;
-		HaloDoom_EnemyBase.HCE_Variant "jackal marksman plasma carbine";
+		HaloDoom_EnemyBase.HCE_Variant "jackal marksman helmet plasma carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 6.00, 0.50, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12769,8 +12893,6 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
-		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -12808,10 +12930,8 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
-		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
-		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -12827,10 +12947,6 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
-		}
 		return (0, 0, 0);
 	}
 
@@ -12849,21 +12965,20 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
 }
 
-// objects\characters\jackal\jackal\jackal marksman pulse carbine
-class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
+// objects\characters\jackal\jackal\jackal marksman helmet pulse carbine
+class HCE_JackalMarksmanHelmetPulseCarbine : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
-	//$Title "Jackal Marksman (Pulse Carbine)"
-	//$Sprite "HU35A0"
+	//$Title "Jackal Marksman Helmet (Pulse Carbine)"
 	Default
 	{
 		Health 70;
 		Speed 9.0;
 		HaloDoom_EnemyBase.HCE_Type 1;
-		HaloDoom_EnemyBase.HCE_Variant "jackal marksman pulse carbine";
+		HaloDoom_EnemyBase.HCE_Variant "jackal marksman helmet pulse carbine";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 6.00, 0.50, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -12933,8 +13048,6 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
-		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -12972,10 +13085,8 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
-		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
-		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -12991,10 +13102,309 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		return (0, 0, 0);
+	}
+
+	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
+	override Name HCE_ShieldBone() { return 'shield'; }
+	override Name HCE_GunHandBone() { return 'l_hand'; }
+	override int HCE_ShieldSurface() { return 10; }
+}
+
+// objects\characters\jackal\jackal\jackal marksman plasma carbine
+class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
+{
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Marksman (Plasma Carbine)"
+	//$Sprite "HU34A0"
+	Default
+	{
+		Health 70;
+		Speed 9.0;
+		HaloDoom_EnemyBase.HCE_Type 1;
+		HaloDoom_EnemyBase.HCE_Variant "jackal marksman plasma carbine";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 6.00, 0.50, 3200;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 480, 1760;
+		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
+		HaloDoom_EnemyBase.HCE_Panic 0.80, 0.20, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.10, 0.75, 0.00, 0.60, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 2, 3, 9, 1.30, 2.21, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Carbine/Fire", "Halo/Weapons/Carbine/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Jackal";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_Carbine", "None";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'stand rifle idle';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee pistol move-front';
+		case HCE_A_FIRE: return 'stand rifle fire-1 csr baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand rifle surprise-back';
+		case HCE_A_WARN: return 'stand rifle warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: return 's-ping front gut baked';
+		case HCE_A_PING_B: return 's-ping back gut baked';
+		case HCE_A_PING_L: return 's-ping left gut baked';
+		case HCE_A_PING_R: return 's-ping right gut baked';
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front r-hand' }; return o[random(0, 2)]; }
+		case HCE_A_HPING_B: return 'h-ping back gut';
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
-		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
+		case 'crouch rifle idle': return 69;
+		case 'crouch rifle move-front': return 42;
+		case 'flee pistol move-front': return 23;
+		case 'h-kill back gut': return 49;
+		case 'h-kill front gut': return 41;
+		case 'h-ping back gut': return 38;
+		case 'h-ping front chest': return 41;
+		case 'h-ping front gut': return 28;
+		case 'h-ping front r-hand': return 44;
+		case 's-kill back gut': return 93;
+		case 's-kill front gut': return 82;
+		case 's-kill left gut': return 46;
+		case 's-kill right gut': return 46;
+		case 's-ping back gut baked': return 7;
+		case 's-ping front gut baked': return 6;
+		case 's-ping left gut baked': return 7;
+		case 's-ping right gut baked': return 10;
+		case 'stand airborne-dead': return 85;
+		case 'stand landing-dead': return 24;
+		case 'stand pistol melee': return 57;
+		case 'stand rifle airborne': return 72;
+		case 'stand rifle celebrate': return 61;
+		case 'stand rifle dive-front': return 50;
+		case 'stand rifle dive-left': return 50;
+		case 'stand rifle dive-right': return 50;
+		case 'stand rifle evade-left': return 32;
+		case 'stand rifle evade-right': return 32;
+		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 28;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle signal-attack': return 78;
+		case 'stand rifle surprise-back': return 28;
+		case 'stand rifle surprise-front': return 33;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn': return 50;
 		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+
+	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
+	override Name HCE_ShieldBone() { return 'shield'; }
+	override Name HCE_GunHandBone() { return 'l_hand'; }
+	override int HCE_ShieldSurface() { return 10; }
+
+	// the carbine's tracer: every round draws HaloDoom Evolved's green carbine laser trail along its path, from the
+	// muzzle to where it will land, fading in a few tics
+	override void HCE_OnShot(Actor shot)
+	{
+		if(shot.vel.Length() < 0.1) return;
+		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
+	}
+	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+}
+
+// objects\characters\jackal\jackal\jackal marksman pulse carbine
+class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
+{
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Marksman (Pulse Carbine)"
+	//$Sprite "HU35A0"
+	Default
+	{
+		Health 70;
+		Speed 9.0;
+		HaloDoom_EnemyBase.HCE_Type 1;
+		HaloDoom_EnemyBase.HCE_Variant "jackal marksman pulse carbine";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 6.00, 0.50, 3200;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 480, 1760;
+		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
+		HaloDoom_EnemyBase.HCE_Panic 0.80, 0.20, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.10, 0.75, 0.00, 0.60, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.82, 2.99, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Jackal";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'stand rifle idle';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee pistol move-front';
+		case HCE_A_FIRE: return 'stand rifle fire-1 csr baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand rifle surprise-back';
+		case HCE_A_WARN: return 'stand rifle warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: return 's-ping front gut baked';
+		case HCE_A_PING_B: return 's-ping back gut baked';
+		case HCE_A_PING_L: return 's-ping left gut baked';
+		case HCE_A_PING_R: return 's-ping right gut baked';
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front r-hand' }; return o[random(0, 2)]; }
+		case HCE_A_HPING_B: return 'h-ping back gut';
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'crouch rifle idle': return 69;
+		case 'crouch rifle move-front': return 42;
+		case 'flee pistol move-front': return 23;
+		case 'h-kill back gut': return 49;
+		case 'h-kill front gut': return 41;
+		case 'h-ping back gut': return 38;
+		case 'h-ping front chest': return 41;
+		case 'h-ping front gut': return 28;
+		case 'h-ping front r-hand': return 44;
+		case 's-kill back gut': return 93;
+		case 's-kill front gut': return 82;
+		case 's-kill left gut': return 46;
+		case 's-kill right gut': return 46;
+		case 's-ping back gut baked': return 7;
+		case 's-ping front gut baked': return 6;
+		case 's-ping left gut baked': return 7;
+		case 's-ping right gut baked': return 10;
+		case 'stand airborne-dead': return 85;
+		case 'stand landing-dead': return 24;
+		case 'stand pistol melee': return 57;
+		case 'stand rifle airborne': return 72;
+		case 'stand rifle celebrate': return 61;
+		case 'stand rifle dive-front': return 50;
+		case 'stand rifle dive-left': return 50;
+		case 'stand rifle dive-right': return 50;
+		case 'stand rifle evade-left': return 32;
+		case 'stand rifle evade-right': return 32;
+		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 28;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle signal-attack': return 78;
+		case 'stand rifle surprise-back': return 28;
+		case 'stand rifle surprise-front': return 33;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn': return 50;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
 		return (0, 0, 0);
 	}
 
@@ -13018,7 +13428,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal sniper beam rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_H2BeamShot", 1, 6.00, 0.50, 3840;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -13089,8 +13499,6 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
-		case HCE_A_HOIST: return 'stand rifle hoist';
 		}
 		return 'None';
 	}
@@ -13128,10 +13536,8 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case 'stand rifle evade-left': return 32;
 		case 'stand rifle evade-right': return 32;
 		case 'stand rifle fire-1 csr baked': return 12;
-		case 'stand rifle hoist': return 29;
 		case 'stand rifle idle': return 69;
 		case 'stand rifle land-soft': return 28;
-		case 'stand rifle low-move': return 34;
 		case 'stand rifle move-back': return 23;
 		case 'stand rifle move-front': return 23;
 		case 'stand rifle move-left': return 23;
@@ -13147,10 +13553,153 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		return (0, 0, 0);
+	}
+
+	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
+	override Name HCE_ShieldBone() { return 'shield'; }
+	override Name HCE_GunHandBone() { return 'l_hand'; }
+	override int HCE_ShieldSurface() { return 10; }
+}
+
+// objects\characters\jackal\jackal\jackal sniper helmet beam rifle
+class HCE_JackalSniperHelmetBeamRifle : HCE_H2JackalBase
+{
+	//$Category "Halo CE/Covenant/H2 Jackal"
+	//$Title "Jackal Sniper Helmet (Beam Rifle)"
+	Default
+	{
+		Health 60;
+		Speed 9.0;
+		HaloDoom_EnemyBase.HCE_Type 1;
+		HaloDoom_EnemyBase.HCE_Variant "jackal sniper helmet beam rifle";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_H2BeamShot", 1, 6.00, 0.50, 3840;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 640, 2240;
+		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
+		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
+		HaloDoom_EnemyBase.HCE_Panic 0.80, 0.20, 4.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.10, 0.75, 0.00, 0.60, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 60, 75, 1, 3.12, 4.42, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BeamRifle/Laser/Loop", "", "Halo/Weapons/BeamRifle/Laser/LoopEnd", "Halo/Weapons/BeamRifle/Laser/Fire";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_Voices "Jackal";
+		HaloDoom_EnemyBase.HCE_Drops "Halo_BeamRifle", "None";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Panics
+		+HaloDoom_EnemyBase.HCE_SeeksCover
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand rifle idle';
+		case HCE_A_ALERT: return 'stand rifle idle';
+		case HCE_A_MOVE_F: return 'stand rifle move-front';
+		case HCE_A_MOVE_B: return 'stand rifle move-back';
+		case HCE_A_MOVE_L: return 'stand rifle move-left';
+		case HCE_A_MOVE_R: return 'stand rifle move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch rifle idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
+		case HCE_A_FLEE: return 'flee pistol move-front';
+		case HCE_A_FIRE: return 'stand rifle fire-1 csr baked';
+		case HCE_A_MELEE: return 'stand pistol melee';
+		case HCE_A_DIVE_L: return 'stand rifle dive-left';
+		case HCE_A_DIVE_R: return 'stand rifle dive-right';
+		case HCE_A_DIVE_F: return 'stand rifle dive-front';
+		case HCE_A_EVADE_L: return 'stand rifle evade-left';
+		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
+		case HCE_A_SURPRISE_B: return 'stand rifle surprise-back';
+		case HCE_A_WARN: return 'stand rifle warn';
+		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_AIRBORNE: return 'stand rifle airborne';
+		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_PING_F: return 's-ping front gut baked';
+		case HCE_A_PING_B: return 's-ping back gut baked';
+		case HCE_A_PING_L: return 's-ping left gut baked';
+		case HCE_A_PING_R: return 's-ping right gut baked';
+		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front r-hand' }; return o[random(0, 2)]; }
+		case HCE_A_HPING_B: return 'h-ping back gut';
+		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_B: return 's-kill back gut';
+		case HCE_A_DIE_L: return 's-kill left gut';
+		case HCE_A_DIE_R: return 's-kill right gut';
+		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
+		case HCE_A_DIE_AIR: return 'stand airborne-dead';
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_TURN_L: return 'stand rifle turn-left';
+		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
-		case 'stand rifle hoist': return (59.0, 0.1, 39.9);
+		case 'crouch rifle idle': return 69;
+		case 'crouch rifle move-front': return 42;
+		case 'flee pistol move-front': return 23;
+		case 'h-kill back gut': return 49;
+		case 'h-kill front gut': return 41;
+		case 'h-ping back gut': return 38;
+		case 'h-ping front chest': return 41;
+		case 'h-ping front gut': return 28;
+		case 'h-ping front r-hand': return 44;
+		case 's-kill back gut': return 93;
+		case 's-kill front gut': return 82;
+		case 's-kill left gut': return 46;
+		case 's-kill right gut': return 46;
+		case 's-ping back gut baked': return 7;
+		case 's-ping front gut baked': return 6;
+		case 's-ping left gut baked': return 7;
+		case 's-ping right gut baked': return 10;
+		case 'stand airborne-dead': return 85;
+		case 'stand landing-dead': return 24;
+		case 'stand pistol melee': return 57;
+		case 'stand rifle airborne': return 72;
+		case 'stand rifle celebrate': return 61;
+		case 'stand rifle dive-front': return 50;
+		case 'stand rifle dive-left': return 50;
+		case 'stand rifle dive-right': return 50;
+		case 'stand rifle evade-left': return 32;
+		case 'stand rifle evade-right': return 32;
+		case 'stand rifle fire-1 csr baked': return 12;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 28;
+		case 'stand rifle move-back': return 23;
+		case 'stand rifle move-front': return 23;
+		case 'stand rifle move-left': return 23;
+		case 'stand rifle move-right': return 23;
+		case 'stand rifle signal-attack': return 78;
+		case 'stand rifle surprise-back': return 28;
+		case 'stand rifle surprise-front': return 33;
+		case 'stand rifle turn-left': return 16;
+		case 'stand rifle turn-right': return 16;
+		case 'stand rifle warn': return 50;
 		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
 		return (0, 0, 0);
 	}
 
@@ -13174,7 +13723,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal ultra plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 5.00, 0.25, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -13245,11 +13794,6 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
-		case HCE_A_RELOAD: return 'stand pistol reload-1';
-		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
-		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
-		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -13286,18 +13830,13 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
-		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
-		case 'stand pistol low-idle': return 70;
-		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
-		case 'stand pistol overheat': return 71;
-		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 28;
 		case 'stand pistol surprise-front': return 33;
@@ -13309,10 +13848,6 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		case 'stand pistol hoist': return (59.0, 0.1, 39.9);
-		}
 		return (0, 0, 0);
 	}
 
@@ -13336,7 +13871,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Variant "jackal zealot spiker";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.88, 9.05, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.66;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_SpikerSpike", 1, 5.00, 0.00, 1200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 186.7;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -13407,11 +13942,6 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case HCE_A_CELEBRATE: return 'stand pistol celebrate';
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
-		case HCE_A_RELOAD: return 'stand pistol reload-1';
-		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
-		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
-		case HCE_A_HOIST: return 'stand pistol hoist';
 		}
 		return 'None';
 	}
@@ -13448,18 +13978,13 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case 'stand pistol evade-left': return 32;
 		case 'stand pistol evade-right': return 32;
 		case 'stand pistol fire-1 pr baked': return 7;
-		case 'stand pistol hoist': return 29;
 		case 'stand pistol idle': return 70;
 		case 'stand pistol land-soft': return 28;
-		case 'stand pistol low-idle': return 70;
-		case 'stand pistol low-move': return 34;
 		case 'stand pistol melee': return 57;
 		case 'stand pistol move-back': return 24;
 		case 'stand pistol move-front': return 23;
 		case 'stand pistol move-left': return 23;
 		case 'stand pistol move-right': return 23;
-		case 'stand pistol overheat': return 71;
-		case 'stand pistol reload-1': return 43;
 		case 'stand pistol signal-attack': return 77;
 		case 'stand pistol surprise-back': return 28;
 		case 'stand pistol surprise-front': return 33;
@@ -13471,10 +13996,6 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 	}
 	override vector3 HCE_AnimMove(Name anim)
 	{
-		switch(anim)
-		{
-		case 'stand pistol hoist': return (59.0, 0.1, 39.9);
-		}
 		return (0, 0, 0);
 	}
 
@@ -16760,12 +17281,15 @@ class HCE_RandomH2Jackal : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Random H2 Jackal"
-	//$Sprite "HU34A0"
 	Default
 	{
+		DropItem "HCE_JackalMajorHelmetPlasmaRifle", 255, 1;
+		DropItem "HCE_JackalMarksmanHelmetPlasmaCarbine", 255, 1;
+		DropItem "HCE_JackalMarksmanHelmetPulseCarbine", 255, 1;
 		DropItem "HCE_JackalMarksmanPlasmaCarbine", 255, 1;
 		DropItem "HCE_JackalMarksmanPulseCarbine", 255, 1;
 		DropItem "HCE_JackalSniperBeamRifle", 255, 1;
+		DropItem "HCE_JackalSniperHelmetBeamRifle", 255, 1;
 		DropItem "HCE_JackalUltraPlasmaRifle", 255, 1;
 		DropItem "HCE_JackalZealotSpiker", 255, 1;
 	}

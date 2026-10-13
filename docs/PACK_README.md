@@ -113,7 +113,7 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 |---|---|
 | Zombieman | Minor plasma-pistol Grunt 30%, Major Grunt 18%, Minor needler Grunt 17%, Minor Jackal 16%, Major needler Grunt 11%, Minor Elite 6% |
 | Shotgun Guy | Major Grunts (plasma pistol 22%, needler 20%), Minor Jackal 21%, Major (needler) Jackal 13%, Minor Elites 16%, Major Elite 6% |
-| Chaingunner | Major (needler) Jackal 36%, Ultra (plasma rifle) Jackal 19%, Spec-Ops needler Grunt 17%, needler Elite 16%, ranged Elite 10% |
+| Chaingunner | Major (needler) Jackal 33%, Ultra (plasma rifle) Jackal 17%, Spec-Ops needler Grunt 17%, needler Elite 17%, helmeted Halo 2 Major (plasma rifle) Jackal 8%, ranged Elite 8% |
 | Imp | Major Grunts 55%, Minor Jackal 15%, Minor needler Grunt 14%, Major (needler) Jackal 7%, Minor Elite 7% (Spec-Ops Grunts on hard) |
 | Pinky | unarmed Flood Human 41% / Flood Elite 40%, shotgun Flood 18% |
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
@@ -292,14 +292,22 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   | Sniper (Halo 2 Jackal) | none | Halo 2 beam rifle | 60 / – | `HCE_JackalSniperBeamRifle` (30434) |
   | Marksman (Halo 2 Jackal) | none | Plasma carbine | 70 / – | `HCE_JackalMarksmanPlasmaCarbine` (30436) |
   | Marksman (Halo 2 Jackal) | none | Pulse carbine | 70 / – | `HCE_JackalMarksmanPulseCarbine` (30437) |
+  | Major, CE helmet (Halo 2 Jackal) | Pink | Plasma rifle | 75 / 250 | `HCE_JackalMajorHelmetPlasmaRifle` (30497) |
+  | Sniper, sniper helmet (Halo 2 Jackal) | none | Halo 2 beam rifle | 60 / – | `HCE_JackalSniperHelmetBeamRifle` (30498) |
+  | Marksman, sniper helmet (Halo 2 Jackal) | none | Plasma carbine | 70 / – | `HCE_JackalMarksmanHelmetPlasmaCarbine` (30499) |
+  | Marksman, sniper helmet (Halo 2 Jackal) | none | Pulse carbine | 70 / – | `HCE_JackalMarksmanHelmetPulseCarbine` (30500) |
 
   Halo CE only has Minor and Major plasma-pistol Jackals. The plasma-rifle Jackal (rate of fire and bursts from the Minor plasma-rifle Elite) is the **Ultra**, and the needler Jackal (the Major Grunt's needler timing) the **Major**. Each keeps its weapon, shield colour and DoomEdNum: 30248 is the plasma-rifle Ultra, 30279 the needler Major. The rank's name and stats moved with the swap; older builds had them the other way round, as `HCE_JackalMajorPlasmaRifle` and `HCE_JackalUltraNeedler`. `HCE_RandomJackalMajor` spawns either.
-* **Halo 2 Jackals (Digsite add-on):** the Ultra, the Zealot, the Sniper and the Marksmen wear Halo 2's Jackal, ripped from MCC's `08a_deltacliffs.map`: its 40-bone model and textures, its arm shield, and its own animations (one-handed pistol stance for the plasma rifle and Spiker, two-handed rifle stance for the beam rifle, crouches, dives, evades, surprise, flinches and deaths). Halo 2's Jackal holds its shield on the right forearm and its gun in the left hand; the shield entity, the gun-hand hit and the shield's switch-off follow those bones (`HCE_ShieldBone`, `HCE_GunHandBone`, `HCE_ShieldSurface`).
+* **Halo 2 Jackals (Digsite add-on):** the Ultra, the Zealot, the Sniper and the Marksmen wear Halo 2's Jackal, ripped from MCC's `08a_deltacliffs.map`: its 40-bone model and textures, its arm shield, and its own animations (one-handed pistol stance for the plasma rifle and Spiker, two-handed rifle stance for the beam rifle, crouches, dives, evades, surprise, flinches and deaths). Halo 2's Jackal holds its shield on the right forearm and its gun in the left hand; the shield entity, the gun-hand hit and the shield's switch-off follow those bones (`HCE_ShieldBone`, `HCE_GunHandBone`, `HCE_ShieldSurface`). The body is IanLacksMods' **Characters+** cut of it (`L5_jackal.JMS`, on the same skeleton and animations): it adds **arm armour**, and the head's quills are a piece of their own (cut out of their card by the texture's alpha), which a helmet replaces.
   * **Ultra:** the CE pack's plasma-rifle Ultra moved onto the Halo 2 body; same class, stats and DoomEdNum. Its armour takes Halo 2's Major Jackal colours.
   * **Zealot (new):** a tougher Ultra (120 body, 450 shield) with the **Spiker**, a gold shield and gold armour, the colour Halo gives its zealots.
   * **Sniper (new):** Halo 2's Sniper Jackal: no shield (60 body), keeps its distance (combat range 640–2240), and carries **Halo 2's beam rifle**, which fires like HaloDoom's (see Beam rifle below).
   * **Marksman (new):** Halo 3's carbine Jackal on the Halo 2 body: no shield (70 body), Halo 2's Major armour colours, the rifle stance, and the Elites' **plasma carbine** (`HCE_JackalMarksmanPlasmaCarbine`) or the homing **pulse carbine** (`HCE_JackalMarksmanPulseCarbine`), fired like the carbine Elites'. It hangs back at 480–1760 units, a little closer than the Sniper.
-  * `HCE_RandomH2Jackal` (30435) picks one of the five.
+  * **Helmeted Jackals (new, classes of their own):** from IanLacksMods' Characters+, as its variants wear them. The bare-headed classes above are unchanged.
+    * **Major** in **Halo CE's helmet** (`HCE_JackalMajorHelmetPlasmaRifle`): the CE Major's 75 body and 250 shield, its pink shield and Halo 2's Major armour colours, with the plasma rifle (the one one-handed gun the Halo 2 Jackal's model carries). It joins the Chaingunner mix.
+    * **Sniper** and **Marksmen** in **Halo 3's sniper helmet**, its two scope lenses glowing (`HCE_JackalSniperHelmetBeamRifle`, `HCE_JackalMarksmanHelmetPlasmaCarbine`, `HCE_JackalMarksmanHelmetPulseCarbine`): otherwise the Sniper and Marksmen above. The helmeted Marksmen join the Digsite's Chaingunner rule; the helmeted Sniper, like the plain one, is placed by DoomEdNum.
+    * The crest spikes on top still show through both helmets, as in the source.
+  * `HCE_RandomH2Jackal` (30435) picks one of the Halo 2 Jackals.
 * **Jackal shield pop:** every Jackal's shield (CE and Halo 2) now pops with Halo 2's Jackal shield-break sound (three variations from `jackal_shield_death`).
 * **Beam rifle (Halo 2):** the Sniper Jackal and the beam-rifle Spec Ops Elite carry Halo 2's beam rifle model and fire it like HaloDoom's beam rifle: a held purple beam whose damage climbs while it stays on a target (from about 1 to 4 a tic, three times as much after half a second on target), in bursts of about a second with a 2.5–3.5 s cool-down. **Every burst is telegraphed:** for about 0.9 s before the beam fires, a purple **sniper glint** flashes at the rifle and a thin, harmless **targeting laser** runs to where it's aiming, so you see the shot coming and can break line of sight. The beam and the targeting laser are drawn with **HDE's own beam rifle laser**: the purple beam with its pink core, which fades and spreads when it stops. The Slug Man's particle beam rifle shows the same glint during its one-second aiming laser, and its shot is the same HDE laser, flashing out. It uses HDE's laser sounds and the same slow-tracking aim as every other enemy weapon, so strafing drags the beam off you. It drops HDE's beam rifle. In testing, a Sniper Jackal held on a standing target for up to about 120 damage in a second of beam.
 * **Jackal bodies:** no energy shield of their own; the arm shield is all they have. Shots from a Jackal's side or back that clip the shield's hitbox (held out to the side) go on into the Jackal.
@@ -657,7 +665,7 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 |---|---|---|
 | ZombieMan | 6 / 8 / 10% | plasma-pistol Slug Man |
 | ShotgunGuy, DoomImp | 5–10% | plasma-pistol Slug Man, Minor carbine Elite |
-| ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite, carbine and pulse-carbine Jackal Marksmen |
+| ChaingunGuy | 15 / 20 / 25% | beam-rifle Slug Man, Minor/Major carbine Elites, Minor pulse-carbine Elite, carbine and pulse-carbine Jackal Marksmen (bare-headed and helmeted) |
 | Cacodemon | **always** | Halo 2 Drone |
 | LostSoul | 60 / 65 / 70% | Halo 2 Drone |
 | HellKnight (after the Thorn Beast roll) | 25 / 30 / 35% | Brute Minors (plasma rifle, assault rifle) and Majors (Spiker, shotgun) |
@@ -672,7 +680,7 @@ More enemies from the [Digsite](https://github.com/digsite/h1) source assets, pl
 | Archvile | 10 / 12 / 15% | Commander carbine or pulse-carbine Elite |
 | **Cyberdemon** | **always** | Drinol boss (`HCE_BossCyberdemonDrinol`), unless `hce_digsite_spawns` is 0, which hands it back to the main pack's Hunter bosses |
 
-DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440, and the ranked Drones 30489–30496. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`). DoomEdNums 30900–30931 are the core pack's variant things, `HCE_Variant0` to `HCE_Variant31` (see [Your own variants](#your-own-variants-hcevars)).
+DoomEdNums 30400–30417, in release order: `HCE_Drinol`, the four carbine Elites, both Slug Men, `HCE_Random{Drinol,EliteRifle,SlugMan}` (30400–30409); `HCE_BlindWolf` (30410) and `HCE_RandomBlindWolf` (30411); `HCE_ThornBeast` (30412) and `HCE_RandomThornBeast` (30413); the four pulse-carbine Elites (30414–30417). `HCE_RandomEliteRifle` now includes the pulse-carbine Elites. `HCE_Engineer` is 30418 and `HCE_RandomEngineer` is 30419; `HCE_DronePlasmaPistol` is 30420 and `HCE_RandomDrone` 30421; the Brutes are 30422–30430 (the Chieftain is 30430) and `HCE_RandomBrute` 30431; the Halo 2 Jackals are `HCE_JackalUltraPlasmaRifle` (keeps 30248), `HCE_JackalZealotSpiker` 30433, `HCE_JackalSniperBeamRifle` 30434, `HCE_RandomH2Jackal` 30435, and the Marksmen `HCE_JackalMarksmanPlasmaCarbine` 30436 and `HCE_JackalMarksmanPulseCarbine` 30437; the Drones `HCE_DroneNeedler` 30438, `HCE_DronePlasmaRifle` 30439 and `HCE_DroneSpiker` 30440, and the ranked Drones 30489–30496; the helmeted Halo 2 Jackals `HCE_JackalMajorHelmetPlasmaRifle` 30497, `HCE_JackalSniperHelmetBeamRifle` 30498, `HCE_JackalMarksmanHelmetPlasmaCarbine` 30499 and `HCE_JackalMarksmanHelmetPulseCarbine` 30500. The Ultra Zealot is `HCE_EliteUltraZealotEnergySword` 30455 and `HCE_RandomEliteZealot` 30432; the Brute Stalker `HCE_BruteStalkerSpiker` 30456, and the carbine Honor Guard and Ranger Elites `HCE_EliteHonorGuardPlasmaCarbine` 30457 and `HCE_EliteRangerPlasmaCarbine` 30458. Every released class keeps its number for good: the generator pins them (`ednum_pins.json`). DoomEdNums 30900–30931 are the core pack's variant things, `HCE_Variant0` to `HCE_Variant31` (see [Your own variants](#your-own-variants-hcevars)).
 
 **License: keep this add-on private.** Digsite's README says its content is not open source and is licensed only for MCC mod projects. The Elites' carbine is CMT's and private too. Sources are listed in the pk3's `CREDITS.txt`.
 
@@ -1227,6 +1235,10 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30494 | `HCE_DroneCaptainPlasmaRifle` |
 | 30495 | `HCE_DroneCaptainMajorNeedler` |
 | 30496 | `HCE_DroneCaptainMajorPlasmaRifle` |
+| 30497 | `HCE_JackalMajorHelmetPlasmaRifle` |
+| 30498 | `HCE_JackalSniperHelmetBeamRifle` |
+| 30499 | `HCE_JackalMarksmanHelmetPlasmaCarbine` |
+| 30500 | `HCE_JackalMarksmanHelmetPulseCarbine` |
 
 ## Credits
 
@@ -1236,6 +1248,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
+* **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Engineer:** from Halo CE Ruby's Rebalance.
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).

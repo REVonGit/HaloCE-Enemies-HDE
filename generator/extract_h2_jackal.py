@@ -146,6 +146,83 @@ def add_ce_helmet(meshes, nodes, od, pid):
                        uv=h['uv'], bidx=bidx, bw=bw, tris=h['tris'] if CE_HELMET else np.zeros((0, 3), int)))
 
 
+# IanLacksMods' Halo 2 Characters+ tag pack (its Jackal: HCE_H2_CHARACTERS_PLUS, the pack's folder): the body re-cut
+# from its source JMS (L5_jackal.JMS: the stock body to within a millimetre, with arm armour added and the head's quills
+# split off into a 'hair' region so a helmet can take their place) and its helmets: Halo CE's for Majors and Halo 3's
+# sniper helmet (glowing lenses) for snipers. The JMS shares MCC's bind pose, so its vertices are skinned onto the MCC
+# skeleton by bone name (b_ dropped) and keep MCC's animations and stock textures. The model has no room for more
+# surfaces (30 of UZDoom's 32 with the gore kit's), so the arm armour joins the arms (the same texture) and the quills
+# and both helmets share the helmet surface as one 2x2 atlas (HELMET_CELLS); each class's skin keeps one cell opaque
+# (build_digsite.h2jackal_skin), the sniper's lenses lit by the atlas's brightmap.
+PLUS = os.environ.get('HCE_H2_CHARACTERS_PLUS', 'H2 - Characters Plus Tag Pack v1.2')
+PLUS_JMS = 'data/lacks/objects/characters/jackal/render/L5_jackal.JMS'
+PLUS_BMP = 'data/lacks/objects/characters/jackal/'
+HELMET_CELLS = {'hair': (0, 0), 'ce': (1, 0), 'sniper': (0, 1)}      # cell (column, row) in the helmet atlas
+HELMET_MATS = {'jackal_teethandspikes!%': ('hair', 'hair'), 'jackal_helmet': ('helmet', 'ce'),
+               'sniper_helmet': ('helmet', 'sniper'), 'sniper_helmet_illum': ('helmet', 'sniper')}
+HELMET_TEX = {'hair': ('_bitmaps/head.tif', True), 'ce': ('_bitmaps/ce/jackal_helmet.tif', False),
+              'sniper': ('_bitmaps/h3/helmet_hair_shield_emitter.tif', False)}   # (source, its alpha cuts out)
+HELMET_ILLUM = 'bitmaps/h3/helmet_hair_shield_emitter_illum.tif'
+CELL = 256
+
+
+def plus_meshes(nodes, od, pid):
+    """(body surfaces {shader: mesh}, the helmet atlas surface) from the Characters+ JMS, or None without the pack"""
+    path = os.path.join(PLUS, PLUS_JMS)
+    if not os.path.exists(path): return None
+    from h2jms import read_jms
+    J = read_jms(open(path, encoding='latin1').read())
+    idx = {n['name']: i for i, n in enumerate(nodes)}
+    bone = np.array([idx[n['name'][2:] if n['name'].startswith('b_') else n['name']] for n in J['nodes']])
+    P = np.asarray(J['pos']); N = np.asarray(J['nrm']); UV = np.asarray(J['uv'], np.float64).copy()
+    UV[:, 1] = 1 - UV[:, 1]
+    BI = bone[np.asarray(J['bidx'])].astype(np.uint8); BW = np.clip(np.round(np.asarray(J['bw']) * 255), 0, 255).astype(np.uint8)
+    T = np.asarray(J['tris']); TM = np.asarray(J['tri_mat'])
+    def piece(sel, uv=None):
+        v, inv = np.unique(T[sel].ravel(), return_inverse=True)
+        return dict(pos=P[v], nrm=N[v], uv=(UV if uv is None else uv)[v], bidx=BI[v], bw=BW[v],
+                    tris=inv.reshape(-1, 3)[:, [0, 2, 1]])
+    def join(a, b):
+        n0 = len(a['pos'])
+        out = {k: np.concatenate([a[k], b[k]]) for k in ('pos', 'nrm', 'uv', 'bidx', 'bw')}
+        out['tris'] = np.concatenate([a['tris'], b['tris'] + n0]); return out
+    body, helmet = {}, None
+    for mi, mat in enumerate(J['materials']):
+        sel = TM == mi
+        if not sel.any(): continue
+        if mat['region'] == 'body' and mat['perm'] == 'standard':
+            sh = mat['name'].rstrip('!%')
+            if sh == 'jackal_armor_arms': sh = 'jackal_arms'             # the arm armour: on the arms' texture
+            p = piece(sel); body[sh] = join(body[sh], p) if sh in body else p
+        elif mat['name'] in HELMET_MATS and (mat['region'], mat['perm']) in (('hair', 'base'), ('helmet', 'standard'), ('helmet', 'sniper')):
+            cell = HELMET_MATS[mat['name']][1]; cx, cy = HELMET_CELLS[cell]
+            uv = UV.copy(); v = np.unique(T[sel].ravel())
+            uv[v] -= np.floor(uv[v].min(0) + 1e-6)                      # (the CE helmet's UVs sit one tile over)
+            uv[v] = (np.clip(uv[v], 0, 1) + [cx, cy]) / 2
+            p = piece(sel, uv)
+            if cell == 'hair': p['tris'] = np.concatenate([p['tris'], p['tris'][:, [0, 2, 1]]])   # quill cards: both sides
+            helmet = join(helmet, p) if helmet else p
+    # the atlas: the quills keep the head texture's cut-out alpha; the helmets are opaque (their alpha is a gloss mask)
+    from PIL import Image
+    atlas = Image.new('RGBA', (CELL * 2, CELL * 2), (0, 0, 0, 0)); bm = Image.new('RGB', atlas.size, (0, 0, 0))
+    illum = np.asarray(Image.open(os.path.join(PLUS, PLUS_BMP, HELMET_ILLUM)).convert('RGB').resize((CELL, CELL), Image.LANCZOS)).astype(np.float64) / 255
+    for cell, (f, cut) in HELMET_TEX.items():
+        im = Image.open(os.path.join(PLUS, PLUS_BMP, f)).convert('RGBA').resize((CELL, CELL), Image.LANCZOS)
+        if not cut: im.putalpha(255)
+        if cell == 'sniper':
+            # Halo 3's sniper helmet: a greyscale map the shader tints and shines (near black on its own), lifted to
+            # gunmetal; its lenses take the self-illumination map's colour, which the brightmap then keeps lit
+            a = np.asarray(im).astype(np.float64) / 255
+            rgb = (0.16 + 0.84 * a[..., :3] ** 0.75) * np.array([0.92, 0.95, 1.0])
+            rgb = np.clip(rgb + illum * 1.2, 0, 1)
+            im = Image.fromarray((np.dstack([rgb, a[..., 3:]]) * 255).astype(np.uint8), 'RGBA')
+        cx, cy = HELMET_CELLS[cell]; atlas.paste(im, (cx * CELL, cy * CELL))
+    cx, cy = HELMET_CELLS['sniper']
+    bm.paste(Image.fromarray((np.clip(illum.max(2) * 1.5, 0, 1) * 255).astype(np.uint8)).convert('RGB'), (cx * CELL, cy * CELL))
+    atlas.save(f'{od}/{pid}_helmet_atlas.png'); bm.save(f'{od}/{pid}_helmet_atlas_bm.png')
+    return body, dict(helmet, name='helmet.jackal_helmet', material=f'{pid}_helmet_atlas.png')
+
+
 def extract_jackal(pid='H2Jackal'):
     m = H2Map(MAP08A, CACHE08A)
     M = render_model(m, JACKAL)
@@ -157,8 +234,14 @@ def extract_jackal(pid='H2Jackal'):
         bitmap(m, find_bitmap(m, base)).convert('RGB').save(f'{od}/{pid}_{sh}.png')
         if mask: bitmap(m, find_bitmap(m, mask)).convert('RGB').save(f'{od}/{pid}_{sh}_mask.png')
     meshes = []
+    plus = plus_meshes(nodes, od, pid)
     for mm in model_meshes(m, M, KEEP):
         sh = mm['shader']
+        if plus and mm['region'] == 'body':                 # Characters+: its body in place of MCC's (same order)
+            nm = f'body.{sh}'
+            if sh in plus[0] and not any(x['name'] == nm for x in meshes):
+                meshes.append(dict(plus[0][sh], name=nm, material=f'{pid}_{sh}.png'))
+            continue
         if sh == 'jackal_shield_major': sh = SHIELD_SHADER
         if sh not in SHADER_MAPS: continue
         bidx = np.clip(mm['bi'], 0, NJ - 1).astype(np.uint8)
@@ -174,7 +257,8 @@ def extract_jackal(pid='H2Jackal'):
             x['tris'] = np.concatenate([x['tris'], tris + n0]); continue
         meshes.append(dict(name=nm, material=f'{pid}_{sh}.png', pos=mm['pos'], nrm=mm['nrm'], uv=mm['uv'],
                            bidx=bidx, bw=bw, tris=tris))
-    add_ce_helmet(meshes, nodes, od, pid)
+    if plus: meshes.append(plus[1])
+    else: add_ce_helmet(meshes, nodes, od, pid)
     mesh_weapon = [None] * len(meshes)
     # world bind pose, markers
     W = []
@@ -260,7 +344,8 @@ def extract_jackal(pid='H2Jackal'):
                 iqm_bytes=size, meshes=[x['material'] for x in meshes], mesh_names=[x['name'] for x in meshes],
                 has_multi={}, collision_height=0.6, collision_radius=0.2, markers=markers, mesh_weapon=mesh_weapon,
                 change_colors=cc, shield_surface=[x['name'] for x in meshes].index(f'shield.{SHIELD_SHADER}'),
-                shield_bone='shield', hand_bone='l_hand', sounds=sounds)
+                shield_bone='shield', hand_bone='l_hand', sounds=sounds,
+                helmet_cells=HELMET_CELLS if plus else {}, helmet_surface=[x['name'] for x in meshes].index('helmet.jackal_helmet'))
     json.dump(meta, open(f'{od}/{pid}.json', 'w'), indent=1)
     return meta
 

@@ -694,6 +694,10 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
 			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual7()
@@ -4313,6 +4317,10 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
 			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
@@ -9828,6 +9836,10 @@ class HCE_SgtStacker : HCE_MarineBase
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
 			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
@@ -9883,6 +9895,10 @@ class HCE_SgtStacker : HCE_MarineBase
 		{
 		A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_double_barrel.iqm');
 		A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 			hce_projectile = hce_mainProj; hce_errorAngle = hce_mainErr; hce_projSpeed = hce_mainSpeed; hce_projectilesPerShot = hce_mainPellets;
 			hce_patShotsMin = hce_mainShots[0]; hce_patShotsMax = hce_mainShots[1]; hce_patInterval = hce_mainShots[2];
 			hce_patPauseMin = hce_mainPause[0]; hce_patPauseMax = hce_mainPause[1];
@@ -10637,6 +10653,10 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		{
 			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
 			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual7()
@@ -14256,6 +14276,10 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		{
 			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_double_barrel.iqm');
 			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}

@@ -549,6 +549,10 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 8, "models/hce_dig/Brute", 'Brute_w_double_barrel.iqm');
 			A_ChangeModel('None', 8, "", 'None', 0, "models/hce_dig/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 8, "", 'None', 1, "models/hce_dig/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 8, "", 'None', 2, "models/hce_dig/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 8, "", 'None', 3, "models/hce_dig/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 8, "", 'None', 4, "models/hce_dig/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual3()

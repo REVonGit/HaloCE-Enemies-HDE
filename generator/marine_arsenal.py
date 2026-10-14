@@ -3,8 +3,9 @@ space (+x forward, +z up, origin on the grip), for the Marines' weapon overlays.
 
     python3 marine_arsenal.py            # -> out/weapons/<id>/<id>.pkl + textures
 
-Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation / 08a_deltacliffs) and the Digsite
-prototypes (github.com/digsite/h1, JMS + TIFF). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
+Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation / 08a_deltacliffs), the Digsite
+prototypes (github.com/digsite/h1, JMS + TIFF) and MCC Workshop campaigns ('pc': a weapon tag in a PC/MCC cache file; the
+double barrel is SOI's 8-gauge shotgun from SOI's Singleplayer Adventure V3, HCE_SOI_C20). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
 Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py,
 and the Commando and the Hydra HDE's own (Commando_HDE.blend1, Hydra_HDE.blend) by commando_ce.py / hydra_ce.py."""
 import os, sys, pickle, json
@@ -20,6 +21,8 @@ H2_01B = os.environ.get('HCE_H2_MAP', '01b_spacestation.map')       # MCC halo2\
 H2_01B_CACHE = os.environ.get('HCE_H2_CACHE') or None
 H2_08A = os.environ.get('HCE_H2_MAP08', '08a_deltacliffs.map')
 H2_08A_CACHE = os.environ.get('HCE_H2_CACHE08') or None
+# MCC Workshop campaign maps (PC cache files, PCMap): SOI's Singleplayer Adventure V3 (Steam Workshop 2906165512)
+PC_MAPS = {'soi': os.environ.get('HCE_SOI_C20', 'soi_c20.map')}
 
 SH = 'weapons/_shared/'
 # HDE weapon -> source. ce: an extract_weapons.py id; dig: (JMS, texture); h2: (map, tag)
@@ -33,7 +36,7 @@ ARSENAL = {
     'smg':              ('h2', ('01b', r'objects\weapons\rifle\smg\smg')),
     'gpmg':             ('h2', ('01b', r'objects\weapons\fixed\h_turret_mp\weapon\weapon')),   # the gun off its tripod
     'rocket_launcher':  ('h2', ('08a', r'objects\weapons\support_high\rocket_launcher\rocket_launcher')),
-    'double_barrel':    ('dig', ('weapons/assault_rifle/98_lens/models/base superhigh.JMS', 'weapons/assault_rifle/98_lens/bitmaps/h assault rifle')),
+    'double_barrel':    ('pc', ('soi', r'soi\weapons\shotgun\shotgun')),    # SOI's 8-gauge shotgun (SOI's Singleplayer Adventure)
     'commando':         ('hde_ce', 'commando_ce'),   # HDE's own Commando, reinterpreted as a Halo CE gun in its own colours
     'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
     'ma37':             ('dig', ('weapons/assault_rifle/00_e3/models/h assault rifle.JMS', SH + '00_e3/bitmaps/h small arms ARGL SG')),
@@ -97,6 +100,23 @@ def build_h2(wid, key, tagname):
         meshes.append(dict(material=mat, pos=mm['pos'], nrm=mm['nrm'], uv=mm['uv'], tris=mm['tris'][:, [0, 2, 1]],
                            region=mm['region'], perm=mm['perm'], shader=mm['shader'], bitmaps=bms))
     save_pkl(wid, meshes, 'h2:' + tagname)
+
+def build_pc(wid, key, tagname):
+    """a weapon from an MCC / PC cache file (PC_MAPS) through extract_weapons.extract_weapon, as Halo CE's own are"""
+    import halomodel as hm
+    import extract_spv3                       # (installs the PC maps' bitmap reader: pixels kept in bitmaps.map)
+    from pcmap import PCMap, gbx_geometry
+    import extract_weapons as ew
+    m = PCMap(PC_MAPS[key])
+    _geo = hm.Model.geometry
+    hm.Model.geometry = lambda s_, gi: gbx_geometry(s_.m, s_.geoms[gi].addr) if isinstance(s_.m, PCMap) else _geo(s_, gi)
+    try:
+        t = next(t for t in m.find('weap') if t['name'] == tagname)
+        ew.extract_weapon(m, t, wid, f'{OUT}/weapons/{wid}')
+    finally:
+        hm.Model.geometry = _geo
+    d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
+    save_pkl(wid, d['meshes'], f'{key}:' + tagname)
 
 def _rot(meshes, R, shift=(0, 0, 0)):
     R = np.asarray(R, float)
@@ -378,6 +398,7 @@ def main(only=None):
         if only and name not in only: continue
         if kind == 'dig': build_dig(wid, *src)
         elif kind == 'h2': build_h2(wid, *src)
+        elif kind == 'pc': build_pc(wid, *src)
         elif kind == 'ce_bulldog':
             import bulldog_ce; bulldog_ce.build()
         elif kind == 'ce_gl':

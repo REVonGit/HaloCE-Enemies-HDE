@@ -15,6 +15,7 @@ python3 extract_weapons.py # third-person weapon models + textures              
 python3 extract_weapon_shine.py  # Covenant weapons' reflection masks + cube maps  -> $HCE_OUT/weapons/<id>/shine.json, $HCE_OUT/cubemaps/w_<id>
 python3 extract_chars.py   # IQM models + animations + skins + held weapons         -> $HCE_OUT/models
 HCE_XAM_C40=/path/to/c40_1.map HCE_SPV3_BITMAPS=/path/to/bitmaps.map python3 xam_flood.py   # the XAM Campaign Overhaul's Flood skins on the Flood combat forms (before gore_kit.py)
+HCE_SOI_C20=/path/to/soi/maps/c20.map python3 marine_arsenal.py double_barrel   # the double barrel: SOI's 8-gauge shotgun (MCC Workshop 2906165512), then marine_arsenal.py overlays
 HCE_PROMETHEAN_BLEND=/path/to/HDE_promethian_weapons.blend python3 promethean_ce.py   # the Sentinel Knights' Forerunner arm guns
 HCE_H2_TAGPACK=/path/to/H2EK-Tags python3 extract_sentinel_knight.py    # the Sentinel Knight (after promethean_ce.py)
 HCE_H2_MAP06B=/path/to/06b_floodzone.map HCE_H2_TEXTURES=/path/to/textures.dat python3 extract_h2_sentinels.py    # Halo 2's Sentinel, Enforcer and Constructor (after extract_chars.py)

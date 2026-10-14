@@ -182,7 +182,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
 | `Shotgun` (unchanged) | Halo CE's shotgun | Halo CE pellets | `Halo_Shotgun` |
 | `Bulldog` | HaloDoom Evolved's own Bulldog, reinterpreted as a Halo CE gun: its drum-fed shape cut to a CE polygon budget (1,230 triangles) with one 512x512 CE-style painted texture baked from it (gunmetal receiver, olive-drab stock, drum and fore-end, black rubber grips, painted edge wear) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
-| `DoubleBarrel` | the 1998 Lens Flare demo assault rifle (Digsite) | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
+| `DoubleBarrel` | SOI's 8-gauge shotgun (SOI's Singleplayer Adventure) | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
 | `Sniper` | Halo CE's sniper rifle | Halo CE sniper rounds (101), from far back | `Halo_SniperRifle` |
 | `RocketLauncher` | Halo 2's rocket launcher, with its SPNKr lettering decals | Halo CE rockets | `Halo_RocketLauncher` |
 | `Hydra` | HaloDoom Evolved's own Hydra (Halo Infinite's) at a Halo CE polygon budget, keeping the .blend's own UV layout and texture (Base Color × AO baked and downscaled to Halo CE's 512×512), its UNSC caution and stripe decals on top; held like a rifle | four-missile salvos of HDE Hydra missiles | `Halo_Hydra` |
@@ -1270,6 +1270,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
 * **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
+* **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).

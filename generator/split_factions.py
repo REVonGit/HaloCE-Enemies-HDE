@@ -97,12 +97,20 @@ FLOOD_EVENTS = {
     # the XAM Flood Grunt: its own attack shriek, and the carrier's gurgles and burst
     'FloodGrunt': dict(_CARRIER, Alert=['grunt_attack'], Charge=['grunt_attack'], Melee=['grunt_attack'], Berserk=['grunt_attack'],
                        Taunt=['grunt_attack', 'carrier_idle']),
+    # SOI's Flood Juggernaut: its own roars
+    'FloodJuggernaut': {'Alert': ['juggernaut_spot'], 'FoundFoe': ['juggernaut_spot'], 'HeardGunfire': ['juggernaut_spot'],
+                        'Taunt': ['juggernaut_taunt'], 'KillPlayer': ['juggernaut_taunt'], 'Charge': ['juggernaut_berserk'],
+                        'Berserk': ['juggernaut_berserk'], 'Advance': ['juggernaut_berserk'], 'Melee': ['juggernaut_melee'],
+                        'Pain': ['juggernaut_pain'], 'PainMed': ['juggernaut_pain'], 'PainHeavy': ['juggernaut_pain'],
+                        'Wounded': ['juggernaut_pain'], 'OnFire': ['juggernaut_pain'], 'Stuck': ['juggernaut_pain'],
+                        'Death': ['juggernaut_death'], 'DeathHard': ['juggernaut_death']},
 }
 # the Sentinel Knights' voice (REV's lines, 'Kill Brute 3.ogg' -> HCE/SentinelKnight/KillBrute), shipped in the Sentinels
 # pack and played by the Knight's HCE_Say (sentinel_knight.zs), which turns a sighting or a kill into the line for that
 # kind of target. Each line is downmixed to mono so it comes from the Knight. Line set -> the events it plays for: the
 # player is spotted by his HDE Spartan class (SpotSpartanII/III/IV: that class's lines, weighted twice, and the plain
 # Player (Enemy) ones; SpotPlayer for Doom's marine)
+SENTINEL_SOUNDS = f'{_OUT}/sounds/Sentinel'      # extract_sentinel_sounds.py
 KNIGHT_VOICES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_voices')
 KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Brute': ['KillBrute'],
                 'Kill Combat Form': ['KillCombatForm'], 'Kill Elite': ['KillElite'], 'Kill Flood (Generic)': ['KillFlood'],
@@ -370,6 +378,21 @@ def main():
             open(f'{d}/sndinfo.steps', 'w').write('\n'.join(out) + '\n')
         if fac == 'sentinels' and os.path.isdir(KNIGHT_VOICES) and any('SentinelKnight' in c for c, _, _ in mine):
             knight_voice(d)
+        if fac == 'sentinels' and os.path.exists(f'{SENTINEL_SOUNDS}/index.json'):
+            # the Sentinels' own sounds from Halo CE and Halo 2 (extract_sentinel_sounds.py): HCE/Sentinel/<event>
+            idx = json.load(open(f'{SENTINEL_SOUNDS}/index.json'))
+            os.makedirs(f'{d}/sounds/hce_sentinel', exist_ok=True)
+            out = ["// the Sentinels' sounds from Halo CE (c20) and Halo 2 (06b_floodzone): extract_sentinel_sounds.py"]
+            for ev, files in sorted(idx.items()):
+                ids = []
+                for fn in files:
+                    shutil.copy(f'{SENTINEL_SOUNDS}/{fn}', f'{d}/sounds/hce_sentinel/{fn.lower()}')
+                    ids.append(f'HCE/SentinelSnd/{fn[:-4]}')
+                    out.append(f'{ids[-1]} "sounds/hce_sentinel/{fn.lower()}"')
+                out.append(f'$random HCE/Sentinel/{ev} {{ {" ".join(ids)} }}' if len(ids) > 1 else f'$alias HCE/Sentinel/{ev} {ids[0]}')
+            out.append('$limit HCE/Sentinel/Engine 4')
+            out.append('$limit HCE/Sentinel/Hit 3')
+            open(f'{d}/sndinfo.sentinel', 'w').write('\n'.join(out) + '\n')
         if fac == 'flood' and os.path.exists(f'{FLOOD_SOUNDS}/index.json'):
             idx = json.load(open(f'{FLOOD_SOUNDS}/index.json'))
             os.makedirs(f'{d}/sounds/hce_flood', exist_ok=True)

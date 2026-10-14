@@ -321,7 +321,9 @@ SPV3_FLOOD = {r'characters\flood grunt\flood grunt': 'FloodGrunt',
               r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored',
               r'characters\floodcombat elite new\armored\floodcombat elite armored': 'FloodEliteArmored',
               r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
-              r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra'}
+              r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra',
+              # SOI's Singleplayer Adventure V3's Flood Juggernaut (its c20: Halo 2's Juggernaut)
+              r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}
 # their DoomEdNums, in this order after everything released before them (the Flood Grunt keeps the number it shipped with)
 SPV3_FLOOD_ORDER = (
     ['HCE_FloodGrunt', 'HCE_RandomFloodGrunt',
@@ -331,7 +333,7 @@ SPV3_FLOOD_ORDER = (
      'HCE_FloodcombatHumanArmoredRocketLauncher', 'HCE_FloodcombatHumanArmoredSniperRifle', 'HCE_FloodcombatHumanArmoredUnarmed', 'HCE_RandomFloodArmored']
     + [f'HCE_FloodcombatElite{r}{w}' for r in ('Minor', 'Major') for w in ('Needler', 'PlasmaPistol', 'PlasmaRifle', 'Unarmed')]
     + ['HCE_RandomFloodEliteArmored', 'HCE_FloodcombatEliteCommanderEnergySword', 'HCE_FloodcombatEliteUltraFuelRod',
-       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra'])
+       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra', 'HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut'])
 _sp = f'{OUT}/spv3_ai.json'
 if os.path.exists(_sp):
     _S3 = json.load(open(_sp))
@@ -637,12 +639,12 @@ FIRE_SOUNDS = {
     'rocket launcher': (W + 'RocketLauncher/Fire', '', '', '', False),
     'flamethrower':    (W + 'Flamer/Fire/Loop', '', W + 'Flamer/Fire/End', W + 'Flamer/Fire/Start', True),
     'plasma caster':   (W + 'PlasmaCaster/Fire', '', W + 'PlasmaCaster/ChargedFire', W + 'PlasmaCaster/ChargeBegin', False),
-    'sentinel beam':   (W + 'SentinelBeam/Fire/Loop', '', W + 'SentinelBeam/Fire/End', W + 'SentinelBeam/Fire/Begin', True),
+    'sentinel beam':   ('HCE/Sentinel/BeamLoop', '', '', '', True),          # Halo CE's own (extract_sentinel_sounds.py)
     'light rifle':     (W + 'LightRifle/Fire', W + 'LightRifle/Fire/Bass', '', '', False),
     'scattershot':     (W + 'ScatterShot/Fire', W + 'ScatterShot/Fire/Bass', '', '', False),
     'binary rifle':    (W + 'BinaryRifle/Fire', W + 'BinaryRifle/Fire/Bass', '', '', False),
     'suppressor':      (W + 'LightRifle/Fire', '', '', '', False),
-    'enforcer needler': (W + 'LightRifle/Fire', '', '', '', False),
+    'enforcer needler': ('HCE/Sentinel/EnforcerNeedler', '', '', '', False),   # Halo 2's Enforcer's needle cannon
 }
 # Halo-style drops: HDE Local_DEV pickup classes (Covenant always drop theirs, the energy sword included -- HDE has
 # one to pick up; Hunters' fuel rod arms and Sentinels drop nothing)
@@ -664,6 +666,7 @@ BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
     'HCE_BossFatsoHunterMajor': ('HCE_HunterMajor', 'Fatso', 1.0),
     'HCE_BossFatsoHunterUltra': ('HCE_HunterUltra', 'Fatso', 1.0),
     'HCE_BossSpiderEliteCommanderPlasmaRifle': ('HCE_EliteCommanderPlasmaRifle', 'SpiderMastermind', 4.0),
+    'HCE_BossBaronFloodJuggernaut': ('HCE_FloodJuggernaut', 'BaronOfHell', 1.0),
 }
 VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy',
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
@@ -677,7 +680,8 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           # the Flood Grunt's attack)
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
-          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt'}
+          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
+          'FloodJuggernaut': 'FloodJuggernaut'}
 from extract_weapons import WEAPONS as WEAPON_IDS
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
@@ -696,13 +700,20 @@ BLOOD = {
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
     'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
-    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
+    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
 }
 NO_BLOOD = {'Sentinel'}
 SENTINEL_LIKE = {'Sentinel'} | (GALAP_CHARS - {'SentinelCrawler'})     # flying Sentinel bodies: the fixed stance, hovering, the beam
+# the Sentinels' own sounds from the official games (extract_sentinel_sounds.py, shipped by split_factions.py as
+# HCE/Sentinel/<event>): engine hum, a hit on the hull, the death. Halo CE's for its Sentinel and Galap's (the Crawler
+# walks: no hum), Halo 2's for its Enforcer and Constructor
+SENTINEL_UNIT_SOUNDS = {c: ('HCE/Sentinel/Engine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/Death') for c in SENTINEL_LIKE}
+SENTINEL_UNIT_SOUNDS['SentinelCrawler'] = ('', 'HCE/Sentinel/Hit', 'HCE/Sentinel/Death')
+SENTINEL_UNIT_SOUNDS['SentinelEnforcer'] = ('HCE/Sentinel/EnforcerEngine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/H2Death')
+SENTINEL_UNIT_SOUNDS['SentinelConstructor'] = ('HCE/Sentinel/ConstructorEngine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/H2Death')
 
 def blood_props(char):
     if char in NO_BLOOD: return '\t\t+NOBLOOD\n'
@@ -1798,7 +1809,7 @@ BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Gr
                   'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
                   'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
                   'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
-                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'MarineArmored': 'Armored Marine',
+                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'MarineArmored': 'Armored Marine',
                   'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
 
 def read_lore():
@@ -2058,6 +2069,8 @@ def build(cfg=None):
                 f1, f2, f3, f4, loop = FIRE_SOUNDS[pkey]
                 pat += f'\t\tHaloDoom_EnemyBase.HCE_FireSounds "{f1}", "{f2}", "{f3}", "{f4}";\n'
                 if loop: pat += '\t\tHaloDoom_EnemyBase.HCE_FireLoop true;\n'
+            us = SENTINEL_UNIT_SOUNDS.get(char)
+            if us: pat += f'\t\tHaloDoom_EnemyBase.HCE_UnitSounds "{us[0]}", "{us[1]}", "{us[2]}";\n'
             # Halo 3 kamikaze run: Grunts carrying plasma grenades, rarer for Minors (rolled once a second)
             if char.startswith('Grunt') and gtype == 2:
                 kc = 0.012 if char == 'GruntSpecOps' else 0.008 if ' major' in vname else 0.004
@@ -2141,6 +2154,18 @@ def build(cfg=None):
                 ars = meta.get('arsenal') or {}
                 hit = sorted((k != wid_equipped, k) for k, a in ars.items() if a.get('wid') == wid_equipped)
                 if hit: ov = dict(ov, overlay=hit[0][1])
+            # the shot leaves the barrel: the gun's tip as the body holds it aiming (its firing pose, else its alert
+            # stance), from the feet; HCE_GunOffset is from mid-height (HDE's Fire3DProjectile)
+            ovm = ((meta.get('arsenal') or {}).get(ov['overlay']) or {}).get('model') if ov.get('overlay') else None
+            aim = ((table.get('FIRE') or []) + (table.get('ALERT') or []) + (table.get('IDLE') or []) + [None])[0]
+            lift = -meta['bounds'][0][2] if ov.get('lift') else 0.0
+            def to_doom(p, lift=lift, height=height, radius=radius, msc=msc):
+                return [max(radius * 0.5, p[0] * S * msc), -p[1] * S * msc, (p[2] + lift) * S * msc * 1.2 - height * 0.5]
+            anchor = None if 'gun' in ov else gun_anchor(char, meta, pack, mdir, aim, wid_equipped, ovm)
+            mz = muzzle_point(anchor, aim)
+            if mz is not None: gun = to_doom(mz)
+            if 'gun' in ov: gun = list(ov['gun'])
+            muzzle_zs = '' if mz is None else muzzle_code(anchor, table, to_doom, gun)
             mesh_weapon = meta.get('mesh_weapon') or [None] * len(meta['meshes'])
             stubs = {d['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() if d.get('stub') is not None} if not meta.get('gore', {}).get('cap_model') else set()
             stubs |= {x['stub'] for d in meta.get('gore', {}).get('limbs', {}).values() for x in d.get('variants', {}).values()}
@@ -2270,6 +2295,7 @@ def build(cfg=None):
             animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)), msc)
             if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx
             if ov.get('stacker'): animtxt, jx = stacker_code(A, animtxt, char, meta, mdir); extra += jx
+            extra += muzzle_zs
             if 'HCE_ActiveCamo' in flags:
                 # cheaper shading (hce_simpleshaders): plain copies of the camo skins, with no shader on them
                 plain = []
@@ -2512,6 +2538,11 @@ CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see bu
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
     'FloodGrunt': dict(stance='unarmed', melee=(36, 18), flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Explodes']),
+    # SOI's Flood Juggernaut: Halo 2's, a hulking tank form nearly twice a Hunter's height, shrunk to fit Doom's doors.
+    # It charges, leaps in from 3-9 m and swats with its long arms; SOI's 500 body and 200 shield as one tough body
+    'FloodJuggernaut': dict(stance='unarmed', scale=0.6, height_fixed=96, radius_fixed=36, health=700, shield=0,
+                            melee=(64, 85), speed=7.0, leap=(140, 420, 0.6, 12.0),
+                            flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
     # Ruby's Flood Elite Commander: the sword in Ruby's own sword melee and dives
     'FloodEliteCommander': dict(stance='pistol', anims={'MELEE': ['stand sword melee%0', 'stand sword melee%1'],
                                                        'DIVE_F': ['stand sword dive-front'], 'DIVE_L': ['stand sword dive-left'],
@@ -3019,6 +3050,100 @@ def copy_skin(char, mat, skin_dir):
 
 
 BUBBLE_CHARS = set()          # Sentinel bodies with a shield bubble surface: their shield flare is the bubble
+
+
+_MUZZLE_CACHE = {}
+_IQM_CACHE = {}
+
+def _iqm(path):
+    from iqm import read_iqm
+    if path not in _IQM_CACHE: _IQM_CACHE[path] = read_iqm(path)
+    return _IQM_CACHE[path]
+
+def _posed_world(joints, pose):
+    import preview as pv
+    return pv.world([j[1] for j in joints], pose if pose is not None else [(j[2], j[3]) for j in joints])
+
+def _poses(anims, anim):
+    fr = anims.get(anim) if anim else None
+    return [[(t, q) for (t, q, s) in fr[i]] for i in sorted({0, len(fr) // 2, len(fr) - 1})] if fr else [None]
+
+def gun_anchor(char, meta, pack, mdir, ref, wid, overlay=None):
+    """the barrel's tip fixed to the bone that carries the gun: (iqm path, joint, point in the joint's frame). Found in
+    the aiming stance 'ref' (the gun's surfaces posed -- the baked gun, or the overlay model on the same skeleton --
+    and the centre of its foremost vertices); no gun drawn -> its 'primary trigger' marker, else the gun hand"""
+    key = ('anchor', char, mdir, ref, wid, overlay)
+    if key in _MUZZLE_CACHE: return _MUZZLE_CACHE[key]
+    import preview as pv
+    res = None
+    path = next((p for p in (f'{pack}/models/{mdir}/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.iqm') if os.path.exists(p)), None)
+    if path:
+        joints, meshes, anims = _iqm(path)
+        pose = _poses(anims, ref)[0]
+        gm = None
+        if overlay:
+            op = next((p for p in (f'{pack}/models/{mdir}/{char}/{overlay}', f'{OUT}/models/{char}/{overlay}') if os.path.exists(p)), None)
+            if op:
+                oj, om, _ = _iqm(op)
+                if len(oj) == len(joints): gm = om
+        elif wid:
+            gm = [meshes[si] for si, w in enumerate(meta.get('mesh_weapon') or []) if w == wid and si < len(meshes)] or None
+        if gm:
+            P = np.concatenate(pv.skin(joints, gm, pose))
+            tip = P[P[:, 0] >= P[:, 0].max() - 0.015].mean(0)
+            bi = np.concatenate([m['bidx'][:, 0] for m in gm]); bw = np.concatenate([m['bw'][:, 0] for m in gm])
+            j = int(np.bincount(bi[bw > 0]).argmax())
+            wt, wq = _posed_world(joints, pose)[j]
+            R = pv.qmat(wq).T
+            res = (path, j, R @ (tip - np.asarray(wt, float)), R @ (P.mean(0) - np.asarray(wt, float)))
+        else:
+            mk = meta.get('markers') or {}
+            for name in ('primary trigger', 'right hand elite', 'right hand jackal', 'right hand'):
+                m = mk.get(name)
+                if not m: continue
+                if isinstance(m[0], (int, float)): res = (None, -1, np.array(m[:3], float), None); break     # Galap's: model space already
+                if m[0]['node'] < len(joints): res = (path, m[0]['node'], np.asarray(m[0]['t'], float), None); break
+    _MUZZLE_CACHE[key] = res
+    return res
+
+def muzzle_point(anchor, anim, aimed=False):
+    """the barrel's tip in the animation 'anim' (Halo model space: origin at the feet, +x forward), the mean over its
+    start, middle and end. aimed: None when the gun doesn't point ahead there (held low, swinging on the run: a shot
+    from there would leave from the knees; the class's aiming barrel stands in)"""
+    if anchor is None: return None
+    path, j, loc, mid = anchor
+    if j < 0: return loc
+    import preview as pv
+    joints, _, anims = _iqm(path)
+    out, ahead = [], []
+    for pose in _poses(anims, anim):
+        wt, wq = _posed_world(joints, pose)[j]
+        R = pv.qmat(wq)
+        out.append(np.asarray(wt, float) + R @ loc)
+        if mid is not None:
+            d = R @ (loc - mid); ahead.append(d[0] / max(1e-6, np.linalg.norm(d)))
+    if aimed and ahead and np.mean(ahead) < 0.6: return None
+    return np.mean(out, 0)
+
+# the stances a shot can be fired from (HCE_MuzzleAt: the barrel where that animation holds it)
+MUZZLE_KINDS = ['FIRE', 'ALERT', 'IDLE', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'LOW_IDLE',
+                'LOW_MOVE', 'FLEE', 'COVER_L_PEEK', 'COVER_R_PEEK', 'COVER_L_OPEN', 'COVER_R_OPEN', 'GUARD_IDLE', 'GUARD_MOVE_F',
+                'GUARD_MOVE_B', 'GUARD_MOVE_L', 'GUARD_MOVE_R', 'GUARD_CROUCH_IDLE', 'GUARD_CROUCH_MOVE']
+
+def muzzle_code(anchor, table, to_doom, base):
+    """HCE_MuzzleAt: the barrel's tip per firing stance, where it differs from HCE_GunOffset (base) by 2 units or more"""
+    cases = {}
+    for k in MUZZLE_KINDS:
+        for n in table.get(k) or []:
+            if n in cases: continue
+            mz = muzzle_point(anchor, n, aimed=True)
+            if mz is None: continue
+            g = to_doom(mz)
+            if max(abs(g[i] - base[i]) for i in range(3)) >= 2: cases[n] = g
+    if not cases: return ''
+    return ('\toverride vector3 HCE_MuzzleAt(Name anim)\n\t{\n\t\tswitch(anim)\n\t\t{\n'
+            + ''.join(f"\t\tcase '{n}': return ({g[0]:.1f}, {g[1]:.1f}, {g[2]:.1f});\n" for n, g in sorted(cases.items()))
+            + '\t\t}\n\t\treturn hce_gunOffset;\n\t}\n')
 
 
 def gunner_code(leaf, meta, sc, ov):

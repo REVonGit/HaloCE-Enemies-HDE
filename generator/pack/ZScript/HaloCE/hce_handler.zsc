@@ -59,11 +59,11 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1",
 			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1",
 			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1",
-		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health)
+		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health), and on normal and hard now and then the Flood Juggernaut
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",
-			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",
-			"HCE_BossBaronEliteMajorPlasmaRifle*2 HCE_BossBaronEliteMajorNeedler*2",
+			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1 HCE_BossBaronFloodJuggernaut*1",
+			"HCE_BossBaronEliteMajorPlasmaRifle*2 HCE_BossBaronEliteMajorNeedler*2 HCE_BossBaronFloodJuggernaut*1",
 		// Arachnotron (MAP07 boss): Spec-Ops Elite stand-ins
 		"Arachnotron",
 			"HCE_BossArachnotronEliteSpecopsPlasmaRifle*2 HCE_BossArachnotronEliteSpecopsNeedler*1",
@@ -106,6 +106,7 @@ class HCE_ReplaceHandler : EventHandler
 	{
 		"HCE_BossBaronEliteMajorPlasmaRifle", "BaronOfHell",
 		"HCE_BossBaronEliteMajorNeedler", "BaronOfHell",
+		"HCE_BossBaronFloodJuggernaut", "BaronOfHell",
 		"HCE_BossFatsoHunter", "Fatso",
 		"HCE_BossArachnotronEliteSpecopsPlasmaRifle", "Arachnotron",
 		"HCE_BossArachnotronEliteSpecopsNeedler", "Arachnotron",

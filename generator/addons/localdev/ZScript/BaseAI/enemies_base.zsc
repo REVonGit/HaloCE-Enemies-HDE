@@ -266,6 +266,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
 		if(hce_enabled && target != keepTarget && target && !HCE_IsEnemy(target)) target = keepTarget;
 		if(hce_enabled) HCE_OnDamaged(inflictor, source, dealt, mod);
+		if(hce_enabled && dealt > 0 && health > 0) HCE_UnitHitSound();
 		if(hce_enabled || dealt <= 0 || damageInfo.processing) return dealt;
 
 		Actor damageSource = inflictor ? inflictor : source;
@@ -335,6 +336,23 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(projActor) projActor.target = self;
 
 		return projActor;
+	}
+
+	// a shot from the gun's barrel (HCE_GunOffset: the barrel's tip as the model holds it, from mid-height). HDE's
+	// Fire3DProjectile turns the offset with the aim; the model doesn't pitch (only fliers tilt), so the offset is
+	// handed over turned back by the aim's own turn: the round leaves the barrel wherever it is aimed
+	// the barrel's tip in the animation playing (the generated classes list their firing stances; a picked-up gun
+	// and anything unlisted: HCE_GunOffset)
+	virtual vector3 HCE_MuzzleAt(Name anim) { return hce_gunOffset; }
+	vector3 HCE_Muzzle() { return hce_hasLoadout ? hce_gunOffset : HCE_MuzzleAt(hce_curAnim); }
+
+	Actor HCE_FireMuzzle(class<Actor> proj, double angleOffset = 0, double pitchOffset = 0)
+	{
+		vector3 g = HCE_Muzzle();
+		Quat aim = Quat.FromAngles(angle + angleOffset, pitch + pitchOffset, roll);
+		Quat body = Quat.FromAngles(angle, bHCE_Flying ? pitch : 0., roll);
+		vector3 l = aim.Conjugate() * (body * (g.x, -g.y, g.z));
+		return A_Fire3DProjectile(proj, l.x, -l.y, l.z, angleOffset, pitchOffset);
 	}
 
 	void A_Fire3DProjectiles(class<Actor> proj, double count, double angleSpread = 0, double pitchSpread = 0, double forward = 0, double leftright = 0, double updown = 0)
@@ -576,6 +594,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// weapon audio (HDE SNDINFO names). hce_fireLoop: fire sound loops for the
 	// whole burst (flamethrower, sentinel beam) with start/end sounds
 	String hce_fireSound, hce_fireSoundBass, hce_specialSound, hce_chargeSound;
+	String hce_unitEngine, hce_unitHit, hce_unitDeath;   // HCE_UnitSounds: a machine's hum while it lives, a hit on its hull, its death
 	bool   hce_fireLoop;
 	// dialogue: comma separated voice sets; one is picked per actor
 	String hce_voiceSet;
@@ -615,6 +634,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	Property HCE_FirePattern : hce_patShotsMin, hce_patShotsMax, hce_patInterval, hce_patPauseMin, hce_patPauseMax, hce_patChargeTics;
 	Property HCE_FireSounds : hce_fireSound, hce_fireSoundBass, hce_specialSound, hce_chargeSound;
 	Property HCE_FireLoop : hce_fireLoop;
+	Property HCE_UnitSounds : hce_unitEngine, hce_unitHit, hce_unitDeath;
 	Property HCE_Voices : hce_voiceSet;
 	Property HCE_Drops : hce_dropWeapon, hce_dropGrenade;
 	Property HCE_ArmWeapon : hce_armWeapon;
@@ -781,6 +801,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_enabled) return;
 		if(HCE_SimpleShaders()) HCE_PlainShaders();
 		HCE_GunnerSetup();
+		HCE_UnitEngineSound(true);
 		// the Sentinels fight for the player unless hce_sentinelallies is off (Options > Halo CE AI)
 		if(hce_team == HCE_TEAM_SENTINEL && HCE_CVarF('hce_sentinelallies', 1) > 0)
 		{
@@ -4152,7 +4173,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		double aAng = atan2(diff.y, diff.x), aPit = -atan2(diff.z, diff.xy.Length());
 		for(int i = 0; i < max(1, hce_projectilesPerShot); i++)
 		{
-			let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
+			let shot = HCE_FireMuzzle(pc,
 				DeltaAngle(angle, aAng) + frandom(-1.5, 1.5), DeltaAngle(pitch, aPit) + frandom(-1.5, 1.5));
 			HCE_ScaleShot(shot);
 		}
@@ -4183,7 +4204,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			n = max(1, hce_specialCount);
 		}
 		double err = HCE_ShotError();
-		vector3 from = pos + (0, 0, height * 0.5 + hce_gunOffset.z);
+		vector3 mz = HCE_Muzzle();
+		vector3 from = pos + (0, 0, height * 0.5 + mz.z);
 		if(bHCE_Lobbed)
 		{
 			// gravity projectiles: ballistic arc to where the target will be
@@ -4205,7 +4227,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			double aPit = -atan2(diff.z, diff.xy.Length());
 			for(int i = 0; i < n; i++)
 			{
-				let shot = A_Fire3DProjectile(pc, hce_gunOffset.x, hce_gunOffset.y, hce_gunOffset.z,
+				let shot = HCE_FireMuzzle(pc,
 					DeltaAngle(angle, aAng) + frandom(-err, err), DeltaAngle(pitch, aPit) + frandom(-err, err));
 				HCE_ScaleShot(shot);
 				// a round that drops: aimed up into an arc (not HDE's flames: they fly straight on their own heading, and
@@ -5307,9 +5329,27 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_GibBurst(40, 24);
 	}
 
+	// the unit sounds (HCE_UnitSounds): the hum on its own channel, looped, quietish, heard nearby
+	const HCE_CHAN_ENGINE = 13;
+	int hce_unitHitTic;
+	void HCE_UnitEngineSound(bool on)
+	{
+		if(hce_unitEngine.Length() == 0) return;
+		if(on) A_StartSound(hce_unitEngine, HCE_CHAN_ENGINE, CHANF_LOOPING, 0.5, 1.6);
+		else A_StopSound(HCE_CHAN_ENGINE);
+	}
+	void HCE_UnitHitSound()
+	{
+		if(hce_unitHit.Length() == 0 || level.maptime < hce_unitHitTic) return;
+		hce_unitHitTic = level.maptime + 12;
+		A_StartSound(hce_unitHit, CHAN_AUTO, CHANF_OVERLAP, 0.7);
+	}
+
 	virtual void HCE_Die()
 	{
 		hce_diedAt = level.maptime;
+		HCE_UnitEngineSound(false);
+		if(hce_unitDeath.Length()) A_StartSound(hce_unitDeath, CHAN_AUTO, CHANF_OVERLAP, 1.0);
 		hce_burnDying = false; hce_bleedOut = 0;
 		if(hce_climbTics > 0) HCE_EndClimb(false);
 		hce_cvState = 0;

@@ -115,6 +115,8 @@ Each Doom monster becomes the Halo CE enemy with the closest role, toughness and
 
 **Energy shields:** a shield shows only when it is hit (its flare: the body's glowing copy for the Covenant, the hard-light bubble for the shielded Sentinels), and fails like glass: it shatters into shards in a flash of its colour. Only the player's own shield is heard recharging.
 
+**Shots leave the barrel:** every shot starts at the tip of the gun as the model holds it in its current animation (standing, aiming, strafing, crouching, leaning out of cover), measured from the posed models at build time, so bolts and rounds come out of the barrel rather than the body's middle or feet. A gun picked up off the floor fires from the class's usual barrel height.
+
 **Covenant muzzle flashes and bolts:** Covenant weapons flash in their bolts' colour at the muzzle, with a moment of light on the walls; plasma bolts glow and light what they pass, as in Halo CE. Needles are HaloDoom Evolved's own.
 
 **One voice per callout:** when a group would all call out the same thing at once (a grenade landing among them, an enemy behind them, an order, a man down), one of them, picked at random, says it for the group; the same callout from that side near there stays quiet for 4 seconds.
@@ -134,7 +136,7 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Lost Soul | Halo 2 Constructors (mostly), Flood infection forms, now and then the Flood Grunt |
 | Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills; Eliminators and Enforcers on normal and hard. With the Digsite add-on (or in a bundle), most become Halo 2 Drones |
 | Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills) |
-| Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health |
+| Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health; now and then the Flood Juggernaut (about one in eight on normal, one in four on hard) |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
 | Pain Elemental | Flood Carrier (Flood pack); the Digsite add-on makes it the Engineer instead |
 | Revenant | Spec-Ops fuel-rod Grunts, Spec-Ops needler Elites (homing needles), Spec-Ops needler Grunts |
@@ -362,6 +364,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **XAM skins:** the human and Elite combat forms wear the XAM Campaign Overhaul's Flood skins (Tropical Thunder 98; SPV3's c40 map): raw, reddish flesh on the human forms and purple on the Elite forms, with matching torn-stump textures. They're painted for Halo CE's own meshes, so the models are unchanged.
   * **Sounds:** the Flood growl, shriek and gurgle with Halo CE's own Flood sounds and Ruby's Rebalance's extra set (from its c40): the combat forms' alerts, taunts, berserk roars, melee, pain and deaths; the infection forms' skittering, attacks and deaths; the carriers' gurgles and their bursting boom. The XAM Campaign Overhaul adds its own: the infection forms' death squeals and the Flood Grunt's attack shriek (it bursts like a carrier). They ship in the Flood pack.
   * **Flood Grunt (new, XAM Campaign Overhaul):** an Unggoy taken by the Flood, its body swollen around a sack of infection forms (Tropical Thunder 98's model, skins and 23 animations, from SPV3's c40). It has Halo CE's carrier AI (50 health, no gun): it rushes in, claws (about 18 a hit), and **bursts when it dies, letting out 2–4 infection forms**. Either arm can be shot off. One Lost Soul in five to eight becomes one (by skill). `HCE_FloodGrunt` 30459, `HCE_RandomFloodGrunt` 30460.
+  * **Flood Juggernaut (new, SOI's Singleplayer Adventure):** Halo 2's hulking tank form, from *Halo: SOI's Singleplayer Adventure V3* (its c20 map: SOI's model, skins, 23 animations and stats). Shrunk to 60% to fit Doom's doors (96 tall, radius 36), still taller than a Hunter. 700 health (SOI's 500 body and 200 shield as one), no gun: it charges, leaps in from 140–420 units and swats with its long arms for about 85. It roars with its own sounds from the map (spotting, taunts, berserk, melee, pain, death). It takes the Baron of Hell's place now and then. `HCE_FloodJuggernaut` 30501, `HCE_RandomFloodJuggernaut` 30502.
   * **Ruby's Rebalance's Flood hosts (new):** from Ruby's Rebalance by mynameislol (its c40 map): each its own model, skins, damaged stumps, animations and stats. Each also has its own head, the host's ('corpse head'), which comes off with the Flood's.
     - **Flood ODST** (150 health): assault rifle, shotgun or sniper rifle (`HCE_FloodcombatOdst*`).
     - **Flood Marine**, unarmoured: assault rifle, pistol or unarmed (`HCE_FloodcombatHumanUnarmored*`).
@@ -517,6 +520,7 @@ Enemy fire uses HDE's own SNDINFO sounds, the fire layer and, where HDE has one,
 * **Overcharge:** `PlasmaPistol/Charge/Start` during the wind-up, then `PlasmaPistol/Fire/Charged`.
 * **Human:** `MA5B`, `Mag_MD6`, `Shotgun`, `Sniper` and `RocketLauncher`.
 * **Looping weapons:** the flamethrower and Sentinel beam play start, loop and end sounds.
+* **Sentinels:** their own sounds from the official games (`extract_sentinel_sounds.py`). Halo CE's Sentinel and Galap's Sentinels hum with Halo CE's engine, fire Halo CE's beam loop, clank when hit and die with Halo CE's death; the Enforcer and Constructor use Halo 2's engines and death, and the Enforcer's needle cannon fires with Halo 2's sound. The hum is a quiet loop heard nearby; Galap's Crawler walks, so it has no hum.
 
 ## Dialogue
 
@@ -1260,6 +1264,8 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30495 | `HCE_DroneCaptainMajorNeedler` |
 | 30496 | `HCE_DroneCaptainMajorPlasmaRifle` |
 | 30497 | `HCE_JackalMajorHelmetPlasmaRifle` |
+| 30501 | `HCE_FloodJuggernaut` |
+| 30502 | `HCE_RandomFloodJuggernaut` |
 
 ## Credits
 
@@ -1269,7 +1275,9 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
+* **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, beam, hit and death sounds, by Bungie.
 * **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
+* **Flood Juggernaut:** model, skins, animations, sounds and stats from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).

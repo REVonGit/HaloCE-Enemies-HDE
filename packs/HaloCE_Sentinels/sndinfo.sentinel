@@ -1,0 +1,103 @@
+// the Sentinels' sounds from Halo CE (c20) and Halo 2 (06b_floodzone): extract_sentinel_sounds.py
+HCE/SentinelSnd/BeamImpact_0 "sounds/hce_sentinel/beamimpact_0.ogg"
+HCE/SentinelSnd/BeamImpact_1 "sounds/hce_sentinel/beamimpact_1.ogg"
+HCE/SentinelSnd/BeamImpact_2 "sounds/hce_sentinel/beamimpact_2.ogg"
+HCE/SentinelSnd/BeamImpact_3 "sounds/hce_sentinel/beamimpact_3.ogg"
+HCE/SentinelSnd/BeamImpact_4 "sounds/hce_sentinel/beamimpact_4.ogg"
+HCE/SentinelSnd/BeamImpact_5 "sounds/hce_sentinel/beamimpact_5.ogg"
+HCE/SentinelSnd/BeamImpact_6 "sounds/hce_sentinel/beamimpact_6.ogg"
+HCE/SentinelSnd/BeamImpact_7 "sounds/hce_sentinel/beamimpact_7.ogg"
+HCE/SentinelSnd/BeamImpact_8 "sounds/hce_sentinel/beamimpact_8.ogg"
+HCE/SentinelSnd/BeamImpact_9 "sounds/hce_sentinel/beamimpact_9.ogg"
+HCE/SentinelSnd/BeamImpact_10 "sounds/hce_sentinel/beamimpact_10.ogg"
+HCE/SentinelSnd/BeamImpact_11 "sounds/hce_sentinel/beamimpact_11.ogg"
+HCE/SentinelSnd/BeamImpact_12 "sounds/hce_sentinel/beamimpact_12.ogg"
+HCE/SentinelSnd/BeamImpact_13 "sounds/hce_sentinel/beamimpact_13.ogg"
+HCE/SentinelSnd/BeamImpact_14 "sounds/hce_sentinel/beamimpact_14.ogg"
+HCE/SentinelSnd/BeamImpact_15 "sounds/hce_sentinel/beamimpact_15.ogg"
+HCE/SentinelSnd/BeamImpact_16 "sounds/hce_sentinel/beamimpact_16.ogg"
+$random HCE/Sentinel/BeamImpact { HCE/SentinelSnd/BeamImpact_0 HCE/SentinelSnd/BeamImpact_1 HCE/SentinelSnd/BeamImpact_2 HCE/SentinelSnd/BeamImpact_3 HCE/SentinelSnd/BeamImpact_4 HCE/SentinelSnd/BeamImpact_5 HCE/SentinelSnd/BeamImpact_6 HCE/SentinelSnd/BeamImpact_7 HCE/SentinelSnd/BeamImpact_8 HCE/SentinelSnd/BeamImpact_9 HCE/SentinelSnd/BeamImpact_10 HCE/SentinelSnd/BeamImpact_11 HCE/SentinelSnd/BeamImpact_12 HCE/SentinelSnd/BeamImpact_13 HCE/SentinelSnd/BeamImpact_14 HCE/SentinelSnd/BeamImpact_15 HCE/SentinelSnd/BeamImpact_16 }
+HCE/SentinelSnd/BeamLoop_0 "sounds/hce_sentinel/beamloop_0.ogg"
+HCE/SentinelSnd/BeamLoop_1 "sounds/hce_sentinel/beamloop_1.ogg"
+HCE/SentinelSnd/BeamLoop_2 "sounds/hce_sentinel/beamloop_2.ogg"
+$random HCE/Sentinel/BeamLoop { HCE/SentinelSnd/BeamLoop_0 HCE/SentinelSnd/BeamLoop_1 HCE/SentinelSnd/BeamLoop_2 }
+HCE/SentinelSnd/Chips_0 "sounds/hce_sentinel/chips_0.ogg"
+HCE/SentinelSnd/Chips_1 "sounds/hce_sentinel/chips_1.ogg"
+HCE/SentinelSnd/Chips_2 "sounds/hce_sentinel/chips_2.ogg"
+HCE/SentinelSnd/Chips_3 "sounds/hce_sentinel/chips_3.ogg"
+HCE/SentinelSnd/Chips_4 "sounds/hce_sentinel/chips_4.ogg"
+$random HCE/Sentinel/Chips { HCE/SentinelSnd/Chips_0 HCE/SentinelSnd/Chips_1 HCE/SentinelSnd/Chips_2 HCE/SentinelSnd/Chips_3 HCE/SentinelSnd/Chips_4 }
+HCE/SentinelSnd/ConstructorEngine_0 "sounds/hce_sentinel/constructorengine_0.ogg"
+HCE/SentinelSnd/ConstructorEngine_1 "sounds/hce_sentinel/constructorengine_1.ogg"
+HCE/SentinelSnd/ConstructorEngine_2 "sounds/hce_sentinel/constructorengine_2.ogg"
+$random HCE/Sentinel/ConstructorEngine { HCE/SentinelSnd/ConstructorEngine_0 HCE/SentinelSnd/ConstructorEngine_1 HCE/SentinelSnd/ConstructorEngine_2 }
+HCE/SentinelSnd/Death_0 "sounds/hce_sentinel/death_0.ogg"
+$alias HCE/Sentinel/Death HCE/SentinelSnd/Death_0
+HCE/SentinelSnd/EnforcerEngine_0 "sounds/hce_sentinel/enforcerengine_0.ogg"
+$alias HCE/Sentinel/EnforcerEngine HCE/SentinelSnd/EnforcerEngine_0
+HCE/SentinelSnd/EnforcerNeedler_0 "sounds/hce_sentinel/enforcerneedler_0.ogg"
+HCE/SentinelSnd/EnforcerNeedler_1 "sounds/hce_sentinel/enforcerneedler_1.ogg"
+HCE/SentinelSnd/EnforcerNeedler_2 "sounds/hce_sentinel/enforcerneedler_2.ogg"
+$random HCE/Sentinel/EnforcerNeedler { HCE/SentinelSnd/EnforcerNeedler_0 HCE/SentinelSnd/EnforcerNeedler_1 HCE/SentinelSnd/EnforcerNeedler_2 }
+HCE/SentinelSnd/EnforcerRocket_0 "sounds/hce_sentinel/enforcerrocket_0.ogg"
+HCE/SentinelSnd/EnforcerRocket_1 "sounds/hce_sentinel/enforcerrocket_1.ogg"
+HCE/SentinelSnd/EnforcerRocket_2 "sounds/hce_sentinel/enforcerrocket_2.ogg"
+$random HCE/Sentinel/EnforcerRocket { HCE/SentinelSnd/EnforcerRocket_0 HCE/SentinelSnd/EnforcerRocket_1 HCE/SentinelSnd/EnforcerRocket_2 }
+HCE/SentinelSnd/EnforcerRocketBoom_0 "sounds/hce_sentinel/enforcerrocketboom_0.ogg"
+HCE/SentinelSnd/EnforcerRocketBoom_1 "sounds/hce_sentinel/enforcerrocketboom_1.ogg"
+HCE/SentinelSnd/EnforcerRocketBoom_2 "sounds/hce_sentinel/enforcerrocketboom_2.ogg"
+HCE/SentinelSnd/EnforcerRocketBoom_3 "sounds/hce_sentinel/enforcerrocketboom_3.ogg"
+$random HCE/Sentinel/EnforcerRocketBoom { HCE/SentinelSnd/EnforcerRocketBoom_0 HCE/SentinelSnd/EnforcerRocketBoom_1 HCE/SentinelSnd/EnforcerRocketBoom_2 HCE/SentinelSnd/EnforcerRocketBoom_3 }
+HCE/SentinelSnd/Engine_0 "sounds/hce_sentinel/engine_0.ogg"
+HCE/SentinelSnd/Engine_1 "sounds/hce_sentinel/engine_1.ogg"
+HCE/SentinelSnd/Engine_2 "sounds/hce_sentinel/engine_2.ogg"
+$random HCE/Sentinel/Engine { HCE/SentinelSnd/Engine_0 HCE/SentinelSnd/Engine_1 HCE/SentinelSnd/Engine_2 }
+HCE/SentinelSnd/GunIn_0 "sounds/hce_sentinel/gunin_0.ogg"
+$alias HCE/Sentinel/GunIn HCE/SentinelSnd/GunIn_0
+HCE/SentinelSnd/GunLoop_0 "sounds/hce_sentinel/gunloop_0.ogg"
+$alias HCE/Sentinel/GunLoop HCE/SentinelSnd/GunLoop_0
+HCE/SentinelSnd/GunOut_0 "sounds/hce_sentinel/gunout_0.ogg"
+$alias HCE/Sentinel/GunOut HCE/SentinelSnd/GunOut_0
+HCE/SentinelSnd/H2BeamImpact_0 "sounds/hce_sentinel/h2beamimpact_0.ogg"
+HCE/SentinelSnd/H2BeamImpact_1 "sounds/hce_sentinel/h2beamimpact_1.ogg"
+HCE/SentinelSnd/H2BeamImpact_2 "sounds/hce_sentinel/h2beamimpact_2.ogg"
+HCE/SentinelSnd/H2BeamImpact_3 "sounds/hce_sentinel/h2beamimpact_3.ogg"
+HCE/SentinelSnd/H2BeamImpact_4 "sounds/hce_sentinel/h2beamimpact_4.ogg"
+HCE/SentinelSnd/H2BeamImpact_5 "sounds/hce_sentinel/h2beamimpact_5.ogg"
+HCE/SentinelSnd/H2BeamImpact_6 "sounds/hce_sentinel/h2beamimpact_6.ogg"
+HCE/SentinelSnd/H2BeamImpact_7 "sounds/hce_sentinel/h2beamimpact_7.ogg"
+HCE/SentinelSnd/H2BeamImpact_8 "sounds/hce_sentinel/h2beamimpact_8.ogg"
+HCE/SentinelSnd/H2BeamImpact_9 "sounds/hce_sentinel/h2beamimpact_9.ogg"
+HCE/SentinelSnd/H2BeamImpact_10 "sounds/hce_sentinel/h2beamimpact_10.ogg"
+HCE/SentinelSnd/H2BeamImpact_11 "sounds/hce_sentinel/h2beamimpact_11.ogg"
+HCE/SentinelSnd/H2BeamImpact_12 "sounds/hce_sentinel/h2beamimpact_12.ogg"
+HCE/SentinelSnd/H2BeamImpact_13 "sounds/hce_sentinel/h2beamimpact_13.ogg"
+HCE/SentinelSnd/H2BeamImpact_14 "sounds/hce_sentinel/h2beamimpact_14.ogg"
+HCE/SentinelSnd/H2BeamImpact_15 "sounds/hce_sentinel/h2beamimpact_15.ogg"
+HCE/SentinelSnd/H2BeamImpact_16 "sounds/hce_sentinel/h2beamimpact_16.ogg"
+$random HCE/Sentinel/H2BeamImpact { HCE/SentinelSnd/H2BeamImpact_0 HCE/SentinelSnd/H2BeamImpact_1 HCE/SentinelSnd/H2BeamImpact_2 HCE/SentinelSnd/H2BeamImpact_3 HCE/SentinelSnd/H2BeamImpact_4 HCE/SentinelSnd/H2BeamImpact_5 HCE/SentinelSnd/H2BeamImpact_6 HCE/SentinelSnd/H2BeamImpact_7 HCE/SentinelSnd/H2BeamImpact_8 HCE/SentinelSnd/H2BeamImpact_9 HCE/SentinelSnd/H2BeamImpact_10 HCE/SentinelSnd/H2BeamImpact_11 HCE/SentinelSnd/H2BeamImpact_12 HCE/SentinelSnd/H2BeamImpact_13 HCE/SentinelSnd/H2BeamImpact_14 HCE/SentinelSnd/H2BeamImpact_15 HCE/SentinelSnd/H2BeamImpact_16 }
+HCE/SentinelSnd/H2BeamIn_0 "sounds/hce_sentinel/h2beamin_0.ogg"
+$alias HCE/Sentinel/H2BeamIn HCE/SentinelSnd/H2BeamIn_0
+HCE/SentinelSnd/H2BeamLoop_0 "sounds/hce_sentinel/h2beamloop_0.ogg"
+$alias HCE/Sentinel/H2BeamLoop HCE/SentinelSnd/H2BeamLoop_0
+HCE/SentinelSnd/H2BeamOut_0 "sounds/hce_sentinel/h2beamout_0.ogg"
+$alias HCE/Sentinel/H2BeamOut HCE/SentinelSnd/H2BeamOut_0
+HCE/SentinelSnd/H2Death_0 "sounds/hce_sentinel/h2death_0.ogg"
+HCE/SentinelSnd/H2Death_1 "sounds/hce_sentinel/h2death_1.ogg"
+HCE/SentinelSnd/H2Death_2 "sounds/hce_sentinel/h2death_2.ogg"
+HCE/SentinelSnd/H2Death_3 "sounds/hce_sentinel/h2death_3.ogg"
+HCE/SentinelSnd/H2Death_4 "sounds/hce_sentinel/h2death_4.ogg"
+HCE/SentinelSnd/H2Death_5 "sounds/hce_sentinel/h2death_5.ogg"
+HCE/SentinelSnd/H2Death_6 "sounds/hce_sentinel/h2death_6.ogg"
+HCE/SentinelSnd/H2Death_7 "sounds/hce_sentinel/h2death_7.ogg"
+$random HCE/Sentinel/H2Death { HCE/SentinelSnd/H2Death_0 HCE/SentinelSnd/H2Death_1 HCE/SentinelSnd/H2Death_2 HCE/SentinelSnd/H2Death_3 HCE/SentinelSnd/H2Death_4 HCE/SentinelSnd/H2Death_5 HCE/SentinelSnd/H2Death_6 HCE/SentinelSnd/H2Death_7 }
+HCE/SentinelSnd/H2Engine_0 "sounds/hce_sentinel/h2engine_0.ogg"
+HCE/SentinelSnd/H2Engine_1 "sounds/hce_sentinel/h2engine_1.ogg"
+HCE/SentinelSnd/H2Engine_2 "sounds/hce_sentinel/h2engine_2.ogg"
+$random HCE/Sentinel/H2Engine { HCE/SentinelSnd/H2Engine_0 HCE/SentinelSnd/H2Engine_1 HCE/SentinelSnd/H2Engine_2 }
+HCE/SentinelSnd/H2Melee_0 "sounds/hce_sentinel/h2melee_0.ogg"
+$alias HCE/Sentinel/H2Melee HCE/SentinelSnd/H2Melee_0
+HCE/SentinelSnd/Hit_0 "sounds/hce_sentinel/hit_0.ogg"
+$alias HCE/Sentinel/Hit HCE/SentinelSnd/Hit_0
+$limit HCE/Sentinel/Engine 4
+$limit HCE/Sentinel/Hit 3

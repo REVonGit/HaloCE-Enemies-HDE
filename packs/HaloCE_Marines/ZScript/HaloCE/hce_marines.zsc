@@ -2932,7 +2932,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Assault Rifle)"
-	//$Sprite "HU44A0"
+	//$Sprite "HU45A0"
 	Default
 	{
 		Health 12;
@@ -2948,7 +2948,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3125,6 +3125,22 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine assault rifle major
@@ -3132,7 +3148,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Assault Rifle Major"
-	//$Sprite "HU45A0"
+	//$Sprite "HU46A0"
 	Default
 	{
 		Health 24;
@@ -3148,7 +3164,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3325,6 +3341,22 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine battle rifle
@@ -3332,7 +3364,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Battle Rifle)"
-	//$Sprite "HU46A0"
+	//$Sprite "HU47A0"
 	Default
 	{
 		Health 12;
@@ -3348,7 +3380,7 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.3, 8.7, 18.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3528,6 +3560,20 @@ class HCE_MarineBattleRifle : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return (20.9, 8.3, -1.3);
+		case 'crouch h2br move-front': return (25.0, 5.7, 9.7);
+		case 'stand h2br move-back': return (15.5, 7.6, 15.4);
+		case 'stand h2br move-front': return (36.6, 5.6, 16.2);
+		case 'stand h2br move-right': return (24.1, 11.1, 16.3);
+		case 'stand rifle cover-left-open': return (13.7, 26.9, 14.8);
+		case 'stand rifle cover-right-open': return (16.0, -1.2, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine bulldog
@@ -3535,7 +3581,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Bulldog)"
-	//$Sprite "HU47A0"
+	//$Sprite "HU48A0"
 	Default
 	{
 		Health 12;
@@ -3551,7 +3597,7 @@ class HCE_MarineBulldog : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (22.3, 7.6, 20.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3726,6 +3772,22 @@ class HCE_MarineBulldog : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2bulldog idle': return (19.3, 7.7, -0.3);
+		case 'crouch h2bulldog move-front': return (20.9, 5.7, 12.5);
+		case 'flee rifle move-front': return (16.8, -6.3, 0.5);
+		case 'stand h2bulldog move-back': return (13.2, 7.2, 16.4);
+		case 'stand h2bulldog move-front': return (33.4, 5.3, 18.7);
+		case 'stand h2bulldog move-left': return (21.8, 8.6, 17.8);
+		case 'stand h2bulldog move-right': return (22.1, 10.5, 17.3);
+		case 'stand rifle cover-left-open': return (14.6, 27.1, 14.4);
+		case 'stand rifle cover-right-open': return (16.8, -1.0, 16.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine commando
@@ -3733,7 +3795,7 @@ class HCE_MarineCommando : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Commando)"
-	//$Sprite "HU48A0"
+	//$Sprite "HU49A0"
 	Default
 	{
 		Health 12;
@@ -3749,7 +3811,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1280;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (25.1, 6.3, 20.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3924,6 +3986,22 @@ class HCE_MarineCommando : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (29.1, 5.0, 3.8);
+		case 'crouch rifle move-front': return (27.6, 7.3, 10.7);
+		case 'flee rifle move-front': return (19.6, -8.7, -0.4);
+		case 'stand rifle cover-left-open': return (18.1, 27.6, 15.8);
+		case 'stand rifle cover-right-open': return (20.5, -0.6, 16.8);
+		case 'stand rifle move-back': return (28.0, 6.1, 15.7);
+		case 'stand rifle move-front': return (29.4, 6.1, 17.6);
+		case 'stand rifle move-left': return (26.9, 7.5, 15.3);
+		case 'stand rifle move-right': return (26.9, 7.4, 16.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine dmr
@@ -3931,7 +4009,7 @@ class HCE_MarineDmr : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Dmr)"
-	//$Sprite "HU49A0"
+	//$Sprite "HU4AA0"
 	Default
 	{
 		Health 12;
@@ -3947,7 +4025,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2080;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.6, 6.1, 17.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4122,6 +4200,22 @@ class HCE_MarineDmr : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (25.6, 4.8, 1.2);
+		case 'crouch rifle move-front': return (24.1, 7.1, 8.1);
+		case 'flee rifle move-front': return (16.1, -6.5, -0.9);
+		case 'stand rifle cover-left-open': return (14.8, 27.3, 12.8);
+		case 'stand rifle cover-right-open': return (16.8, -0.6, 14.4);
+		case 'stand rifle move-back': return (24.5, 5.8, 13.1);
+		case 'stand rifle move-front': return (25.8, 5.8, 15.0);
+		case 'stand rifle move-left': return (23.4, 7.0, 12.8);
+		case 'stand rifle move-right': return (23.3, 7.0, 13.4);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine double barrel
@@ -4129,7 +4223,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Double Barrel)"
-	//$Sprite "HU4AA0"
+	//$Sprite "HU4BA0"
 	Default
 	{
 		Health 12;
@@ -4145,7 +4239,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 320;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (19.3, 6.3, 19.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4324,6 +4418,22 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (23.4, 4.8, 3.2);
+		case 'crouch rifle move-front': return (21.9, 7.2, 10.0);
+		case 'flee rifle move-front': return (15.7, -5.0, 1.7);
+		case 'stand rifle cover-left-open': return (12.5, 26.7, 14.5);
+		case 'stand rifle cover-right-open': return (14.7, -1.4, 16.3);
+		case 'stand rifle move-back': return (22.3, 6.0, 15.1);
+		case 'stand rifle move-front': return (23.6, 6.0, 16.9);
+		case 'stand rifle move-left': return (21.1, 7.3, 14.7);
+		case 'stand rifle move-right': return (21.1, 7.3, 15.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine flamethrower
@@ -4331,7 +4441,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Flamethrower)"
-	//$Sprite "HU4BA0"
+	//$Sprite "HU4CA0"
 	Default
 	{
 		Health 12;
@@ -4347,7 +4457,7 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 400;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (32.7, 10.5, 4.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4523,6 +4633,20 @@ class HCE_MarineFlamethrower : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch support move-front': return (37.4, 12.8, 11.1);
+		case 'flee rifle move-front': return (31.0, -1.0, 33.7);
+		case 'stand support idle': return (33.5, 10.5, 23.0);
+		case 'stand support move-back': return (38.3, 8.8, 21.5);
+		case 'stand support move-front': return (36.7, 7.3, 24.2);
+		case 'stand support move-left': return (33.3, 13.4, 20.2);
+		case 'stand support move-right': return (33.1, 10.3, 19.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine gpmg
@@ -4530,7 +4654,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Gpmg)"
-	//$Sprite "HU4CA0"
+	//$Sprite "HU4DA0"
 	Default
 	{
 		Health 12;
@@ -4546,7 +4670,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (37.7, 6.2, 19.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4721,6 +4845,21 @@ class HCE_MarineGpmg : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (41.7, 5.2, 2.0);
+		case 'crouch rifle move-front': return (40.2, 7.3, 8.9);
+		case 'stand rifle cover-left-open': return (30.6, 29.8, 15.5);
+		case 'stand rifle cover-right-open': return (32.8, 1.9, 14.7);
+		case 'stand rifle move-back': return (40.6, 5.9, 14.0);
+		case 'stand rifle move-front': return (42.0, 6.0, 15.8);
+		case 'stand rifle move-left': return (39.5, 7.3, 13.5);
+		case 'stand rifle move-right': return (39.5, 7.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine grenade launcher
@@ -4728,7 +4867,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Grenade Launcher)"
-	//$Sprite "HU4DA0"
+	//$Sprite "HU4EA0"
 	Default
 	{
 		Health 12;
@@ -4744,7 +4883,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (19.3, 6.3, 17.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4920,6 +5059,22 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (23.3, 4.9, 1.1);
+		case 'crouch rifle move-front': return (21.8, 7.3, 7.9);
+		case 'flee rifle move-front': return (14.7, -4.9, -0.0);
+		case 'stand rifle cover-left-open': return (12.6, 27.1, 12.4);
+		case 'stand rifle cover-right-open': return (14.5, -0.8, 14.3);
+		case 'stand rifle move-back': return (22.2, 6.0, 12.9);
+		case 'stand rifle move-front': return (23.5, 5.9, 14.8);
+		case 'stand rifle move-left': return (21.0, 7.1, 12.6);
+		case 'stand rifle move-right': return (21.0, 7.1, 13.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine hydra
@@ -4927,7 +5082,7 @@ class HCE_MarineHydra : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Hydra)"
-	//$Sprite "HU4EA0"
+	//$Sprite "HU4FA0"
 	Default
 	{
 		Health 12;
@@ -4943,7 +5098,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1920;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.2, 6.4, 20.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5121,6 +5276,22 @@ class HCE_MarineHydra : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (25.2, 4.9, 4.1);
+		case 'crouch rifle move-front': return (23.7, 7.3, 11.0);
+		case 'flee rifle move-front': return (17.3, -6.1, 1.6);
+		case 'stand rifle cover-left-open': return (14.3, 27.0, 15.6);
+		case 'stand rifle cover-right-open': return (16.6, -1.3, 17.2);
+		case 'stand rifle move-back': return (24.1, 6.2, 16.0);
+		case 'stand rifle move-front': return (25.5, 6.1, 17.8);
+		case 'stand rifle move-left': return (23.0, 7.6, 15.6);
+		case 'stand rifle move-right': return (23.0, 7.5, 16.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine ma37
@@ -5128,7 +5299,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Ma37)"
-	//$Sprite "HU4FA0"
+	//$Sprite "HU4GA0"
 	Default
 	{
 		Health 12;
@@ -5144,7 +5315,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5319,6 +5490,22 @@ class HCE_MarineMa37 : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
+		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
+		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine magnum
@@ -5326,7 +5513,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Magnum"
-	//$Sprite "HU4GA0"
+	//$Sprite "HU4HA0"
 	Default
 	{
 		Health 12;
@@ -5342,7 +5529,7 @@ class HCE_MarineMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 5.7, 23.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5520,6 +5707,24 @@ class HCE_MarineMagnum : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (23.4, 8.1, 4.2);
+		case 'crouch h2pistol move-front': return (17.3, 5.3, 16.5);
+		case 'flee rifle move-front': return (9.1, 1.7, 6.0);
+		case 'stand h2pistol low-idle': return (16.9, 10.2, 0.7);
+		case 'stand h2pistol low-move': return (25.7, 9.0, -0.0);
+		case 'stand h2pistol move-back': return (12.2, 5.6, 21.1);
+		case 'stand h2pistol move-front': return (26.9, 4.9, 23.6);
+		case 'stand h2pistol move-left': return (20.8, 2.4, 23.2);
+		case 'stand h2pistol move-right': return (22.2, 9.6, 22.4);
+		case 'stand pistol cover-left-open': return (15.3, 19.3, 12.2);
+		case 'stand pistol cover-right-open': return (7.0, -10.7, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic
@@ -5527,7 +5732,7 @@ class HCE_MarineMedic : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic"
-	//$Sprite "HU4HA0"
+	//$Sprite "HU4IA0"
 	Default
 	{
 		Health 12;
@@ -5543,7 +5748,7 @@ class HCE_MarineMedic : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (22.7, 6.1, 22.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5727,6 +5932,22 @@ class HCE_MarineMedic : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (25.4, 8.5, 2.4);
+		case 'crouch h2pistol move-front': return (19.3, 5.8, 14.7);
+		case 'flee rifle move-front': return (9.8, 0.3, 3.7);
+		case 'stand h2pistol move-back': return (14.2, 6.0, 19.4);
+		case 'stand h2pistol move-front': return (28.8, 5.3, 21.9);
+		case 'stand h2pistol move-left': return (22.8, 3.2, 21.6);
+		case 'stand h2pistol move-right': return (24.2, 9.9, 20.5);
+		case 'stand pistol cover-left-open': return (17.3, 19.6, 10.4);
+		case 'stand pistol cover-right-open': return (7.0, -10.1, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic assault rifle
@@ -5734,7 +5955,7 @@ class HCE_MarineMedicAssaultRifle : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic (Assault Rifle)"
-	//$Sprite "HU4IA0"
+	//$Sprite "HU4JA0"
 	Default
 	{
 		Health 12;
@@ -5750,7 +5971,7 @@ class HCE_MarineMedicAssaultRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5934,6 +6155,22 @@ class HCE_MarineMedicAssaultRifle : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic ma37
@@ -5941,7 +6178,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic (Ma37)"
-	//$Sprite "HU4JA0"
+	//$Sprite "HU4KA0"
 	Default
 	{
 		Health 12;
@@ -5957,7 +6194,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6139,6 +6376,22 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
+		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
+		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic magnum
@@ -6146,7 +6399,7 @@ class HCE_MarineMedicMagnum : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic Magnum"
-	//$Sprite "HU4KA0"
+	//$Sprite "HU4LA0"
 	Default
 	{
 		Health 12;
@@ -6162,7 +6415,7 @@ class HCE_MarineMedicMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 5.7, 23.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6347,6 +6600,24 @@ class HCE_MarineMedicMagnum : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (23.4, 8.1, 4.2);
+		case 'crouch h2pistol move-front': return (17.3, 5.3, 16.5);
+		case 'flee rifle move-front': return (9.1, 1.7, 6.0);
+		case 'stand h2pistol low-idle': return (16.9, 10.2, 0.7);
+		case 'stand h2pistol low-move': return (25.7, 9.0, -0.0);
+		case 'stand h2pistol move-back': return (12.2, 5.6, 21.1);
+		case 'stand h2pistol move-front': return (26.9, 4.9, 23.6);
+		case 'stand h2pistol move-left': return (20.8, 2.4, 23.2);
+		case 'stand h2pistol move-right': return (22.2, 9.6, 22.4);
+		case 'stand pistol cover-left-open': return (15.3, 19.3, 12.2);
+		case 'stand pistol cover-right-open': return (7.0, -10.7, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic shotgun
@@ -6354,7 +6625,7 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic (Shotgun)"
-	//$Sprite "HU4LA0"
+	//$Sprite "HU4MA0"
 	Default
 	{
 		Health 60;
@@ -6370,7 +6641,7 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6554,6 +6825,23 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine medic smg
@@ -6561,7 +6849,7 @@ class HCE_MarineMedicSmg : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Medic (Smg)"
-	//$Sprite "HU4MA0"
+	//$Sprite "HU4NA0"
 	Default
 	{
 		Health 12;
@@ -6577,7 +6865,7 @@ class HCE_MarineMedicSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (15.8, 7.7, 21.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6760,6 +7048,21 @@ class HCE_MarineMedicSmg : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2smg idle': return (12.5, 6.9, 2.1);
+		case 'crouch h2smg move-front': return (16.6, 4.3, 12.7);
+		case 'flee rifle move-front': return (10.7, -0.2, 4.3);
+		case 'stand h2smg move-back': return (7.0, 6.1, 18.6);
+		case 'stand h2smg move-front': return (28.1, 4.1, 19.5);
+		case 'stand h2smg move-right': return (15.6, 9.8, 19.7);
+		case 'stand rifle cover-left-open': return (7.0, 25.7, 12.7);
+		case 'stand rifle cover-right-open': return (7.5, -2.3, 15.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine needler
@@ -6767,7 +7070,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Needler)"
-	//$Sprite "HU4NA0"
+	//$Sprite "HU4OA0"
 	Default
 	{
 		Health 12;
@@ -6783,7 +7086,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (26.1, 3.6, 21.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6958,6 +7261,21 @@ class HCE_MarineNeedler : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'flee rifle move-front': return (9.5, -0.8, 1.1);
+		case 'stand pistol cover-left-open': return (18.5, 19.6, 7.9);
+		case 'stand pistol cover-right-open': return (8.1, -9.6, 17.8);
+		case 'stand pistol idle': return (28.3, 3.2, 16.3);
+		case 'stand pistol move-back': return (27.0, 5.7, 13.0);
+		case 'stand pistol move-front': return (15.8, 4.6, -4.1);
+		case 'stand pistol move-left': return (24.0, 6.4, 9.8);
+		case 'stand pistol move-right': return (24.6, 6.3, 11.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine pilot magnum
@@ -6965,7 +7283,7 @@ class HCE_MarinePilotMagnum : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Pilot Magnum"
-	//$Sprite "HU53A0"
+	//$Sprite "HU54A0"
 	Default
 	{
 		Health 10;
@@ -6981,7 +7299,7 @@ class HCE_MarinePilotMagnum : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 5.7, 23.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7167,6 +7485,24 @@ class HCE_MarinePilotMagnum : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (23.4, 8.1, 4.2);
+		case 'crouch h2pistol move-front': return (17.3, 5.3, 16.5);
+		case 'flee rifle move-front': return (9.1, 1.7, 6.0);
+		case 'stand h2pistol low-idle': return (16.9, 10.2, 0.7);
+		case 'stand h2pistol low-move': return (25.7, 9.0, -0.0);
+		case 'stand h2pistol move-back': return (12.2, 5.6, 21.1);
+		case 'stand h2pistol move-front': return (26.9, 4.9, 23.6);
+		case 'stand h2pistol move-left': return (20.8, 2.4, 23.2);
+		case 'stand h2pistol move-right': return (22.2, 9.6, 22.4);
+		case 'stand pistol cover-left-open': return (15.3, 19.3, 12.2);
+		case 'stand pistol cover-right-open': return (7.0, -10.7, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine pilot smg
@@ -7174,7 +7510,7 @@ class HCE_MarinePilotSmg : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Pilot (Smg)"
-	//$Sprite "HU54A0"
+	//$Sprite "HU55A0"
 	Default
 	{
 		Health 10;
@@ -7190,7 +7526,7 @@ class HCE_MarinePilotSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (15.8, 7.7, 21.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7374,6 +7710,21 @@ class HCE_MarinePilotSmg : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2smg idle': return (12.5, 6.9, 2.1);
+		case 'crouch h2smg move-front': return (16.6, 4.3, 12.7);
+		case 'flee rifle move-front': return (10.7, -0.2, 4.3);
+		case 'stand h2smg move-back': return (7.0, 6.1, 18.6);
+		case 'stand h2smg move-front': return (28.1, 4.1, 19.5);
+		case 'stand h2smg move-right': return (15.6, 9.8, 19.7);
+		case 'stand rifle cover-left-open': return (7.0, 25.7, 12.7);
+		case 'stand rifle cover-right-open': return (7.5, -2.3, 15.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine plasma rifle
@@ -7381,7 +7732,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Plasma Rifle)"
-	//$Sprite "HU55A0"
+	//$Sprite "HU56A0"
 	Default
 	{
 		Health 12;
@@ -7397,7 +7748,7 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (16.2, 8.7, 17.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7575,6 +7926,20 @@ class HCE_MarinePlasmaRifle : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2plasma idle': return (12.8, 7.4, -1.8);
+		case 'crouch h2plasma move-front': return (17.0, 5.1, 8.8);
+		case 'stand h2plasma move-back': return (7.3, 7.0, 14.7);
+		case 'stand h2plasma move-front': return (28.4, 4.7, 15.6);
+		case 'stand h2plasma move-right': return (15.9, 10.3, 15.7);
+		case 'stand rifle cover-left-open': return (7.0, 26.5, 8.9);
+		case 'stand rifle cover-right-open': return (7.8, -1.1, 12.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine radio operator
@@ -7582,7 +7947,7 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Radio Operator"
-	//$Sprite "HU56A0"
+	//$Sprite "HU57A0"
 	Default
 	{
 		Health 12;
@@ -7598,7 +7963,7 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7825,6 +8190,22 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine rocket launcher
@@ -7832,7 +8213,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Rocket Launcher)"
-	//$Sprite "HU57A0"
+	//$Sprite "HU58A0"
 	Default
 	{
 		Health 12;
@@ -7848,7 +8229,7 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 560, 2000;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (18.3, 9.5, 26.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8025,6 +8406,23 @@ class HCE_MarineRocketLauncher : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2missile idle': return (17.9, 8.7, 6.2);
+		case 'crouch h2missile move-front': return (17.3, 6.4, 19.4);
+		case 'flee rifle move-front': return (15.9, -4.4, 3.6);
+		case 'stand h2missile idle': return (21.0, 9.5, 25.6);
+		case 'stand h2missile move-back': return (12.4, 7.7, 23.0);
+		case 'stand h2missile move-front': return (29.9, 6.3, 26.2);
+		case 'stand h2missile move-left': return (23.2, 6.9, 24.9);
+		case 'stand h2missile move-right': return (22.3, 14.2, 24.0);
+		case 'stand rifle cover-left-open': return (11.6, 26.3, 16.1);
+		case 'stand rifle cover-right-open': return (14.0, -2.0, 18.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine shotgun
@@ -8032,7 +8430,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Shotgun)"
-	//$Sprite "HU58A0"
+	//$Sprite "HU59A0"
 	Default
 	{
 		Health 60;
@@ -8048,7 +8446,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8225,6 +8623,23 @@ class HCE_MarineShotgun : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine sidekick
@@ -8232,7 +8647,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Sidekick)"
-	//$Sprite "HU59A0"
+	//$Sprite "HU5AA0"
 	Default
 	{
 		Health 12;
@@ -8248,7 +8663,7 @@ class HCE_MarineSidekick : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (22.7, 6.1, 22.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8425,6 +8840,22 @@ class HCE_MarineSidekick : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (25.4, 8.5, 2.4);
+		case 'crouch h2pistol move-front': return (19.3, 5.8, 14.7);
+		case 'flee rifle move-front': return (9.8, 0.3, 3.7);
+		case 'stand h2pistol move-back': return (14.2, 6.0, 19.4);
+		case 'stand h2pistol move-front': return (28.8, 5.3, 21.9);
+		case 'stand h2pistol move-left': return (22.8, 3.2, 21.6);
+		case 'stand h2pistol move-right': return (24.2, 9.9, 20.5);
+		case 'stand pistol cover-left-open': return (17.3, 19.6, 10.4);
+		case 'stand pistol cover-right-open': return (7.0, -10.1, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine smg
@@ -8432,7 +8863,7 @@ class HCE_MarineSmg : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Smg)"
-	//$Sprite "HU5AA0"
+	//$Sprite "HU5BA0"
 	Default
 	{
 		Health 12;
@@ -8448,7 +8879,7 @@ class HCE_MarineSmg : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (15.8, 7.7, 21.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8624,6 +9055,21 @@ class HCE_MarineSmg : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2smg idle': return (12.5, 6.9, 2.1);
+		case 'crouch h2smg move-front': return (16.6, 4.3, 12.7);
+		case 'flee rifle move-front': return (10.7, -0.2, 4.3);
+		case 'stand h2smg move-back': return (7.0, 6.1, 18.6);
+		case 'stand h2smg move-front': return (28.1, 4.1, 19.5);
+		case 'stand h2smg move-right': return (15.6, 9.8, 19.7);
+		case 'stand rifle cover-left-open': return (7.0, 25.7, 12.7);
+		case 'stand rifle cover-right-open': return (7.5, -2.3, 15.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine sniper
@@ -8631,7 +9077,7 @@ class HCE_MarineSniper : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine Sniper"
-	//$Sprite "HU5BA0"
+	//$Sprite "HU5CA0"
 	Default
 	{
 		Health 12;
@@ -8647,7 +9093,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (40.5, 6.2, 20.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8824,6 +9270,22 @@ class HCE_MarineSniper : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (44.5, 5.2, 3.0);
+		case 'crouch rifle move-front': return (43.0, 7.2, 10.0);
+		case 'flee rifle move-front': return (28.8, -18.8, -8.1);
+		case 'stand rifle cover-left-open': return (33.3, 30.1, 16.9);
+		case 'stand rifle cover-right-open': return (35.6, 2.1, 15.6);
+		case 'stand rifle move-back': return (43.4, 6.0, 15.1);
+		case 'stand rifle move-front': return (44.8, 6.1, 16.9);
+		case 'stand rifle move-left': return (42.3, 7.4, 14.6);
+		case 'stand rifle move-right': return (42.3, 7.3, 15.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\marine sticky detonator
@@ -8831,7 +9293,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Marine (Sticky Detonator)"
-	//$Sprite "HU5CA0"
+	//$Sprite "HU5DA0"
 	Default
 	{
 		Health 12;
@@ -8847,7 +9309,7 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 1120;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (26.1, 6.7, 21.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9052,6 +9514,22 @@ class HCE_MarineStickyDetonator : HCE_MarineBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (28.8, 9.0, 1.6);
+		case 'crouch h2pistol move-front': return (22.7, 6.3, 13.9);
+		case 'flee rifle move-front': return (11.8, -2.0, 1.8);
+		case 'stand h2pistol move-back': return (17.6, 6.6, 18.6);
+		case 'stand h2pistol move-front': return (32.2, 5.9, 21.1);
+		case 'stand h2pistol move-left': return (26.2, 3.9, 21.0);
+		case 'stand h2pistol move-right': return (27.6, 10.4, 19.7);
+		case 'stand pistol cover-left-open': return (20.7, 20.0, 9.6);
+		case 'stand pistol cover-right-open': return (9.2, -9.8, 20.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\sgt johnson
@@ -9059,7 +9537,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Sgt Johnson"
-	//$Sprite "HU6CA0"
+	//$Sprite "HU6DA0"
 	Default
 	{
 		Health 75;
@@ -9075,7 +9553,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2400;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (34.6, 6.2, 20.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 40, 90;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9493,6 +9971,22 @@ class HCE_SgtJohnson : HCE_MarineBase
 		}
 		HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (38.6, 5.1, 3.3);
+		case 'crouch rifle move-front': return (37.1, 7.2, 10.2);
+		case 'flee rifle move-front': return (25.2, -14.9, -5.2);
+		case 'stand rifle cover-left-open': return (27.5, 29.1, 16.4);
+		case 'stand rifle cover-right-open': return (29.8, 1.0, 16.0);
+		case 'stand rifle move-back': return (37.5, 6.0, 15.3);
+		case 'stand rifle move-front': return (38.9, 6.1, 17.1);
+		case 'stand rifle move-left': return (36.4, 7.4, 14.8);
+		case 'stand rifle move-right': return (36.4, 7.3, 15.4);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine\sgt stacker
@@ -9500,7 +9994,7 @@ class HCE_SgtStacker : HCE_MarineBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Sgt Stacker"
-	//$Sprite "HU6DA0"
+	//$Sprite "HU6EA0"
 	Default
 	{
 		Health 60;
@@ -9516,7 +10010,7 @@ class HCE_SgtStacker : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 320;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (19.3, 6.3, 19.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 40, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9907,6 +10401,22 @@ class HCE_SgtStacker : HCE_MarineBase
 		}
 		HCE_SetupAmmo();                          // a full SMG magazine; the double barrel comes back reloaded
 		HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
+	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (23.4, 4.8, 3.2);
+		case 'crouch rifle move-front': return (21.9, 7.2, 10.0);
+		case 'flee rifle move-front': return (15.7, -5.0, 1.7);
+		case 'stand rifle cover-left-open': return (12.5, 26.7, 14.5);
+		case 'stand rifle cover-right-open': return (14.7, -1.4, 16.3);
+		case 'stand rifle move-back': return (22.3, 6.0, 15.1);
+		case 'stand rifle move-front': return (23.6, 6.0, 16.9);
+		case 'stand rifle move-left': return (21.1, 7.3, 14.7);
+		case 'stand rifle move-right': return (21.1, 7.3, 15.3);
+		}
+		return hce_gunOffset;
 	}
 }
 
@@ -12891,7 +13401,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Assault Rifle)"
-	//$Sprite "HU3IA0"
+	//$Sprite "HU3JA0"
 	Default
 	{
 		Health 60;
@@ -12907,7 +13417,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13084,6 +13594,22 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored assault rifle major
@@ -13091,7 +13617,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored Assault Rifle Major"
-	//$Sprite "HU3JA0"
+	//$Sprite "HU3KA0"
 	Default
 	{
 		Health 75;
@@ -13107,7 +13633,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13284,6 +13810,22 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored battle rifle
@@ -13291,7 +13833,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Battle Rifle)"
-	//$Sprite "HU3KA0"
+	//$Sprite "HU3LA0"
 	Default
 	{
 		Health 60;
@@ -13307,7 +13849,7 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.3, 8.7, 18.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13487,6 +14029,20 @@ class HCE_MarineArmoredBattleRifle : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return (20.9, 8.3, -1.3);
+		case 'crouch h2br move-front': return (25.0, 5.7, 9.7);
+		case 'stand h2br move-back': return (15.5, 7.6, 15.4);
+		case 'stand h2br move-front': return (36.6, 5.6, 16.2);
+		case 'stand h2br move-right': return (24.1, 11.1, 16.3);
+		case 'stand rifle cover-left-open': return (13.7, 26.9, 14.8);
+		case 'stand rifle cover-right-open': return (16.0, -1.2, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored bulldog
@@ -13494,7 +14050,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Bulldog)"
-	//$Sprite "HU3LA0"
+	//$Sprite "HU3MA0"
 	Default
 	{
 		Health 60;
@@ -13510,7 +14066,7 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (22.3, 7.6, 20.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13685,6 +14241,22 @@ class HCE_MarineArmoredBulldog : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2bulldog idle': return (19.3, 7.7, -0.3);
+		case 'crouch h2bulldog move-front': return (20.9, 5.7, 12.5);
+		case 'flee rifle move-front': return (16.8, -6.3, 0.5);
+		case 'stand h2bulldog move-back': return (13.2, 7.2, 16.4);
+		case 'stand h2bulldog move-front': return (33.4, 5.3, 18.7);
+		case 'stand h2bulldog move-left': return (21.8, 8.6, 17.8);
+		case 'stand h2bulldog move-right': return (22.1, 10.5, 17.3);
+		case 'stand rifle cover-left-open': return (14.6, 27.1, 14.4);
+		case 'stand rifle cover-right-open': return (16.8, -1.0, 16.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored commando
@@ -13692,7 +14264,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Commando)"
-	//$Sprite "HU3MA0"
+	//$Sprite "HU3NA0"
 	Default
 	{
 		Health 60;
@@ -13708,7 +14280,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1280;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (25.1, 6.3, 20.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13883,6 +14455,22 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (29.1, 5.0, 3.8);
+		case 'crouch rifle move-front': return (27.6, 7.3, 10.7);
+		case 'flee rifle move-front': return (19.6, -8.7, -0.4);
+		case 'stand rifle cover-left-open': return (18.1, 27.6, 15.8);
+		case 'stand rifle cover-right-open': return (20.5, -0.6, 16.8);
+		case 'stand rifle move-back': return (28.0, 6.1, 15.7);
+		case 'stand rifle move-front': return (29.4, 6.1, 17.6);
+		case 'stand rifle move-left': return (26.9, 7.5, 15.3);
+		case 'stand rifle move-right': return (26.9, 7.4, 16.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored dmr
@@ -13890,7 +14478,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Dmr)"
-	//$Sprite "HU3NA0"
+	//$Sprite "HU3OA0"
 	Default
 	{
 		Health 60;
@@ -13906,7 +14494,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 2080;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.6, 6.1, 17.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14081,6 +14669,22 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (25.6, 4.8, 1.2);
+		case 'crouch rifle move-front': return (24.1, 7.1, 8.1);
+		case 'flee rifle move-front': return (16.1, -6.5, -0.9);
+		case 'stand rifle cover-left-open': return (14.8, 27.3, 12.8);
+		case 'stand rifle cover-right-open': return (16.8, -0.6, 14.4);
+		case 'stand rifle move-back': return (24.5, 5.8, 13.1);
+		case 'stand rifle move-front': return (25.8, 5.8, 15.0);
+		case 'stand rifle move-left': return (23.4, 7.0, 12.8);
+		case 'stand rifle move-right': return (23.3, 7.0, 13.4);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored double barrel
@@ -14088,7 +14692,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Double Barrel)"
-	//$Sprite "HU3OA0"
+	//$Sprite "HU3PA0"
 	Default
 	{
 		Health 60;
@@ -14104,7 +14708,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 320;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (19.3, 6.3, 19.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14283,6 +14887,22 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (23.4, 4.8, 3.2);
+		case 'crouch rifle move-front': return (21.9, 7.2, 10.0);
+		case 'flee rifle move-front': return (15.7, -5.0, 1.7);
+		case 'stand rifle cover-left-open': return (12.5, 26.7, 14.5);
+		case 'stand rifle cover-right-open': return (14.7, -1.4, 16.3);
+		case 'stand rifle move-back': return (22.3, 6.0, 15.1);
+		case 'stand rifle move-front': return (23.6, 6.0, 16.9);
+		case 'stand rifle move-left': return (21.1, 7.3, 14.7);
+		case 'stand rifle move-right': return (21.1, 7.3, 15.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored flamethrower
@@ -14290,7 +14910,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Flamethrower)"
-	//$Sprite "HU3PA0"
+	//$Sprite "HU3QA0"
 	Default
 	{
 		Health 60;
@@ -14306,7 +14926,7 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 400;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (32.7, 10.5, 4.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14482,6 +15102,20 @@ class HCE_MarineArmoredFlamethrower : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch support move-front': return (37.4, 12.8, 11.1);
+		case 'flee rifle move-front': return (31.0, -1.0, 33.7);
+		case 'stand support idle': return (33.5, 10.5, 23.0);
+		case 'stand support move-back': return (38.3, 8.8, 21.5);
+		case 'stand support move-front': return (36.7, 7.3, 24.2);
+		case 'stand support move-left': return (33.3, 13.4, 20.2);
+		case 'stand support move-right': return (33.1, 10.3, 19.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored gpmg
@@ -14489,7 +15123,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Gpmg)"
-	//$Sprite "HU3QA0"
+	//$Sprite "HU3RA0"
 	Default
 	{
 		Health 60;
@@ -14505,7 +15139,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (37.7, 6.2, 19.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14680,6 +15314,21 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (41.7, 5.2, 2.0);
+		case 'crouch rifle move-front': return (40.2, 7.3, 8.9);
+		case 'stand rifle cover-left-open': return (30.6, 29.8, 15.5);
+		case 'stand rifle cover-right-open': return (32.8, 1.9, 14.7);
+		case 'stand rifle move-back': return (40.6, 5.9, 14.0);
+		case 'stand rifle move-front': return (42.0, 6.0, 15.8);
+		case 'stand rifle move-left': return (39.5, 7.3, 13.5);
+		case 'stand rifle move-right': return (39.5, 7.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored grenade launcher
@@ -14687,7 +15336,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Grenade Launcher)"
-	//$Sprite "HU3RA0"
+	//$Sprite "HU3SA0"
 	Default
 	{
 		Health 60;
@@ -14703,7 +15352,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1440;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (19.3, 6.3, 17.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14879,6 +15528,22 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (23.3, 4.9, 1.1);
+		case 'crouch rifle move-front': return (21.8, 7.3, 7.9);
+		case 'flee rifle move-front': return (14.7, -4.9, -0.0);
+		case 'stand rifle cover-left-open': return (12.6, 27.1, 12.4);
+		case 'stand rifle cover-right-open': return (14.5, -0.8, 14.3);
+		case 'stand rifle move-back': return (22.2, 6.0, 12.9);
+		case 'stand rifle move-front': return (23.5, 5.9, 14.8);
+		case 'stand rifle move-left': return (21.0, 7.1, 12.6);
+		case 'stand rifle move-right': return (21.0, 7.1, 13.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored hydra
@@ -14886,7 +15551,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Hydra)"
-	//$Sprite "HU3SA0"
+	//$Sprite "HU3TA0"
 	Default
 	{
 		Health 60;
@@ -14902,7 +15567,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1920;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.2, 6.4, 20.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15080,6 +15745,22 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (25.2, 4.9, 4.1);
+		case 'crouch rifle move-front': return (23.7, 7.3, 11.0);
+		case 'flee rifle move-front': return (17.3, -6.1, 1.6);
+		case 'stand rifle cover-left-open': return (14.3, 27.0, 15.6);
+		case 'stand rifle cover-right-open': return (16.6, -1.3, 17.2);
+		case 'stand rifle move-back': return (24.1, 6.2, 16.0);
+		case 'stand rifle move-front': return (25.5, 6.1, 17.8);
+		case 'stand rifle move-left': return (23.0, 7.6, 15.6);
+		case 'stand rifle move-right': return (23.0, 7.5, 16.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored ma37
@@ -15087,7 +15768,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Ma37)"
-	//$Sprite "HU3TA0"
+	//$Sprite "HU3UA0"
 	Default
 	{
 		Health 60;
@@ -15103,7 +15784,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15278,6 +15959,22 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
+		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
+		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored magnum
@@ -15285,7 +15982,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored Magnum"
-	//$Sprite "HU3UA0"
+	//$Sprite "HU3VA0"
 	Default
 	{
 		Health 60;
@@ -15301,7 +15998,7 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 5.7, 23.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15479,6 +16176,24 @@ class HCE_MarineArmoredMagnum : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (23.4, 8.1, 4.2);
+		case 'crouch h2pistol move-front': return (17.3, 5.3, 16.5);
+		case 'flee rifle move-front': return (9.1, 1.7, 6.0);
+		case 'stand h2pistol low-idle': return (16.9, 10.2, 0.7);
+		case 'stand h2pistol low-move': return (25.7, 9.0, -0.0);
+		case 'stand h2pistol move-back': return (12.2, 5.6, 21.1);
+		case 'stand h2pistol move-front': return (26.9, 4.9, 23.6);
+		case 'stand h2pistol move-left': return (20.8, 2.4, 23.2);
+		case 'stand h2pistol move-right': return (22.2, 9.6, 22.4);
+		case 'stand pistol cover-left-open': return (15.3, 19.3, 12.2);
+		case 'stand pistol cover-right-open': return (7.0, -10.7, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored needler
@@ -15486,7 +16201,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Needler)"
-	//$Sprite "HU3VA0"
+	//$Sprite "HU3WA0"
 	Default
 	{
 		Health 60;
@@ -15502,7 +16217,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (26.1, 3.6, 21.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15677,6 +16392,21 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'flee rifle move-front': return (9.5, -0.8, 1.1);
+		case 'stand pistol cover-left-open': return (18.5, 19.6, 7.9);
+		case 'stand pistol cover-right-open': return (8.1, -9.6, 17.8);
+		case 'stand pistol idle': return (28.3, 3.2, 16.3);
+		case 'stand pistol move-back': return (27.0, 5.7, 13.0);
+		case 'stand pistol move-front': return (15.8, 4.6, -4.1);
+		case 'stand pistol move-left': return (24.0, 6.4, 9.8);
+		case 'stand pistol move-right': return (24.6, 6.3, 11.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored plasma rifle
@@ -15684,7 +16414,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Plasma Rifle)"
-	//$Sprite "HU3WA0"
+	//$Sprite "HU3XA0"
 	Default
 	{
 		Health 60;
@@ -15700,7 +16430,7 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (16.2, 8.7, 17.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15878,6 +16608,20 @@ class HCE_MarineArmoredPlasmaRifle : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2plasma idle': return (12.8, 7.4, -1.8);
+		case 'crouch h2plasma move-front': return (17.0, 5.1, 8.8);
+		case 'stand h2plasma move-back': return (7.3, 7.0, 14.7);
+		case 'stand h2plasma move-front': return (28.4, 4.7, 15.6);
+		case 'stand h2plasma move-right': return (15.9, 10.3, 15.7);
+		case 'stand rifle cover-left-open': return (7.0, 26.5, 8.9);
+		case 'stand rifle cover-right-open': return (7.8, -1.1, 12.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored plasma rifle major
@@ -15885,7 +16629,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored Plasma Rifle Major"
-	//$Sprite "HU3XA0"
+	//$Sprite "HU3YA0"
 	Default
 	{
 		Health 75;
@@ -15901,7 +16645,7 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (16.2, 8.7, 17.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16079,6 +16823,20 @@ class HCE_MarineArmoredPlasmaRifleMajor : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2plasma idle': return (12.8, 7.4, -1.8);
+		case 'crouch h2plasma move-front': return (17.0, 5.1, 8.8);
+		case 'stand h2plasma move-back': return (7.3, 7.0, 14.7);
+		case 'stand h2plasma move-front': return (28.4, 4.7, 15.6);
+		case 'stand h2plasma move-right': return (15.9, 10.3, 15.7);
+		case 'stand rifle cover-left-open': return (7.0, 26.5, 8.9);
+		case 'stand rifle cover-right-open': return (7.8, -1.1, 12.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored rocket launcher
@@ -16086,7 +16844,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Rocket Launcher)"
-	//$Sprite "HU3YA0"
+	//$Sprite "HU3ZA0"
 	Default
 	{
 		Health 60;
@@ -16102,7 +16860,7 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 560, 2000;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (18.3, 9.5, 26.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16279,6 +17037,23 @@ class HCE_MarineArmoredRocketLauncher : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2missile idle': return (17.9, 8.7, 6.2);
+		case 'crouch h2missile move-front': return (17.3, 6.4, 19.4);
+		case 'flee rifle move-front': return (15.9, -4.4, 3.6);
+		case 'stand h2missile idle': return (21.0, 9.5, 25.6);
+		case 'stand h2missile move-back': return (12.4, 7.7, 23.0);
+		case 'stand h2missile move-front': return (29.9, 6.3, 26.2);
+		case 'stand h2missile move-left': return (23.2, 6.9, 24.9);
+		case 'stand h2missile move-right': return (22.3, 14.2, 24.0);
+		case 'stand rifle cover-left-open': return (11.6, 26.3, 16.1);
+		case 'stand rifle cover-right-open': return (14.0, -2.0, 18.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored shotgun major
@@ -16286,7 +17061,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored Shotgun Major"
-	//$Sprite "HU3ZA0"
+	//$Sprite "HU40A0"
 	Default
 	{
 		Health 75;
@@ -16302,7 +17077,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16479,6 +17254,23 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored sidekick
@@ -16486,7 +17278,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Sidekick)"
-	//$Sprite "HU40A0"
+	//$Sprite "HU41A0"
 	Default
 	{
 		Health 60;
@@ -16502,7 +17294,7 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (22.7, 6.1, 22.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16679,6 +17471,22 @@ class HCE_MarineArmoredSidekick : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (25.4, 8.5, 2.4);
+		case 'crouch h2pistol move-front': return (19.3, 5.8, 14.7);
+		case 'flee rifle move-front': return (9.8, 0.3, 3.7);
+		case 'stand h2pistol move-back': return (14.2, 6.0, 19.4);
+		case 'stand h2pistol move-front': return (28.8, 5.3, 21.9);
+		case 'stand h2pistol move-left': return (22.8, 3.2, 21.6);
+		case 'stand h2pistol move-right': return (24.2, 9.9, 20.5);
+		case 'stand pistol cover-left-open': return (17.3, 19.6, 10.4);
+		case 'stand pistol cover-right-open': return (7.0, -10.1, 19.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored smg
@@ -16686,7 +17494,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Smg)"
-	//$Sprite "HU41A0"
+	//$Sprite "HU42A0"
 	Default
 	{
 		Health 60;
@@ -16702,7 +17510,7 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 160, 800;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (15.8, 7.7, 21.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16878,6 +17686,21 @@ class HCE_MarineArmoredSmg : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2smg idle': return (12.5, 6.9, 2.1);
+		case 'crouch h2smg move-front': return (16.6, 4.3, 12.7);
+		case 'flee rifle move-front': return (10.7, -0.2, 4.3);
+		case 'stand h2smg move-back': return (7.0, 6.1, 18.6);
+		case 'stand h2smg move-front': return (28.1, 4.1, 19.5);
+		case 'stand h2smg move-right': return (15.6, 9.8, 19.7);
+		case 'stand rifle cover-left-open': return (7.0, 25.7, 12.7);
+		case 'stand rifle cover-right-open': return (7.5, -2.3, 15.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored sniper
@@ -16885,7 +17708,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored Sniper"
-	//$Sprite "HU42A0"
+	//$Sprite "HU43A0"
 	Default
 	{
 		Health 60;
@@ -16901,7 +17724,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (40.5, 6.2, 20.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -17078,6 +17901,22 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (44.5, 5.2, 3.0);
+		case 'crouch rifle move-front': return (43.0, 7.2, 10.0);
+		case 'flee rifle move-front': return (28.8, -18.8, -8.1);
+		case 'stand rifle cover-left-open': return (33.3, 30.1, 16.9);
+		case 'stand rifle cover-right-open': return (35.6, 2.1, 15.6);
+		case 'stand rifle move-back': return (43.4, 6.0, 15.1);
+		case 'stand rifle move-front': return (44.8, 6.1, 16.9);
+		case 'stand rifle move-left': return (42.3, 7.4, 14.6);
+		case 'stand rifle move-right': return (42.3, 7.3, 15.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_armored\marine_armored sticky detonator
@@ -17085,7 +17924,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Marine Armored (Sticky Detonator)"
-	//$Sprite "HU43A0"
+	//$Sprite "HU44A0"
 	Default
 	{
 		Health 60;
@@ -17101,7 +17940,7 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 1120;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (26.1, 6.7, 21.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -17305,6 +18144,22 @@ class HCE_MarineArmoredStickyDetonator : HCE_MarineArmoredBase
 			A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_sticky_bomb_0.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
+	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2pistol idle': return (28.8, 9.0, 1.6);
+		case 'crouch h2pistol move-front': return (22.7, 6.3, 13.9);
+		case 'flee rifle move-front': return (11.8, -2.0, 1.8);
+		case 'stand h2pistol move-back': return (17.6, 6.6, 18.6);
+		case 'stand h2pistol move-front': return (32.2, 5.9, 21.1);
+		case 'stand h2pistol move-left': return (26.2, 3.9, 21.0);
+		case 'stand h2pistol move-right': return (27.6, 10.4, 19.7);
+		case 'stand pistol cover-left-open': return (20.7, 20.0, 9.6);
+		case 'stand pistol cover-right-open': return (9.2, -9.8, 20.7);
+		}
+		return hce_gunOffset;
 	}
 }
 
@@ -18064,7 +18919,7 @@ class HCE_MarineOdstAssaultRifle : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst (Assault Rifle)"
-	//$Sprite "HU4OA0"
+	//$Sprite "HU4PA0"
 	Default
 	{
 		Health 60;
@@ -18080,7 +18935,7 @@ class HCE_MarineOdstAssaultRifle : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -18257,6 +19112,22 @@ class HCE_MarineOdstAssaultRifle : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst assault rifle major
@@ -18264,7 +19135,7 @@ class HCE_MarineOdstAssaultRifleMajor : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Assault Rifle Major"
-	//$Sprite "HU4PA0"
+	//$Sprite "HU4QA0"
 	Default
 	{
 		Health 75;
@@ -18280,7 +19151,7 @@ class HCE_MarineOdstAssaultRifleMajor : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -18457,6 +19328,22 @@ class HCE_MarineOdstAssaultRifleMajor : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst closed helmet
@@ -18464,7 +19351,7 @@ class HCE_MarineOdstClosedHelmet : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Closed Helmet"
-	//$Sprite "HU4QA0"
+	//$Sprite "HU4RA0"
 	Default
 	{
 		Health 60;
@@ -18480,7 +19367,7 @@ class HCE_MarineOdstClosedHelmet : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.3, 8.7, 18.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -18675,6 +19562,20 @@ class HCE_MarineOdstClosedHelmet : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return (20.9, 8.3, -1.3);
+		case 'crouch h2br move-front': return (25.0, 5.7, 9.7);
+		case 'stand h2br move-back': return (15.5, 7.6, 15.4);
+		case 'stand h2br move-front': return (36.6, 5.6, 16.2);
+		case 'stand h2br move-right': return (24.1, 11.1, 16.3);
+		case 'stand rifle cover-left-open': return (13.7, 26.9, 14.8);
+		case 'stand rifle cover-right-open': return (16.0, -1.2, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst enclosed helmet
@@ -18682,7 +19583,7 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Enclosed Helmet"
-	//$Sprite "HU4RA0"
+	//$Sprite "HU4SA0"
 	Default
 	{
 		Health 75;
@@ -18698,7 +19599,7 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -18889,6 +19790,23 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst halo2
@@ -18896,7 +19814,7 @@ class HCE_MarineOdstHalo2 : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Halo2"
-	//$Sprite "HU4SA0"
+	//$Sprite "HU4TA0"
 	Default
 	{
 		Health 60;
@@ -18912,7 +19830,7 @@ class HCE_MarineOdstHalo2 : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.4, 8.5, 19.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -19101,6 +20019,21 @@ class HCE_MarineOdstHalo2 : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'flee rifle move-front': return (17.0, -5.9, 2.0);
+		case 'stand pistol idle': return (36.7, 4.9, 20.4);
+		case 'stand pistol move-front': return (24.8, 3.0, -4.5);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.3);
+		case 'stand unarmed move-back': return (26.4, 14.1, -0.2);
+		case 'stand unarmed move-left': return (11.4, 21.1, -5.5);
+		case 'stand unarmed move-right': return (11.6, 21.1, -4.8);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst halo2 battle rifle
@@ -19108,7 +20041,7 @@ class HCE_MarineOdstHalo2BattleRifle : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Halo2 (Battle Rifle)"
-	//$Sprite "HU4TA0"
+	//$Sprite "HU4UA0"
 	Default
 	{
 		Health 60;
@@ -19124,7 +20057,7 @@ class HCE_MarineOdstHalo2BattleRifle : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.3, 8.7, 18.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -19324,6 +20257,20 @@ class HCE_MarineOdstHalo2BattleRifle : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return (20.9, 8.3, -1.3);
+		case 'crouch h2br move-front': return (25.0, 5.7, 9.7);
+		case 'stand h2br move-back': return (15.5, 7.6, 15.4);
+		case 'stand h2br move-front': return (36.6, 5.6, 16.2);
+		case 'stand h2br move-right': return (24.1, 11.1, 16.3);
+		case 'stand rifle cover-left-open': return (13.7, 26.9, 14.8);
+		case 'stand rifle cover-right-open': return (16.0, -1.2, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst halo2 shotgun
@@ -19331,7 +20278,7 @@ class HCE_MarineOdstHalo2Shotgun : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Halo2 (Shotgun)"
-	//$Sprite "HU4UA0"
+	//$Sprite "HU4VA0"
 	Default
 	{
 		Health 75;
@@ -19347,7 +20294,7 @@ class HCE_MarineOdstHalo2Shotgun : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (30.2, 9.8, 17.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -19536,6 +20483,19 @@ class HCE_MarineOdstHalo2Shotgun : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand pistol idle': return (42.2, 5.9, 17.4);
+		case 'stand pistol move-front': return (29.1, 3.6, -9.7);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand unarmed move-back': return (30.5, 17.0, -4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst hellbringer
@@ -19543,7 +20503,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Hellbringer"
-	//$Sprite "HU4VA0"
+	//$Sprite "HU4WA0"
 	Default
 	{
 		Health 60;
@@ -19559,7 +20519,7 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 400;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (32.7, 10.5, 4.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 75;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -19752,6 +20712,20 @@ class HCE_MarineOdstHellbringer : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch support move-front': return (37.4, 12.8, 11.1);
+		case 'flee rifle move-front': return (31.0, -1.0, 33.7);
+		case 'stand support idle': return (33.5, 10.5, 23.0);
+		case 'stand support move-back': return (38.3, 8.8, 21.5);
+		case 'stand support move-front': return (36.7, 7.3, 24.2);
+		case 'stand support move-left': return (33.3, 13.4, 20.2);
+		case 'stand support move-right': return (33.1, 10.3, 19.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst raven blue
@@ -19759,7 +20733,7 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Raven Blue"
-	//$Sprite "HU4WA0"
+	//$Sprite "HU4XA0"
 	Default
 	{
 		Health 60;
@@ -19775,7 +20749,7 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.6, 6.3, 20.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -19952,6 +20926,22 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (24.7, 4.8, 4.2);
+		case 'crouch rifle move-front': return (23.2, 7.2, 11.1);
+		case 'flee rifle move-front': return (17.0, -5.8, 2.0);
+		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.7);
+		case 'stand rifle cover-right-open': return (16.1, -1.5, 17.3);
+		case 'stand rifle move-back': return (23.6, 6.1, 16.1);
+		case 'stand rifle move-front': return (25.0, 6.1, 17.9);
+		case 'stand rifle move-left': return (22.5, 7.5, 15.7);
+		case 'stand rifle move-right': return (22.5, 7.4, 16.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst raven green
@@ -19959,7 +20949,7 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Raven Green"
-	//$Sprite "HU4XA0"
+	//$Sprite "HU4YA0"
 	Default
 	{
 		Health 75;
@@ -19975,7 +20965,7 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20152,6 +21142,23 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst raven orange
@@ -20159,7 +21166,7 @@ class HCE_MarineOdstRavenOrange : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Raven Orange"
-	//$Sprite "HU4YA0"
+	//$Sprite "HU4ZA0"
 	Default
 	{
 		Health 60;
@@ -20175,7 +21182,7 @@ class HCE_MarineOdstRavenOrange : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (24.3, 8.7, 18.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20355,6 +21362,20 @@ class HCE_MarineOdstRavenOrange : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2br idle': return (20.9, 8.3, -1.3);
+		case 'crouch h2br move-front': return (25.0, 5.7, 9.7);
+		case 'stand h2br move-back': return (15.5, 7.6, 15.4);
+		case 'stand h2br move-front': return (36.6, 5.6, 16.2);
+		case 'stand h2br move-right': return (24.1, 11.1, 16.3);
+		case 'stand rifle cover-left-open': return (13.7, 26.9, 14.8);
+		case 'stand rifle cover-right-open': return (16.0, -1.2, 16.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst raven purple
@@ -20362,7 +21383,7 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Raven Purple"
-	//$Sprite "HU4ZA0"
+	//$Sprite "HU50A0"
 	Default
 	{
 		Health 60;
@@ -20378,7 +21399,7 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (40.5, 6.2, 20.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20555,6 +21576,22 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (44.5, 5.2, 3.0);
+		case 'crouch rifle move-front': return (43.0, 7.2, 10.0);
+		case 'flee rifle move-front': return (28.8, -18.8, -8.1);
+		case 'stand rifle cover-left-open': return (33.3, 30.1, 16.9);
+		case 'stand rifle cover-right-open': return (35.6, 2.1, 15.6);
+		case 'stand rifle move-back': return (43.4, 6.0, 15.1);
+		case 'stand rifle move-front': return (44.8, 6.1, 16.9);
+		case 'stand rifle move-left': return (42.3, 7.4, 14.6);
+		case 'stand rifle move-right': return (42.3, 7.3, 15.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst rocketeer
@@ -20562,7 +21599,7 @@ class HCE_MarineOdstRocketeer : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Rocketeer"
-	//$Sprite "HU50A0"
+	//$Sprite "HU51A0"
 	Default
 	{
 		Health 60;
@@ -20578,7 +21615,7 @@ class HCE_MarineOdstRocketeer : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 560, 2000;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (18.3, 9.5, 26.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20770,6 +21807,23 @@ class HCE_MarineOdstRocketeer : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch h2missile idle': return (17.9, 8.7, 6.2);
+		case 'crouch h2missile move-front': return (17.3, 6.4, 19.4);
+		case 'flee rifle move-front': return (15.9, -4.4, 3.6);
+		case 'stand h2missile idle': return (21.0, 9.5, 25.6);
+		case 'stand h2missile move-back': return (12.4, 7.7, 23.0);
+		case 'stand h2missile move-front': return (29.9, 6.3, 26.2);
+		case 'stand h2missile move-left': return (23.2, 6.9, 24.9);
+		case 'stand h2missile move-right': return (22.3, 14.2, 24.0);
+		case 'stand rifle cover-left-open': return (11.6, 26.3, 16.1);
+		case 'stand rifle cover-right-open': return (14.0, -2.0, 18.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst shotgun
@@ -20777,7 +21831,7 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst (Shotgun)"
-	//$Sprite "HU51A0"
+	//$Sprite "HU52A0"
 	Default
 	{
 		Health 75;
@@ -20793,7 +21847,7 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20970,6 +22024,23 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (30.7, 5.0, 2.3);
+		case 'crouch rifle move-front': return (29.2, 7.3, 9.2);
+		case 'flee rifle move-front': return (19.8, -9.7, -2.4);
+		case 'stand rifle cover-left-open': return (19.7, 28.0, 14.5);
+		case 'stand rifle cover-right-open': return (21.9, 0.0, 15.3);
+		case 'stand rifle idle': return (26.9, 6.4, 18.4);
+		case 'stand rifle move-back': return (29.6, 6.0, 14.2);
+		case 'stand rifle move-front': return (30.9, 6.0, 16.1);
+		case 'stand rifle move-left': return (28.4, 7.3, 13.8);
+		case 'stand rifle move-right': return (28.4, 7.2, 14.5);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\marine_odst\marine odst sniper
@@ -20977,7 +22048,7 @@ class HCE_MarineOdstSniper : HCE_MarineODSTBase
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Marine Odst Sniper"
-	//$Sprite "HU52A0"
+	//$Sprite "HU53A0"
 	Default
 	{
 		Health 60;
@@ -20993,7 +22064,7 @@ class HCE_MarineOdstSniper : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2800;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -14.5);
+		HaloDoom_EnemyBase.HCE_GunOffset (40.5, 6.2, 20.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -21185,13 +22256,29 @@ class HCE_MarineOdstSniper : HCE_MarineODSTBase
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (44.5, 5.2, 3.0);
+		case 'crouch rifle move-front': return (43.0, 7.2, 10.0);
+		case 'flee rifle move-front': return (28.8, -18.8, -8.1);
+		case 'stand rifle cover-left-open': return (33.3, 30.1, 16.9);
+		case 'stand rifle cover-right-open': return (35.6, 2.1, 15.6);
+		case 'stand rifle move-back': return (43.4, 6.0, 15.1);
+		case 'stand rifle move-front': return (44.8, 6.1, 16.9);
+		case 'stand rifle move-left': return (42.3, 7.4, 14.6);
+		case 'stand rifle move-right': return (42.3, 7.3, 15.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 class HCE_RandomMarine : RandomSpawner
 {
 	//$Category "Halo CE/Marines (allies)/Marine"
 	//$Title "Random Marine"
-	//$Sprite "HU44A0"
+	//$Sprite "HU45A0"
 	Default
 	{
 		DropItem "HCE_MarineAssaultRifle", 255, 1;
@@ -21231,7 +22318,7 @@ class HCE_RandomMarineArmored : RandomSpawner
 {
 	//$Category "Halo CE/Marines (allies)/Marine Armored"
 	//$Title "Random Marine Armored"
-	//$Sprite "HU3IA0"
+	//$Sprite "HU3JA0"
 	Default
 	{
 		DropItem "HCE_MarineArmoredAssaultRifle", 255, 1;
@@ -21263,7 +22350,7 @@ class HCE_RandomMarineODST : RandomSpawner
 {
 	//$Category "Halo CE/Marines (allies)/Marine ODST"
 	//$Title "Random Marine ODST"
-	//$Sprite "HU4OA0"
+	//$Sprite "HU4PA0"
 	Default
 	{
 		DropItem "HCE_MarineOdstAssaultRifle", 255, 1;

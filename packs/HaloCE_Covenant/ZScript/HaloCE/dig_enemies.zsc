@@ -1615,7 +1615,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (52.2, 7.2, 12.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 0.3;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2143,6 +2143,19 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (16.4, 6.7, -0.5);
+		case 'stand rifle cover-right-open': return (24.9, -8.9, 11.9);
+		case 'stand rifle move-back': return (59.4, 5.8, 17.5);
+		case 'stand rifle move-front': return (58.8, 10.9, 6.7);
+		case 'stand rifle move-left': return (62.7, 5.6, 10.1);
+		case 'stand rifle move-right': return (62.8, -0.5, 10.1);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute captain plasma rifle
@@ -2165,7 +2178,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.7, 11.9, 8.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2681,6 +2694,19 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
+		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
+		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
+		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
+		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
+		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute captain shotgun
@@ -2703,7 +2729,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (53.0, 10.3, 11.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -3219,6 +3245,20 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
+		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
+		case 'stand rifle idle': return (56.4, 8.8, 10.7);
+		case 'stand rifle move-back': return (62.5, 5.8, 17.1);
+		case 'stand rifle move-front': return (61.8, 11.0, 6.3);
+		case 'stand rifle move-left': return (65.7, 5.7, 9.8);
+		case 'stand rifle move-right': return (65.8, -0.5, 9.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute chieftain gravity hammer
@@ -3241,7 +3281,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 0, 32;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (52.5, -24.5, 50.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 60, 70;
 		HaloDoom_EnemyBase.HCE_Leap 150, 400, 0.50, 13.0;
@@ -3752,6 +3792,20 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand melee idle': return (52.4, -3.7, 13.6);
+		case 'stand melee move-back': return (59.3, -2.4, 34.2);
+		case 'stand melee move-front': return (51.4, 11.5, 18.4);
+		case 'stand melee move-left': return (54.4, 6.0, 15.4);
+		case 'stand melee move-right': return (50.3, -12.3, 2.0);
+		case 'stand rifle cover-left-open': return (18.8, -5.6, 51.4);
+		case 'stand rifle cover-right-open': return (29.0, -30.0, 59.4);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // energy-shield flare for the Brutes: the same model, every surface the glowing shield texture
@@ -3777,7 +3831,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (48.2, 6.4, 13.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4289,6 +4343,19 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
+		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
+		case 'stand rifle move-back': return (55.7, 4.8, 19.3);
+		case 'stand rifle move-front': return (55.1, 9.8, 8.4);
+		case 'stand rifle move-left': return (58.9, 4.5, 11.8);
+		case 'stand rifle move-right': return (59.0, -1.6, 11.8);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute honor guard plasma rifle
@@ -4311,7 +4378,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.7, 11.9, 8.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4823,6 +4890,19 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
+		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
+		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
+		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
+		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
+		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute major shotgun
@@ -4845,7 +4925,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (53.0, 10.3, 11.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5362,6 +5442,20 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
+		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
+		case 'stand rifle idle': return (56.4, 8.8, 10.7);
+		case 'stand rifle move-back': return (62.5, 5.8, 17.1);
+		case 'stand rifle move-front': return (61.8, 11.0, 6.3);
+		case 'stand rifle move-left': return (65.7, 5.7, 9.8);
+		case 'stand rifle move-right': return (65.8, -0.5, 9.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute major spiker
@@ -5384,7 +5478,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (51.8, 10.7, 9.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5901,6 +5995,19 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.9, 8.2, -5.8);
+		case 'stand rifle cover-right-open': return (24.2, -6.5, 7.2);
+		case 'stand rifle move-back': return (58.4, 8.7, 13.3);
+		case 'stand rifle move-front': return (57.8, 14.2, 2.9);
+		case 'stand rifle move-left': return (61.7, 8.9, 6.3);
+		case 'stand rifle move-right': return (61.8, 2.7, 6.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute minor assault rifle
@@ -5923,7 +6030,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (48.2, 6.4, 13.9);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6440,6 +6547,19 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
+		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
+		case 'stand rifle move-back': return (55.7, 4.8, 19.3);
+		case 'stand rifle move-front': return (55.1, 9.8, 8.4);
+		case 'stand rifle move-left': return (58.9, 4.5, 11.8);
+		case 'stand rifle move-right': return (59.0, -1.6, 11.8);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute minor plasma rifle
@@ -6462,7 +6582,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.7, 11.9, 8.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6979,6 +7099,19 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
+		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
+		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
+		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
+		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
+		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\brute\brute stalker spiker
@@ -7001,7 +7134,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (30.0, -0.0, -19.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (51.8, 10.7, 9.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7519,6 +7652,19 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		A_ChangeModel('None', 7, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 7, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand rifle cover-left-open': return (15.9, 8.2, -5.8);
+		case 'stand rifle cover-right-open': return (24.2, -6.5, 7.2);
+		case 'stand rifle move-back': return (58.4, 8.7, 13.3);
+		case 'stand rifle move-front': return (57.8, 14.2, 2.9);
+		case 'stand rifle move-left': return (61.7, 8.9, 6.3);
+		case 'stand rifle move-right': return (61.8, 2.7, 6.2);
+		}
+		return hce_gunOffset;
+	}
 	override void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader
 	{
 		A_ChangeModel('None', 0, "", 'None', 0, "models/hce_dig/Brute/skins", 'brute_stalker_major_bth_brute_plain.png', CMDL_USESURFACESKIN);
@@ -7636,7 +7782,7 @@ class HCE_Drinol : HCE_DrinolBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
 		HaloDoom_EnemyBase.HCE_CombatRange 0, 32;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 1.20, 0.80, 1.80, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_GunOffset (34.0, -0.0, -24.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.8, 29.4, -20.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 44, 60;
 		HaloDoom_EnemyBase.HCE_Leap 140, 420, 0.60, 13.0;
@@ -7740,6 +7886,21 @@ class HCE_Drinol : HCE_DrinolBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
+	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch unarmed idle': return (17.2, 27.2, -5.8);
+		case 'crouch unarmed move-front': return (17.0, 28.3, -6.9);
+		case 'stand unarmed idle%1': return (38.0, 20.8, -19.6);
+		case 'stand unarmed idle%2': return (38.6, 31.6, -19.0);
+		case 'stand unarmed move-back': return (17.0, 28.5, -6.9);
+		case 'stand unarmed move-front': return (27.8, 26.3, -6.6);
+		case 'stand unarmed move-left': return (17.0, 28.1, -5.8);
+		case 'stand unarmed move-right': return (27.3, 36.3, -17.2);
+		}
+		return hce_gunOffset;
 	}
 }
 
@@ -8376,7 +8537,7 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (12.6, 15.1, -35.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8484,7 +8645,7 @@ class HCE_DroneCaptainMajorPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 19.5, -32.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8589,7 +8750,7 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 15.7, -45.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8672,6 +8833,16 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol move-back': return (17.8, 18.7, -28.3);
+		case 'stand pistol move-front': return (13.2, 17.0, -30.5);
+		case 'stand pistol move-left': return (11.4, 25.3, -21.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\drone\drone captain plasma rifle
@@ -8694,7 +8865,7 @@ class HCE_DroneCaptainPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 19.5, -32.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8799,7 +8970,7 @@ class HCE_DroneMajorNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (12.6, 15.1, -35.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8904,7 +9075,7 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 15.7, -45.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8987,6 +9158,16 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol move-back': return (17.8, 18.7, -28.3);
+		case 'stand pistol move-front': return (13.2, 17.0, -30.5);
+		case 'stand pistol move-left': return (11.4, 25.3, -21.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\drone\drone needler
@@ -9009,7 +9190,7 @@ class HCE_DroneNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (12.6, 15.1, -35.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9114,7 +9295,7 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 15.7, -45.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9197,6 +9378,16 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol move-back': return (17.8, 18.7, -28.3);
+		case 'stand pistol move-front': return (13.2, 17.0, -30.5);
+		case 'stand pistol move-left': return (11.4, 25.3, -21.7);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\drone\drone plasma rifle
@@ -9219,7 +9410,7 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 19.5, -32.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9324,7 +9515,7 @@ class HCE_DroneSpiker : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 14.4, -51.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9407,6 +9598,16 @@ class HCE_DroneSpiker : HCE_DroneBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand pistol move-back': return (21.5, 20.0, -33.2);
+		case 'stand pistol move-front': return (16.0, 17.9, -36.3);
+		case 'stand pistol move-left': return (14.4, 27.5, -26.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\drone\drone ultra needler
@@ -9429,7 +9630,7 @@ class HCE_DroneUltraNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (12.6, 15.1, -35.8);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9534,7 +9735,7 @@ class HCE_DroneUltraPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (22.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (11.0, 19.5, -32.5);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -9778,7 +9979,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 960;
 		HaloDoom_EnemyBase.HCE_Burst 2.50, 4.50, 0.50, 0.70, 0.00, 0.90;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
@@ -9960,6 +10161,25 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite commander\elite commander pulse carbine
@@ -9982,7 +10202,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 960;
 		HaloDoom_EnemyBase.HCE_Burst 2.50, 4.50, 0.50, 0.70, 0.00, 0.90;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
@@ -10155,6 +10375,25 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		}
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite honor guard\elite honor guard plasma carbine
@@ -10177,7 +10416,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 960;
 		HaloDoom_EnemyBase.HCE_Burst 2.50, 4.50, 0.50, 0.70, 0.00, 0.90;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
@@ -10415,6 +10654,25 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 7, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite major\elite major plasma carbine
@@ -10437,7 +10695,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -10619,6 +10877,25 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite major\elite major pulse carbine
@@ -10641,7 +10918,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -10814,6 +11091,25 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		}
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite minor\elite minor plasma carbine
@@ -10836,7 +11132,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -11018,6 +11314,25 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite minor\elite minor pulse carbine
@@ -11040,7 +11355,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -11213,6 +11528,25 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		}
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite ranger\elite ranger plasma carbine
@@ -11235,7 +11569,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 960;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -11473,6 +11807,25 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		for(int i = 0; i < BS.Size(); i++) A_ChangeModel('None', 7, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite specops\elite specops plasma carbine
@@ -11495,7 +11848,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1008;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 0.70, 0.00, 0.90;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -11678,6 +12031,25 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // characters\elite\elite specops\elite specops pulse carbine
@@ -11700,7 +12072,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1008;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 0.70, 0.00, 0.90;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (38.0, 8.2, 18.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -11874,6 +12246,25 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		}
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'alert rifle idle': return (25.4, -4.0, 2.7);
+		case 'crouch rifle idle': return (41.3, 8.2, -10.9);
+		case 'crouch rifle move-front': return (38.4, 7.6, -1.7);
+		case 'stand rifle cover-left-open': return (22.7, 11.2, 5.6);
+		case 'stand rifle cover-left-peek': return (8.0, 5.3, 4.6);
+		case 'stand rifle cover-right-open': return (20.9, -6.2, 5.4);
+		case 'stand rifle low-idle': return (31.9, 3.9, -10.5);
+		case 'stand rifle low-move': return (31.3, 4.5, -7.1);
+		case 'stand rifle move-back': return (33.0, 6.7, 14.2);
+		case 'stand rifle move-front': return (42.0, 10.8, 8.9);
+		case 'stand rifle move-left': return (39.3, 0.5, 16.7);
+		case 'stand rifle move-right': return (36.0, 11.2, 14.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
@@ -12044,7 +12435,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
 		HaloDoom_EnemyBase.HCE_CombatRange 0, 32;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 1.20, 0.80, 1.80, 0.00, 1.00;
-		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -16.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (46.6, 5.4, 21.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 64, 151;
 		HaloDoom_EnemyBase.HCE_Leap 136, 360, 0.35, 11.2;
@@ -12228,6 +12619,25 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		return (0, 0, 0);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch guard sword idle': return (43.9, 20.3, -27.3);
+		case 'crouch guard sword move-front': return (46.0, 25.0, -20.7);
+		case 'crouch sword idle': return (43.9, 20.3, -27.3);
+		case 'crouch sword move-front': return (46.0, 25.0, -20.7);
+		case 'guard sword move-left': return (26.7, 34.6, -4.4);
+		case 'guard sword move-right': return (32.7, 25.5, -17.9);
+		case 'stand rifle cover-left-open': return (28.0, 11.2, 5.5);
+		case 'stand rifle cover-left-peek': return (9.8, 7.1, 3.6);
+		case 'stand rifle cover-right-open': return (26.2, -6.2, 5.3);
+		case 'stand sword move-back': return (30.6, 19.1, -15.5);
+		case 'stand sword move-left': return (26.7, 34.6, -4.4);
+		case 'stand sword move-right': return (32.7, 25.5, -17.9);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // energy-shield flare for the EliteZealots: the same model, every surface the glowing shield texture
@@ -13088,7 +13498,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Major Helmet (Plasma Rifle)"
-	//$Sprite "HU3AA0"
+	//$Sprite "HU3BA0"
 	Default
 	{
 		Health 75;
@@ -13103,7 +13513,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 1.00, 1.25, 0.50, 0.90, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (30.2, -3.8, 10.3);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13229,6 +13639,19 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 	override Name HCE_ShieldBone() { return 'shield'; }
 	override Name HCE_GunHandBone() { return 'l_hand'; }
 	override int HCE_ShieldSurface() { return 10; }
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol idle': return (19.6, -7.6, 1.9);
+		case 'crouch pistol move-front': return (29.4, -7.6, 5.2);
+		case 'stand pistol move-back': return (29.1, -7.5, 16.9);
+		case 'stand pistol move-front': return (36.2, -8.3, 14.1);
+		case 'stand pistol move-left': return (33.6, -7.8, 7.6);
+		case 'stand pistol move-right': return (33.6, -6.0, 5.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal marksman plasma carbine
@@ -13236,7 +13659,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Marksman (Plasma Carbine)"
-	//$Sprite "HU3CA0"
+	//$Sprite "HU3DA0"
 	Default
 	{
 		Health 70;
@@ -13251,7 +13674,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.4, 16.9, 5.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13385,6 +13808,15 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (31.8, -3.9, 10.7);
+		case 'crouch rifle move-front': return (35.3, -4.1, 15.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal marksman pulse carbine
@@ -13392,7 +13824,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Marksman (Pulse Carbine)"
-	//$Sprite "HU3DA0"
+	//$Sprite "HU3EA0"
 	Default
 	{
 		Health 70;
@@ -13407,7 +13839,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 480, 1760;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (20.4, 16.9, 5.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13532,6 +13964,15 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 	override Name HCE_ShieldBone() { return 'shield'; }
 	override Name HCE_GunHandBone() { return 'l_hand'; }
 	override int HCE_ShieldSurface() { return 10; }
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (31.8, -3.9, 10.7);
+		case 'crouch rifle move-front': return (35.3, -4.1, 15.0);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal sniper beam rifle
@@ -13539,7 +13980,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Sniper (Beam Rifle)"
-	//$Sprite "HU3FA0"
+	//$Sprite "HU3GA0"
 	Default
 	{
 		Health 60;
@@ -13554,7 +13995,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 640, 2240;
 		HaloDoom_EnemyBase.HCE_Burst 0.40, 0.85, 1.50, 2.00, 0.40, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.3, 18.3, 2.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13680,6 +14121,15 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 	override Name HCE_ShieldBone() { return 'shield'; }
 	override Name HCE_GunHandBone() { return 'l_hand'; }
 	override int HCE_ShieldSurface() { return 10; }
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle idle': return (34.3, -4.1, 8.2);
+		case 'crouch rifle move-front': return (37.7, -4.3, 12.4);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal ultra plasma rifle
@@ -13687,7 +14137,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Ultra (Plasma Rifle)"
-	//$Sprite "HU3GA0"
+	//$Sprite "HU3HA0"
 	Default
 	{
 		Health 100;
@@ -13702,7 +14152,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (30.2, -3.8, 10.3);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13828,6 +14278,19 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 	override Name HCE_ShieldBone() { return 'shield'; }
 	override Name HCE_GunHandBone() { return 'l_hand'; }
 	override int HCE_ShieldSurface() { return 10; }
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol idle': return (19.6, -7.6, 1.9);
+		case 'crouch pistol move-front': return (29.4, -7.6, 5.2);
+		case 'stand pistol move-back': return (29.1, -7.5, 16.9);
+		case 'stand pistol move-front': return (36.2, -8.3, 14.1);
+		case 'stand pistol move-left': return (33.6, -7.8, 7.6);
+		case 'stand pistol move-right': return (33.6, -6.0, 5.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // objects\characters\jackal\jackal\jackal zealot spiker
@@ -13835,7 +14298,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Jackal Zealot (Spiker)"
-	//$Sprite "HU3HA0"
+	//$Sprite "HU3IA0"
 	Default
 	{
 		Health 120;
@@ -13850,7 +14313,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.50, 1.50, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.4, -3.5, 6.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -13976,6 +14439,20 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 	override Name HCE_ShieldBone() { return 'shield'; }
 	override Name HCE_GunHandBone() { return 'l_hand'; }
 	override int HCE_ShieldSurface() { return 10; }
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol idle': return (29.1, -7.1, -0.2);
+		case 'crouch pistol move-front': return (38.9, -7.2, 2.6);
+		case 'stand pistol idle': return (41.5, -3.7, 9.1);
+		case 'stand pistol move-back': return (38.7, -7.8, 15.2);
+		case 'stand pistol move-front': return (45.7, -9.0, 12.3);
+		case 'stand pistol move-left': return (43.2, -8.1, 6.0);
+		case 'stand pistol move-right': return (43.2, -6.3, 3.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 class HCE_SlugManBase : HaloDoom_EnemyBase abstract
@@ -14581,7 +15058,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Needler)"
-	//$Sprite "HU6EA0"
+	//$Sprite "HU6FA0"
 	Default
 	{
 		Health 135;
@@ -14596,7 +15073,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (17.8, -7.3, -2.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14731,6 +15208,19 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol move-front': return (27.5, -7.1, 4.1);
+		case 'stand pistol idle': return (31.0, -2.1, 11.4);
+		case 'stand pistol move-back': return (25.9, -6.7, 17.6);
+		case 'stand pistol move-front': return (35.2, -6.3, 15.2);
+		case 'stand pistol move-left': return (33.2, -5.7, 5.3);
+		case 'stand pistol move-right': return (32.7, -3.7, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man major particle beam
@@ -14738,7 +15228,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Particle Beam)"
-	//$Sprite "HU6FA0"
+	//$Sprite "HU6GA0"
 	Default
 	{
 		Health 135;
@@ -14753,7 +15243,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -14936,6 +15426,14 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		Spawn("HCE_BeamPuff", to);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.4, -1.9, 7.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man major plasma carbine
@@ -14943,7 +15441,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Plasma Carbine)"
-	//$Sprite "HU6GA0"
+	//$Sprite "HU6HA0"
 	Default
 	{
 		Health 135;
@@ -14958,7 +15456,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15101,6 +15599,14 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.1, -1.8, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man major plasma pistol
@@ -15108,7 +15614,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Plasma Pistol)"
-	//$Sprite "HU6HA0"
+	//$Sprite "HU6IA0"
 	Default
 	{
 		Health 135;
@@ -15123,7 +15629,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (30.3, -1.7, 13.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15258,6 +15764,19 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol idle': return (17.9, -7.5, -0.5);
+		case 'crouch pistol move-front': return (27.5, -7.6, 6.5);
+		case 'stand pistol move-back': return (25.6, -7.3, 19.9);
+		case 'stand pistol move-front': return (35.0, -6.8, 17.5);
+		case 'stand pistol move-left': return (32.9, -6.3, 7.6);
+		case 'stand pistol move-right': return (32.4, -4.3, 6.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man major plasma rifle
@@ -15265,7 +15784,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Plasma Rifle)"
-	//$Sprite "HU6IA0"
+	//$Sprite "HU6JA0"
 	Default
 	{
 		Health 135;
@@ -15280,7 +15799,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (17.9, -7.6, -0.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15415,6 +15934,19 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol move-front': return (27.8, -7.3, 5.4);
+		case 'stand pistol idle': return (31.2, -2.4, 12.7);
+		case 'stand pistol move-back': return (26.0, -7.0, 18.9);
+		case 'stand pistol move-front': return (35.4, -6.5, 16.5);
+		case 'stand pistol move-left': return (33.3, -5.9, 6.6);
+		case 'stand pistol move-right': return (32.8, -4.0, 5.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man major pulse carbine
@@ -15422,7 +15954,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Major (Pulse Carbine)"
-	//$Sprite "HU6JA0"
+	//$Sprite "HU6KA0"
 	Default
 	{
 		Health 135;
@@ -15437,7 +15969,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15571,6 +16103,14 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.1, -1.8, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man minor needler
@@ -15578,7 +16118,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Minor (Needler)"
-	//$Sprite "HU6KA0"
+	//$Sprite "HU6LA0"
 	Default
 	{
 		Health 100;
@@ -15593,7 +16133,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (17.8, -7.3, -2.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15728,6 +16268,19 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol move-front': return (27.5, -7.1, 4.1);
+		case 'stand pistol idle': return (31.0, -2.1, 11.4);
+		case 'stand pistol move-back': return (25.9, -6.7, 17.6);
+		case 'stand pistol move-front': return (35.2, -6.3, 15.2);
+		case 'stand pistol move-left': return (33.2, -5.7, 5.3);
+		case 'stand pistol move-right': return (32.7, -3.7, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man minor plasma carbine
@@ -15735,7 +16288,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Minor (Plasma Carbine)"
-	//$Sprite "HU6LA0"
+	//$Sprite "HU6MA0"
 	Default
 	{
 		Health 100;
@@ -15750,7 +16303,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -15893,6 +16446,14 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.1, -1.8, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man minor plasma rifle
@@ -15900,7 +16461,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Minor (Plasma Rifle)"
-	//$Sprite "HU6MA0"
+	//$Sprite "HU6NA0"
 	Default
 	{
 		Health 100;
@@ -15915,7 +16476,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (17.9, -7.6, -0.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16050,6 +16611,19 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol move-front': return (27.8, -7.3, 5.4);
+		case 'stand pistol idle': return (31.2, -2.4, 12.7);
+		case 'stand pistol move-back': return (26.0, -7.0, 18.9);
+		case 'stand pistol move-front': return (35.4, -6.5, 16.5);
+		case 'stand pistol move-left': return (33.3, -5.9, 6.6);
+		case 'stand pistol move-right': return (32.8, -4.0, 5.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man particle beam
@@ -16057,7 +16631,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man (Particle Beam)"
-	//$Sprite "HU6NA0"
+	//$Sprite "HU6OA0"
 	Default
 	{
 		Health 100;
@@ -16072,7 +16646,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16255,6 +16829,14 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		Spawn("HCE_BeamPuff", to);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.4, -1.9, 7.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man plasma pistol
@@ -16262,7 +16844,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man (Plasma Pistol)"
-	//$Sprite "HU6OA0"
+	//$Sprite "HU6PA0"
 	Default
 	{
 		Health 100;
@@ -16277,7 +16859,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (30.3, -1.7, 13.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16412,6 +16994,19 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol idle': return (17.9, -7.5, -0.5);
+		case 'crouch pistol move-front': return (27.5, -7.6, 6.5);
+		case 'stand pistol move-back': return (25.6, -7.3, 19.9);
+		case 'stand pistol move-front': return (35.0, -6.8, 17.5);
+		case 'stand pistol move-left': return (32.9, -6.3, 7.6);
+		case 'stand pistol move-right': return (32.4, -4.3, 6.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man ultra particle beam
@@ -16419,7 +17014,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Ultra (Particle Beam)"
-	//$Sprite "HU6PA0"
+	//$Sprite "HU6QA0"
 	Default
 	{
 		Health 180;
@@ -16434,7 +17029,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16617,6 +17212,14 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		Spawn("HCE_BeamPuff", to);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.4, -1.9, 7.3);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man ultra plasma carbine
@@ -16624,7 +17227,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Ultra (Plasma Carbine)"
-	//$Sprite "HU6QA0"
+	//$Sprite "HU6RA0"
 	Default
 	{
 		Health 180;
@@ -16639,7 +17242,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16782,6 +17385,14 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		HCE_EnemyLaser.Flash(shot.pos, HCE_TraceEnd(shot.pos, shot.vel), "Green", 2.0, 0.5);
 	}
 	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch rifle move-front': return (37.1, -1.8, 4.2);
+		}
+		return hce_gunOffset;
+	}
 }
 
 // digsite\characters\slug_man\slug_man ultra plasma rifle
@@ -16789,7 +17400,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Slug Man Ultra (Plasma Rifle)"
-	//$Sprite "HU6RA0"
+	//$Sprite "HU6SA0"
 	Default
 	{
 		Health 180;
@@ -16804,7 +17415,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 200, 560;
 		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.60, 0.50, 0.75, 0.20, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (14.0, -0.0, -12.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (17.9, -7.6, -0.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 24, 20;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -16939,6 +17550,19 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 	{
 		return (0, 0, 0);
 	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'crouch pistol move-front': return (27.8, -7.3, 5.4);
+		case 'stand pistol idle': return (31.2, -2.4, 12.7);
+		case 'stand pistol move-back': return (26.0, -7.0, 18.9);
+		case 'stand pistol move-front': return (35.4, -6.5, 16.5);
+		case 'stand pistol move-left': return (33.3, -5.9, 6.6);
+		case 'stand pistol move-right': return (32.8, -4.0, 5.6);
+		}
+		return hce_gunOffset;
+	}
 }
 
 class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
@@ -17015,7 +17639,7 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 {
 	//$Category "Halo CE/Covenant/Thorn Beast"
 	//$Title "Thorn Beast"
-	//$Sprite "HU6VA0"
+	//$Sprite "HU6WA0"
 	Default
 	{
 		Health 350;
@@ -17155,7 +17779,7 @@ class HCE_RandomSlugMan : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/Slug Man"
 	//$Title "Random Slug Man"
-	//$Sprite "HU6EA0"
+	//$Sprite "HU6FA0"
 	Default
 	{
 		DropItem "HCE_SlugManMajorNeedler", 255, 1;
@@ -17190,7 +17814,7 @@ class HCE_RandomThornBeast : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/Thorn Beast"
 	//$Title "Random Thorn Beast"
-	//$Sprite "HU6VA0"
+	//$Sprite "HU6WA0"
 	Default
 	{
 		DropItem "HCE_ThornBeast", 255, 1;
@@ -17255,7 +17879,7 @@ class HCE_RandomH2Jackal : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
 	//$Title "Random H2 Jackal"
-	//$Sprite "HU3AA0"
+	//$Sprite "HU3BA0"
 	Default
 	{
 		DropItem "HCE_JackalMajorHelmetPlasmaRifle", 255, 1;

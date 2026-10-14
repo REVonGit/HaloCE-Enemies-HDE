@@ -27,9 +27,13 @@ MAPS = {
               r'characters\floodcombat elite new\armored\floodcombat elite armored': 'FloodEliteArmored',
               r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
               r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra'}),
+    # SOI's Singleplayer Adventure V3 (Steam Workshop 2906165512): its Flood Juggernaut, from its c20 (The Library)
+    'soi': (os.environ.get('HCE_SOI_C20', 'c20.map'),
+            {r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}),
 }
 # variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed
 VARIANT_KEYS = {
+    r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
     r'characters\floodcombat_human\armored\floodcombat_human ': r'characters\floodcombat_human\armored\floodcombat_human armored ',
     r'characters\floodcombat_human\floodcombat_human sniper rifle': r'characters\floodcombat_human\armored\floodcombat_human armored sniper rifle',
     r'characters\floodcombat elite shield\minor\floodcombat elite minor ': r'characters\floodcombat elite shield\floodcombat elite minor ',
@@ -49,6 +53,9 @@ OUT = ec.OUT
 
 def run(only=None):
     ai = dict(variants={}, actors={}, bipeds={}, collisions={}, weapons={})
+    if os.path.exists(f'{OUT}/spv3_ai.json'):          # a map not on hand keeps what an earlier run took from it
+        old = json.load(open(f'{OUT}/spv3_ai.json'))
+        for k in ai: ai[k].update(old.get(k, {}))
     for key, (path, chars) in MAPS.items():
         if not os.path.exists(path): print('missing', path); continue
         sub = run_map(path, chars, only)
@@ -64,6 +71,10 @@ def flood_sounds():
     got = {}
     for pid in ('Flood', 'FloodXAM'):
         if os.path.exists(MAPS[SOUNDS[pid][0]][0]): got.update(export_sounds(pid, od, full=True))
+    if os.path.exists(MAPS['soi'][0]):                 # the Juggernaut's own: juggernaut_<event>
+        for k, fs in export_sounds('FloodJuggernaut', od).items():
+            for f in fs: os.replace(f'{od}/{f}', f'{od}/juggernaut_{f}')
+            got[f'juggernaut_{k}'] = [f'juggernaut_{f}' for f in fs]
     if got: json.dump(got, open(f'{od}/index.json', 'w'), indent=1)
     print('Flood sounds:', sum(len(v) for v in got.values()), 'files')
 
@@ -133,7 +144,9 @@ SOUNDS = {'ThornBeast': ('a30', [r'sound\sfx\impulse\thornbeast']),
           # the XAM Campaign Overhaul's own Flood sounds (its c40): the infection forms' death squeal, the Flood Grunt's attack
           # (not its human and Elite idles: they don't fit the Flood's voices)
           'FloodXAM': ('c40', [r'sound\sfx2\characters\flood\infection_form', r'sound\sfx2\characters\flood\grunt',
-                               r'sound\sfx2\impacts\flood flesh impact'])}
+                               r'sound\sfx2\impacts\flood flesh impact']),
+          # SOI's Flood Juggernaut (its c20): its pain, death, taunt, spotting, berserk and melee roars
+          'FloodJuggernaut': ('soi', [r'soi\characters\flood_juggernaut\sounds'])}
 
 
 SPV3_SOUNDS = os.environ.get('HCE_SPV3_SOUNDS', 'sounds.map')   # SPV3's sounds.map (or the stem of its .001 ... pieces)

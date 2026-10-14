@@ -1264,6 +1264,19 @@ Model HCE_FloodInfection
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_FloodJuggernaut
+{
+	Path "models/hce/FloodJuggernaut"
+	Model 0 "FloodJuggernaut.iqm"
+	SurfaceSkin 0 0 "skins/floodjuggernaut_floodjuggernaut_0.png"
+	SurfaceSkin 0 1 "skins/floodjuggernaut_floodjuggernaut_1.png"
+	Scale 48 48 58
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_FloodcombatHumanUnarmoredAssaultRifle
 {
 	Path "models/hce/FloodMarine"
@@ -1432,6 +1445,19 @@ Model HCE_FloodcombatOdstSniperRifle
 	SurfaceSkin 0 17 "w_sniper_rifle_0.png"
 	SurfaceSkin 0 18 "w_sniper_rifle_1.png"
 	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_BossBaronFloodJuggernaut
+{
+	Path "models/hce/FloodJuggernaut"
+	Model 0 "FloodJuggernaut.iqm"
+	SurfaceSkin 0 0 "skins/floodjuggernaut_floodjuggernaut_0.png"
+	SurfaceSkin 0 1 "skins/floodjuggernaut_floodjuggernaut_1.png"
+	Scale 48 48 58
 	UseActorPitch
 	UseActorRoll
 	BaseFrame

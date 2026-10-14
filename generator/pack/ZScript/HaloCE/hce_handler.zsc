@@ -883,3 +883,168 @@ class HCE_FadeAway : Thinker
 		who.A_SetRenderStyle(a, STYLE_Translucent);
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Encounters: on maps not made for these packs, a Marine fire team turns up fighting a group of the Covenant or the
+// Flood somewhere along the way, so a player can come upon a firefight already going. At a map's start a few groups of
+// hostile Halo enemies (two or more together, well away from the players' start, out of secret and damaging sectors)
+// get a fire team of 3 to 5 Marines placed in the open a few hundred units off, in sight of them. Their fight is held
+// until a player comes (HaloDoom_EnemyBase.HCE_EncounterScale: AI hits do little while the players are far, and leave
+// everyone at 40% health), so it is still going when one arrives, and heard from afar. The Marines left standing join
+// the player's squad when he reaches them: once their foes are down (a "thanks"), or straight away if he walks right up.
+// hce_encounters: how many a map can have (0: none); hce_encounterchance: the chance of each. Needs the Marines pack.
+// ---------------------------------------------------------------------------
+class HCE_Encounter
+{
+	vector3 site;
+	Array<HaloDoom_EnemyBase> marines, foes;
+	bool joined;
+}
+
+class HCE_Encounters : EventHandler
+{
+	Array<HCE_Encounter> enc;
+
+	// the fire team's make-up: mostly riflemen, a heavier man or two (looked up at run time; missing ones are skipped)
+	static const Name TEAM[] = { 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifleMajor',
+		'HCE_MarineBattleRifle', 'HCE_MarineShotgun', 'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMedicAssaultRifle',
+		'HCE_MarineSniper', 'HCE_MarineRocketLauncher' };
+
+	static bool BadSector(Sector s) { return !s || s.IsSecret() || s.damageamount > 0 || s.ceilingplane.ZatPoint(s.centerspot) - s.floorplane.ZatPoint(s.centerspot) < 72; }
+
+	static double NearestPlayer(vector3 p)
+	{
+		double d = 1e9;
+		for(int i = 0; i < MAXPLAYERS; i++)
+			if(playeringame[i] && players[i].mo) d = min(d, (players[i].mo.pos - p).Length());
+		return d;
+	}
+
+	override void WorldLoaded(WorldEvent e)
+	{
+		if(e.IsSaveGame || e.IsReopen || deathmatch) return;
+		int want = CVar.FindCVar("hce_encounters") ? CVar.FindCVar("hce_encounters").GetInt() : 0;
+		double chance = CVar.FindCVar("hce_encounterchance") ? CVar.FindCVar("hce_encounterchance").GetFloat() : 0;
+		Name first = 'HCE_MarineAssaultRifle';
+		if(want <= 0 || !(class<Actor>)(first)) return;          // no Marines pack: nothing to do
+		int n = 0;
+		for(int i = 0; i < want; i++) if(frandom[HCEEnc](0, 1) < chance) n++;
+		if(n == 0) return;
+		// the hostile Halo enemies, in a random order
+		Array<HaloDoom_EnemyBase> cand;
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase h;
+		while(h = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(!h.hce_enabled || h.bFRIENDLY || h.health <= 0 || h.hce_dummy || h.bDORMANT) continue;
+			if(h.hce_team != HCE_TEAM_COVENANT && h.hce_team != HCE_TEAM_FLOOD) continue;
+			if(BadSector(h.CurSector) || NearestPlayer(h.pos) < 2048) continue;   // well off: the fight held at a twentieth
+			cand.Push(h);
+		}
+		for(int i = cand.Size() - 1; i > 0; i--) { int j = random[HCEEnc](0, i); let t = cand[i]; cand[i] = cand[j]; cand[j] = t; }
+		for(int i = 0; i < cand.Size() && enc.Size() < n; i++)
+		{
+			let c = cand[i];
+			bool far = true;
+			for(int k = 0; k < enc.Size(); k++) if((enc[k].site - c.pos).Length() < 2048) far = false;
+			if(!far) continue;
+			Array<HaloDoom_EnemyBase> foes;
+			for(int k = 0; k < cand.Size(); k++)
+				if(cand[k].Distance3D(c) < 512 && cand[k].hce_team == c.hce_team && abs(cand[k].pos.z - c.pos.z) < 96) foes.Push(cand[k]);
+			if(foes.Size() < 2) continue;
+			let en = Place(c, foes);
+			if(en) enc.Push(en);
+		}
+		if(enc.Size()) Console.PrintfEx(PRINT_NONOTIFY, "HCEENC %d encounter%s", enc.Size(), enc.Size() == 1 ? "" : "s");
+	}
+
+	// a fire team in the open a few hundred units from c, in its sight, on about its level
+	HCE_Encounter Place(HaloDoom_EnemyBase c, Array<HaloDoom_EnemyBase> foes)
+	{
+		for(int tryN = 0; tryN < 32; tryN++)
+		{
+			double a = frandom[HCEEnc](0, 360), d = frandom[HCEEnc](300, 640);
+			FLineTraceData lt;
+			c.LineTrace(a, d + 64, 0, TRF_THRUACTORS, c.height * 0.6, 0, 0, lt);
+			if(lt.HitType != TRACE_HitNone) d = min(d, lt.Distance - 64);
+			if(d < 256) continue;
+			vector2 xy = c.pos.xy + Actor.AngleToVector(a, d);
+			Sector s = level.PointInSector(xy);
+			if(BadSector(s)) continue;
+			double z = s.floorplane.ZatPoint(xy);
+			if(abs(z - c.pos.z) > 64 || NearestPlayer((xy, z)) < 1792) continue;
+			// the men side by side across the line to the foe, 44 apart
+			let en = new("HCE_Encounter");
+			en.site = c.pos;
+			int men = random[HCEEnc](3, 5);
+			vector2 side = Actor.AngleToVector(a + 90, 44);
+			for(int m = 0; m < men; m++)
+			{
+				Name cn = TEAM[random[HCEEnc](0, TEAM.Size() - 1)];
+				class<Actor> mc = (class<Actor>)(cn);
+				if(!mc) { Name fb = 'HCE_MarineAssaultRifle'; mc = (class<Actor>)(fb); }
+				vector2 p = xy + side * (m - (men - 1) * 0.5);
+				Sector ps = level.PointInSector(p);
+				if(BadSector(ps)) continue;
+				let mo = HaloDoom_EnemyBase(Actor.Spawn(mc, (p, ps.floorplane.ZatPoint(p)), ALLOW_REPLACE));
+				if(!mo) continue;
+				if(!mo.TestMobjLocation() || !mo.CheckSight(c)) { mo.ClearCounters(); mo.Destroy(); continue; }
+				mo.angle = mo.AngleTo(c);
+				mo.bHCE_FollowPlayer = false;                 // holding here, fighting, till the player comes
+				mo.hce_encounter = true;
+				en.marines.Push(mo);
+			}
+			if(en.marines.Size() < 3)
+			{
+				for(int m = 0; m < en.marines.Size(); m++) if(en.marines[m]) en.marines[m].Destroy();
+				continue;
+			}
+			for(int k = 0; k < foes.Size(); k++) { foes[k].hce_encounter = true; en.foes.Push(foes[k]); }
+			return en;
+		}
+		return null;
+	}
+
+	override void WorldTick()
+	{
+		if(level.maptime % 17) return;
+		for(int i = 0; i < enc.Size(); i++)
+		{
+			let en = enc[i];
+			if(en.joined) continue;
+			// the Marines still standing, the foes still fighting near the site
+			Array<HaloDoom_EnemyBase> men;
+			for(int k = 0; k < en.marines.Size(); k++) if(en.marines[k] && en.marines[k].health > 0 && !en.marines[k].hce_betrayed) men.Push(en.marines[k]);
+			if(!men.Size()) { en.joined = true; continue; }
+			// foes still in the fight: alive, near, and after someone (one asleep or wandered off doesn't hold them back)
+			int foes = 0;
+			for(int k = 0; k < en.foes.Size(); k++)
+			{
+				let f = en.foes[k];
+				if(f && f.health > 0 && f.target && f.target.health > 0 && f.Distance3D(men[0]) < 1536) foes++;
+			}
+			// the player who reached them: within 640 and in sight of one of them (walked right up: 256)
+			PlayerPawn who = null;
+			for(int p = 0; p < MAXPLAYERS && !who; p++)
+			{
+				if(!playeringame[p] || !players[p].mo || players[p].mo.health <= 0) continue;
+				let pm = players[p].mo;
+				for(int k = 0; k < men.Size(); k++)
+				{
+					double d = men[k].Distance3D(pm);
+					if(d < 256 || (foes == 0 && d < 640 && men[k].CheckSight(pm))) { who = pm; break; }
+				}
+			}
+			if(!who) continue;
+			en.joined = true;
+			for(int k = 0; k < men.Size(); k++)
+			{
+				men[k].hce_encounter = false;
+				men[k].bHCE_FollowPlayer = true;
+				men[k].hce_orderPlayer = who;
+				men[k].hce_squadOrder = HaloDoom_EnemyBase.HCE_ORDER_FOLLOW;
+			}
+			men[random[HCEEnc](0, men.Size() - 1)].HCE_Say(foes == 0 ? 'Thanks' : 'JoinMe', 1.0, 35 * 3, true);
+		}
+	}
+}

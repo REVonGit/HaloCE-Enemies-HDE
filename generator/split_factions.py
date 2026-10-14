@@ -181,7 +181,7 @@ def main():
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
         '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
     # the HCEVARS variant things (hce_variants.zsc): DoomEdNums 30900-30931
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel"\n}\n\n'
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel", "HCE_Encounters"\n}\n\n'
         'DoomEdNums\n{\n' + ''.join(f'\t{30900 + n} = HCE_Variant{n}\n' for n in range(32)) + '}\n')
     # enemy laser tracers (HCE_EnemyLaser, in the API): HaloDoom Evolved's own beam model and texture
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'

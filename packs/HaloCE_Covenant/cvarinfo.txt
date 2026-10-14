@@ -35,6 +35,8 @@ server int hce_maxgibs = 32;           // garbage collector: severed heads and l
 server int hce_maxgore = 64;           // garbage collector: Halo gore floor splats kept (-1 no limit)
 server int hce_floodlevel = 1;           // the level the Flood first appears on (MAPxx = xx, ExMy = (x-1)*9+y); before it, other enemies take their places
 user bool hce_debugvoice = false;      // debugging: print every line an enemy speaks
+server int hce_encounters = 2;           // at most this many Marine encounters per map (a fire team fighting a group of the Covenant or the Flood, held till a player arrives); 0 off
+server float hce_encounterchance = 0.6;  // the chance of each of them
 
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3

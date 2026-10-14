@@ -53,6 +53,10 @@ OptionMenu "HCE_AIOptions"
 	Slider "Flood appears from level", "hce_floodlevel", 1, 32, 1, 0
 	StaticText "MAPxx counts as xx, ExMy as (x-1)*9+y. Earlier levels", 1
 	StaticText "get Covenant and Sentinels in the Flood's places.", 1
+	Slider "Marine encounters per map", "hce_encounters", 0, 6, 1, 0
+	Slider "Chance of each encounter", "hce_encounterchance", 0, 1, 0.05, 2
+	StaticText "Marine fire teams fighting the Covenant or Flood somewhere", 1
+	StaticText "on the map, held till you arrive; survivors join your squad.", 1
 	Option "Sentinels fight for you", "hce_sentinelallies", "OnOff"
 	StaticText "On: they follow you and take squad orders like Marines.", 1
 	StaticText "Off: they are hostile, as in Halo CE.", 1

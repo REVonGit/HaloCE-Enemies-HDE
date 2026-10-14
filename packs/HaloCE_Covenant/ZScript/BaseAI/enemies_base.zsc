@@ -192,6 +192,22 @@ class HaloDoom_EnemyBase : Actor abstract
 			return HCE_CorpseHit(inflictor, source, dmg, mod, flags);
 		}
 		Actor keepTarget = target;
+		// an encounter (HCE_Encounters: Marines fighting the Covenant or the Flood somewhere on the map) holds until a
+		// player comes: AI-on-AI hits there do little while the players are far off, and leave anyone at 40% health
+		if(hce_enabled && dmg > 0 && source && !source.player && source != self)
+		{
+			let se = HaloDoom_EnemyBase(source);
+			if(hce_encounter || (se && se.hce_encounter))
+			{
+				double f = HCE_EncounterScale();
+				if(f < 0.999)
+				{
+					dmg = int(dmg * f + frandom(0, 0.999));
+					dmg = min(dmg, max(0, health - int(SpawnHealth() * 0.4)));
+					if(dmg <= 0) return 0;
+				}
+			}
+		}
 		if(hce_enabled)
 		{
 			// explosions (A_Explode passes DMG_EXPLOSION) and Hunter punches throw bodies when they kill
@@ -2951,6 +2967,18 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_medicTics, hce_medicPhase;
 
 	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
+
+	// part of an encounter (HCE_Encounters): its fight with the other side is held until a player is near
+	bool hce_encounter;
+	// how hard AI hits land in an encounter: the nearest living player 768 or closer, in full; 1792 or further, a
+	// twentieth; between, in proportion
+	double HCE_EncounterScale()
+	{
+		double d = 1e9;
+		for(int i = 0; i < MAXPLAYERS; i++)
+			if(playeringame[i] && players[i].mo && players[i].mo.health > 0) d = min(d, Distance3D(players[i].mo));
+		return 0.05 + 0.95 * clamp((1792 - d) / (1792 - 768), 0, 1);
+	}
 
 	// the player a squad Marine follows: the one who last gave his squad an order (HCE_SpawnAllHandler.SquadOrder), else
 	// the nearest one alive, kept until that player dies or leaves. Single player: always the player. (Game logic never

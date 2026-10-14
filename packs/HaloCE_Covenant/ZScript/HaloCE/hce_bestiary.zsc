@@ -1,7 +1,7 @@
 // The bestiary: Options > Halo CE Bestiary, or the console command hce_bestiary.
 //
 // Every enemy the loaded packs can place, by faction and kind: its picture (the Ultimate Doom Builder icon), the
-// numbers that matter (health, shield, weapon, speed, its DoomEdNum) and a few lines on what it is and how it
+// numbers that matter (health, shield, the guns it carries, speed) and a few lines, in universe, on what it is and how it
 // fights. The list comes from the packs' HCEBEST lumps (build_pack.bestiary_lump: only the factions loaded appear),
 // plus the variants any HCEVARS lump defines. With HaloDoom Evolved loaded, the card is drawn on HDE's own lore panel
 // (the one its weapons' descriptions use); without it, in the same layout in plain panels.
@@ -11,7 +11,7 @@
 
 class HCE_BestiaryEntry
 {
-	String cls, faction, group, title, sprite, loreKey, extra, weapons;   // weapons: the guns this kind carries (each with its DoomEdNum)
+	String cls, faction, group, title, sprite, loreKey, extra, weapons;   // weapons: the guns this kind carries
 	int ednum;
 }
 
@@ -71,8 +71,14 @@ class HCE_BestiaryMenu : ListMenu
 			e.cls = bs; e.faction = "Variants (HCEVARS)"; e.group = "Variants"; e.title = d.title; e.sprite = "-"; e.loreKey = "-";
 			e.ednum = 30900 + n;
 			for(int i = 0; i < entries.Size(); i++) if(entries[i].cls == bs) { e.sprite = entries[i].sprite; e.loreKey = entries[i].loreKey; break; }
-			e.extra = String.Format("Variant %d of %s: health x%.2f, shield x%.2f, speed x%.2f, damage x%.2f, size x%.2f%s%s.",
-				n, bs, d.health, d.shield, d.speed, d.damage, d.scale, d.weapon != 'None' ? ", with the " .. WeaponName(d.weapon) : "", d.friendly ? ", an ally" : "");
+			// in universe: what it is, not its numbers
+			String kin = bs;
+			for(int i = 0; i < entries.Size(); i++) if(entries[i].cls == bs) { kin = entries[i].title; break; }
+			class<Actor> bc = bs;
+			if(kin == bs && bc) kin = GetDefaultByType(bc).GetTag(bs);
+			e.extra = String.Format("One of the %s kind%s%s%s.", kin,
+				d.health > 1.05 ? ", tougher than most" : d.health < 0.95 ? ", frailer than most" : "",
+				d.weapon != 'None' ? ", carrying " .. Article(WeaponName(d.weapon)) : "", d.friendly ? ", fighting on humanity's side" : "");
 			entries.Push(e);
 		}
 		// rows: a heading before each new faction / kind
@@ -83,6 +89,12 @@ class HCE_BestiaryMenu : ListMenu
 			if(h != last) { rows.Push(-1 - i); last = h; }
 			rows.Push(i);
 		}
+	}
+
+	static String Article(String n)
+	{
+		String c = n.Left(1).MakeLower();
+		return (c == "a" || c == "e" || c == "i" || c == "o" || c == "u" ? "an " : "a ") .. n;
 	}
 
 	static String WeaponName(Name w)
@@ -254,7 +266,6 @@ class HCE_BestiaryMenu : ListMenu
 			if(wn != 'None' && wn != '' && !e.weapons.Length()) stats.Push("Weapon  " .. WeaponName(wn));      // (the standalone packs' enemies drop no guns: the title names it)
 			stats.Push(String.Format("Speed  %.1f", d.hce_runSpeed));
 		}
-		if(!e.weapons.Length()) stats.Push(String.Format("DoomEdNum  %d", e.ednum));
 		for(int i = 0; i < stats.Size(); i++) Text(sc, o, stats[i], x, y + i * 25, 22, Font.CR_GRAY);
 		// top right: the picture, fitted into the box
 		TextureID pic = e.sprite != "-" ? TexMan.CheckForTexture(e.sprite .. "A0", TexMan.Type_Sprite) : TexMan.CheckForTexture("", TexMan.Type_Any);

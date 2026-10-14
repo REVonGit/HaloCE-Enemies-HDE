@@ -932,7 +932,7 @@ How brutally an Elite or Brute dies decides how long the squad it led takes to p
 
 ## Bestiary
 
-Options > Halo CE Bestiary, or the console command `hce_bestiary`: every enemy the loaded packs can place, by faction and kind, the Flood and Sentinels only when their packs are loaded. Each kind and rank is one entry, whatever gun it holds: the guns it carries are listed, each with its DoomEdNum. An entry has the enemy's picture (the one Ultimate Doom Builder shows), its health, shield and speed, and a few lines on what it is and how it fights. The card is drawn on HaloDoom Evolved's own lore panel, the one its weapon descriptions use. Variants from `HCEVARS` lumps are listed too, with what they change. Up and down move, left and right jump to the next kind, page up and down a page, Escape closes; the mouse wheel scrolls and a click picks an entry.
+Options > Halo CE Bestiary, or the console command `hce_bestiary`: every enemy the loaded packs can place, by faction and kind, the Flood and Sentinels only when their packs are loaded. Each kind and rank is one entry, whatever gun it holds, with the guns it carries listed. An entry has the enemy's picture (the one Ultimate Doom Builder shows), its health, shield and speed, and a few lines, in universe, on what it is and how it fights. DoomEdNums are in the editor's thing list and the [thing numbers](#doomednums) below. The card is drawn on HaloDoom Evolved's own lore panel, the one its weapon descriptions use. Variants from `HCEVARS` lumps are listed too, with what they change. Up and down move, left and right jump to the next kind, page up and down a page, Escape closes; the mouse wheel scrolls and a click picks an entry.
 
 ## Mapping with Ultimate Doom Builder
 

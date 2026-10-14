@@ -1,25 +1,17 @@
 // the Halo CE enemies bestiary (hce_bestiary.zsc)
-E	HCE_FloodcombatHumanArmoredAssaultRifle	Flood	Flood (Armored Marine host)	Floodcombat Human Armored	HU28	FloodArmored	30469	Assault Rifle (30469), Pistol (30470), Rocket Launcher (30472), Shotgun (30471), Sniper Rifle (30473)
-E	HCE_FloodcombatHumanArmoredUnarmed	Flood	Flood (Armored Marine host)	Floodcombat Human Armored Unarmed	HU2D	FloodArmored	30474	-
-E	HCE_FloodcombatEliteCommanderEnergySword	Flood	Flood (Elite Commander host)	Floodcombat Elite Commander	HU1O	EliteCommander,FloodEliteCommander	30485	Energy Sword (30485)
-E	HCE_FloodcombatEliteUltraFuelRod	Flood	Flood (Elite Ultra host)	Floodcombat Elite Ultra	HU26	Elite,FloodEliteUltra	30486	Fuel Rod (30486)
-E	HCE_FloodcombatEliteAssaultRifle	Flood	Flood (Elite host)	Floodcombat Elite	HU1N	Elite,FloodElite	30213	Assault Rifle (30213), Needler (30215), Pistol (30216), Plasma Pistol (30217), Plasma Rifle (30218), Rocket Launcher (30219), Shotgun (30220), Sniper Rifle (30221)
-E	HCE_FloodcombatEliteFlameThrower	Flood	Flood (Elite host)	Floodcombat Elite Flame Thrower	HU1P	Elite,FloodElite	30214	-
-E	HCE_FloodcombatEliteStealthUnarmed	Flood	Flood (Elite host)	Floodcombat Elite Stealth Unarmed	HU25	Elite,FloodElite	30222	-
-E	HCE_FloodcombatEliteUnarmed	Flood	Flood (Elite host)	Floodcombat Elite Unarmed	HU27	Elite,FloodElite	30223	-
-E	HCE_FloodGrunt	Flood	Flood (Grunt host)	Flood Grunt	HU1K	FloodGrunt	30459	-
-E	HCE_FloodcombatHumanUnarmoredAssaultRifle	Flood	Flood (Marine host)	Floodcombat Human Unarmored	HU2N	FloodMarine	30465	Assault Rifle (30465), Pistol (30466)
-E	HCE_FloodcombatHumanUnarmoredUnarmed	Flood	Flood (Marine host)	Floodcombat Human Unarmored Unarmed	HU2P	FloodMarine	30467	-
-E	HCE_FloodcombatOdstAssaultRifle	Flood	Flood (ODST host)	Floodcombat Odst	HU2Q	FloodODST	30461	Assault Rifle (30461), Shotgun (30462), Sniper Rifle (30463)
-E	HCE_FloodcombatHumanAssaultRifle	Flood	Flood (human host)	Floodcombat Human	HU2E	FloodHuman	30224	Assault Rifle (30224), Needler (30226), Pistol (30227), Plasma Pistol (30228), Plasma Rifle (30229), Rocket Launcher (30230), Shotgun (30231)
-E	HCE_FloodcombatHumanFlameThrower	Flood	Flood (human host)	Floodcombat Human Flame Thrower	HU2F	FloodHuman	30225	-
-E	HCE_FloodcombatHumanUnarmed	Flood	Flood (human host)	Floodcombat Human Unarmed	HU2M	FloodHuman	30232	-
-E	HCE_FloodcombatEliteMajorNeedler	Flood	Flood (shielded Elite host)	Floodcombat Elite Major	HU1Q	EliteMajor,FloodEliteArmored	30480	Needler (30480), Plasma Pistol (30481), Plasma Rifle (30482)
-E	HCE_FloodcombatEliteMajorUnarmed	Flood	Flood (shielded Elite host)	Floodcombat Elite Major Unarmed	HU1T	EliteMajor,FloodEliteArmored	30483	-
-E	HCE_FloodcombatEliteMinorNeedler	Flood	Flood (shielded Elite host)	Floodcombat Elite Minor	HU1U	EliteMinor,FloodEliteArmored	30476	Needler (30476), Plasma Pistol (30477), Plasma Rifle (30478)
-E	HCE_FloodcombatEliteMinorUnarmed	Flood	Flood (shielded Elite host)	Floodcombat Elite Minor Unarmed	HU1X	EliteMinor,FloodEliteArmored	30479	-
-E	HCE_Floodcarrier	Flood	Flood carrier form	Floodcarrier	HU1M	FloodCarrier	30212	-
-E	HCE_FloodInfection	Flood	Flood infection form	Flood Infection	HU1L	FloodInfection	30233	-
+E	HCE_FloodcombatHumanArmoredAssaultRifle	Flood	Flood (Armored Marine host)	Combat Form: Human Armored	HU28	FloodArmored	30469	Assault Rifle, Pistol, Rocket Launcher, Shotgun, Sniper Rifle
+E	HCE_FloodcombatEliteCommanderEnergySword	Flood	Flood (Elite Commander host)	Combat Form: Elite Commander	HU1O	EliteCommander,FloodEliteCommander	30485	Energy Sword
+E	HCE_FloodcombatEliteUltraFuelRod	Flood	Flood (Elite Ultra host)	Combat Form: Elite Ultra	HU26	Elite,FloodEliteUltra	30486	Fuel Rod
+E	HCE_FloodcombatEliteAssaultRifle	Flood	Flood (Elite host)	Combat Form: Elite	HU1N	Elite,FloodElite	30213	Assault Rifle, Needler, Pistol, Plasma Pistol, Plasma Rifle, Rocket Launcher, Shotgun, Sniper Rifle, Flamethrower
+E	HCE_FloodcombatEliteStealthUnarmed	Flood	Flood (Elite host)	Combat Form: Stealth Elite	HU25	Elite,FloodElite	30222	-
+E	HCE_FloodGrunt	Flood	Flood (Grunt host)	Combat Form: Grunt	HU1K	FloodGrunt	30459	-
+E	HCE_FloodcombatHumanUnarmoredAssaultRifle	Flood	Flood (Marine host)	Combat Form: Human Unarmored	HU2N	FloodMarine	30465	Assault Rifle, Pistol
+E	HCE_FloodcombatOdstAssaultRifle	Flood	Flood (ODST host)	Combat Form: ODST	HU2Q	FloodODST	30461	Assault Rifle, Shotgun, Sniper Rifle
+E	HCE_FloodcombatHumanAssaultRifle	Flood	Flood (human host)	Combat Form: Human	HU2E	FloodHuman	30224	Assault Rifle, Needler, Pistol, Plasma Pistol, Plasma Rifle, Rocket Launcher, Shotgun, Flamethrower
+E	HCE_FloodcombatEliteMajorNeedler	Flood	Flood (shielded Elite host)	Combat Form: Elite Major	HU1Q	EliteMajor,FloodEliteArmored	30480	Needler, Plasma Pistol, Plasma Rifle
+E	HCE_FloodcombatEliteMinorNeedler	Flood	Flood (shielded Elite host)	Combat Form: Elite Minor	HU1U	EliteMinor,FloodEliteArmored	30476	Needler, Plasma Pistol, Plasma Rifle
+E	HCE_Floodcarrier	Flood	Flood carrier form	Carrier Form	HU1M	FloodCarrier	30212	-
+E	HCE_FloodInfection	Flood	Flood infection form	Infection Form	HU1L	FloodInfection	30233	-
 L	Elite	Sangheili. The Covenant's warrior caste and its field officers: tall, fast, and protected by a recharging energy shield. They command the lesser races, roll out of grenade blasts, and fall back to let their shields return before pressing again. Their armor color tells their rank.
 L	EliteCommander	A gold-armored Commander, veteran of many campaigns. Commanders lead from the front and favor the energy sword.
 L	EliteMajor	A red-armored Major. Stronger shields than a Minor, better aim, and a commander's habit of directing the Grunts around it.

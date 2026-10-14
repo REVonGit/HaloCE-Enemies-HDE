@@ -1732,8 +1732,8 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 
 # ---------------- the bestiary (Options > Halo CE Bestiary: hce_bestiary.zsc)
 # Each pack carries an HCEBEST lump (hcebest.<pack>) of its own placeable enemies, tab-separated:
-#   E <class> <faction> <group> <title> <icon sprite or -> <lore keys, rank's first> <DoomEdNum> <guns it carries, each with
-#     its DoomEdNum, or -> (one entry per kind and rank: its weapon variants are listed, not given entries of their own)
+#   E <class> <faction> <group> <title> <icon sprite or -> <lore keys, rank's first> <DoomEdNum> <guns it carries, or ->
+#     (one entry per kind and rank: its weapon variants are listed, not given entries of their own)
 #   L <key> <lore text, paragraphs split by |>
 # The lore is pack/bestiary_lore.txt; a class gets the entry whose key is the longest found in its class name, else its
 # character's. Random spawners and the variant things are left out (the variants from HCEVARS are listed at run time).
@@ -1762,6 +1762,20 @@ def read_lore():
 BESTIARY_RANK_GROUP = (('HonorGuard', 'Honor Guard'), ('Ranger', 'Elite Ranger'), ('StealthElite', 'Stealth Elite'),
                        ('BruteStalker', 'Brute Stalker'), ('Hellbringer', 'ODST Hellbringer'), ('MarinePilot', 'Pilot'))
 
+# the guns as the bestiary names them (from the class names)
+BESTIARY_GUN_NAME = {'Flame Thrower': 'Flamethrower', 'Dmr': 'DMR', 'Gpmg': 'GPMG', 'Smg': 'SMG', 'Ma37': 'MA37', 'Rocketeer': 'Rocket Launcher', 'Sniper': 'Sniper Rifle'}
+
+def bestiary_title(t):
+    """the bestiary's name for a kind, in universe ('Floodcombat Odst' -> 'Combat Form: ODST', 'Sgt Johnson' -> 'Sergeant Johnson')"""
+    t = re.sub(r'\bOdst\b', 'ODST', t)
+    if t == 'Marine ODST Halo2': return 'ODST Shock Trooper'
+    t = re.sub(r'^Marine ODST\b', 'ODST', t)
+    t = re.sub(r'^Floodcombat (.*)$', r'Combat Form: \1', t)
+    t = t.replace('Combat Form: Elite Stealth Unarmed', 'Combat Form: Stealth Elite')
+    t = {'Floodcarrier': 'Carrier Form', 'Flood Infection': 'Infection Form', 'Flood Grunt': 'Combat Form: Grunt'}.get(t, t)
+    t = re.sub(r'^Grunt Flee (\w+)$', r'Grunt \1 (Skittish)', t)
+    return t.replace('Sgt ', 'Sergeant ')
+
 def bestiary_lump(classes, path):
     """write the HCEBEST lump for these placeable classes ({class: DoomEdNum}, from BESTIARY) to path; returns how many.
     An entry's lore is its rank's, then its character's (keys joined by commas)"""
@@ -1779,22 +1793,25 @@ def bestiary_lump(classes, path):
     order = list(UDB_CATEGORY.values())
     ents.sort(key=lambda e: (order.index(e[0]) if e[0] in order else 9, e[1], e[2]))
     # one entry per kind and rank: the same enemy with another gun ('Elite Minor (Needler)', 'Elite Minor (Plasma
-    # Rifle)') is one entry listing the guns it carries, each with its DoomEdNum; the first class stands for its numbers
+    # Rifle)') is one entry listing the guns it carries; the first class stands for its numbers
     merged, keyorder = {}, []
-    guns = {m.group(1) for e in ents for m in [re.search(r'\(([^)]*)\)$', e[2])] if m} | {'Magnum', 'Sniper', 'Rocketeer'}
+    guns = {m.group(1) for e in ents for m in [re.search(r'\(([^)]*)\)$', e[2])] if m} | {'Magnum', 'Sniper', 'Rocketeer', 'Unarmed', 'Flame Thrower'}
     for e in ents:
         m = re.match(r'(.*) \(([^)]*)\)$', e[2])
         base, wpn = (m.group(1), m.group(2)) if m else (e[2], '')
         if not m:                                   # 'Elite Minor Plasma Rifle Ranged': a rank already listed, its gun unbracketed
             pre = next((kk for kk in keyorder if kk[:2] == (e[0], e[1]) and base.startswith(kk[2] + ' ')
                         and any(base[len(kk[2]) + 1:].startswith(gn) for gn in guns)), None)   # (a gun, not another rank: Hunter Major stays)
-            if pre: base, wpn = pre[2], base[len(pre[2]) + 1:]
+            if pre:
+                rest = base[len(pre[2]) + 1:]
+                base, wpn = pre[2], max((gn for gn in guns if rest.startswith(gn)), key=len)    # 'Plasma Rifle Ranged': the gun
         k = (e[0], e[1], base)
         if k not in merged: merged[k] = dict(e=list(e), weps=[]); merged[k]['e'][2] = base; keyorder.append(k)
         g = merged[k]
-        if wpn: g['weps'].append(f'{wpn} ({e[6]})')
+        wpn = BESTIARY_GUN_NAME.get(wpn, wpn)
+        if wpn and wpn != 'Unarmed' and wpn not in g['weps']: g['weps'].append(wpn)
         if g['e'][4] == '-' and e[4] != '-': g['e'][4] = e[4]
-    rows = ['\t'.join(['E', g['e'][3], g['e'][0], g['e'][1], g['e'][2], g['e'][4], g['e'][5], g['e'][6], ', '.join(g['weps']) or '-'])
+    rows = ['\t'.join(['E', g['e'][3], g['e'][0], g['e'][1], bestiary_title(g['e'][2]), g['e'][4], g['e'][5], g['e'][6], ', '.join(g['weps']) or '-'])
             for g in (merged[k] for k in keyorder)]
     rows += ['\t'.join(['L', k, lore[k]]) for k in sorted(keys)]
     if rows: open(path, 'w').write('// the Halo CE enemies bestiary (hce_bestiary.zsc), generated by build_pack.py\n' + '\n'.join(rows) + '\n')

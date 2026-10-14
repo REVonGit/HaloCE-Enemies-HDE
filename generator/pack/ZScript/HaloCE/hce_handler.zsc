@@ -343,6 +343,7 @@ class HCE_ReplaceHandler : EventHandler
 		{
 			let h = lateHunters[i];
 			if(!h || h.health <= 0 || h.hce_bondMate) continue;
+			if(h.hce_dummy) continue;                          // a display dummy (punkassbitches, scenes) stands alone
 			bool mate = false;
 			let it = BlockThingsIterator.Create(h, 512);
 			while(it.Next())
@@ -366,7 +367,11 @@ class HCE_ReplaceHandler : EventHandler
 			{
 				b.angle = h.angle;
 				let hb = HaloDoom_EnemyBase(b);                    // bonded brothers (bond rage)
-				if(hb) { hb.hce_bondMate = h; h.hce_bondMate = hb; hb.hce_bondLooked = true; h.hce_bondLooked = true; }
+				if(hb)
+				{
+					hb.hce_bondMate = h; h.hce_bondMate = hb; hb.hce_bondLooked = true; h.hce_bondLooked = true;
+					hb.hce_dummy = h.hce_dummy; hb.hce_standStill = h.hce_standStill; hb.hce_noMove = h.hce_noMove;   // a dummy's brother is one too
+				}
 				return;
 			}
 			if(b) { b.ClearCounters(); b.Destroy(); }     // a spot with no room: not left in the map's kill count

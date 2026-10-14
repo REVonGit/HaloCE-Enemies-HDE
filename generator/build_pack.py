@@ -887,6 +887,36 @@ def bake_shield(char, mat, tint, outpath):
     o = col * (0.55 + 0.6 * n[..., None]) + (n[..., None] ** 3) * 0.35
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
+_SHIELD_MASK = {}
+
+def hunter_shield_mask(char, mat, size):
+    """the Hunter's shield (the surfaces on its left forearm and hand) as a mask over this texture (W x H, 0..1), its edges
+    grown a few texels so the island's border is in it; None if the shield isn't on this texture"""
+    key = (char, mat, size)
+    if key in _SHIELD_MASK: return _SHIELD_MASK[key]
+    from iqm import read_iqm
+    from PIL import ImageDraw
+    from scipy import ndimage
+    joints, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
+    names = [j[0] for j in joints]
+    mats = json.load(open(f'{OUT}/models/{char}/{char}.json'))['meshes']
+    keep = {names.index(n) for n in ('bip01 l forearm', 'bip01 l hand') if n in names}
+    W, H = size
+    img = Image.new('L', (W, H), 0); d = ImageDraw.Draw(img)
+    for mi, M in enumerate(meshes):
+        if mats[mi][:-4] != mat: continue
+        dom = M['bidx'][np.arange(len(M['bidx'])), M['bw'].argmax(1)]
+        for t in M['tris']:
+            if all(dom[v] in keep for v in t):
+                d.polygon([(M['uv'][v][0] % 1 * W, M['uv'][v][1] % 1 * H) for v in t], fill=255)
+    a = np.asarray(img, np.float32) / 255
+    out = None
+    if a.max() > 0:
+        out = np.clip(ndimage.gaussian_filter(ndimage.grey_dilation(a, size=(5, 5)), 1.0) * 1.2, 0, 1)
+    _SHIELD_MASK[key] = out
+    return out
+
+
 def bake_hunter(char, mat, mode, outpath):
     """Hunter armour is painted blue in the base map; recolour the blue armour by hue (worm flesh/cannon untouched)."""
     im = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
@@ -899,6 +929,11 @@ def bake_hunter(char, mat, mode, outpath):
     hue_in = np.clip(np.minimum(h - 175, 275 - h) / 20.0, 0, 1)
     sat_in = np.clip((sv - 0.10) / 0.14, 0, 1)
     armour = np.clip(ndimage.gaussian_filter(hue_in * sat_in, 1.2) * 1.25, 0, 1)[..., None]
+    # the shield takes no rank colour: its painted rim (a thin blue line) came out patchy, half recoloured, half not;
+    # it is plain dark metal like the plate it frames (shield: the shield's own texels, a little past their edges)
+    shield = hunter_shield_mask(char, mat, im.size)
+    if shield is not None:
+        armour = armour * (1 - shield[..., None])
     lum = (0.3 * rgb[..., 0] + 0.59 * rgb[..., 1] + 0.11 * rgb[..., 2])[..., None]
     # the colour laid on as the Elites' rank colours are (bake_vivid): the paint's light and shade kept, a highlight on
     # the edges, not a flat fill at full saturation; then the same cube-map armour reflection as the Elites (add_shine,
@@ -910,6 +945,18 @@ def bake_hunter(char, mat, mode, outpath):
     # the rank's cube map on the recoloured armour; the cannon, the worms and the rest keep the blue Hunter's
     o = add_shine(char, mat, o, HUNTER_COLOURS[mode]) * armour + add_shine(char, mat, o, None) * (1 - armour)
     o = hue_lock(o, armour[..., 0].astype(np.float32), HUNTER_COLOURS[mode])
+    if shield is not None:
+        # the whole shield in neutral metal (its rim, stray paint and the blue reflection off its edges), all but its own
+        # glowing lights (bright and saturated in the paint)
+        glow = np.clip((v - 0.5) / 0.15, 0, 1) * np.clip((sv - 0.35) / 0.15, 0, 1)
+        k = (shield * (1 - glow))[..., None]
+        metal = o.mean(axis=2, keepdims=True) * np.array([0.97, 0.98, 1.0], np.float32)
+        o = o * (1 - k) + metal * k
+    if mode == 'white':
+        # white paint: the reflection's blue taken out and the plates lifted to a bright off-white, keeping their shading
+        g = o.mean(axis=2, keepdims=True)
+        paint = np.clip(0.38 + 0.72 * g, 0, 1) * np.array([1.0, 0.985, 0.95], np.float32)
+        o = o * (1 - armour * 0.9) + paint * armour * 0.9
     Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
 
 # HUNTER_COLOURS: variants.py

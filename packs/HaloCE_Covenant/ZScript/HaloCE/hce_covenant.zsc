@@ -5072,7 +5072,7 @@ class HCE_StealthEliteMajorEnergySword : HCE_EliteSpecialBase
 {
 	//$Category "Halo CE/Covenant/Elite Special"
 	//$Title "Stealth Elite Major (Energy Sword)"
-	//$Sprite "HU6YA0"
+	//$Sprite "HU6SA0"
 	Default
 	{
 		Health 45;
@@ -5296,7 +5296,7 @@ class HCE_StealthEliteMajorPlasmaRifle : HCE_EliteSpecialBase
 {
 	//$Category "Halo CE/Covenant/Elite Special"
 	//$Title "Stealth Elite Major (Plasma Rifle)"
-	//$Sprite "HU6ZA0"
+	//$Sprite "HU6TA0"
 	Default
 	{
 		Health 45;
@@ -5504,7 +5504,7 @@ class HCE_StealthElitePlasmaRifle : HCE_EliteSpecialBase
 {
 	//$Category "Halo CE/Covenant/Elite Special"
 	//$Title "Stealth Elite (Plasma Rifle)"
-	//$Sprite "HU70A0"
+	//$Sprite "HU6UA0"
 	Default
 	{
 		Health 45;
@@ -9097,125 +9097,6 @@ class HCE_HunterMajor : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 800;
 		HaloDoom_EnemyBase.HCE_Movement 4.70, 7.23, 7;
 		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "HCE_FuelRodBolt", 1, 0.80, 0.00, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 43.9;
-		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 200, 240;
-		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 1.75, 2.25, 1.00, 0.25;
-		HaloDoom_EnemyBase.HCE_GunOffset (19.0, -0.0, -16.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 56, 80;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.25, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.20, 3.20, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Hunter";
-		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_FuelRod";
-		+HaloDoom_EnemyBase.HCE_Berserks
-		+HaloDoom_EnemyBase.HCE_FrontArmor
-		+HaloDoom_EnemyBase.HCE_PairBond
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: { static const Name o[] = { 'alert unarmed idle%0', 'alert unarmed idle%1', 'alert unarmed idle%2', 'alert unarmed idle%3', 'alert unarmed idle%4' }; return o[random(0, 4)]; }
-		case HCE_A_ALERT: { static const Name o[] = { 'alert unarmed idle%0', 'alert unarmed idle%1', 'alert unarmed idle%2', 'alert unarmed idle%3', 'alert unarmed idle%4' }; return o[random(0, 4)]; }
-		case HCE_A_MOVE_F: return 'stand unarmed move-front';
-		case HCE_A_CROUCH_IDLE: return 'crouch unarmed idle';
-		case HCE_A_CROUCH_MOVE: return 'crouch unarmed move-front';
-		case HCE_A_FIRE: return 'crouch unarmed fr fire-1 baked';
-		case HCE_A_MELEE: return 'stand unarmed melee';
-		case HCE_A_DIVE_L: return 'stand unarmed dive-left';
-		case HCE_A_DIVE_R: return 'stand unarmed dive-right';
-		case HCE_A_DIVE_F: return 'stand unarmed dive-front';
-		case HCE_A_AIRBORNE: return 'stand unarmed airborne';
-		case HCE_A_LAND: return 'stand unarmed land-soft';
-		case HCE_A_LEAP_AIR: return 'stand unarmed airborne';
-		case HCE_A_LEAP_MELEE: return 'stand unarmed melee';
-		case HCE_A_PING_F: { static const Name o[] = { 's-ping front chest%0 baked', 's-ping front chest%1 baked', 's-ping front gut baked' }; return o[random(0, 2)]; }
-		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
-		case HCE_A_PING_L: return 's-ping left gut baked';
-		case HCE_A_PING_R: return 's-ping right gut baked';
-		case HCE_A_DIE_F: return 's-kill front gut';
-		case HCE_A_DIE_B: return 'h-kill back gut';
-		case HCE_A_DIE_L: return 's-kill left gut';
-		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
-		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
-		case HCE_A_DIE_AIR: return 'stand airborne-dead';
-		case HCE_A_DIE_LAND: return 'stand landing-dead';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'alert unarmed idle%0': return 52;
-		case 'alert unarmed idle%1': return 385;
-		case 'alert unarmed idle%2': return 139;
-		case 'alert unarmed idle%3': return 140;
-		case 'alert unarmed idle%4': return 112;
-		case 'crouch unarmed fr fire-1 baked': return 23;
-		case 'crouch unarmed idle': return 52;
-		case 'crouch unarmed move-front': return 26;
-		case 'h-kill back gut': return 58;
-		case 'h-kill front gut': return 61;
-		case 's-kill front gut': return 82;
-		case 's-kill left gut': return 80;
-		case 's-kill right gut': return 82;
-		case 's-ping back gut%0 baked': return 14;
-		case 's-ping back gut%1 baked': return 18;
-		case 's-ping front chest%0 baked': return 16;
-		case 's-ping front chest%1 baked': return 16;
-		case 's-ping front gut baked': return 18;
-		case 's-ping left gut baked': return 18;
-		case 's-ping right gut baked': return 18;
-		case 'stand airborne-dead': return 35;
-		case 'stand landing-dead': return 42;
-		case 'stand unarmed airborne': return 82;
-		case 'stand unarmed dive-front': return 55;
-		case 'stand unarmed dive-left': return 55;
-		case 'stand unarmed dive-right': return 55;
-		case 'stand unarmed land-soft': return 24;
-		case 'stand unarmed melee': return 71;
-		case 'stand unarmed move-front': return 30;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-	override bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around
-	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_FuelRod"; }
-}
-
-// characters\hunter\hunter red
-class HCE_HunterRed : HCE_HunterBase
-{
-	//$Category "Halo CE/Covenant/Hunter"
-	//$Title "Hunter Red"
-	//$Sprite "HU39A0"
-	Default
-	{
-		Health 225;
-		Speed 7.2;
-		HaloDoom_EnemyBase.HCE_Type 3;
-		HaloDoom_EnemyBase.HCE_Variant "hunter red";
-		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 800;
-		HaloDoom_EnemyBase.HCE_Movement 4.70, 7.23, 7;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Flame", 1, 15.00, 2.00, 560;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 30.8;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -9320,18 +9201,18 @@ class HCE_HunterRed : HCE_HunterBase
 	override Name HCE_LimbReplacement(int limb) { if(limb != HCE_LIMB_RARM) return 'None'; return "Halo_Flamethrower"; }
 }
 
-// characters\hunter\hunter white
-class HCE_HunterWhite : HCE_HunterBase
+// characters\hunter\hunter ultra
+class HCE_HunterUltra : HCE_HunterBase
 {
 	//$Category "Halo CE/Covenant/Hunter"
-	//$Title "Hunter White"
-	//$Sprite "HU3AA0"
+	//$Title "Hunter Ultra"
+	//$Sprite "HU39A0"
 	Default
 	{
-		Health 225;
+		Health 450;
 		Speed 7.2;
 		HaloDoom_EnemyBase.HCE_Type 3;
-		HaloDoom_EnemyBase.HCE_Variant "hunter white";
+		HaloDoom_EnemyBase.HCE_Variant "hunter ultra";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 800;
 		HaloDoom_EnemyBase.HCE_Movement 4.70, 7.23, 7;
 		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
@@ -9583,7 +9464,7 @@ class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 {
 	//$Category "Halo CE/Covenant/Jackal"
 	//$Title "Jackal Minor (Plasma Pistol)"
-	//$Sprite "HU3FA0"
+	//$Sprite "HU3EA0"
 	Default
 	{
 		Health 50;
@@ -9880,7 +9761,7 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 {
 	//$Category "Halo CE/Covenant/Jackal Major"
 	//$Title "Jackal Major (Needler)"
-	//$Sprite "HU3CA0"
+	//$Sprite "HU3BA0"
 	Default
 	{
 		Health 75;
@@ -10117,8 +9998,7 @@ class HCE_RandomHunter : RandomSpawner
 	{
 		DropItem "HCE_Hunter", 255, 1;
 		DropItem "HCE_HunterMajor", 255, 1;
-		DropItem "HCE_HunterRed", 255, 1;
-		DropItem "HCE_HunterWhite", 255, 1;
+		DropItem "HCE_HunterUltra", 255, 1;
 	}
 }
 
@@ -10126,7 +10006,7 @@ class HCE_RandomJackal : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/Jackal"
 	//$Title "Random Jackal"
-	//$Sprite "HU3FA0"
+	//$Sprite "HU3EA0"
 	Default
 	{
 		DropItem "HCE_JackalMinorPlasmaPistol", 255, 1;
@@ -10137,7 +10017,7 @@ class HCE_RandomJackalMajor : RandomSpawner
 {
 	//$Category "Halo CE/Covenant/Jackal Major"
 	//$Title "Random Jackal Major"
-	//$Sprite "HU3CA0"
+	//$Sprite "HU3BA0"
 	Default
 	{
 		DropItem "HCE_JackalMajorNeedler", 255, 1;
@@ -10181,29 +10061,29 @@ class HCE_BossBaronEliteMajorPlasmaRifle : HCE_EliteMajorPlasmaRifle
 }
 
 // stands in for Doom's Cyberdemon: CheckReplacee maps it back so A_BossDeath map specials fire
+class HCE_BossCyberdemonHunter : HCE_Hunter
+{
+	Default
+	{
+		Health 675;
+	}
+}
+
+// stands in for Doom's Cyberdemon: CheckReplacee maps it back so A_BossDeath map specials fire
 class HCE_BossCyberdemonHunterMajor : HCE_HunterMajor
 {
 	Default
 	{
-		Health 700;
+		Health 1050;
 	}
 }
 
 // stands in for Doom's Cyberdemon: CheckReplacee maps it back so A_BossDeath map specials fire
-class HCE_BossCyberdemonHunterRed : HCE_HunterRed
+class HCE_BossCyberdemonHunterUltra : HCE_HunterUltra
 {
 	Default
 	{
-		Health 675;
-	}
-}
-
-// stands in for Doom's Cyberdemon: CheckReplacee maps it back so A_BossDeath map specials fire
-class HCE_BossCyberdemonHunterWhite : HCE_HunterWhite
-{
-	Default
-	{
-		Health 675;
+		Health 1350;
 	}
 }
 
@@ -10217,20 +10097,20 @@ class HCE_BossFatsoHunter : HCE_Hunter
 }
 
 // stands in for Doom's Fatso: CheckReplacee maps it back so A_BossDeath map specials fire
-class HCE_BossFatsoHunterRed : HCE_HunterRed
+class HCE_BossFatsoHunterMajor : HCE_HunterMajor
 {
 	Default
 	{
-		Health 225;
+		Health 350;
 	}
 }
 
 // stands in for Doom's Fatso: CheckReplacee maps it back so A_BossDeath map specials fire
-class HCE_BossFatsoHunterWhite : HCE_HunterWhite
+class HCE_BossFatsoHunterUltra : HCE_HunterUltra
 {
 	Default
 	{
-		Health 225;
+		Health 450;
 	}
 }
 

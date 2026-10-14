@@ -73,24 +73,26 @@ def synthesize(variants):
     ultra['unit']['maximum_body_vitality'] = 100.0
     ultra['unit']['maximum_shield_vitality'] = 350.0
     ultra['_rank'] = 'ultra'; ultra['_late'] = True        # new class: DoomEdNum appended after the existing ones
-    # Hunter colours: White lobs plasma-caster grenades, Red sprays a flamethrower from the arm cannon
+    # Hunter ranks by colour: the Major is red and sprays a flamethrower from the arm cannon, the Ultra is white and lobs
+    # plasma-caster grenades; both on the Major's body (Halo CE's own blue Major, the common Hunter's twin, is dropped)
     H = 'characters\\hunter\\hunter'
-    hun = variants.get(H)
-    if hun:
-        white = copy.deepcopy(hun)
+    hun, hmaj = variants.get(H), variants.get(H + ' major')
+    if hun and hmaj:
+        white = copy.deepcopy(hmaj)
         rc = white['ranged_combat']
         rc['reference'] = 'hce\\plasma caster'           # HDE weapon; not a Halo CE tag
         rc['maximum_firing_range'] = 18.0
         rc['combat_range_lower_bound'], rc['combat_range_upper_bound'] = 4.0, 12.0
-        white['_hunter_color'] = 'white'; white['_late'] = True
-        red = copy.deepcopy(hun)
+        white['unit']['maximum_body_vitality'] = 450.0
+        white['_hunter_color'] = 'white'; white['_rank'] = 'ultra'; white['_late'] = True
+        red = copy.deepcopy(hmaj)
         rc = red['ranged_combat']
         rc['reference'] = 'weapons\\flamethrower\\flamethrower'
         rc['maximum_firing_range'] = 7.0
         rc['combat_range_lower_bound'], rc['combat_range_upper_bound'] = 0.0, 3.0
-        red['_hunter_color'] = 'red'; red['_late'] = True
-        variants[H + ' white'] = white
-        variants[H + ' red'] = red
+        red['_hunter_color'] = 'red'
+        variants[H + ' major'] = red
+        variants[H + ' ultra'] = white
     variants[J + 'jackal minor plasma pistol']['_rank'] = 'minor'
     del variants[J + 'jackal major plasma pistol']
     variants[J + 'jackal major plasma rifle'] = pr

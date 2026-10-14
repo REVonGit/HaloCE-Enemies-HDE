@@ -321,13 +321,13 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Belly:** the gap at the stomach takes 1.5× even from the front, within 30° of dead ahead and at 30–55% of their height.
   * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
   * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
-* **Hunter colours:**
+* **Hunter ranks by colour:**
 
   | Hunter | Weapon | Class (DoomEdNum) |
   |---|---|---|
-  | Blue (CE) | fuel-rod cannon | `HCE_Hunter` (30245), `HCE_HunterMajor` (30246) |
-  | White | lobs plasma caster grenades on a ballistic arc (1–2 per volley); 30% of volleys are a charged 3-grenade cluster after an audible charge-up | `HCE_HunterWhite` (30280) |
-  | Red | flamethrower stream from the arm cannon, short range (it closes in) | `HCE_HunterRed` (30281) |
+  | Blue (CE) | fuel-rod cannon | `HCE_Hunter` (30245) |
+  | Major: red, tougher | flamethrower stream from the arm cannon, short range (it closes in) | `HCE_HunterMajor` (30246) |
+  | Ultra: white, toughest | lobs plasma caster grenades on a ballistic arc (1–2 per volley); 30% of volleys are a charged 3-grenade cluster after an audible charge-up | `HCE_HunterUltra` (30280) |
 
   White and Red are new. They're the regular Hunter with the arm cannon's weapon swapped for HDE's plasma caster (the `PlasmaCasterProj` / `PlasmaCasterClusterProj` grenades) or the flamethrower, and the blue armour recoloured. Both come in bonded pairs, and `HCE_RandomHunter` includes them. The Red Hunter is lethal up close: in testing it burned a player from full to 1 HP in about 4 seconds.
 * **Stuck Elites go berserk:** an Elite (or anything else that berserks: Flood combat forms, Hunters) stuck by a plasma grenade roars and charges whoever threw it, trying to take them down in the blast. If the thrower is unknown, it charges the nearest enemy in sight. Grunts and Jackals panic instead.
@@ -1070,8 +1070,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30277 | `HCE_RandomMarineArmored` |
 | 30278 | `HCE_RandomSentinel` |
 | 30279 | `HCE_JackalMajorNeedler` |
-| 30280 | `HCE_HunterWhite` |
-| 30281 | `HCE_HunterRed` |
+| 30280 | `HCE_HunterUltra` |
 | 30282 | `HCE_EliteMajorFuelRod` |
 | 30283 | `HCE_EliteSpecopsBeamRifle` |
 | 30284 | `HCE_MarineArmoredBattleRifle` |

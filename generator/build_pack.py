@@ -658,11 +658,11 @@ BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
     'HCE_BossFatsoHunter': ('HCE_Hunter', 'Fatso', 1.0),
     'HCE_BossArachnotronEliteSpecopsPlasmaRifle': ('HCE_EliteSpecopsPlasmaRifle', 'Arachnotron', 1.0),
     'HCE_BossArachnotronEliteSpecopsNeedler': ('HCE_EliteSpecopsNeedler', 'Arachnotron', 1.0),
-    'HCE_BossCyberdemonHunterMajor': ('HCE_HunterMajor', 'Cyberdemon', 2.0),
-    'HCE_BossCyberdemonHunterWhite': ('HCE_HunterWhite', 'Cyberdemon', 3.0),
-    'HCE_BossCyberdemonHunterRed': ('HCE_HunterRed', 'Cyberdemon', 3.0),
-    'HCE_BossFatsoHunterWhite': ('HCE_HunterWhite', 'Fatso', 1.0),
-    'HCE_BossFatsoHunterRed': ('HCE_HunterRed', 'Fatso', 1.0),
+    'HCE_BossCyberdemonHunter': ('HCE_Hunter', 'Cyberdemon', 3.0),
+    'HCE_BossCyberdemonHunterMajor': ('HCE_HunterMajor', 'Cyberdemon', 3.0),
+    'HCE_BossCyberdemonHunterUltra': ('HCE_HunterUltra', 'Cyberdemon', 3.0),
+    'HCE_BossFatsoHunterMajor': ('HCE_HunterMajor', 'Fatso', 1.0),
+    'HCE_BossFatsoHunterUltra': ('HCE_HunterUltra', 'Fatso', 1.0),
     'HCE_BossSpiderEliteCommanderPlasmaRifle': ('HCE_EliteCommanderPlasmaRifle', 'SpiderMastermind', 4.0),
 }
 VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy',
@@ -2347,7 +2347,7 @@ def build(cfg=None):
                   f'class {alias} : {base}\n{{\n\tDefault\n\t{{\n\t\tHealth {hp};\n\t}}\n}}\n')
         md.append(blocks[base].replace(f'Model {base}\n', f'Model {alias}\n', 1))
     # classes added after the first release keep their numbers: appended in release order, never re-sorted
-    LATE_ORDER = cfg.get('late_order', ['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'])
+    LATE_ORDER = cfg.get('late_order', ['HCE_JackalMajorNeedler', 'HCE_HunterUltra'])
     late_items = late + [f'HCE_Random{c}' for c in late_chars if c in spawners]
     late_items.sort(key=lambda c: (LATE_ORDER.index(c) if c in LATE_ORDER else len(LATE_ORDER), c))
     for cls in late_items:                 # classes added after the first release keep old numbers stable
@@ -2451,7 +2451,7 @@ MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', 
             handler='HCE_ReplaceHandler', index='pack_index.json',
             late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
                        + [c for c in ('SentinelEnforcer', 'SentinelConstructor') if c in TEAM],
-            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterWhite', 'HCE_HunterRed'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER + GALAP_ORDER)
+            late_order=['HCE_JackalMajorNeedler', 'HCE_HunterUltra'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER + GALAP_ORDER)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)

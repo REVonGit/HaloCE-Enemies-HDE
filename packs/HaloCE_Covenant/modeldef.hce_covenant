@@ -1576,41 +1576,18 @@ Model HCE_HunterMajor
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_HunterRed
+Model HCE_HunterUltra
 {
 	Path "models/hce/Hunter"
 	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterred_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterred_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterred_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterred_hunter_3.png"
-	Path "models/hce/weapons"
-	SurfaceSkin 0 8 "hce_hidden.png"
-	SurfaceSkin 0 9 "hce_hidden.png"
-	SurfaceSkin 0 10 "hce_hidden.png"
-	Scale 80 80 96
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_HunterWhite
-{
-	Path "models/hce/Hunter"
-	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterwhite_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterwhite_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterwhite_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterwhite_hunter_3.png"
+	SurfaceSkin 0 0 "skins/hunterultra_hunter_0.png"
+	SurfaceSkin 0 1 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 2 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 3 "skins/hunterultra_hunter_3.png"
+	SurfaceSkin 0 4 "skins/hunterultra_hunter_4.png"
+	SurfaceSkin 0 5 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 6 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 7 "skins/hunterultra_hunter_3.png"
 	Path "models/hce/weapons"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
@@ -1804,6 +1781,29 @@ Model HCE_BossBaronEliteMajorPlasmaRifle
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_BossCyberdemonHunter
+{
+	Path "models/hce/Hunter"
+	Model 0 "Hunter.iqm"
+	SurfaceSkin 0 0 "skins/hunter_hunter_0.png"
+	SurfaceSkin 0 1 "skins/hunter_hunter_1.png"
+	SurfaceSkin 0 2 "skins/hunter_hunter_2.png"
+	SurfaceSkin 0 3 "skins/hunter_hunter_3.png"
+	SurfaceSkin 0 4 "skins/hunter_hunter_4.png"
+	SurfaceSkin 0 5 "skins/hunter_hunter_1.png"
+	SurfaceSkin 0 6 "skins/hunter_hunter_2.png"
+	SurfaceSkin 0 7 "skins/hunter_hunter_3.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 8 "hce_hidden.png"
+	SurfaceSkin 0 9 "hce_hidden.png"
+	SurfaceSkin 0 10 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_BossCyberdemonHunterMajor
 {
 	Path "models/hce/Hunter"
@@ -1827,41 +1827,18 @@ Model HCE_BossCyberdemonHunterMajor
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_BossCyberdemonHunterRed
+Model HCE_BossCyberdemonHunterUltra
 {
 	Path "models/hce/Hunter"
 	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterred_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterred_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterred_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterred_hunter_3.png"
-	Path "models/hce/weapons"
-	SurfaceSkin 0 8 "hce_hidden.png"
-	SurfaceSkin 0 9 "hce_hidden.png"
-	SurfaceSkin 0 10 "hce_hidden.png"
-	Scale 80 80 96
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_BossCyberdemonHunterWhite
-{
-	Path "models/hce/Hunter"
-	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterwhite_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterwhite_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterwhite_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterwhite_hunter_3.png"
+	SurfaceSkin 0 0 "skins/hunterultra_hunter_0.png"
+	SurfaceSkin 0 1 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 2 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 3 "skins/hunterultra_hunter_3.png"
+	SurfaceSkin 0 4 "skins/hunterultra_hunter_4.png"
+	SurfaceSkin 0 5 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 6 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 7 "skins/hunterultra_hunter_3.png"
 	Path "models/hce/weapons"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
@@ -1896,18 +1873,18 @@ Model HCE_BossFatsoHunter
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_BossFatsoHunterRed
+Model HCE_BossFatsoHunterMajor
 {
 	Path "models/hce/Hunter"
 	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterred_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterred_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterred_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterred_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterred_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterred_hunter_3.png"
+	SurfaceSkin 0 0 "skins/huntermajor_hunter_0.png"
+	SurfaceSkin 0 1 "skins/huntermajor_hunter_1.png"
+	SurfaceSkin 0 2 "skins/huntermajor_hunter_2.png"
+	SurfaceSkin 0 3 "skins/huntermajor_hunter_3.png"
+	SurfaceSkin 0 4 "skins/huntermajor_hunter_4.png"
+	SurfaceSkin 0 5 "skins/huntermajor_hunter_1.png"
+	SurfaceSkin 0 6 "skins/huntermajor_hunter_2.png"
+	SurfaceSkin 0 7 "skins/huntermajor_hunter_3.png"
 	Path "models/hce/weapons"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"
@@ -1919,18 +1896,18 @@ Model HCE_BossFatsoHunterRed
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_BossFatsoHunterWhite
+Model HCE_BossFatsoHunterUltra
 {
 	Path "models/hce/Hunter"
 	Model 0 "Hunter.iqm"
-	SurfaceSkin 0 0 "skins/hunterwhite_hunter_0.png"
-	SurfaceSkin 0 1 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 2 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 3 "skins/hunterwhite_hunter_3.png"
-	SurfaceSkin 0 4 "skins/hunterwhite_hunter_4.png"
-	SurfaceSkin 0 5 "skins/hunterwhite_hunter_1.png"
-	SurfaceSkin 0 6 "skins/hunterwhite_hunter_2.png"
-	SurfaceSkin 0 7 "skins/hunterwhite_hunter_3.png"
+	SurfaceSkin 0 0 "skins/hunterultra_hunter_0.png"
+	SurfaceSkin 0 1 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 2 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 3 "skins/hunterultra_hunter_3.png"
+	SurfaceSkin 0 4 "skins/hunterultra_hunter_4.png"
+	SurfaceSkin 0 5 "skins/hunterultra_hunter_1.png"
+	SurfaceSkin 0 6 "skins/hunterultra_hunter_2.png"
+	SurfaceSkin 0 7 "skins/hunterultra_hunter_3.png"
 	Path "models/hce/weapons"
 	SurfaceSkin 0 8 "hce_hidden.png"
 	SurfaceSkin 0 9 "hce_hidden.png"

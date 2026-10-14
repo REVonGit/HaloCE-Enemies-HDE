@@ -76,21 +76,21 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_GruntSpecopsFuelRod*3 HCE_GruntSpecopsNeedler*2 HCE_EliteSpecopsNeedler*2 HCE_EliteSpecopsPlasmaRifle*1",
 			"HCE_GruntSpecopsFuelRod*3 HCE_EliteSpecopsNeedler*3 HCE_GruntSpecopsNeedler*1 HCE_EliteSpecopsPlasmaRifle*1",
 			"HCE_EliteSpecopsNeedler*3 HCE_GruntSpecopsFuelRod*2 HCE_EliteSpecopsPlasmaRifle*2 HCE_GruntSpecopsNeedler*1",
-		// Mancubus (fire-spewing artillery, MAP07 boss): Hunter pairs - blue, Red (flamethrower), White (plasma caster)
+		// Mancubus (fire-spewing artillery, MAP07 boss): Hunter pairs - blue, the red Major (flamethrower), the white Ultra (plasma caster)
 		"Fatso",
-			"HCE_BossFatsoHunter*3 HCE_BossFatsoHunterRed*2 HCE_BossFatsoHunterWhite*1",
-			"HCE_BossFatsoHunter*2 HCE_BossFatsoHunterRed*2 HCE_BossFatsoHunterWhite*2",
-			"HCE_BossFatsoHunterRed*2 HCE_BossFatsoHunterWhite*2 HCE_BossFatsoHunter*2",
+			"HCE_BossFatsoHunter*3 HCE_BossFatsoHunterMajor*2 HCE_BossFatsoHunterUltra*1",
+			"HCE_BossFatsoHunter*2 HCE_BossFatsoHunterMajor*2 HCE_BossFatsoHunterUltra*2",
+			"HCE_BossFatsoHunterMajor*2 HCE_BossFatsoHunterUltra*2 HCE_BossFatsoHunter*2",
 		// Arch-Vile: Elite Commanders with swords, then plasma-rifle Commanders and sword Stealth Majors
 		"Archvile",
 			"HCE_EliteCommanderEnergySword*3 HCE_EliteCommanderPlasmaRifle*1",
 			"HCE_EliteCommanderEnergySword*3 HCE_EliteCommanderPlasmaRifle*2 HCE_StealthEliteMajorEnergySword*1",
 			"HCE_EliteCommanderEnergySword*2 HCE_EliteCommanderPlasmaRifle*2 HCE_StealthEliteMajorEnergySword*2",
-		// Cyberdemon: Hunter pairs - Major (2x health), White and Red (3x health)
+		// Cyberdemon: Hunter pairs (3x health) - blue, the red Major, the white Ultra
 		"Cyberdemon",
-			"HCE_BossCyberdemonHunterMajor*2 HCE_BossCyberdemonHunterWhite*2 HCE_BossCyberdemonHunterRed*1",
-			"HCE_BossCyberdemonHunterMajor*2 HCE_BossCyberdemonHunterWhite*2 HCE_BossCyberdemonHunterRed*1",
-			"HCE_BossCyberdemonHunterMajor*1 HCE_BossCyberdemonHunterWhite*2 HCE_BossCyberdemonHunterRed*2",
+			"HCE_BossCyberdemonHunter*2 HCE_BossCyberdemonHunterMajor*2 HCE_BossCyberdemonHunterUltra*1",
+			"HCE_BossCyberdemonHunter*1 HCE_BossCyberdemonHunterMajor*2 HCE_BossCyberdemonHunterUltra*2",
+			"HCE_BossCyberdemonHunterMajor*2 HCE_BossCyberdemonHunterUltra*2 HCE_BossCyberdemonHunter*1",
 		// Spider Mastermind: Elite Commander (4x health)
 		"SpiderMastermind", "HCE_BossSpiderEliteCommanderPlasmaRifle*1", "HCE_BossSpiderEliteCommanderPlasmaRifle*1", "HCE_BossSpiderEliteCommanderPlasmaRifle*1",
 		// Wolfenstein SS (secret levels): armed human Flood forms, with Ruby's Rebalance's Marine, Armored Marine and ODST
@@ -109,11 +109,11 @@ class HCE_ReplaceHandler : EventHandler
 		"HCE_BossFatsoHunter", "Fatso",
 		"HCE_BossArachnotronEliteSpecopsPlasmaRifle", "Arachnotron",
 		"HCE_BossArachnotronEliteSpecopsNeedler", "Arachnotron",
+		"HCE_BossCyberdemonHunter", "Cyberdemon",
 		"HCE_BossCyberdemonHunterMajor", "Cyberdemon",
-		"HCE_BossCyberdemonHunterWhite", "Cyberdemon",
-		"HCE_BossCyberdemonHunterRed", "Cyberdemon",
-		"HCE_BossFatsoHunterWhite", "Fatso",
-		"HCE_BossFatsoHunterRed", "Fatso",
+		"HCE_BossCyberdemonHunterUltra", "Cyberdemon",
+		"HCE_BossFatsoHunterMajor", "Fatso",
+		"HCE_BossFatsoHunterUltra", "Fatso",
 		"HCE_BossSpiderEliteCommanderPlasmaRifle", "SpiderMastermind"
 	};
 

@@ -647,362 +647,6 @@ class HCE_SentinelBeamGunnerBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\sentinel beam gunner ally heavy\sentinel beam gunner ally heavy
-class HCE_SentinelBeamGunnerAllyHeavy : HCE_SentinelBeamGunnerBase
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Sentinel Beam Gunner Ally Heavy"
-	//$Sprite "HU5HA0"
-	Default
-	{
-		Health 60;
-		+FRIENDLY
-		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;
-		Speed 7.0;
-		HaloDoom_EnemyBase.HCE_Type 15;
-		HaloDoom_EnemyBase.HCE_Variant "sentinel beam gunner ally heavy";
-		HaloDoom_EnemyBase.HCE_Perception 4000, 229, 5600, 160;
-		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
-		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
-		HaloDoom_EnemyBase.HCE_CombatRange 0, 960;
-		HaloDoom_EnemyBase.HCE_Burst 1.60, 1.60, 0.70, 1.10, 0.50, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 36, 55;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 65.3;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 48;
-		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 0.90, 1.62, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
-		HaloDoom_EnemyBase.HCE_FireLoop true;
-		+HaloDoom_EnemyBase.HCE_Beam
-		+HaloDoom_EnemyBase.HCE_Evades
-		+HaloDoom_EnemyBase.HCE_Flying
-		+HaloDoom_EnemyBase.HCE_Surprise
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: return 'stand fixed idle%0';
-		case HCE_A_ALERT: return 'stand fixed idle%0';
-		case HCE_A_MOVE_F: return 'stand fixed idle%0';
-		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
-		case HCE_A_FIRE: return 'gunseat fixed gt fire-1 baked';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'crouch fixed idle%0': return 2;
-		case 'gunseat fixed gt fire-1 baked': return 16;
-		case 'stand fixed idle%0': return 70;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-	override void HCE_RollName() { String l = "ABCDEFGH"; hce_rankName = String.Format("Sentinel %d-%s%d", random(100, 999), l.Mid(random(0, 7), 1), random(1, 9)); }
-}
-
-// characters\sentinel beam gunner ally\sentinel beam gunner ally
-class HCE_SentinelBeamGunnerAlly : HCE_SentinelBeamGunnerBase
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Sentinel Beam Gunner Ally"
-	//$Sprite "HU5GA0"
-	Default
-	{
-		Health 35;
-		+FRIENDLY
-		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;
-		Speed 7.0;
-		HaloDoom_EnemyBase.HCE_Type 15;
-		HaloDoom_EnemyBase.HCE_Variant "sentinel beam gunner ally";
-		HaloDoom_EnemyBase.HCE_Perception 4000, 229, 5600, 160;
-		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
-		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 0, 960;
-		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.40, 0.75, 1.50, 0.50, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 36, 55;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 65.3;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 48;
-		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.12, 2.02, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
-		HaloDoom_EnemyBase.HCE_FireLoop true;
-		+HaloDoom_EnemyBase.HCE_Beam
-		+HaloDoom_EnemyBase.HCE_Evades
-		+HaloDoom_EnemyBase.HCE_Flying
-		+HaloDoom_EnemyBase.HCE_Surprise
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: return 'stand fixed idle%0';
-		case HCE_A_ALERT: return 'stand fixed idle%0';
-		case HCE_A_MOVE_F: return 'stand fixed idle%0';
-		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
-		case HCE_A_FIRE: return 'gunseat fixed gt fire-1 baked';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'crouch fixed idle%0': return 2;
-		case 'gunseat fixed gt fire-1 baked': return 16;
-		case 'stand fixed idle%0': return 70;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-	override void HCE_RollName() { String l = "ABCDEFGH"; hce_rankName = String.Format("Sentinel %d-%s%d", random(100, 999), l.Mid(random(0, 7), 1), random(1, 9)); }
-}
-
-// characters\sentinel beam gunner heavy\sentinel beam gunner heavy
-class HCE_SentinelBeamGunnerHeavy : HCE_SentinelBeamGunnerBase
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Sentinel Beam Gunner Heavy"
-	//$Sprite "HU5IA0"
-	Default
-	{
-		Health 60;
-		Speed 7.0;
-		HaloDoom_EnemyBase.HCE_Type 15;
-		HaloDoom_EnemyBase.HCE_Variant "sentinel beam gunner heavy";
-		HaloDoom_EnemyBase.HCE_Perception 4000, 229, 5600, 160;
-		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
-		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 0, 960;
-		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.40, 0.75, 1.50, 0.50, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 36, 55;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 65.3;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 48;
-		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.12, 2.02, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
-		HaloDoom_EnemyBase.HCE_FireLoop true;
-		+HaloDoom_EnemyBase.HCE_Beam
-		+HaloDoom_EnemyBase.HCE_Evades
-		+HaloDoom_EnemyBase.HCE_Flying
-		+HaloDoom_EnemyBase.HCE_Surprise
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: return 'stand fixed idle%0';
-		case HCE_A_ALERT: return 'stand fixed idle%0';
-		case HCE_A_MOVE_F: return 'stand fixed idle%0';
-		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
-		case HCE_A_FIRE: return 'gunseat fixed gt fire-1 baked';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'crouch fixed idle%0': return 2;
-		case 'gunseat fixed gt fire-1 baked': return 16;
-		case 'stand fixed idle%0': return 70;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-}
-
-// characters\sentinel beam gunner turret\sentinel beam gunner turret
-class HCE_SentinelBeamGunnerTurret : HCE_SentinelBeamGunnerBase
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Sentinel Beam Gunner Turret"
-	//$Sprite "HU5JA0"
-	Default
-	{
-		Health 35;
-		Speed 7.0;
-		HaloDoom_EnemyBase.HCE_Type 15;
-		HaloDoom_EnemyBase.HCE_Variant "sentinel beam gunner turret";
-		HaloDoom_EnemyBase.HCE_Perception 4000, 229, 5600, 160;
-		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
-		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
-		HaloDoom_EnemyBase.HCE_CombatRange 0, 960;
-		HaloDoom_EnemyBase.HCE_Burst 1.60, 1.60, 0.70, 1.10, 0.50, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 36, 55;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 65.3;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 48;
-		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 0.90, 1.62, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
-		HaloDoom_EnemyBase.HCE_FireLoop true;
-		+HaloDoom_EnemyBase.HCE_Beam
-		+HaloDoom_EnemyBase.HCE_Evades
-		+HaloDoom_EnemyBase.HCE_Flying
-		+HaloDoom_EnemyBase.HCE_Surprise
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: return 'stand fixed idle%0';
-		case HCE_A_ALERT: return 'stand fixed idle%0';
-		case HCE_A_MOVE_F: return 'stand fixed idle%0';
-		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
-		case HCE_A_FIRE: return 'gunseat fixed gt fire-1 baked';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'crouch fixed idle%0': return 2;
-		case 'gunseat fixed gt fire-1 baked': return 16;
-		case 'stand fixed idle%0': return 70;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-}
-
-// characters\sentinel beam gunner\sentinel beam gunner
-class HCE_SentinelBeamGunner : HCE_SentinelBeamGunnerBase
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Sentinel Beam Gunner"
-	//$Sprite "HU5FA0"
-	Default
-	{
-		Health 35;
-		Speed 7.0;
-		HaloDoom_EnemyBase.HCE_Type 15;
-		HaloDoom_EnemyBase.HCE_Variant "sentinel beam gunner";
-		HaloDoom_EnemyBase.HCE_Perception 4000, 229, 5600, 160;
-		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
-		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 1600;
-		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
-		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 0, 960;
-		HaloDoom_EnemyBase.HCE_Burst 0.30, 0.40, 0.75, 1.50, 0.50, 0.60;
-		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
-		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
-		HaloDoom_EnemyBase.HCE_Melee 36, 55;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 65.3;
-		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
-		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
-		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
-		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
-		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 80, 5.0, 6.0;
-		HaloDoom_EnemyBase.HCE_FlyHeight 48;
-		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.12, 2.02, 0;
-		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
-		HaloDoom_EnemyBase.HCE_FireLoop true;
-		+HaloDoom_EnemyBase.HCE_Beam
-		+HaloDoom_EnemyBase.HCE_Evades
-		+HaloDoom_EnemyBase.HCE_Flying
-		+HaloDoom_EnemyBase.HCE_Surprise
-	}
-	override Name HCE_AnimName(int kind)
-	{
-		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
-		switch(kind)
-		{
-		case HCE_A_IDLE: return 'stand fixed idle%0';
-		case HCE_A_ALERT: return 'stand fixed idle%0';
-		case HCE_A_MOVE_F: return 'stand fixed idle%0';
-		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
-		case HCE_A_FIRE: return 'gunseat fixed gt fire-1 baked';
-		}
-		return 'None';
-	}
-
-	override int HCE_AnimTics(Name anim)
-	{
-		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
-		switch(anim)
-		{
-		case 'crouch fixed idle%0': return 2;
-		case 'gunseat fixed gt fire-1 baked': return 16;
-		case 'stand fixed idle%0': return 70;
-		}
-		return 30;
-	}
-	override vector3 HCE_AnimMove(Name anim)
-	{
-		return (0, 0, 0);
-	}
-}
-
 class HCE_SentinelConstructorBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -1468,6 +1112,11 @@ class HCE_SentinelDragoonAlly : HCE_SentinelDragoonBase
 	}
 	override bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble
 	override void HCE_RollName() { String l = "ABCDEFGH"; hce_rankName = String.Format("Sentinel %d-%s%d", random(100, 999), l.Mid(random(0, 7), 1), random(1, 9)); }
+	// Galap's gunner seats (sentinel beam gunner ally heavy): beams of their own beside its weapon
+	override void HCE_GunnerSetup()
+	{
+		HCE_AddGunner((37.2, -0.0, 75.8), 1.00, 1.60, 1.60, 0.70, 1.10, 1600);   // beam gun
+	}
 }
 
 // characters\sentinel dragoon\sentinel dragoon
@@ -1546,6 +1195,11 @@ class HCE_SentinelDragoon : HCE_SentinelDragoonBase
 		return (0, 0, 0);
 	}
 	override bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble
+	// Galap's gunner seats (sentinel beam gunner heavy): beams of their own beside its weapon
+	override void HCE_GunnerSetup()
+	{
+		HCE_AddGunner((37.2, -0.0, 75.8), 1.00, 1.60, 1.60, 0.70, 1.10, 1600);   // beam gun
+	}
 }
 
 class HCE_SentinelEnforcerBase : HaloDoom_EnemyBase abstract
@@ -4822,6 +4476,12 @@ class HCE_SentinelSoldierAlly : HCE_SentinelSoldierBase
 	}
 	override bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble
 	override void HCE_RollName() { String l = "ABCDEFGH"; hce_rankName = String.Format("Sentinel %d-%s%d", random(100, 999), l.Mid(random(0, 7), 1), random(1, 9)); }
+	// Galap's gunner seats (sentinel beam gunner ally): beams of their own beside its weapon
+	override void HCE_GunnerSetup()
+	{
+		HCE_AddGunner((48.8, 36.2, 96.7), 0.60, 0.30, 0.40, 0.75, 1.50, 1600);   // beam gun a
+		HCE_AddGunner((48.8, -35.1, 96.7), 0.60, 0.30, 0.40, 0.75, 1.50, 1600);   // beam gun b
+	}
 }
 
 // characters\sentinel soldier\sentinel soldier
@@ -4902,6 +4562,12 @@ class HCE_SentinelSoldier : HCE_SentinelSoldierBase
 		return (0, 0, 0);
 	}
 	override bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble
+	// Galap's gunner seats (sentinel beam gunner): beams of their own beside its weapon
+	override void HCE_GunnerSetup()
+	{
+		HCE_AddGunner((48.8, 36.2, 96.7), 0.60, 0.30, 0.40, 0.75, 1.50, 1600);   // beam gun a
+		HCE_AddGunner((48.8, -35.1, 96.7), 0.60, 0.30, 0.40, 0.75, 1.50, 1600);   // beam gun b
+	}
 }
 
 class HCE_SentinelWardenBase : HaloDoom_EnemyBase abstract
@@ -5062,19 +4728,6 @@ class HCE_RandomSentinel : RandomSpawner
 		DropItem "HCE_SentinelDefensive", 255, 1;
 		DropItem "HCE_SentinelShielded", 255, 1;
 		DropItem "HCE_SentinelShieldedMajor", 255, 1;
-	}
-}
-
-class HCE_RandomSentinelBeamGunner : RandomSpawner
-{
-	//$Category "Halo CE/Sentinels/Sentinel Beam Gunner"
-	//$Title "Random Sentinel Beam Gunner"
-	//$Sprite "HU5IA0"
-	Default
-	{
-		DropItem "HCE_SentinelBeamGunnerHeavy", 255, 1;
-		DropItem "HCE_SentinelBeamGunnerTurret", 255, 1;
-		DropItem "HCE_SentinelBeamGunner", 255, 1;
 	}
 }
 

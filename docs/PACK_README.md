@@ -932,7 +932,7 @@ How brutally an Elite or Brute dies decides how long the squad it led takes to p
 
 ## Bestiary
 
-Options > Halo CE Bestiary, or the console command `hce_bestiary`: every enemy the loaded packs can place, by faction and kind, the Flood and Sentinels only when their packs are loaded. Each entry has the enemy's picture (the one Ultimate Doom Builder shows), its health, shield, weapon, speed and DoomEdNum, and a few lines on what it is and how it fights. The card is drawn on HaloDoom Evolved's own lore panel, the one its weapon descriptions use. Variants from `HCEVARS` lumps are listed too, with what they change. Up and down move, left and right jump to the next kind, page up and down a page, Escape closes; the mouse wheel scrolls and a click picks an entry.
+Options > Halo CE Bestiary, or the console command `hce_bestiary`: every enemy the loaded packs can place, by faction and kind, the Flood and Sentinels only when their packs are loaded. Each kind and rank is one entry, whatever gun it holds: the guns it carries are listed, each with its DoomEdNum. An entry has the enemy's picture (the one Ultimate Doom Builder shows), its health, shield and speed, and a few lines on what it is and how it fights. The card is drawn on HaloDoom Evolved's own lore panel, the one its weapon descriptions use. Variants from `HCEVARS` lumps are listed too, with what they change. Up and down move, left and right jump to the next kind, page up and down a page, Escape closes; the mouse wheel scrolls and a click picks an entry.
 
 ## Mapping with Ultimate Doom Builder
 
@@ -1266,7 +1266,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
-* **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder, Crawler and Beam Gunner (models, textures, animations and AI tags) are by Galap.
+* **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) and the Flood combat forms' skins are by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).

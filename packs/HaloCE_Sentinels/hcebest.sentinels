@@ -1,49 +1,34 @@
 // the Halo CE enemies bestiary (hce_bestiary.zsc)
-E	HCE_Sentinel	Sentinels	Sentinel	Sentinel	HU5E	Sentinel	30260
-E	HCE_SentinelDefensive	Sentinels	Sentinel	Sentinel Defensive	HU5M	Sentinel	30262
-E	HCE_SentinelEliminator	Sentinels	Sentinel	Sentinel Eliminator	HU5P	SentinelEliminator,Sentinel	30366
-E	HCE_SentinelMajor	Sentinels	Sentinel	Sentinel Major	HU69	Sentinel	30261
-E	HCE_SentinelShielded	Sentinels	Sentinel	Sentinel Shielded	HU6D	Sentinel	30263
-E	HCE_SentinelShieldedMajor	Sentinels	Sentinel	Sentinel Shielded Major	HU6E	Sentinel	30264
-E	HCE_SentinelBeamGunner	Sentinels	Sentinel Beam Gunner	Sentinel Beam Gunner	HU5F	SentinelBeamGunner	30395
-E	HCE_SentinelBeamGunnerAlly	Sentinels	Sentinel Beam Gunner	Sentinel Beam Gunner Ally	HU5G	SentinelBeamGunner	30398
-E	HCE_SentinelBeamGunnerAllyHeavy	Sentinels	Sentinel Beam Gunner	Sentinel Beam Gunner Ally Heavy	HU5H	SentinelBeamGunner	30399
-E	HCE_SentinelBeamGunnerHeavy	Sentinels	Sentinel Beam Gunner	Sentinel Beam Gunner Heavy	HU5I	SentinelBeamGunner	30396
-E	HCE_SentinelBeamGunnerTurret	Sentinels	Sentinel Beam Gunner	Sentinel Beam Gunner Turret	HU5J	SentinelBeamGunner	30397
-E	HCE_SentinelConstructor	Sentinels	Sentinel Constructor	Sentinel Constructor	HU5K	SentinelConstructor	30368
-E	HCE_SentinelCrawler	Sentinels	Sentinel Crawler	Sentinel Crawler	HU5L	SentinelCrawler	30394
-E	HCE_SentinelDragoon	Sentinels	Sentinel Dragoon	Sentinel Dragoon	HU5N	SentinelDragoon	30382
-E	HCE_SentinelDragoonAlly	Sentinels	Sentinel Dragoon	Sentinel Dragoon Ally	HU5O	SentinelDragoon	30383
-E	HCE_SentinelEnforcer	Sentinels	Sentinel Enforcer	Sentinel Enforcer	HU5Q	SentinelEnforcer	30367
-E	HCE_SentinelGold	Sentinels	Sentinel Gold	Sentinel Gold	HU5R	SentinelGold	30384
-E	HCE_SentinelGoldMajor	Sentinels	Sentinel Gold	Sentinel Gold Major	HU5S	SentinelGold	30385
-E	HCE_SentinelGoldShielded	Sentinels	Sentinel Gold	Sentinel Gold Shielded	HU5T	SentinelGold	30386
-E	HCE_SentinelGoldShieldedMajor	Sentinels	Sentinel Gold	Sentinel Gold Shielded Major	HU5U	SentinelGold	30387
-E	HCE_SentinelInterceptor	Sentinels	Sentinel Interceptor	Sentinel Interceptor	HU5V	SentinelInterceptor	30392
-E	HCE_SentinelKnightCommanderBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Commander (Binary Rifle)	HU5W	SentinelKnightCommander,SentinelKnight	30363
-E	HCE_SentinelKnightCommanderLightRifle	Sentinels	Sentinel Knight	Sentinel Knight Commander (Light Rifle)	HU5X	SentinelKnightCommander,SentinelKnight	30361
-E	HCE_SentinelKnightCommanderScattershot	Sentinels	Sentinel Knight	Sentinel Knight Commander (Scattershot)	HU5Y	SentinelKnightCommander,SentinelKnight	30362
-E	HCE_SentinelKnightCommanderSuppressor	Sentinels	Sentinel Knight	Sentinel Knight Commander (Suppressor)	HU5Z	SentinelKnightCommander,SentinelKnight	30364
-E	HCE_SentinelKnightMajorBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Major (Binary Rifle)	HU60	SentinelKnightMajor,SentinelKnight	30359
-E	HCE_SentinelKnightMajorLightRifle	Sentinels	Sentinel Knight	Sentinel Knight Major (Light Rifle)	HU61	SentinelKnightMajor,SentinelKnight	30357
-E	HCE_SentinelKnightMajorScattershot	Sentinels	Sentinel Knight	Sentinel Knight Major (Scattershot)	HU62	SentinelKnightMajor,SentinelKnight	30358
-E	HCE_SentinelKnightMajorSuppressor	Sentinels	Sentinel Knight	Sentinel Knight Major (Suppressor)	HU63	SentinelKnightMajor,SentinelKnight	30360
-E	HCE_SentinelKnightMinorBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Minor (Binary Rifle)	HU64	SentinelKnightMinor,SentinelKnight	30355
-E	HCE_SentinelKnightMinorLightRifle	Sentinels	Sentinel Knight	Sentinel Knight Minor (Light Rifle)	HU65	SentinelKnightMinor,SentinelKnight	30353
-E	HCE_SentinelKnightMinorScattershot	Sentinels	Sentinel Knight	Sentinel Knight Minor (Scattershot)	HU66	SentinelKnightMinor,SentinelKnight	30354
-E	HCE_SentinelKnightMinorSuppressor	Sentinels	Sentinel Knight	Sentinel Knight Minor (Suppressor)	HU67	SentinelKnightMinor,SentinelKnight	30356
-E	HCE_SentinelLancer	Sentinels	Sentinel Lancer	Sentinel Lancer	HU68	SentinelLancer	30391
-E	HCE_SentinelMarauder	Sentinels	Sentinel Marauder	Sentinel Marauder	HU6A	SentinelMarauder	30393
-E	HCE_SentinelOnyx	Sentinels	Sentinel Onyx	Sentinel Onyx	HU6B	SentinelOnyx	30388
-E	HCE_SentinelProtector	Sentinels	Sentinel Protector	Sentinel Protector	HU6C	SentinelProtector	30390
-E	HCE_SentinelSoldier	Sentinels	Sentinel Soldier	Sentinel Soldier	HU6F	SentinelSoldier	30380
-E	HCE_SentinelSoldierAlly	Sentinels	Sentinel Soldier	Sentinel Soldier Ally	HU6G	SentinelSoldier	30381
-E	HCE_SentinelWarden	Sentinels	Sentinel Warden	Sentinel Warden	HU6H	SentinelWarden	30389
+E	HCE_Sentinel	Sentinels	Sentinel	Sentinel	HU5E	Sentinel	30260	-
+E	HCE_SentinelDefensive	Sentinels	Sentinel	Sentinel Defensive	HU5M	Sentinel	30262	-
+E	HCE_SentinelEliminator	Sentinels	Sentinel	Sentinel Eliminator	HU5P	SentinelEliminator,Sentinel	30366	-
+E	HCE_SentinelMajor	Sentinels	Sentinel	Sentinel Major	HU69	Sentinel	30261	-
+E	HCE_SentinelShielded	Sentinels	Sentinel	Sentinel Shielded	HU6D	Sentinel	30263	-
+E	HCE_SentinelShieldedMajor	Sentinels	Sentinel	Sentinel Shielded Major	HU6E	Sentinel	30264	-
+E	HCE_SentinelConstructor	Sentinels	Sentinel Constructor	Sentinel Constructor	HU5K	SentinelConstructor	30368	-
+E	HCE_SentinelCrawler	Sentinels	Sentinel Crawler	Sentinel Crawler	HU5L	SentinelCrawler	30394	-
+E	HCE_SentinelDragoon	Sentinels	Sentinel Dragoon	Sentinel Dragoon	HU5N	SentinelDragoon	30382	-
+E	HCE_SentinelDragoonAlly	Sentinels	Sentinel Dragoon	Sentinel Dragoon Ally	HU5O	SentinelDragoon	30383	-
+E	HCE_SentinelEnforcer	Sentinels	Sentinel Enforcer	Sentinel Enforcer	HU5Q	SentinelEnforcer	30367	-
+E	HCE_SentinelGold	Sentinels	Sentinel Gold	Sentinel Gold	HU5R	SentinelGold	30384	-
+E	HCE_SentinelGoldMajor	Sentinels	Sentinel Gold	Sentinel Gold Major	HU5S	SentinelGold	30385	-
+E	HCE_SentinelGoldShielded	Sentinels	Sentinel Gold	Sentinel Gold Shielded	HU5T	SentinelGold	30386	-
+E	HCE_SentinelGoldShieldedMajor	Sentinels	Sentinel Gold	Sentinel Gold Shielded Major	HU5U	SentinelGold	30387	-
+E	HCE_SentinelInterceptor	Sentinels	Sentinel Interceptor	Sentinel Interceptor	HU5V	SentinelInterceptor	30392	-
+E	HCE_SentinelKnightCommanderBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Commander	HU5W	SentinelKnightCommander,SentinelKnight	30363	Binary Rifle (30363), Light Rifle (30361), Scattershot (30362), Suppressor (30364)
+E	HCE_SentinelKnightMajorBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Major	HU60	SentinelKnightMajor,SentinelKnight	30359	Binary Rifle (30359), Light Rifle (30357), Scattershot (30358), Suppressor (30360)
+E	HCE_SentinelKnightMinorBinaryRifle	Sentinels	Sentinel Knight	Sentinel Knight Minor	HU64	SentinelKnightMinor,SentinelKnight	30355	Binary Rifle (30355), Light Rifle (30353), Scattershot (30354), Suppressor (30356)
+E	HCE_SentinelLancer	Sentinels	Sentinel Lancer	Sentinel Lancer	HU68	SentinelLancer	30391	-
+E	HCE_SentinelMarauder	Sentinels	Sentinel Marauder	Sentinel Marauder	HU6A	SentinelMarauder	30393	-
+E	HCE_SentinelOnyx	Sentinels	Sentinel Onyx	Sentinel Onyx	HU6B	SentinelOnyx	30388	-
+E	HCE_SentinelProtector	Sentinels	Sentinel Protector	Sentinel Protector	HU6C	SentinelProtector	30390	-
+E	HCE_SentinelSoldier	Sentinels	Sentinel Soldier	Sentinel Soldier	HU6F	SentinelSoldier	30380	-
+E	HCE_SentinelSoldierAlly	Sentinels	Sentinel Soldier	Sentinel Soldier Ally	HU6G	SentinelSoldier	30381	-
+E	HCE_SentinelWarden	Sentinels	Sentinel Warden	Sentinel Warden	HU6H	SentinelWarden	30389	-
 L	Sentinel	Forerunner machines left behind to guard their installations, firing a continuous beam. Some carry shields. Once they ignored humanity; now they defend the rings against the Flood and anyone else in the way.|Unless the Sentinels are set against you (Options > Halo CE AI), they fight on your side: they keep with you like a Marine squad and answer your squad orders.
-L	SentinelBeamGunner	A small hard-light gun platform rather than a full Sentinel. It was built to sit in the installation's walls and machinery and fire on intruders, so it is easy to miss until it opens up. The Heavy and Turret models hit harder, and the Ally ones fight for humans whatever the Sentinels' allegiance is set to.|Model and design by Galap.
 L	SentinelConstructor	A little Forerunner builder drone, made to weld and mend the installation, not to fight. Turned on intruders it still does what it knows: it darts at you out of nowhere, rams you, and burns at you with its cutting beam. It cannot take much punishment.
 L	SentinelCrawler	A Forerunner machine that walks instead of flying, scuttling across the floor on its legs. It keeps a beam for range and lunges at anyone who gets close.|Model and design by Galap.
-L	SentinelDragoon	A long, T-shaped Forerunner gunship with a heavy shield. Instead of a beam it carries the Enforcer's needle cannon, raking an area with strings of hard-light bolts from range.|The Dragoon Ally answers to humans instead, whatever the Sentinels' allegiance is set to.|Model and design by Galap.
+L	SentinelDragoon	A long, T-shaped Forerunner gunship with a heavy shield. It carries the Enforcer's needle cannon, raking an area with strings of hard-light bolts from range, and a heavy beam gun under its nose that burns at you in long bursts at the same time.|The Dragoon Ally answers to humans instead, whatever the Sentinels' allegiance is set to.|Model and design by Galap.
 L	SentinelEliminator	A Sentinel built for the purge's hardest work: a shield bubble around its hull and a beam that burns far hotter than the common Sentinel's. When one turns up, the Forerunner machines have decided you are worth the effort.
 L	SentinelEnforcer	A heavy Forerunner war machine that floats on hover jets. Two energy shields across its front stop anything fired from ahead; it answers with long strings of needle bolts from both arms, salvoes of homing hard-light rockets, and its claws for anyone who gets close. Flank it: its back and sides are bare.
 L	SentinelGold	A Sentinel cast in gold, burning a cold blue beam instead of the usual one. Majors are tougher, and the Shielded models carry an energy shield that has to be stripped first.|Model and design by Galap.
@@ -56,5 +41,5 @@ L	SentinelLancer	A Forerunner burner. It flies in close and sprays fire across w
 L	SentinelMarauder	A cross-winged Forerunner raider with a standard beam. It is light and quick, meant to harass rather than hold a line.|Model and design by Galap.
 L	SentinelOnyx	A dark Forerunner drone of a different make, compact and heavily shielded, with a blue beam. It is slow to kill and quick to punish anyone who stands in the open.|Model and design by Galap.
 L	SentinelProtector	A light escort drone with the Enforcer's needle cannon. On its own it is no great threat, but its hard-light bolts add up fast when it flies with others.|Model and design by Galap.
-L	SentinelSoldier	The heaviest of the new Forerunner guardians: a broad, armoured hull with a strong shield and a beam that does not let up. It takes a sustained effort to bring one down, and it soaks up fire the whole while.|The Soldier Ally answers to humans instead, whatever the Sentinels' allegiance is set to.|Model and design by Galap.
+L	SentinelSoldier	The heaviest of the new Forerunner guardians: a broad, armoured hull with a strong shield and three beams: its own, and one from a gun on either side of the hull, each firing on its own. It takes a sustained effort to bring one down, and it soaks up fire the whole while.|The Soldier Ally answers to humans instead, whatever the Sentinels' allegiance is set to.|Model and design by Galap.
 L	SentinelWarden	A well-shielded guardian of the installation, built to hold ground. Its beam is the common Sentinel's; its staying power is not.|Model and design by Galap.

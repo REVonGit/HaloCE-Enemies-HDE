@@ -11,7 +11,7 @@
 
 class HCE_BestiaryEntry
 {
-	String cls, faction, group, title, sprite, loreKey, extra;
+	String cls, faction, group, title, sprite, loreKey, extra, weapons;   // weapons: the guns this kind carries (each with its DoomEdNum)
 	int ednum;
 }
 
@@ -54,6 +54,7 @@ class HCE_BestiaryMenu : ListMenu
 					if(!c) continue;
 					let e = new("HCE_BestiaryEntry");
 					e.cls = f[1]; e.faction = f[2]; e.group = f[3]; e.title = f[4]; e.sprite = f[5]; e.loreKey = f[6]; e.ednum = f[7].ToInt();
+					if(f.Size() >= 9 && f[8] != "-") e.weapons = f[8];
 					entries.Push(e);
 				}
 				else if(f.Size() >= 3 && f[0] == "L" && loreKeys.Find(f[1]) == loreKeys.Size()) { loreKeys.Push(f[1]); loreText.Push(f[2]); }
@@ -250,10 +251,10 @@ class HCE_BestiaryMenu : ListMenu
 			stats.Push(String.Format("Health  %d", d.Health));
 			if(d.hce_shieldMax > 0) stats.Push(String.Format("Shield  %d", int(d.hce_shieldMax)));
 			Name wn = d.hce_armWeapon != 'None' && d.hce_armWeapon != '' ? d.hce_armWeapon : d.hce_dropWeapon;
-			if(wn != 'None' && wn != '') stats.Push("Weapon  " .. WeaponName(wn));      // (the standalone packs' enemies drop no guns: the title names it)
+			if(wn != 'None' && wn != '' && !e.weapons.Length()) stats.Push("Weapon  " .. WeaponName(wn));      // (the standalone packs' enemies drop no guns: the title names it)
 			stats.Push(String.Format("Speed  %.1f", d.hce_runSpeed));
 		}
-		stats.Push(String.Format("DoomEdNum  %d", e.ednum));
+		if(!e.weapons.Length()) stats.Push(String.Format("DoomEdNum  %d", e.ednum));
 		for(int i = 0; i < stats.Size(); i++) Text(sc, o, stats[i], x, y + i * 25, 22, Font.CR_GRAY);
 		// top right: the picture, fitted into the box
 		TextureID pic = e.sprite != "-" ? TexMan.CheckForTexture(e.sprite .. "A0", TexMan.Type_Sprite) : TexMan.CheckForTexture("", TexMan.Type_Any);
@@ -269,6 +270,7 @@ class HCE_BestiaryMenu : ListMenu
 		// below: what it is
 		String lore = Lore(e.loreKey);
 		if(e.extra.Length()) lore = e.extra .. (lore.Length() ? "|" .. lore : "");
+		if(e.weapons.Length()) lore = "Carries: " .. e.weapons .. "." .. (lore.Length() ? "|" .. lore : "");
 		Array<String> paras;
 		lore.Split(paras, "|");
 		x = CARD_X + 235 * k; y = CARD_Y + 440 * k; w = 1450 * k;

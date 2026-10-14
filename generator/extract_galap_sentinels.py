@@ -124,6 +124,38 @@ def load_model(tag):
     return nodes, parts
 
 
+def load_markers(tag):
+    """the base permutations' markers: {name: [x, y, z]} in the model's space at its bind pose (the gunner seats 'beam gun',
+    'beam gun a/b': where Galap seats his invisible beam gunners, CE's way of giving one body more than one weapon)"""
+    import cmt_weapon as cw
+    lw.fields = cw._fields_gbx
+    try:
+        t = lw.LooseTag(path(tag, 'gbxmodel'), 'model', CH)
+    finally:
+        lw.fields = cw._fields_gbx.__defaults__[0]
+    r = t.root[1]
+    par = [t.get('model_node', o, 'parent_node_index') for o, _ in r['nodes']]
+    loc = [(np.array(t.get('model_node', o, 'default_translation')), hm.hq(np.array(t.get('model_node', o, 'default_rotation'))))
+           for o, _ in r['nodes']]
+    import preview as pv
+    W = pv.world(par, loc)
+    out = {}
+    for ro, rch in r['regions']:
+        perms = rch.get('permutations', [])
+        if not perms: continue
+        po, pch = next(((o, c) for o, c in perms if t.cstr(o) == 'base'), perms[0])
+        for mo, _ in pch.get('markers', []):
+            # a permutation marker: name[32], node index (int16) + pad, rotation (4f), translation (3f)
+            node = t.u('h', mo + 32)[0]
+            tr = np.array(t.u('3f', mo + 52))
+            # in the vertices' space: the node's bind frame relative to the root's (the root's own placement is not in them)
+            if 0 < node < len(W):
+                R0 = pv.qmat(W[0][1])
+                tr = R0.T @ (np.asarray(W[node][0]) + pv.qmat(W[node][1]) @ tr - np.asarray(W[0][0]))
+            out.setdefault(t.cstr(mo), [round(float(x), 5) for x in tr])
+    return out
+
+
 def bitmap(tag):
     from loosebitmap import load
     return load(path(tag, 'bitmap'))
@@ -237,6 +269,13 @@ def ai():
 
 def main():
     if not os.path.isdir(SRC): sys.exit(f'no Galap pack at {SRC} (HCE_GALAP)')
+    if '--markers' in sys.argv:                     # only the markers, into the models already extracted
+        for pid, (model, graph) in CHARS.items():
+            pj = f'{OUT}/models/{pid}/{pid}.json'
+            if not os.path.exists(pj): continue
+            meta = json.load(open(pj)); meta['markers'] = load_markers(C + model); json.dump(meta, open(pj, 'w'), indent=1)
+            print(f'  {pid}: markers {sorted(meta["markers"])}')
+        return
     for pid, (model, graph) in CHARS.items():
         od = f'{OUT}/models/{pid}'
         if os.path.exists(od): shutil.rmtree(od)
@@ -245,6 +284,7 @@ def main():
         meshes = [surface(n, m, ps) for n, m, ps in skins(pid, parts, od)]
         A = anims(graph, nodes)
         meta = write(pid, model, nodes, meshes, A, od)
+        meta['markers'] = load_markers(C + model); json.dump(meta, open(f'{od}/{pid}.json', 'w'), indent=1)
         print(f'  {pid}: {len(nodes)} nodes, {sum(len(x["tris"]) for x in meshes)} tris, surfaces {meta["mesh_names"]}, {len(A)} anims')
     ai()
 

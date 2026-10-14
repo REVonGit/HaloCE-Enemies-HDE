@@ -748,6 +748,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		Super.PostBeginPlay();
 		if(!hce_enabled) return;
 		if(HCE_SimpleShaders()) HCE_PlainShaders();
+		HCE_GunnerSetup();
 		// the Sentinels fight for the player unless hce_sentinelallies is off (Options > Halo CE AI)
 		if(hce_team == HCE_TEAM_SENTINEL && HCE_CVarF('hce_sentinelallies', 1) > 0)
 		{
@@ -3627,8 +3628,69 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	// Ranged combat: Halo burst model (actor_burst_geometry)
 	// ------------------------------------------------------------------
+	// ------------------------------------------------------------------
+	// Gunner seats: more than one weapon on one body. Halo CE gave a unit one gun, so a Sentinel that fires several
+	// (Galap's Soldier and Dragoon) seated invisible beam gunners on its markers; here the body fires them itself, each
+	// seat on the gunner's own bursts, alongside its own weapon. Packs fill them in HCE_GunnerSetup (HCE_AddGunner).
+	// ------------------------------------------------------------------
+	Array<HCE_GunnerSeat> hce_gunners;
+	virtual void HCE_GunnerSetup() {}
+	void HCE_AddGunner(vector3 ofs, double dmg, double dur0, double dur1, double sep0, double sep1, double range)
+	{
+		let g = new('HCE_GunnerSeat');
+		g.ofs = ofs; g.dmg = dmg; g.dur0 = dur0; g.dur1 = dur1; g.sep0 = sep0; g.sep1 = sep1; g.range = range;
+		hce_gunners.Push(g);
+	}
+	vector3 HCE_GunnerPos(HCE_GunnerSeat g)
+	{
+		return level.Vec3Offset(pos, (RotateVector(g.ofs.xy, angle), g.ofs.z));
+	}
+	void HCE_GunnerTick(double dist)
+	{
+		if(!hce_gunners.Size() || !target || hce_holdFire || health <= 0) return;
+		int now = level.maptime;
+		for(int i = 0; i < hce_gunners.Size(); i++)
+		{
+			let g = hce_gunners[i];
+			bool can = hce_canSee && dist <= g.range;
+			if(g.nextAt == 0) { g.nextAt = now + random(17, 35); continue; }      // its first burst a moment after the body's
+			if(now >= g.nextAt && now >= g.onUntil)
+			{
+				if(!can) continue;
+				g.onUntil = now + int(35 * frandom(g.dur0, g.dur1));
+				g.nextAt = g.onUntil + int(35 * frandom(g.sep0, g.sep1) * HCE_D(HCE_D_ROF));
+				A_StartSound("Halo/Weapons/SentinelBeam/Fire/Begin", CHAN_AUTO, CHANF_OVERLAP, 0.7);
+			}
+			if(now < g.onUntil && can) HCE_GunnerBeam(g, now % 2 == i % 2);
+		}
+	}
+	void HCE_GunnerBeam(HCE_GunnerSeat g, bool draw)
+	{
+		vector3 from = HCE_GunnerPos(g);
+		vector3 dv = level.Vec3Diff(from, HCE_AimPoint());
+		double ang = atan2(dv.y, dv.x) + frandom(-hce_errorAngle, hce_errorAngle) * HCE_SpreadScale();
+		double pit = -atan2(dv.z, max(1, dv.xy.Length()));
+		// traced from the seat itself (forward / left of the body, LineTrace's side offset is to the right)
+		FLineTraceData lt;
+		LineTrace(ang, g.range, pit, 0, g.ofs.z, g.ofs.x, -g.ofs.y, lt);
+		vector3 to = lt.HitLocation;
+		int bd = HCE_ScaledHit(max(1, int(random(2, 3) * g.dmg + frandom(0, 0.99))));
+		if(lt.HitType == TRACE_HitActor && lt.HitActor && lt.HitActor.bSHOOTABLE && bd > 0 && (lt.HitActor == target || HCE_IsEnemy(lt.HitActor)))
+		{
+			lt.HitActor.DamageMobj(self, self, bd, 'Fire', 0, ang);
+			Spawn("HCE_BeamPuff", to);
+		}
+		else if(lt.HitType != TRACE_HitNone && draw) Spawn("HCE_BeamPuff", to);
+		if(!draw) return;
+		vector3 step = level.Vec3Diff(from, to) / 16.0;
+		vector3 rel = level.Vec3Diff(pos, from);
+		for(int i = 0; i < 16; i++)
+			A_SpawnParticle("FF9020", SPF_FULLBRIGHT, 3, 3, 0, rel.x + step.x * i, rel.y + step.y * i, rel.z + step.z * i);
+	}
+
 	virtual void HCE_UpdateFiring(double dist)
 	{
+		HCE_GunnerTick(dist);
 		if(hce_projectile == 'None' && !bHCE_Beam) return;
 		if(hce_holdFire) { if(hce_shotsLeft > 0) HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0; return; }   // "hold fire"
 		if(hce_patShotsMax > 0) { HCE_UpdatePattern(dist); return; }
@@ -7313,6 +7375,15 @@ class HCE_LimbGib : Actor
 // laser's colour, stretched from the muzzle to where it stops), fired by an enemy. A flash fades at once
 // (the carbine's trail: 'fade' alpha a tic); a held beam stays while its gun keeps calling Hold, then fades
 // and spreads (the beam rifle's turn-off).
+// a gunner seat (HaloDoom_EnemyBase.HCE_AddGunner): where it sits on the body (forward, left, up), its beam's damage
+// scale, burst length and pause (seconds) and its range
+class HCE_GunnerSeat
+{
+	vector3 ofs;
+	double dmg, dur0, dur1, sep0, sep1, range;
+	int onUntil, nextAt;
+}
+
 // the muzzle flash's light: a moment of the bolt's colour on the walls, shrinking over three tics
 class HCE_MuzzleLight : Actor
 {

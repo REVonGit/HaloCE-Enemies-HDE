@@ -314,8 +314,9 @@ def build():
                             '// Standalone: carries the enemy API and the HDE-derived projectiles/effects; needs no other pk3.')
             zt = zt.replace('#include "ZScript/HaloCE/hce_explosives.zsc"\n', '')   # HDE-only; hces_lib has its own
             zt = zt.replace('#include "ZScript/HaloCE/hce_hde.zsc"\n', '')          # HDE-only: reads HDE's dropped guns
-            lm = os.path.join(dst, 'modeldef.hce_lasers')            # HDE's paths: the standalone entry comes from MODEL_OF
-            if os.path.exists(lm): os.remove(lm)
+            for lf in ('modeldef.hce_lasers', 'modeldef.hce_needles'):   # HDE's paths: the standalone entries come from MODEL_OF
+                lm = os.path.join(dst, lf)
+                if os.path.exists(lm): os.remove(lm)
             ex = os.path.join(zs_dir, 'hce_explosives.zsc')
             if os.path.exists(ex): os.remove(ex)
             hx = os.path.join(zs_dir, 'hce_hde.zsc')

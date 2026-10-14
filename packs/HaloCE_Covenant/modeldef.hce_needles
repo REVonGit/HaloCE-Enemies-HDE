@@ -1,0 +1,33 @@
+// the Covenant's needles: HaloDoom Evolved's needle crystal model and texture (Models/Weapons, in HDE)
+Model HCE_NeedleScaled
+{
+	Path "Models/Weapons"
+	Skin 0 "needle_crystal.png"
+	Model 0 "needle_crystal.md3"
+	Scale 4.0 4.0 2.5
+	AngleOffset 90
+	PITCHFROMMOMENTUM
+	FrameIndex TRAC A 0 0
+}
+
+Model HCE_Needle
+{
+	Path "Models/Weapons"
+	Skin 0 "needle_crystal.png"
+	Model 0 "needle_crystal.md3"
+	Scale 4.0 4.0 2.5
+	AngleOffset 90
+	PITCHFROMMOMENTUM
+	FrameIndex TRAC A 0 0
+}
+
+Model HCE_BallistaNeedle
+{
+	Path "Models/Weapons"
+	Skin 0 "needle_crystal.png"
+	Model 0 "needle_crystal.md3"
+	Scale 4.0 4.0 2.5
+	AngleOffset 90
+	USEACTORPITCH
+	FrameIndex TRAC A 0 0
+}

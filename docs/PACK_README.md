@@ -117,7 +117,7 @@ Each Doom monster becomes the Halo CE enemy with the closest role, toughness and
 
 **Shots leave the barrel:** every shot starts at the tip of the gun as the model holds it in its current animation (standing, aiming, strafing, crouching, leaning out of cover), measured from the posed models at build time, so bolts and rounds come out of the barrel rather than the body's middle or feet. A gun picked up off the floor fires from the class's usual barrel height.
 
-**Covenant muzzle flashes and bolts:** Covenant weapons flash in their bolts' colour at the muzzle, with a moment of light on the walls; plasma bolts glow and light what they pass, as in Halo CE. Needles are HaloDoom Evolved's own.
+**Covenant muzzle flashes and bolts:** Covenant weapons flash in their bolts' colour at the muzzle, with a moment of light on the walls; plasma bolts glow and light what they pass, as in Halo CE. Needles are HaloDoom Evolved's own, drawn with its needle crystal model.
 
 **One voice per callout:** when a group would all call out the same thing at once (a grenade landing among them, an enemy behind them, an order, a man down), one of them, picked at random, says it for the group; the same callout from that side near there stays quiet for 4 seconds.
 

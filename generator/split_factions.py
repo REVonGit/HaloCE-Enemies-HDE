@@ -196,6 +196,14 @@ def main():
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
         'Model HCE_EnemyLaser\n{\n\tModel 0 "Models/Lasers/beam_simple.md3"\n\tSkin 0 "Models/Lasers/BEAM_detailed.png"\n'
         '\tUSEACTORPITCH\n\tFrameIndex HCEM A 0 0\n}\n')
+    # the Covenant's needles: HaloDoom Evolved's needle crystal model (Models/Weapons, in HDE), as HDE draws its own
+    # (MODELDEF isn't inherited: HDE's entry for HaloNeedler_Proj doesn't reach our subclasses, which fell back to its sprite)
+    needle = ('\tPath "Models/Weapons"\n\tSkin 0 "needle_crystal.png"\n\tModel 0 "needle_crystal.md3"\n\tScale 4.0 4.0 2.5\n'
+              '\tAngleOffset 90\n')
+    open(f'{core}/modeldef.hce_needles', 'w').write(
+        "// the Covenant's needles: HaloDoom Evolved's needle crystal model and texture (Models/Weapons, in HDE)\n"
+        + ''.join(f'Model {c}\n{{\n{needle}\tPITCHFROMMOMENTUM\n\tFrameIndex TRAC A 0 0\n}}\n\n' for c in ('HCE_NeedleScaled', 'HCE_Needle'))
+        + f'Model HCE_BallistaNeedle\n{{\n{needle}\tUSEACTORPITCH\n\tFrameIndex TRAC A 0 0\n}}\n')
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
     shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
     shard_texture(f'{core}/graphics/HCESHARD.png')                  # the shield's glass shards (HCE_ShieldShatter)

@@ -44,9 +44,9 @@ class HCE_SentinelBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
@@ -634,9 +634,9 @@ class HCE_SentinelBeamGunnerBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -693,9 +693,9 @@ class HCE_SentinelConstructorBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// ---- Halo 2's Constructor (extract_h2_sentinels.py), in the Lost Souls' place. It has no gun: every 2-4 s, with its
 	// target in sight 96-640 units away, it darts at it for up to a second, homing, and rams it (3-24 damage, as a Lost
@@ -877,9 +877,9 @@ class HCE_SentinelCrawlerBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -1014,9 +1014,9 @@ class HCE_SentinelDragoonBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
@@ -1248,9 +1248,9 @@ class HCE_SentinelEnforcerBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// ---- Halo 2's Sentinel Enforcer (extract_h2_sentinels.py)
 	// Two energy shields across its front (surfaces 3 left, 4 right) take every hit that comes from ahead of it
@@ -1489,9 +1489,9 @@ class HCE_SentinelGoldBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
@@ -1872,9 +1872,9 @@ class HCE_SentinelInterceptorBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -2008,9 +2008,9 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_SentinelKnightShieldShell'; }
 	// ---- Sentinel Knight: its core's colour, rolled once from its rank's palette (cold for the grey Knights, warm for
@@ -3826,9 +3826,9 @@ class HCE_SentinelLancerBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -3965,9 +3965,9 @@ class HCE_SentinelMarauderBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -4095,9 +4095,9 @@ class HCE_SentinelOnyxBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
@@ -4240,9 +4240,9 @@ class HCE_SentinelProtectorBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -4376,9 +4376,9 @@ class HCE_SentinelSoldierBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }
@@ -4616,9 +4616,9 @@ class HCE_SentinelWardenBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// the shield bubble (shielded ranks: HCE_HasBubble) is a flare: lit by hits, fading, shattering when it fails
 	virtual bool HCE_HasBubble() { return false; }

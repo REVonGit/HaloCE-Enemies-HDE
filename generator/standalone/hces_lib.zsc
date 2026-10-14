@@ -565,7 +565,7 @@ class HCES_Needle : HCES_SlowProjectile
 	Default
 	{
 		Radius 2; Height 5; Speed 15; Scale 0.25; RenderStyle "Add";
-		Translation "0:255=@60[255,80,205]";                     // Halo CE's hot pink
+		Translation "0:255=@70[128, 17, 247]";
 		BounceType "Doom"; BounceCount 3; +BOUNCEONWALLS +BOUNCEONFLOORS +BOUNCEONCEILINGS -BOUNCEONACTORS
 		BounceSound "HCES/Needler/Ricochet";
 		HCES_SlowProjectile.BaseDamage 5;
@@ -607,7 +607,7 @@ class HCES_Needle : HCES_SlowProjectile
 		if(b) b.A_SetScale(1.5);
 		A_StartSound("HCES/Halo/Weapons/Needler/SuperCombine", CHAN_AUTO, CHANF_OVERLAP);
 		for(int i = 0; i < 60; i++)
-			victim.A_SpawnParticle("FF50D0", SPF_FULLBRIGHT, 20, 8, 0, 0, 0, victim.height * 0.5,
+			victim.A_SpawnParticle("Purple", SPF_FULLBRIGHT, 20, 8, 0, 0, 0, victim.height * 0.5,
 				frandom[HCESFX](-10, 10), frandom[HCESFX](-10, 10), frandom[HCESFX](-6, 10), 0, 0, 0, 1.0, 0.03);
 		victim.DamageMobj(self, target, max(1, int(70 * DamageMultiply)), 'Explosive', 0, angle);
 		HCES_Math.Blast(self, target, int(30 * DamageMultiply), 128, 'Explosive', 0.5);
@@ -634,15 +634,7 @@ class HCES_Needle : HCES_SlowProjectile
 	States
 	{
 	Spawn:
-		HCEM A 1 Bright
-		{
-			// a bright pink streak behind each needle
-			for(int i = 0; i < 3; i++)
-			{
-				double f = i / 3.0;
-				HCES_EnemyBase.HCE_Glow(self, i ? Color(255, 255, 80, 208) : Color(255, 255, 192, 240), 7, 8 - i * 1.5, -vel * f, alpha: 0.9, grow: -1);
-			}
-		}
+		HCEM A 2 Bright { A_SpawnParticle("Purple", SPF_FULLBRIGHT, 10, 3, 0, 0, 0, 0, -vel.x * 0.1, -vel.y * 0.1, -vel.z * 0.1); }
 		Loop;
 	Stuck:
 		HCEM A 1 Bright;
@@ -662,7 +654,7 @@ class HCES_Needle : HCES_SlowProjectile
 			let b = Spawn("HCES_NeedleBurst", pos);
 			if(b) b.A_SetScale(0.25);
 			for(int i = 0; i < 8; i++)
-				A_SpawnParticle("FF50D0", SPF_FULLBRIGHT, 25, 4, 0, 0, 0, 0, frandom[HCESFX](-4, 4), frandom[HCESFX](-4, 4), frandom[HCESFX](-3, 4), 0, 0, -0.1);
+				A_SpawnParticle("Purple", SPF_FULLBRIGHT, 25, 4, 0, 0, 0, 0, frandom[HCESFX](-4, 4), frandom[HCESFX](-4, 4), frandom[HCESFX](-3, 4), 0, 0, -0.1);
 		}
 		Stop;
 	}

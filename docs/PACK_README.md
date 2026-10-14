@@ -115,7 +115,7 @@ Each Doom monster becomes the Halo CE enemy with the closest role, toughness and
 
 **Energy shields:** a shield shows only when it is hit (its flare: the body's glowing copy for the Covenant, the hard-light bubble for the shielded Sentinels), and fails like glass: it shatters into shards in a flash of its colour. Only the player's own shield is heard recharging.
 
-**Covenant muzzle flashes and bolts:** Covenant weapons flash in their bolts' colour at the muzzle, with a moment of light on the walls; plasma bolts glow and light what they pass, as in Halo CE, and needles are hot pink with a bright pink streak behind them.
+**Covenant muzzle flashes and bolts:** Covenant weapons flash in their bolts' colour at the muzzle, with a moment of light on the walls; plasma bolts glow and light what they pass, as in Halo CE. Needles are HaloDoom Evolved's own.
 
 **One voice per callout:** when a group would all call out the same thing at once (a grenade landing among them, an enemy behind them, an order, a man down), one of them, picked at random, says it for the group; the same callout from that side near there stays quiet for 4 seconds.
 

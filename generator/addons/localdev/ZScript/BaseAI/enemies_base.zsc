@@ -682,14 +682,30 @@ class HaloDoom_EnemyBase : Actor abstract
 			else if(kind >= HCE_A_DIE_F && kind <= HCE_A_DIE_AIR) n = HCE_AnimName(HCE_A_DIE_F);
 			if(n == 'None') return;
 		}
+		// one walk into another (forward to a sidestep, a sidestep to a backpedal): the new one picks up the stride where
+		// the old one was, so a soldier whose way swings about keeps his legs going instead of starting every step over
+		int start = level.maptime;
+		hce_applyFrame = 0;
+		if(loop && HCE_IsWalkKind(hce_curAnimKind) && HCE_IsWalkKind(kind) && hce_curAnim != 'None' && n != hce_curAnim)
+		{
+			int oldLen = max(1, HCE_AnimTics(hce_curAnim)), newLen = max(1, HCE_AnimTics(n));
+			double ph = ((level.maptime - hce_animStartTic) % oldLen) / double(oldLen);
+			int frames = max(1, int(newLen * 30.0 / 35.0));
+			hce_applyFrame = int(ph * frames) % frames;
+			start = level.maptime - int(ph * newLen);
+		}
 		hce_curAnimKind = kind;
 		hce_curAnim = n;
-		hce_animStartTic = level.maptime; hce_curLoop = loop;
+		hce_animStartTic = start; hce_curLoop = loop;
 		HCE_ApplyAnim(n, hce_noBlend ? 0 : blend, loop);
+		hce_applyFrame = 0;
 		hce_noBlend = false;
 		HCE_CrouchHitbox(n);
 	}
 	int hce_animStartTic;
+	int hce_applyFrame;                 // the frame HCE_ApplyAnim starts at (a walk picking up another's stride)
+	bool HCE_IsWalkKind(int k) { return (k >= HCE_A_MOVE_F && k <= HCE_A_MOVE_R) || k == HCE_A_LOW_MOVE; }
+	int hce_walkSince;                  // when the walk direction last changed (HCE_PickMoveAnim holds it a moment)
 
 	// a guard stance (GUARD_*: the Ultra Zealot's shield held out) for characters that have one, taken up in cover and
 	// for two seconds after a ranged hit (a bullet or bolt, not a blade, a blast or fire)
@@ -2470,8 +2486,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		double d = DeltaAngle(angle, want);
 		double rate = hce_turnRate * mul;
 		A_SetAngle(angle + clamp(d, -rate, rate), SPF_INTERPOLATE);
-		double dz = (target.pos.z + target.height * 0.5) - (pos.z + height * 0.6);
-		A_SetPitch(-atan2(dz, max(1, Distance2D(target))), SPF_INTERPOLATE);
+		// only fliers tip to aim: the models follow the actor's pitch, and a soldier on his feet leaned his whole body
+		// at a target above or below him (the shots take their own pitch: HCE_FireShot)
+		if(bHCE_Flying)
+		{
+			double dz = (target.pos.z + target.height * 0.5) - (pos.z + height * 0.6);
+			A_SetPitch(-atan2(dz, max(1, Distance2D(target))), SPF_INTERPOLATE);
+		}
+		else if(pitch != 0) A_SetPitch(0, SPF_INTERPOLATE);
 	}
 
 	void HCE_Brake()
@@ -2924,13 +2946,16 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(cur >= HCE_A_MOVE_F && cur <= HCE_A_MOVE_R && HCE_HasAnim(cur))
 		{
 			double mid = cur == HCE_A_MOVE_F ? 0 : cur == HCE_A_MOVE_L ? 90 : cur == HCE_A_MOVE_R ? -90 : 180;
-			if(abs(DeltaAngle(mid, rel)) < 45 + 20) { HCE_Play(cur); return; }
+			double off = abs(DeltaAngle(mid, rel));
+			// and holds for a third of a second whatever the wobble (only a full turn about cuts it short)
+			if(off < 45 + 20 || (level.maptime - hce_walkSince < 12 && off < 150)) { HCE_Play(cur); return; }
 		}
 		int k = HCE_A_MOVE_F;
 		if(rel > 45 && rel < 135) k = HCE_A_MOVE_L;
 		else if(rel < -45 && rel > -135) k = HCE_A_MOVE_R;
 		else if(abs(rel) >= 135) k = HCE_A_MOVE_B;
 		if(!HCE_HasAnim(k)) k = HCE_A_MOVE_F;
+		if(k != cur) hce_walkSince = level.maptime;
 		HCE_Play(k);
 	}
 
@@ -4213,7 +4238,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual Color HCE_MuzzleColor(Actor shot)
 	{
 		String n = shot.GetClassName();
-		if(n.IndexOf("Needle") >= 0) return Color(255, 255, 70, 200);                                     // needler pink
+		if(n.IndexOf("Needle") >= 0) return Color(255, 150, 40, 255);                                     // HDE's violet needles
 		if(n.IndexOf("PlasmaRifle") >= 0 || n.IndexOf("Pulse") >= 0) return Color(255, 70, 160, 255);      // plasma rifle blue
 		if(n.IndexOf("PlasmaPistol") >= 0 || n.IndexOf("ChargedPlasma") >= 0 || n == "HaloPlasma_Proj")
 			return Color(255, 60, 255, 110);                                                                // plasma pistol green

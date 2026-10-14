@@ -1953,9 +1953,9 @@ def build(cfg=None):
                   # HDE's grenades push what they hit into Pain (frag) / Pain.PlasmaStuck (plasma): a corpse stays dead
                   f'\tPain:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tGoto See;\n'
                   f'\tPain.PlasmaStuck:\n\t\tHCEM A 0 A_JumpIf(health <= 0, "Dead");\n\t\tHCEM A 1 HCE_OnStuck();\n\t\tGoto See;\n\t}}\n'
-                  f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
-                  f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n'
-                  f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
+                  f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
+                  f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n'
+                  f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
@@ -2265,7 +2265,7 @@ def build(cfg=None):
                           f'\t\thce_bladeActor = Spawn("{cls}Blade", pos, NO_REPLACE);\n'
                           f'\t\tif(hce_bladeActor) hce_bladeActor.master = self;\n\t\tsuper.PostBeginPlay();\n\t}}\n'
                           f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tsuper.HCE_ApplyAnim(n, blend, loop);\n'
-                          f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n'
+                          f'\t\tif(hce_bladeActor) hce_bladeActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);\n\t}}\n'
                           f'\toverride void HCE_OnSever(int limb, bool gunArm)\n\t{{\n\t\tif(gunArm && hce_bladeActor) {{ hce_bladeActor.Destroy(); hce_bladeActor = null; }}\n\t}}\n')
             animtxt = zs_anim_funcs(A, table, ov.get('berserk_anims', BERSERK_ANIMS.get(char)), msc)
             if ov.get('johnson'): animtxt, jx = johnson_code(A, animtxt, char, meta, mdir); extra += jx

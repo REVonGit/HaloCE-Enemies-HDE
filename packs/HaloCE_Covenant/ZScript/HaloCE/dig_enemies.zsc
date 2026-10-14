@@ -45,9 +45,9 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -208,9 +208,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_BruteShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
@@ -7590,9 +7590,9 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -7786,9 +7786,9 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_DroneShieldShell'; }
 
@@ -9662,9 +9662,9 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -11919,9 +11919,9 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override Name HCE_ShellClass() { return 'HCE_EliteZealotShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
@@ -12276,9 +12276,9 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{
@@ -12566,9 +12566,9 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -14021,9 +14021,9 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override bool HCE_SeverLimb(int limb)
 	{
@@ -16984,9 +16984,9 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 	}
 	override void HCE_ApplyAnim(Name n, int blend, bool loop)
 	{
-		SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);
-		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
-		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, -1, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	override void HCE_ResumeAnim()
 	{

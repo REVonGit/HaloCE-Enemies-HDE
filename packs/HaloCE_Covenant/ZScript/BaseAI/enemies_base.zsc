@@ -4038,8 +4038,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_StopFireLoop()
 	{
 		if(!hce_fireLoop) return;
+		bool on = IsActorPlayingSound(CHAN_WEAPON);                      // the loop was running: its tail plays as it stops
 		A_StopSound(CHAN_WEAPON);
-		if(hce_shotsLeft > 0 && hce_specialSound.Length() > 0) A_StartSound(hce_specialSound, CHAN_AUTO, CHANF_OVERLAP, 0.8);
+		if(on && hce_specialSound.Length() > 0) A_StartSound(hce_specialSound, CHAN_AUTO, CHANF_OVERLAP, 0.8);
 		hce_shotsLeft = 0;
 	}
 

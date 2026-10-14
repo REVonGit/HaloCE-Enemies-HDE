@@ -519,8 +519,8 @@ Enemy fire uses HDE's own SNDINFO sounds, the fire layer and, where HDE has one,
 * **Covenant:** plasma pistol, plasma rifle, needler and fuel rod (`Halo/Weapons/<Weapon>/Fire`).
 * **Overcharge:** `PlasmaPistol/Charge/Start` during the wind-up, then `PlasmaPistol/Fire/Charged`.
 * **Human:** `MA5B`, `Mag_MD6`, `Shotgun`, `Sniper` and `RocketLauncher`.
-* **Looping weapons:** the flamethrower and Sentinel beam play start, loop and end sounds.
-* **Sentinels:** their own sounds from the official games (`extract_sentinel_sounds.py`). Halo CE's Sentinel and Galap's Sentinels hum with Halo CE's engine, fire Halo CE's beam loop, clank when hit and die with Halo CE's death; the Enforcer and Constructor use Halo 2's engines and death, and the Enforcer's needle cannon fires with Halo 2's sound. The hum is a quiet loop heard nearby; Galap's Crawler walks, so it has no hum.
+* **Looping weapons:** the flamethrower and Sentinel beam play start, loop and end sounds (the end as each burst stops).
+* **Sentinels:** their own sounds from the official games (`extract_sentinel_sounds.py`). Halo CE's Sentinel and Galap's Sentinels hum with Halo CE's engine, clank when hit and die with Halo CE's death; the Enforcer and Constructor use Halo 2's engines and death. Their weapons sound like HaloDoom Evolved's: the beams use its Sentinel Beam (start, loop and end), and the hard-light bolt guns (the Knights' Suppressor and the Enforcer's needle cannon) its Suppressor (shipped in the Sentinels pack). The hum is a quiet loop heard nearby; Galap's Crawler walks, so it has no hum.
 
 ## Dialogue
 
@@ -1275,7 +1275,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel Knight voice:** REV.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
-* **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, beam, hit and death sounds, by Bungie.
+* **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, hit and death sounds, by Bungie. The Suppressor's fire sounds are HaloDoom Evolved's.
 * **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
 * **Flood Juggernaut:** model, skins, animations, sounds and stats from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).

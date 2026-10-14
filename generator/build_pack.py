@@ -639,12 +639,12 @@ FIRE_SOUNDS = {
     'rocket launcher': (W + 'RocketLauncher/Fire', '', '', '', False),
     'flamethrower':    (W + 'Flamer/Fire/Loop', '', W + 'Flamer/Fire/End', W + 'Flamer/Fire/Start', True),
     'plasma caster':   (W + 'PlasmaCaster/Fire', '', W + 'PlasmaCaster/ChargedFire', W + 'PlasmaCaster/ChargeBegin', False),
-    'sentinel beam':   ('HCE/Sentinel/BeamLoop', '', '', '', True),          # Halo CE's own (extract_sentinel_sounds.py)
+    'sentinel beam':   (W + 'SentinelBeam/Fire/Loop', '', W + 'SentinelBeam/Fire/End', W + 'SentinelBeam/Fire/Begin', True),   # HDE's Sentinel Beam
     'light rifle':     (W + 'LightRifle/Fire', W + 'LightRifle/Fire/Bass', '', '', False),
     'scattershot':     (W + 'ScatterShot/Fire', W + 'ScatterShot/Fire/Bass', '', '', False),
     'binary rifle':    (W + 'BinaryRifle/Fire', W + 'BinaryRifle/Fire/Bass', '', '', False),
-    'suppressor':      (W + 'LightRifle/Fire', '', '', '', False),
-    'enforcer needler': ('HCE/Sentinel/EnforcerNeedler', '', '', '', False),   # Halo 2's Enforcer's needle cannon
+    'suppressor':      ('HCE/Suppressor/Fire', 'HCE/Suppressor/Fire/Bass', '', '', False),   # HDE's Suppressor (split_factions.py ships it)
+    'enforcer needler': ('HCE/Suppressor/Fire', 'HCE/Suppressor/Fire/Bass', '', '', False),   # the Enforcer's hard-light bolts: HDE's Suppressor
 }
 # Halo-style drops: HDE Local_DEV pickup classes (Covenant always drop theirs, the energy sword included -- HDE has
 # one to pick up; Hunters' fuel rod arms and Sentinels drop nothing)

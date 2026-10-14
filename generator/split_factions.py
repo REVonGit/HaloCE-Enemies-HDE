@@ -111,6 +111,7 @@ FLOOD_EVENTS = {
 # player is spotted by his HDE Spartan class (SpotSpartanII/III/IV: that class's lines, weighted twice, and the plain
 # Player (Enemy) ones; SpotPlayer for Doom's marine)
 SENTINEL_SOUNDS = f'{_OUT}/sounds/Sentinel'      # extract_sentinel_sounds.py
+SUPPRESSOR_SOUNDS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'hde_suppressor')   # HDE's Suppressor
 KNIGHT_VOICES = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_voices')
 KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Brute': ['KillBrute'],
                 'Kill Combat Form': ['KillCombatForm'], 'Kill Elite': ['KillElite'], 'Kill Flood (Generic)': ['KillFlood'],
@@ -393,6 +394,20 @@ def main():
             out.append('$limit HCE/Sentinel/Engine 4')
             out.append('$limit HCE/Sentinel/Hit 3')
             open(f'{d}/sndinfo.sentinel', 'w').write('\n'.join(out) + '\n')
+        if fac == 'sentinels' and os.path.isdir(SUPPRESSOR_SOUNDS):
+            # HaloDoom Evolved's Suppressor (its dev build's Sounds/Supressor, downmixed to mono): the fire and its low
+            # layer, HCE/Suppressor/Fire and HCE/Suppressor/Fire/Bass, for the Sentinels' hard-light bolt guns
+            os.makedirs(f'{d}/sounds/hce_suppressor', exist_ok=True)
+            out = ["// HaloDoom Evolved's Suppressor sounds: the Sentinels' hard-light bolt guns (build_pack.FIRE_SOUNDS)"]
+            for kind, ev in (('fire', 'HCE/Suppressor/Fire'), ('low', 'HCE/Suppressor/Fire/Bass')):
+                ids = []
+                for fn in sorted(f for f in os.listdir(SUPPRESSOR_SOUNDS) if f.startswith(f'sup_{kind}')):
+                    shutil.copy(f'{SUPPRESSOR_SOUNDS}/{fn}', f'{d}/sounds/hce_suppressor/{fn}')
+                    ids.append(f'HCE/SuppressorSnd/{fn[:-4]}')
+                    out.append(f'{ids[-1]} "sounds/hce_suppressor/{fn}"')
+                out.append(f'$random {ev} {{ {" ".join(ids)} }}')
+                out.append(f'$limit {ev} 6')
+            open(f'{d}/sndinfo.suppressor', 'w').write('\n'.join(out) + '\n')
         if fac == 'flood' and os.path.exists(f'{FLOOD_SOUNDS}/index.json'):
             idx = json.load(open(f'{FLOOD_SOUNDS}/index.json'))
             os.makedirs(f'{d}/sounds/hce_flood', exist_ok=True)

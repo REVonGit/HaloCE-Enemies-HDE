@@ -1,0 +1,13 @@
+// HaloDoom Evolved's Suppressor sounds: the Sentinels' hard-light bolt guns (build_pack.FIRE_SOUNDS)
+HCE/SuppressorSnd/sup_fire1 "sounds/hce_suppressor/sup_fire1.ogg"
+HCE/SuppressorSnd/sup_fire2 "sounds/hce_suppressor/sup_fire2.ogg"
+HCE/SuppressorSnd/sup_fire3 "sounds/hce_suppressor/sup_fire3.ogg"
+HCE/SuppressorSnd/sup_fire4 "sounds/hce_suppressor/sup_fire4.ogg"
+$random HCE/Suppressor/Fire { HCE/SuppressorSnd/sup_fire1 HCE/SuppressorSnd/sup_fire2 HCE/SuppressorSnd/sup_fire3 HCE/SuppressorSnd/sup_fire4 }
+$limit HCE/Suppressor/Fire 6
+HCE/SuppressorSnd/sup_low1 "sounds/hce_suppressor/sup_low1.ogg"
+HCE/SuppressorSnd/sup_low2 "sounds/hce_suppressor/sup_low2.ogg"
+HCE/SuppressorSnd/sup_low3 "sounds/hce_suppressor/sup_low3.ogg"
+HCE/SuppressorSnd/sup_low4 "sounds/hce_suppressor/sup_low4.ogg"
+$random HCE/Suppressor/Fire/Bass { HCE/SuppressorSnd/sup_low1 HCE/SuppressorSnd/sup_low2 HCE/SuppressorSnd/sup_low3 HCE/SuppressorSnd/sup_low4 }
+$limit HCE/Suppressor/Fire/Bass 6

@@ -890,7 +890,7 @@ def bake_shield(char, mat, tint, outpath):
 _SHIELD_MASK = {}
 
 def hunter_shield_mask(char, mat, size):
-    """the Hunter's shield (the surfaces on its left forearm and hand) as a mask over this texture (W x H, 0..1), its edges
+    """the Hunter's shield and its shoulder plating (the surfaces on its left arm) as a mask over this texture (W x H, 0..1), its edges
     grown a few texels so the island's border is in it; None if the shield isn't on this texture"""
     key = (char, mat, size)
     if key in _SHIELD_MASK: return _SHIELD_MASK[key]
@@ -900,7 +900,7 @@ def hunter_shield_mask(char, mat, size):
     joints, meshes, _ = read_iqm(f'{OUT}/models/{char}/{char}.iqm')
     names = [j[0] for j in joints]
     mats = json.load(open(f'{OUT}/models/{char}/{char}.json'))['meshes']
-    keep = {names.index(n) for n in ('bip01 l forearm', 'bip01 l hand') if n in names}
+    keep = {names.index(n) for n in ('bip01 l upperarm', 'bip01 l forearm', 'bip01 l hand') if n in names}   # its shoulder plating too
     W, H = size
     img = Image.new('L', (W, H), 0); d = ImageDraw.Draw(img)
     for mi, M in enumerate(meshes):
@@ -952,6 +952,15 @@ def bake_hunter(char, mat, mode, outpath):
         k = (shield * (1 - glow))[..., None]
         metal = o.mean(axis=2, keepdims=True) * np.array([0.97, 0.98, 1.0], np.float32)
         o = o * (1 - k) + metal * k
+    if mode == 'red' and mat == 'Hunter_4':
+        # the Major's arm cannon: the body painted the blue Hunter's blue, with the red rank's reflection on it (the
+        # nozzle, on the arm's other texture, is red with the armour)
+        green = np.clip(np.minimum(h - 70, 170 - h) / 15.0, 0, 1) * np.clip((sv - 0.25) / 0.15, 0, 1)   # its lights
+        paint = ndimage.gaussian_filter(1 - green, 0.8)[..., None]
+        blue = np.clip(np.array([0.10, 0.22, 0.62], np.float32) * (0.30 + 1.9 * lum), 0, 1)
+        glint = np.clip(add_shine(char, mat, blue, HUNTER_COLOURS['red']) - blue, 0, 1).max(axis=2, keepdims=True)
+        shone = np.clip(blue + glint * np.array([1.0, 0.12, 0.06], np.float32) * 1.5, 0, 1)    # the reflection pure red
+        o = rgb * (1 - paint) + shone * paint
     if mode == 'white':
         # white paint: the reflection's blue taken out and the plates lifted to a bright off-white, keeping their shading
         g = o.mean(axis=2, keepdims=True)

@@ -19,11 +19,11 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_GruntMinorPlasmaPistol*6 HCE_GruntMinorNeedler*3 HCE_GruntMajorPlasmaPistol*2 HCE_GruntMajorNeedler*1 HCE_JackalMinorPlasmaPistol*2 HCE_EliteMinorPlasmaRifle*1",
 			"HCE_GruntMinorPlasmaPistol*5 HCE_GruntMinorNeedler*3 HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*2 HCE_JackalMinorPlasmaPistol*3 HCE_EliteMinorPlasmaRifle*1",
 			"HCE_GruntMinorPlasmaPistol*4 HCE_GruntMinorNeedler*3 HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_EliteMinorPlasmaRifle*2",
-		// Shotgun Guy: Major Grunts, then Jackals (Minor/Major), then Elites (Minor/Major)
+		// Shotgun Guy: Major Grunts, then Jackals (Minor/Major), then Elites (Minor/Major) and Draeth Minors
 		"ShotgunGuy",
-			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*1 HCE_EliteMinorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*2 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1",
-			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*3 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteMajorNeedler*1",
+			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*1 HCE_EliteMinorPlasmaRifle*1 HCE_DraethMinorPlasmaRifle*1",
+			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*2 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1 HCE_DraethMinorPlasmaRifle*1 HCE_DraethMinorNeedler*1",
+			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_JackalMinorPlasmaPistol*3 HCE_JackalMajorNeedler*3 HCE_EliteMinorPlasmaRifle*2 HCE_EliteMinorNeedler*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteMajorNeedler*1 HCE_DraethMinorPlasmaRifle*1 HCE_DraethMinorNeedler*1",
 		// Chaingunner (sustained fire): Major Jackals (needler), Spec-Ops needler Grunts, Ultra Jackals and helmeted Halo 2 Majors (plasma rifle), needler Elites
 		"ChaingunGuy",
 			"HCE_JackalMajorNeedler*5 HCE_GruntSpecopsNeedler*2 HCE_JackalUltraPlasmaRifle*1 HCE_JackalMajorHelmetPlasmaRifle*1 HCE_EliteMinorNeedler*1",
@@ -40,25 +40,27 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_FloodcombatHumanUnarmed*4 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmoredUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*1 HCE_FloodcombatHumanShotgun*1",
 			"HCE_FloodcombatHumanUnarmed*3 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmoredUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteMinorUnarmed*1 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteShotgun*1",
 			"HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteMinorUnarmed*2 HCE_FloodcombatEliteMajorUnarmed*1 HCE_FloodcombatEliteShotgun*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteCommanderEnergySword*1",
-		// Spectre (invisible): Stealth Elites, stealth Flood Elites, sword-wielding Stealth Majors
+		// Spectre (invisible): Stealth Elites, stealth Flood Elites, sword-wielding Stealth Majors, cloaked Draeth Commanders
 		"Spectre",
-			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1",
-			"HCE_StealthElitePlasmaRifle*4 HCE_StealthEliteMajorPlasmaRifle*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorEnergySword*1",
-			"HCE_StealthElitePlasmaRifle*3 HCE_StealthEliteMajorPlasmaRifle*3 HCE_StealthEliteMajorEnergySword*2 HCE_FloodcombatEliteStealthUnarmed*2",
-		// Lost Soul (flying kamikaze): Halo 2's Constructors (darting, welding drones) and infection forms, now and then the XAM
-		// Flood Grunt (it bursts into more of them); before the Flood is out, the Constructors alone
-		"LostSoul",         "HCE_SentinelConstructor*12 HCE_FloodInfection*7 HCE_FloodGrunt*1", "HCE_SentinelConstructor*10 HCE_FloodInfection*5 HCE_FloodGrunt*1 HCE_SentinelInterceptor*1", "HCE_SentinelConstructor*9 HCE_FloodInfection*4 HCE_FloodGrunt*1 HCE_SentinelInterceptor*2",
-		// Cacodemon (tough flyer): Sentinels of every kind (Galap's among them: the lighter ones early, the Soldiers and Dragoons on the harder skills)
+			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1 HCE_DraethCommanderExcavatorCamo*1",
+			"HCE_StealthElitePlasmaRifle*4 HCE_StealthEliteMajorPlasmaRifle*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorEnergySword*1 HCE_DraethCommanderExcavatorCamo*1",
+			"HCE_StealthElitePlasmaRifle*3 HCE_StealthEliteMajorPlasmaRifle*3 HCE_StealthEliteMajorEnergySword*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_DraethCommanderExcavatorCamo*2",
+		// Lost Soul (flying kamikaze): the Covenant's Geists (Mercury Rising's little strafing drones) most of all, Halo 2's
+		// Constructors (darting, welding drones) and infection forms, now and then the XAM Flood Grunt (it bursts into more of
+		// them); before the Flood is out, the Geists and Constructors alone
+		"LostSoul",         "HCE_Geist*14 HCE_SentinelConstructor*8 HCE_FloodInfection*6 HCE_FloodGrunt*1", "HCE_Geist*14 HCE_SentinelConstructor*7 HCE_FloodInfection*5 HCE_FloodGrunt*1 HCE_SentinelInterceptor*1 HCE_SentinelScout*1", "HCE_Geist*14 HCE_SentinelConstructor*6 HCE_FloodInfection*4 HCE_FloodGrunt*1 HCE_SentinelInterceptor*2 HCE_SentinelScout*2",
+		// Cacodemon (tough flyer): Sentinels of every kind (Galap's and Mercury Rising's among them: the lighter ones early, the Soldiers,
+		// Dragoons and the Brute Sentinel on the harder skills)
 		"Cacodemon",
-			"HCE_Sentinel*4 HCE_SentinelDefensive*2 HCE_SentinelShielded*1 HCE_SentinelProtector*1 HCE_SentinelGold*1 HCE_SentinelInterceptor*1 HCE_SentinelCrawler*1",
-			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1 HCE_SentinelEliminator*1 HCE_SentinelEnforcer*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1 HCE_SentinelGoldShielded*1 HCE_SentinelMarauder*1 HCE_SentinelOnyx*1 HCE_SentinelProtector*1 HCE_SentinelCrawler*1",
-			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_SentinelEliminator*2 HCE_SentinelEnforcer*2 HCE_Sentinel*1 HCE_SentinelSoldier*1 HCE_SentinelDragoon*1 HCE_SentinelGoldShieldedMajor*1 HCE_SentinelOnyx*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1",
+			"HCE_Sentinel*4 HCE_SentinelDefensive*2 HCE_SentinelShielded*1 HCE_SentinelProtector*1 HCE_SentinelGold*1 HCE_SentinelInterceptor*1 HCE_SentinelCrawler*1 HCE_SentinelScout*1 HCE_SentinelCanoneer*1 HCE_SentinelArtillery*1",
+			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1 HCE_SentinelEliminator*1 HCE_SentinelEnforcer*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1 HCE_SentinelGoldShielded*1 HCE_SentinelMarauder*1 HCE_SentinelOnyx*1 HCE_SentinelProtector*1 HCE_SentinelCrawler*1 HCE_SentinelScout*1 HCE_SentinelCanoneer*1 HCE_SentinelArtillery*1 HCE_SentinelCompiler*1 HCE_SentinelOmega*1",
+			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_SentinelEliminator*2 HCE_SentinelEnforcer*2 HCE_Sentinel*1 HCE_SentinelSoldier*1 HCE_SentinelDragoon*1 HCE_SentinelGoldShieldedMajor*1 HCE_SentinelOnyx*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1 HCE_SentinelCanoneer*1 HCE_SentinelArtillery*1 HCE_SentinelCompiler*1 HCE_SentinelOmega*1 HCE_SentinelBrute*1",
 		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major and Heavy Elites; and Sentinel
-		// Knights (Sentinels pack), more of them and their commanders on the harder skills
+		// Knights (Sentinels pack), more of them and their commanders on the harder skills; Draeth and the Artybug
 		"HellKnight",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1",
-			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_DraethMinorPlasmaRifle*1 HCE_Artybug*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_Artybug*1",
+			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_DraethCommanderExcavator*1 HCE_Artybug*1",
 		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health), and on normal and hard now and then the Flood Juggernaut
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",
@@ -163,7 +165,7 @@ class HCE_ReplaceHandler : EventHandler
 	// before the Flood is out, the Doom monsters only the Flood stood in for draw from another monster's list instead
 	static const String PRE_FLOOD[] =
 	{
-		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"   // (Lost Souls: the Constructors cover them when loaded)
+		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"   // (Lost Souls: the Geists and Constructors cover them when loaded)
 	};
 
 	// with the Sentinels allied (hce_sentinelallies), the monsters only Sentinels stood in for take another row's
@@ -922,10 +924,11 @@ class HCE_Encounters : EventHandler
 {
 	Array<HCE_Encounter> enc;
 
-	// the fire team's make-up: mostly riflemen, a heavier man or two (looked up at run time; missing ones are skipped)
+	// the fire team's make-up: mostly riflemen (men and women), a heavier gun or two, now and then a field medic (looked up at run time; missing ones are skipped)
 	static const Name TEAM[] = { 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifleMajor',
 		'HCE_MarineBattleRifle', 'HCE_MarineShotgun', 'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMedicAssaultRifle',
-		'HCE_MarineSniper', 'HCE_MarineRocketLauncher' };
+		'HCE_MarineSniper', 'HCE_MarineRocketLauncher', 'HCE_MarineFemaleAssaultRifle', 'HCE_MarineFemaleAssaultRifle',
+		'HCE_MarineFemaleBattleRifle', 'HCE_MarineFemaleSmg', 'HCE_MarineFieldMedicMagnum' };
 
 	static bool BadSector(Sector s) { return !s || s.IsSecret() || s.damageamount > 0 || s.ceilingplane.ZatPoint(s.centerspot) - s.floorplane.ZatPoint(s.centerspot) < 72; }
 

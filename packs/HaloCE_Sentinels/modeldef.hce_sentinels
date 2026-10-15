@@ -88,6 +88,62 @@ Model HCE_SentinelShieldedMajor
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_SentinelArtillery
+{
+	Path "models/hce/SentinelArtillery"
+	Model 0 "SentinelArtillery.iqm"
+	SurfaceSkin 0 0 "skins/sentinelartillery_sentinelartillery_0.png"
+	SurfaceSkin 0 1 "skins/sentinelartillery_sentinelartillery_1.png"
+	Scale 80 80 96
+	ZOffset 7
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelBrute
+{
+	Path "models/hce/SentinelBrute"
+	Model 0 "SentinelBrute.iqm"
+	SurfaceSkin 0 0 "skins/sentinelbrute_sentinelbrute_0.png"
+	SurfaceSkin 0 1 "skins/sentinelbrute_sentinelbrute_1.png"
+	Scale 44 44 53
+	ZOffset 25
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelCanoneer
+{
+	Path "models/hce/SentinelCanoneer"
+	Model 0 "SentinelCanoneer.iqm"
+	SurfaceSkin 0 0 "skins/sentinelcanoneer_sentinelcanoneer_0.png"
+	SurfaceSkin 0 1 "skins/sentinelcanoneer_sentinelcanoneer_1.png"
+	Scale 80 80 96
+	ZOffset 15
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelCompiler
+{
+	Path "models/hce/SentinelCompiler"
+	Model 0 "SentinelCompiler.iqm"
+	SurfaceSkin 0 0 "skins/sentinelcompiler_sentinelcompiler_0.png"
+	SurfaceSkin 0 1 "skins/sentinelcompiler_sentinelcompiler_1.png"
+	Scale 80 80 96
+	ZOffset 43
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_SentinelConstructor
 {
 	Path "models/hce/SentinelConstructor"
@@ -526,6 +582,20 @@ Model HCE_SentinelMarauder
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_SentinelOmega
+{
+	Path "models/hce/SentinelOmega"
+	Model 0 "SentinelOmega.iqm"
+	SurfaceSkin 0 0 "skins/sentinelomega_sentinelomega_0.png"
+	SurfaceSkin 0 1 "skins/sentinelomega_sentinelomega_1.png"
+	Scale 80 80 96
+	ZOffset 32
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_SentinelOnyxBubbleShell
 {
 	Path "models/hce/SentinelOnyx"
@@ -560,6 +630,20 @@ Model HCE_SentinelProtector
 	SurfaceSkin 0 0 "skins/sentinelprotector_metal.png"
 	Scale 80 80 96
 	ZOffset 28
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_SentinelScout
+{
+	Path "models/hce/SentinelScout"
+	Model 0 "SentinelScout.iqm"
+	SurfaceSkin 0 0 "skins/sentinelscout_sentinelscout_0.png"
+	SurfaceSkin 0 1 "skins/sentinelscout_sentinelscout_1.png"
+	Scale 80 80 96
+	ZOffset 23
 	UseActorPitch
 	UseActorRoll
 	BaseFrame

@@ -55,8 +55,8 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 * **Summon:** e.g. `summon HCE_EliteMajorPlasmaRifle`.
 * **Spawn everything:** the console command `punkassbitches` spawns one of every enemy class that's loaded (every pack), side by side in lines in front of you and facing you: 640 units of enemies per line, a line every 128 units. They are **display dummies with no AI**: each stands in its idle animation where it was put and never targets, turns, moves, fires, throws or talks, even when shot (flyers hover in place). They're there to look at and to test the gore on: they still flinch, bleed, lose shields, armour and limbs, burn, die and come apart like any other (a Grunt or Jackal that loses its gun arm bleeds out where it stands). Spots blocked by walls are retried further ahead, then behind you, then anywhere free within 1024 units. Marines come out as allies. A class with several looks stands in the line once per look, so all three Brute Chieftains (Tartarus's look and both kit sets) appear. It's a console alias (`KEYCONF`) for `netevent hce_spawnall`, so it works in multiplayer too.
 * **Spawn every ODST:** `helljumpers` does the same with only the ODSTs (the ODST rifle and shotgun troopers and Fire Team Raven), as allies, also as display dummies.
-* **Spawn every Sentinel:** `reclaimer` does the same with only the Sentinels (the Halo CE and Halo 2 Sentinels, Enforcers, Constructors and Knights), also as display dummies.
-* **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks) and Sergeants Johnson and Stacker, as allies, in the same lines. They are display dummies with no AI, like `punkassbitches`'s: no following, no squad orders, no fighting, just standing for display and gore testing. It's an alias for `netevent hce_spawnmarines`.
+* **Spawn every Sentinel:** `reclaimer` does the same with only the Sentinels (the Halo CE and Halo 2 Sentinels, Enforcers, Constructors, Knights, Galap's and Mercury Rising's), also as display dummies.
+* **Spawn every Marine:** `leatherneck` does the same with only the Marines: every Marine and Armored Marine class (each gun, both ranks), the female Marines and field medics, and Sergeants Johnson and Stacker, as allies, in the same lines. They are display dummies with no AI, like `punkassbitches`'s: no following, no squad orders, no fighting, just standing for display and gore testing. It's an alias for `netevent hce_spawnmarines`.
 * **Spawn every Marine, free to move:** `leatherneck2` spawns the same Marines in the same lines, but they have their AI and aren't pinned: they join your squad, follow you, dive and take orders like any other Marine. It's an alias for `netevent hce_spawnmarines2`.
 * **Bestiary:** Options > Halo CE Bestiary (or the console command `hce_bestiary`) lists every enemy the loaded packs can place, with its picture, numbers and what it is (see [Bestiary](#bestiary)).
 * **Mapping:** Ultimate Doom Builder shows every placeable enemy by faction and kind, named and pictured (see [Mapping with Ultimate Doom Builder](#mapping-with-ultimate-doom-builder)).
@@ -107,11 +107,11 @@ Marines are on the human team and fight Covenant and Flood alongside the player.
 
 Each Doom monster becomes the Halo CE enemy with the closest role, toughness and threat.
 
-**When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls become Constructors only, and Pain Elementals draw from the Cacodemon's mix (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
+**When the Flood appears:** the AI menu's *Flood appears from level* slider (`hce_floodlevel`, 1-32, default 1 = from the start) holds the Flood back until that level, as in Halo, where it turns up partway through the campaign. MAPxx counts as level xx, ExMy as (x-1)×9+y. Before it, the monsters only the Flood replaced draw from another monster's mix: Demons from the Imp's, Lost Souls become Geists and Constructors only, and Pain Elementals draw from the Cacodemon's mix (Sentinels), Wolfenstein SS from the Shotgun Guy's. The Spectre's mix and the Digsite's rules just leave their Flood out. Flood a mapper placed by hand still appears.
 
 **Marine encounters:** on any map, with the Marines pack loaded, a Marine fire team of 3 to 5 may turn up fighting a group of the Covenant or the Flood somewhere along the way, so you can come upon a firefight already going. Up to `hce_encounters` per map (2), each with chance `hce_encounterchance` (0.6), at groups well away from the start (outside secret and damaging sectors), the Marines placed in sight of them a few hundred units off. The fight is held until you come: while every player is far off (1792 units or more) the two sides' hits on each other do a twentieth of their damage, rising to full by 768 units, and while you are away nobody there drops below 40% health. You can hear it from a distance. The Marines still standing join your squad when you reach them: once their foes are down (with a thanks), or straight away if you walk right up to them mid-fight. They can still lose once you are there.
 
-**Sentinels on your side:** by default every Sentinel (Halo CE's and Halo 2's Sentinels, Enforcers, Constructors, Knights and Galap's) fights for the player: allied, named by a Sentinel designation instead of a rank, and not counted as a kill to make. They keep with the player like a Marine squad, taking a place in the formation, and answer the squad orders (hold, follow, regroup, the fire orders) as the Marines do. While they are allies they don't stand in for Doom's monsters: monsters only Sentinels replaced draw from another mix instead (Cacodemons and Pain Elementals from the Hell Knight's, Lost Souls from the Imp's). *Sentinels fight for you* (`hce_sentinelallies`) off makes them hostile again, as in Halo CE.
+**Sentinels on your side:** by default every Sentinel (Halo CE's and Halo 2's Sentinels, Enforcers, Constructors, Knights, Galap's and Mercury Rising's) fights for the player: allied, named by a Sentinel designation instead of a rank, and not counted as a kill to make. They keep with the player like a Marine squad, taking a place in the formation, and answer the squad orders (hold, follow, regroup, the fire orders) as the Marines do. While they are allies they don't stand in for Doom's monsters: monsters only Sentinels replaced draw from another mix instead (Cacodemons and Pain Elementals from the Hell Knight's; Lost Souls are the Covenant's Geists, or the Imp's mix without the Covenant pack). *Sentinels fight for you* (`hce_sentinelallies`) off makes them hostile again, as in Halo CE.
 
 **Energy shields:** a shield shows only when it is hit (its flare: the body's glowing copy for the Covenant, the hard-light bubble for the shielded Sentinels), and fails like glass: it shatters into shards in a flash of its colour. Only the player's own shield is heard recharging.
 
@@ -128,14 +128,14 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Doom monster | Halo enemies (most → least likely, normal skill) |
 |---|---|
 | Zombieman | Minor plasma-pistol Grunt 30%, Major Grunt 18%, Minor needler Grunt 17%, Minor Jackal 16%, Major needler Grunt 11%, Minor Elite 6% |
-| Shotgun Guy | Major Grunts (plasma pistol 22%, needler 20%), Minor Jackal 21%, Major (needler) Jackal 13%, Minor Elites 16%, Major Elite 6% |
+| Shotgun Guy | Major Grunts (plasma pistol 22%, needler 20%), Minor Jackal 21%, Major (needler) Jackal 13%, Minor Elites 16%, Major Elite 6%; now and then a Draeth Minor |
 | Chaingunner | Major (needler) Jackal 33%, Ultra (plasma rifle) Jackal 17%, Spec-Ops needler Grunt 17%, needler Elite 17%, helmeted Halo 2 Major (plasma rifle) Jackal 8%, ranged Elite 8% |
 | Imp | Major Grunts 55%, Minor Jackal 15%, Minor needler Grunt 14%, Major (needler) Jackal 7%, Minor Elite 7% (Spec-Ops Grunts on hard) |
 | Pinky | unarmed Flood Human 41% / Flood Elite 40%, shotgun Flood 18% |
-| Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11% |
-| Lost Soul | Halo 2 Constructors (mostly), Flood infection forms, now and then the Flood Grunt |
-| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills; Eliminators and Enforcers on normal and hard. Most become Halo 2 Drones (the Digsite enemies' mix, below) |
-| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills) |
+| Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11%; now and then a cloaked Draeth Commander |
+| Lost Soul | the Covenant's Geists (about half), Halo 2 Constructors, Flood infection forms, now and then the Flood Grunt; Scout Sentinels on normal and hard |
+| Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills; Eliminators and Enforcers on normal and hard; Mercury Rising's Sentinels (Scouts, Canoneers and Artillery early, Compilers and Omegas on normal and hard, the Brute Sentinel on hard). Most become Halo 2 Drones (the Digsite enemies' mix, below) |
+| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills); a Draeth now and then (Minors on easy, Majors and the Excavator Commander on harder skills) and the Artybug |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health; now and then the Flood Juggernaut (about one in eight on normal, one in four on hard) |
 | Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
 | Pain Elemental | the Engineer (the Digsite enemies' mix, below); the Flood Carrier when `hce_digsite_spawns` is 0 |
@@ -373,6 +373,19 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
     - **Flood Elite Commander** (300 body, 300 shield, gold armour): the energy sword, swung with Ruby's own sword animations (`HCE_FloodcombatEliteCommanderEnergySword`).
     - **Flood Elite Ultra** (125 body, 100 shield, white armour): the fuel rod (`HCE_FloodcombatEliteUltraFuelRod`).
     - They join the Flood among the Pinkies (the unarmed hosts, the Commander on hard) and the Wolfenstein SS (the armed hosts, the shielded Elites and the Ultra on hard). DoomEdNums 30461–30488, with `HCE_RandomFloodODST`, `HCE_RandomFloodMarine`, `HCE_RandomFloodArmored`, `HCE_RandomFloodEliteArmored`, `HCE_RandomFloodEliteCommander` and `HCE_RandomFloodEliteUltra`.
+* **Mercury Rising's units (new):** from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694; its two maps, `HCE_MR_MAP1` / `HCE_MR_MAP2`, with its own `bitmaps.map`, `HCE_MR_BITMAPS`): models, skins, animations and stats as the mod fields them (`extract_spv3.py`).
+  * **Sentinels (Sentinels pack):** six of its own, each its own body on Halo CE's Sentinel animations, flying like Galap's and allied like every Sentinel by default. Their guns are the bipeds' own weapons from the mod:
+    - **Artillery** (`HCE_SentinelArtillery`, 35 health): lobs a heavy green hard-light mortar shell on an arc (the plasma caster's lob, under the ceiling), bursting where it lands (40 within 112 units).
+    - **Brute** (`HCE_SentinelBrute`, 850 health): a flying fortress, shrunk to 55% to fit Doom (radius 40, 64 tall). A heavy beam (twice the Sentinel's damage), and the Artillery's mortar shell lobbed every 3–5 seconds between bursts (never inside 256 units).
+    - **Canoneer** (`HCE_SentinelCanoneer`, 70) and **Omega** (`HCE_SentinelOmega`, 75): the Canoneer's heavy beam (1.5× the Sentinel's).
+    - **Compiler** (`HCE_SentinelCompiler`, 105): ten hard-light bolts in a 6° spread, a shot a second or so.
+    - **Scout** (`HCE_SentinelScout`, 45): strings of hard-light needle bolts (the Enforcer's).
+  * **Artybug (Covenant pack, `HCE_Artybug`):** a Covenant war beast, 250 health, with its plasma shotgun: ten plasma-rifle bolts in an 8° cone, about two shots a second. It charges, berserks and swipes up close; orange blood.
+  * **Geist (Covenant pack, `HCE_Geist`):** CMT's little Covenant drone (30 health) with a plasma rifle, flying like a Sentinel. It takes the Lost Souls' place: about half of them become Geists.
+  * **Draeth (Covenant pack):** the 1999 Elite (the Digsite release's `99_mac` Elite, as Mercury Rising fields it) as a race of its own; the UNSC calls them Reavers. Elite voices and AI, purple blood. Minors (100 body, 100 shield, blue) and Majors (100 body, 150 shield, red) with the plasma rifle or the needler (`HCE_DraethMinorPlasmaRifle`, `HCE_DraethMinorNeedler`, `HCE_DraethMajorPlasmaRifle`, `HCE_DraethMajorNeedler`), and white Commanders with the **Excavator** (the mod's gun, extracted with its own model and texture): eight plasma bolts in a 3.5° cone, 1.5 shots a second. The cloaked Commander (`HCE_DraethCommanderExcavatorCamo`, 80 body, no shield, active camo) as in the mod, and one without the cloak (`HCE_DraethCommanderExcavator`, 100 body, 200 shield). `HCE_RandomDraeth` picks any.
+  * **Female Marines and field medics (Marines pack):** the mod's female Marine and medic, each one whole body worn over the Halo CE Marine (`extract_mr_marines.py`: carried onto the CE Marine's skeleton bone by bone), so they play every Marine animation, hold every gun of the arsenal, pick up weapons and take squad orders like any Marine. Their armour takes the Marines' olive drab (the mod paints it white with a colour-change mask); the medic's face is Halo CE's under his red-cross cap. No kit pieces are rolled for them.
+    - **Female Marines:** with the assault rifle, battle rifle, MA37, SMG, Magnum, shotgun, sniper rifle or DMR (`HCE_MarineFemale<Gun>`). They speak with Halo 2's female Marine voices (Sassy and Tough). They join `HCE_RandomMarine`, the Marine fire teams of the encounters and the radio operator's reinforcements.
+    - **Field medics** (`HCE_MarineFieldMedicMagnum`, `HCE_MarineFieldMedicSmg`): in the medical corps' whites, a sidearm or SMG, and corpsmen: they answer the squad's *medic* order like the other corpsmen.
 * **Sentinels:** hover at Halo's flying height and fire a hitscan beam.
 * **Deaths:** directional (front/back/left/right) soft and hard death animations, airborne deaths, and Halo's flinch ("ping") animations by hit direction.
 * **Flinches:** a heavy hit plays a **hard ping** (h-ping) every time: a quarter of its health in one hit, a blast, or a hard melee. It cuts short a soft flinch, a landing or a taunt, though not a swing, throw, dive or an earlier hard ping. Lighter hits have a chance of a soft ping (s-ping).
@@ -546,7 +559,7 @@ The fork's Acid Breath lines aren't used.
   * **Gloves (unarmoured Marines, one in five):** full sleeves with gloves, gauntlets, or both, in place of the arms.
   * Sergeants Johnson and Stacker keep their own look. The Insurrectionist, stealth and damaged pieces in the kit aren't used. The heads keep Halo CE's articulated jaw, held shut in every animation: Halo CE drove it from dialogue, and its animations left it parked anywhere from shut to hanging open, so mouths gaped and snapped open and shut between animations. Instead the jaw now moves with the voice: while a Marine speaks, its mouth opens and closes irregularly in syllable-like beats (at most 10°), and it shuts when the line ends. Halo CE's skin weights hung the nose, upper lip and brow partly on the jaw, so opening it dragged the whole face; the faces are reweighted to a clean hinge (`jaw_weights.py`): the mouth line up stays with the head, and only the lower lip and chin move.
 * **Sergeant Johnson:** Johnson's face (the dark-skinned one, with his full-sleeved arms) is his alone. Only `HCE_SgtJohnson` wears it (see [The Marine arsenal](#the-marine-arsenal)), and he always speaks with Johnson's voice, from Halo CE's sergeant and Halo 2's Johnson.
-* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald and Mendoza (the second sergeant is Stacker's alone). From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, and the cautious and gruff sergeants. Halo 2's female Marine voices (Sassy and Tough, the two its female Marine uses) are left out, as Halo CE's Marines are all men.
+* **Everyone else:** a random one of the other voices. From Halo CE: Aussie, Bisenti, Fitzgerald and Mendoza (the second sergeant is Stacker's alone). From Halo 2: Aussie (merged with CE's), Cross, Perez, Timid, and the cautious and gruff sergeants. Halo 2's female Marine voices (Sassy and Tough, the two its female Marine uses) are the women's alone: the female Marines speak with one of them.
 * **What they say:** sightings, kill taunts, pain, deaths, burning screams, grenade calls, retreats, regrouping, a fallen comrade, berserk and melee shouts. For the squad features they also have Halo's lines for scolding the player's friendly fire, turning on the player, a Marine the player killed, acknowledging orders, forgiving, and being badly wounded (Halo 2's voices have their own acknowledgements; the Halo CE voices use their nearest lines).
 
 **Loudness:** every voice line is levelled at build time (`louden_voices.py`).
@@ -1269,6 +1282,31 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30497 | `HCE_JackalMajorHelmetPlasmaRifle` |
 | 30501 | `HCE_FloodJuggernaut` |
 | 30502 | `HCE_RandomFloodJuggernaut` |
+| 30503 | `HCE_SentinelArtillery` |
+| 30504 | `HCE_SentinelBrute` |
+| 30505 | `HCE_SentinelCanoneer` |
+| 30506 | `HCE_SentinelCompiler` |
+| 30507 | `HCE_SentinelOmega` |
+| 30508 | `HCE_SentinelScout` |
+| 30509 | `HCE_Artybug` |
+| 30510 | `HCE_Geist` |
+| 30511 | `HCE_DraethMinorPlasmaRifle` |
+| 30512 | `HCE_DraethMajorPlasmaRifle` |
+| 30513 | `HCE_DraethMinorNeedler` |
+| 30514 | `HCE_DraethCommanderExcavatorCamo` |
+| 30515 | `HCE_DraethMajorNeedler` |
+| 30516 | `HCE_DraethCommanderExcavator` |
+| 30517 | `HCE_RandomDraeth` |
+| 30518 | `HCE_MarineFemaleAssaultRifle` |
+| 30519 | `HCE_MarineFemaleBattleRifle` |
+| 30520 | `HCE_MarineFemaleMa37` |
+| 30521 | `HCE_MarineFemaleSmg` |
+| 30522 | `HCE_MarineFemaleMagnum` |
+| 30523 | `HCE_MarineFemaleShotgun` |
+| 30524 | `HCE_MarineFemaleSniper` |
+| 30525 | `HCE_MarineFemaleDmr` |
+| 30526 | `HCE_MarineFieldMedicMagnum` |
+| 30527 | `HCE_MarineFieldMedicSmg` |
 
 ## Credits
 
@@ -1281,6 +1319,10 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, hit and death sounds, by Bungie. The Suppressor's fire sounds are HaloDoom Evolved's.
 * **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
 * **Flood Juggernaut:** model, skins, animations, sounds and stats from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
+* **Mercury Rising:** the Artillery, Brute, Canoneer, Compiler, Omega and Scout Sentinels, the Artybug, the female Marine and the medic, the Excavator, and the Draeth's and the Geist's stats and loadouts: from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694).
+* **Geist:** CMT's (its model, textures and animations, from Mercury Rising).
+* **Draeth:** the 1999 Elite (`99_mac`) is the Digsite release's (github.com/digsite/h1), from Mercury Rising.
+* **Female Marine voices:** Halo 2's (marine_sassy, marine_tough), by Bungie.
 * **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).

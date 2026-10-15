@@ -68,7 +68,7 @@ class HCE_Sentinel : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel"
-	//$Sprite "HU5EA0"
+	//$Sprite "HU5WA0"
 	Default
 	{
 		Health 80;
@@ -164,7 +164,7 @@ class HCE_SentinelEliminator : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Eliminator"
-	//$Sprite "HU5KA0"
+	//$Sprite "HU66A0"
 	Default
 	{
 		Health 120;
@@ -261,7 +261,7 @@ class HCE_SentinelMajor : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Major"
-	//$Sprite "HU64A0"
+	//$Sprite "HU6QA0"
 	Default
 	{
 		Health 120;
@@ -357,7 +357,7 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Defensive"
-	//$Sprite "HU5HA0"
+	//$Sprite "HU63A0"
 	Default
 	{
 		Health 80;
@@ -453,7 +453,7 @@ class HCE_SentinelShielded : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded"
-	//$Sprite "HU68A0"
+	//$Sprite "HU6WA0"
 	Default
 	{
 		Health 60;
@@ -550,7 +550,7 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded Major"
-	//$Sprite "HU69A0"
+	//$Sprite "HU6XA0"
 	Default
 	{
 		Health 80;
@@ -642,6 +642,152 @@ class HCE_SentinelShieldedMajor : HCE_SentinelBase
 	}
 }
 
+class HCE_SentinelArtilleryBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 24;
+		Radius 12;
+		Mass 25;
+		PainChance 0;
+		Tag "SentinelArtillery";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel artillery\sentinel artillery
+class HCE_SentinelArtillery : HCE_SentinelArtilleryBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Artillery"
+	//$Title "Sentinel Artillery"
+	//$Sprite "HU5XA0"
+	Default
+	{
+		Health 35;
+		Speed 7.8;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel artillery";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 5.06, 7.78, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_SentinelMortar", 1, 3.00, 4.00, 1280;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 49.5;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 2.20, 2.20, 4.00, 5.00, 0.60, 0.25;
+		HaloDoom_EnemyBase.HCE_GunOffset (13.9, 0.0, 12.3);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.08, 3.38, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/FuelRod/Fire", "Halo/Weapons/FuelRod/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Lobbed
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand fixed idle%0': return (16.3, 0.0, 9.0);
+		}
+		return hce_gunOffset;
+	}
+}
+
 class HCE_SentinelBeamGunnerBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -698,6 +844,448 @@ class HCE_SentinelBeamGunnerBase : HaloDoom_EnemyBase abstract
 		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
 		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
 		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+class HCE_SentinelBruteBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 64;
+		Radius 40;
+		Mass 254;
+		PainChance 0;
+		Tag "SentinelBrute";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel brute\sentinel brute
+class HCE_SentinelBrute : HCE_SentinelBruteBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Brute"
+	//$Title "Sentinel Brute"
+	//$Sprite "HU5YA0"
+	Default
+	{
+		Health 850;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel brute";
+		HaloDoom_EnemyBase.HCE_Perception 4000, 190, 4000, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 2800;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 2.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 480, 800;
+		HaloDoom_EnemyBase.HCE_Burst 0.80, 1.20, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (35.0, -4.4, 14.1);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.25, 2.25, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+
+	// the Brute Sentinel's second trigger: an artillery shell lobbed now and then between its beam bursts
+	int hce_mortarTics;
+	override void Tick()
+	{
+		super.Tick();
+		if(health <= 0 || IsFrozen() || !target || target.health <= 0 || !hce_canSee) return;
+		if(--hce_mortarTics > 0) return;
+		hce_mortarTics = random[HCEMortar](35 * 3, 35 * 5);
+		if(Distance3D(target) < 256) return;                  // too close to be safe for itself
+		class<Actor> pc = (class<Actor>)('HCE_SentinelMortar');
+		if(!pc) return;
+		let g = Spawn(pc, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z), ALLOW_REPLACE);
+		if(!g) return;
+		g.target = self;
+		if(!HCE_LobAt(g, g.pos, 48)) { g.Destroy(); return; }     // no arc under this ceiling
+		HCE_ScaleShot(g);
+		A_StartSound("Halo/Weapons/FuelRod/Fire", CHAN_WEAPON, CHANF_OVERLAP);
+	}
+	override vector3 HCE_MuzzleAt(Name anim)
+	{
+		switch(anim)
+		{
+		case 'stand fixed idle%0': return (37.5, -4.4, 6.1);
+		}
+		return hce_gunOffset;
+	}
+}
+
+class HCE_SentinelCanoneerBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 24;
+		Radius 12;
+		Mass 25;
+		PainChance 0;
+		Tag "SentinelCanoneer";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel canoneer\sentinel canoneer
+class HCE_SentinelCanoneer : HCE_SentinelCanoneerBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Canoneer"
+	//$Title "Sentinel Canoneer"
+	//$Sprite "HU5ZA0"
+	Default
+	{
+		Health 70;
+		Speed 5.6;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel canoneer";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 3.64, 5.60, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 240, 400;
+		HaloDoom_EnemyBase.HCE_Burst 1.00, 1.40, 1.60, 2.20, 0.25, 0.40;
+		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.30, 2.34, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+}
+
+class HCE_SentinelCompilerBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 32;
+		Radius 16;
+		Mass 25;
+		PainChance 0;
+		Tag "SentinelCompiler";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel compiler\sentinel compiler
+class HCE_SentinelCompiler : HCE_SentinelCompilerBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Compiler"
+	//$Title "Sentinel Compiler"
+	//$Sprite "HU60A0"
+	Default
+	{
+		Health 105;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel compiler";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_CompilerBolt", 10, 3.00, 6.00, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 373.3;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.00;
+		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_Burst 0.80, 1.00, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (16.0, -0.0, -8.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 1.25, 2.00, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/ScatterShot/Fire", "Halo/Weapons/ScatterShot/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
 	}
 }
 
@@ -819,7 +1407,7 @@ class HCE_SentinelConstructor : HCE_SentinelConstructorBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Constructor"
 	//$Title "Sentinel Constructor"
-	//$Sprite "HU5FA0"
+	//$Sprite "HU61A0"
 	Default
 	{
 		Health 30;
@@ -958,7 +1546,7 @@ class HCE_SentinelCrawler : HCE_SentinelCrawlerBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Crawler"
 	//$Title "Sentinel Crawler"
-	//$Sprite "HU5GA0"
+	//$Sprite "HU62A0"
 	Default
 	{
 		Health 50;
@@ -1102,7 +1690,7 @@ class HCE_SentinelDragoonAlly : HCE_SentinelDragoonBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Dragoon"
 	//$Title "Sentinel Dragoon Ally"
-	//$Sprite "HU5JA0"
+	//$Sprite "HU65A0"
 	Default
 	{
 		Health 200;
@@ -1189,7 +1777,7 @@ class HCE_SentinelDragoon : HCE_SentinelDragoonBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Dragoon"
 	//$Title "Sentinel Dragoon"
-	//$Sprite "HU5IA0"
+	//$Sprite "HU64A0"
 	Default
 	{
 		Health 200;
@@ -1433,7 +2021,7 @@ class HCE_SentinelEnforcer : HCE_SentinelEnforcerBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Enforcer"
 	//$Title "Sentinel Enforcer"
-	//$Sprite "HU5LA0"
+	//$Sprite "HU67A0"
 	Default
 	{
 		Health 600;
@@ -1580,7 +2168,7 @@ class HCE_SentinelGoldMajor : HCE_SentinelGoldBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Major"
-	//$Sprite "HU5NA0"
+	//$Sprite "HU69A0"
 	Default
 	{
 		Health 120;
@@ -1660,7 +2248,7 @@ class HCE_SentinelGoldShieldedMajor : HCE_SentinelGoldBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Shielded Major"
-	//$Sprite "HU5PA0"
+	//$Sprite "HU6BA0"
 	Default
 	{
 		Health 120;
@@ -1741,7 +2329,7 @@ class HCE_SentinelGoldShielded : HCE_SentinelGoldBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Shielded"
-	//$Sprite "HU5OA0"
+	//$Sprite "HU6AA0"
 	Default
 	{
 		Health 120;
@@ -1822,7 +2410,7 @@ class HCE_SentinelGold : HCE_SentinelGoldBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold"
-	//$Sprite "HU5MA0"
+	//$Sprite "HU68A0"
 	Default
 	{
 		Health 80;
@@ -1961,7 +2549,7 @@ class HCE_SentinelInterceptor : HCE_SentinelInterceptorBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Interceptor"
 	//$Title "Sentinel Interceptor"
-	//$Sprite "HU5QA0"
+	//$Sprite "HU6CA0"
 	Default
 	{
 		Health 40;
@@ -2401,7 +2989,7 @@ class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Binary Rifle)"
-	//$Sprite "HU5RA0"
+	//$Sprite "HU6DA0"
 	Default
 	{
 		Health 400;
@@ -2538,7 +3126,7 @@ class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Light Rifle)"
-	//$Sprite "HU5SA0"
+	//$Sprite "HU6EA0"
 	Default
 	{
 		Health 400;
@@ -2672,7 +3260,7 @@ class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Scattershot)"
-	//$Sprite "HU5TA0"
+	//$Sprite "HU6FA0"
 	Default
 	{
 		Health 400;
@@ -2806,7 +3394,7 @@ class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Suppressor)"
-	//$Sprite "HU5UA0"
+	//$Sprite "HU6GA0"
 	Default
 	{
 		Health 400;
@@ -2939,7 +3527,7 @@ class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Binary Rifle)"
-	//$Sprite "HU5VA0"
+	//$Sprite "HU6HA0"
 	Default
 	{
 		Health 300;
@@ -3072,7 +3660,7 @@ class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Light Rifle)"
-	//$Sprite "HU5WA0"
+	//$Sprite "HU6IA0"
 	Default
 	{
 		Health 300;
@@ -3205,7 +3793,7 @@ class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Scattershot)"
-	//$Sprite "HU5XA0"
+	//$Sprite "HU6JA0"
 	Default
 	{
 		Health 300;
@@ -3338,7 +3926,7 @@ class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Suppressor)"
-	//$Sprite "HU5YA0"
+	//$Sprite "HU6KA0"
 	Default
 	{
 		Health 300;
@@ -3470,7 +4058,7 @@ class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Binary Rifle)"
-	//$Sprite "HU5ZA0"
+	//$Sprite "HU6LA0"
 	Default
 	{
 		Health 200;
@@ -3603,7 +4191,7 @@ class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Light Rifle)"
-	//$Sprite "HU60A0"
+	//$Sprite "HU6MA0"
 	Default
 	{
 		Health 200;
@@ -3736,7 +4324,7 @@ class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Scattershot)"
-	//$Sprite "HU61A0"
+	//$Sprite "HU6NA0"
 	Default
 	{
 		Health 200;
@@ -3869,7 +4457,7 @@ class HCE_SentinelKnightMinorSuppressor : HCE_SentinelKnightBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Suppressor)"
-	//$Sprite "HU62A0"
+	//$Sprite "HU6OA0"
 	Default
 	{
 		Health 200;
@@ -4060,7 +4648,7 @@ class HCE_SentinelLancer : HCE_SentinelLancerBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Lancer"
 	//$Title "Sentinel Lancer"
-	//$Sprite "HU63A0"
+	//$Sprite "HU6PA0"
 	Default
 	{
 		Health 120;
@@ -4200,7 +4788,7 @@ class HCE_SentinelMarauder : HCE_SentinelMarauderBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Marauder"
 	//$Title "Sentinel Marauder"
-	//$Sprite "HU65A0"
+	//$Sprite "HU6RA0"
 	Default
 	{
 		Health 60;
@@ -4257,6 +4845,145 @@ class HCE_SentinelMarauder : HCE_SentinelMarauderBase
 		{
 		case 'stand airborne-dead': return 117;
 		case 'stand fixed idle': return 117;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+}
+
+class HCE_SentinelOmegaBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 36;
+		Radius 18;
+		Mass 28;
+		PainChance 0;
+		Tag "SentinelOmega";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel omega\sentinel omega
+class HCE_SentinelOmega : HCE_SentinelOmegaBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Omega"
+	//$Title "Sentinel Omega"
+	//$Sprite "HU6SA0"
+	Default
+	{
+		Health 75;
+		Speed 7.0;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel omega";
+		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 240;
+		HaloDoom_EnemyBase.HCE_Movement 4.55, 7.00, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 30.00, 0.60, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 1.50;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.70, 1.00, 1.20, 2.20, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (18.0, -0.0, -9.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 20, 35, 1, 1.30, 2.34, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/SentinelBeam/Fire/Loop", "", "Halo/Weapons/SentinelBeam/Fire/End", "Halo/Weapons/SentinelBeam/Fire/Begin";
+		HaloDoom_EnemyBase.HCE_FireLoop true;
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Beam
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
 		case 'stand landing-dead': return 4;
 		}
 		return 30;
@@ -4337,7 +5064,7 @@ class HCE_SentinelOnyx : HCE_SentinelOnyxBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Onyx"
 	//$Title "Sentinel Onyx"
-	//$Sprite "HU66A0"
+	//$Sprite "HU6TA0"
 	Default
 	{
 		Health 120;
@@ -4477,7 +5204,7 @@ class HCE_SentinelProtector : HCE_SentinelProtectorBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Protector"
 	//$Title "Sentinel Protector"
-	//$Sprite "HU67A0"
+	//$Sprite "HU6UA0"
 	Default
 	{
 		Health 80;
@@ -4504,6 +5231,143 @@ class HCE_SentinelProtector : HCE_SentinelProtectorBase
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 48;
 		HaloDoom_EnemyBase.HCE_FirePattern 8, 12, 2, 1.82, 3.12, 0;
+		HaloDoom_EnemyBase.HCE_FireSounds "HCE/Suppressor/Fire", "HCE/Suppressor/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
+		+HaloDoom_EnemyBase.HCE_Evades
+		+HaloDoom_EnemyBase.HCE_Flying
+		+HaloDoom_EnemyBase.HCE_Surprise
+	}
+	override Name HCE_AnimName(int kind)
+	{
+		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
+		switch(kind)
+		{
+		case HCE_A_IDLE: return 'stand fixed idle%0';
+		case HCE_A_ALERT: return 'alert fixed idle%0';
+		case HCE_A_MOVE_F: return 'stand fixed idle%0';
+		case HCE_A_CROUCH_IDLE: return 'crouch fixed idle%0';
+		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%1 baked', 's-ping front gut%2 baked', 's-ping front gut%3 baked' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_F: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2', 'stand landing-dead' }; return o[random(0, 2)]; }
+		case HCE_A_DIE_AIR: { static const Name o[] = { 'stand airborne-dead%1', 'stand airborne-dead%2' }; return o[random(0, 1)]; }
+		case HCE_A_DIE_LAND: return 'stand landing-dead';
+		}
+		return 'None';
+	}
+
+	override int HCE_AnimTics(Name anim)
+	{
+		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
+		switch(anim)
+		{
+		case 'alert fixed idle%0': return 35;
+		case 'crouch fixed idle%0': return 4;
+		case 's-ping front gut%1 baked': return 26;
+		case 's-ping front gut%2 baked': return 26;
+		case 's-ping front gut%3 baked': return 26;
+		case 'stand airborne-dead%1': return 112;
+		case 'stand airborne-dead%2': return 85;
+		case 'stand fixed idle%0': return 4;
+		case 'stand landing-dead': return 4;
+		}
+		return 30;
+	}
+	override vector3 HCE_AnimMove(Name anim)
+	{
+		return (0, 0, 0);
+	}
+}
+
+class HCE_SentinelScoutBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_SENTINEL";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_SENTINEL;
+		Height 24;
+		Radius 12;
+		Mass 25;
+		PainChance 0;
+		Tag "SentinelScout";
+		+NOBLOOD
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+}
+
+// characters\sentinel scout\sentinel scout
+class HCE_SentinelScout : HCE_SentinelScoutBase
+{
+	//$Category "Halo CE/Sentinels/Sentinel Scout"
+	//$Title "Sentinel Scout"
+	//$Sprite "HU6VA0"
+	Default
+	{
+		Health 45;
+		Speed 17.1;
+		HaloDoom_EnemyBase.HCE_Type 13;
+		HaloDoom_EnemyBase.HCE_Variant "sentinel scout";
+		HaloDoom_EnemyBase.HCE_Perception 2800, 140, 2400, 240;
+		HaloDoom_EnemyBase.HCE_Movement 11.12, 17.11, 12;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_Weapon "HCE_EnforcerNeedle", 1, 3.00, 0.00, 960;
+		HaloDoom_EnemyBase.HCE_ProjectileSpeed 280.0;
+		HaloDoom_EnemyBase.HCE_DamageModifier 0.80;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 640;
+		HaloDoom_EnemyBase.HCE_Burst 0.50, 0.50, 1.00, 1.50, 0.25, 0.50;
+		HaloDoom_EnemyBase.HCE_GunOffset (12.0, -0.0, -6.0);
+		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
+		HaloDoom_EnemyBase.HCE_Melee 36, 55;
+		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.5, 240, 1120, 26.0;
+		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
+		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.00, 0;
+		HaloDoom_EnemyBase.HCE_Defensive 0.00, 0.00, 0.00, 0.00, 0.00;
+		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
+		HaloDoom_EnemyBase.HCE_FlyHeight 48;
+		HaloDoom_EnemyBase.HCE_FirePattern 8, 12, 2, 1.75, 3.00, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "HCE/Suppressor/Fire", "HCE/Suppressor/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_UnitSounds "HCE/Sentinel/Engine", "HCE/Sentinel/Hit", "HCE/Sentinel/Death";
 		+HaloDoom_EnemyBase.HCE_Evades
@@ -4620,7 +5484,7 @@ class HCE_SentinelSoldierAlly : HCE_SentinelSoldierBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Soldier"
 	//$Title "Sentinel Soldier Ally"
-	//$Sprite "HU6BA0"
+	//$Sprite "HU6ZA0"
 	Default
 	{
 		Health 275;
@@ -4710,7 +5574,7 @@ class HCE_SentinelSoldier : HCE_SentinelSoldierBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Soldier"
 	//$Title "Sentinel Soldier"
-	//$Sprite "HU6AA0"
+	//$Sprite "HU6YA0"
 	Default
 	{
 		Health 275;
@@ -4862,7 +5726,7 @@ class HCE_SentinelWarden : HCE_SentinelWardenBase
 {
 	//$Category "Halo CE/Sentinels/Sentinel Warden"
 	//$Title "Sentinel Warden"
-	//$Sprite "HU6CA0"
+	//$Sprite "HU70A0"
 	Default
 	{
 		Health 140;
@@ -4942,7 +5806,7 @@ class HCE_RandomSentinel : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Random Sentinel"
-	//$Sprite "HU5EA0"
+	//$Sprite "HU5WA0"
 	Default
 	{
 		DropItem "HCE_Sentinel", 255, 1;
@@ -4958,7 +5822,7 @@ class HCE_RandomSentinelCrawler : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Crawler"
 	//$Title "Random Sentinel Crawler"
-	//$Sprite "HU5GA0"
+	//$Sprite "HU62A0"
 	Default
 	{
 		DropItem "HCE_SentinelCrawler", 255, 1;
@@ -4969,7 +5833,7 @@ class HCE_RandomSentinelDragoon : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Dragoon"
 	//$Title "Random Sentinel Dragoon"
-	//$Sprite "HU5IA0"
+	//$Sprite "HU64A0"
 	Default
 	{
 		DropItem "HCE_SentinelDragoon", 255, 1;
@@ -4980,7 +5844,7 @@ class HCE_RandomSentinelGold : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Random Sentinel Gold"
-	//$Sprite "HU5NA0"
+	//$Sprite "HU69A0"
 	Default
 	{
 		DropItem "HCE_SentinelGoldMajor", 255, 1;
@@ -4994,7 +5858,7 @@ class HCE_RandomSentinelInterceptor : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Interceptor"
 	//$Title "Random Sentinel Interceptor"
-	//$Sprite "HU5QA0"
+	//$Sprite "HU6CA0"
 	Default
 	{
 		DropItem "HCE_SentinelInterceptor", 255, 1;
@@ -5005,7 +5869,7 @@ class HCE_RandomSentinelLancer : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Lancer"
 	//$Title "Random Sentinel Lancer"
-	//$Sprite "HU63A0"
+	//$Sprite "HU6PA0"
 	Default
 	{
 		DropItem "HCE_SentinelLancer", 255, 1;
@@ -5016,7 +5880,7 @@ class HCE_RandomSentinelMarauder : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Marauder"
 	//$Title "Random Sentinel Marauder"
-	//$Sprite "HU65A0"
+	//$Sprite "HU6RA0"
 	Default
 	{
 		DropItem "HCE_SentinelMarauder", 255, 1;
@@ -5027,7 +5891,7 @@ class HCE_RandomSentinelOnyx : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Onyx"
 	//$Title "Random Sentinel Onyx"
-	//$Sprite "HU66A0"
+	//$Sprite "HU6TA0"
 	Default
 	{
 		DropItem "HCE_SentinelOnyx", 255, 1;
@@ -5038,7 +5902,7 @@ class HCE_RandomSentinelProtector : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Protector"
 	//$Title "Random Sentinel Protector"
-	//$Sprite "HU67A0"
+	//$Sprite "HU6UA0"
 	Default
 	{
 		DropItem "HCE_SentinelProtector", 255, 1;
@@ -5049,7 +5913,7 @@ class HCE_RandomSentinelSoldier : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Soldier"
 	//$Title "Random Sentinel Soldier"
-	//$Sprite "HU6AA0"
+	//$Sprite "HU6YA0"
 	Default
 	{
 		DropItem "HCE_SentinelSoldier", 255, 1;
@@ -5060,7 +5924,7 @@ class HCE_RandomSentinelWarden : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Warden"
 	//$Title "Random Sentinel Warden"
-	//$Sprite "HU6CA0"
+	//$Sprite "HU70A0"
 	Default
 	{
 		DropItem "HCE_SentinelWarden", 255, 1;
@@ -5071,7 +5935,7 @@ class HCE_RandomSentinelKnight : RandomSpawner
 {
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Random Sentinel Knight"
-	//$Sprite "HU5RA0"
+	//$Sprite "HU6DA0"
 	Default
 	{
 		DropItem "HCE_SentinelKnightCommanderBinaryRifle", 255, 1;

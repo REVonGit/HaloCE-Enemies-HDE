@@ -2391,7 +2391,7 @@ def build(cfg=None):
             zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
     pz = ['// Enemy projectiles: HDE visuals, Halo CE impact damage']
-    if main and any(w in projectiles_used for w in list(KNIGHT_GUNS) + ['enforcer needler']): pz.append(HARDLIGHT_CODE)
+    if main and any(w in projectiles_used for w in list(KNIGHT_GUNS) + ['enforcer needler'] + HARDLIGHT_WEAPONS): pz.append(HARDLIGHT_CODE)
     done = set()
     for wn in sorted(projectiles_used):
         pc, base_cls, dmg, sp = WEAPONS[wn]
@@ -2759,7 +2759,8 @@ PILOT_CODE = """
 # calls it in; some seconds later a fire team of three Marines comes up from behind him, out of the enemy's sight,
 # and joins in (Marines are allies: they fall in with the squad like any other). Once per operator.
 RADIO_TEAM = ('HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineBattleRifle', 'HCE_MarineShotgun',
-              'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMa37')
+              'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMa37', 'HCE_MarineFemaleAssaultRifle',
+              'HCE_MarineFemaleBattleRifle')
 RADIO_CODE = """
 	// the radio operator: the radio pack always, and one call for a fire team per fight
 	override void HCE_KitOverride()
@@ -3573,6 +3574,261 @@ def stacker_code(A, animtxt, char, meta, mdir):
 	}}
 """
     return animtxt + '\n' + smg_table, code
+
+# ---------------------------------------------------------------- Mercury Rising's units
+# aLTis's Mercury Rising (Steam Workshop 3021510694; extract_spv3.py 'mr1' / 'mr2' -> spv3_ai.json, keys under 'mercury\'):
+#  * six Sentinels of its own (Sentinels pack), each on its own body with Halo CE's Sentinel animations, flying like
+#    Galap's. Their guns are the bipeds' own (the actor variants carry none): the Artillery lobs a hard-light mortar
+#    (0.5 a second, a gravity shell), the Brute a heavy beam with the same mortar between its bursts, the Canoneer
+#    and the Omega a heavy beam, the Compiler a spread of ten hard-light bolts, the Scout strings of needle bolts
+#  * the Artybug (Covenant): a big Covenant war beast with a plasma shotgun (ten plasma-rifle bolts a shot)
+#  * CMT's Geist (Covenant): a little Covenant drone with a plasma rifle, in the Lost Souls' place
+#  * the 1999 Elite (Digsite's 99_mac, as Mercury Rising fields it): the Draeth, a race of its own, the UNSC's
+#    Reavers. Minors and Majors with the plasma rifle and the needler, Commanders with the Excavator (a scatter gun
+#    of eight plasma bolts), cloaked or not
+#  * the medic and the female Marine (Marines pack): whole bodies over the CE Marine (extract_mr_marines.py), so they
+#    fight with all the Marines have. The women speak with Halo 2's two female Marine voices; the field medics are
+#    corpsmen (they answer the "medic" order)
+MR = 'mercury\\'
+MR_SENTINELS = {r'characters\sentinel\variants\artillery\artillery': ('SentinelArtillery', 'sentinel artillery'),
+                r'characters\sentinel\variants\brute\brute': ('SentinelBrute', 'sentinel brute'),
+                r'characters\sentinel\variants\canoneer\canoneer': ('SentinelCanoneer', 'sentinel canoneer'),
+                r'characters\sentinel\variants\compiler\compiler': ('SentinelCompiler', 'sentinel compiler'),
+                r'characters\sentinel\variants\omega\omega': ('SentinelOmega', 'sentinel omega'),
+                r'characters\sentinel\variants\scout\scout': ('SentinelScout', 'sentinel scout')}
+MR_SENTINEL_GUNS = {'sentinel artillery': (r'mercury\sentinel artillery', 1.0),       # the mortar (WEAPONS below)
+                    'sentinel brute': (r'characters\sentinel\sentinel', 2.0),          # a heavy beam (+ the mortar: MR_BRUTE_CODE)
+                    'sentinel canoneer': (r'characters\sentinel\sentinel', 1.5),
+                    'sentinel compiler': (r'mercury\sentinel compiler', 1.0),
+                    'sentinel omega': (r'characters\sentinel\sentinel', 1.5),
+                    'sentinel scout': (r'weapons\enforcer needler\enforcer needler', 0.8)}
+MR_ARTYBUG = r'characters\artybug\artybug'
+MR_GEIST = r'cmt\characters\geist\geist'
+MR_DRAETH = r'digsite\characters\elite\99_mac\elite_99'
+MR_EXCAVATOR = r'dw2\weapons\excavator\excavator'
+# Mercury Rising's variant (leaf) -> the pack's (the class name: HCE_Draeth...)
+MR_DRAETH_NAMES = {'elite minor plasma rifle': 'draeth minor plasma rifle', 'elite major plasma rifle': 'draeth major plasma rifle',
+                   'elite minor needler': 'draeth minor needler', 'elite commander excavator camo': 'draeth commander excavator camo'}
+MR_FEMALE_GUNS = ('assault rifle', 'battle rifle', 'ma37', 'smg', 'magnum', 'shotgun', 'sniper', 'dmr')
+MR_MEDIC_GUNS = ('magnum', 'smg')
+MR_CHARS = []
+MR_ORDER = (['HCE_SentinelArtillery', 'HCE_SentinelBrute', 'HCE_SentinelCanoneer', 'HCE_SentinelCompiler', 'HCE_SentinelOmega',
+             'HCE_SentinelScout', 'HCE_Artybug', 'HCE_Geist']
+            + [cname(n) for n in MR_DRAETH_NAMES.values()] + ['HCE_DraethMajorNeedler', 'HCE_DraethCommanderExcavator', 'HCE_RandomDraeth']
+            + [cname(f'marine female {g}') for g in MR_FEMALE_GUNS] + [cname(f'marine field medic {g}') for g in MR_MEDIC_GUNS])
+
+# the Brute Sentinel's second gun: Mercury Rising's brute_gun fires the beam and, on its other trigger, the Artillery's shell
+MR_BRUTE_CODE = """
+	// the Brute Sentinel's second trigger: an artillery shell lobbed now and then between its beam bursts
+	int hce_mortarTics;
+	override void Tick()
+	{
+		super.Tick();
+		if(health <= 0 || IsFrozen() || !target || target.health <= 0 || !hce_canSee) return;
+		if(--hce_mortarTics > 0) return;
+		hce_mortarTics = random[HCEMortar](35 * 3, 35 * 5);
+		if(Distance3D(target) < 256) return;                  // too close to be safe for itself
+		class<Actor> pc = (class<Actor>)('HCE_SentinelMortar');
+		if(!pc) return;
+		let g = Spawn(pc, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z), ALLOW_REPLACE);
+		if(!g) return;
+		g.target = self;
+		if(!HCE_LobAt(g, g.pos, 48)) { g.Destroy(); return; }     // no arc under this ceiling
+		HCE_ScaleShot(g);
+		A_StartSound("Halo/Weapons/FuelRod/Fire", CHAN_WEAPON, CHANF_OVERLAP);
+	}
+"""
+# the Artillery Sentinel's shell (HARDLIGHT_CODE's): a heavy green hard-light bolt that falls (Halo's gravity scale 1.1)
+# and bursts where it lands
+HARDLIGHT_CODE += '''
+// Mercury Rising's Artillery Sentinel: a hard-light mortar shell on an arc, bursting where it comes down
+class HCE_HardlightMortar : HCE_HardlightGreen
+{
+	Default { Scale 0.024; -NOGRAVITY; Gravity 0.43; }
+	// the lob's velocity is set right after the spawn (HCE_LobAt): kept through HDE's own set-up (which aims it straight)
+	override void PostBeginPlay()
+	{
+		vector3 v = vel;
+		super.PostBeginPlay();
+		if(v.Length() > 0) { vel = v; angle = atan2(v.y, v.x); }
+	}
+	States
+	{
+	Death:
+	XDeath:
+	Crash:
+		TNT1 A 0
+		{
+			A_Explode(int(40 * max(0.1, DamageMultiply)), 112, 0);
+			A_StartSound("Halo/Wraith/MissileExplosion", CHAN_BODY, CHANF_OVERLAP);
+		}
+		Goto Super::Death;
+	}
+}
+'''
+SLOW_PROJ.add('HCE_HardlightMortar')
+HARDLIGHT_WEAPONS = ['sentinel artillery', 'sentinel compiler']
+WEAPONS['sentinel artillery'] = ('HCE_SentinelMortar', 'HCE_HardlightMortar', 30, 0.53)
+PATTERNS['sentinel artillery'] = (1, 1, 1, 1.6, 2.6, 0, False, 2.0, 0.1)
+FIRE_SOUNDS['sentinel artillery'] = (W + 'FuelRod/Fire', W + 'FuelRod/Fire/Bass', '', '', False)
+LOBBED.add('sentinel artillery')
+WEAPONS['sentinel compiler'] = ('HCE_CompilerBolt', 'HCE_HardlightBlue', 8, 4.0)
+PATTERNS['sentinel compiler'] = (1, 1, 1, 1.0, 1.6, 0, False, 1.0, 0.1)
+FIRE_SOUNDS['sentinel compiler'] = FIRE_SOUNDS['scattershot']
+# the Artybug's plasma shotgun: ten plasma-rifle bolts a shot, about 2 a second in Mercury Rising
+WEAPONS['plasma shotgun'] = ('HCE_PlasmaShotgunBolt', 'HaloPlasmaRifle_Proj', 13, 1.67)
+PATTERNS['plasma shotgun'] = (1, 2, 16, 1.4, 2.2, 0, False, 1.75, 0.1)
+FIRE_SOUNDS['plasma shotgun'] = FIRE_SOUNDS['plasma rifle']
+FIRE_CODE['plasma shotgun'] = 'pp'
+# the Draeth Commander's Excavator: eight plasma bolts in a 3-degree cone, 1.5 a second
+WEAPONS['excavator'] = ('HCE_ExcavatorBolt', 'HaloPlasmaRifle_Proj', 12, 0.9)
+PATTERNS['excavator'] = (1, 1, 1, 1.0, 1.6, 0, False, 0.5, 0.1)
+FIRE_SOUNDS['excavator'] = (W + 'PlasmaPistol/Fire/Charged', W + 'PlasmaRifle/Fire/Bass', '', '', False)
+FIRE_CODE['excavator'] = 'pp'
+WEAPON_IDS[MR_EXCAVATOR] = 'excavator'
+
+# the medic's and the women's bodies: hide the CE Marine (every body surface) and wear the whole body at the kit's
+# head slot (model 1; no kit is rolled for them)
+MR_BODY_CODE = """
+	// %s (Mercury Rising's body: extract_mr_marines.py), a whole body on the Marine's skeleton in place of Halo CE's,
+	// and none of the field kit
+	override void HCE_KitOverride() { for(int i = 0; i < hce_kit.Size(); i++) hce_kit[i] = ""; }
+	override void PostBeginPlay()
+	{
+%s		super.PostBeginPlay();
+		static const int BS[] = { {HCE_BODY_SURFS} };
+		for(int i = 0; i < BS.Size(); i++)
+		{
+			if(BS[i] < 0) continue;
+			A_ChangeModel('None', 0, "", 'None', BS[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(hce_hideSurf.Find(BS[i]) == hce_hideSurf.Size()) hce_hideSurf.Push(BS[i]);
+		}
+		A_ChangeModel('None', 1, "models/hce/MarineKit", "%s.iqm", 1, "", 'None');
+		HCE_ResumeAnim();
+	}
+"""
+# her 'bip01 ponytail1' is her ponytail, not a jaw: the Marines' lip-sync (lip.zs) is undone every tic
+MR_FEMALE_CODE = MR_BODY_CODE % ('a female Marine', '', 'mr_female_body') + """
+	override void Tick()
+	{
+		super.Tick();
+		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, 0, 1), SB_ADD, 0);
+	}
+"""
+MR_MEDIC_CODE = MR_BODY_CODE % ('a field medic: a corpsman who answers "medic" (HCE_MedicOrder)', '\t\thce_isMedic = true;\n', 'mr_medic_body')
+
+
+def add_mercury(ai):
+    """Mercury Rising's units into the pack's AI data (spv3_ai.json's 'mercury\\' keys: their actors and collision
+    models under 'mercury\\' too, clear of Halo CE's own of the same names)"""
+    sp = f'{OUT}/spv3_ai.json'
+    if not os.path.exists(sp): return
+    S3 = json.load(open(sp))
+    mv = {k[len(MR):]: v for k, v in S3['variants'].items() if k.startswith(MR)}
+    def body(unit, char, team):
+        if unit not in S3['bipeds'] or not os.path.exists(f'{OUT}/models/{char}/{char}.json'): return False
+        CHAR_OF_UNIT[unit] = char; TEAM[char] = team; MR_CHARS.append(char)
+        b = copy.deepcopy(S3['bipeds'][unit])
+        cm = b.get('collision_model')
+        if cm and cm in S3['collisions']:
+            b['collision_model'] = MR + cm; ai['collisions'][MR + cm] = S3['collisions'][cm]
+        ai['bipeds'][unit] = b
+        return True
+    def variant(src, key, ref=None, **kw):
+        v = copy.deepcopy(src)
+        ar = v['actor_reference']
+        if not ar.startswith(MR): ai['actors'][MR + ar] = copy.deepcopy(S3['actors'][ar]); ar = MR + ar
+        v['actor_reference'] = ar
+        if ref is not None: v['ranged_combat']['reference'] = ref
+        v['_late'] = True
+        v.update(kw)
+        ai['variants'][key] = v
+        return v
+    # the Sentinels
+    for unit, (char, name) in MR_SENTINELS.items():
+        src = next((v for v in mv.values() if v['unit_reference'] == unit), None)
+        if src is None or not body(unit, char, 'SENTINEL'): continue
+        ref, dmg = MR_SENTINEL_GUNS[name]
+        v = variant(src, rf'characters\{name}\{name}', ref, _rank='sentinel_minor', _ov={})
+        v['ranged_combat']['weapon_damage_modifier'] = dmg
+        v['grenade_combat']['throw_grenade_chance'] = 0.0; v['items']['grenades_upper_bound'] = 0
+        if name == 'sentinel brute': v['_ov'] = dict(code=MR_BRUTE_CODE)
+        if name == 'sentinel compiler': v['_ov'] = dict(pellets=10, spread=6.0)
+    # the Artybug and the Geist
+    src = mv.get(r'characters\artybug\bug')
+    if src and body(MR_ARTYBUG, 'Artybug', 'COVENANT'):
+        v = variant(src, r'characters\artybug\artybug', r'characters\artybug\plasma shotgun')
+        v['ranged_combat'].update(rate_of_fire=2.2, weapon_damage_modifier=0.6)
+        v['_ov'] = dict(pellets=10, spread=8.0)
+    src = mv.get(r'cmt\characters\geist\geist')
+    if src and body(MR_GEIST, 'Geist', 'COVENANT'):
+        v = variant(src, r'characters\geist\geist')
+        v['grenade_combat']['throw_grenade_chance'] = 0.0; v['items']['grenades_upper_bound'] = 0
+        v['_ov'] = dict(drops=False)
+    # the Draeth
+    if body(MR_DRAETH, 'Draeth', 'COVENANT'):
+        for leaf, name in MR_DRAETH_NAMES.items():
+            src = next((v for k, v in mv.items() if k.split('\\')[-1] == leaf), None)
+            if src is None: continue
+            v = variant(src, rf'characters\draeth\{name}')
+            if 'excavator' in name: v['ranged_combat']['rate_of_fire'] = 1.5; v['_ov'] = dict(pellets=8, spread=3.5)
+            if 'major plasma rifle' in name:       # a Major with the needler too (Mercury Rising has only Minors carry it)
+                n = variant(v, r'characters\draeth\draeth major needler', r'weapons\needler\needler')
+                n['ranged_combat'].update({k: mv[r'characters\elite\elite minor\elite minor needler']['ranged_combat'][k]
+                                           for k in ('rate_of_fire', 'burst_geometry', 'combat_range_lower_bound', 'combat_range_upper_bound')}
+                                          if r'characters\elite\elite minor\elite minor needler' in mv else {})
+            if name.endswith('camo'):              # and the Commander without the cloak, his shield up instead
+                c = variant(v, r'characters\draeth\draeth commander excavator')
+                c['flags'] = v['flags'] & ~0x30
+                c['unit'] = dict(v['unit'], maximum_body_vitality=100.0, maximum_shield_vitality=200.0)
+    # the medic and the female Marines, on the CE Marine
+    for gun in MR_FEMALE_GUNS:
+        src = ai['variants'].get(f'characters\\marine\\marine {gun}')
+        if not src or not os.path.exists(f'{MARINE_KIT}/mr_female_body.iqm'): continue
+        v = copy.deepcopy(src); v['_late'] = True
+        ov = dict(v.get('_ov') or {})
+        ov['code'] = ov.get('code', '') + MR_FEMALE_CODE
+        ov['voices'] = 'Marine_Sassy,Marine_Tough'
+        ov.setdefault('skin_as', cname(f'marine {gun}'))
+        v['_ov'] = ov
+        ai['variants'][f'characters\\marine\\marine female {gun}'] = v
+    for gun in MR_MEDIC_GUNS:
+        src = ai['variants'].get(f'characters\\marine\\marine {gun}')
+        if not src or not os.path.exists(f'{MARINE_KIT}/mr_medic_body.iqm'): continue
+        v = copy.deepcopy(src); v['_late'] = True
+        ov = dict(v.get('_ov') or {})
+        ov['code'] = ov.get('code', '') + MR_MEDIC_CODE
+        ov.setdefault('skin_as', cname(f'marine {gun}'))
+        v['_ov'] = ov
+        ai['variants'][f'characters\\marine\\marine field medic {gun}'] = v
+
+add_mercury(AI)
+for _c in MR_CHARS:
+    _gm = json.load(open(f'{OUT}/models/{_c}/{_c}.json'))
+    if _c.startswith('Sentinel') or _c == 'Geist':
+        # flying bodies built round their middle (Halo CE's Sentinel rig): raised clear of the floor like Galap's
+        SENTINEL_LIKE.add(_c); NO_BLOOD.add(_c); NO_RANDOM.add(_c)
+        _r = max(12, min(48, int(_gm['collision_radius'] * S * 0.6)))
+        CHAR_OVERRIDES[_c] = dict(stance='fixed', flying=True, radius_fixed=_r, height_fixed=max(24, _r * 2), lift=True)
+        if _c.startswith('Sentinel'):
+            SENTINEL_UNIT_SOUNDS[_c] = ('HCE/Sentinel/Engine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/Death')
+if 'SentinelBrute' in MR_CHARS:      # a flying fortress two and a half metres across: shrunk to fit Doom's halls
+    CHAR_OVERRIDES['SentinelBrute'] = dict(stance='fixed', flying=True, scale=0.55, radius_fixed=40, height_fixed=64, lift=True)
+if 'Geist' in MR_CHARS:
+    CHAR_OVERRIDES['Geist'] = dict(CHAR_OVERRIDES['Geist'], radius_fixed=14, height_fixed=28)
+if 'Artybug' in MR_CHARS:
+    NO_RANDOM.add('Artybug')
+    BLOOD['Artybug'] = 'FF8C1A'            # its blood is the Hunters' (Mercury Rising's own damage effects)
+    CHAR_OVERRIDES['Artybug'] = dict(stance='pistol', radius_fixed=30, height_fixed=52, melee=(56, 60),
+                                     flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades'])
+if 'Draeth' in MR_CHARS:
+    BLOOD['Draeth'] = BLOOD['Elite']
+    VOICES['Draeth'] = VOICES['Elite']
+    HEAD_CLEAR['Draeth'] = HEAD_CLEAR['Elite']
+    BESTIARY_GROUP['Draeth'] = 'Draeth (Reaver)'
+BESTIARY_RANK_GROUP += (('MarineFemale', 'Female Marine'), ('MarineFieldMedic', 'Field Medic'))
+MAIN['late_chars'] = MAIN['late_chars'] + [c for c in MR_CHARS if c not in NO_RANDOM]
+MAIN['late_order'] = MAIN['late_order'] + MR_ORDER
 
 MAIN_WEAPONS |= set(WEAPONS)
 

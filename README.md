@@ -1,6 +1,6 @@
 # Halo CE Enemies for HaloDoom Evolved (HDE version)
 
-Halo: Combat Evolved's enemies (Covenant, Flood, Sentinels and Marines), plus the Digsite / SPV3 / Halo 2 enemies (Drones, Brutes and their Chieftain, Blind Wolf, Thorn Beast, Engineer, Slug Men, Drinol), as UZDoom / GZDoom monsters for **HaloDoom Evolved (Local_DEV)**.
+Halo: Combat Evolved's enemies (Covenant, Flood, Sentinels and Marines), plus the Digsite / SPV3 / Halo 2 enemies (Drones, Brutes and their Chieftain, Blind Wolf, Thorn Beast, Engineer, Slug Men, Drinol) and Mercury Rising's (its six Sentinels, the Artybug, the Geist, the Draeth, female Marines and field medics), as UZDoom / GZDoom monsters for **HaloDoom Evolved (Local_DEV)**.
 
 The standalone version, which doesn't need HDE, is in **HaloCE-Enemies-Standalone**.
 

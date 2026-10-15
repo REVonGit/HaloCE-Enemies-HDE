@@ -30,7 +30,30 @@ MAPS = {
     # SOI's Singleplayer Adventure V3 (Steam Workshop 2906165512): its Flood Juggernaut, from its c20 (The Library)
     'soi': (os.environ.get('HCE_SOI_C20', 'c20.map'),
             {r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}),
+    # aLTis's Mercury Rising (Steam Workshop 3021510694): its Sentinel variants, the Artybug and the 1999 Elite (the
+    # Draeth) from mercury_falling; CMT's Geist, the Marine medic and the female Marine from mercury2. Its textures are in
+    # the mod's own bitmaps.map (HCE_MR_BITMAPS: the file or the stem of its .001 ... pieces)
+    'mr1': (os.environ.get('HCE_MR_MAP1', 'mercury_falling.map'),
+            {r'characters\sentinel\variants\artillery\artillery': 'SentinelArtillery',
+             r'characters\sentinel\variants\brute\brute': 'SentinelBrute',
+             r'characters\sentinel\variants\canoneer\canoneer': 'SentinelCanoneer',
+             r'characters\sentinel\variants\compiler\compiler': 'SentinelCompiler',
+             r'characters\sentinel\variants\omega\omega': 'SentinelOmega',
+             r'characters\sentinel\variants\scout\scout': 'SentinelScout',
+             r'characters\artybug\artybug': 'Artybug',
+             r'digsite\characters\elite\99_mac\elite_99': 'Draeth'}),
+    'mr2': (os.environ.get('HCE_MR_MAP2', 'mercury2.map'),
+            {r'cmt\characters\geist\geist': 'Geist',
+             r'characters\medic\medic': 'MarineMedic',
+             r'characters\civilian\female\civilian_female': 'MarineFemale'}),
 }
+# maps whose textures sit in a bitmaps.map of their own, and the prefix their variant keys get (clear of Halo CE's own)
+MAP_BITMAPS = {'mr1': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'), 'mr2': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map')}
+MAP_PREFIX = {'mr1': 'mercury\\', 'mr2': 'mercury\\'}
+# guns a map's characters carry that Halo CE has none of: extracted from the map itself (extract_weapons.extract_weapon,
+# into $HCE_OUT/weapons/<id>) so they are baked into the hand like Halo CE's: the Draeth Commander's Excavator (a
+# Covenant scatter gun, Mercury Rising's dw2\weapons\excavator)
+MAP_WEAPONS = {'mr1': {r'dw2\weapons\excavator\excavator': 'excavator'}}
 # variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed
 VARIANT_KEYS = {
     r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
@@ -56,9 +79,14 @@ def run(only=None):
     if os.path.exists(f'{OUT}/spv3_ai.json'):          # a map not on hand keeps what an earlier run took from it
         old = json.load(open(f'{OUT}/spv3_ai.json'))
         for k in ai: ai[k].update(old.get(k, {}))
+    import gore_kit
     for key, (path, chars) in MAPS.items():
         if not os.path.exists(path): print('missing', path); continue
-        sub = run_map(path, chars, only)
+        if only and not any(c in only for c in chars.values()) and 'FloodSounds' not in only: continue
+        keep = gore_kit.SPV3_BITMAPS
+        if key in MAP_BITMAPS: gore_kit.SPV3_BITMAPS = MAP_BITMAPS[key]
+        try: sub = run_map(path, chars, only, MAP_PREFIX.get(key, ''), MAP_WEAPONS.get(key, {}))
+        finally: gore_kit.SPV3_BITMAPS = keep
         for k in ai: ai[k].update(sub[k])
     json.dump(ai, open(f'{OUT}/spv3_ai.json', 'w'), indent=1, default=str)
     if not only or 'FloodSounds' in only: flood_sounds()
@@ -95,11 +123,18 @@ def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
 ec.bitmap_image = pc_bitmap_image
 
 
-def run_map(MAP, CHARS, only=None):
+def run_map(MAP, CHARS, only=None, prefix='', weapons=None):
     m = PCMap(MAP)
     _geo = hm.Model.geometry
     hm.Model.geometry = lambda s, gi: gbx_geometry(s.m, s.geoms[gi].addr) if isinstance(s.m, PCMap) else _geo(s, gi)
-    from extract_weapons import WEAPONS
+    import extract_weapons
+    from extract_weapons import WEAPONS, extract_weapon
+    extract_weapons.bitmap_image = pc_bitmap_image   # its textures may sit in the shared bitmaps.map too
+    WEAPONS = dict(WEAPONS, **(weapons or {}))
+    for wt in m.find('weap'):                    # the map's own guns (MAP_WEAPONS)
+        if wt['name'] in (weapons or {}):
+            extract_weapon(m, wt, weapons[wt['name']], f'{OUT}/weapons/{weapons[wt["name"]]}')
+            print('weapon', wt['name'], '->', weapons[wt['name']])
     carried = {}                                 # the guns each biped's variants in this map carry (baked into its hand)
     for t in m.find('actv'):
         v = dump(m, 'actor_variant_definition', t['data'])
@@ -124,7 +159,7 @@ def run_map(MAP, CHARS, only=None):
         rc = v.get('ranged_combat') or {}
         if rc.get('reference') in WEAPON_REFS: rc['reference'] = WEAPON_REFS[rc['reference']]
         v['change_colors_list'] = block_dump(m, v.get('change_colors'), 'actor_variant_change_colors')
-        ai['variants'][variant_key(t['name'])] = v
+        ai['variants'][prefix + variant_key(t['name'])] = v
         ai['actors'][v['actor_reference']] = dump(m, 'actor_definition', byname[('actr', v['actor_reference'])]['data'])
         b = flatten_obj(dump(m, 'biped_definition', byname[('bipd', v['unit_reference'])]['data']))
         b['change_colors_list'] = []

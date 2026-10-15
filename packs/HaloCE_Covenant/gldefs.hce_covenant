@@ -3,6 +3,42 @@ brightmap texture "models/hce/weapons/w_needler_glow.png"
 {
 	map "models/hce/brightmap_full.png"
 }
+brightmap texture "models/hce/Artybug/skins/artybug_artybug_0.png"
+{
+	map "models/hce/Artybug/Artybug_0_bm.png"
+}
+brightmap texture "models/hce/Artybug/skins/artybug_artybug_1.png"
+{
+	map "models/hce/Artybug/Artybug_1_bm.png"
+}
+brightmap texture "models/hce/Artybug/skins/artybug_artybug_2.png"
+{
+	map "models/hce/Artybug/Artybug_2_bm.png"
+}
+brightmap texture "models/hce/Artybug/skins/artybug_artybug_3.png"
+{
+	map "models/hce/Artybug/Artybug_3_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethcommanderexcavator_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethmajorneedler_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethmajorplasmarifle_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethminorneedler_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethminorplasmarifle_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
 brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_0.png"
 {
 	map "models/hce/Elite/Elite_0_bm.png"
@@ -482,6 +518,14 @@ brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitesp
 brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_5.png"
 {
 	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+brightmap texture "models/hce/Geist/skins/geist_geist_0.png"
+{
+	map "models/hce/Geist/Geist_0_bm.png"
+}
+brightmap texture "models/hce/Geist/skins/geist_geist_1.png"
+{
+	map "models/hce/Geist/Geist_1_bm.png"
 }
 brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_2.png"
 {
@@ -1274,6 +1318,11 @@ brightmap texture "models/hce/EliteKit/ek_ranger_torso_inset.png"
 brightmap texture "models/hce/EliteKit/ek_elite_jetpack.png"
 {
 	map "models/hce/EliteKit/ek_elite_jetpack_bm.png"
+}
+HardwareShader Texture "models/hce/Draeth/skins/draethcommanderexcavatorcamo_draeth_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
 }
 HardwareShader Texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_0.png"
 {

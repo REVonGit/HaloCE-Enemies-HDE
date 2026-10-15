@@ -65,7 +65,7 @@ def chunks(text):
 HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_healthbar')   # CE_HB1..9 from HDE
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
-CHIEF_GAIN_DB = 8           # the Chief's orders, raised over the fight
+CHIEF_GAIN_DB = 16          # the Chief's orders, raised over the fight (a fast limiter holds the peaks)
 # Halo 2's footsteps (extract_footsteps.py): the sets each faction's bodies use (Jackals step as Grunts, Hunters as
 # Brutes, the Flood's combat forms as the body they were)
 from build_pack import OUT as _OUT
@@ -363,8 +363,10 @@ def main():
                 if not m or m.group(1).lower() not in CHIEF_LINES: continue
                 key = CHIEF_LINES[m.group(1).lower()]
                 dst = f'sounds/hce_chief/{key.lower()}_{int(m.group(2))}.ogg'
-                # 8 dB louder (they sat at about -21 dB mean, under the gunfire), a limiter keeping the peaks clean
-                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{CHIEF}/{fn}', '-af', f'volume={CHIEF_GAIN_DB}dB,alimiter=limit=0.95',
+                # raised CHIEF_GAIN_DB (from about -20 LUFS to about -10: as loud as speech goes without breaking up), a
+                # fast limiter holding the peaks under full scale
+                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{CHIEF}/{fn}', '-af',
+                                f'volume={CHIEF_GAIN_DB}dB,alimiter=limit=0.97:attack=1:release=30:level=disabled',
                                 '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5', f'{d}/{dst}'], check=True)
                 groups.setdefault(key, []).append(dst)
             out = ['// the Master Chief\'s squad orders (the Halo CE Squad keys)']

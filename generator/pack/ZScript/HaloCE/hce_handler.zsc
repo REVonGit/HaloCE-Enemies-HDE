@@ -586,7 +586,8 @@ class HCE_SpawnAllHandler : EventHandler
 		while(m = HaloDoom_EnemyBase(it.Next()))
 			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
 		for(int i = 0; i < squad.Size(); i++) squad[i].hce_orderPlayer = pl;     // the player who gave the order leads them (co-op)
-		if(line[o].Length() > 0) pl.A_StartSound(line[o], CHAN_VOICE, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		// on a channel of its own: the player's pain and landing grunts (CHAN_VOICE) don't cut the order off
+		if(line[o].Length() > 0) pl.A_StartSound(line[o], 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
 		if(o <= 2)
 		{
 			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o);

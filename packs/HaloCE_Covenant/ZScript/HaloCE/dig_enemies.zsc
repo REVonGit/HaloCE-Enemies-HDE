@@ -10213,7 +10213,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 200, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.05, 1.72, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.05, 1.72, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";
@@ -10929,7 +10929,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 150, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.05, 1.73, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.05, 1.73, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";
@@ -11366,7 +11366,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.40, 2.30, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.40, 2.30, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";
@@ -12083,7 +12083,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 200, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.05, 1.72, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.05, 1.72, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Elite_Dogmatic,Elite_Loose";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "PlasmaGrenades";
@@ -13130,7 +13130,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		{
 			hce_projectile = 'HCE_PulseCarbineBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 6.00; hce_errorAngle = 0.50; hce_maxRange = 3200; hce_projSpeed = 112.0;
 			hce_rangeMin = 480; hce_rangeMax = 1760; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
-			hce_patShotsMin = 3; hce_patShotsMax = 5; hce_patInterval = 3; hce_patPauseMin = 1.82; hce_patPauseMax = 2.99; hce_patChargeTics = 0;
+			hce_patShotsMin = 5; hce_patShotsMax = 10; hce_patInterval = 3; hce_patPauseMin = 1.82; hce_patPauseMax = 2.99; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PulseCarbine/Fire"; hce_fireSoundBass = "Halo/Weapons/PulseCarbine/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
@@ -13850,7 +13850,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.82, 2.99, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.82, 2.99, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Jackal";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";
@@ -14655,7 +14655,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		{
 			hce_projectile = 'HCE_PulseCarbineBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 3.00; hce_errorAngle = 0.09; hce_maxRange = 3200; hce_projSpeed = 112.0;
 			hce_rangeMin = 400; hce_rangeMax = 3200; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
-			hce_patShotsMin = 3; hce_patShotsMax = 5; hce_patInterval = 3; hce_patPauseMin = 1.82; hce_patPauseMax = 2.99; hce_patChargeTics = 0;
+			hce_patShotsMin = 5; hce_patShotsMax = 10; hce_patInterval = 3; hce_patPauseMin = 1.82; hce_patPauseMax = 2.99; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PulseCarbine/Fire"; hce_fireSoundBass = "Halo/Weapons/PulseCarbine/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
 		}
@@ -15980,7 +15980,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_FirePattern 3, 5, 3, 1.82, 2.99, 0;
+		HaloDoom_EnemyBase.HCE_FirePattern 5, 10, 3, 1.82, 2.99, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PulseCarbine/Fire", "Halo/Weapons/PulseCarbine/Fire/Bass", "", "";
 		HaloDoom_EnemyBase.HCE_Voices "Slug";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PulseCarbine", "None";

@@ -618,7 +618,7 @@ PATTERNS = {
     'flamethrower':    (18, 30, 2, 1.2, 2.0, 0, True, 2.5, 4.5),
     'sentinel beam':   (20, 35, 1, 1.0, 1.8, 0, False, 1.0, 1.0),
     'plasma caster':   (1, 2, 18, 2.4, 3.4, 30, False, 2.0, 0.1),   # lobbed; charged = 3-grenade cluster
-    'light rifle':     (3, 3, 5, 1.2, 2.0, 0, False, 1.0, 0.3),    # three-round bursts
+    'light rifle':     (3, 6, 3, 1.2, 2.0, 0, False, 1.0, 0.3),    # three-round bursts, a pull or two (HCE_TriggerBurst)
     'scattershot':     (1, 1, 1, 1.4, 2.2, 0, False, 2.0, 0.1),
     'binary rifle':    (1, 1, 1, 3.0, 4.2, 0, False, 1.0, 0.1),
     'suppressor':      (8, 14, 3, 1.0, 1.6, 0, True, 1.0, 2.0),
@@ -2630,7 +2630,7 @@ PATTERNS.update({
     'sidekick':         (2, 4, 7, 0.9, 1.5, 0, False, 1.0, 2.0),
     'ma37':             (5, 10, 3, 0.8, 1.4, 0, True, 1.0, 2.0),
     'commando':         (3, 6, 4, 0.7, 1.3, 0, False, 1.0, 1.0),
-    'battle rifle':     (3, 3, 2, 0.6, 1.1, 0, False, 1.0, 1.0),      # Halo's three-round burst
+    'battle rifle':     (3, 6, 3, 0.6, 1.1, 0, False, 1.0, 1.0),      # Halo's three-round burst, a pull or two (HCE_TriggerBurst)
     'dmr':              (1, 3, 11, 1.0, 1.6, 0, False, 1.0, 1.0),
     'smg':              (8, 14, 2, 0.8, 1.4, 0, True, 1.0, 2.0),
     'bulldog':          (2, 4, 9, 1.2, 1.8, 0, False, 1.0, 1.0),
@@ -2642,7 +2642,7 @@ PATTERNS.update({
     'stanchion':        (25, 25, 1, 2.8, 3.8, 0, False, 1.0, 1.0),     # 24 tics of aiming, then the rail
     'plasma carbine':   (2, 3, 9, 1.0, 1.7, 0, False, 1.0, 1.0),
     'spiker':           (5, 9, 3, 0.8, 1.4, 0, True, 1.0, 2.0),
-    'marine pulse carbine': (3, 5, 3, 1.4, 2.3, 0, False, 1.0, 1.0),
+    'marine pulse carbine': (5, 10, 3, 1.4, 2.3, 0, False, 1.0, 1.0),   # five-bolt bursts (HCE_TriggerBurst)
     'needle ballista':  (1, 1, 1, 2.4, 3.2, 0, False, 1.0, 1.0),
 })
 for _k, _snd in {'sidekick': 'Sidekick', 'ma37': 'Rifle', 'commando': 'Commando', 'battle rifle': 'BattleRifle', 'dmr': 'DMR',

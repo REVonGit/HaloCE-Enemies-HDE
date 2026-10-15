@@ -969,7 +969,7 @@ def configure():
     bp.FIRE_CODE.update({'plasma carbine': 'cr', 'particle beam': 'sr', 'pulse carbine': 'cr'})
     # Pulse Carbine: HDE's homing, accelerating plasma bolts in bursts (its own gun fires five-bolt bursts)
     bp.WEAPONS['pulse carbine'] = ('HCE_PulseCarbineBolt', 'HCE_PulseCarbineHoming', 8, 1.2)
-    bp.PATTERNS['pulse carbine'] = (3, 5, 3, 1.4, 2.3, 0, False, 1.0, 1.0)
+    bp.PATTERNS['pulse carbine'] = (5, 10, 3, 1.4, 2.3, 0, False, 1.0, 1.0)   # five-bolt bursts (HCE_TriggerBurst)
     bp.FIRE_SOUNDS['pulse carbine'] = (W + 'PulseCarbine/Fire', W + 'PulseCarbine/Fire/Bass', '', '', False)
     bp.DROP_WEAPON['pulse carbine'] = 'Halo_PulseCarbine'
     bp.WEAPON_IDS[PULSE] = 'cmt_carbine'

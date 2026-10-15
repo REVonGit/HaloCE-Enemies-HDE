@@ -224,10 +224,10 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * Deaf/ambush enemies stand their post. `hce_patrols 0` turns patrols off.
 * **Sleeping Grunts:** some Grunts start asleep, in Halo's sleeping animation (`hce_sleepinggrunts`, 30% by default; Grunts placed deaf/ambush always do). Any of these wakes one, and it wakes startled, with the surprise animation and a yell:
   * you walk within 96 units of it;
-  * gunfire within 320 units (not for deaf/ambush Grunts);
-  * an ally within 400 units, in its sight, fighting or dying;
+  * gunfire within 320 units wakes it at once; further off it wakes a moment later: anyone's gunfire (an enemy's, an ally's, a Marine's) within 768 units, or yours as far as its noise carries into the room, up to 1024. Deaf/ambush Grunts only wake to gunfire within 384 units;
+  * an ally within 768 units, in its sight, fighting or dying;
   * its squad leader raising the alarm;
-  * taking damage.
+  * taking damage, or a plasma grenade stuck to it.
 * **Combat:** pattern burst fire (see Fire patterns), with first-burst delay and projectile error taken from each variant. Units strafe and reposition inside the variant's firing-range band.
 * **Aim (accuracy nerf):** enemies don't aim at you; they aim at a point that chases you at a limited speed (`hce_enemytracking`), so strafing drags their fire behind you, and a fresh burst opens off the mark.
   * **Leading:** they lead targets half as much as Halo's tags say.
@@ -389,6 +389,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 
 * **Teleporters:** when you take a teleporter, the Marines following you who were with you come through after you a moment later, one by one, with the teleport fog, and take up places round where you came out. A Marine left far behind (out of sight and 1800 units or more away for 20 seconds) catches up the same way. Marines told to hold stay put.
 * **Round corners:** a Marine that can't walk straight to its place in the formation follows your trail instead: the newest point on the path you walked that it can reach.
+* **Shield hits:** a hit an energy shield (or a Jackal's arm shield) soaks up still counts: the enemy turns on whoever shot it, now and then calls out the hit, and a heavy hit on the shield jolts it.
 * **Doors and lifts:** Marines and the Covenant use doors and lifts in their way, the same way the squad's *press that button* order works. A door or lift worked by using it is used, and they wait for it; on a moving lift they stand still and ride it. A closed door worked from a switch elsewhere sends them to press the switch, then back through. Locked doors stay locked. The Flood and the Sentinels don't use them.
 * **Lifts up to you:** a Marine following you who comes to a ledge too high to climb, with a lift up to it, finds what works the lift and works it: a switch somewhere else, the lift's own face, or a line walked over in front of it. Doom's switches and walk-over lines made only for the player work for him too. Then he gets on as it comes down and rides it up to you; if it has gone back up before he gets there, he works it again. On a lift that's working with you up above, a following Marine stays on and rides it rather than wandering off. The Covenant do the same when they chase you up.
 
@@ -511,6 +512,7 @@ Other changes:
 
 * **Reaction time:** enemies wait at least 0.4 s (Halo's `first_burst_delay` when longer) after spotting you before the first burst.
 * **Overcharge:** the plasma pistol overcharge is rolled once per burst (20%) instead of per shot.
+* **Burst guns fire whole bursts:** a gun that fires several rounds a pull of the trigger (the battle rifle and the Light Rifle three, the Pulse Carbine five, as HaloDoom Evolved's do) is always fired in whole pulls: its rounds 3 tics apart, then the gun's own refire (10 tics, 12 for the Pulse Carbine) before the next pull. A volley is one or two pulls (more when suppressing, still whole), and a pull is never cut short: losing sight of the target, a friend stepping in, or the last round of the magazine wait for the burst to finish.
 * **Difficulty:** `hce_burstpause` scales every pause.
 
 ## Weapon sounds
@@ -871,7 +873,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
 
   * `hce_button`: press that button. Point at a switch (a wall line you'd use), or near one: the switch nearest where your crosshair lands, within 96 units, counts, so a switch you can only see the side of the pillar of still works. The nearest Marine runs over and uses it, Doom's own switches included (the ones made only for the player).
 
-  The aliases are for `netevent hce_squad 0`–`9` (in that order). One Marine answers each order, a random one (or the one given the job), and only once the Chief has finished his line (1.6–2.3 s later). The Chief's lines are OGG files, in `sounds/hce_chief`, raised 8 dB (with a limiter) so they carry over a firefight.
+  The aliases are for `netevent hce_squad 0`–`9` (in that order). One Marine answers each order, a random one (or the one given the job), and only once the Chief has finished his line (1.6–2.3 s later). The Chief's lines are OGG files, in `sounds/hce_chief`, raised 16 dB (from about -20 LUFS to about -10, held under full scale by a fast limiter) so they carry over a firefight, and they play on a channel of their own so your own pain and landing grunts don't cut them off.
 * **Trading guns:** press use on a Marine following you. If he can carry the gun in your hands (any human or Covenant gun but the melee and BFG-class ones), you swap: you get his gun and he takes yours. What he says depends on how he rates the swap (his own liking, see the weapon biases): a clearly better gun gets thanks, a fair swap an "okay", a worse one scorn, and one he can't carry at all a refusal (he keeps his). He also refuses if you already carry his gun (say, as your other weapon): taking it would only top up your ammo while he kept yours, and you'd be a weapon short. Each has its own set of Halo 2 lines, every take Halo 2 has for each voice (about 8 to 24 per voice and reaction). The Halo CE voices have no trade lines, so they tell you off instead. (HaloDoom Evolved packs only.)
 * **Names:** every Marine has a rank and a name, rolled when he spawns: Privates, Privates First Class and Lance Corporals among the regulars, Lance Corporals to Sergeants among the Armored Marines, Corporals and Staff Sergeants for the Majors, Hospital Corpsman Third Class (`HM3.`) for the corpsmen. First names, middle initials and surnames are drawn from long lists, e.g. `PVT. George A. Romero`. Sergeant Johnson is always `SGT. Avery J. Johnson` and Stacker `MSG. Marcus P. Stacker`.
 * **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.

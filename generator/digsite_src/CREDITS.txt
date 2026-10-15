@@ -1,36 +1,55 @@
-Digsite add-on for the Halo CE enemy pack
-=========================================
+Halo CE enemy pack: credits
+===========================
 
-NOT FOR PUBLIC RELEASE.
+This is the main pack (the Core, the enemy API, the Covenant, and the Digsite / SPV3 / Halo 2 enemies);
+the Flood, Sentinels and Marines packs load with it.
 
+Digsite content: NOT FOR PUBLIC RELEASE outside MCC mod projects.
 - Drinol and Slug Man models, animations, textures, AI stats, the Slug Man's dialogue and his
-  Particle Beam Rifle (99_mac) come from the Halo CE Digsite release (github.com/digsite/h1).
-  Its README states the content is not open source and is licensed only for use in
-  Halo: The Master Chief Collection mod projects.
+  Particle Beam Rifle (99_mac), and the prototype guns (the Sidekick, MA37 and DMR, and Sergeant
+  Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release
+  (github.com/digsite/h1). Its README states the content is not open source and is licensed only for
+  use in Halo: The Master Chief Collection mod projects.
 - The Elites' Covenant carbine is CMT's (cmt\weapons\_shared\carbine): model and textures from the
-  CMT tags; the purple carapace tint is baked from its shader's reflection colours.
+  CMT tags; the purple carapace tint is baked from its shader's reflection colours. The Pulse Carbine
+  Elites carry a blue re-tint of it.
+
+Other creatures and kits:
 - The Blind Wolf and the Thorn Beast were created by SOI_7 (models, animations, textures, stats); they
-  are extracted from SPV3's a30 map. The Blind Wolf's dialogue comes from the HaloDoomEnemies sound set; the Thorn Beast's
-  sounds are its own, from the same map.
+  are extracted from SPV3's a30 map. The Blind Wolf's dialogue comes from the HaloDoomEnemies sound set;
+  the Thorn Beast's sounds are its own, from the same map.
 - The Engineer comes from Halo CE Ruby's Rebalance (model, texture, animations, dialogue), extracted
   from SPV3's b30 map.
-- The Pulse Carbine Elites carry a blue re-tint of the same CMT carbine.
 - Elite rifle stance: Halo CE Elite rifle animations (CE rig) from the supplied elite.model_animations,
   with a two-bone IK touch-up keeping the support hand on the carbine.
 - Brute armour kit: the h2_brute armour set (brute.blend with its bitmaps): the "King Hit" helmets,
   chest plates, shoulder pads, bracers, belts and leg armour, the Halo 3-style Minor / Major / Captain
-  armour and the jump-pack and chieftain suits, all rigged to the Halo 2 Brute skeleton. Read straight
-  from the .blend; Halo 3-style pieces are tinted per rank through their change-colour mask.
+  armour and the jump-pack and chieftain suits, all rigged to the Halo 2 Brute skeleton.
 - Additional Brute and Elite content by Shigure. The Ultra Zealot is Shigure's Zealot Elite
-  (elite.blend: Zealot helmet, ornament, torso and arm plates, the diamond arm shield) on the Halo CE
-  Elite, wearing Halo CE's textures; its sword stance is SPV3's shield Elite's (a30 map), so the shield
-  is held clear of the body.
+  (Zealot helmet, ornament, torso and arm plates, the diamond arm shield) on the Halo CE Elite.
 - The Elite Vanguard animations (SPV3's shield Elite, used for the Ultra Zealot's sword stance) are by
   Masterz1337 and Ruby of Blue.
-- Drone ranks (Major, Ultra, Captain, Captain Major): Ruby of Blue's "H2 Drone Rank Tags": the plate
-  change-colour map, each rank's colours and its health and shield, read from the mod's tags.
-- Halo 2 Jackal armour and helmets: IanLacksMods' "Halo 2 - Characters+ Tag Pack": the Jackal's arm armour
-  and quills, Halo CE's helmet on it (the helmeted Major) and Halo 3's sniper helmet with its glowing lenses
-  (the helmeted Sniper and Marksmen), from the pack's source model and bitmaps.
+- Drone ranks (Major, Ultra, Captain, Captain Major): Ruby of Blue's "H2 Drone Rank Tags".
+- Halo 2 Jackal armour and helmets: IanLacksMods' "Halo 2 - Characters+ Tag Pack".
+- The Halo 3 Spiker: a community Halo CE port of Halo 3's.
 
-Halo assets are Microsoft / Bungie property.
+The rest of the packs:
+- Gore stumps and gore textures, the Flood Grunt and the Flood combat forms' skins: Tropical Thunder 98,
+  from the XAM Campaign Overhaul (SPV3's c40 map).
+- Halo 2 Elite shoulder stumps: Hunterunt's Restored Gore features Halo 2.
+- Ruby's Rebalance's Flood hosts (ODST, Marine, Armored Marine, shielded Elites, Elite Ultra and
+  Commander): mynameislol, from Ruby's Rebalance (its c40 map).
+- The Flood Juggernaut and the double barrel (SOI's 8-gauge shotgun): Halo: SOI's Singleplayer
+  Adventure V3 by SOI (MCC Steam Workshop 2906165512).
+- Sentinel Knight: blackandfan's Halo 2 tag pack (H2EK-Tags); its voice: REV.
+- Galap's Sentinels (Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder,
+  Crawler): Galap.
+- Forerunner arm guns: HDE_promethian_weapons.blend (HaloDoom Evolved).
+- Marine kit: Elefant. ODSTs: Spiral. Fire Team Raven ODSTs: Connor Dawn. Marine flamethrower
+  animations: The Fluffers (with thanks to Spiral).
+- Voice lines: Lewisk3/HaloDoomEnemies (through the REVonGit/HaloDoomEnemies-Proto fork).
+- HaloDoom Evolved team: HDE, the enemy API base, and the sounds, models and effects the packs use
+  from it (the Suppressor's fire sounds among them).
+
+Halo assets are Microsoft / 343 Industries / Bungie property, used under the Game Content Usage Rules
+(non-commercial).

@@ -1,6 +1,73 @@
 // Halo CE enemy dialogue (sound files from Lewisk3/HaloDoomEnemies).
 // Logical names HCE/<Voice>/<Event> are played by HaloDoom_EnemyBase.HCE_Say().
 
+// ---- Artybug
+HCE/Artybug/Alert/0 "sounds/hce_voice/artybug/alert_00.ogg"
+HCE/Artybug/Alert/1 "sounds/hce_voice/artybug/alert_01.ogg"
+HCE/Artybug/Alert/2 "sounds/hce_voice/artybug/alert_02.ogg"
+HCE/Artybug/Alert/3 "sounds/hce_voice/artybug/alert_03.ogg"
+HCE/Artybug/Alert/4 "sounds/hce_voice/artybug/alert_04.ogg"
+HCE/Artybug/Alert/5 "sounds/hce_voice/artybug/alert_05.ogg"
+$random HCE/Artybug/Alert { HCE/Artybug/Alert/0 HCE/Artybug/Alert/1 HCE/Artybug/Alert/2 HCE/Artybug/Alert/3 HCE/Artybug/Alert/4 HCE/Artybug/Alert/5 }
+HCE/Artybug/Death/0 "sounds/hce_voice/artybug/death_06.ogg"
+HCE/Artybug/Death/1 "sounds/hce_voice/artybug/death_07.ogg"
+HCE/Artybug/Death/2 "sounds/hce_voice/artybug/death_08.ogg"
+HCE/Artybug/Death/3 "sounds/hce_voice/artybug/death_09.ogg"
+HCE/Artybug/Death/4 "sounds/hce_voice/artybug/death_10.ogg"
+$random HCE/Artybug/Death { HCE/Artybug/Death/0 HCE/Artybug/Death/1 HCE/Artybug/Death/2 HCE/Artybug/Death/3 HCE/Artybug/Death/4 }
+HCE/Artybug/FoundFoe/0 "sounds/hce_voice/artybug/foundfoe_11.ogg"
+HCE/Artybug/FoundFoe/1 "sounds/hce_voice/artybug/foundfoe_12.ogg"
+HCE/Artybug/FoundFoe/2 "sounds/hce_voice/artybug/foundfoe_13.ogg"
+HCE/Artybug/FoundFoe/3 "sounds/hce_voice/artybug/foundfoe_14.ogg"
+$random HCE/Artybug/FoundFoe { HCE/Artybug/FoundFoe/0 HCE/Artybug/FoundFoe/1 HCE/Artybug/FoundFoe/2 HCE/Artybug/FoundFoe/3 }
+HCE/Artybug/GrenadeThrow/0 "sounds/hce_voice/artybug/grenadethrow_15.ogg"
+HCE/Artybug/GrenadeThrow/1 "sounds/hce_voice/artybug/grenadethrow_16.ogg"
+HCE/Artybug/GrenadeThrow/2 "sounds/hce_voice/artybug/grenadethrow_17.ogg"
+HCE/Artybug/GrenadeThrow/3 "sounds/hce_voice/artybug/grenadethrow_18.ogg"
+HCE/Artybug/GrenadeThrow/4 "sounds/hce_voice/artybug/grenadethrow_19.ogg"
+HCE/Artybug/GrenadeThrow/5 "sounds/hce_voice/artybug/grenadethrow_20.ogg"
+$random HCE/Artybug/GrenadeThrow { HCE/Artybug/GrenadeThrow/0 HCE/Artybug/GrenadeThrow/1 HCE/Artybug/GrenadeThrow/2 HCE/Artybug/GrenadeThrow/3 HCE/Artybug/GrenadeThrow/4 HCE/Artybug/GrenadeThrow/5 }
+HCE/Artybug/Pain/0 "sounds/hce_voice/artybug/pain_21.ogg"
+HCE/Artybug/Pain/1 "sounds/hce_voice/artybug/pain_23.ogg"
+HCE/Artybug/Pain/2 "sounds/hce_voice/artybug/pain_25.ogg"
+HCE/Artybug/Pain/3 "sounds/hce_voice/artybug/pain_27.ogg"
+HCE/Artybug/Pain/4 "sounds/hce_voice/artybug/pain_29.ogg"
+$random HCE/Artybug/Pain { HCE/Artybug/Pain/0 HCE/Artybug/Pain/1 HCE/Artybug/Pain/2 HCE/Artybug/Pain/3 HCE/Artybug/Pain/4 }
+HCE/Artybug/PainMed/0 "sounds/hce_voice/artybug/pain_21.ogg"
+HCE/Artybug/PainMed/1 "sounds/hce_voice/artybug/pain_23.ogg"
+HCE/Artybug/PainMed/2 "sounds/hce_voice/artybug/pain_25.ogg"
+HCE/Artybug/PainMed/3 "sounds/hce_voice/artybug/pain_27.ogg"
+HCE/Artybug/PainMed/4 "sounds/hce_voice/artybug/pain_29.ogg"
+$random HCE/Artybug/PainMed { HCE/Artybug/PainMed/0 HCE/Artybug/PainMed/1 HCE/Artybug/PainMed/2 HCE/Artybug/PainMed/3 HCE/Artybug/PainMed/4 }
+$alias HCE/Artybug/PainHeavy HCE/Artybug/PainMed
+$alias HCE/Artybug/Regroup HCE/Artybug/Alert
+$alias HCE/Artybug/OnFire HCE/Artybug/PainMed
+$alias HCE/Artybug/DeathHard HCE/Artybug/Death
+$alias HCE/Artybug/Scold HCE/Artybug/PainMed
+$alias HCE/Artybug/AllyKilled HCE/Artybug/PainMed
+$alias HCE/Artybug/Acknowledge HCE/Artybug/Alert
+$alias HCE/Artybug/Thanks HCE/Artybug/Alert
+$alias HCE/Artybug/Wounded HCE/Artybug/PainMed
+$alias HCE/Artybug/Forgive HCE/Artybug/Alert
+$alias HCE/Artybug/WorseWeapon HCE/Artybug/PainMed
+$alias HCE/Artybug/TradeOk HCE/Artybug/Alert
+$alias HCE/Artybug/Refuse HCE/Artybug/PainMed
+$alias HCE/Artybug/HeardGunfire HCE/Artybug/Alert
+$alias HCE/Artybug/Cover HCE/Artybug/Alert
+$alias HCE/Artybug/Uncovered HCE/Artybug/Alert
+$alias HCE/Artybug/SearchStart HCE/Artybug/Alert
+$alias HCE/Artybug/SearchClear HCE/Artybug/Alert
+$alias HCE/Artybug/SearchFail HCE/Artybug/Alert
+$alias HCE/Artybug/KeepWatch HCE/Artybug/Alert
+$alias HCE/Artybug/JoinMe HCE/Artybug/Alert
+$alias HCE/Artybug/Investigate HCE/Artybug/Alert
+$alias HCE/Artybug/Behind HCE/Artybug/Alert
+$alias HCE/Artybug/Sniper HCE/Artybug/Alert
+$alias HCE/Artybug/Sword HCE/Artybug/Alert
+$alias HCE/Artybug/UpThere HCE/Artybug/Alert
+$alias HCE/Artybug/DownThere HCE/Artybug/Alert
+$alias HCE/Artybug/Advance HCE/Artybug/Alert
+
 // ---- Blind Wolf
 HCE/Blind_Wolf/Alert/0 "sounds/hce_voice/blind_wolf/alert_00.ogg"
 HCE/Blind_Wolf/Alert/1 "sounds/hce_voice/blind_wolf/alert_01.ogg"

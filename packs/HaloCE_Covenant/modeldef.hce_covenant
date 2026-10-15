@@ -1786,6 +1786,21 @@ Model HCE_JackalMajorNeedler
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_BossArachnotronArtybug
+{
+	Path "models/hce/Artybug"
+	Model 0 "Artybug.iqm"
+	SurfaceSkin 0 0 "skins/artybug_artybug_0.png"
+	SurfaceSkin 0 1 "skins/artybug_artybug_1.png"
+	SurfaceSkin 0 2 "skins/artybug_artybug_2.png"
+	SurfaceSkin 0 3 "skins/artybug_artybug_3.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_BossArachnotronEliteSpecopsNeedler
 {
 	Path "models/hce/EliteSpecial"

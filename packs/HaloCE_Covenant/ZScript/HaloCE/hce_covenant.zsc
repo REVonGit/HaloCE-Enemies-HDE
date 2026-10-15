@@ -49,6 +49,8 @@ class HCE_ArtybugBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	// the barrage call as it opens fire (its GrenadeThrow lines): about one shot in three (checked per bolt)
+	override void HCE_OnShot(Actor shot) { super.HCE_OnShot(shot); HCE_Say('GrenadeThrow', 0.04, 35 * 4); }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -91,6 +93,7 @@ class HCE_Artybug : HCE_ArtybugBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 2, 16, 1.60, 2.51, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaRifle/Fire", "Halo/Weapons/PlasmaRifle/Fire/Bass", "", "";
+		HaloDoom_EnemyBase.HCE_Voices "Artybug";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_Surprise
@@ -12252,6 +12255,15 @@ class HCE_RandomJackalMajor : RandomSpawner
 	Default
 	{
 		DropItem "HCE_JackalMajorNeedler", 255, 1;
+	}
+}
+
+// stands in for Doom's Arachnotron: CheckReplacee maps it back so A_BossDeath map specials fire
+class HCE_BossArachnotronArtybug : HCE_Artybug
+{
+	Default
+	{
+		Health 500;
 	}
 }
 

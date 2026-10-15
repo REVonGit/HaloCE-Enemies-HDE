@@ -3818,12 +3818,18 @@ if 'Geist' in MR_CHARS:
     CHAR_OVERRIDES['Geist'] = dict(CHAR_OVERRIDES['Geist'], radius_fixed=14, height_fixed=28)
 if 'Artybug' in MR_CHARS:
     NO_RANDOM.add('Artybug')
+    # its own voice (voice_extra/Artybug, REV's): alerts, pain and deaths, a call as it opens fire, another on finding a lost foe
+    VOICES['Artybug'] = 'Artybug'
+    BASE_CODE['Artybug'] = BASE_CODE.get('Artybug', '') + (
+        "\t// the barrage call as it opens fire (its GrenadeThrow lines): about one shot in three (checked per bolt)\n"
+        "\toverride void HCE_OnShot(Actor shot) { super.HCE_OnShot(shot); HCE_Say('GrenadeThrow', 0.04, 35 * 4); }\n")
+    BOSS_ALIASES['HCE_BossArachnotronArtybug'] = ('HCE_Artybug', 'Arachnotron', 2.0)   # the Arachnotrons' stand-in (MAP07)
     BLOOD['Artybug'] = 'FF8C1A'            # its blood is the Hunters' (Mercury Rising's own damage effects)
     CHAR_OVERRIDES['Artybug'] = dict(stance='pistol', radius_fixed=30, height_fixed=52, melee=(56, 60),
                                      flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades'])
 if 'Draeth' in MR_CHARS:
     BLOOD['Draeth'] = BLOOD['Elite']
-    # their own voice (voice_extra/Reaver: growls, roars, pain and death cries, no words) and heavy steps (reaver_steps/,
+    # their own voice (voice_extra/Reaver, Black Mesa's Alien Grunt: growls, roars, pain and death cries, no words) and heavy steps (reaver_steps/,
     # split_factions.py's 'reaver' footstep set)
     VOICES['Draeth'] = 'Reaver'
     BASE_CODE['Draeth'] = BASE_CODE.get('Draeth', '') + "\toverride Name HCE_StepSet() { return 'reaver'; }    // the Reavers' own steps\n"

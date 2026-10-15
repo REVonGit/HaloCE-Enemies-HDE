@@ -135,9 +135,9 @@ Each spawn rolls from a weighted mix, so a room of Zombiemen isn't all Grunts. T
 | Spectre | Stealth Elite 44%, stealth Flood Elite 22%, Stealth Major 21%, sword Stealth Major 11%; now and then a cloaked Draeth Commander |
 | Lost Soul | the Covenant's Geists (about half), Halo 2 Constructors, Flood infection forms, now and then the Flood Grunt; Scout Sentinels on normal and hard |
 | Cacodemon | Sentinel, Shielded and Defensive Sentinels, Majors on harder skills; Eliminators and Enforcers on normal and hard; Mercury Rising's Sentinels (Scouts, Canoneers and Artillery early, Compilers and Omegas on normal and hard, the Brute Sentinel on hard). Most become Halo 2 Drones (the Digsite enemies' mix, below) |
-| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills); a Draeth now and then (Minors on easy, Majors and the Excavator Commander on harder skills) and the Artybug |
+| Hell Knight | Minor Elites 60%, Ultra (plasma rifle) Jackal 11%, Major Elite 10%, Heavy Elite 10%, Spec-Ops fuel-rod Grunt 9%; with the Sentinels pack, Sentinel Knights too (about one in five; Majors and Commanders on harder skills); a Draeth now and then (Minors on easy, Majors and the Excavator Commander on harder skills) |
 | Baron of Hell | Major Elite (plasma rifle / needler), 1.5× health; now and then the Flood Juggernaut (about one in eight on normal, one in four on hard) |
-| Arachnotron | Spec-Ops Elite (plasma rifle / needler) |
+| Arachnotron | the Artybug (2× health: 500) |
 | Pain Elemental | the Engineer (the Digsite enemies' mix, below); the Flood Carrier when `hce_digsite_spawns` is 0 |
 | Revenant | Spec-Ops fuel-rod Grunts, Spec-Ops needler Elites (homing needles), Spec-Ops needler Grunts |
 | Mancubus | Hunter pair: blue 34%, White 33%, Red 32% |
@@ -380,7 +380,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
     - **Canoneer** (`HCE_SentinelCanoneer`, 70) and **Omega** (`HCE_SentinelOmega`, 75): the Canoneer's heavy beam (1.5× the Sentinel's).
     - **Compiler** (`HCE_SentinelCompiler`, 105): ten hard-light bolts in a 6° spread, a shot a second or so.
     - **Scout** (`HCE_SentinelScout`, 45): strings of hard-light needle bolts (the Enforcer's).
-  * **Artybug (Covenant pack, `HCE_Artybug`):** a Covenant war beast, 250 health, with its plasma shotgun: ten plasma-rifle bolts in an 8° cone, about two shots a second. It charges, berserks and swipes up close; orange blood.
+  * **Artybug (Covenant pack, `HCE_Artybug`):** a Covenant war beast, 250 health, with its plasma shotgun: ten plasma-rifle bolts in an 8° cone, about two shots a second. It charges, berserks and swipes up close; orange blood. Its own voice: alerts, pain, deaths, a barrage call as it opens fire and another when it finds a foe it lost. It takes the Arachnotrons' place (as `HCE_BossArachnotronArtybug`, twice its health, so MAP07's Arachnotron trigger still fires).
   * **Geist (Covenant pack, `HCE_Geist`):** CMT's little Covenant drone (30 health) with a plasma rifle, flying like a Sentinel. It takes the Lost Souls' place: about half of them become Geists.
   * **Draeth (Covenant pack):** the 1999 Elite (the Digsite release's `99_mac` Elite, as Mercury Rising fields it) as a race of its own; the UNSC calls them Reavers. Elite AI and purple blood, and a voice of their own: growls, roars, pain and death cries with no words in them, and heavy footsteps of their own. Minors (100 body, 100 shield, blue) and Majors (100 body, 150 shield, red) with the plasma rifle or the needler (`HCE_DraethMinorPlasmaRifle`, `HCE_DraethMinorNeedler`, `HCE_DraethMajorPlasmaRifle`, `HCE_DraethMajorNeedler`), and white Commanders with the **Excavator** (the mod's gun, extracted with its own model and texture): eight plasma bolts in a 3.5° cone, 1.5 shots a second. The cloaked Commander (`HCE_DraethCommanderExcavatorCamo`, 80 body, no shield, active camo) as in the mod, and one without the cloak (`HCE_DraethCommanderExcavator`, 100 body, 200 shield). `HCE_RandomDraeth` picks any.
   * **Female Marines and field medics (Marines pack):** the mod's female Marine and medic, each one whole body worn over the Halo CE Marine (`extract_mr_marines.py`: carried onto the CE Marine's skeleton bone by bone), so they play every Marine animation, hold every gun of the arsenal, pick up weapons and take squad orders like any Marine. Their armour takes the Marines' olive drab (the mod paints it white with a colour-change mask); the medic's face is Halo CE's under his red-cross cap. No kit pieces are rolled for them.
@@ -1323,6 +1323,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Geist:** CMT's (its model, textures and animations, from Mercury Rising).
 * **Draeth:** the 1999 Elite (`99_mac`) is the Digsite release's (github.com/digsite/h1), from Mercury Rising.
 * **Female Marine voices:** Halo 2's (marine_sassy, marine_tough), by Bungie.
+* **Reaver (Draeth) voice and footsteps:** Black Mesa's Alien Grunt, by Crowbar Collective.
 * **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).

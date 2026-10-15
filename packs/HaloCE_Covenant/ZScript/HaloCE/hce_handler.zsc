@@ -56,21 +56,21 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_Sentinel*3 HCE_SentinelShielded*2 HCE_SentinelDefensive*2 HCE_SentinelMajor*1 HCE_SentinelEliminator*1 HCE_SentinelEnforcer*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1 HCE_SentinelGoldShielded*1 HCE_SentinelMarauder*1 HCE_SentinelOnyx*1 HCE_SentinelProtector*1 HCE_SentinelCrawler*1 HCE_SentinelScout*1 HCE_SentinelCanoneer*1 HCE_SentinelArtillery*1 HCE_SentinelCompiler*1 HCE_SentinelOmega*1",
 			"HCE_SentinelShielded*3 HCE_SentinelMajor*2 HCE_SentinelShieldedMajor*2 HCE_SentinelEliminator*2 HCE_SentinelEnforcer*2 HCE_Sentinel*1 HCE_SentinelSoldier*1 HCE_SentinelDragoon*1 HCE_SentinelGoldShieldedMajor*1 HCE_SentinelOnyx*1 HCE_SentinelWarden*1 HCE_SentinelLancer*1 HCE_SentinelCanoneer*1 HCE_SentinelArtillery*1 HCE_SentinelCompiler*1 HCE_SentinelOmega*1 HCE_SentinelBrute*1",
 		// Hell Knight: Minor Elites, then Ultra Jackals, fuel-rod Spec-Ops Grunts, Major and Heavy Elites; and Sentinel
-		// Knights (Sentinels pack), more of them and their commanders on the harder skills; Draeth and the Artybug
+		// Knights (Sentinels pack), more of them and their commanders on the harder skills; and the Draeth
 		"HellKnight",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_DraethMinorPlasmaRifle*1 HCE_Artybug*1",
-			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_Artybug*1",
-			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_DraethCommanderExcavator*1 HCE_Artybug*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_DraethMinorPlasmaRifle*1",
+			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1",
+			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_DraethCommanderExcavator*1",
 		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health), and on normal and hard now and then the Flood Juggernaut
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1 HCE_BossBaronFloodJuggernaut*1",
 			"HCE_BossBaronEliteMajorPlasmaRifle*2 HCE_BossBaronEliteMajorNeedler*2 HCE_BossBaronFloodJuggernaut*1",
-		// Arachnotron (MAP07 boss): Spec-Ops Elite stand-ins
+		// Arachnotron (MAP07 boss): the Artybug, Mercury Rising's Covenant war beast, as its stand-in
 		"Arachnotron",
-			"HCE_BossArachnotronEliteSpecopsPlasmaRifle*2 HCE_BossArachnotronEliteSpecopsNeedler*1",
-			"HCE_BossArachnotronEliteSpecopsPlasmaRifle*2 HCE_BossArachnotronEliteSpecopsNeedler*1",
-			"HCE_BossArachnotronEliteSpecopsPlasmaRifle*1 HCE_BossArachnotronEliteSpecopsNeedler*1",
+			"HCE_BossArachnotronArtybug*1",
+			"HCE_BossArachnotronArtybug*1",
+			"HCE_BossArachnotronArtybug*1",
 		// Pain Elemental (spits Lost Souls): Flood Carrier
 		"PainElemental",    "HCE_Floodcarrier*1", "HCE_Floodcarrier*1", "HCE_Floodcarrier*1",
 		// Revenant (homing rockets): Spec-Ops Grunts and Spec-Ops Elites (homing needles)
@@ -112,6 +112,7 @@ class HCE_ReplaceHandler : EventHandler
 		"HCE_BossFatsoHunter", "Fatso",
 		"HCE_BossArachnotronEliteSpecopsPlasmaRifle", "Arachnotron",
 		"HCE_BossArachnotronEliteSpecopsNeedler", "Arachnotron",
+		"HCE_BossArachnotronArtybug", "Arachnotron",
 		"HCE_BossCyberdemonHunter", "Cyberdemon",
 		"HCE_BossCyberdemonHunterMajor", "Cyberdemon",
 		"HCE_BossCyberdemonHunterUltra", "Cyberdemon",

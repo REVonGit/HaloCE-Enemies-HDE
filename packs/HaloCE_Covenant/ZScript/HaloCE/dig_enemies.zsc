@@ -14654,7 +14654,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			hce_projectile = 'HCE_PulseCarbineBolt'; hce_projectilesPerShot = 1; hce_rateOfFire = 3.00; hce_errorAngle = 0.09; hce_maxRange = 3200; hce_projSpeed = 112.0;
-			hce_rangeMin = 400; hce_rangeMax = 3200; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_rangeMin = 400; hce_rangeMax = 2720; hce_damageMod = 0.50; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 5; hce_patShotsMax = 10; hce_patInterval = 3; hce_patPauseMin = 1.82; hce_patPauseMax = 2.99; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/PulseCarbine/Fire"; hce_fireSoundBass = "Halo/Weapons/PulseCarbine/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
@@ -15241,7 +15241,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
@@ -15454,7 +15454,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -15967,7 +15967,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PulseCarbineBolt", 1, 3.00, 0.09, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 112.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -16301,7 +16301,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.10, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -16644,7 +16644,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.10, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
@@ -17027,7 +17027,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_BeamRifleShot", 1, 3.00, 0.07, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.3, -1.0, 5.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 1.0;
@@ -17240,7 +17240,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_CarbineRound", 1, 3.00, 0.07, 3200;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 560.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
-		HaloDoom_EnemyBase.HCE_CombatRange 400, 3200;
+		HaloDoom_EnemyBase.HCE_CombatRange 400, 2720;
 		HaloDoom_EnemyBase.HCE_Burst 0.55, 0.85, 2.00, 3.00, 0.25, 0.50;
 		HaloDoom_EnemyBase.HCE_GunOffset (33.0, -0.9, 2.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;

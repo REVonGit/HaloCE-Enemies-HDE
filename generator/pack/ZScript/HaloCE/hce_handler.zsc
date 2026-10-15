@@ -1044,7 +1044,7 @@ class HCE_Encounters : EventHandler
 				let f = en.foes[k];
 				if(f && f.health > 0 && f.target && f.target.health > 0 && f.Distance3D(men[0]) < 1536) foes++;
 			}
-			// the player who reached them: within 640 and in sight of one of them (walked right up: 256)
+			// the player who reached them: in sight of one of them within 512 (640 once the foes are down), or right beside one (256)
 			PlayerPawn who = null;
 			for(int p = 0; p < MAXPLAYERS && !who; p++)
 			{
@@ -1053,11 +1053,12 @@ class HCE_Encounters : EventHandler
 				for(int k = 0; k < men.Size(); k++)
 				{
 					double d = men[k].Distance3D(pm);
-					if(d < 256 || (foes == 0 && d < 640 && men[k].CheckSight(pm))) { who = pm; break; }
+					if(d < 256 || (d < 512 && men[k].CheckSight(pm)) || (foes == 0 && d < 640 && men[k].CheckSight(pm))) { who = pm; break; }
 				}
 			}
 			if(!who) continue;
 			en.joined = true;
+			for(int k = 0; k < en.foes.Size(); k++) if(en.foes[k]) en.foes[k].hce_encounter = false;   // an ordinary fight from here
 			for(int k = 0; k < men.Size(); k++)
 			{
 				men[k].hce_encounter = false;

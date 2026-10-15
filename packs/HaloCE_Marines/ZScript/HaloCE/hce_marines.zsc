@@ -556,7 +556,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			hce_projectile = 'HCE_ShotgunPellet'; hce_projectilesPerShot = 15; hce_rateOfFire = 0.40; hce_errorAngle = 10.00; hce_maxRange = 400; hce_projSpeed = 435.9;
-			hce_rangeMin = 320; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_rangeMin = 204; hce_rangeMax = 340; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.05; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Shotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
@@ -5650,7 +5650,7 @@ class HCE_MarineFemaleShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -9019,7 +9019,7 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -10824,7 +10824,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -13405,7 +13405,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			hce_projectile = 'HCE_ShotgunPellet'; hce_projectilesPerShot = 15; hce_rateOfFire = 0.40; hce_errorAngle = 10.00; hce_maxRange = 400; hce_projSpeed = 435.9;
-			hce_rangeMin = 320; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_rangeMin = 204; hce_rangeMax = 340; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.05; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Shotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
@@ -19455,7 +19455,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -20681,7 +20681,7 @@ class HCE_MarineODSTBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			hce_projectile = 'HCE_ShotgunPellet'; hce_projectilesPerShot = 15; hce_rateOfFire = 0.40; hce_errorAngle = 10.00; hce_maxRange = 400; hce_projSpeed = 435.9;
-			hce_rangeMin = 320; hce_rangeMax = 480; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
+			hce_rangeMin = 204; hce_rangeMax = 340; hce_damageMod = 0.60; hce_specialFire = 0; hce_specialChance = 0; bHCE_Lobbed = false;
 			hce_patShotsMin = 1; hce_patShotsMax = 1; hce_patInterval = 1; hce_patPauseMin = 1.05; hce_patPauseMax = 1.50; hce_patChargeTics = 0;
 			hce_fireSound = "Halo/Weapons/Shotgun/Fire"; hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; hce_specialSound = ""; hce_chargeSound = ""; hce_fireLoop = false;
 			hce_specialProj = 'None'; hce_specialCount = 0;
@@ -21977,7 +21977,7 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -22672,7 +22672,7 @@ class HCE_MarineOdstHalo2Shotgun : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (30.2, 9.8, 17.7);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -23343,7 +23343,7 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
@@ -24225,7 +24225,7 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 0.40, 10.00, 400;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
-		HaloDoom_EnemyBase.HCE_CombatRange 320, 480;
+		HaloDoom_EnemyBase.HCE_CombatRange 204, 340;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.50, 1.25, 0.25, 0.60;
 		HaloDoom_EnemyBase.HCE_GunOffset (23.8, 6.7, 19.1);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;

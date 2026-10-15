@@ -195,19 +195,18 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		Actor keepTarget = target;
 		// an encounter (HCE_Encounters: Marines fighting the Covenant or the Flood somewhere on the map) holds until a
-		// player comes: AI-on-AI hits there do little while the players are far off, and leave anyone at 40% health
-		if(hce_enabled && dmg > 0 && source && !source.player && source != self)
+		// player comes: AI-on-AI hits there (and hits from nobody: burning, a barrel) do little until a player is close
+		// and can see the fight, and nobody in it drops below 40% health until a player has joined it
+		if(hce_enabled && dmg > 0 && (!source || (!source.player && source != self)))
 		{
 			let se = HaloDoom_EnemyBase(source);
 			if(hce_encounter || (se && se.hce_encounter))
 			{
 				double f = HCE_EncounterScale();
-				if(f < 0.999)
-				{
-					dmg = int(dmg * f + frandom(0, 0.999));
-					dmg = min(dmg, max(0, health - int(SpawnHealth() * 0.4)));
-					if(dmg <= 0) return 0;
-				}
+				if(f < 0.999) dmg = int(dmg * f + frandom(0, 0.999));
+				// nobody in it goes below 40% until a player has joined it (HCE_Encounters clears the flag then)
+				if(hce_encounter) dmg = min(dmg, max(0, health - int(SpawnHealth() * 0.4)));
+				if(dmg <= 0) return 0;
 			}
 		}
 		if(hce_enabled)
@@ -1351,6 +1350,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_canSee = HCE_SightOf(target, 360);
 		if(hce_canSee) { hce_lastSeen = level.maptime; hce_lastKnown = target.pos; }
 
+		// a target taken up outside the usual wake-up (a Marine following the player, a unit that heard the fight) left
+		// it in the idle or follow action: it fought through the default case, but its cover was reset every tic
+		if(hce_action == HCE_ACT_IDLE || hce_action == HCE_ACT_FOLLOW) hce_action = HCE_ACT_FIGHT;
 		HCE_Emotions();
 		if(hce_cvState > 0 && hce_action != HCE_ACT_FIGHT && hce_action != HCE_ACT_COVER) hce_cvState = 0;
 
@@ -1602,11 +1604,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		double sp = speed;
 		speed = max(1, hce_runSpeed);
+		vector2 was = pos.xy;
 		A_Chase(null, null, CHF_NOPLAYACTIVE | CHF_NODIRECTIONTURN);
 		speed = sp;
 		hce_moveSpeed = hce_runSpeed;
 		hce_moveAngle = movedir * 45.;
-		HCE_Play(HCE_A_MOVE_F);
+		hce_inPlaceTics = (pos.xy - was).Length() < 0.5 ? hce_inPlaceTics + 1 : 0;
+		HCE_Play(hce_inPlaceTics > 17 ? HCE_A_ALERT : HCE_A_MOVE_F);      // no marching on the spot when the way is shut
 		if(level.maptime - hce_lastSeen > 35 * 20) target = null;   // give up the search
 	}
 
@@ -3081,9 +3085,18 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	vector2 hce_pmaPos; int hce_pmaTic, hce_inPlaceTics;
 	void HCE_PickMoveAnim()
 	{
-		if(hce_moveSpeed <= 0.1)
+		// walking in place: pushing into a wall, a closet door or a crowd, it got nowhere for half a second. It
+		// stands (the alert idle) until it moves again, rather than marching on the spot
+		if(level.maptime != hce_pmaTic)
+		{
+			bool got = (pos.xy - hce_pmaPos).Length() > max(0.4, hce_moveSpeed * 0.15) * max(1, level.maptime - hce_pmaTic);
+			hce_inPlaceTics = (hce_moveSpeed > 0.1 && !got && pos.z <= floorz + 1) ? hce_inPlaceTics + 1 : 0;
+			hce_pmaPos = pos.xy; hce_pmaTic = level.maptime;
+		}
+		if(hce_moveSpeed <= 0.1 || hce_inPlaceTics > 17)
 		{
 			if(hce_crouch) HCE_Play(HCE_A_CROUCH_IDLE);
 			else if(hce_curAnimKind != HCE_A_FIRE || !hce_canSee) HCE_Play(target ? HCE_A_ALERT : HCE_A_IDLE);
@@ -3149,11 +3162,20 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_encounter;
 	// how hard AI hits land in an encounter: the nearest living player 768 or closer, in full; 1792 or further, a
 	// twentieth; between, in proportion
+	// how much of a hit lands in an encounter: a twentieth while no player is near, rising to all of it as a player who
+	// can see this one comes from 1792 to 768 units off. A player close by on the far side of a wall (another room, a
+	// corridor round the back) doesn't count: the fight was lost unseen that way
 	double HCE_EncounterScale()
 	{
 		double d = 1e9;
 		for(int i = 0; i < MAXPLAYERS; i++)
-			if(playeringame[i] && players[i].mo && players[i].mo.health > 0) d = min(d, Distance3D(players[i].mo));
+		{
+			if(!playeringame[i] || !players[i].mo || players[i].mo.health <= 0) continue;
+			let pm = players[i].mo;
+			double pd = Distance3D(pm);
+			if(pd < 1792 && pd > 256 && !CheckSight(pm, SF_IGNOREVISIBILITY)) continue;
+			d = min(d, pd);
+		}
 		return 0.05 + 0.95 * clamp((1792 - d) / (1792 - 768), 0, 1);
 	}
 
@@ -5575,7 +5597,14 @@ class HaloDoom_EnemyBase : Actor abstract
 			vel.xy = AngleToVector(angle, hce_runSpeed * 0.9);
 		}
 		if(!HCE_HasAnim(k)) k = HCE_HasAnim(HCE_A_DIE_F) ? HCE_A_DIE_F : HCE_A_DIE_HARD_F;
-		HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
+		if(HCE_HasAnim(k)) HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
+		else
+		{
+			// a body with no death animation at all (Mercury Rising's Artybug): it stood dead in whatever pose it was
+			// in. Its idle, played once and held, and the body keels over onto its side instead
+			HCE_Play(HCE_A_IDLE, false, true, 3, true);     // once through, held on its last frame
+			hce_toppleTics = 18; hce_toppleDir = random(0, 1) ? 1 : -1;
+		}
 		HCE_StopFireLoop();
 		// no death cry from a body torn apart or shattered, a headshot kill, or one whose head came off
 		if(!hce_gibbed && !hce_lastHeadshot && !(hce_severed & (1 << HCE_LIMB_HEAD)))
@@ -6615,6 +6644,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_canSee || hce_action == HCE_ACT_KAMIKAZE) return false;
 		double d = Distance2D(target);
 		if(d < 160 || d > 1100) return false;
+		if(!HCE_KamikazeRoom()) return false;             // no suicide runs in a cramped room or a corridor
 		// one suicide run at a time per squad
 		let it = BlockThingsIterator.Create(self, 1024);
 		while(it.Next())
@@ -6647,6 +6677,26 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_kamiNades.Push(g);
 		}
 		return true;
+	}
+
+	// Room to run: a kamikaze in a cramped room or a corridor only takes its own squad with it. Eight traces out from
+	// the Grunt at chest height (to 512 units): the space is roomy when the walls are on average at least 320 off, at
+	// least four ways are open past 256, and the ceiling is a storey and a half up. The way to the target is checked
+	// by the sight test that comes before
+	bool HCE_KamikazeRoom()
+	{
+		if(ceilingz - floorz < height * 1.6) return false;
+		double sum = 0; int open = 0;
+		FLineTraceData lt;
+		for(int i = 0; i < 8; i++)
+		{
+			double a = angle + i * 45;
+			LineTrace(a, 512, 0, TRF_THRUACTORS, height * 0.6, 0, 0, lt);
+			double dist = lt.HitType == TRACE_HitNone ? 512 : lt.Distance;
+			sum += dist;
+			if(dist >= 256) open++;
+		}
+		return sum / 8 >= 320 && open >= 4;
 	}
 
 	void HCE_KamikazeTick()
@@ -6778,9 +6828,19 @@ class HaloDoom_EnemyBase : Actor abstract
 		return dmg;
 	}
 
+	int hce_toppleTics, hce_toppleDir;
 	void HCE_CorpseTick()
 	{
 		if(!hce_corpseInit) HCE_SetUpCorpse();
+		if(hce_toppleTics > 0)
+		{
+			// the model turns about its feet: raised as it goes over so its far side doesn't sink through the floor
+			hce_toppleTics--;
+			double r = 80 * (1 - hce_toppleTics / 18.0) ** 2;
+			A_SetRoll(hce_toppleDir * r, SPF_INTERPOLATE);
+			bNOGRAVITY = true; vel = (0, 0, 0);
+			SetZ(floorz + radius * 0.75 * sin(r));
+		}
 		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
 		HCE_AirTick();
 		HCE_StumpTick();

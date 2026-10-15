@@ -2082,6 +2082,10 @@ def build(cfg=None):
             rlo, rhi = rc['combat_range_lower_bound'] * S, rc['combat_range_upper_bound'] * S
             if rhi <= 0: rlo, rhi = 0, maxrange * 0.6
             if weapon == 'energy sword' or not weapon or ov.get('melee_only'): rlo, rhi = 0, 32
+            # a fighting distance past the gun's reach left it holding where it couldn't fire (Halo CE's shotgun
+            # Marines: 320-480 against a 400 reach): kept inside it
+            if rhi > maxrange * 0.85 and weapon != 'energy sword' and weapon:
+                rhi = maxrange * 0.85; rlo = min(rlo, rhi * 0.6)
             gun = rc.get('gun_offset_stand') or [0.1, 0, 0]
             gun = [max(radius, gun[0] * S), -gun[1] * S, gun[2] * S - height * 0.5 + height * 0.25]
             # melee

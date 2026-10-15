@@ -1,9 +1,9 @@
 // the Halo CE enemies bestiary (hce_bestiary.zsc)
 E	HCE_MarineArmoredAssaultRifle	Marines (allies)	Armored Marine	Marine Armored	HU3R	MarineArmored	30254	Assault Rifle, Battle Rifle, Bulldog, Commando, DMR, Double Barrel, Flamethrower, GPMG, Grenade Launcher, Hydra, MA37, Needler, Plasma Rifle, Rocket Launcher, Sidekick, SMG, Sticky Detonator, Magnum, Shotgun, Sniper Rifle
-E	HCE_MarineFemaleAssaultRifle	Marines (allies)	Female Marine	Marine Female	HU4K	MarineFemale,Marine	30518	Assault Rifle, Battle Rifle, DMR, MA37, Shotgun, SMG, Magnum, Sniper Rifle
-E	HCE_MarineFieldMedicSmg	Marines (allies)	Field Medic	Marine Field Medic	HU4T	MarineFieldMedic,Marine	30527	SMG, Magnum
+E	HCE_MarineFemaleAssaultRifle	Marines (allies)	Female Marine	Female Marine	HU4K	MarineFemale,Marine	30518	Assault Rifle, Battle Rifle, DMR, MA37, Shotgun, SMG, Magnum, Sniper Rifle
+E	HCE_MarineFieldMedicSmg	Marines (allies)	Field Medic	Field Medic	HU4T	MarineFieldMedic,Marine	30527	SMG, Magnum
 E	HCE_MarineAssaultRifle	Marines (allies)	Marine	Marine	HU4D	Marine	30249	Assault Rifle, Battle Rifle, Bulldog, Commando, DMR, Double Barrel, Flamethrower, GPMG, Grenade Launcher, Hydra, MA37, Needler, Plasma Rifle, Rocket Launcher, Shotgun, Sidekick, SMG, Sticky Detonator, Magnum, Sniper Rifle
-E	HCE_MarineMedic	Marines (allies)	Marine	Marine Medic	HU50	Marine	30321	Assault Rifle, MA37, Shotgun, SMG, Magnum
+E	HCE_MarineMedic	Marines (allies)	Marine	Corpsman	HU50	MarineMedic,Marine	30321	Assault Rifle, MA37, Shotgun, SMG, Magnum
 E	HCE_MarineRadioOperator	Marines (allies)	Marine	Marine Radio Operator	HU5P	RadioOperator,Marine	30352	-
 E	HCE_SgtJohnson	Marines (allies)	Marine	Sergeant Johnson	HU71	Johnson,Marine	30316	-
 E	HCE_SgtStacker	Marines (allies)	Marine	Sergeant Stacker	HU72	Stacker,Marine	30454	-
@@ -16,13 +16,14 @@ E	HCE_MarineOdstRavenGreen	Marines (allies)	ODST	ODST Raven Green	HU5G	Marine,Ma
 E	HCE_MarineOdstRavenOrange	Marines (allies)	ODST	ODST Raven Orange	HU5H	Marine,MarineODST	30335	-
 E	HCE_MarineOdstRavenPurple	Marines (allies)	ODST	ODST Raven Purple	HU5I	Marine,MarineODST	30336	-
 E	HCE_MarineOdstHellbringer	Marines (allies)	ODST Hellbringer	ODST Hellbringer	HU5E	Hellbringer,MarineODST	30343	-
-E	HCE_MarinePilotSmg	Marines (allies)	Pilot	Marine Pilot	HU5N	Marine	30351	SMG, Magnum
+E	HCE_MarinePilotSmg	Marines (allies)	Pilot	Pilot	HU5N	Marine	30351	SMG, Magnum
 L	Hellbringer	An ODST flamethrower specialist. Hellbringers clear the Flood out of corridors no one else will enter.
 L	Johnson	Sergeant Avery Johnson: veteran, inspiration, and the last man to tell you he is in trouble.
 L	Marine	UNSC Marines: the soldiers who stood against the Covenant on every front. They follow a Spartan, take orders, pick up better weapons and carry on fighting while there is breath in them.
 L	MarineArmored	Marines in heavier armor, given heavier weapons and harder jobs.
 L	MarineFemale	UNSC Marines: the women who held the line beside the men on every front, in the same fatigues and armour and every bit as stubborn under fire.
 L	MarineFieldMedic	A UNSC field medic in the white of the medical corps, under a red-cross cap. Medics carry a sidearm and use it, but their work is keeping the squad alive: call for a medic and one will come running to whoever needs patching up.
+L	MarineMedic	A Navy corpsman serving with the Marines: a rifleman like the rest until someone goes down, then the one who runs to him under fire and patches him up. Call for a medic and the nearest corpsman comes.
 L	MarineODST	Orbital Drop Shock Troopers. They arrive feet first from orbit in drop pods, fight in sealed armor and have a reputation to maintain. Their black armor and dark visors are recognized across the Covenant's front lines.
 L	RadioOperator	A Marine radioman. When the fight turns bad, the radio brings reinforcements.
 L	Stacker	Sergeant Stacker: a steady hand, never far from his men or his rifle.

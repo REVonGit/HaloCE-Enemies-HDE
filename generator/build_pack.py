@@ -1841,6 +1841,10 @@ def bestiary_title(t):
     t = t.replace('Combat Form: Elite Stealth Unarmed', 'Combat Form: Stealth Elite')
     t = {'Floodcarrier': 'Carrier Form', 'Flood Infection': 'Infection Form', 'Flood Grunt': 'Combat Form: Grunt'}.get(t, t)
     t = re.sub(r'^Grunt Flee (\w+)$', r'Grunt \1 (Skittish)', t)
+    t = re.sub(r'^Marine Female\b', 'Female Marine', t)
+    t = re.sub(r'^Marine Field Medic\b', 'Field Medic', t)
+    t = re.sub(r'^Marine Medic\b', 'Corpsman', t)
+    t = re.sub(r'^Marine Pilot\b', 'Pilot', t)
     return t.replace('Sgt ', 'Sergeant ')
 
 def bestiary_lump(classes, path):

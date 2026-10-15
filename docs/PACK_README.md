@@ -444,7 +444,7 @@ Halo 2's own combat dialogue, for the Marines, Elites, Grunts, Jackals and Brute
 
 ## Footsteps
 
-Every body that walks has footsteps: Halo 2's Marine (the Chief's, played softer: the MCC archive's Marine set doesn't decode), Elite, Grunt and Brute sets; Jackals step as Grunts (lighter), Hunters as Brutes (heavier), the Flood's combat forms as the body they were. One plays a stride of ground actually covered, walk or run, on the surface the floor's texture suggests: hard floor, metal grating, dirt, grass or shallow water (liquid floors and wading).
+Every body that walks has footsteps: Halo 2's Marine (the Chief's, played softer: the MCC archive's Marine set doesn't decode), Elite, Grunt and Brute sets; Jackals step as Grunts (lighter), Hunters as Brutes (heavier), the Flood's combat forms as the body they were. The Draeth (Reavers) have heavy steps of their own, from their voice set. One plays a stride of ground actually covered, walk or run, on the surface the floor's texture suggests: hard floor, metal grating, dirt, grass or shallow water (liquid floors and wading).
 
 ## Cover
 
@@ -1000,7 +1000,7 @@ Options > Halo CE Performance:
 
 ## Not included / known limits
 
-* The Flood and Sentinels have no dialogue (HaloDoomEnemies has no lines for them).
+* The Sentinels have no dialogue beyond the Knights' voice and their engine, hit and death sounds; the Flood growl and shriek with Halo CE's and Ruby's Rebalance's Flood sounds rather than speaking lines.
 * No vehicles, turrets, dropships or scripted AI (encounters, squads, firing points). Units pick positions with local steering instead of Halo's firing-point graph.
 * Only combat characters are included: no Keyes, Cortana, 343 Guilty Spark or crew.
 

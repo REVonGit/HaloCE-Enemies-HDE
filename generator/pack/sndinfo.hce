@@ -4,3 +4,6 @@ $alias HCE/FloodPop Halo/Grenade/Frag/Explode
 $volume HCE/FloodPop 0.6
 $alias HCE/BodyLand Halo/Melee/Punch
 $volume HCE/BodyLand 0.5
+
+// the needler supercombine: never held back by the sound limit (several can go off at once in a crowd)
+$limit Halo/Weapons/Needler/SuperCombine 0

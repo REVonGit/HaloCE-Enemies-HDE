@@ -10,7 +10,7 @@ alias reclaimer "netevent hce_spawnsentinels"
 alias hce_bestiary "openmenu HCE_Bestiary"
 
 // squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on
-// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.
+// the order wheel (hold its key, point with the mouse, let go); the combat orders and the button order have keys of their own.
 // The rest stay bindable from the console (bind <key> hce_regroup, and so on)
 alias +hce_wheel "event hce_wheel_open"
 alias -hce_wheel "event hce_wheel_close"
@@ -31,3 +31,4 @@ addmenukey "Squad: hold fire" hce_holdfire
 addmenukey "Squad: focus on my target" hce_focus
 addmenukey "Squad: suppress" hce_suppress
 addmenukey "Squad: medic" hce_medic
+addmenukey "Squad: press that button" hce_button

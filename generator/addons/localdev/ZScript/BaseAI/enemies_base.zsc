@@ -186,6 +186,7 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	override int DamageMobJ(Actor inflictor, Actor source, int dmg, Name mod, int flags, double angle)
 	{
+		if(inflictor && mod == 'Explosive' && dmg >= 40 && health > 0) HCE_SuperCombineSound(inflictor);
 		if(hce_enabled && health <= 0 && hce_corpseInit)
 		{
 			if(HCE_IsBurn(mod) && !default.bNOBLOOD) { hce_burnHit = true; bNOBLOOD = true; }   // till its next tic
@@ -1298,6 +1299,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
 		if(!hce_bondLooked) HCE_BondLink();
 		if(hce_button && HCE_ButtonTick()) return;
+		if(hce_liftSec && HCE_LiftTick()) return;
 		if(hce_medicFor && HCE_MedicTick()) return;
 		if(hce_scavItem && HCE_ScavengeTick()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
@@ -1826,7 +1828,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		int side = level.PointOnLineSide(pos.xy, l);
 		if(l.special && HCE_DoorOrLift(l.special) && (l.activation & (SPAC_Use | SPAC_UseThrough)) && !l.locknumber)
 		{
-			if(l.Activate(self, side, SPAC_Use))
+			if(HCE_PressLine(l, side, SPAC_Use))
 			{
 				hce_doorLine = l; hce_doorWait = level.maptime + 35 * 3;
 				HCE_StopFireLoop();
@@ -1845,9 +1847,122 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 sm = sw.v1.p + sw.delta * 0.5;
 		vector2 nrm = (sw.delta.y, -sw.delta.x).Unit();              // the front side's normal
 		int ss = level.PointOnLineSide(pos.xy, sw);
-		hce_button = sw; hce_buttonSide = ss; hce_buttonAt = (sm + nrm * (ss == 0 ? 1 : -1) * (radius + 12), pos.z); hce_buttonTics = 35 * 12;
+		hce_button = sw; hce_buttonSide = ss; hce_buttonAct = SPAC_Use; hce_buttonAt = (sm + nrm * (ss == 0 ? 1 : -1) * (radius + 12), pos.z); hce_buttonTics = 35 * 12;
 		hce_doorNext = level.maptime + 35 * 8;
 		return false;
+	}
+
+	// ------------------------------------------------------------------
+	// Lifts worked from elsewhere. A ledge too high to climb, with a lift up to it: he finds what works the lift (a
+	// switch on a wall, the lift's own face, a line walked over), goes and works it, then gets on the lift as it comes
+	// down and rides it up (HCE_LiftTick). If it has gone back up before he gets there, he works it again. This is how
+	// a Marine following the player gets up to him; the Covenant do it too when they chase.
+	// ------------------------------------------------------------------
+	Sector hce_liftSec;                    // the lift he's working towards riding
+	vector2 hce_liftAt;                    // where to stand on it
+	int hce_liftTics, hce_liftNext;
+	bool hce_liftLow, hce_liftRode;        // it has come down since he worked it / he has ridden it
+
+	// a line worked as the player would work it: Doom's switches and walk-over lines are made for players, so
+	// whether monsters may work it is put aside for the press
+	bool HCE_PressLine(Line l, int side, int act)
+	{
+		if(!l) return false;
+		int keep = l.flags;
+		l.flags |= Line.ML_MONSTERSCANACTIVATE;
+		bool ok = l.Activate(self, side, act);
+		l.flags = keep;
+		return ok;
+	}
+
+	// a needler supercombine on one of ours: HaloDoom Evolved's blast plays its sound from the needle that set it
+	// off; should that not be sounding (the engine had no room for it), it sounds from where the blast was
+	static void HCE_SuperCombineSound(Actor inf)
+	{
+		String n = inf.GetClassName();
+		n = n.MakeLower();
+		if(n.IndexOf("needle") < 0 || n.IndexOf("javelin") >= 0 || n.IndexOf("ballista") >= 0) return;
+		if(inf.IsActorPlayingSound(CHAN_BODY, "Halo/Weapons/Needler/SuperCombine")) return;
+		let s = Actor.Spawn("HCE_SoundSpot", inf.pos);
+		if(s) s.A_StartSound("Halo/Weapons/Needler/SuperCombine", CHAN_AUTO, CHANF_OVERLAP, 1.0, ATTN_NORM * 0.5);
+	}
+
+	// the point of a line nearest to p
+	static vector2 HCE_LinePoint(Line l, vector2 p)
+	{
+		double len2 = l.delta dot l.delta;
+		double t = len2 > 0 ? clamp(((p - l.v1.p) dot l.delta) / len2, 0, 1) : 0;
+		return l.v1.p + l.delta * t;
+	}
+
+	bool HCE_TryLift(double ang)
+	{
+		if(!HCE_CanUseDoors() || hce_button || hce_liftSec || level.maptime < hce_liftNext) return false;
+		hce_liftNext = level.maptime + 35;
+		// the sector just ahead, and its floor
+		vector2 dir = AngleToVector(ang, 1);
+		Sector ls = null; vector2 at;
+		for(double d = radius + 4; d <= radius + 64; d += 12)
+		{
+			at = pos.xy + dir * d;
+			Sector s = level.PointInSector(at);
+			if(s != CurSector) { ls = s; break; }
+		}
+		if(!ls) return false;
+		double rise = ls.floorplane.ZatPoint(at) - pos.z;
+		if(rise <= max(MaxStepHeight, hce_jumpHeight)) return false;          // a step or a jump: not a lift's job
+		let tr = HCE_MissileTracker.Get();
+		int act = SPAC_Use;
+		Line sw = tr ? tr.LiftSwitchFor(ls, self, act) : null;
+		if(!sw) return false;
+		// where to stand on it: just past its edge, as far in as fits
+		vector2 stand = at;
+		for(double d = radius; d >= 0; d -= 8)
+			if(level.PointInSector(at + dir * d) == ls) { stand = at + dir * d; break; }
+		hce_liftSec = ls; hce_liftAt = stand; hce_liftTics = 35 * 20; hce_liftLow = false; hce_liftRode = false;
+		HCE_SetButton(sw, act);
+		return true;
+	}
+
+	// go and work this line: stand by a switch (on the side he's on), walk onto a walk-over line
+	void HCE_SetButton(Line sw, int act)
+	{
+		vector2 p = HCE_LinePoint(sw, pos.xy);
+		vector2 off = pos.xy - p;
+		double ol = off.Length();
+		vector2 n = ol > 0.01 ? off / ol : (sw.delta.y, -sw.delta.x).Unit();
+		hce_button = sw; hce_buttonSide = level.PointOnLineSide(pos.xy, sw); hce_buttonAct = act;
+		hce_buttonAt = (act == SPAC_Cross ? p : p + n * (radius + 12), pos.z);
+		hce_buttonTics = 35 * 12;
+		HCE_StopFireLoop();
+	}
+
+	bool HCE_LiftTick()
+	{
+		if(!hce_liftSec || health <= 0 || --hce_liftTics <= 0) { hce_liftSec = null; return false; }
+		if(hce_button) return false;                                 // working it first
+		let ls = hce_liftSec;
+		double fz = ls.floorplane.ZatPoint(hce_liftAt);
+		bool moving = ls.floordata != null;
+		if(CurSector == ls && pos.z <= fz + 4)
+		{
+			// on it: stand and ride; off again once it has carried him up and stopped
+			HCE_Brake(); hce_moveSpeed = 0;
+			hce_doorWait = level.maptime;
+			if(moving) hce_liftRode = true;
+			else if(hce_liftRode) { hce_liftSec = null; hce_liftNext = level.maptime + 35 * 2; return false; }
+			HCE_PickMoveAnim();
+			return true;
+		}
+		bool low = fz - pos.z <= MaxStepHeight;
+		if(low) hce_liftLow = true;
+		else if(hce_liftLow && !moving) { hce_liftSec = null; hce_liftNext = level.maptime + 10; return false; }   // missed it: work it again
+		vector2 dv = hce_liftAt - pos.xy;
+		if(!low && dv.Length() < radius + 56) { HCE_Brake(); hce_moveSpeed = 0; A_SetAngle(atan2(dv.y, dv.x), SPF_INTERPOLATE); HCE_PickMoveAnim(); return true; }   // waits by it
+		HCE_Move(atan2(dv.y, dv.x), hce_runSpeed);
+		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
+		return true;
 	}
 
 	// on a lift that's moving: stand still and ride it
@@ -2636,6 +2751,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				Actor b = BlockingMobj;
 				byFriend = !target && b && b != self && (b.player || b.bISMONSTER) && b.health > 0 && !HCE_IsEnemy(b);
 				if(HCE_TryDoor(a)) { hce_moveSpeed = 0; HCE_Brake(); return false; }   // a door or lift it's waiting on
+				if(HCE_TryLift(a)) { hce_moveSpeed = 0; HCE_Brake(); return false; }   // a lift worked from elsewhere: off to work it
 				if(HCE_TryJump(a, true)) { hce_moveAngle = a; return true; }
 				if(HCE_TryDrop(a, spd)) { hce_moveAngle = a; return true; }
 			}
@@ -2666,7 +2782,12 @@ class HaloDoom_EnemyBase : Actor abstract
 			double nd = (np - hce_holdPos.xy).Length();
 			if(nd > 192 && nd > held) return false;
 		}
-		if(!TryMove(np, 0)) return false;
+		if(!TryMove(np, 0))
+		{
+			// already standing over a drop (a lift has carried him up with a foot over its edge): a step that keeps
+			// him on the floor he's on may go on over it, or he'd never get off
+			if(floorz - dropoffz <= MaxDropoffHeight || abs(GetZAt(np.x, np.y, 0, GZF_ABSOLUTEPOS) - floorz) > 2 || !TryMove(np, 1)) return false;
+		}
 		vel.xy = (0, 0);
 		return true;
 	}
@@ -3051,11 +3172,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_AckLater() { hce_ackAt = level.maptime + random(55, 80); }
 
 	// "press that button": walk to the switch the player pointed at and use it
-	Line hce_button; int hce_buttonSide, hce_buttonTics; vector3 hce_buttonAt;
+	Line hce_button; int hce_buttonSide, hce_buttonTics, hce_buttonAct; vector3 hce_buttonAt;
 	void HCE_ButtonOrder(Line l, int side, vector3 at)
 	{
 		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
-		hce_button = l; hce_buttonSide = side; hce_buttonAt = at; hce_buttonTics = 35 * 10;
+		HCE_SetButton(l, SPAC_Use);                                   // by the switch, on the side he comes from
+		hce_buttonTics = 35 * 15;
 		hce_scavItem = null; hce_medicFor = null;
 		HCE_AckLater();
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
@@ -3075,7 +3197,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		HCE_Brake();
 		A_SetAngle(atan2(dv.y, dv.x), SPF_INTERPOLATE);
-		hce_button.Activate(self, hce_buttonSide, SPAC_Use);
+		HCE_PressLine(hce_button, hce_buttonSide, hce_buttonAct ? hce_buttonAct : SPAC_Use);
 		hce_button = null;
 		HCE_Play(HCE_A_IDLE, true, true);
 		return true;
@@ -3601,6 +3723,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector2 hce_fmNewSpot; double hce_fmNewFace;     // the formation's latest slot for him, before he takes it up
 	bool hce_fmWalking, hce_fmTurning, hce_fmHurry;
 	int hce_fmStuck;                       // tics walking without getting anywhere (blocked by the others)
+	vector2 hce_fmLastPos;                 // where he was last tic (he moves by TryMove: his velocity says nothing)
+	double hce_fmSettledZ;                 // the height he settled at
 	bool hce_fmFwd;                        // following and turning into his way: walks forward through the turn (HCE_PickMoveAnim)
 	vector2 hce_fmSettledBy;               // settled short of his place (blocked): where the player was; (0,0) none   // following: on his way to his place / turning to his sector / running (each with hysteresis)
 	virtual void HCE_Follow()
@@ -3626,6 +3750,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		else
 		{
 			if(hce_squadOrder == HCE_ORDER_REGROUP && HCE_RegroupTick()) return;
+			// on a lift that's working, with the player up above: he stays on and rides it up to him
+			if(CurSector && CurSector.floordata && pos.z <= floorz + 2 && p.pos.z > pos.z + MaxStepHeight)
+			{
+				HCE_Brake(); hce_moveSpeed = 0; hce_fmStuck = 0; hce_doorWait = level.maptime;
+				HCE_PickMoveAnim();
+				return;
+			}
 			// a place in the squad's formation (HCE_Formation): a wedge behind the player in the open, a file down
 			// his own path where it's tight
 			if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
@@ -3635,7 +3766,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				// a new place only when it has really moved: small shifts of the slot don't send him shuffling about
 				hce_formation.Spot(self, hce_fmNewSpot, hce_fmNewFace);      // (fields: the JIT can't take a local vector as an out)
 				// settled short of his place: he stays put until the player has moved on
-				if(hce_fmSettledBy != (0, 0) && (p.pos.xy - hce_fmSettledBy).Length() > 128) hce_fmSettledBy = (0, 0);
+				if(hce_fmSettledBy != (0, 0) && ((p.pos.xy - hce_fmSettledBy).Length() > 128 || abs(pos.z - hce_fmSettledZ) > 24)) hce_fmSettledBy = (0, 0);   // (or a lift has carried him on)
 				if(hce_fmSettledBy == (0, 0) && (hce_formSpot == (0, 0) || (hce_fmNewSpot - hce_formSpot).Length() > (hce_fmWalking ? 8 : 40))) hce_formSpot = hce_fmNewSpot;
 				if(abs(DeltaAngle(hce_fmNewFace, hce_formFace)) > 20 || hce_fmTurning) hce_formFace = hce_fmNewFace;
 				hce_formTics = level.maptime + 6;
@@ -3659,10 +3790,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(!pMoving && (d <= 72 || gd < 20)) { hce_fmWalking = false; hce_fmHurry = false; }
 			else if(!hce_fmWalking && gd > (pMoving ? 32 : 64)) { hce_fmWalking = true; hce_fmStuck = 0; }
 			// blocked by the men round him or by the ground: he settles where he is until the player moves on
-			if(hce_fmWalking) hce_fmStuck = vel.xy.Length() < 1.0 ? hce_fmStuck + 1 : max(0, hce_fmStuck - 1);
+			if(hce_fmWalking) hce_fmStuck = HCE_OnMovingLift() ? 0 : (pos.xy - hce_fmLastPos).Length() < 1.0 ? hce_fmStuck + 1 : max(0, hce_fmStuck - 1);   // riding a lift isn't being stuck
+			hce_fmLastPos = pos.xy;
 			if(hce_fmWalking && !pMoving && (hce_fmStuck > 14 && gd < 110 || hce_fmStuck > 45))
 			{
-				hce_fmWalking = false; hce_fmHurry = false; hce_formSpot = pos.xy; hce_fmSettledBy = p.pos.xy;
+				hce_fmWalking = false; hce_fmHurry = false; hce_formSpot = pos.xy; hce_fmSettledBy = p.pos.xy; hce_fmSettledZ = pos.z;
 			}
 			if(hce_fmWalking)
 			{
@@ -7215,6 +7347,43 @@ class HCE_MissileTracker : EventHandler
 		return best;
 	}
 
+	// ---- what works a lift: a switch (used) or a walk-over line (crossed) tagged to it, or the lift's own face
+	// (tag 0: the lift behind it); the nearest to who. act: how it's worked (SPAC_Use / SPAC_Cross)
+	Array<Line> liftLines;
+	bool liftLinesDone;
+
+	Line LiftSwitchFor(Sector lift, Actor who, out int act)
+	{
+		if(!liftLinesDone)
+		{
+			liftLinesDone = true;
+			for(int i = 0; i < level.Lines.Size(); i++)
+			{
+				Line l = level.Lines[i];
+				if(l.special && HaloDoom_EnemyBase.HCE_DoorOrLift(l.special) && !l.locknumber
+					&& (l.activation & (SPAC_Use | SPAC_UseThrough | SPAC_Cross | SPAC_MCross)))
+					liftLines.Push(l);
+			}
+		}
+		Line best = null; double bd = 3072;
+		for(int i = 0; i < liftLines.Size(); i++)
+		{
+			Line l = liftLines[i];
+			bool works = false;
+			if(l.Args[0] == 0) works = l.backsector == lift;
+			else
+			{
+				let si = level.CreateSectorTagIterator(l.Args[0]);
+				int k;
+				while((k = si.Next()) >= 0) if(k == lift.Index()) { works = true; break; }
+			}
+			if(!works) continue;
+			double d = (HaloDoom_EnemyBase.HCE_LinePoint(l, who.pos.xy) - who.pos.xy).Length();
+			if(d < bd) { bd = d; best = l; act = (l.activation & (SPAC_Use | SPAC_UseThrough)) ? SPAC_Use : SPAC_Cross; }
+		}
+		return best;
+	}
+
 	// ---- flashlights (HaloDoom Evolved's, through the pickup resolver; the standalone packs have none)
 	HCE_PickupResolver resolver;
 	bool resolverTried;
@@ -7479,6 +7648,13 @@ class HCE_GunnerSeat
 }
 
 // the muzzle flash's light: a moment of the bolt's colour on the walls, shrinking over three tics
+// a sound left where something happened, on its own (HaloDoom_EnemyBase.HCE_SuperCombineSound)
+class HCE_SoundSpot : Actor
+{
+	Default { +NOINTERACTION; +NOBLOCKMAP; +NOGRAVITY; RenderStyle "None"; }
+	States { Spawn: TNT1 A 175; Stop; }
+}
+
 class HCE_MuzzleLight : Actor
 {
 	Color col;

@@ -604,11 +604,26 @@ class HCE_SpawnAllHandler : EventHandler
 		{
 			// the switch in the crosshair: a line with a use special
 			FLineTraceData d;
-			pl.LineTrace(pl.angle, 1024, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
-			if(d.HitType != TRACE_HitWall || !d.HitLine || !d.HitLine.special || !(d.HitLine.activation & (SPAC_Use | SPAC_UseThrough))) return;
+			pl.LineTrace(pl.angle, 1536, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
+			Line sw = null; int side = 0;
+			if(d.HitType == TRACE_HitWall && d.HitLine && d.HitLine.special && (d.HitLine.activation & (SPAC_Use | SPAC_UseThrough)))
+			{ sw = d.HitLine; side = d.LineSide; }
+			else
+			{
+				// not quite on it: the switch nearest where the crosshair landed, within 96 units
+				double bd = 96;
+				for(int i = 0; i < level.Lines.Size(); i++)
+				{
+					Line l = level.Lines[i];
+					if(!l.special || !(l.activation & (SPAC_Use | SPAC_UseThrough)) || l.locknumber) continue;
+					double dd = (HaloDoom_EnemyBase.HCE_LinePoint(l, d.HitLocation.xy) - d.HitLocation.xy).Length();
+					if(dd < bd) { bd = dd; sw = l; side = level.PointOnLineSide(pl.pos.xy, l); }
+				}
+			}
+			if(!sw) return;
 			HaloDoom_EnemyBase best = null;
 			for(int i = 0; i < squad.Size(); i++) if(!best || squad[i].Distance2D(pl) < best.Distance2D(pl)) best = squad[i];
-			if(best) best.HCE_ButtonOrder(d.HitLine, d.LineSide, d.HitLocation);
+			if(best) best.HCE_ButtonOrder(sw, side, (HaloDoom_EnemyBase.HCE_LinePoint(sw, pl.pos.xy), pl.pos.z));
 			return;
 		}
 		// the one closest to the player (the medic) or to the gun (the weapon)

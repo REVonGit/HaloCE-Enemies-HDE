@@ -11,7 +11,7 @@ Every faction pack only needs the core (and the enemy API addon); load any combi
 DoomEdNums are unchanged: each pack lists the numbers of its own classes."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
-import os, re, shutil, sys
+import os, re, shutil, subprocess, sys
 import json, os, re, shutil, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
@@ -65,6 +65,7 @@ def chunks(text):
 HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_healthbar')   # CE_HB1..9 from HDE
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
+CHIEF_GAIN_DB = 8           # the Chief's orders, raised over the fight
 # Halo 2's footsteps (extract_footsteps.py): the sets each faction's bodies use (Jackals step as Grunts, Hunters as
 # Brutes, the Flood's combat forms as the body they were)
 from build_pack import OUT as _OUT
@@ -218,7 +219,7 @@ def main():
                                           'alias reclaimer "netevent hce_spawnsentinels"\n'
                                           'alias hce_bestiary "openmenu HCE_Bestiary"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on\n'
-                                          '// the order wheel (hold its key, point with the mouse, let go); only the combat orders have keys of their own.\n'
+                                          '// the order wheel (hold its key, point with the mouse, let go); the combat orders and the button order have keys of their own.\n'
                                           '// The rest stay bindable from the console (bind <key> hce_regroup, and so on)\n'
                                           'alias +hce_wheel "event hce_wheel_open"\nalias -hce_wheel "event hce_wheel_close"\n'
                                           'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
@@ -229,7 +230,7 @@ def main():
                                           'addmenukey "Squad: order wheel (hold)" +hce_wheel\n'
                                           'addmenukey "Squad: open fire" hce_openfire\naddmenukey "Squad: hold fire" hce_holdfire\n'
                                           'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
-                                          'addmenukey "Squad: medic" hce_medic\n')
+                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: press that button" hce_button\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}
@@ -361,8 +362,10 @@ def main():
                 m = re.fullmatch(r'(.+?) (\d+)\.(mp3|ogg|wav|flac)', fn, re.I)
                 if not m or m.group(1).lower() not in CHIEF_LINES: continue
                 key = CHIEF_LINES[m.group(1).lower()]
-                dst = f'sounds/hce_chief/{key.lower()}_{int(m.group(2))}.{m.group(3).lower()}'
-                shutil.copy(f'{CHIEF}/{fn}', f'{d}/{dst}')
+                dst = f'sounds/hce_chief/{key.lower()}_{int(m.group(2))}.ogg'
+                # 8 dB louder (they sat at about -21 dB mean, under the gunfire), a limiter keeping the peaks clean
+                subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{CHIEF}/{fn}', '-af', f'volume={CHIEF_GAIN_DB}dB,alimiter=limit=0.95',
+                                '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5', f'{d}/{dst}'], check=True)
                 groups.setdefault(key, []).append(dst)
             out = ['// the Master Chief\'s squad orders (the Halo CE Squad keys)']
             for key, files in sorted(groups.items()):

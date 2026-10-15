@@ -886,7 +886,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
   * `hce_openfire`: open fire.
   * `hce_focus`: focus on the enemy in your crosshair. Every Marine targets it until it's dead (and opens fire, if holding).
   * `hce_suppress`: suppress. For 8 seconds they fire twice as long and pause a third as long, at the enemy in your crosshair if there is one.
-  * `hce_medic`: medic. Put a Marine in your crosshair: the nearest corpsman (`HCE_MarineMedic`) runs to him, crouches beside him and patches him up (60% of his health back, never past his maximum).
+  * `hce_medic`: medic. Put a Marine in your crosshair: the nearest corpsman (`HCE_MarineMedic`) runs to him, crouches beside him and patches him up (60% of his health back, never past his maximum). Aim at a corpsman and he patches himself up where he stands.
   * `hce_weapon`: get that weapon. Point at a gun on the ground; the nearest Marine that can use it goes and picks it up, crouching beside it as usual and leaving his own, whether or not he'd have wanted it.
 
   * `hce_button`: press that button. Point at a switch (a wall line you'd use), or near one: the switch nearest where your crosshair lands, within 96 units, counts, so a switch you can only see the side of the pillar of still works. The nearest Marine runs over and uses it, Doom's own switches included (the ones made only for the player).

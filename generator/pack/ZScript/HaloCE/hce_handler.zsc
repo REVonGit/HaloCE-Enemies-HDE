@@ -691,6 +691,8 @@ class HCE_SpawnAllHandler : EventHandler
 		{
 			let hurt = LookedAtMarine(pl);
 			if(!hurt) return;
+			// a corpsman in the crosshair patches himself up
+			if(hurt.hce_isMedic && !hurt.hce_medicFor) { hurt.HCE_MedicOrder(hurt); return; }
 			HaloDoom_EnemyBase best = null;
 			for(int i = 0; i < squad.Size(); i++)
 				if(squad[i].hce_isMedic && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];

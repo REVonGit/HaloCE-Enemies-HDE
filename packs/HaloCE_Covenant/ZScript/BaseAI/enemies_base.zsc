@@ -3583,7 +3583,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// "medic": a corpsman (hce_isMedic) runs to the Marine the player has in the crosshair, crouches beside him and
-	// patches him up (true: busy with it this tic)
+	// patches him up (true: busy with it this tic). A corpsman who is himself in the crosshair is his own patient: he
+	// kneels where he stands and dresses his own wounds.
 	bool hce_isMedic;
 	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
 	// the acknowledgement.
@@ -3614,7 +3615,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				return true;
 			}
 			HCE_Brake();
-			A_SetAngle(AngleTo(pl), SPF_INTERPOLATE);
+			if(pl != self) A_SetAngle(AngleTo(pl), SPF_INTERPOLATE);
 			hce_medicPhase = 1; hce_medicTics = 35;
 			HCE_Play(HCE_HasAnim(HCE_A_CROUCH_IDLE) ? HCE_A_CROUCH_IDLE : HCE_A_IDLE, true, true);
 			return true;
@@ -3624,7 +3625,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		pl.GiveBody(int(max(20, pl.SpawnHealth() * 0.6)));   // a field dressing: 60% of his health, never past his maximum
 		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
 		let pm = HaloDoom_EnemyBase(pl);
-		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; pm.HCE_Say('Thanks', 0.8, 35); }
+		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; if(pm != self) pm.HCE_Say('Thanks', 0.8, 35); }
 		hce_medicFor = null;
 		HCE_Play(HCE_A_IDLE, true, true);
 		return true;

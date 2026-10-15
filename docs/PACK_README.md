@@ -1337,7 +1337,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
 * **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick, MA37 and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
 * **Covenant carbine:** CMT's (the Elites' carbine, and its blue re-tint on the Pulse Carbine Elites).
-* **Blind Wolf and Thorn Beast:** created by SOI_7 (from SPV3's a30 map). Mercury Rising's credits name omargabagu for their models, unevenelefant5 for their rigging and animations and Ruby of Blue for their sounds.
+* **Blind Wolf and Thorn Beast:** created by SOI_7 (from SPV3's a30 map).
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).

@@ -3823,7 +3823,10 @@ if 'Artybug' in MR_CHARS:
                                      flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades'])
 if 'Draeth' in MR_CHARS:
     BLOOD['Draeth'] = BLOOD['Elite']
-    VOICES['Draeth'] = VOICES['Elite']
+    # their own voice (voice_extra/Reaver: growls, roars, pain and death cries, no words) and heavy steps (reaver_steps/,
+    # split_factions.py's 'reaver' footstep set)
+    VOICES['Draeth'] = 'Reaver'
+    BASE_CODE['Draeth'] = BASE_CODE.get('Draeth', '') + "\toverride Name HCE_StepSet() { return 'reaver'; }    // the Reavers' own steps\n"
     HEAD_CLEAR['Draeth'] = HEAD_CLEAR['Elite']
     BESTIARY_GROUP['Draeth'] = 'Draeth (Reaver)'
 BESTIARY_RANK_GROUP += (('MarineFemale', 'Female Marine'), ('MarineFieldMedic', 'Field Medic'))

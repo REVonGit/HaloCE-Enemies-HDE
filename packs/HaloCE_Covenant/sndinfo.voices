@@ -1297,3 +1297,99 @@ $alias HCE/Jackal/DownThere HCE/Jackal/Alert
 $alias HCE/Jackal/FallBack HCE/Jackal/Flee
 $alias HCE/Jackal/Advance HCE/Jackal/Alert
 
+// ---- Reaver
+HCE/Reaver/Alert/0 "sounds/hce_voice/reaver/alert_00.ogg"
+HCE/Reaver/Alert/1 "sounds/hce_voice/reaver/alert_01.ogg"
+HCE/Reaver/Alert/2 "sounds/hce_voice/reaver/alert_02.ogg"
+HCE/Reaver/Alert/3 "sounds/hce_voice/reaver/alert_03.ogg"
+$random HCE/Reaver/Alert { HCE/Reaver/Alert/0 HCE/Reaver/Alert/1 HCE/Reaver/Alert/2 HCE/Reaver/Alert/3 }
+HCE/Reaver/Berserk/0 "sounds/hce_voice/reaver/berserk_04.ogg"
+HCE/Reaver/Berserk/1 "sounds/hce_voice/reaver/berserk_05.ogg"
+HCE/Reaver/Berserk/2 "sounds/hce_voice/reaver/berserk_06.ogg"
+HCE/Reaver/Berserk/3 "sounds/hce_voice/reaver/berserk_07.ogg"
+$random HCE/Reaver/Berserk { HCE/Reaver/Berserk/0 HCE/Reaver/Berserk/1 HCE/Reaver/Berserk/2 HCE/Reaver/Berserk/3 }
+HCE/Reaver/Death/0 "sounds/hce_voice/reaver/death_08.ogg"
+HCE/Reaver/Death/1 "sounds/hce_voice/reaver/death_09.ogg"
+HCE/Reaver/Death/2 "sounds/hce_voice/reaver/death_10.ogg"
+HCE/Reaver/Death/3 "sounds/hce_voice/reaver/death_11.ogg"
+$random HCE/Reaver/Death { HCE/Reaver/Death/0 HCE/Reaver/Death/1 HCE/Reaver/Death/2 HCE/Reaver/Death/3 }
+HCE/Reaver/DeathHard/0 "sounds/hce_voice/reaver/deathhard_12.ogg"
+HCE/Reaver/DeathHard/1 "sounds/hce_voice/reaver/deathhard_13.ogg"
+$random HCE/Reaver/DeathHard { HCE/Reaver/DeathHard/0 HCE/Reaver/DeathHard/1 }
+HCE/Reaver/Idle/0 "sounds/hce_voice/reaver/idle_14.ogg"
+HCE/Reaver/Idle/1 "sounds/hce_voice/reaver/idle_15.ogg"
+HCE/Reaver/Idle/2 "sounds/hce_voice/reaver/idle_16.ogg"
+HCE/Reaver/Idle/3 "sounds/hce_voice/reaver/idle_17.ogg"
+HCE/Reaver/Idle/4 "sounds/hce_voice/reaver/idle_18.ogg"
+HCE/Reaver/Idle/5 "sounds/hce_voice/reaver/idle_19.ogg"
+HCE/Reaver/Idle/6 "sounds/hce_voice/reaver/idle_20.ogg"
+HCE/Reaver/Idle/7 "sounds/hce_voice/reaver/idle_21.ogg"
+HCE/Reaver/Idle/8 "sounds/hce_voice/reaver/idle_22.ogg"
+$random HCE/Reaver/Idle { HCE/Reaver/Idle/0 HCE/Reaver/Idle/1 HCE/Reaver/Idle/2 HCE/Reaver/Idle/3 HCE/Reaver/Idle/4 HCE/Reaver/Idle/5 HCE/Reaver/Idle/6 HCE/Reaver/Idle/7 HCE/Reaver/Idle/8 }
+HCE/Reaver/Melee/0 "sounds/hce_voice/reaver/melee_23.ogg"
+HCE/Reaver/Melee/1 "sounds/hce_voice/reaver/melee_24.ogg"
+HCE/Reaver/Melee/2 "sounds/hce_voice/reaver/melee_25.ogg"
+HCE/Reaver/Melee/3 "sounds/hce_voice/reaver/melee_26.ogg"
+HCE/Reaver/Melee/4 "sounds/hce_voice/reaver/melee_27.ogg"
+HCE/Reaver/Melee/5 "sounds/hce_voice/reaver/melee_28.ogg"
+HCE/Reaver/Melee/6 "sounds/hce_voice/reaver/melee_29.ogg"
+HCE/Reaver/Melee/7 "sounds/hce_voice/reaver/melee_30.ogg"
+HCE/Reaver/Melee/8 "sounds/hce_voice/reaver/melee_31.ogg"
+HCE/Reaver/Melee/9 "sounds/hce_voice/reaver/melee_32.ogg"
+HCE/Reaver/Melee/10 "sounds/hce_voice/reaver/melee_33.ogg"
+HCE/Reaver/Melee/11 "sounds/hce_voice/reaver/melee_34.ogg"
+HCE/Reaver/Melee/12 "sounds/hce_voice/reaver/melee_35.ogg"
+$random HCE/Reaver/Melee { HCE/Reaver/Melee/0 HCE/Reaver/Melee/1 HCE/Reaver/Melee/2 HCE/Reaver/Melee/3 HCE/Reaver/Melee/4 HCE/Reaver/Melee/5 HCE/Reaver/Melee/6 HCE/Reaver/Melee/7 HCE/Reaver/Melee/8 HCE/Reaver/Melee/9 HCE/Reaver/Melee/10 HCE/Reaver/Melee/11 HCE/Reaver/Melee/12 }
+HCE/Reaver/Pain/0 "sounds/hce_voice/reaver/pain_40.ogg"
+HCE/Reaver/Pain/1 "sounds/hce_voice/reaver/pain_41.ogg"
+HCE/Reaver/Pain/2 "sounds/hce_voice/reaver/pain_42.ogg"
+HCE/Reaver/Pain/3 "sounds/hce_voice/reaver/pain_43.ogg"
+HCE/Reaver/Pain/4 "sounds/hce_voice/reaver/pain_44.ogg"
+HCE/Reaver/Pain/5 "sounds/hce_voice/reaver/pain_45.ogg"
+$random HCE/Reaver/Pain { HCE/Reaver/Pain/0 HCE/Reaver/Pain/1 HCE/Reaver/Pain/2 HCE/Reaver/Pain/3 HCE/Reaver/Pain/4 HCE/Reaver/Pain/5 }
+HCE/Reaver/PainHeavy/0 "sounds/hce_voice/reaver/painheavy_46.ogg"
+$random HCE/Reaver/PainHeavy { HCE/Reaver/PainHeavy/0 }
+HCE/Reaver/PainMed/0 "sounds/hce_voice/reaver/painmed_36.ogg"
+HCE/Reaver/PainMed/1 "sounds/hce_voice/reaver/painmed_37.ogg"
+HCE/Reaver/PainMed/2 "sounds/hce_voice/reaver/painmed_38.ogg"
+HCE/Reaver/PainMed/3 "sounds/hce_voice/reaver/painmed_39.ogg"
+$random HCE/Reaver/PainMed { HCE/Reaver/PainMed/0 HCE/Reaver/PainMed/1 HCE/Reaver/PainMed/2 HCE/Reaver/PainMed/3 }
+HCE/Reaver/Taunt/0 "sounds/hce_voice/reaver/taunt_47.ogg"
+HCE/Reaver/Taunt/1 "sounds/hce_voice/reaver/taunt_48.ogg"
+HCE/Reaver/Taunt/2 "sounds/hce_voice/reaver/taunt_49.ogg"
+HCE/Reaver/Taunt/3 "sounds/hce_voice/reaver/taunt_50.ogg"
+HCE/Reaver/Taunt/4 "sounds/hce_voice/reaver/taunt_51.ogg"
+HCE/Reaver/Taunt/5 "sounds/hce_voice/reaver/taunt_52.ogg"
+HCE/Reaver/Taunt/6 "sounds/hce_voice/reaver/taunt_53.ogg"
+HCE/Reaver/Taunt/7 "sounds/hce_voice/reaver/taunt_54.ogg"
+$random HCE/Reaver/Taunt { HCE/Reaver/Taunt/0 HCE/Reaver/Taunt/1 HCE/Reaver/Taunt/2 HCE/Reaver/Taunt/3 HCE/Reaver/Taunt/4 HCE/Reaver/Taunt/5 HCE/Reaver/Taunt/6 HCE/Reaver/Taunt/7 }
+$alias HCE/Reaver/KillPlayer HCE/Reaver/Taunt
+$alias HCE/Reaver/Regroup HCE/Reaver/Alert
+$alias HCE/Reaver/OnFire HCE/Reaver/PainHeavy
+$alias HCE/Reaver/Scold HCE/Reaver/PainMed
+$alias HCE/Reaver/AllyKilled HCE/Reaver/PainMed
+$alias HCE/Reaver/Betrayal HCE/Reaver/Taunt
+$alias HCE/Reaver/Acknowledge HCE/Reaver/Alert
+$alias HCE/Reaver/Thanks HCE/Reaver/Alert
+$alias HCE/Reaver/Wounded HCE/Reaver/PainHeavy
+$alias HCE/Reaver/Forgive HCE/Reaver/Alert
+$alias HCE/Reaver/WorseWeapon HCE/Reaver/PainMed
+$alias HCE/Reaver/TradeOk HCE/Reaver/Alert
+$alias HCE/Reaver/Refuse HCE/Reaver/PainMed
+$alias HCE/Reaver/HeardGunfire HCE/Reaver/Alert
+$alias HCE/Reaver/Cover HCE/Reaver/Alert
+$alias HCE/Reaver/Uncovered HCE/Reaver/Alert
+$alias HCE/Reaver/SearchStart HCE/Reaver/Alert
+$alias HCE/Reaver/SearchClear HCE/Reaver/Alert
+$alias HCE/Reaver/SearchFail HCE/Reaver/Alert
+$alias HCE/Reaver/KeepWatch HCE/Reaver/Alert
+$alias HCE/Reaver/FoundFoe HCE/Reaver/Alert
+$alias HCE/Reaver/JoinMe HCE/Reaver/Alert
+$alias HCE/Reaver/Charge HCE/Reaver/Berserk
+$alias HCE/Reaver/Investigate HCE/Reaver/Alert
+$alias HCE/Reaver/Behind HCE/Reaver/Alert
+$alias HCE/Reaver/Sniper HCE/Reaver/Alert
+$alias HCE/Reaver/Sword HCE/Reaver/Alert
+$alias HCE/Reaver/UpThere HCE/Reaver/Alert
+$alias HCE/Reaver/DownThere HCE/Reaver/Alert
+$alias HCE/Reaver/Advance HCE/Reaver/Alert

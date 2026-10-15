@@ -146,7 +146,9 @@ def knight_voice(d):
     open(f'{d}/sndinfo.knight', 'w').write('\n'.join(out) + '\n')
 
 
-STEP_SETS = {'covenant': ['elite', 'grunt', 'brute'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
+STEP_SETS = {'covenant': ['elite', 'grunt', 'brute', 'reaver'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
+# the Draeth's (Reavers') own heavy steps (reaver_steps/, with their voice): the same takes on every surface, walk and run
+REAVER_STEPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reaver_steps')
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
                'hold position': 'HoldPosition', 'pressbutton': 'PressButton', 'press button': 'PressButton',
@@ -378,14 +380,17 @@ def main():
         if fac in STEP_SETS and os.path.exists(f'{STEPS}/index.json'):
             # footsteps: HCE/Step/<set>/<surface>_<walk|run>, one a stride (HaloDoom_EnemyBase.HCE_StepTick)
             idx = json.load(open(f'{STEPS}/index.json'))
+            if os.path.isdir(REAVER_STEPS):
+                rs = sorted(os.path.join(REAVER_STEPS, f) for f in os.listdir(REAVER_STEPS) if f.endswith('.ogg'))
+                idx['reaver'] = {f'{sf}_{g}': rs for sf in ('hard', 'metal', 'dirt', 'grass', 'water') for g in ('walk', 'run')}
             out = ["// Halo 2's footsteps (extract_footsteps.py): HCE/Step/<set>/<surface>_<walk|run>"]
             for st in STEP_SETS[fac]:
                 for key, files in sorted(idx.get(st, {}).items()):
                     ids = []
                     for k, fn in enumerate(files):
-                        dst = f'sounds/hce_steps/{fn}'
+                        dst = f'sounds/hce_steps/{st}/{os.path.basename(fn)}' if os.path.isabs(fn) else f'sounds/hce_steps/{fn}'
                         os.makedirs(os.path.dirname(f'{d}/{dst}'), exist_ok=True)
-                        shutil.copy(f'{STEPS}/{fn}', f'{d}/{dst}')
+                        shutil.copy(fn if os.path.isabs(fn) else f'{STEPS}/{fn}', f'{d}/{dst}')
                         ids.append(f'HCE/Step/{st}/{key}/{k}')
                         out.append(f'{ids[-1]} "{dst}"')
                     out.append(f'$random HCE/Step/{st}/{key} {{ {" ".join(ids)} }}')

@@ -963,7 +963,7 @@ class HCE_Encounters : EventHandler
 		{
 			let c = cand[i];
 			bool far = true;
-			for(int k = 0; k < enc.Size(); k++) if((enc[k].site - c.pos).Length() < 2048) far = false;
+			for(int k = 0; k < enc.Size(); k++) if((enc[k].site - c.pos).Length() < 1536) far = false;   // encounters well apart
 			if(!far) continue;
 			Array<HaloDoom_EnemyBase> foes;
 			for(int k = 0; k < cand.Size(); k++)

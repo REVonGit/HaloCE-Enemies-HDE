@@ -68,8 +68,8 @@ UZDoom resolves every `#include` to the **last-loaded** file with that path.
 | `hce_keepdoommonsters` | false | Leave Doom's monsters alone (Doom's scripted marines are still replaced) |
 | `hce_floodlevel` | 1 | The level the Flood first appears on (see [Replacing Doom's monsters](#replacing-dooms-monsters)) |
 | `hce_sentinelallies` | true | The Sentinels fight for the player (Options > Halo CE AI > *Sentinels fight for you*); off, they are hostile as in Halo CE |
-| `hce_encounters` | 2 | At most this many Marine encounters per map (Options > Halo CE AI > *Marine encounters per map*); 0 turns them off |
-| `hce_encounterchance` | 0.6 | The chance of each of them |
+| `hce_encounters` | 3 | At most this many Marine encounters per map (Options > Halo CE AI > *Marine encounters per map*); 0 turns them off |
+| `hce_encounterchance` | 0.8 | The chance of each of them |
 | `hce_hunterpairs` | true | A lone Hunter spawns with its bond brother, including one that turns up mid-map (a monster spawner's, a summon) |
 | `hce_nerf_projectiles` | 0.4 (standalone: 0.3) | **Enemy projectile nerf.** Covers everything an enemy fires or throws: bullets, plasma, needles, spikes, rockets, fuel rods, grenades, Plasma Caster shots, beams, and their blasts and fuel-rod toxic clouds. Melee is untouched, and Marines' shots are not affected |
 | `hce_nerf_health` | 0.6 | Enemy health multiplier (Marines unaffected) |

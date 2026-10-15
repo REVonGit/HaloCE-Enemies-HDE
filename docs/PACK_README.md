@@ -1322,10 +1322,10 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
 * **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, hit and death sounds, by Bungie. The Suppressor's fire sounds are HaloDoom Evolved's.
-* **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
+* **Galap's Sentinels:** the Soldier, Dragoon, Gold, Onyx, Warden, Protector, Lancer, Interceptor, Marauder and Crawler (models, textures, animations and AI tags) are by Galap; the Crawler's biped is Lone Warrior's. His beam gunners (invisible gunners seated on a Sentinel's markers, Halo CE's way of giving one body several weapons) are not enemies of their own here: the Soldier fires its two extra beams and the Dragoon its heavy beam itself, from the same markers, on the gunners' own bursts.
 * **Flood Juggernaut:** model, skins, animations, sounds and stats from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
-* **Mercury Rising:** the Artillery, Brute, Canoneer, Compiler, Omega and Scout Sentinels, the Artybug, the female Marine and the medic, the Excavator, and the Draeth's and the Geist's stats and loadouts: from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694).
-* **Geist:** CMT's (its model, textures and animations, from Mercury Rising).
+* **Mercury Rising:** from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694), with its own credits: the Artillery, Brute, Canoneer, Compiler, Omega and Scout Sentinels, the Artybug and the Marine variants (the medic among them) are unevenelefant5's; the female Marine's tags are Galap's, with rigging and animation fixes by Kinnet; the Excavator is VKMT's. The Draeth's and the Geist's stats and loadouts are the mod's.
+* **Geist:** Arteen's (CMT; its model, textures and animations, from Mercury Rising).
 * **Draeth:** the 1999 Elite (`99_mac`) is the Digsite release's (github.com/digsite/h1), from Mercury Rising.
 * **Female Marine voices:** Halo 2's (marine_sassy, marine_tough), by Bungie.
 * **Reaver (Draeth) voice and footsteps:** Black Mesa's Alien Grunt, by Crowbar Collective.
@@ -1337,8 +1337,8 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
 * **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick, MA37 and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
 * **Covenant carbine:** CMT's (the Elites' carbine, and its blue re-tint on the Pulse Carbine Elites).
-* **Blind Wolf and Thorn Beast:** created by SOI_7 (from SPV3's a30 map).
-* **Marine kit:** the extra Marine accessories and permutations are Elefant's.
+* **Blind Wolf and Thorn Beast:** created by SOI_7 (from SPV3's a30 map). Mercury Rising's credits name omargabagu for their models, unevenelefant5 for their rigging and animations and Ruby of Blue for their sounds.
+* **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
 * **ODSTs:** the Halo CE ODST model and textures by Spiral.

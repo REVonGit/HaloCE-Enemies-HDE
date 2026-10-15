@@ -20,6 +20,8 @@ TEXTURES = os.environ.get('HCE_H2_TEXTURES', '')
 DRONE = r'objects\characters\bugger\bugger'
 
 # Halo 2 animation -> CE-style name used by build_pack.anim_table (or a custom name the drone's code plays)
+# To carry another Halo 2 Drone animation over, add a row: its graph name -> the pack name (a build_pack.anim_table
+# name, or one the Drone's own ZScript plays by name). Overlays (fire, pings) go in OVERLAYS instead.
 RENAME = {
     'flight:pistol:idle:var0': 'stand pistol idle',
     'flight:pistol:move_front': 'stand pistol move-front',
@@ -64,10 +66,12 @@ OVERLAYS = {
 }
 
 def qmul(a, b):
+    """a * b for (x, y, z, w) quaternions: b's rotation then a's (parent * local gives a bone's world rotation)"""
     ax, ay, az, aw = a; bx, by, bz, bw = b
     return np.array([aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx,
                      aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz])
 def qrot(q, v):
+    """vector v rotated by the (x, y, z, w) quaternion q"""
     u = np.asarray(q[:3]); w = q[3]
     return v + 2 * np.cross(u, np.cross(u, v) + w * v)
 
@@ -85,6 +89,8 @@ def placeholder(kind, size=256):
     rgb = np.stack([(base[c] + var[c] * (noise - 0.5)) * seg for c in range(3)], -1)
     return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), 'RGB')
 
+# The guns baked into the Drone's right hand, one surface set each (the builder shows one per class). To add one,
+# its pkl must exist under out/weapons (extract_weapons.py / cmt_weapon.py); add its id here and pick it in the builder.
 DRONE_WEAPONS = ['plasma_pistol', 'needler', 'plasma_rifle', 'spiker']   # out/weapons/<id>/<id>.pkl (CE weapon space)
 
 
@@ -96,6 +102,9 @@ DRONE_OLIVE = np.array([0.60, 0.66, 0.40], np.float32)
 DRONE_SHEEN = np.array([0.85, 0.95, 0.55], np.float32)
 
 def bake_bugger(im, bump):
+    """the Drone's colour map with its shader baked in: the grey shell tinted DRONE_OLIVE, the normal map's relief lit from
+    above and the specular sheen (DRONE_SHEEN, under the diffuse's alpha mask) added. im: RGBA diffuse, bump: its
+    normal map or None. Returns an RGB image. To change the Drone's colour, edit DRONE_OLIVE / DRONE_SHEEN."""
     from PIL import Image as _I
     a = np.asarray(im.convert('RGBA')).astype(np.float32) / 255
     rgb, spec = a[..., :3], a[..., 3:4]
@@ -139,6 +148,10 @@ def drone_textures(pid='Drone'):
         if im is not None: im.save(f'{OUT}/models/{pid}/{mat}'); done.add(mat); print(kind, '->', mat, im.mode, im.size)
 
 def extract_drone(pid='Drone'):
+    """Halo 2's Drone -> out/models/<pid>/<pid>.iqm, its skins and <pid>.json (the layout extract_chars.py writes).
+    The base permutation's highest LOD, one surface per shader (wings and antennae two-sided), the DRONE_WEAPONS
+    pkl meshes baked into the right-hand marker, the RENAME animations and the OVERLAYS baked onto their base poses.
+    Returns (meta, render model, map). Needs out/weapons/<id>/<id>.pkl for every DRONE_WEAPONS entry."""
     m = H2Map(MAP, os.environ.get('HCE_H2_CACHE') or None)
     M = render_model(m, DRONE)
     nodes = M['nodes']; NJ = len(nodes)
@@ -205,10 +218,12 @@ def extract_drone(pid='Drone'):
     byname = {x['name']: x for x in an}
     dec = {}
     def get(nm):
+        """the decoded (frames, root movement) of Halo 2 animation nm, cached"""
         if nm not in dec: dec[nm] = h2anim.decode(byname[nm]['data'], byname[nm]['sizes'], byname[nm]['frames'], byname[nm]['nodes'], defaults)
         return dec[nm]
     alist = []; info = {}
     def add(name, frames, mv, loop):
+        """records one animation for the IQM and its json entry (frames, speed, yaw, loop, net dx) from its root movement mv (F, 4)"""
         dx = mv[:, [0, 1, 2, 3]]
         speed = float(np.hypot(dx[:, 0], dx[:, 1]).sum() / max(1, len(frames)))
         info[name] = dict(frames=len(frames), speed=speed, yaw=float(np.degrees(dx[:, 3].sum())), loop=loop, key=-1, next=-1,

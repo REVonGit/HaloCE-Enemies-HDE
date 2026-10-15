@@ -35,7 +35,8 @@ from hce_paths import OUT
 
 SRC = os.environ.get('HCE_GALAP', 'galap_sentinels')
 C = 'characters\\custom\\'
-# pid -> (model, animation graph); 'ce' = Halo CE's Sentinel graph (from Sentinel_CE)
+# pid -> (model, animation graph); 'ce' = Halo CE's Sentinel graph (from Sentinel_CE). Tags are under C
+# (characters\custom\). To add one of Galap's Sentinels, add it here and map its biped tag(s) in UNIT_CHAR.
 CHARS = {
     'SentinelSoldier': ('sentinel_soldier\\sentinel_soldier', 'sentinel_soldier\\sentinel_generic'),
     'SentinelDragoon': ('sentinel_dragoon\\sentinel_dragoon', 'sentinel_soldier\\sentinel_generic'),
@@ -59,10 +60,12 @@ UNIT_CHAR = {C + 'sentinel_beam_gunner\\sentinel_beam_gunner_invisible\\sentinel
              C + 'sentinel_warden\\sentinel_warden': 'SentinelWarden', C + 'sentinel_protector\\sentinel_protector': 'SentinelProtector',
              C + 'sentinel_lancer\\sentinel_lancer': 'SentinelLancer', C + 'sentinel_interceptor\\sentinel_interceptor': 'SentinelInterceptor',
              C + 'sentinel_marauder\\sentinel_marauder': 'SentinelMarauder', C + 'sentinel_crawler\\sentinel_crawler': 'SentinelCrawler'}
+# variants whose name holds one of these are left out of ai()
 SKIP_VARIANTS = ('sentinel_constructor', 'sentinel_enforcer')       # the pack has Halo 2's
 # the beam gunner's own graph names -> the pack's
 RENAME = {'gunseat fixed idle': 'stand fixed idle%0', 'crouch fixed idle': 'crouch fixed idle%0'}
 
+# (parent struct, block field) -> child struct name, for lib/loosewalk to walk the gbxmodel tag
 CH = {('model', 'markers'): 'model_marker', ('model_marker', 'instances'): 'model_marker_instance', ('model', 'nodes'): 'model_node',
       ('model', 'regions'): 'model_region', ('model_region', 'permutations'): 'model_region_permutation',
       ('model_region_permutation', 'markers'): 'model_perm_marker', ('model', 'geometries'): 'model_geometry',
@@ -72,11 +75,17 @@ CH = {('model', 'markers'): 'model_marker', ('model_marker', 'instances'): 'mode
 
 
 def path(tag, ext):
+    """the file of a loose tag under SRC: tag name (backslashes) + '.' + extension"""
     return os.path.join(SRC, tag.replace('\\', '/') + '.' + ext)
 
 
 def load_model(tag):
-    """nodes [dict(name, parent, t, q)], parts [dict(shader name, pos, nrm, uv, bi, bw, tris)] of the base permutations"""
+    """nodes [dict(name, parent, t, q)], parts [dict(shader name, pos, nrm, uv, bi, bw, tris)] of the base permutations
+
+    Reads the .gbxmodel with lib/loosewalk (the gbxmodel field tables of cmt_weapon), takes each region's 'base'
+    permutation (else its first) at its highest level of detail, maps the parts' local node tables back to the
+    model's nodes, normalises the two weights and unrolls the triangle strips, flipping the winding when most
+    faces come out against their normals."""
     import cmt_weapon as cw
     lw.fields = cw._fields_gbx
     try:
@@ -157,12 +166,18 @@ def load_markers(tag):
 
 
 def bitmap(tag):
+    """a loose .bitmap tag as a PIL image (lib/loosebitmap)"""
     from loosebitmap import load
     return load(path(tag, 'bitmap'))
 
 
 def skins(pid, parts, od):
-    """surfaces: body (by shader), shield; returns [(surface name, material file, parts)]"""
+    """surfaces: body (by shader), shield; returns [(surface name, material file, parts)]
+
+    Groups the parts by shader name ('shield' -> shield.<shader>, 'gold' -> body.sentinel_metal_gold, the rest
+    body.sentinel_metal; 'invisible' dropped) and writes each material into od: the CE Sentinel's skin and
+    multipurpose map copied, the Gold's bitmap with a made-up multipurpose map (0.8 specular), a flat blue for
+    the shield. To give a Sentinel its own texture, add a branch on its shader name here."""
     ce = f'{OUT}/models/Sentinel_CE'
     out = {}
     for p in parts:
@@ -188,6 +203,8 @@ def skins(pid, parts, od):
 
 
 def surface(name, material, parts):
+    """the parts of one skins() group concatenated into one IQM mesh dict (weights as bytes summing to 255,
+    triangles flipped to the IQM winding)"""
     pos, nrm, uv, bi, bw, tris, n0 = [], [], [], [], [], [], 0
     for x in parts:
         pos.append(x['pos']); nrm.append(x['nrm']); uv.append(x['uv'])
@@ -199,7 +216,10 @@ def surface(name, material, parts):
 
 
 def anims(graph, nodes):
-    """{name: (frames, movement, loop)}: the graph's base animations, its overlays baked on the idle"""
+    """{name: (frames, movement, loop)}: the graph's base animations, its overlays baked on the idle
+
+    graph 'ce' takes the Halo CE Sentinel's animations straight from out/models/Sentinel_CE (same skeleton
+    asserted); otherwise the loose .model_animations is decoded with lib/looseantr, names mapped through RENAME."""
     names = [n['name'] for n in nodes]
     if graph == 'ce':
         j, _, an = read_iqm(f'{OUT}/models/Sentinel_CE/Sentinel.iqm')
@@ -224,6 +244,9 @@ def anims(graph, nodes):
 
 
 def write(pid, tag, nodes, meshes, A, od):
+    """<pid>.iqm and <pid>.json into od from the nodes, surfaces and anims() dict; the json follows
+    extract_chars.py's layout plus shield_surface (the index of the 'shield.' surface) and source='galap'.
+    Collision radius is half the model's widest horizontal extent; collision height is left 0. Returns the meta."""
     joints = [(n['name'], n['parent'], tuple(n['t']), tuple(n['q']), (1, 1, 1)) for n in nodes]
     alist, info = [], {}
     for name, (frames, mv, loop) in sorted(A.items()):
@@ -268,6 +291,8 @@ def ai():
 
 
 def main():
+    """every CHARS entry -> out/models/<pid>/ (folder replaced), then ai(); --markers only rewrites the markers
+    of models already extracted"""
     if not os.path.isdir(SRC): sys.exit(f'no Galap pack at {SRC} (HCE_GALAP)')
     if '--markers' in sys.argv:                     # only the markers, into the models already extracted
         for pid, (model, graph) in CHARS.items():

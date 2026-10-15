@@ -23,6 +23,8 @@ STANCE = 'h2plasma'
 
 
 def main():
+    """per body: every 'h2rifle' animation copied as 'h2plasma' with the left arm solved onto the plasma rifle's
+    palm target (unless the animation lets go of the gun), the json entries copied, the IQM rewritten"""
     left = mg.GUNS[STANCE][0]
     for char in ('Marine', 'MarineArmored'):
         pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'

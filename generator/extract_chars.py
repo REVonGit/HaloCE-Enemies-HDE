@@ -1,4 +1,14 @@
-"""Extract Halo CE campaign enemies (+ marines) to IQM + PNG skins + JSON stats."""
+"""Extract Halo CE campaign enemies (+ marines) to IQM + PNG skins + JSON stats.
+
+    python3 extract_chars.py [PackId ...]      # -> $HCE_OUT/models/<PackId>/<PackId>.iqm, *.png, <PackId>.json
+
+Reads the Xbox campaign maps in MAPS (HCE_MAPS), finds each biped in CHARS and writes its model (one permutation per
+region, best level of detail, weapons baked onto the hand), its skins (base map and multipurpose map per material),
+every animation of its graph merged across the maps (overlays baked onto the idle, Halo 2 stances added) and a JSON
+of joints, bounds, per-animation speed and movement, markers and collision size for build_pack.py. extract_weapons.py
+and extract_ai.py must have run first (the baked weapons come from out/weapons, the carried ones from ai_data.json).
+The other extractors (extract_spv3.py, extract_odst.py ...) reuse extract() on other maps by patching the module.
+"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, re, shutil
@@ -10,7 +20,10 @@ from tags import tag, HMap, Tag, LAYOUT
 from bitmaps import bitmap_image
 from iqm import write_iqm
 
+# the Xbox campaign caches, in the order they are searched
 MAPS = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40']
+# To add a Halo CE biped to the pack, add it here (and its variants come along through extract_ai.py); the pack id
+# names the out/models folder, the IQM and the classes build_pack.py makes.
 CHARS = {  # biped tag name -> pack id
     r'characters\grunt\grunt': 'Grunt',
     r'characters\grunt\grunt specops': 'GruntSpecOps',
@@ -28,7 +41,9 @@ CHARS = {  # biped tag name -> pack id
     r'characters\marine_armored\marine_armored': 'MarineArmored',
 }
 from hce_paths import OUT, MAPS_DIR
-# Halo CE armour permutations per pack id (the base looks otherwise). The Spec Ops Elites wear the regular Elite
+# Halo CE armour permutations per pack id (the base looks otherwise): {region name: permutation name}. To dress a
+# body differently, name another permutation of the region here (the names are in the model tag's regions).
+# The Spec Ops Elites wear the regular Elite
 # model's crescent-masked (curved) helmet with the armoured arms and legs instead of the elite_special body; the
 # Spec Ops Grunts the "shellback" (shrimp-back) tank; Major Jackals the armoured head.
 PERMS = {
@@ -46,12 +61,15 @@ def bitmap_count(m, tid):
     return m.reflexive(t['data'] + 0x60)[0]
 
 
+# pack id -> biped whose model supplies the geometry (the animations still come from the body's own graph)
 MODEL_FROM = {'EliteSpecial': r'characters\elite\elite'}     # take the geometry from this biped's model
 # Regions kept with several permutations, each on surfaces of its own (named region.perm), for the packs to pick one per
 # enemy at run time: all twelve of the Marines' faces and headgear (Sgt Johnson's among them), their sleeves (Johnson's
 # full sleeves, the rolled-down ones); the Armored Marines' battle-damaged vest is left out (base vest only). The armoured Marines' helmet and HUD
 # visor are the same mesh on every helmeted face: one shared surface (region.shared). The faces keep Halo CE's
 # open-mouth textures: the heads have an articulated jaw (bip01 ponytail1) that closes over them.
+# {pack id: {region: [permutation names] or None}}. A region listed here is written with every named permutation as
+# its own surface ('region.perm' in the json's mesh_names) instead of one; build_pack.py shows one per enemy.
 MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: faces, hats, sleeves)
     'Marine': {'head': None, 'arms': None},
     'MarineArmored': {'head': None, 'arms': ['__base', 'sgt_johnson-100']},
@@ -72,12 +90,18 @@ MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: fa
 # bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
 # model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)
 OVERLAY_GUNS = ('Marine', 'MarineArmored')
+# shaders whose MULTI_PERMS geometry is one 'region.shared' surface, not one per permutation
 SHARED_SHADERS = ('marine_helmet', 'marine_hud')
 
 def sanitize(n):
+    """a name as a lower-case identifier: runs of anything but [a-z0-9_] become one underscore"""
     return re.sub(r'[^a-z0-9_]+', '_', n.lower()).strip('_')
 
 def shader_maps(m, sh):
+    """a model shader reference (dict with 'id') -> (base map tag id, multipurpose map tag id, (u scale, v scale)).
+
+    shader_model (soso) tags carry both maps and their own UV scale at fixed offsets; any other shader class goes
+    through render.shader_basemap for its base map alone. Missing maps come back as None, scales default to 1."""
     t = m.byid.get(sh['id']) if isinstance(sh, dict) else None
     if not t: return None, None, (1, 1)
     if t['cls'] == 'soso':
@@ -89,7 +113,8 @@ def shader_maps(m, sh):
     ref, _ = shader_basemap(m, t['id'])
     return ref, None, (1, 1)
 
-# hand marker each species attaches its weapon to (animation graph weapon_class.hand_marker_name)
+# hand marker each species attaches its weapon to (animation graph weapon_class.hand_marker_name); the default is
+# 'right hand'. A body whose gun sits wrong wants its own marker named here (extract_elite_rifle.py adds one).
 HAND_MARKER = {'Elite': 'right hand elite', 'EliteSpecial': 'right hand elite',
                'Jackal': 'left hand jackal', 'JackalMajor': 'left hand jackal'}
 
@@ -116,7 +141,11 @@ def char_weapons(name):
 EXTRA_WEAPONS = {r'characters\elite\elite': ['fuel_rod'], r'characters\elite\elite special': ['h2_beam_rifle']}
 
 def attach_weapons(pid, name, model, markers, meshes):
-    """Bake each weapon rigidly onto the hand node at Halo's hand marker (weapon origin = marker)."""
+    """Bake each weapon rigidly onto the hand node at Halo's hand marker (weapon origin = marker).
+
+    Appends one mesh per weapon part to meshes (all weighted to the hand node) and copies the weapon textures into
+    the body's folder; returns the weapon id of each mesh added, in order. Weapons come from char_weapons(name)
+    (ai_data.json plus EXTRA_WEAPONS); Hunters and Sentinels get none (the gun is part of the body)."""
     import pickle
     if pid in ('Hunter', 'Sentinel'): return []   # weapon is part of the body (arm cannon / beam)
     mk = markers.get(HAND_MARKER.get(pid, 'right hand'))
@@ -141,7 +170,10 @@ def attach_weapons(pid, name, model, markers, meshes):
     return added
 
 def merge_meshes(meshes, mesh_weapon):
-    """One surface per (material, weapon): UZDoom models allow at most 32 surfaces (MD3_MAX_SURFACES)."""
+    """One surface per (material, weapon): UZDoom models allow at most 32 surfaces (MD3_MAX_SURFACES).
+
+    mesh_weapon lists the weapon id of each mesh (None for body parts); meshes with a 'group' (MULTI_PERMS
+    permutation surfaces) stay separate per group. Returns (merged meshes, their weapon ids)."""
     groups = {}
     for mm, w in zip(meshes, mesh_weapon):
         groups.setdefault((mm['material'], w, mm.get('group')), []).append(mm)
@@ -159,6 +191,15 @@ def merge_meshes(meshes, mesh_weapon):
     return out, ow
 
 def extract(name, pid, sources, maps):
+    """One biped (tag name, pack id) -> out/models/<pid>/: <pid>.iqm, <material>.png (+ _multi.png), <pid>.json.
+
+    sources are the names of the maps (keys of maps, {name: HMap}) that carry the biped; the first supplies the
+    model, all of them supply animations (first occurrence of a name wins). Steps: pick a permutation per region
+    (PERMS, MULTI_PERMS), take its best level of detail, write one material per (base map, multipurpose map, image
+    index), skin to at most two bones, bake the carried weapons on the hand (attach_weapons, unless OVERLAY_GUNS),
+    merge to at most 32 surfaces, read the animation graph, bake fire / flinch / reload overlays onto the matching
+    idle, add Halo 2 stances (h2_elite_anims, marine_grip), pin the Marines' jaw shut, write the IQM and the meta.
+    Returns the meta dict that was written to the json."""
     os.makedirs(f'{OUT}/models/{pid}', exist_ok=True)
     for f in os.listdir(f'{OUT}/models/{pid}'):        # left over from an earlier mouth-painting pass
         if f.endswith('_open.png'): os.remove(f'{OUT}/models/{pid}/{f}')
@@ -332,6 +373,7 @@ def extract(name, pid, sources, maps):
     return meta
 
 def read_markers(m, model):
+    """the model tag's markers: {name: [dict(node, t, q), ...]} (one entry per instance, in node-local space)"""
     out = {}
     for mk in model.tag.block('markers', 'model_marker'):
         nm = hm.cstr(m, mk.addr)

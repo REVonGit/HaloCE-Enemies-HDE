@@ -14,12 +14,13 @@ import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import hashlib, json, os, re, subprocess, sys
 
-TARGET = -11.0      # LUFS
-MAX_GAIN = 18.0     # dB
-SKIP = re.compile(r'(move|flying|bodyfall|step|land|thump|footstep)', re.I)
+TARGET = -11.0      # LUFS: the loudness every line is raised toward (lower, e.g. -14, for quieter dialogue)
+MAX_GAIN = 18.0     # dB: the most a very quiet line is raised, so near-silent takes don't turn to hiss
+SKIP = re.compile(r'(move|flying|bodyfall|step|land|thump|footstep)', re.I)   # sound names that aren't speech: left alone
 
 
 def lufs(path):
+    """the file's integrated loudness in LUFS (ffmpeg's ebur128 filter), or None when ffmpeg reports none"""
     out = subprocess.run(['ffmpeg', '-hide_banner', '-nostats', '-i', path, '-af', 'ebur128', '-f', 'null', '-'],
                          capture_output=True, text=True).stderr
     m = re.findall(r'I:\s+(-?[\d.]+) LUFS', out)
@@ -27,10 +28,13 @@ def lufs(path):
 
 
 def sha(path):
+    """the file's sha1 hex digest (the manifest's key for 'already levelled')"""
     return hashlib.sha1(open(path, 'rb').read()).hexdigest()
 
 
 def voice_sets(roots):
+    """the voice set names (lowercased) any class names in HCE_Voices "A,B" across the .zsc files under roots, pack/
+    and addons/digsite: the voices that are actually spoken, so unused sets aren't processed"""
     names = set()
     here = os.path.dirname(os.path.abspath(__file__))
     for base in list(roots) + [os.path.join(here, 'pack'), os.path.join(here, 'addons', 'digsite')]:
@@ -43,6 +47,8 @@ def voice_sets(roots):
 
 
 def files_of(root, voices):
+    """the sound files under root that its sndinfo* lumps map to HCE/<Voice>/<Event> for one of 'voices', minus
+    SKIP's non-speech names; sorted absolute paths"""
     out = set()
     for f in os.listdir(root):
         if not f.lower().startswith('sndinfo'): continue
@@ -55,6 +61,8 @@ def files_of(root, voices):
 
 
 def process(root, voices):
+    """raise every voice line under root (files_of) toward TARGET in place, re-encoding as Vorbis q6; files whose hash
+    is in root/.loudened.json are skipped, and the manifest is rewritten afterwards"""
     man_path = os.path.join(root, '.loudened.json')
     man = json.load(open(man_path)) if os.path.exists(man_path) else {}
     files = files_of(root, voices)

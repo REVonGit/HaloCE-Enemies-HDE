@@ -1,17 +1,32 @@
-"""Minimal IQM v2 writer (skeletal meshes + animations)."""
+"""Minimal IQM v2 writer (skeletal meshes + animations).
+
+write_iqm() is how every extractor hands a model to UZDoom; read_iqm() reads those files back for previews, texture
+baking (texmath.raster_normals) and retargeting (h2rig). What is written: one vertex array each for position,
+texcoord, normal, blend indices and blend weights (no tangents, no colours), one mesh record per input mesh, the
+joints with their parent-relative bind pose, one pose record per joint, and every animation's frames quantised to
+u16 per channel (IQM's own scheme: value = offset + raw * scale; a channel that never changes is stored once in the
+pose). Coordinates are passed through untouched: the extractors already scaled Halo units to Doom units and the
+IQM axes are Halo's (x forward, y left, z up), which UZDoom's model loader maps itself."""
 import struct
 import numpy as np
 
 class IQMWriter:
+    """The IQM text table under construction: text (bytes, NUL-separated, starts with the empty string) and
+    textidx (string -> offset into it)."""
     def __init__(s):
+        """start the table with the empty string at offset 0"""
         s.text = b'\0'
         s.textidx = {'': 0}
     def T(s, t):
+        """Offset of string t in the text table, adding it if new."""
         if t not in s.textidx:
             s.textidx[t] = len(s.text)
             s.text += t.encode('latin1') + b'\0'
         return s.textidx[t]
 
+# Frame tuples (t, q, s): t and q as 3- and 4-sequences, s a scalar or 3-sequence. All animations' frames are
+# concatenated into one frame table and each animation record points at its range. Returns the file size in bytes.
+# Blend indices are joint indices into `joints`; weights are bytes summing to 255 (UZDoom normalises anyway).
 def write_iqm(path, joints, meshes, anims):
     """
     joints: list of (name, parent, t(3), q(4 xyzw), s(3))
@@ -76,6 +91,7 @@ def write_iqm(path, joints, meshes, anims):
     blobs = []
     off = HDR
     def add(b):
+        """append blob b to the file (padded to 4 bytes) and return its offset"""
         nonlocal off
         o = off
         pad = (-len(b)) % 4
@@ -116,6 +132,8 @@ def write_iqm(path, joints, meshes, anims):
         for b in blobs: f.write(b)
     return size
 
+# anims comes back as a dict {name: frames} (write_iqm takes a list), fps and loop flags are dropped, and meshes
+# carry their own 0-based tris. Only reads the vertex array formats this writer emits (float and ubyte).
 def read_iqm(path):
     """inverse of write_iqm (for previews/tests): returns joints, meshes, anims (frames[F][J] = (t, q, s))"""
     d = open(path, 'rb').read()

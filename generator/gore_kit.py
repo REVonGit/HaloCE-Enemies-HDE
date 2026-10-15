@@ -56,6 +56,13 @@ SPV3_BITMAPS = os.environ.get('HCE_SPV3_BITMAPS', 'bitmaps.map')   # SPV3's bitm
 
 
 # char -> blood colour and texture style, spv3 model (or none: kitbashed caps), limbs {name: root bone (subtree)}
+# Keys: blood (hex, the stand-in texture's and recolour's colour), style ('bone' / 'worm' / 'insect': gore_texture),
+# spv3 (SPV3_MODEL key whose torso caps are borrowed), limbs {limb: root bone, its subtree is the limb}, regions
+# {limb: (SPV3 region name, bone)} for a limb that is a region rather than a bone subtree, collapse {limb: bone} for
+# limbs scaled away at run time, cap_model (attachment index for stumps kept as their own model), cap_from (surface
+# name prefix the collapsed stump's rim is cut from), prune / drop_slivers (give up tiny surfaces), swap / roots / gun
+# (the Flood's permutation swap). To dismember a new character: a row here (limbs by its bone names), a GORE_TEX row,
+# and build_pack.BLOOD for its blood. Limb names head / larm / rarm are what HCE_SeverLimb knows.
 GORE = {
     'Elite':        dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'EliteSpecial': dict(blood='3A1E8C', style='bone', spv3='elite_new', limbs={'head': 'bip01 neck', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
@@ -110,6 +117,7 @@ SPV3_MODEL = {'elite_new': r'characters\elite_new\elite_new', 'grunt_new': r'cha
 
 _spv3 = None
 def spv3():
+    """(SPV3's b40_1.map opened as a PCMap, the halomodel module patched to read its Gearbox geometry), opened once"""
     global _spv3
     if _spv3 is None:
         from pcmap import PCMap, gbx_geometry
@@ -234,11 +242,13 @@ def planar_uv(pos, center, outward, radius):
 
 
 def world_bind(joints):
+    """every joint's bind pose in model space, [(position, rotation quaternion)] (preview.world)"""
     from preview import world
     return world([j[1] for j in joints], [(j[2], j[3]) for j in joints])
 
 
 def subtree(joints, root):
+    """the joint indices of the bone named root and everything under it (case-insensitive)"""
     names = [j[0].lower() for j in joints]
     r = names.index(root.lower())
     out = {r}
@@ -249,11 +259,13 @@ def subtree(joints, root):
 
 
 def dominant(m):
+    """per vertex of mesh m, the bone with the largest weight"""
     k = np.argmax(m['bw'], axis=1)
     return m['bidx'][np.arange(len(k)), k]
 
 
 def sub_mesh(m, tris):
+    """a copy of mesh m holding only these triangles (vertex indices into m), vertices compacted"""
     used = np.unique(tris)
     remap = np.full(len(m['pos']), -1); remap[used] = np.arange(len(used))
     return dict(name=m['name'], material=m['material'], pos=m['pos'][used], nrm=m['nrm'][used], uv=m['uv'][used],
@@ -266,6 +278,7 @@ def boundary_loops(parts, skins=None):
     key = {}
     pts, sk = [], []
     def vid(p, b):
+        """the welded vertex id of position p (rounded to 1/2000 units), recording its skin weights b the first time"""
         k = tuple(np.round(p * 2000).astype(int))
         if k not in key: key[k] = len(pts); pts.append(p); sk.append(b)
         return key[k]
@@ -331,7 +344,7 @@ def cap_mesh(loops, joint_pos, outward, bone, material, dome=0.25):
     return dict(name='', material=material, pos=P, nrm=np.array(N), uv=np.array(UV), bidx=bidx, bw=bw, tris=T)
 
 
-COLLAPSE_EDGE = 0.15
+COLLAPSE_EDGE = 0.15      # a triangle with a corner weighted more than this on a collapsed limb's bones is in its stump's rim
 
 
 def limb_frac(m, bones):
@@ -469,6 +482,10 @@ def perm_of(name):
 
 
 def process(char):
+    """cut one character's limbs (GORE[char], the non-swap kind): starting from the pristine copy, split its surfaces
+    per limb, build the stumps (SPV3's, collapsed or kitbashed) and the gore texture, write a gib IQM per limb (and
+    per permutation), rewrite <char>.iqm with the new surfaces and record it all under 'gore' in <char>.json. The
+    animations and json keys later scripts added are carried over."""
     cfg = GORE[char]
     od = f'{OUT}/models/{char}'
     ip, jp = f'{od}/{char}.iqm', f'{od}/{char}.json'

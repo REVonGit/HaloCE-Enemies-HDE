@@ -1,10 +1,14 @@
 """Loose CE .gbxmodel weapon (e.g. CMT's Covenant carbine) -> weapon pkl (+x forward, +z up, origin at the grip)."""
+# Run: python3 cmt_weapon.py [carbine dir] [out dir]        -> out/weapons/cmt_carbine/cmt_carbine.pkl + w_cmt_carbine_*.png
+#      python3 cmt_weapon.py spiker [Spiker dir] [out dir]  -> out/weapons/spiker/spiker.pkl + w_spiker_*.png
+# Reads the loose .gbxmodel and its bitmaps/ folder; the Jackal, Drone and Brute extractors bake the pkl into hands.
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import struct, pickle, os, sys
 import numpy as np
 import loosewalk as lw
 
+# (parent struct, block field) -> child struct name, for loosewalk's walk of a gbxmodel
 CH = {('model', 'markers'): 'model_marker', ('model_marker', 'instances'): 'model_marker_instance', ('model', 'nodes'): 'model_node',
       ('model', 'regions'): 'model_region', ('model_region', 'permutations'): 'model_region_permutation',
       ('model_region_permutation', 'markers'): 'model_perm_marker', ('model', 'geometries'): 'model_geometry',
@@ -13,12 +17,14 @@ CH = {('model', 'markers'): 'model_marker', ('model_marker', 'instances'): 'mode
       ('model', 'shaders'): 'model_shader_reference'}
 
 def _fields_gbx(st, _orig=lw.fields):
+    """loosewalk's field table with the gbxmodel (PC) struct sizes"""
     if st == 'model_perm_marker': return 80, []
     sz, fl = _orig(st)
     if st == 'model_geometry_part': sz = 132          # gbxmodel (PC) parts carry the local-node table
     return sz, fl
 
 def load(path):
+    """a loose .gbxmodel as a loosewalk tag (must be complete)"""
     lw.fields = _fields_gbx
     try:
         t = lw.LooseTag(path, 'model', CH)
@@ -28,6 +34,7 @@ def load(path):
     return t
 
 def strip_to_tris(idx):
+    """a Halo triangle strip (-1 ends a strip) -> (M, 3) triangles, degenerates dropped"""
     tris = []
     for i in range(len(idx) - 2):
         a, b, c = idx[i], idx[i + 1], idx[i + 2]
@@ -75,6 +82,8 @@ def build_carbine(gbx, bitmaps_dir, out_dir, wid='cmt_carbine'):
     p = d * (1 - m) + np.clip(d * purple * 1.35 + 0.04 * purple, 0, 1) * m
     tex['purple.png'] = Image.fromarray((p * 255).astype(np.uint8))
     def glow(img, gain=1.0):
+        """an illumination bitmap as an RGBA additive texture: alpha from its brightness (x2 x gain), so the dark
+        parts drop out"""
         a = np.asarray(img.convert('RGB')).astype(np.float32)
         alpha = np.clip(a.max(2) * 2.0 * gain, 0, 255)
         return Image.fromarray(np.dstack([a, alpha]).astype(np.uint8), 'RGBA')
@@ -86,6 +95,8 @@ def build_carbine(gbx, bitmaps_dir, out_dir, wid='cmt_carbine'):
     pb = d * (1 - m) + np.clip(d * blue * 1.35 + 0.04 * blue, 0, 1) * m
     tex['blue_purple.png'] = Image.fromarray((pb * 255).astype(np.uint8))
     def to_blue(img):
+        """recolour a glow texture's RGB to blue by its brightness (whites stay bright), keeping its alpha.
+        To change the Pulse Carbine's light colour, edit the [0.35, 0.65, 1.0] here"""
         a = np.asarray(img).astype(np.float32)
         lum = a[..., :3].max(2, keepdims=True) / 255.0
         rgb = np.clip(lum * np.array([0.35, 0.65, 1.0]) * 255 + lum ** 3 * 60, 0, 255)

@@ -20,10 +20,13 @@ except Exception:
     OUT = os.path.join(HERE, 'out')
 SOUNDS_DIR = os.environ.get('HCE_H2_SOUNDS', '')
 TAG = 'sound\\vehicles\\jet_pack\\jet_pack\\'
+# Halo 2's sample-rate enum -> Hz
 RATES = {0: 22050, 1: 44100, 2: 32000}
 
 
 def main():
+    """decodes the three jump-pack sounds (Xbox ADPCM, whole chunks from sounds_neutral.dat) to WAV and encodes
+    them with ffmpeg as out/sounds/H2Jetpack/{in,loop,out}.ogg (Vorbis q5)"""
     from h2map import H2Map, sound_chunks
     bank = os.path.join(SOUNDS_DIR, 'sounds_neutral.dat')
     if not os.path.exists(bank): sys.exit(f'no {bank}: set HCE_H2_SOUNDS to MCC\'s halo2\\h2_maps_win64_dx11')

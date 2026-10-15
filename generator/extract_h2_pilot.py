@@ -21,6 +21,7 @@ from h2rig import ce_head, node_world_pos
 from h2map import shader_bitmaps
 import extract_h2_elite_kit as ek
 KIT = eo.KIT
+# the Halo 2 Marine head permutations made into pilots (one piece each); the visor's tint and the teeth's whiteness follow
 FACES = ('smith', 'banks', 'dion', 'morgan', 'perez', 'walter')
 VISOR = 'mk_h2_pilot_visor.png'
 VISOR_RGB = ((0.42, 0.30, 0.16), (0.10, 0.07, 0.05))   # smoked amber, lighter at the brow
@@ -29,6 +30,9 @@ TEETH_SHADE = 0.6                                        # how much of Halo 2's 
 
 
 def main():
+    """writes the visor gradient, then for each face one h2_pilot_<face>.iqm (its head, eyes, teeth and the pilot
+    helmet, rigid on the CE head bone) with the colour maps made by extract_h2_elite_kit.colour_map, and records
+    them in MarineKit.json as enclosed heads"""
     from h2map import H2Map, render_model
     import extract_h2_brute as hb
     from PIL import Image
@@ -45,6 +49,7 @@ def main():
     Image.fromarray(np.clip((t * (1 - y) + b * y) * 255 * np.ones((64, 64, 3)), 0, 255).astype(np.uint8)).save(f'{KIT}/{VISOR}')
     done = {}
     def tex(shader):
+        """the kit texture of a Halo 2 shader (made once; the teeth map re-levelled to white)"""
         if shader not in done:
             fn = f'mk_h2_{shader}.png'
             ek.colour_map(m, hb, shader_bitmaps(m, R, shader), fn)

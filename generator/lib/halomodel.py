@@ -1,14 +1,25 @@
-"""Halo CE (Xbox) 'mode' + 'antr' extraction."""
+"""Halo CE (Xbox) 'mode' + 'antr' extraction.
+
+Model: the skeleton, shader list, regions/permutations and skinned geometry of a model tag (Xbox vertex formats:
+compressed 32-byte and uncompressed 68-byte). read_animations: every animation of an animation_graph tag decoded
+to per-frame per-node (translation, rotation, scale) plus root motion, uncompressed and compressed data alike.
+
+Conventions used by everything downstream (iqm.py, jms.py, preview.py): quaternions are (x, y, z, w); Halo stores
+node rotations conjugated, and hq() undoes that so returned quaternions are the usual convention; positions are
+Halo world units (1 unit = 10 feet = 3.048 m); a joint's (t, q) is relative to its parent; frames[F][N] = (t, q, s)
+with None where an overlay animation leaves a channel alone."""
 import struct, math
 import numpy as np
 from tags import Tag, tag, HMap, LAYOUT
 
 def cstr(m, addr, n=32):
+    """Fixed-width (n bytes) NUL-padded string at virtual address addr, e.g. a node or region name."""
     o = m.v2o(addr)
     return m.d[o:o + n].split(b'\0')[0].decode('latin1')
 
 # ---------------------------------------------------------------- math
 def qmul(a, b):
+    """Hamilton product a * b of (x, y, z, w) quaternions: the rotation b followed by a."""
     ax, ay, az, aw = a; bx, by, bz, bw = b
     return np.array([aw*bx + ax*bw + ay*bz - az*by,
                      aw*by - ax*bz + ay*bw + az*bx,
@@ -16,26 +27,34 @@ def qmul(a, b):
                      aw*bw - ax*bx - ay*by - az*bz])
 
 def qrot(q, v):
+    """The vector v (3) rotated by the unit quaternion q."""
     x, y, z, w = q
     u = np.array([x, y, z]); v = np.asarray(v, dtype=float)
     return v + 2.0 * np.cross(u, np.cross(u, v) + w * v)
 
 def qconj(q):
+    """The conjugate (inverse rotation) of a unit quaternion."""
     return np.array([-q[0], -q[1], -q[2], q[3]])
 
 def qnorm(q):
+    """q scaled to unit length; the identity for a zero quaternion."""
     q = np.asarray(q, dtype=float); n = np.linalg.norm(q)
     return q / n if n > 0 else np.array([0, 0, 0, 1.0])
 
 # Halo stores node rotations as the inverse (conjugate) of the usual convention.
-HALO_CONJ = True
+HALO_CONJ = True   # leave on: every reader (jms.py, looseantr.py) and writer assumes converted quaternions
 def hq(q):
+    """A rotation as Halo stores it -> the usual convention (normalised, conjugated when HALO_CONJ)."""
     q = qnorm(q)
     return qconj(q) if HALO_CONJ else q
 
 # ---------------------------------------------------------------- model
 class Model:
+    """A model ('mode') tag: nodes (list of dict(name, parent, t, q) in parent-relative bind pose), shaders (list
+    of shader tag dicts or None), base_map_scale, geoms (model_geometry Tags) and regions (list of dict(name,
+    perms=[dict(name, geoms=[geometry index per LOD, super high .. super low])]))."""
     def __init__(s, m, mode_tag):
+        """m: HMap; mode_tag: a 'mode' entry from m.tags."""
         s.m = m
         M = tag(m, mode_tag, 'model')
         s.tag = M
@@ -54,6 +73,7 @@ class Model:
             s.regions.append(dict(name=cstr(m, r.addr), perms=perms))
 
     def world_bind(s):
+        """Bind pose in model space: list of (t, q) per node, parents composed in (nodes are stored parents-first)."""
         W = []
         for i, n in enumerate(s.nodes):
             if n['parent'] < 0:
@@ -63,6 +83,11 @@ class Model:
                 W.append((pt + qrot(pq, n['t']), qnorm(qmul(pq, n['q']))))
         return W
 
+    # Vertex buffer type 5 (compressed, 32 bytes): pos 3f; normal packed 11/11/10-bit signed in a u32; binormal and
+    # tangent u32 (skipped); uv 2 x i16 (-32767..32767 -> 0..1); node0, node1 as bytes (index * 3); weight0 as a
+    # byte (weight1 = 1 - weight0). Type 4 (uncompressed, 68 bytes) is the gbxmodel layout: see pcmap.gbx_geometry.
+    # Triangle buffer type 1 is a strip (count + 2 u16s, degenerates dropped, winding alternates); otherwise a list.
+    # Node indices are model node indices; weights sum to 1 (one-bone vertices have w = (1, 0)).
     def geometry(s, gi):
         """list of parts: dict(shader, pos(N,3), nrm, uv(N,2), nodes(N,2), w(N,2), tris(M,3))"""
         m = s.m
@@ -109,9 +134,11 @@ class Model:
         return out
 
 # ---------------------------------------------------------------- animation
-COMP_HDR = '11i'
+COMP_HDR = '11i'   # compressed animation header: 11 int32 offsets (see read_compressed); not used directly
 
 def q6(words):
+    """Unpack a 6-byte (three u16) compressed rotation into a (x, y, z, w) array in -1..1: 12 bits per component,
+    sign-extended, in Halo's bit arrangement."""
     w0, w1, w2 = words
     def s16(v): v &= 0xffff; return v - 0x10000 if v & 0x8000 else v
     i = s16((w0 >> 12) | (w0 & 0xFFF0))
@@ -121,8 +148,14 @@ def q6(words):
     return np.array([i, j, k, w], dtype=float) / 32767.0
 
 class Animation:
+    """Plain holder filled by read_animations: name, type (0 base, 1 overlay, 2 replacement), nframes, flags, loop
+    (loop frame index), key (key frame index), next (next animation index), fi_type (frame info type: 0 none,
+    1 dx dy, 2 dx dy dyaw, 3 dx dy dz dyaw), frames[F][N] = (t, q, s) and dx (F, 4) = per-frame root motion."""
     pass
 
+# Animations whose node count differs from node_count (e.g. the graph's weapon animations) and ones whose data
+# fails to decode are skipped, so the returned list can be shorter than the tag's block. Rotations come out in the
+# usual convention (hq). Overlay frames keep None for channels the animation doesn't touch (see bake_overlay).
 def read_animations(m, antr_tag, node_count):
     """returns list of Animation(name, type, frames[F][N] = (t, q, s), dx[F] root motion)"""
     G = tag(m, antr_tag, 'animation_graph')
@@ -193,12 +226,23 @@ def read_animations(m, antr_tag, node_count):
     return res
 
 def read_compressed(m, addr, F, N, rflags, tflags, sflags):
+    """Decode Halo's compressed keyframe animation data at virtual address addr for F frames of N nodes.
+    Layout (offsets relative to addr): an 11-int header (rotation key-index table, rotation defaults, rotation keys,
+    translation header, translation key-index table, translation defaults, translation keys, scale header, scale
+    key-index table, scale defaults, scale keys), then at 0x2C one u32 per animated-rotation node (first key
+    index << 12 | key count); the translation header holds the same per animated-translation node. Rotations are
+    6-byte q6 values, translations 3 floats, keys are u16 frame numbers. Each node's channel is linearly interpolated
+    between its keys (its default value before the first key, held after the last). Scale is not decoded (always
+    1.0). Returns frames[F][N] = (t, q in the usual convention, 1.0), with the per-node default where a flag bit is
+    clear."""
     o = m.v2o(addr)
     hdr = struct.unpack_from('<11i', m.d, o)
     (r_idx, r_def, r_key, t_hdr, t_idx, t_def, t_key, s_hdr, s_idx, s_def, s_key) = hdr
     def u16(off): return struct.unpack_from('<H', m.d, o + off)[0]
     def rot_at(off): return q6(struct.unpack_from('<3H', m.d, o + off))
     def interp(keys_frames, getter, deflt, f):
+        """the value at frame f: linear between the keys at keys_frames (getter(i) gives key i's value), from deflt
+        before the first key, held after the last; deflt when there are no keys"""
         if not keys_frames: return deflt
         if f < keys_frames[0]:
             a0, f0, a1, f1 = deflt, 0, getter(0), keys_frames[0]
@@ -235,6 +279,8 @@ def read_compressed(m, addr, F, N, rflags, tflags, sflags):
     return frames
 
 
+# base_frame: one frame [N] of (t, q, s) (usually the bind pose or an idle frame); overlay_frames: an overlay
+# animation's frames[F][N] with None for untouched channels. Returns full frames[F][N] ready for write_iqm.
 def bake_overlay(base_frame, overlay_frames):
     """Halo overlay: rotation = overlay*base (halo conv) -> base*overlay in ours; translation added."""
     out = []

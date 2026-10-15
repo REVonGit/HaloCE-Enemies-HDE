@@ -1,4 +1,11 @@
-"""Extract Halo CE third-person weapon models (weap -> mod2) for attaching to character IQMs."""
+"""Extract Halo CE third-person weapon models (weap -> mod2) for attaching to character IQMs.
+
+    python3 extract_weapons.py      # -> $HCE_OUT/weapons/<id>/<id>.pkl + w_<id>_<n>.png (before extract_chars.py)
+
+Each weapon in WEAPONS is taken from the first Xbox campaign map (extract_chars.MAPS) that has it: the first
+permutation of every region at its best level of detail, one material per base map, in Halo's weapon space (+x
+forward, origin on the grip). The pickle holds the meshes for extract_chars.attach_weapons to bake onto a hand.
+"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, pickle
@@ -11,6 +18,8 @@ from bitmaps import bitmap_image
 from extract_chars import shader_maps, MAPS, OUT
 from hce_paths import MAPS_DIR
 
+# To add a Halo CE gun, add its tag here; extract_ai.py's variants then map to it by this id, and extract_chars.py
+# bakes it into the hand of every biped whose variants carry it.
 WEAPONS = {  # weapon tag -> pack id
     r'weapons\plasma pistol\plasma pistol': 'plasma_pistol',
     r'weapons\plasma rifle\plasma rifle': 'plasma_rifle',
@@ -24,11 +33,16 @@ WEAPONS = {  # weapon tag -> pack id
     r'weapons\rocket launcher\rocket launcher': 'rocket_launcher',
     r'weapons\flamethrower\flamethrower': 'flamethrower',
 }
-# translucent shader parts we keep as solid glow colours (blade, needles)
+# translucent shader parts we keep as solid glow colours (blade, needles): weapon id -> RGB; others are dropped
 GLOW = {'energy_sword': (120, 190, 255), 'needler': (255, 80, 200)}
+# the transparent shader classes
 TRANSPARENT = ('spla', 'sgla', 'schi', 'scex', 'swat', 'smet', 'sotr')
 
 def extract_weapon(m, wt, wid, outdir):
+    """one weapon tag (wt) of map m -> outdir/<wid>.pkl and its textures; returns (triangle count, mesh count).
+
+    The pickle is dict(id, tag, meshes=[dict(material, pos, nrm, uv, tris, glow)]), triangles already flipped to
+    the IQM winding. Transparent parts are dropped unless the weapon is in GLOW."""
     W = tag(m, wt, 'weapon_definition')
     M = hm.Model(m, W['model'])
     parts = []

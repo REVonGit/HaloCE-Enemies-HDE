@@ -18,6 +18,7 @@ SKIP = ('knight:default.003', 'knight:default.004')
 
 
 def groups(R):
+    """{gun: [object names]} of the four Knight guns, by the objects' name prefixes and materials"""
     g = {'light_rifle': [], 'scattershot': [], 'binary_rifle': [], 'suppressor': []}
     for n, v in R.items():
         if n in SKIP or n.startswith('default:'): continue
@@ -33,6 +34,7 @@ def groups(R):
 #   metallic = control blue, roughness = 1 - control red, normal = the normal map (green flipped)
 #   emission = colour map x its alpha (the lights' mask) x the material's emission colour, at a strength that saturates it
 # material -> (grey constant, control gamma, emission colour); the energy bars are emission only
+# To change a gun's light colour, edit its emission tuple here; materials not listed get a neutral default.
 BLEND_MATS = {'light_rifle_default_body': (0.467, 1.95, (0.0, 0.12, 1.0)),
               'Material.001': (0.467, 1.95, (0.0, 0.12, 1.0)),            # the Halo 5 group over the same maps
               'light_rifle_default_scope': (0.6, 1.0, (0.0, 0.12, 1.0)),
@@ -56,6 +58,8 @@ def blend_paint(src):
     brighter on its upturned faces, its sheen under the room's light)"""
     cache = {}
     def paint(mat, role):
+        """the material's painted sRGB image (H, W, 3 float32), cached per material; EMISSION_ONLY materials become
+        a flat 8x8 of their colour. To change a weapon's brightness or light colour, edit BLEND_MATS"""
         if mat in cache: return cache[mat]
         if mat in EMISSION_ONLY:
             c = np.array(EMISSION_ONLY[mat]); c = c / c.max()
@@ -96,6 +100,8 @@ def brightmap(wid):
 
 
 def build():
+    """each gun from groups(): origin at its back end on the centre line, a budget of 1800 triangles shared by
+    its objects by size, hde_ce.build with blend_paint, then its brightmap"""
     src = hde_ce.Source(BLEND)
     paint = blend_paint(src)
     for gun, names in groups(src.R).items():

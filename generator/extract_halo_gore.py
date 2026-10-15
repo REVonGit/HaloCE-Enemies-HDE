@@ -29,7 +29,9 @@ CE_DEC = 'effects\\decals\\blood splats\\bitmaps\\'
 CE_PART = 'effects\\particles\\solid\\bitmaps\\'
 H2_DEC = 'effects\\decals\\blood_splats\\bitmaps\\'
 
-# species -> [(game, bitmap, decal scale)]; 'Big' groups (deaths) add the smears and the large splats
+# species -> [(game, bitmap, decal scale)]; 'Big' groups (deaths) add the smears and the large splats. To give a
+# species its own blood, add a key to SPLATS and FLOOR (and BIG if it has smears); hce_gore.zsc picks the groups
+# by species name. Scale is the DECALDEF X/Y-Scale before DECAL_GROW.
 SPLATS = {
     'Elite':    [('ce', CE_DEC + 'blood splat elite', 0.8), ('h2', H2_DEC + 'blood_splat_elite', 0.8)],
     'Grunt':    [('ce', CE_DEC + 'blood splat grunt', 0.7), ('h2', H2_DEC + 'blood_splat_grunt', 0.7)],
@@ -52,6 +54,7 @@ BIG = {
 PUFFS = [('ce', CE_PART + 'blood generic burst'), ('h2', 'effects\\bitmaps\\solids\\blood_generic_burst')]
 PUFFS_COV = [('ce', CE_PART + 'blood elite impact burst'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
 PUFFS_HUMAN = [('ce', CE_PART + 'blood h impact'), ('ce', CE_PART + 'blood burst'), ('ce', CE_PART + 'blood generic burst')]
+# spray streaks (HGBS sprites)
 STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
 # Halo's blood bitmaps are small (about 50 px a splat): drawn at their own size in Doom units they came out
 # fist-sized. Halo spreads them over a body's width and more: this many times bigger
@@ -71,6 +74,8 @@ def png_grab(path, im, ox, oy):
 
 
 def ce_sheet(name):
+    """a Halo CE bitmap by tag name -> (RGBA sheet, [(l, t, r, b) in 0..1]): the sprite rectangles of its sequences,
+    from the first of a few campaign maps that carries it; FileNotFoundError when none does"""
     from tags import HMap
     from bitmaps import bitmap_image
     for mp in ('a10', 'a50', 'b30', 'c10'):           # (c10 carries the blood pool)
@@ -93,6 +98,8 @@ def ce_sheet(name):
 
 _h2 = None
 def h2_sheet(name):
+    """a Halo 2 bitmap by tag name (08b's cache + MCC textures.dat) -> (RGBA sheet, rects): one whole-sheet rect for the
+    drippy splat, None for the loose burst / trail sheets (crops() finds the shapes), else the 2x2 quarters"""
     global _h2
     from h2map import H2Map, mcc_bitmap
     if _h2 is None: _h2 = H2Map(MAP08B, CACHE08B)
@@ -104,6 +111,8 @@ def h2_sheet(name):
 
 
 def blend_kind(im):
+    """how Halo drew the sheet: 'alpha' (a real coverage alpha), 'mul' (multiplied, white background) or 'add'
+    (added, black background), judged from the mean alpha and the border colour"""
     a = np.asarray(im).astype(float)
     if a[..., 3].mean() < 128: return 'alpha'          # a real coverage alpha (the drippy splat); others carry masks
     edge = np.concatenate([a[0, :, :3], a[-1, :, :3], a[:, 0, :3], a[:, -1, :3]])
@@ -128,6 +137,8 @@ def to_decal(im, kind):
 
 
 def crops(im, rects):
+    """the cut-outs of a sheet: by its rects (fractions of the size), or, with rects None, each connected shape of
+    its alpha / brightness at least 60 px in box area"""
     w, h = im.size
     if rects is None:                                 # connected shapes in the alpha (or brightness)
         from scipy import ndimage
@@ -143,11 +154,14 @@ def crops(im, rects):
 
 
 def trim(im):
+    """an RGBA image cropped to where its alpha is above 8; None when it is empty"""
     bb = im.split()[3].point(lambda v: 255 if v > 8 else 0).getbbox()
     return im.crop(bb) if bb else None
 
 
 def main():
+    """out/gore rebuilt: the decal PNGs and decaldef.hcegore (SPLATS, BIG), the puff and streak sprites (PUFFS*,
+    STREAKS), the floor splat sprites per species (FLOOR), the skid marks, and gore.json with the counts of each"""
     od = f'{OUT}/gore'
     gdir = f'{od}/graphics/hcegore'; sdir = f'{od}/sprites/hcegore'
     for d in (gdir, sdir): os.makedirs(d, exist_ok=True)
@@ -157,6 +171,8 @@ def main():
            'Fader HCEGoreFade\n{\n\tDecayStart 90.0\n\tDecayTime 25.0\n}\n']
     groups = {}; made = {}
     def add_group(gname, src):
+        """one DecalGroup: every cut-out of the sheets in src ([(game, bitmap, scale)]) as a decal PNG and a Decal
+        entry (a sheet already cut keeps its decal names); groups[gname] = the decal names"""
         names = []
         for game, bm, scale in src:
             if bm in made: names += made[bm]; continue
@@ -183,6 +199,8 @@ def main():
     open(f'{od}/decaldef.hcegore', 'w').write('\n'.join(dec))
     # impact puffs (HGBP) and spray streaks (HGBS): white alpha masks, frames A..
     def sprites(spr, src):
+        """the cut-outs of the sheets in src as white alpha-mask sprites <spr>A0.png, <spr>B0.png ... (26 at most),
+        offsets at their centre; returns how many"""
         n = 0
         for game, bm in src:
             im, rects = (ce_sheet if game == 'ce' else h2_sheet)(bm)

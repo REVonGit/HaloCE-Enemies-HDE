@@ -11,6 +11,8 @@
 	int hce_rocketNext;
 	Array<Actor> hce_rockets;
 
+	// Shows or hides one front shield (side 0 left, 1 right) by swapping its model surface skin to hce_hidden.png;
+	// does nothing when it is already in that state.
 	void HCE_EnfShieldShow(int side, bool show)
 	{
 		if(hce_eshOff[side] == !show) return;
@@ -18,6 +20,7 @@
 		A_ChangeModel('None', 0, "", 'None', side == 0 ? {SL} : {SR}, "models/{MDIR}/weapons", show ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 
+	// Spawns six light-blue sparks on the shield's surface facing the attacker (radius * 1.1 out, at a random height).
 	void HCE_EnfShieldSpark(Actor from)
 	{
 		double a = AngleTo(from);
@@ -27,6 +30,10 @@
 				frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(-0.5, 1.5), 0, 0, 0, 1.0, -0.08);
 	}
 
+	// Front shields: a hit from within 65 deg of its facing (not forced, not a telefrag) goes to the shield on the
+	// attacker's side, or the other one if that is down. The shield loses the damage, regens 4 s after the last hit,
+	// and when exhausted hides itself for 10 s with a pop. Absorbed hits return 0 and never reach the body;
+	// anything else goes to the base DamageMobj.
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle)
 	{
 		if(health > 0 && damage > 0 && !(flags & DMG_FORCED) && mod != 'Telefrag')
@@ -57,13 +64,16 @@
 		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 	}
 
+	// Steers every live rocket in hce_rockets at its tracer and bursts one that has stopped flying (A_Explode 28 dmg,
+	// 96 radius). Then, with a visible target at least 192 away and the cooldown passed, fires a salvo of four homing
+	// HCE_HardlightBlue rockets (20 dmg each) and sets the next salvo 6-10 s out. To change the cadence, edit random(6, 10).
 	void HCE_EnfRockets()
 	{
 		for(int i = hce_rockets.Size() - 1; i >= 0; i--)
 		{
 			let r = hce_rockets[i];
 			if(!r) { hce_rockets.Delete(i); continue; }
-			if(!r.bMISSILE) { r.A_Explode(28, 96, 0); hce_rockets.Delete(i); continue; }     // it hit: the burst
+			if(!r.bMISSILE) { r.A_Explode(int(28 * HCE_DamageScale()), 96, 0); hce_rockets.Delete(i); continue; }     // it hit: the burst
 			if(r.tracer && r.tracer.health > 0) r.A_SeekerMissile(2, 3, SMF_PRECISE);
 		}
 		if(health <= 0 || !target || hce_dummy || level.maptime < hce_rocketNext) return;
@@ -77,11 +87,14 @@
 			r.tracer = target;
 			r.A_SetScale(0.02);
 			r.vel = r.vel.Unit() * 10;
-			r.SetDamage(20);
+			r.SetDamage(max(1, int(20 * HCE_DamageScale())));
 			hce_rockets.Push(r);
 		}
 	}
 
+	// Per tic: on the first tic fills both shields to HCE_ENF_SHIELD and sets the first salvo 3-6 s out; runs the
+	// rockets; hides both shields on death; otherwise counts down each shield's regen delay and then refills it 4 HP
+	// a tic, showing it again as soon as it starts to recover.
 	override void Tick()
 	{
 		super.Tick();

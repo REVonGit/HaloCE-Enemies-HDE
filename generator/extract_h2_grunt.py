@@ -25,6 +25,8 @@ SRC = os.environ.get('HCE_VOICE_SRC', 'HaloDoomEnemies/Sounds')
 PREFIX = 'sound\\dialog\\combat\\grunt_crazy\\'
 
 # pack category (build_voices.CAT key) -> [(Halo 2 tag leaf, how many lines)]
+# To fill another event, add its build_voices category with the Halo 2 leaves to draw from; to take more of a
+# leaf, raise its count.
 PLAN = {
     'Kamikaze':      [('thrtn', 5), ('thrtn_hum', 2)],                          # threats while charging in
     'Kill Player':   [('glt', 3), ('glt_hum', 1), ('glt_mjrfoe_chief', 2)],     # gloats
@@ -99,6 +101,7 @@ def ce_grunt_lines(tmp):
 
 
 def envelope(path):
+    """a clip's loudness envelope (log RMS per 10 ms at 8 kHz mono, via ffmpeg), for matching lines by waveform"""
     raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', path, '-ac', '1', '-ar', '8000', '-f', 's16le', '-'],
                          capture_output=True).stdout
     a = np.frombuffer(raw, '<i2').astype(float)
@@ -119,6 +122,9 @@ def same_line(a, b):
 
 
 def main():
+    """extracts PLAN and H2_EXTRA from Halo 2 (skipping lines whose envelope matches one already in the main set or
+    already taken) and CE_PLAN from the Halo CE maps, into voice_extra/Grunt_Crazy/'<Category> N.ogg', and
+    writes sources.json saying which leaf gave how many lines"""
     m = H2Map(MAP08A, CACHE08A)
     files = {k: splitfile.open(os.path.join(SOUNDS_DIR, fn)) for k, fn in (('en', 'sounds_en.dat'), ('neutral', 'sounds_neutral.dat'))
              if splitfile.exists(os.path.join(SOUNDS_DIR, fn))}

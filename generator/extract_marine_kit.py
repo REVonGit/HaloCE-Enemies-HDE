@@ -33,7 +33,8 @@ ZIP = os.environ.get('HCE_MARINE_KIT_ZIP', os.path.join(HERE, 'extra', 'elefant.
 ADDONS = os.environ.get('HCE_MARINE_KIT_ADDONS', os.path.join(HERE, 'extra', 'head_add_ons.tif'))   # Elefant's head add-ons sheet
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
 INNIE = 'elefant/characters/innie/bitmaps/'
-# the .blend's image -> Halo CE bitmap (map, tag) or the zip's file
+# the .blend's image -> Halo CE bitmap (map, tag); images not here are looked for in the zip (INNIE) or ADDONS, and a
+# piece whose image is in none of them is left out (the run prints it)
 CE = {
     'woodland_marine_body.tif': ('a50', r'characters\marine\bitmaps\marine_body'),
     'woodland_marine_hats.tif': ('a10', r'characters\marine\bitmaps\marine_hats'),
@@ -69,7 +70,9 @@ FALLBACK = {'innie_cigar': 'innie_cigar.tif', 'visor': 'innie_visor_diff.tif', '
 # its own texture (build_pack.kit_visors gives it the visor shader)
 MAT_OVERRIDE = {('helm_hellbringer', 'glasses'): 'mk_hellbringer_visor.png'}
 FACES = ('face_', 'eyes_')
-# blend object -> (piece id, slot). Slots: head (replaces the head), face, chest, back, shoulders, arms (replaces arms)
+# blend object -> (piece id, slot). Slots: head (replaces the head), face, chest, back, shoulders, arms (replaces arms).
+# A tuple of objects is merged into one piece (merged_piece). To add a piece, name its blend object here and put the
+# id in a POOLS or OUTFITS list (or WEAPON_BACKS) so a Marine ever wears it.
 PIECES = {
     # headgear: helmet shells worn over an Armored Marine's own face in place of Halo CE's helmet, and whole heads
     # (Elefant's helmets on Halo CE's Fred and Marcus faces; the closed and enclosed helmets)
@@ -112,6 +115,7 @@ PIECES = {
     'arms:sleeves_gloves': ('arms_gloves', 'arms'), 'arms:sleeves_gauntlets': ('arms_gauntlets', 'arms'),
     'arms:sleeves_guantlets_gloves': ('arms_gauntlets_gloves', 'arms'),
 }
+# slot -> model attachment index (6 is the gun overlay, 7 the blood_kit.py damage stage)
 SLOTS = {'head': 1, 'face': 2, 'chest': 3, 'back': 4, 'shoulders': 5, 'arms': 8, 'legs': 9, 'wrists': 10, 'waist': 11}
 ENCLOSED = {'helmet_closed', 'helmet_enclosed', 'odst_helmet', 'odst_helmet_shock', 'odst_helmet_filters', 'odst_helmet_shock_filters'}                  # no face showing: no face add-ons over them
 SHELLS = {'helmet_tilted', 'helmet_strapped', 'helmet_hellbringer', 'odst_helmet_open'}  # worn over the Marine's own (helmeted) face: hide only CE's helmet
@@ -124,7 +128,8 @@ OUTFITS = {
                                   legs=[('odst_legs', 1)], shoulders=[('odst_pads', 2), ('odst_pads_heavy', 1)],
                                   wrists=[('odst_gauntlets', 1)], waist=[('odst_cape', 1), ('', 1)], face=[('odst_headset', 1), ('odst_headset_b', 1), ('', 2)]))],
 }
-# per body: chance a slot is filled, and the weighted picks
+# per body: chance a slot is filled, and the weighted picks; build_pack.marine_kit_code rolls them per Marine. To
+# make a piece commoner, raise its weight; to leave a slot bare more often, lower its chance.
 POOLS = {
     'Marine': dict(
         face=(0.35, [('headset_mic', 2), ('headset_mic_b', 2), ('headset_boom', 2), ('goggles', 2), ('pilot_goggles', 1), ('sniper_goggles', 1),
@@ -166,7 +171,10 @@ def material_images(B):
 
 
 class Textures:
+    """the kit's texture sources, written into od as mk_<image>.png on demand: Halo CE bitmaps (CE), the head
+    add-ons sheet (ADDONS) and the zip's innie set (ZIP), each at most 512 px"""
     def __init__(s, od):
+        """od: the output folder the pngs go in; opens the innie zip (ZIP) when it exists"""
         s.od = od; s.done = {}; s.maps = {}
         s.zip = zipfile.ZipFile(ZIP) if os.path.exists(ZIP) else None
 
@@ -211,7 +219,11 @@ def merged_piece(K, objs, nodes):
 
 
 def main(only=None):
-    """only: piece ids to (re)build into the existing kit, keeping the rest"""
+    """only: piece ids to (re)build into the existing kit, keeping the rest
+
+    out/models/MarineKit: each PIECES entry as <piece>.iqm on the Marine's skeleton (weights filled from the body,
+    headgear on the head bone with the jaw kept for faces), its textures through Textures, and MarineKit.json
+    (slots, pieces, pools, outfits, weapon_backs, enclosed) with the picks cut to the pieces that came out."""
     od = f'{OUT}/models/MarineKit'
     if not only:
         if os.path.isdir(od): shutil.rmtree(od)

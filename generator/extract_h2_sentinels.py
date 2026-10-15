@@ -43,8 +43,10 @@ TEXTURES = os.environ.get('HCE_H2_TEXTURES', 'textures.dat')
 AGG = r'objects\characters\sentinel_aggressor\sentinel_aggressor'
 ENF = r'objects\characters\sentinel_enforcer\sentinel_enforcer'
 CON = r'objects\characters\sentinel_constructor\sentinel_constructor'
+# the Enforcer's shield objects: side -> (render model, the Enforcer marker it hangs on)
 SHIELDS = {'left': (r'objects\characters\sentinel_enforcer\left_shield\left_shield', 'left_shield_gen'),
            'right': (r'objects\characters\sentinel_enforcer\right_shield\right_shield', 'right_shield_gen')}
+# rank -> character tag (vitality); the json 'ranks' blocks are keyed by these names
 CHARS = {'sentinel': r'objects\characters\sentinel_aggressor\ai\sentinel_aggressor',
          'major': r'objects\characters\sentinel_aggressor\ai\sentinel_aggressor_major',
          'eliminator': r'objects\characters\sentinel_aggressor\ai\sentinel_aggressor_eliminator',
@@ -63,6 +65,7 @@ def texture(m, name, size=None):
 
 
 def world(nodes):
+    """each node's world bind (t, q) from the render model's local node list"""
     W = []
     for n in nodes:
         t = np.array(n['t']); q = np.array(n['q'])
@@ -73,6 +76,7 @@ def world(nodes):
 
 
 def markers(m, name, nodes):
+    """{marker name: [dict(node, t, q)]} of render model `name`"""
     a = m.tag('mode', name)['addr']; out = {}
     for g in m.block(a + 0x58, 0xC):
         nm = m.sid(m.u('I', g)[0])
@@ -91,6 +95,7 @@ def vitality(m):
 
 
 def change_colours(m, bipd):
+    """{variant: [primary rgb, secondary rgb, ...]} from a biped's change-colour permutations (the mid of each range)"""
     b = m.tag('bipd', bipd)['addr']; cc = {}
     for ci, c in enumerate(m.block(b + 0xAC, 0x10)):
         for p in m.block(c, 0x20):
@@ -115,6 +120,7 @@ def death_anims(idle_frame, root, n):
     falls) and the landing (on its side)"""
     import math
     def turned(deg_roll, deg_pitch):
+        """the idle frame with the root rolled and pitched by the given degrees"""
         qr = np.array([math.sin(math.radians(deg_roll) / 2), 0, 0, math.cos(math.radians(deg_roll) / 2)])
         qp = np.array([0, math.sin(math.radians(deg_pitch) / 2), 0, math.cos(math.radians(deg_pitch) / 2)])
         rot = qmul(qp, qr)
@@ -161,6 +167,8 @@ def anims_of(m, name, nodes, plan, base):
 
 
 def write(pid, tag, nodes, meshes, anims, extra, od):
+    """writes out/models/<pid>/<pid>.iqm and <pid>.json in the extract_chars layout (anims: {name: (frames, movement,
+    loop)}; extra: more json keys) and returns the meta"""
     joints = [(n['name'], n['parent'], tuple(n['t']), tuple(n['q']), (1, 1, 1)) for n in nodes]
     alist, info = [], {}
     for name, (frames, mv, loop) in anims.items():
@@ -180,6 +188,9 @@ def write(pid, tag, nodes, meshes, anims, extra, od):
 
 
 def aggressor(m, vit):
+    """the Aggressor -> out/models/Sentinel (the Halo CE model moved to Sentinel_CE first): body and shield surfaces,
+    the body's multipurpose map (reflection + change colour) from the change-colour bitmap, idles, flinches and
+    the made-up death fall, with ranks, change colours and the shield surface index in the json"""
     pid = 'Sentinel'; od = f'{OUT}/models/{pid}'
     if os.path.exists(od) and not os.path.exists(f'{OUT}/models/Sentinel_CE'):
         shutil.copytree(od, f'{OUT}/models/Sentinel_CE')            # the Halo CE model, kept
@@ -218,6 +229,9 @@ def aggressor(m, vit):
 
 
 def enforcer(m, vit):
+    """the Enforcer -> out/models/SentinelEnforcer: body, hover-jet and eye surfaces, the two energy shields placed on
+    their generator markers (shield_surfaces in the json), idles, grapple, flinches and death fall, plus the rocket
+    and needler port positions from its trigger markers"""
     pid = 'SentinelEnforcer'; od = f'{OUT}/models/{pid}'
     if os.path.exists(od): shutil.rmtree(od)
     os.makedirs(od)
@@ -305,6 +319,7 @@ FORCE = os.environ.get('HCE_H2_SENTINELS_FORCE') == '1'      # build them even w
 
 
 def reachable(m, names):
+    """True when every bitmap named can be read from textures.dat"""
     for n in names:
         try: mcc_bitmap(m, n, TEXTURES)
         except Exception as e:
@@ -314,6 +329,8 @@ def reachable(m, names):
 
 
 def main():
+    """builds whichever of the three models has its textures (NEEDS) or is forced, restores the Halo CE Sentinel
+    otherwise, and records the textures that came out grey in each json"""
     if not os.path.exists(MAP06B): print('extract_h2_sentinels: no', MAP06B); return
     m = H2Map(MAP06B, CACHE06B)
     vit = vitality(m)

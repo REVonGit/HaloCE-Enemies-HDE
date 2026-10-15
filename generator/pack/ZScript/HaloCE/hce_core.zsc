@@ -52,12 +52,17 @@ class HCE_JackalShield : Actor
 		Stop;
 	}
 
+	// bone -2 marks "not set up yet": the first Tick() sizes the shield, reads hce_frontShieldMax and finds the bones,
+	// because the Jackal (master) is only assigned after Spawn() returns
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
 		bone = -2; handBone = -1;      // master is set right after the spawn: set up on the first tic
 	}
 
+	// how much of a hit the shield takes, as a multiplier on the damage (the table in the banner above): by damage
+	// type, then by the inflictor's class name ("charged"+"plasma", "plasma", "needle"). 0 means it glances off.
+	// To make a weapon drain the shield more or less, add or change a line here (first match wins).
 	static double HitMul(Actor inflictor, Name mod, int flags)
 	{
 		String cn = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
@@ -71,6 +76,7 @@ class HCE_JackalShield : Actor
 		return 0;                                               // bullets, pellets, spikes
 	}
 
+	// what the shield blocks: everything except the Jackal itself and missiles fired by it or by its own team
 	override bool CanCollideWith(Actor other, bool passive)
 	{
 		// the Jackal's own shots and its squad's pass through
@@ -81,6 +87,10 @@ class HCE_JackalShield : Actor
 		return Super.CanCollideWith(other, passive);
 	}
 
+	// a hit on the shield cylinder. Friendly fire is ignored; a non-blast hit from behind the Jackal (over 80 degrees
+	// off its facing) or along the gun hand is handed to the Jackal (PassOn); the rest drains hp by HitMul() and
+	// flashes the face (HCE_ShieldImpact), staggers the Jackal on a melee hit and pops the shield at 0. Always returns
+	// 0: the shield actor itself never loses health. regenWait (tics) is how long recharge is held off after a hit.
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle)
 	{
 		let j = HaloDoom_EnemyBase(master);
@@ -117,6 +127,8 @@ class HCE_JackalShield : Actor
 		return 0;
 	}
 
+	// gives a hit that missed the shield to the Jackal in full. With hand set (the gun hand was hit) the Jackal also
+	// drops whatever it was doing and plays a hard ping, unless it is mid-leap, mid-jump or already in one
 	int PassOn(HaloDoom_EnemyBase j, Actor inflictor, Actor source, int damage, Name mod, int flags, bool hand)
 	{
 		j.DamageMobj(inflictor, source, damage, mod, flags);
@@ -178,6 +190,8 @@ class HCE_JackalShield : Actor
 		return Color(255, 80, 120, 255);
 	}
 
+	// the shield is drained: it stops being shootable for good (broken), pops with sound, flash and shards, is hidden on
+	// the model, and the Jackal reels and may panic (60%, if its class panics at all)
 	void BreakShield(HaloDoom_EnemyBase j)
 	{
 		down = true; broken = true;
@@ -218,6 +232,9 @@ class HCE_JackalShield : Actor
 		else j.A_ChangeModel('None', 0, "", 'None', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 
+	// every tic: first-time setup (size, hp, bones), then follow the shield bone (or a point in front of the Jackal
+	// when the bone is missing), then recharge once regenWait has run out: maxhp/70 per tic, back up and shootable at
+	// half. A broken shield never recharges. Publishes the hp to the Jackal as hce_frontShieldHP.
 	override void Tick()
 	{
 		let j = HaloDoom_EnemyBase(master);
@@ -284,6 +301,7 @@ class HCE_BladeShell : Actor
 		Stop;
 	}
 
+	// follows the Elite (position, angles, scale) and hides itself once the Elite is visible enough to draw its own sword
 	override void Tick()
 	{
 		let e = HaloDoom_EnemyBase(master);
@@ -317,6 +335,8 @@ class HCE_ShieldShell : Actor
 	}
 
 	bool hce_dressed;
+	// on the first tic with a dressed wearer, copies its look and joins its animation in progress; then follows the
+	// wearer and fades its alpha by 0.045 a tic (the enemy API raises the alpha when the shield is hit)
 	override void Tick()
 	{
 		if(!master || master.health <= 0) { Destroy(); return; }
@@ -354,6 +374,8 @@ class HCE_ShieldShatter : Actor
 		+NOBLOCKMAP
 		RenderStyle "None";
 	}
+	// a one-shot: spawns 22-60 shards (scaled to the wearer's radius) plus sparks and a flash at the wearer, then
+	// destroys itself. To change the look, edit the particle calls here; the shard sprite is HCESHARD.
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -392,6 +414,9 @@ class HCE_ShieldShatter : Actor
 class HCE_HaloBlood : Blood
 {
 	bool hce_checked;
+	// decided once, on the first tic: with NashGore absent, behave as plain Blood; with it present and hce_halogore on,
+	// become a Halo gore puff (human or Covenant by the shedder's class name, tinted its BloodColor) and go away;
+	// with the patch off, become whichever NashGore blood nashgore_bloodtype asks for (0 NashGore, 1 Classic, 2 Doom's)
 	override void Tick()
 	{
 		if(!hce_checked)
@@ -480,6 +505,7 @@ class HCE_RadarBlip : Actor
 		TNT1 A -1;
 		Stop;
 	}
+	// sits on the Marine and targets him only while he has no target of his own; gone when he dies or turns hostile
 	override void Tick()
 	{
 		if(!master || master.health <= 0 || !master.bFRIENDLY || master.bCORPSE) { Destroy(); return; }

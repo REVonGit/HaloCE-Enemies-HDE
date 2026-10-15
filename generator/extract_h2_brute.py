@@ -25,11 +25,14 @@ TEXTURES = os.environ.get('HCE_H2_TEXTURES', 'textures.dat')
 BRUTE = r'objects\characters\brute\brute'
 TARTARUS = r'objects\characters\brute\tartarus\brute_tartarus'
 HELMET = r'objects\characters\brute\garbage\brute_helmet\brute_helmet'
+# Halo 2 weapon tags extract_weapon / extract_hammer read (id -> render model tag)
 WEAPONS = {'brute_shot': r'objects\weapons\support_low\brute_shot\brute_shot',
            'brute_plasma_rifle': r'objects\weapons\rifle\brute_plasma_rifle\brute_plasma_rifle',
            'gravity_hammer': r'objects\weapons\melee\gravity_hammer\gravity_hammer'}
 HAND_WEAPONS = ['plasma_rifle', 'assault_rifle', 'shotgun', 'spiker']     # out/weapons/<id>/<id>.pkl (CE weapon space)
 # region permutations any of our ranks wears (hlmt variants minor/major/captain/honor_guard)
+# To give a rank another armour piece, add its (region, permutation) here and its shader to SHADER_MAPS; the builder's
+# skin hook then decides which rank shows it (build_digsite.py).
 KEEP = {('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'default'), ('helmet', 'honor_on'),
         ('sensors', 'default'), ('sensors', 'honor_on'), ('sh_armor', 'default'), ('sh_armor', 'honor_on'),
         ('hg_arm', 'honor_on'), ('hg_legs', 'honor_on'), ('flag', 'captain'),
@@ -47,6 +50,7 @@ SHADER_MAPS = {
     'tartarus_shoulder_armor': ('brute', None, False),
     'tartarus_mohawk': ('tartarus_mohawk', 'brute_hair_change_color', True),
     'elite_skull': ('elite_skull', None, False),
+    # a None base writes a flat colour instead of a bitmap
     'tartarus_eyes': (None, None, False),          # additive optics: a flat glowing amber (brightmapped)
 }
 BMP = r'objects\characters\brute\bitmaps' + '\\'
@@ -109,9 +113,11 @@ def anim_plan():
     return ren, ovl
 
 def bitmap(m, name):
+    """an MCC bitmap by tag name (textures.dat: TEXTURES), or a flat tan stand-in when the file isn't there"""
     return mcc_bitmap(m, name, TEXTURES) if splitfile.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
 
 def find_bitmap(m, short):
+    """the full name of the 'bitm' tag ending in <short>, preferring one under characters/brute"""
     names = [t['name'] for t in m.tags if t['cls'] == 'bitm' and t['name'].endswith('\\' + short)]
     pref = [n for n in names if 'characters\\brute' in n]
     return (pref or names)[0]
@@ -133,6 +139,8 @@ def model_meshes(m, M, keep=None, name_fn=None):
     return out
 
 def extract_weapon(m, wid):
+    """a Halo 2 weapon (WEAPONS[wid]) in its own model space -> out/weapons/<wid>/<wid>.pkl and w_<wid>_<k>.png, one
+    mesh per shader part with the shader's diffuse (its third bitmap, the bump / detail maps filtered out)"""
     od = f'{OUT}/weapons/{wid}'; os.makedirs(od, exist_ok=True)
     M = render_model(m, WEAPONS[wid])
     meshes = []
@@ -177,6 +185,8 @@ def extract_hammer(m):
     return out
 
 def extract_helmet(m, pid='BruteHelmet'):
+    """the Brute's pop-off helmet (the garbage object) -> out/models/<pid>/<pid>.iqm: one surface centred on its
+    mean, rigid on a single root bone with a one-frame 'idle', skinned with the Brute's base map"""
     od = f'{OUT}/models/{pid}'; os.makedirs(od, exist_ok=True)
     M = render_model(m, HELMET)
     mm = model_meshes(m, M)[0]
@@ -189,6 +199,12 @@ def extract_helmet(m, pid='BruteHelmet'):
               [dict(name='idle', fps=30.0, loop=True, frames=[[((0, 0, 0), (0, 0, 0, 1), (1, 1, 1))]])])
 
 def extract_brute(pid='Brute'):
+    """Halo 2's Brute -> out/models/<pid>/<pid>.iqm, its base maps / change-colour masks and <pid>.json.
+    Surfaces: one per region.permutation.shader in KEEP and SHADER_MAPS (hair, flag and mohawk two-sided), then
+    the HAND_WEAPONS pkl meshes and the gravity hammer baked into the right-hand marker (mesh_weapon says which
+    surface shows which gun); at most 32 surfaces. Animations: anim_plan's renames (the hammer stance with the
+    left-hand grip pose applied) and its overlays baked onto their idles. The json also carries the markers and
+    each hlmt variant's change colours (plus Tartarus's as 'tartarus' for the Chieftain). Returns meta."""
     m = H2Map(MAP, CACHE)
     M = render_model(m, BRUTE)
     nodes = M['nodes']; NJ = len(nodes)
@@ -232,6 +248,7 @@ def extract_brute(pid='Brute'):
     wt, wq = W[mk['node']]; mt = np.array(mk['t']); mq = np.array(mk['q'])
     tq = qmul(wq, mq); tq /= np.linalg.norm(tq)
     def by_material(ms):
+        """weapon pkl meshes merged into one mesh per material (fewer surfaces)"""
         g = {}
         for x in ms: g.setdefault(x['material'], []).append(x)
         out = []
@@ -267,11 +284,13 @@ def extract_brute(pid='Brute'):
     byname = {x['name']: x for x in an}
     dec = {}
     def get(nm):
+        """the decoded (frames, root movement) of Halo 2 animation nm, cached"""
         if nm not in dec:
             x = byname[nm]; dec[nm] = h2anim.decode(x['data'], x['sizes'], x['frames'], x['nodes'], defaults)
         return dec[nm]
     alist = []; info = {}
     def add(name, frames, mv, loop):
+        """records one animation for the IQM and its json entry (frames, speed, yaw, loop, net dx) from its root movement mv (F, 4)"""
         speed = float(np.hypot(mv[:, 0], mv[:, 1]).sum() / max(1, len(frames)))
         info[name] = dict(frames=len(frames), speed=speed, yaw=float(np.degrees(mv[:, 3].sum())), loop=loop, key=-1, next=-1,
                           dx=[float(mv[:, 0].sum()), float(mv[:, 1].sum())])
@@ -340,6 +359,8 @@ if __name__ == '__main__':
 
 # ---------------------------------------------------------------- sounds
 SOUNDS_DIR = os.environ.get('HCE_H2_SOUNDS', '.')   # folder with sounds_en.dat and sounds_neutral.dat
+# voice set -> its Halo 2 dialogue folder (every snd! under it is extracted); FX: effect name -> one sound tag.
+# To add a voice or an effect, add a key: the files land under out/sounds/Brute/<key>/ and in index.json.
 VOICES = {'Brute_Bloodthirsty': 'sound\\dialog\\combat\\brute_bloodthirsty\\', 'Brute_Cruel': 'sound\\dialog\\combat\\brute_cruel\\'}
 FX = {'thump': r'sound\characters\brute\brute_thump', 'melee_moves': r'sound\characters\brute\brute_melee_moves',
       'step_walk': r'sound\characters\footsteps\brute\grtcement\walk', 'step_run': r'sound\characters\footsteps\brute\grtcement\run',
@@ -348,6 +369,8 @@ FX = {'thump': r'sound\characters\brute\brute_thump', 'melee_moves': r'sound\cha
       'shot_bounce': r'sound\weapons\brute_shot\brute_shot_bounce'}
 
 def tag_oggs(m, name, files):
+    """the Ogg Opus data of each permutation of sound tag `name` (files: {'en' / 'neutral': an open sounds_*.dat});
+    None when the bank a permutation needs isn't open. Used by the other Halo 2 sound extractors too."""
     import h2opus
     from h2map import sound_chunks
     out = []
@@ -373,6 +396,7 @@ def extract_brute_sounds(pid='Brute'):
     if os.path.exists(od): shutil.rmtree(od)
     idx = {}
     def save(group, leaf, oggs):
+        """writes the oggs as <group>/<leaf>_NN.ogg under the Brute's sound folder and records them in idx"""
         os.makedirs(f'{od}/{group}', exist_ok=True)
         for i, data in enumerate(oggs):
             fn = f'{group}/{leaf}_{i:02d}.ogg'

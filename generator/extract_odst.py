@@ -43,7 +43,9 @@ def ensure_a10():
             i += 1
     os.replace(tmp, A10)
 PID = 'MarineODST'
+# the base ODST biped in SPV3's a50
 BODY = 'characters\\marine_odst\\odst'
+# Fire Team Raven: colour -> biped in SPV3's a10 (the same model; its textures become *_raven_<colour>.png)
 RAVEN = {'green': 'characters\\marine_odst\\raven_green\\odst green',
          'orange': 'characters\\marine_odst\\raven_orange_you_glad\\odst orange',
          'blue': 'characters\\marine_odst\\raven_meth\\odst blue',
@@ -68,6 +70,7 @@ def extract_spv3(path, biped):
     return f'{tmp}/models/{PID}', meta
 
 
+# visor cube map bitmap tag -> out/cubemaps folder (extract_cubemaps.py's CUBES keys)
 VISOR_CUBES = {r'characters\cyborg\bitmaps\cyborg reflection armor': 'cyborg',
                r'characters\elite\bitmaps\cubemap dark gray': 'dark_gray'}
 
@@ -93,6 +96,9 @@ def cube_strip(key, out, size=128):
 
 
 def main():
+    """out/models/MarineODST rebuilt: the a50 body's surfaces and skins on the Marine's skeleton with every Marine
+    animation, the Marine's arsenal overlays and hand frame copied into the json, Fire Team Raven's skins per
+    colour, and the visor's tint texture, cube-map strips and shader parameters (json 'visor')"""
     from extract_chars import OUT
     src = f'{OUT}/models/Marine'
     d = f'{OUT}/models/{PID}'
@@ -140,6 +146,7 @@ def main():
     assert visor[0][0] <= 16, 'no visor surface'
     vis = dict(mat=visor[1], base=visor_params(A50), raven={})
     def tint_png(p, fn):
+        """an 8 x 8 texture of the visor's resting colour from visor_params' tints (parallel weighted over perpendicular)"""
         c = np.array(p['par'][1]) * p['par'][0] * 0.6 + np.array(p['perp'][1]) * p['perp'][0] * 0.4
         Image.new('RGB', (8, 8), tuple(int(x) for x in np.clip(0.18 + c * 0.82, 0, 1) * 255)).save(f'{d}/{fn}')
     tint_png(vis['base'], visor[1])

@@ -16,8 +16,10 @@ from PIL import Image
 from extract_chars import OUT
 
 XAM_C40 = os.environ.get('HCE_XAM_C40', 'c40_1.map')   # SPV3's c40_1.map (the XAM Campaign Overhaul's c40)
-TEX = 1024
+TEX = 1024              # the replacement skins are resized to this (square) before they overwrite the extracted ones
 # material -> XAM bitmap (the shaders XAM's c40 floodcombat models use)
+# the key is the extracted material (out/models/<Char>/<Char>_<n>.png: _0 the base skin, _1 the damaged one); to
+# repaint another Flood form from the same map, add its materials and the bitmap tag paths its shaders name
 SKINS = {
     'FloodHuman_0': r'characters\zombie human\bitmaps\floodhuman',
     'FloodHuman_1': r'characters\zombie human\bitmaps\floodhuman_damaged',
@@ -39,6 +41,8 @@ def xam_image(m, name):
 
 
 def main():
+    """overwrite each SKINS material's extracted png with the XAM bitmap, resized to TEX; does nothing (and says so)
+    when the map, the extracted file or the bitmap's pixels are missing"""
     if not os.path.exists(XAM_C40): print('xam_flood: no', XAM_C40, '(Halo CE skins kept)'); return
     from pcmap import PCMap
     m = PCMap(XAM_C40)

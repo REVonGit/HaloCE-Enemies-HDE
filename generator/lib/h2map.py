@@ -1,9 +1,20 @@
-"""Halo 2 MCC cache reader (version 13, chunk-compressed): decompress, tag index, names, blocks, raw."""
+"""Halo 2 MCC cache reader (version 13, chunk-compressed): decompress, tag index, names, blocks, raw.
+
+H2Map opens a map (decompressing it once to <map>.dec beside it); render_model(), graph (h2anim.py), sound_perms /
+sound_chunks and mcc_bitmap read the tags the extractors need. Addresses inside the decompressed body are relative
+to the tag index header (H2Map.o adds s.H), and all structure offsets here are hand-found for the MCC build, not
+taken from a layout file: to read another tag class, find its block offsets in a tag editor (Assembly) and follow
+the pattern in render_model. Halo 2 world units match Halo CE's; quaternions are (x, y, z, w) as stored."""
 import struct, zlib, os, json
 import numpy as np
 
 class H2Map:
+    """An opened MCC Halo 2 cache: hdr (first 0x380 bytes), b (decompressed body), H (offset of the tag index
+    header, which is the tag address base), scen / glob (scenario and globals tag ids), tags (list of dict(cls, id,
+    addr, size, name)), byid (id -> tag), by ((cls, name) -> tag), and the string-id table (sid())."""
     def __init__(s, path, cache=None):
+        """Decompress path's chunk table (each chunk zlib raw deflate after a 2-byte header, or stored when its size
+        is negative) into memory, reusing the cached copy at `cache` (default path + '.dec') when its size matches."""
         d = open(path, 'rb').read()
         s.hdr = d[:0x380]
         cache = cache or path + '.dec'
@@ -38,23 +49,33 @@ class H2Map:
         si = struct.unpack_from('<I', s.hdr, 0x3C)[0] - 0x380
         s.sid_off = [struct.unpack_from('<i', s.b, si + 4 * i)[0] for i in range(sc)]
         s.sid_data = so
+    # tag address -> offset into s.b
     def o(s, addr): return s.H + addr
+    # little-endian struct.unpack of fmt at tag address addr (returns the tuple)
     def u(s, fmt, addr): return struct.unpack_from('<' + fmt, s.b, s.H + addr)
     def block(s, addr, size):
+        """The tag_block (count, address) at addr -> list of element addresses, size bytes apart."""
         c, p = s.u('II', addr)
         return [p + i * size for i in range(c)]
     def sid(s, v):
+        """A string_id value -> its string ('' for 0 or out of range); the index is the low 24 bits."""
         i = v & 0xFFFFFF
         if v == 0 or i >= len(s.sid_off): return ''
         o = s.sid_data + s.sid_off[i]
         return s.b[o:s.b.index(b'\0', o)].decode('latin1')
     def raw(s, ptr, size):
+        """Raw resource bytes (geometry, sound chunks) at a resource pointer: the top two bits say which map holds
+        them (0 = this one; shared.map / single_player_shared.map raise ValueError), the rest is a file offset."""
         loc = ptr >> 30
         if loc: raise ValueError('raw data lives in a shared map (location %d)' % loc)
         o = (ptr & 0x3FFFFFFF) - 0x380
         return s.b[o:o + size]
+    # tag by class and full path name, e.g. tag('mode', 'objects\\characters\\elite\\elite')
     def tag(s, cls, name): return s.by[(cls, name)]
 
+# Earlier gestalt walk that expects the sample bytes to sit in the map itself (ugh! block offsets 16/32/40/64);
+# not used by any extractor now. sound_chunks() below is the MCC layout, where samples live in sounds_*.dat.
+# Fields come straight from the snd! header: codec and enc (0 mono / 1 stereo) as stored, rate mapped to Hz.
 def sound_perms(m, name):
     """[(perm name, codec, channels, rate, bytes)] for a snd! tag, via the ugh! gestalt"""
     t = m.tag('snd!', name); a = t['addr']
@@ -75,6 +96,8 @@ def sound_perms(m, name):
     return out
 
 def strip_to_tris(idx):
+    """A triangle strip (sequence of vertex indices) -> (M, 3) int32 triangle list: degenerate triangles (a repeated
+    index, how Halo joins strips) are dropped and odd triangles have their winding swapped so every face agrees."""
     t = []
     for k in range(len(idx) - 2):
         a, b, c = int(idx[k]), int(idx[k + 1]), int(idx[k + 2])
@@ -82,6 +105,20 @@ def strip_to_tris(idx):
         t.append((a, b, c) if k % 2 == 0 else (b, a, c))
     return np.array(t, np.int32).reshape(-1, 3)
 
+# Returns dict(nodes=[dict(name, parent, t (3), q (4, x y z w))] parent-relative bind pose,
+#              shaders=[shader tag path or None] by shader index,
+#              regions=[dict(name, perms=[dict(name, lods=[section index per LOD, -1 = none])])],
+#              sections=[dict(cls, vc, tc, npv, vsz, pos (V,3), uv (V,2), nrm (V,3), bi (V,4) node indices,
+#                             bw (V,4) weights 0..1, parts=[(shader index, tris (M,3))], nmap)]).
+# Block offsets in the mode tag: regions +0x1C (16 bytes each, permutations at +8), sections +0x24 (0x5C bytes),
+# nodes +0x48 (0x60 bytes: name sid, parent i16 at +4, t at +0xC, q at +0x18), shaders +0x60 (0x20 bytes, tag ref
+# at +8), compression info +0x14 (or per section at +0x1C): 14 floats, position bounds x/y/z then uv bounds.
+# A section's resource blob (pointer, size, header size, resource size at +0x38) holds sub-blocks listed in its
+# resource table (+0x48, 16 bytes each: type, index, size, offset): 32 = index strip, 56/0 = vertices, 56/1 = uvs,
+# 56/2 = normal/binormal/tangent, 104 = node map (section-local bone index -> model node). Vertex layout by section
+# class: cls 3 (or 2 with 20+ byte vertices) = pos 3f + 4 node bytes + 4 weight bytes (skinned); 13+ bytes = pos +
+# one node byte (rigid-boned); else pos only (rigid). Positions and uvs are stored normalised to -1..1 inside the
+# compression bounds and are expanded here to world units.
 def render_model(m, name):
     """nodes, sections (decoded), shaders, regions of an H2 mode tag"""
     a = m.tag('mode', name)['addr']
@@ -147,6 +184,8 @@ def render_model(m, name):
                              parts=tris_all, nmap=nmap))
     return dict(nodes=nodes, shaders=shaders, regions=regions, sections=sections)
 
+# R: the dict from render_model; shader: the last path component of a shader tag ('elite_armor'). Returns the bitm
+# tag paths in the first postprocess definition's bitmap block, in order (usually base, detail, bump, cube ...).
 def shader_bitmaps(m, R, shader):
     """the bitmap tag names a render model's shader samples (its first pass), by the shader's short name"""
     shs = [s for s in R['shaders'] if s and s.endswith('\\' + shader)]
@@ -159,6 +198,12 @@ def shader_bitmaps(m, R, shader):
                 if t in m.byid: bms.append(m.byid[t]['name'])
     return bms
 
+# codec is three bytes from the gestalt's codec block: (sample rate enum 0 = 22050 / 1 = 44100 / 2 = 32000,
+# encoding 0 mono / 1 stereo, compression 1 = Xbox ADPCM, else Opus). Each location is (bank index, [(file offset,
+# size low 16 bits, flags (bit 0x2000 = sounds_neutral.dat, low byte = size high bits), unpacked size, ?) per
+# chunk], sample count); see extract_sentinel_sounds.py for how a chunk is read out of sounds_en/neutral.dat. Opus
+# chunks are packet chains (h2opus.packets). ugh! block offsets: codecs +0 (3 bytes), names +0x18 (4), pitch ranges +0x28 (12),
+# permutations +0x30 (16), banks +0x60 (8 bytes each, their chunk blocks 16 bytes each).
 def sound_chunks(m, name):
     """[(perm name, codec(rate, enc, comp), [(bank, file offset, size, pcm bytes)])] for a snd! tag (MCC gestalt)"""
     g = [t for t in m.tags if t['cls'] == 'ugh!'][0]['addr']
@@ -181,6 +226,8 @@ def sound_chunks(m, name):
             out.append((m.sid(m.u('I', names[pn])[0]), codec, locs))
     return out
 
+# bitmap_data entries are 0xA8 bytes at bitm + 0x44: width/height i16 at +4, format (bitmaps.FMT numbering) at +0xC,
+# offset into textures.dat at +0x38. texfile may be textures.dat itself or its split pieces (splitfile.py).
 def mcc_bitmap(m, name, texfile, index=0):
     """MCC Halo 2 bitmap -> PIL RGBA (top mip). Pixels live in textures.dat: int count, int[count] block sizes, then
     zlib blocks (negative size = stored)."""

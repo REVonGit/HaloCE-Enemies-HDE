@@ -1,19 +1,38 @@
 """Halo 2 animation graph (jmad) decoding: codecs ported from TagTool (UncompressedStatic, 8-byte quantized
-rotation, byte/word keyframe lightly quantized, and their reversed variants). Units stay in world units."""
+rotation, byte/word keyframe lightly quantized, and their reversed variants). Units stay in world units.
+
+    skel, anims = graph(m, 'objects\\characters\\elite\\elite')
+    frames, move = decode(a['data'], a['sizes'], a['frames'], a['nodes'], defaults)
+
+An animation's data blob is: [static codec block][animated codec block][unknown][static flags][animated flags]
+[movement data]; `sizes` from graph() gives each part's length. The codec blocks list, per node that has the
+matching flag bit, that node's rotation / translation / scale keys; every other node takes its default (bind) value.
+Rotations are returned as stored (x, y, z, w) and the Halo 2 extractors convert them to the Halo CE convention
+themselves."""
 import struct
 import numpy as np
 
 def _q(v):
+    """Four int16 -> unit (x, y, z, w) quaternion (identity if zero)."""
     q = np.array(v, np.float64) / 32767.0
     n = np.linalg.norm(q); return q / n if n > 0 else np.array([0, 0, 0, 1.0])
 
 class Codec:
+    """One decoded codec block: type (byte 0), nr/nt/ns (node counts with rotation / translation / scale data), and
+    per animated node its values (rot: list of quaternions, tr: list of (3) arrays, sc: list of floats) and the
+    frame numbers they sit on (rk, tk, sk). Values and keys line up index for index."""
     def __init__(s, data, pos, frames):
+        """data: the animation blob; pos: offset of the codec block; frames: frame count."""
         s.d = data; s.p0 = pos; s.F = frames
         s.type, s.nr, s.nt, s.ns = data[pos], data[pos + 1], data[pos + 2], data[pos + 3]
         s.rot = []; s.tr = []; s.sc = []; s.rk = []; s.tk = []; s.sk = []
 
 def read_codec(d, pos, F):
+    """Parse the codec block at pos. Type 1 (UncompressedStatic) holds one value per node (keys left empty, every
+    frame uses it); type 3 (uncompressed animated) holds F values per node, laid out node-major; types 4-7 are
+    keyframed: a run of key frame numbers per node (bytes for 4/6, words for 5/7, read until the numbers stop
+    increasing or exceed F) at pos + 48 + 4 * (nr + nt + ns), then the values at the three offsets stored at pos + 32.
+    Types 6/7 store the lists reversed, so they are flipped back. Other types raise ValueError."""
     c = Codec(d, pos, F); t = c.type
     if t in (1, 3):
         toff, soff, rbs, tbs, sbs = struct.unpack_from('<5I', d, pos + 12)
@@ -35,6 +54,8 @@ def read_codec(d, pos, F):
         roff, toff, soff = struct.unpack_from('<3I', d, pos + 32)
         p = pos + 48 + 4 * (c.nr + c.nt + c.ns)
         def keys():
+            """read one node's keyframe index list (uint8 or uint16 per ks) from p, stopping when the indices stop
+            rising or pass F; advances p"""
             nonlocal p
             out = []
             while True:
@@ -58,12 +79,15 @@ def read_codec(d, pos, F):
     raise ValueError('codec %d' % t)
 
 def slerp(a, b, t):
+    """Spherical interpolation between unit quaternions a and b at t in 0..1, taking the short way round."""
     d = float(np.dot(a, b))
     if d < 0: b = -b; d = -d
     if d > 0.9995: r = a + (b - a) * t; return r / np.linalg.norm(r)
     th = np.arccos(d); return (np.sin((1 - t) * th) * a + np.sin(t * th) * b) / np.sin(th)
 
 def sample(keys, vals, f, interp):
+    """Value at frame f of a keyed channel: keys (sorted frame numbers), vals (one per key), interp(a, b, t) between
+    the two keys around f; clamped to the first / last key outside the range."""
     if len(keys) == 1 or f <= keys[0]: return vals[0]
     if f >= keys[-1]: return vals[-1]
     j = int(np.searchsorted(keys, f, side='right'))
@@ -72,6 +96,8 @@ def sample(keys, vals, f, interp):
     return interp(vals[j - 1], vals[j], (f - k0) / (k1 - k0))
 
 def bits(d, off, size, n):
+    """A node-flags block (size bytes at off: three equal bit sets, rotation / translation / scale, each a run of
+    u32 words) -> [[bool] * n] * 3, or None when the block is empty."""
     if not size: return None
     L = size // 3 // 4
     out = []
@@ -80,6 +106,11 @@ def bits(d, off, size, n):
         out.append([bool(words[i // 32] >> (i % 32) & 1) for i in range(n)])
     return out
 
+# sizes = (static flags size, animated flags size, movement data size, pill offset size, static codec size,
+# unknown size, animated codec size) as the jmad animation struct stores them (graph()). Per node and channel, a
+# static flag bit means "one value for the whole animation", an animated flag bit means "keyed", neither means the
+# default. Movement data is F rows of 2 (dx dy), 3 (dx dy dyaw) or 4 (dx dy dz dyaw) floats. Scale is returned as a
+# 3-tuple so the frames drop straight into write_iqm.
 def decode(data, sizes, F, N, defaults):
     """-> frames[F][N] of (t, q xyzw, s), movement (F,4) dx dy dz dyaw.  defaults: [(t, q)] per node"""
     sflag, aflag, move, pill, ssize, usize, csize = sizes
@@ -117,6 +148,10 @@ def decode(data, sizes, F, N, defaults):
     frames = [[(tuple(comps[1][f][n]), tuple(comps[0][f][n]), (comps[2][f][n],) * 3) for n in range(N)] for f in range(F)]
     return frames, mv
 
+# Returns (skeleton node names in graph order, animations). Animation entries are 0x60 bytes at jmad + 0x2C: name
+# sid +0, type +0x10 (0 base, 1 overlay, 2 replacement), frame info type +0x11, blend screen +0x12, node count +0x13,
+# frame count +0x14, loop frame +0x20, data (size, pointer) +0x28, sizes +0x30 (see decode). Node names are at +0xC
+# (0x20 bytes each). The frames themselves are not decoded here: call decode() on data / sizes.
 def graph(m, name):
     """animations of a jmad tag: list of dict(name, type, frame_info, nodes, frames, loop, data, sizes)"""
     a = m.tag('jmad', name)['addr']

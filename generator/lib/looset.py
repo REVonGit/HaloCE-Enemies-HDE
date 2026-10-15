@@ -3,21 +3,36 @@
 Tag files are big-endian: 64-byte header, then the main struct, then each field's child data in field
 order (tag reference paths, data blobs, block elements).  Only the main struct is mapped here; tag
 reference names are recovered by walking the trailing strings in order.  Blocks are left unresolved
-(count only), which is enough for the actor/variant/biped/collision stats the pack uses."""
+(count only), which is enough for the actor/variant/biped/collision stats the pack uses.
+
+    lm = LooseMap(); t = lm.load('grunt.actor_variant', 'grunt')
+    T = tags.tag(lm, t, 'actor_variant_definition'); T['ranged_combat.maximum_firing_range']
+
+Several tag files can be loaded into one LooseMap; each gets its own address range (a 0x100 gap apart) and a tag id
+0x80000 + n, with the tags it references given fake ids 0x10000 + k so T['some_tag_reference'] returns a dict with
+cls and name like it does on a cache map (data=None: the referenced file is not loaded)."""
 import struct, re
 from tags import LAYOUT, FMT, VEC
 
+# tag file group code (bytes 0x24..0x28 of the header) -> decomp struct of its main body. Add a pair to load
+# another tag class; the struct must exist in the decomp headers.
 GROUPS = {'actv': 'actor_variant_definition', 'actr': 'actor_definition', 'bipd': 'biped_definition',
           'coll': 'collision_model', 'weap': 'weapon_definition'}
 
 class LooseMap:
+    """A fake map for tags.Tag: d (the loaded files concatenated with padding), tags, byid; u() reads big-endian
+    where HMap reads little-endian, so the same decomp layouts apply."""
     def __init__(s):
+        """start empty; load() adds tags"""
         s.d = b''; s.tags = []; s.byid = {}
     def u(s, fmt, a):
+        """big-endian struct.unpack of fmt at file offset a (addresses here are plain offsets into s.d)."""
         return struct.unpack_from('>' + fmt, s.d, a)
+    # all loaded tags of a group code
     def find(s, cls): return [t for t in s.tags if t['cls'] == cls]
 
     def _tagrefs(s, st, base, out):
+        """Append the offsets of every tag_reference field in struct st at base (recursing into embedded structs)."""
         L = LAYOUT.layout(st)
         for fn, (o, t, n) in sorted(L['fields'].items(), key=lambda x: x[1][0]):
             t = re.sub(r'^(struct|union)\s+', '', t.strip())
@@ -27,6 +42,9 @@ class LooseMap:
                 s._tagrefs(t, base + o, out)
 
     def load(s, path, name):
+        """append the loose tag file at path (a GROUPS class) to s.d at a 0x100-aligned base and register it as tag
+        `name`; every tag_reference in its struct gets a synthetic id whose byid entry carries the path string found
+        after the struct. Returns the tag dict (cls, id, name, data = the struct's offset)"""
         raw = open(path, 'rb').read()
         grp = raw[0x24:0x28].decode('latin1')
         st = GROUPS[grp]

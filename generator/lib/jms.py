@@ -6,14 +6,17 @@ standard (x, y, z, w) so they match halomodel / iqm.py."""
 import numpy as np
 from halomodel import qmul, qrot, qconj, qnorm
 
-U = 0.01
+U = 0.01   # JMS/JMA units -> world units
 
 def _lines(path):
+    """The file's non-blank lines, stripped (JMS/JMA are one value or vector per line)."""
     return [l.strip() for l in open(path, encoding='latin1') if l.strip() != '']
 
+# a whitespace-separated line of numbers -> list of floats
 def _f(s): return [float(x) for x in s.split()]
 
 def _parents(child, sib):
+    """Parent index per node from JMS's first-child / next-sibling links (-1 for roots)."""
     par = [-1] * len(child)
     for i in range(len(child)):
         c = child[i]
@@ -23,9 +26,15 @@ def _parents(child, sib):
     return par
 
 class JMS:
+    """A parsed JMS 8200 model: version, checksum, names / parent / q / t per node (bind pose, parent-relative),
+    materials [(name, tif path)], markers [dict(name, region, node, q, t, radius)], regions, and per vertex node0,
+    node1, w1 (weight of node1; node0 gets 1 - w1), pos (V,3), nrm (V,3), uv (V,2); per triangle tri_region,
+    tri_mat, tris (T,3)."""
     def __init__(s, path):
+        """parse the JMS file at path into the attributes listed on the class"""
         L = _lines(path); i = 0
         def nx():
+            """the next line of the file, advancing the cursor i"""
             nonlocal i
             v = L[i]; i += 1; return v
         s.version = int(nx()); s.checksum = int(nx())
@@ -55,9 +64,11 @@ class JMS:
             s.tri_region[k] = int(nx()); s.tri_mat[k] = int(nx()); s.tris[k] = [int(x) for x in nx().split()]
 
     def world_bind(s):
+        """Bind pose in model space: [(t, q)] per node."""
         return world(s.parent, [(t, q) for t, q in zip(s.t, s.q)])
 
 def world(parent, local):
+    """Compose parent-relative [(t, q)] into model-space [(t, q)]; parents must come before their children."""
     W = []
     for i, (t, q) in enumerate(local):
         if parent[i] < 0: W.append((np.asarray(t, float), qnorm(q)))
@@ -69,8 +80,11 @@ def world(parent, local):
 class JMA:
     """frames[F][N] = (t, q, scale) in local (parent) space, standard quaternions, world units."""
     def __init__(s, path):
+        """Also sets version, nframes, fps, names, checksum, parent (None for 16390 files, which carry no
+        hierarchy) and kind (the upper-cased extension: JMA, JMM, JMO, JMR, JMT, JMZ)."""
         L = _lines(path); i = 0
         def nx():
+            """the next line of the file, advancing the cursor i"""
             nonlocal i
             v = L[i]; i += 1; return v
         s.version = int(nx()); s.nframes = int(nx()); s.fps = float(nx())

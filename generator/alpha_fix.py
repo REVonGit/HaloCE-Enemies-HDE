@@ -22,12 +22,16 @@ try:
 except Exception:
     OUT = os.path.join(HERE, 'out')
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
+# the characters fixed by default (the Elite bodies that share the teeth card); the first line is overridden by the second
 CHARS = ('Elite', 'EliteSpecial', 'EliteRifle')
 CHARS = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot')
+# substrings of the Halo CE shader names whose base bitmap carries the cut-out alpha; add another alpha-tested
+# shader here (and its character to CHARS) to cut out more of a model
 TEETH = ('elite teeth',)
 
 
 def teeth_bitmaps():
+    """[(shader name, RGBA image)] for every TEETH shader in b30.map: the bitmaps whose alpha cuts the card out"""
     from tags import HMap
     from bitmaps import bitmap_image
     from extract_chars import shader_maps
@@ -42,6 +46,9 @@ def teeth_bitmaps():
 
 
 def main(chars):
+    """for each character: find the skin that is the teeth bitmap (same size, same colours), save it RGBA with the
+    bitmap's alpha made 0/255, and add back faces to the IQM surfaces wearing it (rewriting the IQM and its json's
+    iqm_bytes) unless they have them already"""
     bms = teeth_bitmaps()
     for char in chars:
         d = f'{OUT}/models/{char}'

@@ -20,6 +20,9 @@
 		hce_action = HCE_ACT_FEED;
 		return true;
 	}
+	// The feed action set up by HCE_SeekCorpse: walks to the chosen corpse, then plays the feed animation for 3 s and
+	// replaces the corpse with a combat form (Elite or human, by hce_type), which plays its rise animation and goes to
+	// See. The infection form destroys itself. Aborts to idle if the corpse is gone or no longer a corpse.
 	override void HCE_Feed()
 	{
 		let c = hce_feedTarget;

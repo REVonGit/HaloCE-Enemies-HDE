@@ -3,7 +3,13 @@
 Builds 'EliteRifle' (Elite body + the Plasma Carbine on the right hand) whose rifle animations keep the
 Elite's own legs, pelvis and spine from the matching pistol animation and take the arms from the
 Marine's rifle animation of the same action (both are 3ds Max bipeds, so arm bones share local axes).
-The left hand is then solved onto the carbine's fore-grip with two-bone IK."""
+The left hand is then solved onto the carbine's fore-grip with two-bone IK.
+
+    python3 extract_elite_rifle.py      # after extract_chars.py and cmt_weapon.py (the carbine); -> out/models/EliteRifle/
+
+With a CE-rig graph that has a real rifle set at ANTR (HCE_SKETCHFAB/elite.model_animations) its animations are
+used (from_tag) and build() only fills the actions it lacks; otherwise build() makes the whole set from PLAN.
+Either way the body goes through extract_chars.extract with read_animations patched to add the made animations."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, os, re, copy
@@ -16,10 +22,12 @@ from tags import tag, HMap
 MAP = 'a30'          # carries both the Elite and the Marine graphs
 ELITE = r'characters\elite\elite'
 MARINE = r'characters\marine\marine'
+# the arm bones copied from the Marine when USE_MARINE_ARMS is on
 ARM = ['bip01 l clavicle', 'bip01 r clavicle', 'bip01 l upperarm', 'bip01 r upperarm',
        'bip01 l forearm', 'bip01 r forearm', 'bip01 l hand', 'bip01 r hand']
 FOREGRIP = np.array([0.087, 0.07, -0.054])  # support-hand wrist in weapon space, as the CE rifle set holds it
-# rifle animation <- (Elite pistol animation for the body, Marine rifle animation for the arms or None to keep)
+# rifle animation <- (Elite pistol animation for the body, Marine rifle animation for the arms or None to keep).
+# To add a rifle action, name it here after the pistol animation it should move like.
 PLAN = {
     'stand rifle idle': ('stand pistol idle%0', 'stand rifle idle'),
     'alert rifle idle': ('alert pistol idle', 'alert rifle idle%0'),
@@ -55,10 +63,13 @@ PLAN = {
 # Copying the Marine's arm rotations points the carbine wrong (the Elite's hand marker is oriented differently),
 # so the Elite's own aiming right arm is kept and only the support hand is solved onto the fore-grip.
 USE_MARINE_ARMS = False
+# actions whose left hand leaves the gun (no fore-grip IK)
 IK_SKIP = {'stand rifle melee', 'stand rifle throw-grenade', 'stand rifle signal-attack', 'stand rifle warn',
            'stand rifle berserk'}
 
 def rot_between(a, b):
+    """the shortest quaternion (x, y, z, w) turning direction a onto direction b (a half-turn about any
+    perpendicular axis when they are opposite)"""
     a = a / np.linalg.norm(a); b = b / np.linalg.norm(b)
     c = np.cross(a, b); d = float(np.dot(a, b))
     if d < -0.999999:
@@ -69,6 +80,7 @@ def rot_between(a, b):
     return qnorm(np.array([c[0], c[1], c[2], 1.0 + d]))
 
 def world(parent, frame):
+    """a frame of parent-local (t, q, s) per node -> [(world position, world rotation)] per node"""
     W = []
     for i, (t, q, s) in enumerate(frame):
         if parent[i] < 0: W.append((np.asarray(t, float), qnorm(q)))
@@ -78,6 +90,9 @@ def world(parent, frame):
     return W
 
 def two_bone_ik(frame, parent, iu, if_, ih, target):
+    """the frame with the arm (upper arm iu, forearm if_, hand ih node indices) bent so the hand reaches target
+    (world space): bone lengths kept, the elbow stays in its current bend plane, the hand's local rotation is
+    left alone. Returns a new frame list."""
     W = world(parent, frame)
     S, qs = W[iu]; E, qe = W[if_]; H, qh = W[ih]
     a = np.linalg.norm(E - S); b = np.linalg.norm(H - E)
@@ -102,8 +117,12 @@ def two_bone_ik(frame, parent, iu, if_, ih, target):
     return out
 
 def build(maps):
+    """the rifle set made from PLAN on the Elite's and the Marine's graphs in maps[MAP]: each entry copies the Elite
+    pistol animation, optionally takes the Marine's arm rotations (USE_MARINE_ARMS), and solves the left hand onto
+    FOREGRIP (unless in IK_SKIP); plus the carbine recoil overlay from the Marine's AR fire. Returns the animations."""
     m = maps[MAP]
     def graph(name):
+        """a biped's model and {animation name: animation} from its graph"""
         bt = [t for t in m.find('bipd') if t['name'] == name][0]
         B = tag(m, bt, 'biped_definition')
         model = hm.Model(m, B['model'])
@@ -155,7 +174,11 @@ ANTR = SKETCHFAB + '/elite.model_animations'   # user-supplied CE Elite graph wi
 TAG_IK = True
 
 def from_tag(maps):
-    """real Elite rifle animations from the supplied CE-rig animation graph"""
+    """real Elite rifle animations from the supplied CE-rig animation graph
+
+    Every base 'stand / crouch / alert rifle' animation of ANTR (lib/looseantr), the support hand solved onto
+    FOREGRIP where it is more than 0.02 WU off (TAG_IK), an 8-frame baked recoil made from the idle, and build()'s
+    animations for the actions the tag lacks. Returns the animations."""
     from looseantr import Antr
     A = Antr(ANTR)
     m = maps[MAP]
@@ -211,11 +234,14 @@ def from_tag(maps):
     return made
 
 def run():
+    """EliteRifle through extract_chars.extract: the Elite body with the carbine on 'right hand elite', its graph
+    cut to the stances in keep (no sword set) plus the made rifle animations. Returns the meta."""
     maps = {MAP: HMap(f'{MAPS_DIR}/{MAP}.map')}
     made = from_tag(maps) if os.path.exists(ANTR) else build(maps)
     keep = re.compile(r'^(stand|alert|crouch|flee|s-ping|h-ping|s-kill|h-kill|stand airborne-dead|stand landing-dead)')
     orig_read = hm.read_animations
     def patched(mm, graph, nc):
+        """hm.read_animations for the Elite's 26-node graph only: the kept stances plus the made rifle set"""
         res = orig_read(mm, graph, nc)
         if nc != 26: return res
         res = [a for a in res if keep.match(a.name) and ' sword ' not in a.name]

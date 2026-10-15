@@ -1,6 +1,15 @@
 """Build the dialogue pk3 tree from Lewisk3/HaloDoomEnemies (Sounds/<Voice>/<Category> N.ogg).
 
-Logical sounds: HCE/<Voice>/<Event>, played by HaloDoom_EnemyBase.HCE_Say().
+    HCE_VOICE_SRC=HaloDoomEnemies/Sounds python3 build_voices.py     # -> voices/ (HCE_VOICE_OUT)
+
+Reads every <Voice>/ folder under SRC (plus voice_extra/, HCE_VOICE_EXTRA: lines extract_h2_grunt.py adds, or a
+whole replacement set when the folder holds a REPLACE file), copies each .ogg to voices/sounds/hce_voice/<voice>/
+<event>_NN.ogg and writes voices/sndinfo.voices: one HCE/<Voice>/<Event>/<n> entry per file, a $random
+HCE/<Voice>/<Event> over them, and $alias lines for the events a voice lacks (FALLBACK). The packs ship that tree;
+HaloDoom_EnemyBase.HCE_Say() plays HCE/<Voice>/<Event> for the voice named in the class's HCE_Voices.
+
+To map a new source category to an event, add it to CAT; to give a voice a stand-in for an event it has no lines
+for, add the event to FALLBACK. The copy is incremental (.sources.json), so louden_voices.py's levelling survives.
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
@@ -11,6 +20,9 @@ OUT = os.environ.get('HCE_VOICE_OUT', os.path.join(os.path.dirname(os.path.abspa
 EXTRA = os.environ.get('HCE_VOICE_EXTRA', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'voice_extra'))
 
 # source category (lowercased, number stripped) -> pack events
+# a file 'Pain 3.ogg' is category 'pain'; it is filed under every event listed (the first names the copied file).
+# A category not here is skipped (printed). The event names are what HCE_Say() asks for; a new event needs a line in
+# the ZScript that says it.
 CAT = {
     'alert': ['Alert'], 'taunt': ['Taunt'], 'death': ['Death'], 'death nrml': ['Death'],
     'kill player': ['KillPlayer'], 'pain': ['Pain', 'PainMed'], 'pain nrml': ['Pain'], 'pain med': ['PainMed'],
@@ -47,6 +59,8 @@ CAT = {
     'advance': ['Advance'],
 }
 # events a voice lacks borrow another of its own events
+# event -> the event it is aliased to when a voice has no lines for it; chains are followed up to five steps
+# (Thanks -> Acknowledge -> Regroup -> Alert), so a new event only needs its nearest neighbour here
 FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 'Pain', 'PainHeavy': 'PainMed',
             'Regroup': 'Alert', 'OnFire': 'PainHeavy', 'Kamikaze': 'Panic', 'Stuck': 'Panic', 'LeaderDead': 'Panic', 'Berserk': 'Taunt',
             'Taunt': 'Howl', 'Pain': 'PainMed', 'Death': 'DeathHard', 'DeathHard': 'Death',
@@ -60,6 +74,8 @@ FALLBACK = {'KillPlayer': 'Taunt', 'Panic': 'Flee', 'Flee': 'Panic', 'PainMed': 
             'DownThere': 'Alert', 'FallBack': 'Flee', 'Advance': 'Regroup'}
 
 def main():
+    """copy every voice's lines from SRC (and EXTRA) into OUT and write OUT/sndinfo.voices; prunes copies whose
+    source is gone. Takes nothing (the paths are module constants), prints the file count."""
     # incremental: a line whose source file is unchanged keeps its copy in OUT (louden_voices.py has levelled it in
     # place; copying it again would mean levelling every line again). .sources.json: OUT path -> source sha1
     import hashlib, json

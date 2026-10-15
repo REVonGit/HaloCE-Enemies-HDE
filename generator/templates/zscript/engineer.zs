@@ -15,12 +15,18 @@
 	Array<bool> hce_buffGiven;
 	HaloDoom_EnemyBase hce_buffNear;
 
+	// True when e is a live, enabled ally on the Engineer's team and side that is in a fight and is not another
+	// Engineer or a Stealth (cloaked) class; those are the ones it shields.
 	bool HCE_EngAlly(HaloDoom_EnemyBase e)
 	{
 		return e && e != self && e.hce_enabled && e.health > 0 && e.hce_team == hce_team && e.bFRIENDLY == bFRIENDLY
 			&& !(e is GetClass()) && e.HCE_Alerted() && String.Format("%s", e.GetClassName()).IndexOf("Stealth") < 0;   // cloaked Elites stay shieldless
 	}
 
+	// The once-a-second gift: for every ally within 420 units in sight, gives a 40-point shield (x HCE_ShieldScale) to
+	// one that has none or tops an existing one up by 20% of its max, to 1.5x max; remembers each in hce_buffed with
+	// the time, and keeps the nearest in hce_buffNear. Then releases allies dead or unseen for over 4 s.
+	// To change the reach, edit the two 420s; the cap, the 1.5s.
 	void HCE_EngPulse()
 	{
 		hce_buffNear = null;
@@ -52,6 +58,8 @@
 			if(!hce_buffed[i] || hce_buffed[i].health <= 0 || level.maptime - hce_buffAt[i] > 35 * 4) HCE_EngRelease(i);
 	}
 
+	// Takes the gift back from entry i of hce_buffed: a shield the Engineer gave is destroyed (and its loop sound
+	// stopped), a topped-up one is clamped back to its max. Drops the entry from the three parallel arrays.
 	void HCE_EngRelease(int i)
 	{
 		let e = hce_buffed[i];
@@ -67,6 +75,8 @@
 		hce_buffed.Delete(i); hce_buffAt.Delete(i); hce_buffGiven.Delete(i);
 	}
 
+	// Draws the pink/violet particle tethers from the Engineer's middle to each ally it pulsed in the last 40 tics:
+	// 2-18 particles per tether, drifting along it with a slight arc. Purely visual.
 	void HCE_EngTether()
 	{
 		vector3 from = pos + (0, 0, height * 0.5);
@@ -86,6 +96,9 @@
 		}
 	}
 
+	// Per tic: pulses the shields once a second (maptime % 35 == 7), redraws tethers every 3 tics, then drifts: toward
+	// its nearest shielded ally when farther than 300 or away when closer than 200 (new heading every 2 s), otherwise
+	// a random heading every 3-7 s at 0.8-1.8 speed (1 in 4 chance of hovering still). A blocked move repicks at once.
 	override void Tick()
 	{
 		super.Tick();
@@ -118,6 +131,9 @@
 		A_SetAngle(angle + clamp(DeltaAngle(angle, hce_driftAngle), -2, 2), SPF_INTERPOLATE);
 	}
 
+	// Death: takes back every shield it gave, then bursts (explosion sound, quake, 40 particles) and throws 4-6 charged
+	// Plasma Caster cluster shots in a ring, scaled by HCE_DamageScale. The body is hidden; nothing lies on the floor.
+	// To change the grenade count, edit random(4, 6).
 	override void HCE_Die()
 	{
 		super.HCE_Die();

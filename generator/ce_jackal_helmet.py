@@ -18,6 +18,7 @@ JACKAL = r'characters\jackal\jackal'
 
 
 def _qmat(q):
+    """the 3x3 rotation matrix of an (x, y, z, w) quaternion"""
     w, x, y, z = q[3], q[0], q[1], q[2]
     return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
                      [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
@@ -25,6 +26,8 @@ def _qmat(q):
 
 
 def helmet(maps_dir):
+    """the helmet cut out of the Halo CE Jackal's armored_head permutation (the first map under maps_dir with the
+    Jackal), in the head bone's frame, with its base and multipurpose maps: see the module docstring for the keys"""
     from tags import HMap, tag
     from bitmaps import bitmap_image
     import halomodel as hm
@@ -41,6 +44,7 @@ def helmet(maps_dir):
     model = hm.Model(m, B['model'])
     reg = next(r for r in model.regions if r['name'] == 'head')
     def geo(name):
+        """the head permutation's richest geometry (most triangles over its LODs)"""
         perm = next(p for p in reg['perms'] if p['name'] == name)
         best = None
         for gi in sorted(set(perm['geoms'])):

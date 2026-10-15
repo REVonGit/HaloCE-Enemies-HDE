@@ -8,6 +8,8 @@ from bitmaps import bitmap_image
 LIGHT_BINS = [88, 128, 168, 208, 248]
 
 def shader_basemap(m, shader_id):
+    """(base bitmap tag id, alpha-tested?) of a shader tag: senv's base map and its alpha-test flag, else the first
+    tag reference in the shader (chicago-style shaders' map blocks searched one level down); (None, False) if none"""
     t = m.byid.get(shader_id)
     if not t: return None, False
     cls = t['cls']
@@ -30,17 +32,21 @@ def shader_basemap(m, shader_id):
     return None, False
 
 class LightmapSampler:
+    """A BSP's lightmap bitmap tag, its images decoded on demand and cached by index."""
     def __init__(s, m, bsp):
+        """m: HMap; bsp: halomap.BSP, whose lightmaps bitmap reference sits at root + 12"""
         s.imgs = {}
         s.m = m
         s.tag = bsp.u('I', bsp.root + 12)[0]
     def get(s, idx):
+        """lightmap image idx as a float RGB array (H, W, 3) in 0..1, or None for -1 / an undecodable bitmap"""
         if idx < 0: return None
         if idx not in s.imgs:
             im = bitmap_image(s.m, s.tag, idx)
             s.imgs[idx] = np.asarray(im.convert('RGB'), dtype=np.float32) / 255.0 if im else None
         return s.imgs[idx]
     def sample(s, idx, uvs):
+        """the mean RGB of lightmap idx at the given (u, v) points (nearest texel), or None without an image"""
         a = s.get(idx)
         if a is None: return None
         h, w, _ = a.shape
@@ -92,6 +98,8 @@ def render_triangles(m, b):
     return tris
 
 def light_level(l):
+    """lightmap brightness l (0..1) -> the nearest Doom sector light level in LIGHT_BINS (72 + 260 * l, snapped).
+    To change the bake's brightness range, edit the 72 / 260 here or LIGHT_BINS"""
     ll = 72 + 260 * float(l)
     best = min(LIGHT_BINS, key=lambda q: abs(q - ll))
     return best

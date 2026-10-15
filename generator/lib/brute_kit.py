@@ -18,10 +18,14 @@ sys.path.insert(0, HERE)
 import blendfile as bf
 
 BLEND = os.environ.get('HCE_BRUTE_KIT_BLEND', 'brute.blend')
+# vertex-group name (Halo 2 spelling) -> the Halo 2 Brute node to bind it to when the model has no such node.
+# Add an entry when piece()['missing'] lists a group that should follow a particular bone.
 FALLBACK = {'flap_front': 'pelvis', 'flap_rear': 'pelvis', 'physics_control': 'pelvis', 'l_toe': 'l_foot', 'r_toe': 'r_foot'}
 
 
 def bone_name(g, nodes):
+    """A vertex-group name in any of the three spellings -> the Halo 2 node name it binds to (a key of nodes), via
+    FALLBACK and the finger -> hand rule, or None when nothing matches."""
     n = g.lower().strip()
     if n.startswith('bip01 '): n = n[6:]
     if n.startswith('b_'): n = n[2:]
@@ -58,6 +62,7 @@ def euler(r, mode=1):
 
 
 def quat_mat(q):
+    """3x3 rotation matrix of a quaternion in Blender's (w, x, y, z) order (normalised first)."""
     w, x, y, z = q
     n = math.sqrt(w * w + x * x + y * y + z * z) or 1.0; w, x, y, z = w / n, x / n, y / n, z / n
     return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
@@ -66,11 +71,17 @@ def quat_mat(q):
 
 
 class Kit:
+    """An opened kit .blend: B (blendfile.Blend) and objects (name -> Object block). piece() pulls one object out
+    as a skinned mesh. Subclass and override attrs() for files whose meshes store attributes differently
+    (elefant_kit.Kit does this for Blender 4.0 files)."""
     def __init__(s, path=BLEND):
+        """parse the .blend at path (default BLEND, from the environment) and index its Object blocks by name"""
         s.B = B = bf.Blend(path)
         s.objects = {B.id_name(o): o for o in B.of_type('Object')}
 
     def world(s, o):
+        """4x4 world matrix of Object block o: loc / rot (quaternion, axis-angle or euler by rotmode) / size,
+        composed with the parent's world matrix and parent-inverse matrix."""
         B = s.B; B.ctx = o
         M = np.eye(4)
         rm = B.get('Object', o.off, 'rotmode')
@@ -88,6 +99,9 @@ class Kit:
         return M
 
     def attrs(s, me):
+        """Mesh block me's generic attributes (Blender 4.3+ AttributeStorage) -> {name: (array, domain)}; domain 0 =
+        point, 2 = face, 3 = corner. Arrays are (n,) or (n, k) by data type (float3, float2, int, int2, int16x2,
+        bool, float). Needed ones: 'position', '.corner_vert', 'material_index', the first float2 corner layer (UV)."""
         B = s.B; out = {}
         a = B.get('Mesh', me.off, 'attribute_storage')
         blk = B.block(B.get('AttributeStorage', a, 'dna_attributes')); n = B.get('AttributeStorage', a, 'dna_attributes_num')
@@ -108,6 +122,12 @@ class Kit:
             out[name] = (a_.reshape(size, spec[1]) if spec[1] > 1 else a_, dom)
         return out
 
+    # Returns dict(name, pos (C,3) one entry per face corner in render-model units, nrm (C,3), uv (C,2), bi (C,4)
+    # node indices, bw (C,4) weights summing to 1 (0 where unweighted), tris (T,3) corner indices, tmat (T,) material
+    # slot, mats slot names, missing = vertex-group names no bone matched, unweighted = corner count with no
+    # weights). Steps: attributes -> fan polygons -> apply Mirror modifiers (type 5; flag bits 3..5 = axes, bit 2 =
+    # flip group names) -> world matrix (winding flipped for a negative determinant) -> / 100 -> weights to node
+    # indices (four heaviest) -> left/right sanity swap -> rebuilt normals.
     def piece(s, name, nodes):
         """one object -> mesh in Halo 2 render-model space, bones as indices into nodes (list of names)"""
         B = s.B; o = s.objects[name]

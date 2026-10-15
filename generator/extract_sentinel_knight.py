@@ -28,11 +28,13 @@ PACK = os.environ.get('HCE_H2_TAGPACK', 'H2EK-Tags')        # blackandfan's Halo
 SRC = f'{PACK}/data/objects/characters/sentinel_knight'
 TAGS = f'{PACK}/tags/objects/characters/sentinel_knight'
 DST = f'{OUT}/models/SentinelKnight'
-# shader -> (diffuse, change colour, self-illumination) under bitmaps/
+# shader -> (diffuse, change colour, self-illumination) under bitmaps/; the order is the surface order of the IQM
+# (shader_surface in the json). 'Core' has no textures: bake() paints it from CORES.
 SHADERS = {'Knight': ('sentinel_diffuse', 'sentinel_xf', 'sentinel_illum'),
            'SuperSentinel': ('sentinel_03_df', 'sentinel_03_xf', 'sentinel_03_illum'),
            'Monitor': ('monitor_01_df', 'monitor_01_xf', 'monitor_01_illum'),
            'Core': (None, None, None)}
+# every baked texture is resized to this many texels square
 TEX = 512
 # the Knight's right forearm is missing from the model (no geometry from the elbow, b_r_forearm, to b_r_hand: Halo 2
 # put a separate weapon object there). Its arm guns take its place: the Halo Infinite Forerunner weapons of
@@ -42,9 +44,11 @@ ARM_GUNS = {'light_rifle': 0.46, 'scattershot': 0.42, 'binary_rifle': 0.60, 'sup
 LIGHT_GROW = 5                  # the guns' lights grown to this many texels across (of 512)
 GUN_LOOK = 'SuperSentinel'     # the material the guns' colouring is matched to: the upper arm's, which the gun continues
 ARM_BACK = 0.03                 # how far behind the elbow the gun starts (it caps the joint)
+# a source animation whose file name holds one of these loops
 LOOP = ('idle', 'walk_', 'move_', 'airborne', 'look')
 # source animation -> the pack's name (build_pack.anim_table; '%N' numbers a name's variants). The JMO overlays (aim,
-# fire, soft flinches) are left out
+# fire, soft flinches) are left out. To bring in another of the Knight's animations, add its file here under the
+# pack name build_pack.py expects for the stance.
 ANIM_NAMES = {'any any idle var0.JMM': 'stand pistol idle',
               'any any move_front.JMA': 'stand pistol move-front', 'any any move_back.JMA': 'stand pistol move-back',
               'any any move_left.JMA': 'stand pistol move-left', 'any any move_right.JMA': 'stand pistol move-right',
@@ -74,6 +78,7 @@ ANIM_NAMES = {'any any idle var0.JMM': 'stand pistol idle',
 # pulse, hot rim, a cube-map reflection) and fullbright
 CORES = {'cold': {'cyan': (0.20, 0.85, 1.00), 'ice': (0.45, 0.65, 1.00), 'violet': (0.58, 0.38, 1.00), 'teal': (0.12, 0.95, 0.72)},
          'warm': {'orange': (1.00, 0.52, 0.10), 'amber': (1.00, 0.76, 0.22), 'red': (1.00, 0.26, 0.12), 'gold': (1.00, 0.88, 0.45)}}
+# rank -> CORES palette
 CORE_PALETTE = {'minor': 'cold', 'major': 'cold', 'commander': 'warm'}
 
 
@@ -101,6 +106,7 @@ def bake(shader, rank, colour):
             Image.new('L', (32, 32), 255).save(f'{DST}/core_{nm}_bm.png')
         return f'core_{names[0]}.png'
     def load(n, mode):
+        """bitmaps/<n>.* in the given PIL mode at TEX x TEX, or None when the file isn't there"""
         f = next(iter(glob.glob(f'{SRC}/bitmaps/{n}.*')), None)
         return Image.open(f).convert(mode).resize((TEX, TEX), Image.LANCZOS) if f else None
     d = np.asarray(load(df, 'RGB')).astype(np.float64) / 255
@@ -149,6 +155,10 @@ def gun_skin(src, rank, colour):
 
 
 def main():
+    """the whole extraction: the JMS skeleton and surfaces (one per SHADERS entry, skins baked per rank from the
+    biped's change colours), the arm guns from promethean_ce.py's pickles laid along the forearm, the animations
+    of ANIM_NAMES with their root motion moved into the json, then SentinelKnight.iqm and SentinelKnight.json
+    (extract_chars.py's layout plus guns, gun_surface, shader_surface, cores, core_palette and ranks)"""
     from extract_h2_drone_ranks import change_colours
     os.makedirs(DST, exist_ok=True)
     j = read_jms(open(f'{SRC}/render/sentinel_knight.JMS', 'rb').read())

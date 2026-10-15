@@ -1,8 +1,16 @@
-"""Minimal i386 C struct layout calculator for the Halo decomp headers."""
+"""Minimal i386 C struct layout calculator for the Halo decomp headers.
+
+Scans every .h/.c under hce_paths.HALO_SRC for struct/union definitions, enum members and integer #defines, then
+lays structs out the way MSVC did for the 32-bit game: natural alignment per field, no packing, pointers 4 bytes,
+tag_block 12, tag_reference 16, tag_data 20. The layouts are what tags.py / looset.py / loosewalk.py index tags
+with, so a wrong size here shifts every field after it. Run as a script to print a few key struct sizes
+(python3 lib/clayout.py) when checking a new decomp checkout."""
 import re, os, glob
 
 from hce_paths import HALO_SRC as SRC
 
+# Sizes and alignments of the decomp's primitive typedefs. Add an entry when layout() raises 'unknown type'
+# for a new typedef; a wrong size here corrupts every struct that uses the type.
 PRIM = {  # name: (size, align)
     'char': (1, 1), 'byte': (1, 1), 'boolean': (1, 1), 'byte_flags': (1, 1), 'signed char': (1, 1),
     'unsigned char': (1, 1), 'short': (2, 2), 'word': (2, 2), 'unsigned short': (2, 2), 'word_flags': (2, 2),
@@ -19,7 +27,11 @@ PRIM = {  # name: (size, align)
 }
 
 class Layout:
+    """The parsed decomp sources: structs (name -> (kind, body text), also under typedef aliases), consts (enum
+    member / #define name -> int, used for array dimensions), cache (name -> computed layout)."""
     def __init__(s):
+        """Parse every header and source file under SRC once (a second or two); comments are stripped first,
+        structs with nested definitions are skipped."""
         s.structs = {}
         files = glob.glob(SRC + '/**/*.h', recursive=True) + glob.glob(SRC + '/**/*.c', recursive=True)
         for f in files:
@@ -61,6 +73,8 @@ class Layout:
                     s.consts.setdefault(mm.group(1), val)
 
     def eval_dim(s, e):
+        """Evaluate an array-dimension expression such as 'MAXIMUM_NODES_PER_MODEL' or '2*k_x' to an int, with the
+        collected constants substituted (longest names first so prefixes don't clash)."""
         e = e.strip()
         for k in sorted(s.consts, key=len, reverse=True):
             if k in e:
@@ -68,6 +82,8 @@ class Layout:
         return int(eval(e))
 
     def type_info(s, t):
+        """(size, alignment) of a C type name: pointers, the three tag containers, PRIM entries, or a struct by
+        laying it out. Raises KeyError for anything unknown."""
         t = t.strip()
         t = re.sub(r'\bconst\b', '', t).strip()
         if t.endswith('*'):
@@ -87,6 +103,9 @@ class Layout:
         raise KeyError('unknown type ' + t)
 
     def layout(s, name):
+        """Layout of struct/union `name`: dict(size, align, fields={field name: (byte offset, type text, element
+        count)}). Field offsets are aligned to the field type; union members all sit at 0. Bitfields are not
+        supported (ValueError). Cached."""
         if name in s.cache:
             return s.cache[name]
         kind, body = s.structs[name]

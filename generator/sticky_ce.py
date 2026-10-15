@@ -22,6 +22,8 @@ def green(im):
     return Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8))
 
 def build():
+    """builds m_sticky_bomb from the .blend, then the two detonator pkls: the Sidekick's meshes with green textures,
+    plus the bomb scaled and seated at the muzzle for the loaded one"""
     from marine_arsenal import OUT, save_pkl
     # the charge, CE-style
     src = hde_ce.Source(BLEND)

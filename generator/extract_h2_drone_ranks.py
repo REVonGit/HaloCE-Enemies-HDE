@@ -63,6 +63,8 @@ def vitality(d):
 
 
 def main():
+    """reads the mod's biped (change colours), bitmap (the plates mask, resized to Drone_0.png) and character tags
+    (vitality) straight from the zip and writes Drone_rank_mask.png and the 'ranks' block of Drone.json"""
     if not os.path.exists(SRC): print('extract_h2_drone_ranks: no', SRC); return
     if not os.path.exists(f'{DRONE}/Drone.json'): print('extract_h2_drone_ranks: run extract_h2.py first'); return
     z = zipfile.ZipFile(SRC)

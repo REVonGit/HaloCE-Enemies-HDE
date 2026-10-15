@@ -32,6 +32,8 @@ mixin class HCE_NerfMixin
 // third tic.
 mixin class HCE_LitePlasma
 {
+	// the bolt's look at launch: HDE's two glowing cores, a random roll, its colour and a point light; the crackle
+	// actor HaloPlasma_Proj would attach is left out
 	override void PostBeginPlay()
 	{
 		HaloBullet.PostBeginPlay();                  // HaloPlasma_Proj's, without the attached lightning crackle
@@ -41,6 +43,8 @@ mixin class HCE_LitePlasma
 		SetShade(col);
 		A_AttachLight('glow', DynamicLight.PointLight, col, 40, 0);   // Halo CE's bolts light the walls they pass
 	}
+	// HDE's lightning arcs, cut down: none unless a player is within 1200 units; one arc in flight, two on impact,
+	// three for a charged shot's hit (amt > 4), each a coarser chain than HDE's
 	override void A_DoLightning(class<LightningBiri> type, double amt)
 	{
 		bool near = false;
@@ -60,6 +64,7 @@ mixin class HCE_LitePlasma
 // their own Tick, which does more than smoke)
 mixin class HCE_LitePlasmaSmoke
 {
+	// HaloBullet's tick plus the halo glow every other tic and the smoke every third (HDE's: every tic)
 	override void Tick()
 	{
 		HaloBullet.Tick();
@@ -78,6 +83,7 @@ mixin class HCE_LitePlasmaSmoke
 }
 
 // ---------------------------------------------------------------- grenades
+// the frag: the blast's damage times DamageMultiply (HDE's FragGrenadeExplosion is spawned with it scaled)
 class HCE_FragGrenade : FragGrenade_Proj
 {
 	States
@@ -94,8 +100,11 @@ class HCE_FragGrenade : FragGrenade_Proj
 	}
 }
 
+// the plasma grenade: a scaled blast, and a kill on a player it is stuck to
 class HCE_PlasmaGrenade : PlasmaGrenade_Proj
 {
+	// the blast, scaled by DamageMultiply; first, a stuck player (not one the player stuck himself) takes 10x his
+	// health, no armour, no thrust
 	override void DoExplode()
 	{
 		// stuck to the player, a Covenant plasma grenade kills, as in Halo
@@ -107,8 +116,10 @@ class HCE_PlasmaGrenade : PlasmaGrenade_Proj
 }
 
 // ---------------------------------------------------------------- Plasma Caster (White Hunter, Engineer)
+// the Plasma Caster's shot: HDE's blast and splash, the damage scaled
 class HCE_PlasmaCasterScaled : PlasmaCasterProj
 {
+	// a plasma-grenade blast at the impact, scaled
 	override void DoExplode()
 	{
 		let e = PlasmaGrenadeExplosion(Spawn("PlasmaGrenadeExplosion", pos));
@@ -117,8 +128,10 @@ class HCE_PlasmaCasterScaled : PlasmaCasterProj
 	}
 }
 
+// one bomblet of the cluster shot: a small (64-radius, 100 x DamageMultiply) blast
 class HCE_PlasmaCasterMiniScaled : PlasmaCasterMiniProj
 {
+	// a small blast; to change the bomblets' punch, edit the radius and damage here
 	override void DoExplode()
 	{
 		let e = PlasmaGrenadeExplosion(Spawn("PlasmaGrenadeExplosion", pos));
@@ -132,8 +145,10 @@ class HCE_PlasmaCasterMiniScaled : PlasmaCasterMiniProj
 	}
 }
 
+// the Plasma Caster's charged shot: a scaled blast that throws two scaled bomblets back the way it came
 class HCE_PlasmaCasterClusterScaled : PlasmaCasterClusterProj
 {
+	// the blast, then two HCE_PlasmaCasterMiniScaled lobbed back within 60 degrees, carrying the same DamageMultiply
 	override void DoExplode()
 	{
 		Spawn("PlasmaSplashSpawner", pos);
@@ -152,6 +167,7 @@ class HCE_PlasmaCasterClusterScaled : PlasmaCasterClusterProj
 }
 
 // ---------------------------------------------------------------- rocket
+// the rocket (Marines, Flood with launchers): HDE's rocket with the blast's damage scaled
 class HCE_RocketScaled : HaloRocketProj
 {
 	mixin HCE_NerfMixin;
@@ -172,6 +188,8 @@ class HCE_RocketScaled : HaloRocketProj
 }
 
 // ---------------------------------------------------------------- fuel rod
+// the fuel rod's blast: 128 x hce_scale over 256 units (HDE's numbers), its splash, its toxic cloud (HCE_FuelRodDamager,
+// pulsing less often the lower the scale) and HDE's smoke, sparks and flare. hce_scale is set by HCE_FuelRodScaled.
 class HCE_FuelRodExplosion : Fuelrod_Explosion
 {
 	double hce_scale;
@@ -213,6 +231,7 @@ class HCE_FuelRodExplosion : Fuelrod_Explosion
 	}
 }
 
+// the toxic cloud after a fuel rod blast: HDE's damager, but one pulse every hce_step tics (HDE: every 2) for 170 tics
 class HCE_FuelRodDamager : Fuelrod_Damager
 {
 	int hce_step;
@@ -230,9 +249,12 @@ class HCE_FuelRodDamager : Fuelrod_Damager
 	}
 }
 
+// the fuel rod shot: HDE's, with the blast swapped for HCE_FuelRodExplosion and the scale handed to it
 class HCE_FuelRodScaled : FuelrodPlasma
 {
 	Default { WraithPlasma.ExplosionType "HCE_FuelRodExplosion"; }
+	// HDE's FuelrodPlasma.DoExplosion, copied so the explosion gets hce_scale = DamageMultiply: the blast just behind
+	// the point of impact, coloured and scaled like the shot, then 20-30 flying plasma blobs
 	override void DoExplosion()
 	{
 		A_StopSound(CHAN_BODY);
@@ -264,6 +286,7 @@ class HCE_FuelRodScaled : FuelrodPlasma
 }
 
 // ---------------------------------------------------------------- needles (supercombine blast)
+// the needle: HDE's, with the supercombine's area blast scaled (the per-needle shatter damage on the victim is HDE's own)
 class HCE_NeedleScaled : HaloNeedler_Proj
 {
 	mixin HCE_NerfMixin;

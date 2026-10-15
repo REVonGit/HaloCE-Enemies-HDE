@@ -43,6 +43,8 @@ CHARS = ('Marine', 'MarineArmored')
 
 
 def cyborg_anims():
+    """(node names, rest (t, q) per node, {name: animation}) of the cyborg from the SPV3 map (MAP), reading its
+    gbxmodel geometry"""
     from pcmap import PCMap, gbx_geometry
     from tags import tag
     m = PCMap(MAP)
@@ -81,6 +83,8 @@ def retarget(joints, nodes, crest, frames):
 
 
 def main():
+    """renames the cyborg's support set (NAMES; replacements laid over the idle, the fire overlay as the idle),
+    retargets it onto each Marine body and replaces every ' support ' animation in its IQM and json"""
     nodes, crest, an = cyborg_anims()
     idle = an['stand support idle'].frames[0]
     cy = {}

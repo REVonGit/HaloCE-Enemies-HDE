@@ -23,6 +23,7 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		HaloDoom_EnemyBase.HCE_Leap 160, 560, 0.8, 15.0;
 	}
 
+	// Gives the boss a 3 s head start before its first charge (dashReady).
 	override void BeginPlay()
 	{
 		super.BeginPlay();
@@ -40,6 +41,10 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		return true;
 	}
 
+	// The charge, hooked into the leap check: an active dash runs DashTick instead. On the ground with a visible target
+	// 220-1100 away and the cooldown passed, a 5%/tic roll starts a 70-tic dash (faces the target, Berserk line, hoof
+	// sound, quake). Otherwise falls back to the base pounce. Returns true while dashing or starting one.
+	// To change how often it charges, edit the 0.05.
 	override bool HCE_TryLeap(double dist)
 	{
 		if(dashTics > 0) { DashTick(); return true; }
@@ -56,6 +61,10 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		return super.HCE_TryLeap(dist);
 	}
 
+	// One tic of the charge: turns up to 3.5 deg toward the target and runs at 22 units/tic with hoof sounds and
+	// quakes every 9 tics. Reaching the target deals 50-60 (x HCE_DamageScale) 'Melee', knocks it back and up, and
+	// ends the dash with a 5 s cooldown; five tics without moving (a wall) ends it staggered with 4 s; running out of
+	// tics also ends it with 4 s. A dead or lost target ends it after 1 s.
 	void DashTick()
 	{
 		if(!target || target.health <= 0) { EndDash(35); return; }
@@ -83,6 +92,7 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		if(--dashTics <= 0) EndDash(35 * 4);
 	}
 
+	// Stops the charge: clears dashTics, cuts speed to 30% and sets the next dash cooldown + 0-2 s out.
 	void EndDash(int cooldown)
 	{
 		dashTics = 0;
@@ -90,6 +100,7 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		dashReady = level.maptime + cooldown + random(0, 70);
 	}
 
+	// Watches the leap state: the tic a live boss goes from airborne (hce_leapState 2) back to 0 on the floor, it slams.
 	override void Tick()
 	{
 		super.Tick();
@@ -97,6 +108,9 @@ class HCE_BossCyberdemonDrinol : HCE_Drinol
 		prevLeap = hce_leapState;
 	}
 
+	// The landing shockwave: hoof sound, a big quake, a ring of 32 dust particles, and every shootable enemy (or player)
+	// within 260 units and no more than 40 above the floor takes 15-70 'Melee' damage (x HCE_DamageScale, more when
+	// closer) and is thrown outward and up. Allies are spared. To change the reach, edit the 260s.
 	void Slam()
 	{
 		Dbg("slam");

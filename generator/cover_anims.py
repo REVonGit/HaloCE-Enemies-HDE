@@ -54,9 +54,12 @@ def corner(h2stance, base, ce):
 
 
 def climb(h2stance, base, ce, hoist='hoist', vault='vault'):
+    """the hoist and vault of one Halo 2 stance -> {CE name: (Halo 2 animation, base idle)}; hoist / vault pick the
+    variant leaf the body's graph has"""
     return {f'stand {ce} hoist': (f'hoist:{h2stance}:{hoist}', base), f'stand {ce} vault': (f'vault:{h2stance}:{vault}', base)}
 
 
+# per body: CE name -> (Halo 2 animation, base idle). To cover another stance, add a corner() / climb() for it.
 MARINE_SET = {**corner('rifle', 'combat:rifle:idle:var0', 'rifle'), **corner('pistol', 'combat:pistol:idle', 'pistol'),
               **climb('rifle', 'combat:rifle:idle:var0', 'rifle', 'enter', 'enter'),
               **climb('pistol', 'combat:pistol:idle', 'pistol', 'enter', 'enter'),
@@ -75,6 +78,7 @@ BRUTE_SET = {**corner('support', 'combat:support:idle', 'support'),
              **climb('rifle', 'combat:rifle:idle', 'rifle', 'enter:var1', 'enter:var1'),
              **climb('support', 'combat:support:idle', 'support', 'enter:var1', 'enter:var1'),
              **climb('melee', 'combat:melee:idle', 'melee', 'enter:var1', 'enter:var1')}
+# character -> (Halo 2 model, map, cache, set). To add a body, add it here with the set its stances match.
 CHARS = {
     'Marine': (MARINE, MAP01B, CACHE01B, MARINE_SET), 'MarineArmored': (MARINE, MAP01B, CACHE01B, MARINE_SET),
     'MarineODST': (MARINE, MAP01B, CACHE01B, MARINE_SET),
@@ -85,10 +89,13 @@ CHARS = {
     'H2Jackal': (JACKAL, MAP08A, CACHE08A, JACKAL_SET),
     'Brute': (BRUTE, MAP08B, CACHE08B, BRUTE_SET),
 }
+# the name fragments this script owns: removed before re-adding
 MARK = (' cover-left-', ' cover-right-', ' hoist', ' vault')
 
 
 def add(char):
+    """adds the character's set to its IQM and json: replaces this script's animations, makes the held '-open' from
+    each peek's last frame, keeps the Marine's jaw shut, and writes each hoist / vault's root travel as 'move'"""
     model, path, cache, plan = CHARS[char]
     pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'
     if not os.path.exists(pi) or not os.path.exists(path): print(char, 'skipped'); return

@@ -14,17 +14,20 @@ sys.path.insert(0, os.path.join(HERE, 'lib')); sys.path.insert(0, HERE)
 import blend35, bulldog_ce as bc
 
 def srgb(lin):
+    """linear 0..1 -> sRGB 0..1"""
     lin = np.clip(lin, 0, 1)
     return np.where(lin <= 0.0031308, lin * 12.92, 1.055 * lin ** (1 / 2.4) - 0.055)
 
 class Source:
     """one .blend: meshes, packed images, Infinite-shader inputs per material"""
     def __init__(s, path, maxres=1024):
+        """open the .blend at path; maxres caps the size image() returns (edit the default to bake larger textures)"""
         s.B, s.R = blend35.meshes(path)
         s.mats = blend35.base_images(s.B)
         s.inf = infinite_inputs(s.B)
         s.maxres = maxres; s._imgs = {}
     def image(s, name, alpha=False):
+        """the packed image called `name` as a float array (H, W, 3 or 4) no larger than maxres, cached; None if it isn't there"""
         key = (name, alpha)
         if key in s._imgs: return s._imgs[key]
         B = s.B; res = None
@@ -52,6 +55,7 @@ def infinite_inputs(B):
     """material -> {'inputs': socket name -> default value, 'links': socket name -> image name} for the Halo Infinite
     shader group in its node tree"""
     def sockval(sk):
+        """a socket's default value (colour or float), or None"""
         dv = B.get('bNodeSocket', sk.off, 'default_value'); db = B.block(dv) if dv else None
         if not db: return None
         for st in ('bNodeSocketValueRGBA', 'bNodeSocketValueFloat'):
@@ -76,6 +80,7 @@ def infinite_inputs(B):
         links = [(B.get('bNodeLink', lk.off, 'fromnode'), B.get('bNodeLink', lk.off, 'tonode'), B.get('bNodeLink', lk.off, 'tosock'))
                  for lk in B.listbase(B.get('bNodeTree', nt.off, 'links'), 'bNodeLink')]
         def src(node, d=0):
+            """the image name feeding a node, following links back at most 6 steps"""
             if d > 6 or node not in nodes: return None
             if nodes[node][0] == 'ShaderNodeTexImage': return nodes[node][1]
             for f, t, ts in links:
@@ -117,6 +122,7 @@ def soften(a, k):
     return np.stack([np.asarray(x) for x in im], -1)
 
 def _fit(a, size):
+    """image a resized to (H, W) `size` (bilinear), or as it is when it already fits"""
     if a is None: return None
     if a.shape[:2] == size: return a
     return np.asarray(Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).resize(size[::-1], Image.BILINEAR)).astype(np.float32) / 255
@@ -130,10 +136,12 @@ def infinite_paint(src, mat):
     m0 = _fit(src.image(L['Mask_0']), size) if 'Mask_0' in L else np.zeros_like(asg)
     m1 = _fit(src.image(L['Mask_1']), size) if 'Mask_1' in L else np.zeros_like(asg)
     def col(z, part):
+        """zone z's Top / Mid / Bot / Scratch colour from the inputs, or None"""
         for k in (f'Zone {z} {part}Color', f'Zone {z} {part}'):
             if k in I: return np.array(I[k][:3], np.float32)
         return None
     def on(z):
+        """whether zone z is switched on (zone 1 always is)"""
         t = I.get(f'Zone {z} Toggle'); return z == 1 or t is None or fv(t) > 0.5
     g = asg[..., 2:3]
     w = [None, None] + [m0[..., k:k + 1] for k in range(3)] + [m1[..., k:k + 1] for k in range(3)]
@@ -231,6 +239,7 @@ def build(src, parts, paint, origin, wid, tag, to_halo=lambda P: P, seed=3, hook
     bc.finish(lows, SPs, SNs, SCs, wid, tag, rng)
 
 def _decal_samples(P, T, tm, U, paints, rng, ns=30000):
+    """(points, rgb, alpha) sampled over the decal triangles T of a part, from its RGBA paints; near-transparent samples dropped"""
     a, b, c = P[T[:, 0]], P[T[:, 1]], P[T[:, 2]]
     area = np.linalg.norm(np.cross(b - a, c - a), axis=1) / 2
     ti = rng.choice(len(T), ns, p=area / area.sum())
@@ -251,6 +260,7 @@ def default_paint(src, skip=()):
     """paint(mat, role): the Infinite shader where there is one, else the material's colour map (with its AO /
     normal maps when it has them); materials matching `skip` are left out"""
     def paint(mat, role):
+        """the material's sRGB image (RGBA for decals) or None"""
         if mat == 'Material' or any(k in mat.lower() for k in skip): return None
         p = infinite_paint(src, mat)
         if p is not None: return p

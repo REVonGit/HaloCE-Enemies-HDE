@@ -4,6 +4,7 @@ from PIL import Image, ImageDraw
 from halomodel import qmul, qrot, qconj, qnorm
 
 def world(parent, local):
+    """parent-relative (t, q) per joint -> world (t, q) per joint, parents first (parent[i] < 0 for roots)"""
     W = []
     for i, (t, q) in enumerate(local):
         if parent[i] < 0: W.append((np.asarray(t, float), qnorm(q)))
@@ -13,6 +14,7 @@ def world(parent, local):
     return W
 
 def qmat(q):
+    """3x3 rotation matrix of the (x, y, z, w) quaternion q"""
     x, y, z, w = q
     return np.array([[1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
                      [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
@@ -56,6 +58,8 @@ def render(joints, meshes, pose, tex, path=None, size=512, yaw=200, pitch=10, ex
     ctr = (lo + hi) / 2
     light = np.array([0.4, -0.6, 0.7]); light /= np.linalg.norm(light)
     def add(pos, tris, colfn):
+        """queue every triangle of (pos, tris) for drawing: its camera-space depth, corners, colfn(tri) colour and
+        a Lambert shade from the fixed light"""
         c = pos @ V.T
         for t in tris:
             a_, b_, c_ = c[t[0]], c[t[1]], c[t[2]]
@@ -68,6 +72,7 @@ def render(joints, meshes, pose, tex, path=None, size=512, yaw=200, pitch=10, ex
         im = tex.get(m['material'])
         arr = np.asarray(im.convert('RGB')) if im is not None else None
         def colfn(t, m=m, arr=arr):
+            """the mesh texture's RGB at the triangle's mean UV (grey when it has no texture)"""
             if arr is None: return (180, 180, 180)
             uv = m['uv'][t].mean(0)
             x = int((uv[0] % 1) * (arr.shape[1] - 1)); y = int((uv[1] % 1) * (arr.shape[0] - 1))

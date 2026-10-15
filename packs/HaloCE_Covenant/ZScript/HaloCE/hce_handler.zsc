@@ -11,6 +11,20 @@ class HCE_ReplaceHandler : EventHandler
 {
 	// Weighted picks, most likely first. Each Doom monster draws from several Halo types so encounters
 	// stay mixed; higher skills shift the weights toward the stronger ranks.
+	//
+	// The table is flat, four strings per row (CheckReplacement walks it in steps of 4):
+	//   "DoomClass", "<easy list>", "<normal list>", "<hard list>"
+	// The three lists are the skill tiers of SkillTier(): easy = ITYTD and HNTR, normal = HMP, hard = UV and Nightmare.
+	// Each list is "Class*weight Class*weight ...", separated by spaces: the class name of a Halo enemy and its
+	// relative weight (any whole number; "*weight" left off counts as 1). PickWeighted draws one entry with chance
+	// weight / sum of the weights of the entries still in play, so "A*3 B*1" is A three times out of four. An entry
+	// whose class isn't loaded (its faction pack is missing), a Flood class before the Flood is out, a Sentinel class
+	// with hce_sentinelallies on, or a class whose gun the hce_presets weapon preset leaves out, is dropped from the
+	// draw and the others share its weight; a list left with nothing keeps the Doom monster (or falls back through
+	// PRE_FLOOD / ALLY_FALLBACK).
+	// To make a Doom monster turn into something else, edit its three lists; to replace a Doom monster that isn't here
+	// (or a mod's monster), add a row of four strings; a new enemy class only needs adding to a list. The lists are
+	// what the generated enemy classes are called (hce_enemies.zsc), so a typo there silently drops the entry.
 	static const String RULES[] =
 	{
 		// Doom monster      easy | normal | hard
@@ -104,6 +118,8 @@ class HCE_ReplaceHandler : EventHandler
 	};
 
 	// boss stand-in -> Doom boss it replaces (CheckReplacee; A_BossDeath uses it for map specials)
+	// Pairs: "HCE class", "Doom class". A boss stand-in that isn't listed here won't end E1M8 / MAP07 and the like when
+	// it dies: add a pair for every HCE_Boss* class used in RULES.
 	static const String BOSSES[] =
 	{
 		"HCE_BossBaronEliteMajorPlasmaRifle", "BaronOfHell",
@@ -122,6 +138,7 @@ class HCE_ReplaceHandler : EventHandler
 	};
 
 	// Doom's scripted marines -> Halo Marines, always (matched to their weapon)
+	// Pairs: "Doom class", "Halo Marine class"; checked before RULES and not subject to hce_keepdoommonsters
 	static const String MARINES[] =
 	{
 		"ScriptedMarine", "HCE_MarineAssaultRifle",
@@ -155,32 +172,42 @@ class HCE_ReplaceHandler : EventHandler
 		return max(1, level.levelnum);
 	}
 
+	// the level the Flood first appears on (hce_floodlevel, at least 1; 1 without the CVar: the Flood from the start)
 	static int FloodLevel()
 	{
 		CVar cv = CVar.FindCVar("hce_floodlevel");
 		return cv ? max(1, cv.GetInt()) : 1;
 	}
 
+	// true once this map's level index has reached the Flood's level: Flood entries in RULES are in play
 	static bool FloodOut() { return LevelIndex() >= FloodLevel(); }
 
 	// before the Flood is out, the Doom monsters only the Flood stood in for draw from another monster's list instead
+	// Pairs: "Doom monster", "the Doom monster whose RULES row it borrows". Used only when its own row gave nothing.
 	static const String PRE_FLOOD[] =
 	{
 		"Demon", "DoomImp", "LostSoul", "Cacodemon", "PainElemental", "Cacodemon", "WolfensteinSS", "ShotgunGuy"   // (Lost Souls: the Geists and Constructors cover them when loaded)
 	};
 
 	// with the Sentinels allied (hce_sentinelallies), the monsters only Sentinels stood in for take another row's
+	// Pairs like PRE_FLOOD: "Doom monster", "the Doom monster whose RULES row it borrows"
 	static const String ALLY_FALLBACK[] =
 	{
 		"Cacodemon", "HellKnight", "LostSoul", "DoomImp", "PainElemental", "HellKnight"
 	};
 
+	// which of the three RULES lists the current skill uses: 0 easy (ITYTD, HNTR), 1 normal (HMP), 2 hard (UV, NM).
+	// A mod with more skills than five falls in the hard tier.
 	static int SkillTier()
 	{
 		int sk = G_SkillPropertyInt(SKILLP_ACSReturn);   // 0 = ITYTD ... 4 = Nightmare
 		return sk <= 1 ? 0 : (sk == 2 ? 1 : 2);
 	}
 
+	// draws one class from a "Class*weight ..." list (the RULES format), or null when nothing in it can be used.
+	// Skips classes that aren't loaded, Flood classes before the Flood is out and Sentinel classes with the Sentinels
+	// allied. The first pass also skips enemies whose weapons the hce_presets preset doesn't allow; if that empties
+	// the list the second pass takes them anyway.
 	static class<Actor> PickWeighted(String picks)
 	{
 		Array<String> opts; picks.Split(opts, " ", TOK_SKIPEMPTY);
@@ -234,11 +261,16 @@ class HCE_ReplaceHandler : EventHandler
 		return null;
 	}
 
+	// the HCEVARS lumps are parsed once, when the handler comes up
 	override void OnRegister()
 	{
 		variants = HCE_VariantBook.Read();
 	}
 
+	// the replacement itself, in this order: Doom's marines always become Halo Marines (MARINES); then, unless
+	// hce_keepdoommonsters is on, an HCEVARS variant that claims the monster (VariantFor), else a weighted draw from
+	// its RULES row for the skill tier, falling back through PRE_FLOOD and ALLY_FALLBACK when the row gives nothing.
+	// Leaving e.Replacement alone keeps the Doom monster. Another mod's replacement already made final is respected.
 	override void CheckReplacement(ReplaceEvent e)
 	{
 		if(e.IsFinal || !e.Replacee) return;
@@ -281,6 +313,8 @@ class HCE_ReplaceHandler : EventHandler
 		}
 	}
 
+	// the reverse lookup: tells the engine which Doom boss a stand-in counts as (BOSSES), so A_BossDeath's map
+	// specials fire when it dies
 	override void CheckReplacee(ReplacedEvent e)
 	{
 		if(!e.Replacement) return;
@@ -318,6 +352,8 @@ class HCE_ReplaceHandler : EventHandler
 		else console.printf("\cgHalo CE enemies:\c- %d Doom monsters were not replaced. Another mod's replacement may be loaded after this one.", n);
 	}
 
+	// every Halo enemy as it spawns: a friendly one that isn't human is queued to be swapped for a Marine (WorldTick);
+	// a hostile pair-bonding one (Hunters) gets a brother, now at map load or next tic later on (hce_hunterpairs)
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		let h = HaloDoom_EnemyBase(e.Thing);
@@ -341,6 +377,8 @@ class HCE_ReplaceHandler : EventHandler
 
 	Array<HaloDoom_EnemyBase> lateHunters;
 
+	// the Hunters that spawned after map load, one tic on: each still without a mate and with no free Hunter of its
+	// team within 512 units gets a brother spawned beside it
 	void PairLateHunters()
 	{
 		for(int i = 0; i < lateHunters.Size(); i++)
@@ -387,12 +425,14 @@ class HCE_ReplaceHandler : EventHandler
 	// hce_maxcorpses, severed limbs past hce_maxgibs and Halo gore floor splats past hce_maxgore fade out and are
 	// removed, never one a player can see (a few at a time, so nothing pops). Off by default.
 	// ------------------------------------------------------------------
+	// a limit CVar's value, or def when the CVar is missing (a negative limit turns that kind of cleanup off)
 	static int CleanupLimit(String cvn, int def)
 	{
 		CVar cv = CVar.FindCVar(cvn);
 		return cv ? cv.GetInt() : def;
 	}
 
+	// could any player see it go: within 384 units, or within 3072 and in line of sight
 	static bool PlayerSees(Actor a)
 	{
 		for(int i = 0; i < MAXPLAYERS; i++)
@@ -414,6 +454,9 @@ class HCE_ReplaceHandler : EventHandler
 		a.bNOINTERACTION = true;
 	}
 
+	// one sweep: at most 12 removals, bodies past hce_maxcorpses first (oldest by hce_diedAt), then limbs and gore
+	// splats past their limits (oldest by age), skipping anything a player can see. To collect another kind of
+	// actor, add it to the kinds / limits / defs arrays below.
 	void Cleanup()
 	{
 		CVar on = CVar.FindCVar("hce_cleanup");
@@ -462,6 +505,10 @@ class HCE_ReplaceHandler : EventHandler
 		}
 	}
 
+	// per tic: the cleanup sweep every 105 tics, late Hunter pairing, the start-of-map console report (tic 2), and the
+	// Marine swap for queued friendly monsters: a Marine sized to the monster's health (<= 50 rifleman, <= 100
+	// armoured, else armoured Major) takes its place, TID, special, args and ambush flag, and the monster is removed
+	// without counting as a kill
 	override void WorldTick()
 	{
 		if(level.maptime % 105 == 52) Cleanup();
@@ -518,6 +565,7 @@ class HCE_SpawnAllHandler : EventHandler
 	HaloDoom_EnemyBase looked[MAXPLAYERS];
 	int lookedTic[MAXPLAYERS];
 
+	// the live, friendly, human-team Halo enemy under the player's crosshair within 2048 units, or null
 	static HaloDoom_EnemyBase LookedAtMarine(PlayerPawn pl)
 	{
 		if(!pl || !pl.player) return null;
@@ -528,6 +576,8 @@ class HCE_SpawnAllHandler : EventHandler
 		return m;
 	}
 
+	// keeps looked[] up to date: a Marine stays "looked at" for 12 tics after the crosshair leaves him, so the overlay
+	// can fade rather than blink
 	override void WorldTick()
 	{
 		for(int i = 0; i < MAXPLAYERS; i++)
@@ -576,6 +626,12 @@ class HCE_SpawnAllHandler : EventHandler
 			DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, fade);
 	}
 
+	// carries out "netevent hce_squad <order>" for the player who sent it (the order numbers are listed at the top of
+	// the class): gathers the squad within 1536 units, plays the Chief's line, then hands the order on. 0-2 go to
+	// every Marine (HCE_Order), 3-6 are fire orders with the aimed-at actor (HCE_FireOrder), 7 sends the nearest free
+	// medic to the Marine in the crosshair, 8 sends the nearest Marine that can use it to the gun near the crosshair,
+	// 9 sends the nearest Marine to the use-switch the crosshair is on or near. To add an order, extend the line[]
+	// sounds here, the clamp, and HCE_SquadWheel's ORDER / LABEL.
 	void SquadOrder(ConsoleEvent e)
 	{
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
@@ -672,6 +728,10 @@ class HCE_SpawnAllHandler : EventHandler
 		squad[random(0, squad.Size() - 1)].HCE_AckLater();
 	}
 
+	// the net events: hce_squad goes to SquadOrder; the five spawn-all commands (see the class header) build the
+	// line-up: every concrete HaloDoom_EnemyBase class that fits the command, sorted by name, one per look, laid out
+	// in rows of up to 640 units across in front of the player, each spawned as a display dummy (or a free Marine for
+	// leatherneck2). To change what a command includes, edit the name filters in the first loop.
 	override void NetworkProcess(ConsoleEvent e)
 	{
 		if(e.Name == "hce_squad") { SquadOrder(e); return; }
@@ -785,6 +845,8 @@ class HCE_SquadWheel : EventHandler
 	static const String LABEL[] = { "Follow", "Regroup", "Hold", "Open fire", "Focus", "Suppress",
 		"Hold fire", "Medic", "Weapon", "Button" };
 
+	// the wheel's own (local, ui-side) events from the +hce_wheel key: hce_wheel_open on press, hce_wheel_close on
+	// release (gives whatever is under the pointer), hce_wheel_pick <slice> from the console
 	override void ConsoleProcess(ConsoleEvent e)
 	{
 		if(e.Name == "hce_wheel_open")
@@ -806,6 +868,7 @@ class HCE_SquadWheel : EventHandler
 		return h;
 	}
 
+	// closes the wheel and, if a slice is picked, sends its order as the hce_squad net event (play side)
 	ui void Give()
 	{
 		wOpen = false;
@@ -815,6 +878,8 @@ class HCE_SquadWheel : EventHandler
 		}
 	}
 
+	// clamps the pointer to REACH and works out the slice under it (wSel), -1 inside the DEAD zone; slice 0 is centred
+	// on straight up and they go clockwise
 	ui void Point()
 	{
 		double r = sqrt(wx * wx + wy * wy);
@@ -824,6 +889,8 @@ class HCE_SquadWheel : EventHandler
 		wSel = int(((a + 360 + 180.0 / SLICES) % 360) / (360.0 / SLICES)) % SLICES;
 	}
 
+	// while the wheel is up it eats the mouse (moves the pointer), left click (give), right click / Escape (put away)
+	// and the 1-0 keys (pick that slice); everything else goes through to the game
 	override bool InputProcess(InputEvent e)
 	{
 		if(!wOpen) return false;
@@ -837,6 +904,7 @@ class HCE_SquadWheel : EventHandler
 		return false;
 	}
 
+	// the wheel drops on its own when the level ends, a menu opens or the player dies
 	override void UiTick()
 	{
 		if(wOpen && (gamestate != GS_LEVEL || menuactive != Menu.Off || !players[consoleplayer].mo || players[consoleplayer].health <= 0)) wOpen = false;
@@ -895,6 +963,8 @@ class HCE_FadeAway : Thinker
 {
 	Actor who;
 	double step;
+	// takes step off the actor's alpha each tic; at 0 the actor goes (and never counts as a kill or item), then so
+	// does the thinker
 	override void Tick()
 	{
 		if(!who) { Destroy(); return; }
@@ -914,6 +984,7 @@ class HCE_FadeAway : Thinker
 // the player's squad when he reaches them: once their foes are down (a "thanks"), or straight away if he walks right up.
 // hce_encounters: how many a map can have (0: none); hce_encounterchance: the chance of each. Needs the Marines pack.
 // ---------------------------------------------------------------------------
+// one staged firefight: where the foes stood (site), the Marines and foes in it, and whether the player has reached it
 class HCE_Encounter
 {
 	vector3 site;
@@ -921,18 +992,23 @@ class HCE_Encounter
 	bool joined;
 }
 
+// sets the encounters up at map load (WorldLoaded / Place) and watches for a player reaching one (WorldTick)
 class HCE_Encounters : EventHandler
 {
 	Array<HCE_Encounter> enc;
 
 	// the fire team's make-up: mostly riflemen (men and women), a heavier gun or two, now and then a field medic (looked up at run time; missing ones are skipped)
+	// Each man is one draw from this list, so a class listed twice turns up twice as often; add or repeat entries to
+	// change the mix. A class that isn't loaded falls back to the rifleman.
 	static const Name TEAM[] = { 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifleMajor',
 		'HCE_MarineBattleRifle', 'HCE_MarineShotgun', 'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMedicAssaultRifle',
 		'HCE_MarineSniper', 'HCE_MarineRocketLauncher', 'HCE_MarineFemaleAssaultRifle', 'HCE_MarineFemaleAssaultRifle',
 		'HCE_MarineFemaleBattleRifle', 'HCE_MarineFemaleSmg', 'HCE_MarineFieldMedicMagnum' };
 
+	// no encounter in a secret sector, a damaging one, or one under 72 units tall at its centre
 	static bool BadSector(Sector s) { return !s || s.IsSecret() || s.damageamount > 0 || s.ceilingplane.ZatPoint(s.centerspot) - s.floorplane.ZatPoint(s.centerspot) < 72; }
 
+	// the distance from p to the closest player in the game (1e9 with none)
 	static double NearestPlayer(vector3 p)
 	{
 		double d = 1e9;
@@ -941,6 +1017,10 @@ class HCE_Encounters : EventHandler
 		return d;
 	}
 
+	// at a fresh map start (not a save, a reopen or deathmatch): rolls hce_encounterchance once per hce_encounters
+	// slot, then looks for groups of two or more hostile Covenant / Flood within 512 units of each other, at least
+	// 2048 from every player and 1536 from other encounters, and places a fire team by each (Place) until the count
+	// is met. "HCEENC n" on the console (no notify) is for the tests.
 	override void WorldLoaded(WorldEvent e)
 	{
 		if(e.IsSaveGame || e.IsReopen || deathmatch) return;
@@ -1026,6 +1106,9 @@ class HCE_Encounters : EventHandler
 		return null;
 	}
 
+	// every 17 tics, for each encounter not yet joined: once a live player is close to a surviving Marine (256, or in
+	// sight within 512, or 640 with the foes down), the fight becomes an ordinary one, the Marines fall in behind that
+	// player, and one of them says thanks (foes down) or calls him over
 	override void WorldTick()
 	{
 		if(level.maptime % 17) return;

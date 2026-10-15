@@ -19,6 +19,7 @@ XATLAS = os.environ.get('HCE_XATLAS_SRC', os.path.join(HERE, 'third_party', 'xat
 TOOL = os.path.join(WORK, 'meshtool')
 
 def ensure_tool():
+    """builds the meshtool binary (meshoptimizer + xatlas) into WORK if it isn't there yet"""
     if os.path.exists(TOOL): return
     os.makedirs(WORK, exist_ok=True)
     src = os.path.join(HERE, 'lib', 'meshtool.cpp')
@@ -64,6 +65,8 @@ PARTS = {
 GUNMETAL = (0.20, 0.215, 0.23); STEEL = (0.38, 0.39, 0.40); OLIVE = (0.31, 0.33, 0.24); RUBBER = (0.085, 0.09, 0.09)
 TAN = (0.45, 0.40, 0.29); ACCENT = (0.70, 0.52, 0.12)
 DARK = (0.13, 0.14, 0.15)
+# To recolour a part, change its tuple; to change a part's polygon budget, its count in PARTS. Parts not in
+# PALETTE get flat_paint.
 PALETTE = {
     'upper':  (GUNMETAL, STEEL, DARK, RUBBER),
     'lower':  (DARK, GUNMETAL, RUBBER, RUBBER),
@@ -75,10 +78,12 @@ PALETTE = {
 }
 
 def wbin(path, P, I):
+    """writes positions (N, 3) and triangles (M, 3) in meshtool's binary layout"""
     with open(path, 'wb') as f:
         f.write(struct.pack('<II', len(P), len(I))); f.write(np.asarray(P, '<f4').tobytes()); f.write(np.asarray(I, '<u4').tobytes())
 
 def rbin(path, uv=False):
+    """reads meshtool's binary: (P, I), or with uv (P, I, UV, X) after an unwrap (X: source vertex of each)"""
     d = open(path, 'rb').read(); nv, nt = struct.unpack_from('<II', d)
     o = 8; P = np.frombuffer(d, '<f4', nv * 3, o).reshape(-1, 3).astype(float); o += nv * 12
     I = np.frombuffer(d, '<u4', nt * 3, o).reshape(-1, 3).astype(int); o += nt * 12
@@ -88,6 +93,7 @@ def rbin(path, uv=False):
     return P, I, U, X
 
 def tex(name, size=None):
+    """the unpacked texture whose file name starts with `name`, as a float RGB array, or None"""
     for f in os.listdir(TEX):
         if f.startswith(name): 
             im = Image.open(os.path.join(TEX, f)).convert('RGB')
@@ -122,6 +128,8 @@ def flat_paint(role):
     return np.ones((8, 8, 3), np.float32) * np.array(GUNMETAL, np.float32)
 
 def build(debug=None):
+    """the whole Bulldog: each PARTS object simplified to its budget, its high-poly sampled with ce_paint's colours,
+    then finish() for the atlas, texture and pkl. The grip origin is found on the lower receiver."""
     ensure_tool(); unpack_textures()
     _, R = blend35.meshes(BLEND)
     tmpd = os.path.join(WORK, 'tmp'); os.makedirs(tmpd, exist_ok=True)

@@ -13,6 +13,7 @@ import builtins, os
 
 
 class MissingPart(FileNotFoundError):
+    """a read needs a numbered piece that isn't there; the message names it and the byte range it holds"""
     pass
 
 
@@ -32,7 +33,10 @@ def exists(path):
 
 
 class SplitReader:
+    """A file-like reader over path's numbered pieces: seek / tell / read / close, pieces opened as they are needed.
+    size is the piece size (the largest piece present, or HCE_SPLIT_SIZE / 100 MiB when only a short one is)."""
     def __init__(s, path):
+        """find path's pieces (FileNotFoundError when there are none) and work out the piece size"""
         s.path = path; s.pos = 0; s.fh = {}
         d, b = os.path.split(path)
         nums = sorted(int(f[len(b) + 1:]) for f in os.listdir(d or '.') if f.startswith(b + '.') and f[len(b) + 1:].isdigit())
@@ -44,6 +48,7 @@ class SplitReader:
         if len(nums) == 1 and s.size < 104857600: s.size = int(os.environ.get('HCE_SPLIT_SIZE', 104857600))
 
     def _piece(s, k):
+        """the open file of piece k (0-based; piece files are numbered from .001), raising MissingPart if absent"""
         if k not in s.fh:
             n = k + 1
             if n not in s.have:
@@ -53,12 +58,14 @@ class SplitReader:
         return s.fh[k]
 
     def seek(s, off, whence=0):
+        """move the position: absolute (whence 0) or relative to the current position (anything else)"""
         s.pos = off if whence == 0 else s.pos + off
         return s.pos
 
     def tell(s): return s.pos
 
     def read(s, n=-1):
+        """read n bytes (all that remain for -1) across piece boundaries, advancing the position"""
         out = b''
         while n != 0:
             k, o = divmod(s.pos, s.size)
@@ -70,6 +77,7 @@ class SplitReader:
         return out
 
     def close(s):
+        """close every piece opened so far"""
         for f in s.fh.values(): f.close()
         s.fh = {}
 

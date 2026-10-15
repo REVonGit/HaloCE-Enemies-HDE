@@ -3,6 +3,8 @@
 	// Soul's bite); in reach it welds it with a short arc of its cutting beam (6-16 damage)
 	int hce_dartTics, hce_dartNext;
 
+	// In melee reach it welds the target (HCE_ConWeld) instead of the base melee swing, then waits 30 tics before the
+	// next weld. Returns false while on cooldown or without a target.
 	override bool HCE_TryMelee()
 	{
 		if(hce_meleeTics > level.maptime || !target) return false;
@@ -12,6 +14,8 @@
 		return true;
 	}
 
+	// The welding arc: a line of yellow sparks from its middle to the target's, the Light Rifle fire sound, and 6-16
+	// 'Plasma' damage if the target is within 112 units. The damage is not run through HCE_DamageScale.
 	void HCE_ConWeld()
 	{
 		if(!target) return;
@@ -25,9 +29,12 @@
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(-0.4, 0.4));
 		}
 		A_StartSound("Halo/Weapons/LightRifle/Fire", CHAN_WEAPON, CHANF_OVERLAP, 0.5);
-		if(Distance3D(target) < 112) target.DamageMobj(self, self, random(3, 8) * 2, 'Plasma');
+		if(Distance3D(target) < 112) target.DamageMobj(self, self, int(random(3, 8) * 2 * HCE_DamageScale()), 'Plasma');
 	}
 
+	// The ram: while hce_dartTics runs it flies straight at the target at 14 units/tic, homing every tic; on contact
+	// deals 3-24 'Melee' damage, bounces back and stops. Otherwise, with the target in sight 96-640 units away and the
+	// cooldown passed, starts a 40-tic dart and sets the next one 2-4 s out. To change the cadence, edit random(2, 4).
 	override void Tick()
 	{
 		super.Tick();
@@ -40,7 +47,7 @@
 			A_SetAngle(AngleTo(target));
 			if(Distance3D(target) < radius + target.radius + 20)
 			{
-				target.DamageMobj(self, self, random(1, 8) * 3, 'Melee', 0, AngleTo(target));
+				target.DamageMobj(self, self, int(random(1, 8) * 3 * HCE_DamageScale()), 'Melee', 0, AngleTo(target));
 				A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
 				vel = -vel * 0.4; hce_dartTics = 0;
 			}

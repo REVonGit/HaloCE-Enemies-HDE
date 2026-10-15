@@ -6,6 +6,7 @@
 	color hce_coreCol;                     // the core's colour (its embers when it dies)
 	int hce_phase, hce_phaseTics, hce_phaseNext, hce_hurtAt, hce_phaseOff;
 
+	// Records when it was last hurt (hce_hurtAt); the phase check in Tick treats it as 'under fire' for 35 tics after.
 	override void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
 	{
 		super.HCE_OnDamaged(inflictor, source, dealt, mod);
@@ -14,6 +15,8 @@
 
 	virtual int HCE_KnightPalette() { return 0; }
 
+	// Picks the core's skin and colour once: palette 1 (commanders) rolls orange/amber/red/gold, anything else
+	// cyan/ice/violet/teal. hce_coreCol is used for its death embers. To add a colour, add a case and a core_*.png.
 	void HCE_KnightCore()
 	{
 		if(HCE_KnightPalette() == 1)
@@ -36,6 +39,8 @@
 		}
 	}
 
+	// The hard-light burst at either end of a phase: 24 rising orange particles over the body and the Binary Rifle
+	// zoom sound.
 	void HCE_PhaseBurst()
 	{
 		for(int i = 0; i < 24; i++)
@@ -119,6 +124,9 @@
 		return 'SpotPlayer';
 	}
 
+	// Which voice line to use on spotting a, by HCE_KnightKind: the player's Spartan line (or SpotPlayerAlly when
+	// friendly), the Flood lines (FirstFlood once per Flood level, CarrierBlow for a carrier within 400), SpotCovenant,
+	// SpotHunter, SpotHuman or SpotDrinol. Returns 'None' for anything it has no line for.
 	Name HCE_SpotLine(Actor a)
 	{
 		switch(HCE_KnightKind(a))
@@ -134,6 +142,9 @@
 		return 'None';
 	}
 
+	// Which voice line to use on killing a: a random SanitizeFlood/KillCombatForm/KillFlood for the Flood, KillElite,
+	// KillGrunt, KillJackal, KillBrute, KillHeavy (Hunters, big monsters, Drinols) or KillHuman (humans and players).
+	// Returns 'None' for the rest.
 	Name HCE_KillLine(Actor a)
 	{
 		switch(HCE_KnightKind(a))
@@ -150,6 +161,9 @@
 		return 'None';
 	}
 
+	// Maps the base AI's generic voice events to the Knight's lines: the alert/spot events go through HCE_SpotLine,
+	// Taunt only speaks over a dead target (HCE_KillLine, at least 60% chance), search events become 'Search', and
+	// events with no line are dropped. Prints the mapping when hce_debugPhase is set.
 	override void HCE_Say(Name ev, double chance, int cooldown, bool force)   // (an override takes no defaults: callers here pass all four)
 	{
 		Name line = 'None';
@@ -203,6 +217,9 @@
 	// left behind but the guns it drops
 	const HCE_DISSOLVE_TICS = 105;          // the death animation's length (90 frames at 30 fps)
 	int hce_dissolve;
+	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
+	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays
+	// the zoom sound.
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -215,6 +232,9 @@
 		A_StartSound("Halo/Weapons/BinaryRifle/Zoom/IN", CHAN_7, CHANF_OVERLAP, 1.0, ATTN_NORM, 0.6);
 	}
 
+	// One tic of the death dissolve: spawns 1-9 embers (core colour, some white-hot) from the part of the body not yet
+	// gone, fades it out over the second half with random flicker, and when hce_dissolve passes HCE_DISSOLVE_TICS
+	// scatters 20 last particles and destroys the actor and its shell. To change the length, edit HCE_DISSOLVE_TICS.
 	void HCE_DissolveTick()
 	{
 		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
@@ -244,6 +264,10 @@
 		}
 	}
 
+	// Per tic: runs the dissolve when dying, sets the core colour on its first tic, runs HCE_KnightWatch, then the
+	// phase state machine: idle Knights phase (8%/tic when shield down and hit in the last second, 1%/tic when the
+	// target is over 900 away); phase 1 sinks (unshootable halfway), 3 waits 12 tics underground while HCE_PhaseSpot
+	// moves it, 2 rises (shootable halfway), then it is free again and the next phase is 6-10 s out.
 	override void Tick()
 	{
 		if(hce_dissolve > 0 && !isFrozen()) { HCE_DissolveTick(); if(bDestroyed) return; }

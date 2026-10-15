@@ -18,6 +18,7 @@ from extract_weapons import WEAPONS, TRANSPARENT, GLOW
 from extract_chars import shader_maps, MAPS, OUT
 from hce_paths import MAPS_DIR
 
+# the weapons that get a reflection
 COVENANT = ('plasma_pistol', 'plasma_rifle', 'needler', 'fuel_rod', 'energy_sword')
 REF_CUBE = 0x164                     # shader_model: reflection cube map (tag reference; its id at +12)
 REF_BRIGHT = 0x144                   # perpendicular brightness, tint (rgb), parallel brightness, tint (rgb)
@@ -37,6 +38,8 @@ def save_cube(m, bid, d):
 
 
 def weapon_shine(m, wt, wid):
+    """one weapon's reflective materials -> out/weapons/<wid>/shine.json and <material>_multi.png, its cube map ->
+    out/cubemaps/w_<wid>/; returns the json dict {material file: dict(cube, multi, perpendicular, parallel, tint)}"""
     W = tag(m, wt, 'weapon_definition')
     M = hm.Model(m, W['model'])
     parts = []

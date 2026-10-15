@@ -1,5 +1,7 @@
 """Halo CE's reflection cube maps for the Elites and Grunts -> out/cubemaps/<name>/<index>_<face>.png
 
+    python3 extract_cubemaps.py      # reads a50.map (HCE_CUBE_MAP to pick another map that carries the bitmaps)
+
 Their armour shaders (shader_model) reflect a cube map under the multipurpose map's specular mask: the Elites'
 'cubemaps' bitmap holds four (blue, magenta, gold, silver: one per rank), the Grunts use 'cubemap dark gray'.
 build_pack.py bakes that reflection into the skins (add_shine). Xbox cube maps: six DXT faces in a row, each with its
@@ -11,11 +13,13 @@ from halomap import HMap
 import bitmaps as bm
 from hce_paths import OUT, MAPS_DIR
 MAP = os.environ.get('HCE_CUBE_MAP', os.path.join(MAPS_DIR, 'a50.map'))
+# output folder name -> cube map bitmap tag (every image of the bitmap is written; the second line replaces the first)
 CUBES = {'elite': r'characters\elite\bitmaps\cubemaps', 'dark_gray': r'characters\elite\bitmaps\cubemap dark gray'}
 CUBES = {'elite': r'characters\elite\bitmaps\cubemaps', 'dark_gray': r'characters\elite\bitmaps\cubemap dark gray',
          'cyborg': r'characters\cyborg\bitmaps\cyborg reflection armor'}      # the ODSTs' visor (extract_odst.py)
 
 def main():
+    """every cube map in CUBES -> out/cubemaps/<key>/<image>_<face>.png (asserts each image is a cube map)"""
     m = HMap(MAP)
     for key, name in CUBES.items():
         t = [x for x in m.find('bitm') if x['name'] == name][0]

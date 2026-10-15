@@ -20,6 +20,8 @@ import halomodel as hm
 
 PALM = np.array([0.028, 0.0, 0.0])       # hand bone origin (the wrist) -> the middle of the palm, in hand space (WU)
 # gun -> (left hand palm target, butt plate centre or None), in Halo weapon space (WU)
+# To tune a grip, move its palm target (x forward, z up, from the grip origin); to add a gun stance, add a key:
+# derive makes it from every 'h2rifle' animation and names it by replacing 'h2rifle' (extract_chars.py calls it).
 GUNS = {
     'h2smg':     (np.array([0.063, 0.003, 0.009]), None),
     'h2br':      (np.array([0.105, 0.002, 0.019]), None),
@@ -30,6 +32,7 @@ GUNS = {
 FREE_LEFT = ('throw-grenade', 'signal-attack', 'celebrate', 'warn')
 
 def world(parents, frame):
+    """world (t, q) of every joint from local (t, q) pairs and the parent list"""
     W = []
     for i, (t, q) in enumerate(frame):
         q = hm.qnorm(np.asarray(q, float)); t = np.asarray(t, float)
@@ -40,6 +43,7 @@ def world(parents, frame):
     return W
 
 def rot_between(a, b):
+    """the shortest (x, y, z, w) rotation taking direction a onto direction b"""
     a = a / max(np.linalg.norm(a), 1e-12); b = b / max(np.linalg.norm(b), 1e-12)
     c = np.cross(a, b); d = float(np.dot(a, b))
     if d < -0.999999:
@@ -91,6 +95,7 @@ def derive(anims, joints, weapon_to_bind, Anim):
     bind = world(parents, [(j[2], j[3]) for j in joints])
     bt, bq = bind[rh]
     def in_hand(p):                       # weapon-space point -> right-hand space
+        """weapon-space point p in the right hand's bind-pose frame"""
         return hm.qrot(hm.qconj(bq), weapon_to_bind(p) - bt)
     out = []
     src = {n: a for n, a in anims.items() if ' h2rifle ' in f' {n} '}

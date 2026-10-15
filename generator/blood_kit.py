@@ -27,13 +27,14 @@ from iqm import read_iqm, write_iqm
 from hce_paths import OUT
 
 OUT = os.environ.get('HCE_OUT', os.path.join(HERE, 'out'))
-STAGE_HITS = (5, 7, 10)              # new hits per stage
-PUSH = 0.004                          # world units the overlay sits out from the skin
+STAGE_HITS = (5, 7, 10)              # new hits per stage (three stages: more hits = a bloodier enemy; the hits accumulate)
+PUSH = 0.004                          # world units the overlay sits out from the skin (too little z-fights, too much floats)
 TEX = 256                             # blood texture size
-NO_BLOOD = {'Sentinel'}
+NO_BLOOD = {'Sentinel'}               # characters that never bleed, whatever build_pack.BLOOD says
 
 
 def blood_colour(char):
+    """the character's blood as (r, g, b) in 0..1 from build_pack.BLOOD's hex, or None when it has none"""
     import build_pack as bp
     c = bp.BLOOD.get(char)
     return None if not c else np.array([int(c[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
@@ -80,6 +81,9 @@ def noise3(p, seed, scale):
 
 
 def process(char):
+    """write the three blood overlay models and their textures for one character under out/models/<char>/ and record
+    them in its json ('blood'); skips characters with no blood colour, or in NO_BLOOD. The hit placement is seeded by
+    the character's name, so a rebuild gives the same splats."""
     od = f'{OUT}/models/{char}'
     jp = f'{od}/{char}.json'
     if not os.path.exists(jp): print(char, 'missing'); return
@@ -92,6 +96,8 @@ def process(char):
     stubs = set() if g.get('cap_model') else {d['stub'] for d in g.get('limbs', {}).values() if d.get('stub') is not None}
     names = meta.get('mesh_names') or [m['name'] for m in meshes]
     def body(si, m):
+        """is mesh si a bleeding body surface: not a weapon, gore stub, shield, damaged twin, w_ / gore / atlas
+        material, and has triangles"""
         mat = m['material'].lower()
         return not (mw[si] or si in stubs or 'shield' in mat or 'shield' in names[si] or '~damaged' in names[si] or mat.startswith('w_') or 'gore' in mat
                     or '_atlas' in mat) and len(m['tris'])       # (an atlas whose parts come and go per class, the H2 Jackal's helmets: no blood)

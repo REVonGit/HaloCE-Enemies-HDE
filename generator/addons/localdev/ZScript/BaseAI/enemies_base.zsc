@@ -16,6 +16,43 @@
 // Behaviour switches mirror which actor_action_handle_* calls each Halo actor
 // type makes; numbers come from the actr/actv/coll tags at generation time.
 // ============================================================================
+//
+// HOW TO READ THIS FILE. One class, HaloDoom_EnemyBase, in sections marked "// ----" banners, in this order:
+//   HDE API            the original members (DamageMobJ, A_Chase3D ...), kept so HDE's own classes still compile
+//   properties / flags the HCE_* properties the generated classes set (HCE_Weapon, HCE_CombatRange ...) and the
+//                      HCE_* flags (bHCE_Evades, bHCE_SeeksCover ...); the enums above name the actions and the
+//                      animation kinds
+//   setup              PostBeginPlay: difficulty scaling, the shield item, squads, names, the first animation
+//   squads / idle      leaders and followers, patrols, sleeping Grunts, teams (HCE_IsEnemy, HCE_ScanTargets)
+//   HCE_Look / HCE_Think   the Spawn and See states: perception, then one action a tic (HCE_Fight, HCE_Pursue,
+//                      HCE_Charge, HCE_Flee, HCE_Cover, HCE_Follow, the Flood's HCE_Feed, the Grunts' kamikaze)
+//   emotions           panic, berserk, cover-seeking, the Hunters' bond rage
+//   getting about      doors and lifts, footsteps, searching and investigating, sniper perches, lunges, rallying,
+//                      corner cover, movement and steering (HCE_Move, HCE_PickHeading), jumping, hoist and vault
+//   the player's squad orders, names, trading guns, the fire-team and lance tactics (HCE_Doctrine)
+//   ranged combat      bursts and fire patterns (HCE_UpdateFiring, HCE_FireShot), gunner seats, magazines and heat,
+//                      friendly-fire checks, the beam rifle, shooting the dead, tracers, the aim nerf, difficulty
+//   dialogue           HCE_Say and the group callouts
+//   grenades, lobs, melee, leaps, evasion dives
+//   damage and death   HCE_OnDamaged, headshots, shield pops, HCE_Die, thrown bodies, gore (HCE_SeverLimb), blood,
+//                      corpses and the Flood's revival, HCEVARS variants, picking up weapons (loadouts)
+//   helper classes     HCE_Lance, HCE_Formation, HCE_Callouts, HCE_EnemyLaser ... at the end of the file
+//
+// HOW TO EDIT. Three ways, from least to most invasive:
+//   * a CVar: most tunables are CVars (hce_* in the core's cvarinfo.txt, read through HCE_CVarF) and can be set in
+//     the console or the AI options menu without touching code.
+//   * a subclass: every generated enemy class extends this one, so anything marked "virtual" is a hook a pack's own
+//     class (or an HCEVARS variant's "code") can override: HCE_Fight / HCE_Pursue / HCE_Charge for the action
+//     itself, HCE_TryGrenade / HCE_TryMelee / HCE_TryLeap / HCE_TryEvade for the special moves, HCE_FireShot and
+//     HCE_OnShot for the gun, HCE_OnDamaged / HCE_Die / HCE_SeverLimb for taking hits, HCE_Say for dialogue,
+//     HCE_IsEnemy for who it fights, HCE_AnimName / HCE_AnimTics / HCE_AnimMove for the animation table. The
+//     templates in generator/templates/zscript/ (the Sentinel Knight, the Enforcer, the Drone ...) are worked
+//     examples. Call super.X() unless you mean to replace the behaviour outright.
+//   * this file: a change here reaches every enemy. The numbers that aren't CVars are mostly named constants at the
+//     top of their section or literal in one place with a comment saying what they are; search for the comment.
+//     Keep the HDE API half as it is: HDE's own enemies and the standalone port (build_standalone.py turns this
+//     file into hces_api.zsc) both depend on it.
+// ============================================================================
 
 struct LastDamageInfo
 {
@@ -100,6 +137,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		HaloDoom_EnemyBase.HDE_MoveFriction 0.7;
 	}
 
+	// Per-tic housekeeping that runs in every state: applies a pending HCEVARS variant and weapon preset, hides blood
+	// while shields are up, pins leatherneck spawns to their anchor, ticks stuck grenades and shoves, spawns the friendly
+	// radar blip, and (HCE off) applies HDE's moveFriction. The radar blip is checked every 16 tics (level.maptime & 15).
 	override void Tick()
 	{
 		super.Tick();
@@ -140,6 +180,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// a shotgun shove: the body pushed back over a few tics (its own movement zeroes its velocity every step, so the
 	// push is a slide of its own), easing off
 	vector2 hce_shove;
+	// Slides the body along hce_shove each tic until it fades below 0.2 units or hits something.
+	// To change how fast a shove dies off, edit the 0.72 decay; the push itself is set in DamageMobJ (HaloShotgun_Bullet).
 	void HCE_ShoveTick()
 	{
 		if(hce_shove.Length() < 0.2) { hce_shove = (0, 0); return; }
@@ -151,6 +193,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// low hallway it then sits wedged under the ceiling). Halo units never stack: one resting on another actor
 	// slides off it, to whichever side has room.
 	int hce_stackTics;
+	// When standing on another monster or player, pushes the body off toward whichever side has room, harder the longer
+	// it has been stacked (3 to 8 units/tic), and after 35 tics teleports it clear with a TryMove.
+	// Crates and barrels don't count. To change the hop delay, edit the 35 in hce_stackTics > 35.
 	void HCE_SlideOffTick()
 	{
 		if(pos.z <= floorz + 1 || abs(vel.z) > 1) { hce_stackTics = 0; return; }
@@ -184,6 +229,9 @@ class HaloDoom_EnemyBase : Actor abstract
 			"####" "#" 0 A_ResumePrevious();
 	}
 
+	// Every hit passes through here before the engine applies it: corpse hits go to HCE_CorpseHit, encounter damage is
+	// scaled, blast/punch/kick/shotgun knockback is recorded for the death throw, shields suppress blood, incoming damage
+	// is modified (HCE_ModifyIncoming, HCE_FireDeathCheck), then HCE_OnDamaged reacts. Returns the damage actually dealt.
 	override int DamageMobJ(Actor inflictor, Actor source, int dmg, Name mod, int flags, double angle)
 	{
 		if(inflictor && mod == 'Explosive' && dmg >= 40 && health > 0) HCE_SuperCombineSound(inflictor);
@@ -293,6 +341,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return dealt;
 	}
 
+	// HDE's Info.DamageTaken hook: clears damageInfo.processing and returns the state the actor was in when hit,
+	// or null (continue the current sequence) if there is nothing to go back to.
 	State A_ResumePrevious()
 	{
 		damageInfo.processing = false;
@@ -307,10 +357,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		return ResolveState(null);
 	}
 
+	// HDE API: true if the last recorded hit came from the given damager class (or a subclass) and matched isHeadshot.
+	// Only filled in when HCE is off (see the early return in DamageMobJ).
 	bool A_CheckDamageInfo(class<Actor> damager, bool isHeadshot)
 	{
 		return (damageInfo.damager is damager) && (damageInfo.headshot == isHeadshot);
 	}
+	// HDE API: the last hit's damage rounded up, or with killed = true whether that hit killed the actor (1 or 0).
 	int A_GetDamageTaken(bool killed = false)
 	{
 		if(killed)
@@ -319,6 +372,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			return ceil(damageInfo.dmgTaken);
 	}
 
+	// HDE API: turns and pitches the actor (interpolated) from its mid-height toward victim (default: target), aiming at
+	// heightAimScale of the victim's height (0.5 = centre mass, 1.0 = top of the head). Does nothing without a target.
 	void A_AimToTarget(double heightAimScale, Actor victim = NULL)
 	{
 		if(!target) return;
@@ -335,6 +390,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_SetPitch(aimDir.y, SPF_INTERPOLATE);
 	}
 
+	// HDE API: fires proj through HaloMath.Fire3DProjectile from an offset (forward/left/up, turned with the aim) with
+	// an angle and pitch offset, and makes this actor its owner. Returns the projectile, or null if it couldn't spawn.
 	Actor A_Fire3DProjectile(class<Actor> proj, double forward = 0, double leftright = 0, double updown = 0, double angleOffset = 0, double pitchOffset = 0)
 	{
 		let projActor = HaloMath.Fire3DProjectile(self, proj, forward, leftright, updown, false, angleOffset, pitchOffset);
@@ -351,6 +408,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual vector3 HCE_MuzzleAt(Name anim) { return hce_gunOffset; }
 	vector3 HCE_Muzzle() { return hce_hasLoadout ? hce_gunOffset : HCE_MuzzleAt(hce_curAnim); }
 
+	// Fires proj from the barrel's tip (HCE_Muzzle) in the aim direction. The muzzle offset is in body space (unpitched
+	// unless flying), so it is turned into aim space first and Fire3DProjectile's own turn puts it back.
+	// Returns the projectile.
 	Actor HCE_FireMuzzle(class<Actor> proj, double angleOffset = 0, double pitchOffset = 0)
 	{
 		vector3 g = HCE_Muzzle();
@@ -360,6 +420,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return A_Fire3DProjectile(proj, l.x, -l.y, l.z, angleOffset, pitchOffset);
 	}
 
+	// HDE API: fires count copies of proj from the same offset, each with a random angle and pitch error within
+	// +/- angleSpread / pitchSpread degrees (a shotgun-style spread).
 	void A_Fire3DProjectiles(class<Actor> proj, double count, double angleSpread = 0, double pitchSpread = 0, double forward = 0, double leftright = 0, double updown = 0)
 	{
 		for(int i = 0; i < count; i++)
@@ -372,6 +434,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// HDE API: spawns an ejected casing at a body-relative offset from mid-height, with a body-relative velocity, owned by
+	// this actor. Returns null (spawns nothing) when the host's halodoom_fx_casings cvar is off.
 	BulletCasing A_SpawnWeaponDebris(class<BulletCasing> debris, double fw, double lr, double ud, double vel_fw, double vel_lr, double vel_ud)
 	{
 		CVar doSpawnFX = CVar.GetCVar("halodoom_fx_casings", players[Net_Arbitrator]);   // the game host's setting: the same on every machine
@@ -389,6 +453,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return proj;
 	}
 
+	// HDE API: attaches (or finds and configures) an energy shield inventory item of the given type: full shields,
+	// regen delay and speed in tics, and the break/low/recover sounds. Returns the ShieldProcessor, or null if it
+	// couldn't be given. PostBeginPlay calls it with the HCE_Shield subclass and no recharge sounds.
 	ShieldProcessor A_SetupShield(double maxShields, double regenDelay, double regenSpeed, Sound snd_ShieldBreak = "Shield/Explode", Sound snd_ShieldLow = "Shield/Low", Sound snd_ShieldRecover = "Shield/Regenerate", class<ShieldProcessor> type = "ShieldProcessor")
 	{
 		ShieldProcessor shields;
@@ -479,6 +546,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// HDE API (A_Chase3D without a target): picks a random point up to 1024 units away in front of the actor when the
+	// last one is reached, 10 seconds have passed, or the way ahead is blocked, then turns and moves toward it.
+	// To change the wander radius, edit the frandom(-1024, 1024); the timeout is the 35*10.
 	virtual void A_Wander3D()
 	{
 		wanderTime++;
@@ -507,6 +577,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		MoveTowardsFacing(0.9);
 	}
 
+	// HDE API: eases the facing toward curDesiredAngle (10% a tic) and adds forward velocity scaled by how well the
+	// actor is lined up; with precision > 0 it only moves once alignment (0..1) exceeds that value.
 	void MoveTowardsFacing(double precision = 0)
 	{
 		curChaseAngle = HaloMath.LerpDegrees(curChaseAngle, curDesiredAngle, 0.1);
@@ -519,6 +591,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			vel += Quat.FromAngles(angle, 0, 0) * (Speed * diff, 0, 0);
 	}
 
+	// HDE API: sets curDesiredAngle to the map angle from the actor to toPos (used by A_Chase3D / A_Wander3D).
 	void UpdateDesiredAngle(vector3 toPos)
 	{
 		vector3 diff = level.Vec3Diff(pos, toPos);
@@ -682,6 +755,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// out of a fight (no target, ten seconds after the last): Halo 2's low ready (low_ready_anims.py)
 	bool HCE_Relaxed() { return !target && level.maptime > hce_combatUntil && !hce_berserk && hce_lowWalkSpeed > 0; }
 
+	// Plays the animation for an HCE_A_* kind: swaps idle/walk for the low-ready set when relaxed, the guard set when
+	// guarding, the last-stand pose when downed; falls back to idle / move_f / die_f when the class has no such clip.
+	// A locked animation is only replaced with force. A walk replacing another walk keeps its stride phase.
 	void HCE_Play(int kind, bool loop = true, bool restart = false, int blend = 4, bool force = false)
 	{
 		if(!bDECOUPLEDANIMATIONS) return;
@@ -736,6 +812,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// for two seconds after a ranged hit (a bullet or bolt, not a blade, a blast or fire)
 	int hce_guardUntil;
 	bool HCE_Guarding() { return hce_action == HCE_ACT_COVER || level.maptime < hce_guardUntil; }
+	// Maps an idle/move/crouch kind to its GUARD_* counterpart while guarding (in cover or within hce_guardUntil),
+	// if the class has that clip; otherwise returns kind unchanged. Dead actors never guard.
 	int HCE_GuardKind(int kind)
 	{
 		if(health <= 0 || !HCE_Guarding()) return kind;
@@ -756,6 +834,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// crouched (any 'crouch ...' animation), the body is a smaller target: its hitbox drops to the crouch's height
 	// (about 60% of standing), and comes back up when it stands, if there is headroom
 	bool hce_crouchBox;
+	// Shrinks the hitbox to 62% of default height while a 'crouch ...' animation plays and restores it when standing,
+	// but only if there is ceiling room. To change the crouched height, edit the 0.62.
 	void HCE_CrouchHitbox(Name anim)
 	{
 		if(health <= 0 || hce_corpseInit) return;
@@ -793,6 +873,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Performance: cheaper shading (hce_simpleshaders). Variants drawn with a custom shader on their whole body (the
 	// active camo) swap those surfaces for plain copies of the same textures (build_pack.py writes the override)
 	virtual void HCE_PlainShaders() {}
+	// True when the hce_simpleshaders cvar exists and is on (cheaper shading: PostBeginPlay then calls HCE_PlainShaders).
 	static bool HCE_SimpleShaders()
 	{
 		CVar cv = CVar.FindCVar("hce_simpleshaders");
@@ -800,6 +881,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	int hce_diedAt;                      // level.maptime it died (the garbage collector removes the oldest bodies first)
 
+	// One-time spawn setup for HCE actors: Sentinel allies, weapon preference and Marine name, difficulty-scaled health
+	// and shields (A_SetupShield / the Jackal shield actor), active camo alpha, flying flags, infection-form speed,
+	// default jump height, a voice set, home and patrol timers, sleeping Grunts, the shield flare shell, first animation.
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
@@ -888,7 +972,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// ------------------------------------------------------------------
-	// Squads (Halo encounters): Grunts and Jackals attach to the nearest Elite or Brute leader (up to six to
+	// Squads (Halo encounters): Grunts and Jackals attach to the nearest Elite or Brute leader (up to nine to
 	// a leader). They take a station around it, walk with it on patrol, share what it sees (a squad that
 	// spots you wakes and turns as one), stay within reach of it in a fight, and stay with it instead of
 	// hunting you on their own. A leader's death still breaks them (panic).
@@ -897,11 +981,16 @@ class HaloDoom_EnemyBase : Actor abstract
 	int    hce_squadCount, hce_squadCheck, hce_squadNotified;
 	double hce_slotAng, hce_slotDist;
 
+	// True for units that attach to a squad leader: hostile, ground-bound Covenant Jackals (type 1) and Grunts (type 2)
+	// that are not leaders themselves.
 	bool HCE_IsFollowerType()
 	{
 		return !bHCE_Leader && (hce_type == 1 || hce_type == 2) && !bFRIENDLY && hce_team == HCE_TEAM_COVENANT && !bHCE_Flying;
 	}
 
+	// Returns this unit's squad leader, dropping a dead or side-switched one. A leaderless follower looks every 3 s for
+	// the nearest living same-team HCE_Leader in sight within 768 units with fewer than nine members, joins it and takes
+	// the next station slot (SA/SD tables: angle and distance round the leader). Null when hce_squads is off or none fits.
 	HaloDoom_EnemyBase HCE_SquadLeader()
 	{
 		if(hce_squadLead && (hce_squadLead.health <= 0 || hce_squadLead.bFRIENDLY != bFRIENDLY)) hce_squadLead = null;
@@ -976,6 +1065,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	int     hce_lineupLook;                 // punkassbitches: 1 + which of the class's looks to wear (0: roll as usual)
 	virtual int HCE_LineupLooks() { return 1; }   // how many looks the class has for punkassbitches to line up (one of each)
 
+	// Idle-time movement: a squad member walks to its station, anyone else patrols. Returns true while moving, false
+	// when standing (fliers, followers, feeders, dormant, stand-still, ambush units, or hce_patrols off).
 	bool HCE_IdleMove()
 	{
 		if(bHCE_Flying || bHCE_FollowPlayer || hce_action == HCE_ACT_FEED || bDORMANT || hce_standStill) return false;
@@ -986,6 +1077,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_PatrolTick();
 	}
 
+	// Patrol state machine: after a pause picks the next goal (the map's PatrolPoint chain if goal is set, else a
+	// random spot 96-288 units from hce_home with a clear path), walks there, then pauses 3-8 s (or the PatrolPoint's
+	// args[1] seconds). Gives up on a point after 10 s. Returns true while walking.
 	bool HCE_PatrolTick()
 	{
 		if(hce_patrolState == 0)
@@ -1042,6 +1136,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	int  hce_wakeAt;
 	double hce_shieldTook;                 // what its shield took of the hit being dealt (HCE_OnDamaged)
 
+	// A sleeping Grunt's tick: wakes at once for an enemy player within 96 units or a sound target within 320, in
+	// 10-40 tics for one within 1024, and in 15-60 tics when a same-team ally within 768 (256 if ambush) is dead or
+	// fighting in sight. Scans every 10 tics; the ally scan every 30. To change the ranges, edit the numbers here.
 	void HCE_SleepTick()
 	{
 		HCE_Play(HCE_A_SLEEP);
@@ -1075,6 +1172,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	int hce_scanTimer2;
 
+	// Ends sleep: marks the unit surprised and alert for 8 s, scans for a target if it has none, plays the surprise
+	// animation when startled, says Alert (or Panic with nothing in sight) and, with a target, goes to the See state.
 	void HCE_Wake(bool startled)
 	{
 		if(!hce_sleeping) return;
@@ -1136,6 +1235,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_TEAM_NEUTRAL;
 	}
 
+	// Team check: true for a living, shootable actor on another HCE team, or the one that betrayed it. Plain Doom
+	// monsters count as enemies only to the human team. Same-team actors are never enemies.
 	virtual bool HCE_IsEnemy(Actor other)
 	{
 		if(!other || other == self || other.health <= 0 || !other.bSHOOTABLE || other.bNONSHOOTABLE) return false;
@@ -1150,6 +1251,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// True if other is within hce_visionDist, inside the given field of view (360 = all round) and there is a clear
+	// line of sight ignoring visibility and water boundaries.
 	bool HCE_SightOf(Actor other, double fov)
 	{
 		if(!other) return false;
@@ -1168,6 +1271,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_combatUntil, hce_flipTics;
 	bool HCE_Alerted() { return target != null || level.maptime < hce_combatUntil; }
 
+	// Picks the closest visible enemy (a squad focus target wins outright): the current target scores 0.6x its distance
+	// while seen, players score raw distance, monsters 1.15x. Uses the full 360 when alerted, else hce_visionFOV.
+	// A target gained from none calls HCE_OnAcquire. To favour players more, edit the 1.15 monster multiplier.
 	void HCE_ScanTargets()
 	{
 		if(hce_focusTarget && (hce_focusTarget.health <= 0 || !HCE_IsEnemy(hce_focusTarget))) hce_focusTarget = null;
@@ -1202,6 +1308,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// First contact with a new target: wakes, alerts the squad, resets the burst and sets the first-burst delay (at
+	// least 0.4 s, scaled by difficulty), says the sighting line, delays grenades 3-6 s, and plays a surprise (within
+	// hce_surpriseDist; 1 in 3 panic) or a warn animation (1 in 4). Always-berserk types go berserk here.
 	virtual void HCE_OnAcquire()
 	{
 		if(hce_sleeping) HCE_Wake(false);
@@ -1399,6 +1508,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_evadeTics > 0) hce_evadeTics--;
 	}
 
+	// Sets berserk and switches to the charge action, with the Berserk line and, when roar is true, the berserk
+	// animation. Ignored on a kamikaze run or with the off arm lost.
 	void HCE_GoBerserk(bool roar)
 	{
 		if(hce_action == HCE_ACT_KAMIKAZE || hce_offArmLost) return;   // (the charge is on all fours)
@@ -1417,6 +1528,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Actor hce_bondMate;
 	bool hce_raging, hce_bondLooked;
 
+	// Pairs an unpaired HCE_PairBond Hunter with the nearest unpaired living one of the same team and side within
+	// 512 units; both remember each other. Runs once (hce_bondLooked) from the look and think loops.
 	void HCE_BondLink()
 	{
 		hce_bondLooked = true;
@@ -1433,6 +1546,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(best) { hce_bondMate = best; best.hce_bondMate = self; best.hce_bondLooked = true; }
 	}
 
+	// The surviving Hunter's rage: targets its brother's killer, runs a third faster, cuts cannon pauses to 60%, melees
+	// half as hard again, roars into berserk and leaves the Spawn state. To change the buffs, edit the multipliers here.
 	void HCE_BondRage(HaloDoom_EnemyBase fallen)
 	{
 		if(hce_raging || health <= 0) return;
@@ -1447,6 +1562,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
+	// Switches to the flee action: says Panic (unless already fleeing), stops any fire loop and burst, and sets the
+	// cower time to frandom(hce_cowerMin, hce_cowerMax) seconds, at least 1.5-3 s. Not during a kamikaze run.
 	void HCE_StartPanic()
 	{
 		if(hce_action == HCE_ACT_KAMIKAZE) return;
@@ -1470,6 +1587,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(L.bHCE_Leader && !L.bFRIENDLY) HCE_Rally(L);          // another leader takes the survivors on
 	}
 
+	// Reaction of same-team units within 768 of a dead leader: the LeaderDead line, a 30% kamikaze roll for Grunts
+	// with hce_kamiChance, and a panic roll of max(0.35, hce_panicLeaderChance) + 0.08 per brutality point (cap 0.95).
+	// If it was the last leader within 900, followers can't take a new one for 3 s + 2.5 s per brutality point.
 	static void HCE_LeaderDiedPanic(Actor leader, HaloDoom_EnemyBase L)
 	{
 		int b = L.bHCE_Leader ? L.hce_brutalityFinal : 0;
@@ -1589,6 +1709,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_PickMoveAnim();
 	}
 
+	// Chases a target it can't see: fliers move straight at it; walkers jump toward a higher last-known spot, else use
+	// Doom's A_Chase pathing at hce_runSpeed, playing alert instead of walk when boxed in. Gives up after 20 s unseen.
 	virtual void HCE_Pursue()
 	{
 		if(bHCE_Flying)
@@ -1622,6 +1744,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_pursuing;
 	int  hce_pursueCheck;
 
+	// Pursuit cap: true if this unit may chase an unseen target. Once a second it counts same-team pursuers of the
+	// same target within 2048 units and allows pursuit while under hce_maxpursuers (default 4; 0 = no cap).
 	bool HCE_MayPursue()
 	{
 		if(hce_pursuing) return true;
@@ -1640,6 +1764,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return hce_pursuing;
 	}
 
+	// Stands in place turning toward the last known position (a unit over the pursuit cap). Forgets the target after
+	// 25 s without a sighting. To change that, edit the 35 * 25.
 	void HCE_Hold()
 	{
 		HCE_Brake();
@@ -1649,6 +1775,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(level.maptime - hce_lastSeen > 35 * 25) { target = null; hce_pursuing = false; }   // forget it
 	}
 
+	// The berserk / melee action: faces the target at double turn rate, tries lunge, melee, leap and jetpack, pursues
+	// when it can't see it, otherwise runs straight in at 1.15x run speed, firing inside half max range.
+	// Exploding types (HCE_Explodes) detonate within 24 units of contact.
 	virtual void HCE_Charge()
 	{
 		double d = Distance2D(target);
@@ -1664,6 +1793,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Explodes && d < radius + target.radius + 24) HCE_Detonate();
 	}
 
+	// The panic action: runs away from the target (+/- 30 degrees) at run speed in the flee animation, with the Flee line
+	// about once every 50 tics. When hce_panicTics runs out it says Regroup and goes back to fighting.
 	virtual void HCE_Flee()
 	{
 		if(--hce_panicTics <= 0) { hce_action = HCE_ACT_FIGHT; HCE_Say('Regroup', 0.5, 35 * 2); return; }
@@ -1673,6 +1804,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
 	}
 
+	// The shields-down action: uses a real cover spot (HCE_FindCover within 384, HCE_CoverTick) when it can, else
+	// sidesteps 120 degrees off the target's line toward open ground while firing, or crouches still when unseen.
+	// Returns to the fight once shields reach hce_shieldEmerge and hce_coverTics (3 s) is spent.
 	virtual void HCE_Cover()
 	{
 		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
@@ -1734,6 +1868,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the player's trail (HCE_MissileTracker): the newest point on it, recorded between fromTic and toTic, that it can
 	// walk straight to (Marines catching up round corners; the Covenant tracking where you went)
 	vector3 hce_trailHit;                       // HCE_TrailGoal's answer (an out vector3 trips the JIT)
+	// Searches player pn's recorded trail (HCE_MissileTracker) newest-first for a point recorded between fromTic and
+	// toTic, within 1200 units, that HCE_Walkable reaches; stores it in hce_trailHit and returns true.
+	// Tests at most 28 points and stops at a teleport break.
 	bool HCE_TrailGoal(int pn, int fromTic, int toTic)
 	{
 		let tr = HCE_MissileTracker.Get();
@@ -1765,6 +1902,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	int hce_tpAt, hce_nearTic;
 
+	// Called when a player teleports: every living squad member not holding, within 1536 of where he left and not
+	// already within 400 of where he arrived, is scheduled to teleport after him (20 tics, then 12 more each, +0-6).
 	static void HCE_PlayerTeleported(Actor pl, vector3 from, vector3 to)
 	{
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
@@ -1778,6 +1917,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// When its scheduled hce_tpAt comes, teleports the Marine (with fog) to a free spot behind the squad's player,
+	// trying rings of 72-216 units at 40-degree steps with floor, headroom and sight checks, and resets cover and
+	// stuck state. Returns true on arrival; retries in a second if nowhere is free.
 	bool HCE_TeleportTick()
 	{
 		if(hce_tpAt <= 0 || level.maptime < hce_tpAt || hce_animLock > 0 || hce_climbTics > 0) return false;
@@ -1816,6 +1958,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Line hce_doorLine;
 	int hce_doorWait, hce_doorNext;
 
+	// True for line specials the AI will use on its own: doors (not 13 Door_LockedRaise), plats, lifts and elevators.
+	// To let the AI use another special, add its number to the case list.
 	static bool HCE_DoorOrLift(int sp)
 	{
 		switch(sp)
@@ -1909,6 +2053,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return l.v1.p + l.delta * t;
 	}
 
+	// When the sector just ahead (up to 64 units) has a floor too high to step or jump onto, asks the tracker for a
+	// line that works that lift and, if there is one, remembers where to stand on it and sends the unit to press it
+	// (HCE_SetButton). Returns true when a lift job was started. Checks at most once a second.
 	bool HCE_TryLift(double ang)
 	{
 		if(!HCE_CanUseDoors() || hce_button || hce_liftSec || level.maptime < hce_liftNext) return false;
@@ -1951,6 +2098,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_StopFireLoop();
 	}
 
+	// Rides a lift started by HCE_TryLift: waits for the button job, walks to the lift once it is low, stands still
+	// while it moves, steps off when it has carried him and stopped, or works it again if it went back up. Returns true
+	// while busy; gives up after 20 s (hce_liftTics).
 	bool HCE_LiftTick()
 	{
 		if(!hce_liftSec || health <= 0 || --hce_liftTics <= 0) { hce_liftSec = null; return false; }
@@ -1994,6 +2144,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Name hce_footSet;
 	bool hce_stepInit;
 
+	// Picks the footstep sound set from the class name, team and type: brute (Brutes, Hunters), marine (humans, human
+	// Flood), elite, grunt, or 'None' for fliers and the small types. Override in a class to force a set.
 	virtual Name HCE_StepSet()
 	{
 		String cn = GetClassName();
@@ -2006,6 +2158,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return 'None';
 	}
 
+	// Guesses the footstep surface from the floor flat's name (or being in water): water, grass, metal, dirt or hard.
+	// To map more flats, add their name fragments to the IndexOf lists.
 	String HCE_StepSurface()
 	{
 		if(waterlevel >= 1) return "water";
@@ -2019,6 +2173,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return "hard";
 	}
 
+	// Accumulates ground distance covered and plays HCE/Step/<set>/<surface>_<walk|run> once per stride (0.42 of height
+	// walking, 0.62 running). No steps while airborne, climbing or after a teleport. Hunters are pitched down, Jackals up.
+	// To change loudness, edit the 0.6 / 0.42 volumes.
 	void HCE_StepTick()
 	{
 		if(!hce_stepInit) { hce_stepInit = true; hce_footSet = HCE_StepSet(); hce_stepLast = pos.xy; }
@@ -2075,6 +2232,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			for(int k = 0; k < ev.Size(); k++) MarkSound(Sound(String.Format("HCE/%s/%s", vs[i], ev[k])));
 	}
 
+	// The voice line for a sighting: Sword for an energy sword carrier, Sniper for a sniper beyond 640 units,
+	// UpThere / DownThere when the target is more than 96 units above or below, otherwise Alert.
 	Name HCE_SightingLine()
 	{
 		if(!target) return 'Alert';
@@ -2101,6 +2260,9 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_Searches() { return hce_team == HCE_TEAM_COVENANT && !bFRIENDLY && !bHCE_Flying && HCE_CVarF('hce_search', 1) > 0; }
 
+	// Picks the next search spot: a point 96-320 units from the last known position, in the level, within 64 units
+	// of its height, and in line of sight from it; squad members start from different angles (hce_srIdx).
+	// Falls back to the last known position itself after 8 tries.
 	vector3 HCE_SearchPoint()
 	{
 		vector3 c = hce_lastKnown;
@@ -2118,6 +2280,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return c;
 	}
 
+	// Ends a search. When nothing was found it says SearchClear / SearchFail, drops the target and pursuit, and
+	// sends the unit home for up to 25 s (HCE_ReturnTick).
 	void HCE_EndSearch(bool found)
 	{
 		hce_srPhase = 0;
@@ -2128,6 +2292,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_returnHome = true; hce_returnUntil = level.maptime + 35 * 25;
 	}
 
+	// The search phases: 1 walk to where the target was seen, 2 follow its trail from the 4 s after that, 3 check up
+	// to four spots round there, looking about 1-2 s at each. Calls it off after 20-30 s or four spots.
+	// To change how long they search, edit random(35 * 20, 35 * 30); the spot count is the 4 in hce_srPoints >= 4.
 	void HCE_SearchTick()
 	{
 		if(hce_srPhase == 0)
@@ -2189,6 +2356,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 hce_invPos;
 	int hce_invUntil, hce_invLook;
 
+	// Notes something worth a look at a position: a squad Marine just turns that way for 3 s; an idle Covenant unit
+	// that searches says Investigate and walks over for up to 15 s (HCE_InvestigateTick). Ignored with a target or asleep.
 	void HCE_Investigate(vector3 at, Actor src)
 	{
 		if(health <= 0 || target || hce_sleeping) return;
@@ -2204,6 +2373,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
+	// Carries out HCE_Investigate: a Marine only turns toward the spot (returns false); a Covenant unit walks to within
+	// 128 units, looks about for 2-4 s, then heads home. Returns true while it owns the unit's movement.
 	bool HCE_InvestigateTick()
 	{
 		if(level.maptime >= hce_invUntil) return false;
@@ -2240,6 +2411,9 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_IsSniper() { int b; return hce_type == 1 && !bFRIENDLY && HCE_WeaponKindOf(hce_dropWeapon, b) == HCE_WK_LONG; }
 
+	// Finds a new sniper perch: samples rings of 192/320/448 units round the unit, keeps spots 384 to ~hce_rangeMax
+	// from the target that are walkable, free and have a line of fire, scoring height gain x2 plus distance.
+	// Stores the best in hce_pcGoal; returns false when none fits.
 	bool HCE_FindPerch()
 	{
 		if(!target) return false;
@@ -2288,6 +2462,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_HasSword() { return hce_dropWeapon == 'Halo_EnergySword' && hce_type == 0; }
 
+	// A sword Elite's lunge: from 120-360 units with sight and level ground, a 25% roll starts a 14-tic dash at 2.6x run
+	// speed straight at the target, swinging on contact. Returns true while lunging. Retries after 3-5 s (difficulty-scaled).
 	bool HCE_TryLunge(double d)
 	{
 		if(hce_lgTics > 0)
@@ -2321,6 +2497,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_squadCheck = level.maptime + 35 * 3;
 	}
 
+	// After a leader dies: the nearest living hostile leader of its team within 1100 (with room in its squad) takes on
+	// the fallen one's followers within 900, cutting any panic to 30-60 tics, and says JoinMe if it got anyone.
 	static void HCE_Rally(HaloDoom_EnemyBase fallen)
 	{
 		HaloDoom_EnemyBase best = null; double bd = 1100;
@@ -2353,6 +2531,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// that nobody is engaging
 	// ------------------------------------------------------------------
 	int hce_behindNext;
+	// A Marine hit from behind: says Behind and hands foe to the nearest squadmate within 900 that can see it and isn't
+	// already on it. Won't repeat for 6 s (hce_behindNext).
 	void HCE_CoverMyBack(Actor foe)
 	{
 		hce_behindNext = level.maptime + 35 * 6;
@@ -2388,6 +2568,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_cvLow;
 	vector3 hce_cvSpot;
 
+	// Whether this unit uses cover spots: human or Covenant, not flying, Hunter, exploding or berserk, no shield still up
+	// (Jackals), a ranged weapon, and a corner or crouch idle animation. hce_cover 0 turns it off for everyone.
 	bool HCE_CoverCapable()
 	{
 		if(bHCE_Flying || bHCE_FrontArmor || bHCE_Explodes || bHCE_AlwaysBerserk || hce_berserk) return false;
@@ -2409,10 +2591,13 @@ class HaloDoom_EnemyBase : Actor abstract
 	// a short slide (the step out to the corner and back), spread over a locked animation
 	vector3 hce_peekFrom, hce_peekTo;
 	int hce_peekTics, hce_peekDur;
+	// Starts a smooth slide from the current position to 'to' over tics tics (HCE_PeekSlideTick does the moving).
 	void HCE_PeekSlide(vector3 to, int tics)
 	{
 		hce_peekFrom = pos; hce_peekTo = to; hce_peekDur = hce_peekTics = max(1, tics);
 	}
+	// One tic of a peek slide: moves along a smoothstep curve between hce_peekFrom and hce_peekTo, stopping early if
+	// something now stands in the way.
 	void HCE_PeekSlideTick()
 	{
 		double t = 1.0 - (--hce_peekTics) / double(hce_peekDur);
@@ -2459,6 +2644,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		return 0;
 	}
 
+	// True if the unit fits at p and no other living HCE unit in cover has its spot within touching distance (+16) of it.
 	bool HCE_SpotFree(vector2 p)
 	{
 		if(!CheckPosition(p)) return false;
@@ -2502,11 +2688,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		return false;
 	}
 
+	// True when the target is a player looking within 12 degrees of this unit (counts as being under fire for cover).
 	bool HCE_AimedAt()
 	{
 		return target && target.player && abs(DeltaAngle(target.angle, target.AngleTo(self))) < 12;
 	}
 
+	// True when shields are at or above hce_shieldEmerge of full, or the unit has no ShieldProcessor at all.
 	bool HCE_ShieldsBack()
 	{
 		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
@@ -2515,6 +2703,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	int HCE_CvHideTics() { return max(15, int(35 * frandom(0.9, 2.2) * HCE_D(HCE_D_BURST_SEP))); }
 
+	// Starts a cover run: state GO, 5 s to get there, and 10-16 s of cover in all before it leaves.
+	// To change how long they stay in cover, edit random(35 * 10, 35 * 16).
 	void HCE_CvBegin()
 	{
 		hce_cvState = HCE_CV_GO;
@@ -2522,6 +2712,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_cvUntil = level.maptime + random(35 * 10, 35 * 16);
 	}
 
+	// Leaves cover: plays the corner exit animation if it was hiding at a corner, clears the cover state and won't look
+	// for cover again for 3-6 s.
 	void HCE_LeaveCover()
 	{
 		if(hce_cvState >= HCE_CV_HIDE && !hce_cvLow && hce_animLock <= 0 && health > 0) HCE_PlayLocked(HCE_CvKind(5), 0.7);
@@ -2646,6 +2838,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		else if(pitch != 0) A_SetPitch(0, SPF_INTERPOLATE);
 	}
 
+	// Stops: bleeds 40% of horizontal velocity per tic and marks the move speed as zero (animation picks idle).
 	void HCE_Brake()
 	{
 		vel.xy *= 0.6;
@@ -2667,6 +2860,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the target in view (not straight away from it) are preferred
 	double hce_headCache, hce_headWant;
 	int    hce_headTics;
+	// Returns a heading near 'want' with at least radius + 40 of clearance, scoring closeness to want, room ahead and
+	// a penalty for heading straight away from the target; nudges 30 degrees off a wall close alongside. Cached for 6
+	// tics while want stays within 25 degrees; an unstick heading (HCE_StuckCheck) overrides everything.
 	double HCE_PickHeading(double want, double toTarget)
 	{
 		if(hce_unstickTics > 0) return hce_unstickAngle;
@@ -2696,6 +2892,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector2 hce_stuckPos;
 	int     hce_stuckTics, hce_unstickTics;
 	double  hce_unstickAngle;
+	// Every 18 tics of trying to move, if the unit covered less than 4 tics' worth of speed it is stuck: picks the
+	// most open of 8 headings round the target direction, forces it for 25 tics and flips the strafe side.
 	void HCE_StuckCheck(double spd)
 	{
 		if(hce_unstickTics > 0) { hce_unstickTics--; return; }
@@ -2721,6 +2919,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// steering: try the wanted heading, then fan out
 	int hce_waitTics, hce_detourTics, hce_detourSide;   // waiting on a friend in the way; a detour held; its side (-1 left, else right)
 	double hce_detourOff;
+	// The one movement call: tries a step at ang, then fans out 30/60/90/135 degrees either side (keeping a chosen
+	// detour for 8 tics); on the first blocked step tries doors, lifts, jumps and drops. Out of combat a friend in the
+	// way is waited for, not walked round. Sets hce_moveAngle / hce_moveSpeed; returns true if it moved.
 	bool HCE_Move(double ang, double spd)
 	{
 		if(hce_noMove) { hce_moveSpeed = 0; HCE_Brake(); return false; }
@@ -2822,6 +3023,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	double hce_climbExtra;
 	bool hce_noBlend;
 
+	// Hoist or vault (human / Covenant only, both arms): a low wall (rise <= 60% of height) with floor beyond is
+	// vaulted; a ledge within 75-125% of the hoist clip's climb is hoisted. Checks the landing, headroom, walls and
+	// bodies there, then locks the animation, freezes gravity and starts HCE_ClimbTick. Returns true when started.
 	bool HCE_TryClimb(double ang, double rise, double top, bool overThing, Actor bm)
 	{
 		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
@@ -2875,6 +3079,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// One tic of a hoist / vault: holds the body still, raises it by hce_climbExtra on a smoothstep over the clip's
+	// length (the ledge's excess over what the animation climbs), and ends the climb when the tics run out.
 	void HCE_ClimbTick()
 	{
 		vel = (0, 0, 0);
@@ -2883,6 +3089,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(--hce_climbTics <= 0) HCE_EndClimb(true);
 	}
 
+	// Finishes a climb: restores gravity and, when arriving, moves the actor to where the animation left the body,
+	// unlocks the AI, skips the next animation blend and resets stuck tracking. arrive = false just aborts.
 	void HCE_EndClimb(bool arrive)
 	{
 		hce_climbTics = 0;
@@ -2894,6 +3102,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy;
 	}
 
+	// Hops onto a ledge, or over a solid prop (useBlocker: the thing it bumped), that is taller than a step but within
+	// hce_jumpHeight; taller ones go to HCE_TryClimb first. Needs headroom, a wall-free arc, ground beyond the edge and
+	// the hce_jumping cvar on. Sets the jump velocity and airborne animation; returns true when the jump starts.
 	bool HCE_TryJump(double ang, bool useBlocker)
 	{
 		if(hce_jumpHeight <= 0 || bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0) return false;
@@ -2943,6 +3154,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the same with its 'safe to jump down' hint. They fall in the airborne animation and land in the landing one.
 	double HCE_SafeDrop() { return height * 2.5; }
 
+	// Steps off the ledge ahead at 'spd' when the target, its last-known spot or the followed player is lower.
+	// Refuses a drop deeper than HCE_SafeDrop() or into a damaging floor. True: airborne (HCE_JumpTick lands it).
+	// To change the safe depth, edit HCE_SafeDrop (2.5 x height).
 	bool HCE_TryDrop(double ang, double spd)
 	{
 		if(bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0 || pos.z > floorz + 2 || waterlevel >= 2) return false;
@@ -2976,6 +3190,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// (HCE_JumpTick). Spots are tried at random around it: open floor that isn't a damaging one, with headroom,
 	// no wall in the way at the height of the hop and not too close to the enemy.
 	int hce_jetCool, hce_jetBurn;
+	// A Ranger's jump-pack hop: a 3% roll a tic with the enemy in sight, then 80-160 tics of cooldown. Picks the best of 14
+	// random spots 96-320 off (higher ground scores best, never within 160 of the enemy) and launches. True: airborne.
+	// To change the chance, edit the 0.03 roll; the cooldown, random(80, 160); the spot limits, the loop's checks.
 	virtual bool HCE_TryJet(double dist)
 	{
 		if(!target || !hce_canSee || hce_jetCool > level.maptime) return false;
@@ -3023,6 +3240,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// right, up; map units) and hce_jetDir (the way it blows) are its jet_fire markers, set by a Halo 2 pack
 	// (build_pack.elite_kit_code); without them, a guess at the back of the body
 	vector3 hce_jetNozzle, hce_jetDir;
+	// Spawns one tic of blue exhaust from both pack nozzles (called by HCE_JumpTick while hce_jetBurn runs).
+	// Nozzle positions and blow direction come from hce_jetNozzle / hce_jetDir, else a guess at the back of the body.
 	void HCE_JetExhaust()
 	{
 		bool marked = hce_jetNozzle != (0, 0, 0);
@@ -3060,6 +3279,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_StartSound("HCE/Jetpack/Out", CHAN_BODY, CHANF_OVERLAP, 0.8);
 	}
 
+	// Per-tic flight after a jump, drop or jet hop (hce_jumpState 1): keeps driving forward until over the edge, faces the
+	// target, and on landing (or after 70 tics, 140 with a pack) ends the jump, kills most speed, resets the stuck tracking
+	// and plays the landing animation. A burning pack also caps the fall at 2.5 a tic and keeps firing on the way down.
 	void HCE_JumpTick()
 	{
 		hce_jumpTics++;
@@ -3086,6 +3308,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	vector2 hce_pmaPos; int hce_pmaTic, hce_inPlaceTics;
+	// Picks the locomotion animation each tic from hce_moveSpeed and the move direction relative to facing: idle / alert /
+	// crouch idle when still or walking in place for half a second, else forward / left / right / back with hysteresis
+	// (65 degrees past its edge, 12 tics at least) so steering wobble doesn't flip it. To change it, edit the off < check.
 	void HCE_PickMoveAnim()
 	{
 		// walking in place: pushing into a wall, a closet door or a crowd, it got nowhere for half a second. It
@@ -3124,6 +3349,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Play(k);
 	}
 
+	// Flyers' altitude each tic: eases toward the target's chest height (else holds), kept at least hce_flyHeight above the
+	// floor and under the ceiling, with a slight bob. To change the responsiveness, edit the 0.08 gain and the +-3 clamp.
 	void HCE_Hover()
 	{
 		double want = max(floorz + hce_flyHeight, min(ceilingz - height - 8, (target ? target.pos.z + target.height * 0.6 : pos.z)));
@@ -3183,6 +3410,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the nearest one alive, kept until that player dies or leaves. Single player: always the player. (Game logic never
 	// asks for consoleplayer, which differs from machine to machine in a netgame.)
 	Actor hce_orderPlayer;
+	// Returns the player this squad Marine follows: hce_orderPlayer while alive and in the game, else the nearest player
+	// (a living one first), which it then remembers. Null with no players in the game.
 	PlayerPawn HCE_SquadPlayer()
 	{
 		let cur = PlayerPawn(hce_orderPlayer);
@@ -3205,6 +3434,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// "press that button": walk to the switch the player pointed at and use it
 	Line hce_button; int hce_buttonSide, hce_buttonTics, hce_buttonAct; vector3 hce_buttonAt;
+	// 'Press that button' order: remembers the switch line and side, gives the errand 15 s, drops any scavenging or medic
+	// run and queues the 'Yes sir'. Ignored by a Marine not in the squad, dead or betrayed.
 	void HCE_ButtonOrder(Line l, int side, vector3 at)
 	{
 		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
@@ -3215,6 +3446,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
+	// Runs the button errand each tic: runs to within radius + 24 of the switch, then brakes, faces it, activates the line
+	// (HCE_PressLine) and clears the errand. False when there is none, it timed out or he's dead; true while busy this tic.
 	bool HCE_ButtonTick()
 	{
 		if(!hce_button || health <= 0 || --hce_buttonTics <= 0) { hce_button = null; return false; }
@@ -3243,6 +3476,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_sentinelAlly;                 // a Sentinel on the player's side (hce_sentinelallies)
 	bool HCE_IsSentinel() { return hce_team == HCE_TEAM_SENTINEL || hce_sentinelAlly; }   // on either side
 
+	// Rolls hce_rankName at spawn: Sentinel allies get a designation; Marines a rank by class (Armored -> NCO ranks,
+	// Major -> CPL. / SSGT., corpsmen HM3.), a first name, a middle initial and a surname.
+	// To add names, edit the first[] / last[] tables; ranks, the grunt[] / armour[] tables.
 	virtual void HCE_RollName()
 	{
 		if(hce_sentinelAlly)                 // not a Marine's name: a Sentinel's designation
@@ -3302,6 +3538,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_TradeWith(user);
 	}
 
+	// The weapon swap on use: refuses (with a line) a gun he can't carry or one the player already holds a copy of;
+	// otherwise gives the player his gun, takes theirs (HCE_EquipGun) and rates the deal by the HCE_WeaponScore gain.
+	// False: nothing to trade. To change the thanks / scorn thresholds, edit the gain >= 6 and >= -3.
 	bool HCE_TradeWith(Actor user)
 	{
 		let pw = user.player.ReadyWeapon;
@@ -3346,6 +3585,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// "medic": a corpsman (hce_isMedic) runs to the Marine the player has in the crosshair, crouches beside him and
 	// patches him up (true: busy with it this tic)
 	bool hce_isMedic;
+	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
+	// the acknowledgement.
 	void HCE_MedicOrder(Actor pl)
 	{
 		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
@@ -3354,6 +3595,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
+	// Runs the medic errand each tic: runs to the patient, crouches beside him for a second, then heals 60% of his spawn
+	// health (20 at least) and clears his wounded flag. False once done, timed out, or either is dead.
+	// To change the heal, edit the GiveBody line.
 	bool HCE_MedicTick()
 	{
 		let pl = hce_medicFor;
@@ -3388,6 +3632,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_IsJohnson() { return hce_voice == 'Marine_Johnson'; }
 
+	// Takes a squad order (HCE_ORDER_FOLLOW / HOLD / REGROUP): hold remembers the spot it stands on, regroup runs for 8 s.
+	// Ignored when not in the squad, dead or betrayed.
 	void HCE_Order(int o)
 	{
 		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
@@ -3409,6 +3655,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Once a second for squad Marines (and betrayers): forgives a dead or expired betrayal, sets hce_wounded under 35%
+	// health (with the odd call for help), counts friends within 640 and notes Johnson (hce_inspired), and the last Marine
+	// standing with the player over 768 off cowers in cover for 5 s (12 s cooldown). To change the threshold, edit the 0.35.
 	virtual void HCE_SquadTick()
 	{
 		if(!HCE_InSquad() && !hce_betrayed) return;
@@ -3454,6 +3703,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('Scold', 1.0, 35 * 2, true);
 	}
 
+	// Turns this Marine on pl for 30 s: drops FRIENDLY, targets them, fights and says the betrayal line.
 	void HCE_Betray(Actor pl)
 	{
 		hce_betrayed = pl;
@@ -3466,6 +3716,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health > 0 && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
 	}
 
+	// Ends a betrayal: friendly again, the friendly-fire tally cleared, a player target dropped, and the forgiveness line
+	// if alive.
 	void HCE_Forgive()
 	{
 		hce_betrayed = null;
@@ -3486,6 +3738,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	int hce_gunfireTic, hce_gunfireHeardTic;
 
+	// On death: the nearest living, awake teammate within 768 that can see the body calls 'ManDown'. Skipped for leaders,
+	// pair-bonded units, the Flood, Sentinels and a squad Marine the player killed (HCE_SquadDeath handles that).
 	void HCE_ManDown()
 	{
 		if(bHCE_Leader || bHCE_PairBond || hce_team == HCE_TEAM_FLOOD || HCE_IsSentinel()) return;
@@ -3502,6 +3756,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(best) best.HCE_Say('ManDown', 0.8, 35 * 4);
 	}
 
+	// Called when this one fires (every 2 s at most): sleepers within 768 (384 if AMBUSH) wake in a moment; targetless
+	// enemies within 1024 that can't see it turn toward the sound, note the spot, and one per side says 'HeardGunfire'.
 	void HCE_GunfireHeard()
 	{
 		int said = 0;                                  // a bit per side that has called it
@@ -3526,6 +3782,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// A squad Marine's death, once: if the player killed it or it was Johnson, squadmates within 768 in sight say
+	// 'AllyKilled' / 'LeaderDead'; a player kill also counts two friendly-fire hits against each, which can trip HCE_Betray.
 	void HCE_SquadDeath()
 	{
 		if(hce_squadDeathDone || hce_team != HCE_TEAM_HUMAN || !bHCE_FollowPlayer) return;
@@ -3565,6 +3823,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	bool HCE_TacticsOn() { return HCE_CVarF('hce_tactics', 1) > 0; }
 
+	// Tactics dispatch for a fighting move: squad Marines to HCE_DoctrineUNSC, hostile Covenant to HCE_DoctrineCovenant.
+	// True: moveA / spd / fire were set and the caller follows them. Off when berserk, with no target or hce_tactics 0.
 	virtual bool HCE_Doctrine(double d, double toT, out double moveA, out double spd, out bool fire)
 	{
 		if(!target || hce_berserk || !HCE_TacticsOn()) return false;
@@ -3584,6 +3844,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Bounding overwatch for a following Marine: joins the player's HCE_Formation, roster slot parity picks Alpha / Bravo;
+	// the bounding team rushes its goal without firing (Bravo round the enemy's flank, Alpha to its formation spot, both
+	// back past the player in a break-contact drill), the other holds and suppresses. False with no drill running.
 	bool HCE_DoctrineUNSC(double d, double toT, out double moveA, out double spd, out bool fire)
 	{
 		if(hce_squadOrder != HCE_ORDER_FOLLOW || hce_medicFor) return false;
@@ -3659,6 +3922,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	const HCE_ROLE_HEAVY = 3;    // fuel rods and other heavy weapons: the artillery
 	const HCE_ROLE_SKIRMISH = 4; // Jackal marksmen and snipers, Drones: the horse archers
 
+	// The Covenant battle role: leaders and Elites shock, flyers skirmish, a live front shield the shield wall, heavy
+	// weapons artillery, long guns on Jackals skirmish, all else the line. Returns one of HCE_ROLE_*.
 	int HCE_Role()
 	{
 		if(bHCE_Leader || hce_type == 0) return HCE_ROLE_SHOCK;
@@ -3671,6 +3936,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_ROLE_LINE;
 	}
 
+	// Positions a Covenant unit by its leader's HCE_Lance plan: Drones make firing passes; the leader holds in prep, lies
+	// still in a feint, charges in the exploit, else waits in the second echelon; the rest take a spot by role and rank
+	// (shield wall ahead, the line behind, artillery behind the leader, skirmishers on the flanks, Grunts feigning rout,
+	// the outer two of the line sweeping round). To change the spacing, edit the fw / side multipliers in each case.
 	bool HCE_DoctrineCovenant(double d, double toT, out double moveA, out double spd, out bool fire)
 	{
 		if(bHCE_Flying && !bHCE_Leader)
@@ -3766,6 +4035,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	double hce_fmSettledZ;                 // the height he settled at
 	bool hce_fmFwd;                        // following and turning into his way: walks forward through the turn (HCE_PickMoveAnim)
 	vector2 hce_fmSettledBy;               // settled short of his place (blocked): where the player was; (0,0) none   // following: on his way to his place / turning to his sector / running (each with hysteresis)
+	// The squad follower's per-tic movement: holds its spot (facing out on a perimeter), regroups, rides a lift up to the
+	// player, or walks to its slot in the player's HCE_Formation: a new slot only once it moved enough, trail navigation
+	// round corners, walk / run hysteresis, settling when blocked, matching pace beside a walking player, and turning to
+	// its sector in place. Ends with the move animation and a target scan every 10 tics.
 	virtual void HCE_Follow()
 	{
 		let p = HCE_SquadPlayer();
@@ -3880,16 +4153,22 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ------------------------------------------------------------------
 	Array<HCE_GunnerSeat> hce_gunners;
 	virtual void HCE_GunnerSetup() {}
+	// Adds a gunner seat: offset from the body (forward, left, up), damage a tic, burst length range (s), gap range (s)
+	// and reach. Called from a pack's HCE_GunnerSetup.
 	void HCE_AddGunner(vector3 ofs, double dmg, double dur0, double dur1, double sep0, double sep1, double range)
 	{
 		let g = new('HCE_GunnerSeat');
 		g.ofs = ofs; g.dmg = dmg; g.dur0 = dur0; g.dur1 = dur1; g.sep0 = sep0; g.sep1 = sep1; g.range = range;
 		hce_gunners.Push(g);
 	}
+	// World position of a gunner seat: its offset rotated by the body's facing.
 	vector3 HCE_GunnerPos(HCE_GunnerSeat g)
 	{
 		return level.Vec3Offset(pos, (RotateVector(g.ofs.xy, angle), g.ofs.z));
 	}
+	// Runs every seat's burst clock: a first burst 17-35 tics in, then dur0-dur1 s of beam with sep0-sep1 s between
+	// (scaled by the difficulty rate of fire), only with the target in sight and in range. A firing seat traces its beam
+	// every tic and draws it on alternate tics.
 	void HCE_GunnerTick(double dist)
 	{
 		if(!hce_gunners.Size() || !target || hce_holdFire || health <= 0) return;
@@ -3909,6 +4188,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(now < g.onUntil && can) HCE_GunnerBeam(g, now % 2 == i % 2);
 		}
 	}
+	// One tic of a seat's beam: a trace from the seat toward the aim point with the body's error cone, 2-3 x dmg (scaled)
+	// to the target or any enemy it hits, a puff at the end, and 16 orange particles along it when draw is set.
 	void HCE_GunnerBeam(HCE_GunnerSeat g, bool draw)
 	{
 		vector3 from = HCE_GunnerPos(g);
@@ -3933,6 +4214,9 @@ class HaloDoom_EnemyBase : Actor abstract
 			A_SpawnParticle("FF9020", SPF_FULLBRIGHT, 3, 3, 0, rel.x + step.x * i, rel.y + step.y * i, rel.z + step.z * i);
 	}
 
+	// The per-tic ranged fire driver: ticks gunner seats, obeys hold fire, hands pattern-fire guns to HCE_UpdatePattern;
+	// otherwise the legacy Halo model: hce_burstMin-Max s of shots at hce_rateOfFire, then hce_sepMin-Max s of pause,
+	// with the ammo and friend-in-fire checks before each burst.
 	virtual void HCE_UpdateFiring(double dist)
 	{
 		HCE_GunnerTick(dist);
@@ -3975,6 +4259,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	String hce_reloadSound, hce_ventSound;
 	Name hce_ammoFor;
 
+	// Sets magazine size, reload time and sound, and plasma heat per shot from the projectile's class name (first key[]
+	// match wins; 'rocket' skips the Hydra). Nothing for Hunters, melee or the Flood. To add a gun, add its name part to
+	// key[] and matching entries to rounds[], tics[] and snd[]; plasma heat is the IndexOf chain at the end.
 	virtual void HCE_SetupAmmo()
 	{
 		hce_ammoFor = hce_projectile;
@@ -4030,6 +4317,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// out of rounds mid-fight: a pack class can go to a backup gun instead of reloading (true: handled)
 	virtual bool HCE_OnEmpty() { return false; }
 
+	// Starts a reload (or a 40-tic vent): stops any fire loop or charge, plays the reload / vent animation when the body
+	// has one and is free, holds fire for its length plus 2-10 tics, plays the sound, then refills the magazine or
+	// clears the heat.
 	void HCE_StartReload(bool vent)
 	{
 		HCE_StopFireLoop();
@@ -4148,6 +4438,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	double hce_ffStepAng;
 	bool hce_ffLast;
 
+	// True for a live, shootable actor on this one's side: the player for an unbetrayed squad Marine, or an enabled
+	// enemy actor of the same team that isn't an enemy.
 	bool HCE_IsFriendOf(Actor a)
 	{
 		if(!a || a == self || a.health <= 0 || !a.bSHOOTABLE || a.bNONSHOOTABLE) return false;
@@ -4156,6 +4448,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return e && e.hce_enabled && e.hce_team == hce_team && !HCE_IsEnemy(a);
 	}
 
+	// True when the projectile's class name has an explosive key (rockets, Hydra, grenades, stickies, fuel rods, Plasma
+	// Casters, charged plasma). To add one, edit key[].
 	bool HCE_ExplosiveWeapon()
 	{
 		String p = String.Format("%s", hce_projectile);
@@ -4174,6 +4468,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return false;
 	}
 
+	// Checks (once a tic, cached in hce_ffLast) whether a friend stands on the line from the gun to the aim point, or
+	// within 176 of the impact (or the target within 150) for an explosive weapon. When blocked it also queues a 12-24
+	// tic sidestep to the more open side (hce_ffStepAng). Returns the blocked flag.
 	bool HCE_FriendInFire()
 	{
 		if(!target) return false;
@@ -4221,6 +4518,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return blocked;
 	}
 
+	// Ends a pattern burst: stops the fire loop and sets the pause before the next, hce_patPauseMin-Max s times
+	// pauseScale and the hce_burstpause CVar, cut to a third while suppressing.
 	void HCE_EndBurst(double pauseScale)
 	{
 		hce_shotsLeft = 0;
@@ -4229,6 +4528,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(level.maptime < hce_suppressUntil) hce_sepTics = max(1, hce_sepTics / 3);          // and short pauses
 	}
 
+	// Stops a looping fire sound (hce_fireLoop guns), playing hce_specialSound as its tail if it was running, and clears
+	// the burst.
 	void HCE_StopFireLoop()
 	{
 		if(!hce_fireLoop) return;
@@ -4259,6 +4560,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	Actor hce_beamVictim;
 	double hce_beamRamp;
 	const HCE_BEAM_AIM = 30;
+	// One tic of the Halo 2 beam rifle burst: the first HCE_BEAM_AIM tics are a glint and a targeting laser, then a held
+	// beam traced to hce_maxRange doing 3 x ramp (to 3x after half a second on the same victim, reset off it) scaled by
+	// HCE_DamageScale. To change the aim-up, edit HCE_BEAM_AIM; the damage, the 3.0 and the 2.0 / 17 ramp.
 	void HCE_FireBeamRifle()
 	{
 		if(!target) return;
@@ -4304,6 +4608,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the sticky detonator (HCE_StickyDetCharge): each charge is set off a second and a half after it's fired
 	Array<Actor> hce_stickies;
 	Array<int> hce_stickyAt;
+	// Sets off each sticky detonator charge once its 52-tic fuse (set in HCE_FireShot) is up, by sending it to
+	// ExplodeAndDie, and drops it from the list.
 	void HCE_StickyTick()
 	{
 		for(int i = hce_stickies.Size() - 1; i >= 0; i--)
@@ -4324,6 +4630,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Actor hce_csBody;
 	int hce_csTics, hce_csNext;
 
+	// True for a Marine or Covenant soldier whose gun is safe to put into a body: no beams, lobbed weapons, melee, the
+	// beam rifle or anything explosive by name. To add an excluded gun, edit boom[].
 	bool HCE_CanCorpseShoot()
 	{
 		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
@@ -4335,6 +4643,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Rolls whether to shoot the body just dropped: hce_corpseshoot (0.25 default) x 1.2 Covenant / 0.8 Marines, with the
+	// body within 1024 and in sight; sets up 24-45 tics of it after a 6-14 tic beat.
 	void HCE_StartCorpseShoot(Actor body)
 	{
 		if(!body || hce_csTics > 0 || health <= 0 || !HCE_CanCorpseShoot()) return;
@@ -4346,6 +4656,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_csNext = level.maptime + random[HCECorpse](6, 14);              // a beat, then the rounds
 	}
 
+	// Runs the corpse shoot each tic: turns to the body, then puts scattered rounds into it at 1.5x the rate of fire
+	// until the time, magazine or heat runs out or a new target appears. False when not shooting.
 	bool HCE_CorpseShootTick()
 	{
 		if(hce_csTics <= 0) return false;
@@ -4379,6 +4691,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Fires one shot at the target: beams and the beam rifle go their own way; else the projectile (or the overcharge
+	// special, rolled per shot in legacy mode), lobbed guns on a solved arc, the rest at the tracked aim point with the
+	// error cone and falling rounds re-aimed ballistically; then muzzle flash, pulse homing, sticky fuses, HCE_OnShot,
+	// the fire sound and animation. Also tells the neighbourhood (HCE_GunfireHeard) every 2 s.
 	virtual void HCE_FireShot(bool special = false)
 	{
 		if(!target) return;
@@ -4471,6 +4787,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(g.IsValid()) at.A_SpawnParticleEx(c, g, STYLE_Add, SPF_FULLBRIGHT, life, size, 0, off.x, off.y, off.z, vel.x, vel.y, vel.z, 0, 0, 0, alpha, -1, grow);
 		else at.A_SpawnParticle(c, SPF_FULLBRIGHT, life, size * 0.4, 0, off.x, off.y, off.z, vel.x, vel.y, vel.z, 0, 0, 0, alpha, -1, grow * 0.4);
 	}
+	// Covenant muzzle flash at the spawned shot: a bloom in the bolt's HCE_MuzzleColor, a white heart, five sparks thrown
+	// forward and a short HCE_MuzzleLight. Nothing for colour 0 (human guns).
 	void HCE_MuzzleFlash(Actor shot)
 	{
 		Color c = HCE_MuzzleColor(shot);
@@ -4509,6 +4827,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return lt.HitType != TRACE_HitNone ? lt.HitLocation : from + dir.Unit() * range;
 	}
 
+	// Keeps the beam rifle's two-layer laser (purple outer, pink core) drawn from 'from' to 'to' for 2 more tics,
+	// making the laser actors on first use.
 	void HCE_HeldBeam(vector3 from, vector3 to)
 	{
 		if(!hce_beamOuter) hce_beamOuter = HCE_EnemyLaser.Make(from, "Purple", 1.5, 0.25, 1.02);
@@ -4527,6 +4847,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 hce_aimPt;
 	int     hce_aimTic, hce_burstShot;
 
+	// Reads a float CVar, or def when it doesn't exist.
 	static double HCE_CVarF(Name n, double def)
 	{
 		CVar cv = CVar.FindCVar(n);
@@ -4551,6 +4872,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return sk <= 1 ? 0 : sk == 2 ? 1 : sk == 3 ? 2 : 3;
 	}
 
+	// Halo CE's difficulty multiplier for value v (HCE_D_*) at the current skill (HCE_HaloSkill); friendlies use their
+	// own damage / vitality / shield / recharge rows and Normal for the rest. 1.0 for an out-of-range v.
+	// To retune, edit the t[] table (rows in HCE_DiffValues order, columns easy to legendary).
 	static double HCE_Diff(int v, bool friendly = false)
 	{
 		static const double t[] = {
@@ -4592,12 +4916,15 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	double HCE_D(int v) { return HCE_Diff(v, bFRIENDLY); }
 
+	// The enemy aim-error multiplier: hce_enemyspread (1.75 default); 1.0 for allies.
 	double HCE_SpreadScale()
 	{
 		if(bFRIENDLY) return 1.0;
 		return max(0.0, HCE_CVarF('hce_enemyspread', 1.75));
 	}
 
+	// The error cone (degrees) for the next shot: allies their tag error (30% less with Johnson near); enemies at least
+	// 1.2 (2.5 for automatics) x spread x difficulty, automatics blooming 12% a round up to double. Advances hce_burstShot.
 	double HCE_ShotError()
 	{
 		double err = hce_errorAngle;
@@ -4609,6 +4936,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return err;
 	}
 
+	// Where to aim: the target's chest led by its velocity over the flight time (allies full lead, enemies half plus the
+	// difficulty's). Allies get it exactly; enemies get hce_aimPt chasing it at hce_enemytracking units a tic, reseeded
+	// with up to 64 + 4 units of error at the start of a burst (after 30 tics without a shot).
 	vector3 HCE_AimPoint()
 	{
 		double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
@@ -4633,6 +4963,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return hce_aimPt;
 	}
 
+	// Plays the shot's sound: the special sound for an overcharge, else the fire sound plus its bass layer. Nothing for a
+	// looping-fire gun (HCE_UpdatePattern runs its loop).
 	void HCE_PlayFireSound(bool special)
 	{
 		if(hce_fireLoop) return;
@@ -4657,6 +4989,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return false;
 	}
 
+	// Says the voice line 'HCE/<voice>/<ev>' with the given chance, unless this actor's voice cooldown is running (force
+	// ignores it). Group callouts (HCE_GroupCallout) go through HCE_Callouts so one speaker says it for the group.
 	virtual void HCE_Say(Name ev, double chance = 1.0, int cooldown = 70, bool force = false)
 	{
 		if(hce_voice == 'None' || hce_voice == '') return;
@@ -4666,6 +5000,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_SayNow(ev, cooldown, force);
 	}
 
+	// Plays the line now (a dead actor only its Death lines), carrying further than normal, sets this actor's cooldown
+	// (a second at least) and the taunt timer, and quiets same-team actors within 512 for a second. hce_debugvoice 1 logs it.
 	void HCE_SayNow(Name ev, int cooldown, bool force)
 	{
 		if(health <= 0 && ev != 'Death' && ev != 'DeathHard') return;
@@ -4724,6 +5060,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_ScaleProjectile(shot, m);
 	}
 
+	// Multiplies a projectile's damage by m: DamageMultiply for the pack's subclasses, truedamage / explode_dmg on Halo
+	// projectiles, shatterdmg on needles, random thinning for flames, else the missile damage with random rounding.
 	static void HCE_ScaleProjectile(Actor shot, double m)
 	{
 		if(!shot) return;
@@ -4741,17 +5079,21 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(shot.bMISSILE) shot.SetDamage(max(1, int(shot.GetMissileDamage(0, 1) * m + frandom(0, 1))));
 	}
 
+	// The enemy projectile damage multiplier: hce_enemydamage x hce_nerf_projectiles (0.4 default) x the difficulty
+	// damage row.
 	static double HCE_DamageScale()
 	{
 		CVar cv = CVar.FindCVar("hce_enemydamage");
 		CVar nerf = CVar.FindCVar("hce_nerf_projectiles");
 		return (cv ? max(0., cv.GetFloat()) : 1.0) * (nerf ? max(0., nerf.GetFloat()) : 0.4) * HCE_Diff(HCE_D_DAMAGE);
 	}
+	// The pack's health multiplier: hce_nerf_health (0.6 default, 0.05 at least).
 	static double HCE_HealthScale()
 	{
 		CVar cv = CVar.FindCVar("hce_nerf_health");
 		return cv ? max(0.05, cv.GetFloat()) : 0.6;
 	}
+	// The pack's shield multiplier: hce_nerf_shields (0.5 default).
 	static double HCE_ShieldScale()
 	{
 		CVar cv = CVar.FindCVar("hce_nerf_shields");
@@ -4890,6 +5232,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		shot.angle = yaw; shot.pitch = -th;
 	}
 
+	// Per-tic gravity for a projectile class in a sector (level, sector and class gravity combined); 0.1 for a
+	// NOGRAVITY class.
 	static double HCE_GravityOf(class<Actor> c, Sector sec)
 	{
 		let d = GetDefaultByType(c);
@@ -4897,6 +5241,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return max(0.05, level.gravity * (sec ? sec.gravity : 1.0) * d.Gravity * 0.00125);
 	}
 
+	// Samples a lob's arc at 12 points over tt tics: false if it would come within 12 of a ceiling or hit a floor
+	// before the end. Used by HCE_SolveLob.
 	bool HCE_ArcClear(vector3 from, vector2 dir, double vh, double vz, double grav, double tt)
 	{
 		int steps = 12;
@@ -4916,6 +5262,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// returns the launch velocity; hce_lobClear says whether it clears the ceilings
 	// (no 'out vector3': UZDoom's JIT can't pass vectors by reference)
 	bool hce_lobClear;
+	// Finds a throw velocity from 'from' to 'to': tries 7 arcs from a slow lob up to 1.6 x maxV flat and returns the
+	// first that clears (hce_lobClear true); else the flattest, with hce_lobClear false.
 	vector3 HCE_SolveLob(vector3 from, vector3 to, double grav, double maxV)
 	{
 		vector3 vel;
@@ -4963,12 +5311,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		return gc;
 	}
 
+	// True when a grenade thrown now (from 80% height at hce_grenadeVel) would clear the ceiling on its way to the target.
 	bool HCE_GrenadeArcClear()
 	{
 		class<Actor> gc = HCE_GrenadeClass();
 		return HCE_LobPossible(gc, height * 0.8, max(10, hce_grenadeVel));
 	}
 
+	// Releases the grenade at the throw animation's release point: at hce_throwAt (a cover flush) or where the target
+	// will be in 20 tics, on an HCE_SolveLob arc; keeps the grenade if the arc no longer clears. Damage via HCE_ScaleShot.
 	void HCE_ThrowGrenadeNow()
 	{
 		bool atPoint = hce_throwAtPoint;
@@ -5002,6 +5353,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return hce_meleeRange > 0 && target && d < hce_meleeRange + radius + target.radius + slack;
 	}
 
+	// Starts a melee swing once the melee cooldown is up: exploders detonate instead; else faces the target, plays the
+	// locked melee animation, lands the hit 40% of the way through (HCE_MeleeHitNow) and sets the cooldown from the
+	// difficulty's melee delay. True: started.
 	virtual bool HCE_TryMelee()
 	{
 		if(hce_meleeTics > level.maptime) return false;
@@ -5016,6 +5370,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	int hce_pendingMelee;
 
+	// The swing lands: hce_meleeDamage +-10% (x the difficulty damage for enemies) and a shove, provided the target is
+	// still within reach, at a similar height and within 70 degrees of facing.
 	void HCE_MeleeHitNow()
 	{
 		if(!target || !HCE_InMeleeRange(Distance2D(target), 14)) return;
@@ -5027,6 +5383,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
 	}
 
+	// Starts a leap at a target hce_leapMin-Max away (hce_leapChance x 0.08 a call, not on melee cooldown): faces it and
+	// plays the leap start; HCE_LeapTick launches after it. True: started.
 	virtual bool HCE_TryLeap(double dist)
 	{
 		if(!hce_canSee || hce_leapMax <= 0) return false;
@@ -5156,6 +5514,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Actor  hce_nadeHeard;
 	Array<Actor> hce_nadeSeen;
 
+	// True for a HaloGrenade_Proj, or any other missile whose class name contains 'grenade' (other mods'). Never for
+	// Inventory or NOINTERACTION actors.
 	static bool HCE_IsGrenade(Actor g)
 	{
 		if(!g || g.bNOINTERACTION || g is "Inventory") return false;
@@ -5166,6 +5526,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		return cn.IndexOf("grenade") >= 0;                    // other mods' grenades
 	}
 
+	// Every 4 tics (hce_grenadedodge on): looks through the missile tracker for a live grenade within 320 whose landing
+	// spot (8 tics on) or position is within 200. The chance to notice rises with how centred it is in the vision cone,
+	// a heard warning makes it 0.5 at least, closeness adds up to half again. The first noticed goes to HCE_DodgeGrenade.
+	// To change the danger radius, edit 'danger'.
 	bool HCE_GrenadeCheck()
 	{
 		if(health <= 0 || level.maptime < hce_nadeCheckTics || hce_nadeRunTics > 0) return false;
@@ -5233,6 +5597,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	int hce_nadeDodgeUntil;               // a dodge's cooldown: one every 3 seconds
+	// Reacts to a spotted grenade: shouts 'EnemyGrenade' (squadmates within 480 hear it), then unless berserk (70%
+	// ignore) or within 3 s of the last dodge, picks the clearest heading away and dives (forward, or sideways angled
+	// away) with a boosted dive and a 14-tic sprint after; without dive animations, a 38-tic sprint. True: dodging.
 	bool HCE_DodgeGrenade(Actor g, vector3 at)
 	{
 		HCE_Say('EnemyGrenade', 1.0, 35 * 2, true);
@@ -5277,6 +5644,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// One tic of the post-dodge sprint: runs at 1.25x run speed along the clearest heading near hce_nadeRunAngle, facing
+	// the target, with the move animation.
 	void HCE_NadeRunTick()
 	{
 		hce_nadeRunTics--;
@@ -5292,6 +5661,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_Feed() {}
 
 	virtual Sound HCE_PopSound() { return "HCE/FloodPop"; }   // the Flood's own: the carrier's boom, the infection form's squelch
+	// Blows this actor up (carriers, kamikaze Grunts), once: the pop sound, A_Explode for max(10, hce_meleeDamage) over
+	// radius x 3 + 32, a spray of particles, HCE_OnDetonate, then a forced self-kill if still alive.
 	void HCE_Detonate()
 	{
 		if(health <= 0 && hce_detonated) return;
@@ -5376,32 +5747,40 @@ class HaloDoom_EnemyBase : Actor abstract
 		return t != "Drinol" && t != "BlindWolf" && t != "ThornBeast" && t != "Engineer";
 	}
 
+	// True when the inflictor's class name, or the player's ready weapon's, contains a precision-weapon key (magnum,
+	// sniper, carbine, DMR, beam rifle...), the plasma pistol excluded. To add one, edit P[].
 	static bool HCE_IsPrecision(Actor inflictor, Actor source)
 	{
 		String n = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
 		if(source && source.player && source.player.ReadyWeapon) n = n .. " " .. String.Format("%s", source.player.ReadyWeapon.GetClassName());
 		n = n.MakeLower();
-		n.Replace("plasmapistol", ""); n.Replace("plasma_pistol", ""); n.Replace("plasmapistol", "");   // not a precision weapon
+		n.Replace("plasmapistol", ""); n.Replace("plasma_pistol", "");   // not a precision weapon
 		static const String P[] = { "magnum", "sidekick", "pistol", "sniper", "carbine", "battle", "dmr", "beamrifle", "binary", "needlerifle", "_br" };
 		for(int i = 0; i < P.Size(); i++) if(n.IndexOf(P[i]) >= 0) return true;
 		return false;
 	}
 
+	// Per tic: a Jackal's arm shield regains a 70th of its maximum a tic once the 4 s delay after a hit has passed.
 	void HCE_UpdateFrontShield()
 	{
 		if(hce_frontShieldRegen > 0) { hce_frontShieldRegen--; return; }
 		hce_frontShieldHP = min(hce_frontShieldMax, hce_frontShieldHP + hce_frontShieldMax / 70.0);
 	}
 
+	// After a hit: wakes a sleeper, notes the direction (hce_dieDir), a shot from an unseen enemy behind calls for cover,
+	// player hits on a Marine go to HCE_FriendlyFire. A shield-only hit turns on the shooter, may say a pain line and may
+	// soft-ping; a wound sprays blood, checks the arm, tracks recent damage, turns on the shooter, says a pain line by
+	// severity and plays a hard ping (25% health at once, a blast, a hard melee) or has a chance of a soft one.
 	virtual void HCE_OnDamaged(Actor inflictor, Actor source, int dealt, Name mod)
 	{
 		if(hce_sleeping && health > 0) HCE_Wake(true);
 		Actor from = inflictor ? inflictor : source;
 		if(from && from != self) hce_dieDir = (cos(AngleTo(from)), sin(AngleTo(from)));   // shield hits too: the stun faces it
-		// the player shooting a squad Marine (shield hits count too)
+		// a squad Marine hit from behind by an enemy: he calls it and a squadmate turns to cover him (HCE_CoverMyBack)
 		if(health > 0 && source && source != target && !source.player && HCE_InSquad() && HCE_IsEnemy(source)
 			&& abs(DeltaAngle(angle, AngleTo(source))) > 100 && level.maptime >= hce_behindNext)
 			HCE_CoverMyBack(source);
+		// the player shooting a squad Marine (shield hits count too): friendly fire, scolded or, kept up, betrayal
 		bool ff = health > 0 && source && source.player && (HCE_InSquad() || hce_betrayed);
 		if(ff) HCE_FriendlyFire(source, max(0, dealt));
 		if(dealt <= 0)
@@ -5486,6 +5865,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('PainHeavy', 0.8, 35, true);
 	}
 
+	// Picks an animation kind by where the last hit came from (hce_dieDir) relative to facing: front within 45 degrees,
+	// back beyond 135, else left or right.
 	int HCE_DirKind(int front, int back, int left, int right)
 	{
 		double from = atan2(hce_dieDir.y, hce_dieDir.x);
@@ -5512,6 +5893,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// fire burns, it doesn't bleed
 	bool hce_burnHit;
 	Actor hce_radarBlip;
+	// True for the burning damage types (Fire, Burn, Flame, Flames, Napalm): fire chars, it doesn't bleed.
 	static bool HCE_IsBurn(Name mod)
 	{
 		return mod == 'Fire' || mod == 'Burn' || mod == 'Flame' || mod == 'Flames' || mod == 'Napalm';
@@ -5527,6 +5909,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(b) b.target = who;
 	}
 
+	// On death: an ice-block kill shatters (HCE_IceShatter); otherwise an overkill is clamped to GibHealth and sprays 14
+	// blood spurts, a hard kill 6, nothing for a plain kill or a NOBLOOD body.
 	void HCE_Gore()
 	{
 		if(hce_lastMod == 'IceBlock') { HCE_IceShatter(); return; }
@@ -5538,6 +5922,8 @@ class HaloDoom_EnemyBase : Actor abstract
 				frandom(-3, 3), frandom(-3, 3), frandom(1, 5), 0, SXF_USEBLOODCOLOR | SXF_NOCHECKPOSITION);
 	}
 
+	// A Cryo Cannon kill: marks the body gibbed (no revival), freezes it in place and bursts it into blood and meat
+	// (HCE_GibBurst 40, 24).
 	void HCE_IceShatter()
 	{
 		hce_gibbed = true;
@@ -5549,12 +5935,16 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the unit sounds (HCE_UnitSounds): the hum on its own channel, looped, quietish, heard nearby
 	const HCE_CHAN_ENGINE = 13;
 	int hce_unitHitTic;
+	// Starts or stops the unit's looped engine hum on its own channel (HCE_CHAN_ENGINE); nothing without hce_unitEngine.
+	// To change the hum's volume or attenuation, edit the A_StartSound call (0.5 volume, 1.6 attenuation).
 	void HCE_UnitEngineSound(bool on)
 	{
 		if(hce_unitEngine.Length() == 0) return;
 		if(on) A_StartSound(hce_unitEngine, HCE_CHAN_ENGINE, CHANF_LOOPING, 0.5, 1.6);
 		else A_StopSound(HCE_CHAN_ENGINE);
 	}
+	// Plays the unit's hit clank (hce_unitHit), rate limited to one every 12 tics so a burst doesn't stack them.
+	// To change the spacing, edit the 'level.maptime + 12'.
 	void HCE_UnitHitSound()
 	{
 		if(hce_unitHit.Length() == 0 || level.maptime < hce_unitHitTic) return;
@@ -5562,6 +5952,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_StartSound(hce_unitHit, CHAN_AUTO, CHANF_OVERLAP, 0.7);
 	}
 
+	// The death: stops sounds, climbs and the squad links, bleeds / gibs / dismembers the body by what killed it, picks the
+	// death animation (hard, airborne, falling forward out of a kamikaze run, or the idle held and toppled), drops the loot,
+	// runs A_BossDeath and the explode / resurrect hooks. Resurrect chance and delay: the max(0.25, hce_feignChance) line.
 	virtual void HCE_Die()
 	{
 		hce_diedAt = level.maptime;
@@ -5661,6 +6054,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_forceLimb;                     // a limb the killing blow has already claimed (0 = none, else limb + 1)
 	int hce_brutality, hce_brutalityFinal; // how brutal the death was (squad morale, HCE_LeaderDied)
 
+	// Classifies the killing weapon as HCE_WK_NONE / DISMEMBER / GIB / GRENADE / LIMBS by the projectile's class name,
+	// then the player's weapon in hand, then the enemies' own projectiles (the comment block above has the full list).
+	// To add a weapon, put its lower-case class name in the GIBI / GIBW / RIFW / DISW / RIFI / DISI tables.
 	static int HCE_WeaponKind(Actor inflictor, Actor source, Name mod, int dmg)
 	{
 		if(mod == 'Fire' || mod == 'Burn' || mod == 'Flame' || mod == 'Drowning' || mod == 'Falling' || mod == 'Crush' || mod == 'Bleed') return HCE_WK_NONE;
@@ -5703,6 +6099,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_WK_NONE;
 	}
 
+	// Records what a hit may do (hce_killKind) and where it landed relative to the body (hce_hitRel): a nearby projectile's
+	// own position, else a point on the body's edge facing the attacker at his shoulder height. Picks hce_struckLimb now,
+	// before the hit can turn the body.
 	void HCE_NoteHit(Actor inflictor, Actor source, int dmg, Name mod)
 	{
 		hce_killKind = HCE_WeaponKind(inflictor, source, mod, dmg);
@@ -5721,12 +6120,14 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	int hce_struckLimb;
 
+	// True when dismemberment is on (hce_dismember CVar, on when the CVar is missing).
 	static bool HCE_GoreOn()
 	{
 		CVar cv = CVar.FindCVar("hce_dismember");
 		return !cv || cv.GetBool();
 	}
 
+	// True while the enemy's energy shield still has charge (its ShieldProcessor item).
 	bool HCE_ShieldUp()
 	{
 		let sh = ShieldProcessor(FindInventory("ShieldProcessor", true));
@@ -5736,6 +6137,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// limb geometry (packs: gore_kit.py's limb centres): model space in map units, x forward, y left, z up
 	virtual vector3 HCE_LimbOffset(int limb) { return (0, 0, -1000); }
 	virtual int HCE_GunLimb() { return -1; }
+	// A limb's bind-pose centre (HCE_LimbOffset) rotated into map space by the actor's angle; returned relative to pos.
 	vector3 HCE_LimbRel(int limb)
 	{
 		vector3 o = HCE_LimbOffset(limb);
@@ -5764,6 +6166,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		return -1;
 	}
 
+	// Takes limbs off a fresh corpse by hce_killKind: a frag takes the nearest limb to the blast (two half the time, or
+	// always within 96 units); a dismembering kill takes the head on a headshot, else the struck limb 85% of the time;
+	// rifles never the head. A limb already claimed by hce_forceLimb comes off instead. To change the odds, edit the
+	// frandom[HCEGore] thresholds (0.5, 0.85).
 	void HCE_Dismember()
 	{
 		if(!HCE_GoreOn() || bNOBLOOD || hce_gibbed || hce_lastMod == 'IceBlock') return;
@@ -5801,6 +6207,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// True when this kill may tear the body apart: a gibbing weapon, blood on, gore on, not already gibbed or frozen,
+	// and not a Sentinel or a self-exploding enemy.
 	bool HCE_GibAllowed()
 	{
 		return hce_killKind == HCE_WK_GIB && !bNOBLOOD && !hce_gibbed && hce_lastMod != 'IceBlock' && HCE_GoreOn()
@@ -5826,17 +6234,22 @@ class HaloDoom_EnemyBase : Actor abstract
 		CVar cv = CVar.FindCVar("hce_gorescale");
 		return cv ? clamp(cv.GetFloat(), 0., 1.) : 1.;
 	}
+	// One roll against the gore budget (hce_gorescale): true to keep this blood spurt / gib / puff.
 	static bool HCE_GoreRoll()
 	{
 		double g = HCE_GoreScale();
 		return g >= 1 || frandom[HCEGoreBudget](0, 1) < g;
 	}
+	// Scales a gore count by the gore budget, rounding the fraction up at random so small counts still average out right.
 	static int HCE_GoreCount(int n)
 	{
 		double c = n * HCE_GoreScale();
 		return int(c) + (frandom[HCEGoreBudget](0, 1) < c - int(c) ? 1 : 0);
 	}
 
+	// The body vanishes in a burst: health clamped under GibHealth (so NashGore adds its own splats), the actor hidden,
+	// 'blood' spurts and 'gibs' NashGoreGibs chunks (if that class is loaded) thrown out tagged with this actor as target.
+	// To change the spread or speed, edit the frandom ranges in the two spawn loops.
 	void HCE_GibBurst(int blood, int gibs)
 	{
 		gibs = HCE_GoreCount(gibs);
@@ -5868,6 +6281,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_BloodModel(int stage) {}         // packs: attach stage 1-3
 	virtual void HCE_BloodHideClass() {}              // packs: surfaces this variant doesn't show (rank armour...)
 	virtual void HCE_BloodHideLimb(int limb) {}       // packs: a severed limb's overlay surfaces
+	// Adds a hit's damage to the blood-overlay total (as a fraction of SpawnHealth) and advances the stage: 8% / 35% / 70%.
+	// A corpse always shows at least stage 1. To change the thresholds, edit the 0.08 / 0.35 / 0.7 line.
 	void HCE_BloodHit(int dealt)
 	{
 		if(dealt <= 0 || bNOBLOOD || default.bNOBLOOD || hce_gibbed) return;
@@ -5885,6 +6300,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return cv && cv.GetBool();
 	}
 
+	// Puts the blood-splatter overlay on at stage 'st' if that's higher than the current one and hce_bodyblood is on; hides
+	// the overlay's surfaces for severed limbs and the variant's missing armour, then restarts the animation.
 	void HCE_BloodShow(int st)
 	{
 		if(st <= hce_bloodStage || !HCE_BodyBloodOn()) return;
@@ -5900,6 +6317,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// flames for 1.5-2.7 s (the flaming run / flaming idle where its model has them, else the panic run), then dies.
 	bool hce_burnDying;
 	int hce_burnTics;
+	// True when the enemy carries a fire effect item (HDE's DamageFX_Fire or the packs' HCES_BurnTimer).
+	// To recognise another mod's fire, add its inventory class to the B[] table.
 	bool HCE_Burning()
 	{
 		static const String B[] = { "DamageFX_Fire", "HCES_BurnTimer" };
@@ -5911,6 +6330,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		return false;
 	}
+	// Intercepts a fire hit that would kill: if it's really burning (fire item, or a flame / burn projectile), it returns 0
+	// and starts the flaming panic (hce_burnDying, 52-95 tics) instead; otherwise returns dmg unchanged.
+	// To change how long it burns, edit random[HCEGore](52, 95).
 	int HCE_FireDeathCheck(Actor inflictor, int dmg, Name mod, int flags)
 	{
 		if(hce_burnDying || health <= 0 || dmg < health || (flags & DMG_FORCED) || bHCE_Explodes || bNOBLOOD && default.bNOBLOOD) return dmg;
@@ -5926,6 +6348,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('OnFire', 1.0, 0, true);
 		return 0;                                             // (HDE's fire adds 10% to hits: none can get through)
 	}
+	// One tic of the flaming panic: counts hce_burnTics down and kills with forced Fire damage at 0; meanwhile veers
+	// every 18 tics, screams every 30, runs (flame run / flee / forward) or flails in place, and spawns flame particles.
 	void HCE_BurnPanicTick()
 	{
 		if(--hce_burnTics <= 0)
@@ -5962,6 +6386,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// half the time. Grunts and Jackals survive it: a hard ping, the gun dropped, and they run in terror, bleeding
 	// from the stump, until they bleed out (5-9 s). Anything else dies on the spot.
 	int hce_bleedOut;
+	// After a dismembering hit while alive: Flood go to HCE_FloodLimbCheck, then the last-stand check; otherwise a hit on
+	// the gun arm for 20%+ of SpawnHealth takes it half the time. Grunts and Jackals lose the gun and flee bleeding out
+	// (5-9 s); anything else dies on the spot with that arm claimed. To change the odds, edit the 0.2 and 0.5.
 	void HCE_ArmCheck(int dealt)
 	{
 		if(health <= 0 || dealt <= 0 || (hce_killKind != HCE_WK_DISMEMBER && hce_killKind != HCE_WK_LIMBS) || hce_bleedOut > 0 || hce_burnDying || !HCE_GoreOn() || HCE_ShieldUp() || default.bNOBLOOD) return;
@@ -6020,6 +6447,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// jump pack. A one-handed Brute instead fights on as normal without that hand (HCE_LoseOffArm).
 	bool hce_lastStand;
 	bool hce_noFlinch;                    // never flinches when hit (the standalone packs' Ghost skull)
+	// True when the body holds its gun in one hand: an idle animation named '...pistol...', or a Brute with one of the
+	// one-handed Covenant guns in the one[] table.
 	virtual bool HCE_OneHanded()
 	{
 		String idle = HCE_AnimName(HCE_A_IDLE);
@@ -6041,6 +6470,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	// the kneeling pose of a body with no crouch of its own, for its last stand ('None': it crouches as usual)
 	virtual Name HCE_LastStandAnim() { return 'None'; }
+	// The off arm (the one not holding the gun) shot off: an Elite or Brute that's one-handed, 20%+ of SpawnHealth, half
+	// the time. Severs it and starts the last stand (Elite) or HCE_LoseOffArm (Brute). Returns true when it happened.
 	bool HCE_LastStandCheck(int gl, int dealt)
 	{
 		int off = gl == HCE_LIMB_RARM ? HCE_LIMB_LARM : gl == HCE_LIMB_LARM ? HCE_LIMB_RARM : -1;
@@ -6061,6 +6492,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// no grenade throws, no climbing or vaulting (hoists and vaults take both hands), no berserk charge on all fours,
 	// and it only picks up guns it can fire one-handed.
 	bool hce_offArmLost;
+	// A Brute goes on with one arm: no grenades, no berserk, no scavenging; a heavy ping and a pain line.
 	void HCE_LoseOffArm()
 	{
 		hce_offArmLost = true;
@@ -6071,11 +6503,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Say('PainHeavy', 1.0, 0, true);
 		if(HCE_HasAnim(HCE_A_HPING_F)) HCE_PlayLocked(HCE_A_HPING_F);
 	}
+	// True for the guns a one-armed body can still fire. To add one, extend the list here.
 	static bool HCE_OneHandedGun(Name w)
 	{
 		return w == 'Halo_PlasmaRifle' || w == 'Halo_PlasmaPistol' || w == 'Halo_Needler' || w == 'Halo_Spiker'
 			|| w == 'Halo_Magnum' || w == 'Halo_Sidekick' || w == 'Halo_SMG';
 	}
+	// Drops the enemy into its last stand: rooted where it is, crouched (if it has a crouch or HCE_LastStandAnim), no
+	// grenades, jetpack, berserk or jumps; it only turns and fires from there until killed.
 	void HCE_StartLastStand()
 	{
 		hce_lastStand = true;
@@ -6113,6 +6548,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// One tic of bleeding out after the gun arm is gone: the stump pumps, the counter runs down to a forced Bleed death,
+	// the enemy is kept in HCE_ACT_FLEE and panics. Returns true when it handled the movement itself (no target in mind),
+	// false to let the normal panic run away from its enemy do it.
 	bool HCE_BleedOutTick()
 	{
 		hce_stumpTics = max(hce_stumpTics, 35 * 4 - 2);      // the stump keeps pumping while it runs
@@ -6313,12 +6751,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		CVar cv = CVar.FindCVar("hce_presets");
 		return !cv || cv.GetBool();
 	}
+	// True when HDE's weapon preset lets this gun exist (or presets are off / no resolver). 'None' is always allowed.
 	static bool HCE_PresetAllows(Name w)
 	{
 		if(w == 'None' || w == '' || !HCE_PresetsOn()) return true;
 		let r = HCE_SharedResolver();
 		return !r || r.WeaponAllowed(w);
 	}
+	// The gun to drop for 'w': itself when the preset allows it, else the resolver's same-tier substitute.
 	static Name HCE_PresetDrop(Name w)
 	{
 		if(HCE_PresetAllows(w)) return w;
@@ -6337,6 +6777,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	Name hce_vWeapon;
 	bool hce_vPending;
 
+	// Called by the HCEVARS spawner before the first tic: stores the health / shield / speed / damage multipliers and weapon
+	// for HCE_ApplyVariant, and scales the model and collision box at once by 'sc'.
 	void HCE_SetVariant(double hp, double sh, double sp, double dmg, double sc, Name weap)
 	{
 		hce_vHealth = hp; hce_vShield = sh; hce_vSpeed = sp; hce_vDamage = dmg; hce_vWeapon = weap; hce_vPending = true;
@@ -6347,6 +6789,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// Applies the stored variant on the first tic: re-arms if the weapon is one it can carry, then multiplies StartHealth,
+	// shield max (and the current shield), run / walk / Speed and hce_damageMod. A value of 0 or 1 leaves that stat alone.
 	void HCE_ApplyVariant()
 	{
 		hce_vPending = false;
@@ -6395,6 +6839,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// How much it wants a weapon (HDE class names): a base score for the gun, plus its own bias for the gun's kind.
 	// Kinds: 0 close quarters, 1 mid range, 2 heavy / power weapons, 3 long range, 4 sidearms.
 	const HCE_WK_CLOSE = 0; const HCE_WK_MID = 1; const HCE_WK_HEAVY = 2; const HCE_WK_LONG = 3; const HCE_WK_SIDEARM = 4;
+	// Looks a weapon up in the scavenging tables: returns its kind (0 close, 1 mid, 2 heavy, 3 long, 4 sidearm) and writes
+	// its base desirability to 'base'; -1 and 0 for a gun not in the table.
+	// To add or retune a gun, edit the wn[] / score[] / kind[] tables together (same index).
 	static int HCE_WeaponKindOf(Name w, out int base)
 	{
 		static const Name wn[] = { 'Halo_FuelRod', 'Halo_Needler', 'Halo_PlasmaRifle', 'Halo_PlasmaPistol',
@@ -6436,6 +6883,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		return k == hce_weaponPref ? 15 : 0;
 	}
 
+	// How much this enemy wants a gun: its base score plus the enemy's own bias for the gun's kind (HCE_WeaponBias).
 	virtual int HCE_WeaponScore(Name w)
 	{
 		int base;
@@ -6522,6 +6970,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Picks a ground weapon up: tosses its own gun down where the new one lay (when hce_dropweapons allows), destroys
+	// the pickup and equips the new class.
 	void HCE_TakeWeapon(Actor o)
 	{
 		Name w = HCE_GroundWeaponClass(o);
@@ -6542,6 +6992,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	virtual void HCE_OwnGunBack() {}       // pack classes with a second gun of their own reset it (Johnson's Magnum, Stacker's SMG)
 
+	// Switches to a gun: its own class gun restores every firing field from the defaults (plus HCE_OwnGunBack), a loadout
+	// applies HCE_ApplyLoadout / HCE_LoadoutVisual; anything else is ignored. Then resets ammo, bursts and the animation.
 	void HCE_EquipGun(Name w)
 	{
 		HCE_StopFireLoop();
@@ -6577,6 +7029,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_ResumeAnim();
 	}
 
+	// At death (or losing the gun arm): tosses the gun (the preset's substitute if needed; the Covenant always leave theirs,
+	// others at HDE's half chance) and a grenade half the time if it has any. Nothing with hce_dropweapons off or after a
+	// Flood revive.
 	void HCE_DropLoot()
 	{
 		if(hce_resurrected) return;            // a revived Flood form already dropped its gun
@@ -6595,6 +7050,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 	}
 
+	// Spawns a dropped item at the feet with a little random velocity. 'always' puts it 22 units out to a clear side
+	// (the first of four directions with 32+ units of clearance) so HDE's drop culling doesn't delete it.
 	void HCE_Toss(class<Actor> c, bool always = false)
 	{
 		// spawned at the feet. HDE's pickup system treats a weapon that appears within its radius (10) of a
@@ -6638,6 +7095,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool   hce_kamiUsed;
 	Array<Actor> hce_kamiNades;
 
+	// Starts a Grunt's suicide run if it may: plasma grenades left, a visible target 160-1100 away, room to run, and no
+	// squadmate already on one within 1024. Spawns two held, unarmed plasma grenades in its hands and plays the alert jump.
+	// Returns true when it began. To change the range window, edit the 160 / 1100.
 	bool HCE_StartKamikaze()
 	{
 		if(hce_kamiUsed || health <= 0 || !target || hce_grenadeType != 2 || hce_grenades <= 0) return false;
@@ -6699,6 +7159,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return sum / 8 >= 320 && open >= 4;
 	}
 
+	// One tic of the run: sprints at the target at 1.35x run speed in the panic animation, screaming now and then, and
+	// detonates on contact or when the 6 s timer runs out; a dead target arms the grenades on their fuse instead.
 	void HCE_KamikazeTick()
 	{
 		if(!target || target.health <= 0) { HCE_KamikazeBoom(false); return; }
@@ -6745,6 +7207,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health > 0 && hce_action == HCE_ACT_KAMIKAZE) hce_action = HCE_ACT_FIGHT;
 	}
 
+	// Throws a blast-killed body: launch power from hce_blastDmg over mass (Hunters a quarter), under 25 just drops it
+	// (returns false). Sets vel away from the blast (more upward when it was right underneath) and faces the blast.
+	// To change how far bodies fly, edit the 140.0 / mass scale or the vxy / vz clamps.
 	bool HCE_Launch()
 	{
 		vector3 d = level.Vec3Diff(hce_blastFrom, pos);
@@ -6763,6 +7228,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// Ends the airborne death once the body has been down on the floor for 4+ tics: scrubs most of the slide, plays the
+	// landing-dead animation and the body-land sound.
 	void HCE_AirTick()
 	{
 		if(hce_airPhase != 1) return;
@@ -6780,6 +7247,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// blasts tear it apart, and grenades can take a limb (HCE_WeaponKind, as for the living).
 	bool hce_corpseInit;
 	double hce_corpseDmg;
+	// Makes a fresh corpse shootable but not solid, not auto-aimed and not a monster (HDE's reticle), and shrinks its box
+	// to 30% height (min 12).
 	void HCE_SetUpCorpse()
 	{
 		hce_corpseInit = true;
@@ -6790,6 +7259,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		bSOLID = false;
 		A_SetSize(-1, max(12, height * 0.3));
 	}
+	// Damage on a corpse: blood where it was hit (not for fire), advancing the body-blood stage; a gibbing weapon or a blast
+	// once blast damage passes 3x SpawnHealth tears it apart; else a dismembering hit (8+ dmg, 60%) or a frag (50%) takes a
+	// random remaining limb (rifles never the head). Returns 0 with gore off, else dmg.
 	int HCE_CorpseHit(Actor inflictor, Actor source, int dmg, Name mod, int flags)
 	{
 		if(hce_gibbed || bInvisible || dmg <= 0 || !HCE_GoreOn()) return 0;
@@ -6829,6 +7301,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	int hce_toppleTics, hce_toppleDir;
+	// The corpse's tic: first-time setup, the topple roll for bodies with no death animation (18 tics about the feet),
+	// the delayed gib hide, the airborne landing, pumping stumps and the resurrection countdown.
 	void HCE_CorpseTick()
 	{
 		if(!hce_corpseInit) HCE_SetUpCorpse();
@@ -6847,6 +7321,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_reviveTics > 0 && --hce_reviveTics == 0) HCE_Revive();
 	}
 
+	// Brings a resurrecting corpse back up (RaiseActor): restores the corpse flags, shows the gun again if its arm is still
+	// on, goes straight to fighting and plays the directional resurrect animation.
 	void HCE_Revive()
 	{
 		if(!bHCE_Resurrects || !bCORPSE) return;
@@ -6891,6 +7367,7 @@ class HCE_Lance : Thinker
 	int phase, phaseAt, startCount, feintAt, feintNext, shields;
 	double lastTD;
 
+	// The lance thinker for a leader, created on first use and cached in leader.hce_lance.
 	static HCE_Lance Get(HaloDoom_EnemyBase leader)
 	{
 		if(leader.hce_lance) return leader.hce_lance;
@@ -6915,6 +7392,9 @@ class HCE_Lance : Thinker
 		return i, max(n, 1);
 	}
 
+	// The lance's plan each tic: rebuilds the member list every 17 tics (squad members within 1024), puts members on the
+	// leader's target once a second, and steps PREP (3 s) -> ASSAULT -> FEINT / EXPLOIT by losses (40% down), time (16 s),
+	// and the enemy closing in. To retune the phase timings, edit the 35 * n constants in the switch.
 	override void Tick()
 	{
 		if(!leader || leader.health <= 0) { Destroy(); return; }
@@ -6936,7 +7416,7 @@ class HCE_Lance : Thinker
 		if(!target || target.health <= 0 || !members.Size())
 		{
 			if(phase != PH_NONE && (!target || t - leader.hce_lastSeen > 35 * 8)) phase = PH_NONE;
-			if(!target) return;
+			if(!target || target.health <= 0) return;          // (a dead target was massed fire on for up to 8 s)
 		}
 		if(phase == PH_NONE)
 		{
@@ -6995,6 +7475,7 @@ class HCE_Formation : Thinker
 	int drill, bounding, boundAt, flank, lastEngaged;
 	double maxStrength;
 
+	// The formation thinker for a leader (the player), found among the STAT_USER thinkers or made now.
 	static HCE_Formation Get(Actor leader)
 	{
 		let it = ThinkerIterator.Create("HCE_Formation", STAT_USER);
@@ -7006,6 +7487,9 @@ class HCE_Formation : Thinker
 		return f;
 	}
 
+	// Each tic: prunes the roster, runs the fight drill, smooths the leader's heading / velocity / ring heading, records
+	// his path every 16 units (160 points), and every 10 tics switches wedge <-> file by the room either side
+	// (file under 224 units, wedge again over 300).
 	override void Tick()
 	{
 		if(!leader) { Destroy(); return; }
@@ -7033,6 +7517,9 @@ class HCE_Formation : Thinker
 		}
 	}
 
+	// The squad's battle drill: shares the first man's target with everyone within 1536, reacts to contact for 2 s, then
+	// alternates which fire team rushes every 3-5 s; drops to break-contact (drill 2) when the squad is under 45% of its
+	// peak strength. Contact ends after 4 s unseen, strength resets after 15. Calls WatchRear every second.
 	void FightTick()
 	{
 		bool engaged = false;
@@ -7118,6 +7605,7 @@ class HCE_Formation : Thinker
 		}
 	}
 
+	// Distance to the nearest wall from the leader in direction 'ang', up to 192 units (192 when nothing is hit).
 	double Room(double ang)
 	{
 		FLineTraceData tr;
@@ -7151,6 +7639,9 @@ class HCE_Formation : Thinker
 		return abs(fz - leader.floorz) <= 32;
 	}
 
+	// A member's slot and facing: in file, k+1 gaps back along the leader's path; in the wedge, alternating left / right
+	// arms (4 a side) then down the middle, the last man facing rear; a big squad's overflow stands in arcs behind the
+	// wedge. A slot inside a wall falls back onto the leader's path. Spacing: INTERVAL, FILE_GAP, ARM above.
 	void Spot(HaloDoom_EnemyBase m, out vector2 spot, out double face)
 	{
 		int k = roster.Find(m);
@@ -7214,6 +7705,8 @@ class HCE_Shield : ShieldProcessor
 		RenderStyle "None";
 	}
 	bool hce_started;
+	// Per-tic shield display: no flare for the starting shield; fires OnShieldBreak when it drops to 0; flashes the shell
+	// model on hits, on recharge from empty, and glows faintly while recharging; sparks (blue, red under 25%) on each hit.
 	override void DisplayShields()
 	{
 		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
@@ -7250,6 +7743,8 @@ class HCE_Shield : ShieldProcessor
 		}
 		return dmg;
 	}
+	// The shield pops: tells the owner (HCE_OnShieldPop), shows the shell at full alpha, plays the break sound and throws
+	// HCE_ShieldShatter's shards if the core pack is loaded, else 30 sparks.
 	override void OnShieldBreak()
 	{
 		if(!Owner) return;
@@ -7281,6 +7776,9 @@ class HCE_ShieldImpact : Actor
 		+NOBLOCKMAP
 		RenderStyle "None";
 	}
+	// Spawns a shield-impact effect on 'target' in colour c: at 'at' when given, else at the projectile (if close) or on the
+	// target's surface facing the shooter at a random height. Its direction points outward, leaning back toward the shooter;
+	// 'power' scales the sparks and light.
 	static void Burst(Actor target, Actor inflictor, Actor source, color c, double power = 1.0, vector3 at = (0, 0, 0), bool haveAt = false)
 	{
 		if(!target) return;
@@ -7304,6 +7802,8 @@ class HCE_ShieldImpact : Actor
 		fx.angle = atan2(outward.y, outward.x);
 		fx.pitch = -atan2(outward.z, outward.xy.Length());
 	}
+	// On spawn: a point light of the impact colour, 10 + 8 * power sparks flung along its outward direction, plus a
+	// coloured core and a white-hot centre particle. The actor itself lasts 6 tics (Spawn state).
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -7412,6 +7912,7 @@ class HCE_MissileTracker : EventHandler
 
 	static HCE_MissileTracker Get() { return HCE_MissileTracker(EventHandler.Find("HCE_MissileTracker")); }
 
+	// Registers every missile that spawns so the AI's dodging can find them (projectiles aren't in the blockmap).
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		if(e.Thing && e.Thing.bMISSILE) missiles.Push(e.Thing);
@@ -7424,6 +7925,7 @@ class HCE_MissileTracker : EventHandler
 	vector3 lastPos[MAXPLAYERS];
 	bool havePos[MAXPLAYERS], breakNext[MAXPLAYERS];
 
+	// Adds a point to player pn's trail with the time and a 'broken' flag (after a teleport); the trail holds 1600 points.
 	void AddCrumb(int pn, vector3 p)
 	{
 		crX.Push(p.x); crY.Push(p.y); crZ.Push(p.z); crT.Push(level.maptime); crP.Push(pn); crB.Push(breakNext[pn]);
@@ -7431,6 +7933,7 @@ class HCE_MissileTracker : EventHandler
 		if(crX.Size() > 1600) { crX.Delete(0); crY.Delete(0); crZ.Delete(0); crT.Delete(0); crP.Delete(0); crB.Delete(0); }
 	}
 
+	// Index of the newest trail point left by player pn, or -1.
 	int LastCrumb(int pn)
 	{
 		for(int i = crX.Size() - 1; i >= 0; i--) if(crP[i] == pn) return i;
@@ -7441,6 +7944,7 @@ class HCE_MissileTracker : EventHandler
 	Array<Line> switches;
 	bool switchesDone;
 
+	// The nearest usable, unlocked switch line (within 2048) whose tag opens 'door'; the switch list is gathered once.
 	Line SwitchFor(Sector door, Actor who)
 	{
 		if(!switchesDone)
@@ -7474,6 +7978,8 @@ class HCE_MissileTracker : EventHandler
 	Array<Line> liftLines;
 	bool liftLinesDone;
 
+	// The nearest line (within 3072) that works 'lift': a tagged switch / walk-over line, or the lift's own untagged face.
+	// 'act' tells how to work it (SPAC_Use or SPAC_Cross). Returns null when there's none.
 	Line LiftSwitchFor(Sector lift, Actor who, out int act)
 	{
 		if(!liftLinesDone)
@@ -7509,6 +8015,7 @@ class HCE_MissileTracker : EventHandler
 	// ---- flashlights (HaloDoom Evolved's, through the pickup resolver; the standalone packs have none)
 	HCE_PickupResolver resolver;
 	bool resolverTried;
+	// True when player p's flashlight is on, through HDE's pickup resolver (made once); always false in the standalone packs.
 	bool FlashlightOn(Actor p)
 	{
 		if(!resolverTried)
@@ -7521,6 +8028,9 @@ class HCE_MissileTracker : EventHandler
 		return resolver && resolver.FlashlightOn(p);
 	}
 
+	// Per tic: watches each player for teleports (a jump over max(96, 3x speed + 48) breaks his trail and tells the AI),
+	// drops a trail crumb every 32 units on the ground, and runs the flashlight check (staggered, every 8 tics). Once a
+	// second it drops dead missiles from the list (grenades stay until they go off).
 	override void WorldTick()
 	{
 		for(int i = 0; i < MAXPLAYERS; i++)
@@ -7576,11 +8086,14 @@ class HCE_MissileTracker : EventHandler
 		Noise(t.pos, t.target);
 	}
 
+	// A barrel dying counts as an explosion noise: nearby idle enemies go to look (Noise).
 	override void WorldThingDied(WorldEvent e)
 	{
 		if(e.Thing && e.Thing is "ExplosiveBarrel") Noise(e.Thing.pos, e.Thing.target);
 	}
 
+	// An explosion at 'at': every idle, non-ambush enemy within 1.25x hce_hearing goes to investigate, unless the blast
+	// was its own side's (and not a player's).
 	void Noise(vector3 at, Actor src)
 	{
 		double r = HaloDoom_EnemyBase.HCE_CVarF('hce_hearing', 1024) * 1.25;
@@ -7640,17 +8153,21 @@ class HCE_LimbGib : Actor
 		return (yaw, pitch, roll);
 	}
 
+	// Kicks the gib's facing and spin at random: pitch and roll always, yaw too with randomAngle; 'spin' is the max
+	// angular velocity added per axis.
 	void RandomizeAngles(bool randomAngle = false, double spin = 3)
 	{
 		facingDir *= Quat.FromAngles(frandom[HCEGore](-180, 180) * randomAngle, frandom[HCEGore](-180, 180), frandom[HCEGore](-180, 180));
 		angVel += (frandom[HCEGore](-spin, spin) * randomAngle, frandom[HCEGore](-spin, spin), frandom[HCEGore](-spin, spin));
 	}
 
+	// Adds a random sideways nudge of up to 'spd' per axis to the gib's velocity (on bounces).
 	void RandomizeVelocity(double spd)
 	{
 		vel += (frandom[HCEGore](-1, 1) * spd, frandom[HCEGore](-1, 1) * spd, 0);
 	}
 
+	// Seeds the gib's quaternion facing from its spawn angles.
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -7658,6 +8175,7 @@ class HCE_LimbGib : Actor
 		rotDir = Quat.FromAngles(0, 0, 0);
 	}
 
+	// Sends the piece off at angle a / pitch p with a hard random spin (8 per axis, more than a casing's).
 	void HCE_Launch(double a, double p)
 	{
 		angle = a; pitch = p;
@@ -7680,6 +8198,9 @@ class HCE_LimbGib : Actor
 		return true;
 	}
 
+	// The gib's tic: on the first tic swaps in the dead enemy's MODELDEF with the limb model, gore cap and hidden shield
+	// surface, hiding every other model slot; then eases the drawn angles toward the facing. Resting: pinned flat on the
+	// floor at hce_rest and snapped level after 5 s. Flying: integrates the decaying spin and trails blood for 50 tics.
 	override void Tick()
 	{
 		if(!hce_set && hce_def != 'None')
@@ -7781,6 +8302,7 @@ class HCE_MuzzleLight : Actor
 {
 	Color col;
 	Default { +NOINTERACTION; +NOBLOCKMAP; RenderStyle "None"; }
+	// A three-tic point light in the flash colour, shrinking 72 -> 32 units, then gone.
 	override void Tick()
 	{
 		if(GetAge() >= 3) { Destroy(); return; }
@@ -7802,6 +8324,8 @@ class HCE_EnemyLaser : Actor
 	double fadeStep, widen, baseAlpha;
 	int holdTics;
 
+	// Spawns a beam actor at 'from' with its colour, width, per-tic fade, widen factor and alpha, hidden until aimed.
+	// Returns null if it couldn't spawn.
 	static HCE_EnemyLaser Make(vector3 from, color c, double width, double fade, double widen = 1.0, double alpha = 2.0)
 	{
 		let l = HCE_EnemyLaser(Spawn("HCE_EnemyLaser", from, ALLOW_REPLACE));
@@ -7816,12 +8340,15 @@ class HCE_EnemyLaser : Actor
 		return l;
 	}
 
+	// A one-shot beam from 'from' to 'to' that starts fading at once (a trail or a muzzle flash line).
 	static void Flash(vector3 from, vector3 to, color c, double width, double fade)
 	{
 		let l = Make(from, c, width, fade);
 		if(l) l.Aim(from, to);
 	}
 
+	// Stretches the beam from 'from' to 'to': origin, yaw, pitch (+90: the model points along its y) and y scale to the
+	// length. Shorter than 1 unit, it's hidden.
 	void Aim(vector3 from, vector3 to)
 	{
 		SetOrigin(from, true);
@@ -7834,6 +8361,7 @@ class HCE_EnemyLaser : Actor
 		scale.y = len * level.pixelstretch;
 	}
 
+	// A held beam: re-aims it, resets its alpha and keeps it from fading for 'tics' more tics (the gun calls this each tic).
 	void Hold(vector3 from, vector3 to, int tics)
 	{
 		Aim(from, to);
@@ -7841,6 +8369,8 @@ class HCE_EnemyLaser : Actor
 		alpha = baseAlpha;
 	}
 
+	// Each tic: holds while holdTics runs, otherwise fades by fadeStep and widens by 'widen', destroying itself under
+	// alpha 0.05. Note: super.Tick() is never called (the actor has no states or physics to run).
 	override void Tick()
 	{
 		if(isFrozen()) return;
@@ -7893,6 +8423,7 @@ class HCE_Callouts : Thinker
 	Array<double> px, py, pz;
 	Array<bool> force, done;
 
+	// The single callouts thinker, made on first use.
 	static HCE_Callouts Get()
 	{
 		let it = ThinkerIterator.Create("HCE_Callouts", STAT_DEFAULT);
@@ -7901,6 +8432,9 @@ class HCE_Callouts : Thinker
 		return c;
 	}
 
+	// An enemy wants to make callout 'what': joins the pending one for its team within RANGE (768) of the spot, replacing
+	// the chosen speaker with 1/n odds (reservoir sampling); after it's been said, nothing. A new spot opens a new entry.
+	// To change the grouping radius or quiet time, edit RANGE / QUIET.
 	static void Claim(HaloDoom_EnemyBase e, Name what, int cooldown, bool frc)
 	{
 		let c = Get();
@@ -7917,6 +8451,7 @@ class HCE_Callouts : Thinker
 		c.ev.Push(what); c.px.Push(e.pos.x); c.py.Push(e.pos.y); c.pz.Push(e.pos.z); c.force.Push(frc); c.done.Push(false);
 	}
 
+	// Next tic after a claim, the chosen enemy says it (HCE_SayNow); entries are dropped QUIET (4 s) after they were made.
 	override void Tick()
 	{
 		for(int i = who.Size() - 1; i >= 0; i--)

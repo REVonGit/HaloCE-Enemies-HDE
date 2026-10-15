@@ -1,5 +1,7 @@
 """Digsite (github.com/digsite/h1) characters -> IQM + PNG skins + JSON, same layout as extract_chars.py.
 
+    HCE_DIGSITE=/path/to/h1 python3 extract_digsite.py [PackId ...]      # -> $HCE_OUT/models/<PackId>/, out/weapons/particle_beam_dig/
+
 Source assets are JMS models and JMA-family animations (not compiled tags), so root motion,
 overlays and rename.txt aliases are processed here the way Halo's tool.exe would."""
 import os as _os, sys as _sys
@@ -14,6 +16,9 @@ from iqm import write_iqm
 from hce_paths import DIGSITE, OUT
 DIG = DIGSITE + '/data/digsite'
 
+# pack id -> dict(jms=model file, anims=animation folder, tex={JMS material: bitmap stem}, multi={material: multipurpose
+# stem}, weapons=(hand marker, [weapon ids from out/weapons])), all paths under DIG. To add a Digsite character, add
+# an entry here; every material of its JMS needs a tex entry or build_mesh raises KeyError.
 CHARS = {
     'Drinol': dict(jms='characters/drinol/00_mac/models/base superhigh.JMS',
                    anims='characters/drinol/00_mac/animations',
@@ -32,6 +37,7 @@ CHARS = {
 }
 
 def load_tex(base):
+    """the Digsite bitmap at DIG/<base> with whichever extension it has (.tif, .tiff, .TIF, .png) as a PIL image"""
     for ext in ('.tif', '.tiff', '.TIF', '.png'):
         p = f'{DIG}/{base}{ext}'
         if os.path.exists(p):
@@ -39,6 +45,7 @@ def load_tex(base):
     raise FileNotFoundError(base)
 
 def yaw_q(a):
+    """quaternion (x, y, z, w) for a rotation of a radians about +z"""
     return np.array([0, 0, np.sin(a / 2), np.cos(a / 2)])
 
 def yaw_of(q):
@@ -47,7 +54,10 @@ def yaw_of(q):
     return np.arctan2(f[1], f[0])
 
 def process_anim(a, bind_local):
-    """returns (frames, dx[F,4]) with root motion removed like tool.exe does per file type"""
+    """returns (frames, dx[F,4]) with root motion removed like tool.exe does per file type
+
+    JMA keeps the root's x/y in place, JMZ its z too, JMT also its yaw; the per-frame deltas go into dx
+    (columns: dx, dy, dz, dyaw) for the json's speed and movement. JMM / JMO are returned unchanged."""
     F = a.nframes
     fr = [list(f) for f in a.frames]
     dx = np.zeros((F, 4))
@@ -83,6 +93,8 @@ def bake_overlay(base_frame, ov):
     return out
 
 def read_anims(adir, names):
+    """every JM? file in adir -> ({name: JMA}, {alias: source name} from rename.txt); animations are reordered to
+    the model's node names and ones with another node count are skipped"""
     files = sorted(glob.glob(f'{adir}/*.JM?'))
     raw = {}
     for p in files:
@@ -105,6 +117,8 @@ def read_anims(adir, names):
     return raw, aliases
 
 def build_mesh(j, pid, tex, multi=None, flip_v=True):
+    """a JMS -> (meshes, {bitmap stem: material name}): one mesh per JMS material, its texture (and multipurpose map)
+    written as out/models/<pid>/<pid>_<n>.png, vertices skinned to the JMS's two nodes, V flipped for the IQM"""
     os.makedirs(f'{OUT}/models/{pid}', exist_ok=True)
     meshes = []; mats = {}
     w0 = 1.0 - np.clip(j.w1, 0, 1)
@@ -167,6 +181,8 @@ def attach(j, pid, meshes, marker, wids, fix=lambda v: v):
     return added
 
 def extract(pid, cfg):
+    """one CHARS entry -> out/models/<pid>/<pid>.iqm, textures and <pid>.json (extract_chars.py's layout);
+    returns (meta, JMS, joints, meshes, animation list)"""
     j = JMS(f'{DIG}/{cfg["jms"]}')
     meshes, mats = build_mesh(j, pid, cfg['tex'], cfg.get('multi'))
     mesh_weapon = [None] * len(meshes)

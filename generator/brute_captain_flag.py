@@ -25,17 +25,22 @@ MARKER = 'flag attach'
 
 
 def qmul(a, b):
+    """a * b for (x, y, z, w) quaternions (b's rotation, then a's)"""
     x1, y1, z1, w1 = a; x2, y2, z2, w2 = b
     return np.array([w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2, w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
                      w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2, w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2])
 
 
 def qrot(q, v):
+    """vector v rotated by the (x, y, z, w) quaternion q"""
     u = np.array(q[:3]); s = q[3]
     return 2 * np.dot(u, v) * u + (s * s - np.dot(u, u)) * np.asarray(v) + 2 * s * np.cross(u, v)
 
 
 def main():
+    """reads the cloth's grid and triangles, places it on the highest 'flag attach' marker of the Brute's bind pose,
+    writes Brute_captain_flag.iqm (one surface on that marker's bone, no animations) and paints captain_flag.png
+    from the mask and offset bitmaps in TINT"""
     import extract_h2_brute as eb
     from h2map import H2Map
     from extract_h2_brute import OUT

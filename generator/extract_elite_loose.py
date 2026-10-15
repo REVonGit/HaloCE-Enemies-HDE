@@ -24,7 +24,8 @@ CE_ORDER = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40'
 CE_PREFIX = 'sound\\dialog\\elite\\'
 H2_PREFIX = 'sound\\dialog\\combat\\elite_loose\\'
 
-# pack category (build_voices.CAT key) -> CE tags (all their lines), [(Halo 2 tag, how many lines)]
+# pack category (build_voices.CAT key) -> CE tags (all their lines), [(Halo 2 tag, how many lines)]. To give a
+# category more lines, raise a count or add a Halo 2 leaf; a Halo 2 line is used once across every category.
 PLAN = {
     'Alert':         (['groupcomm\\sightednewenemy', 'groupcomm\\oldenemysighted', 'groupcomm\\sightedenemyrecentcombat'],
                       [('seefoe', 3), ('seefoe_srprs', 2), ('foundfoe', 2)]),
@@ -71,12 +72,14 @@ PLAN = {
 
 
 def ogg_from_wav(wav, out, extra_af=None):
+    """ffmpeg: any audio file -> Vorbis q5 at out, through an optional -af filter chain (reverse, fade)"""
     cmd = ['ffmpeg', '-y', '-loglevel', 'error', '-i', wav]
     if extra_af: cmd += ['-af', extra_af]
     subprocess.run(cmd + ['-c:a', 'libvorbis', '-q:a', '5', out], check=True)
 
 
 def duration(path):
+    """an audio file's length in seconds by ffprobe (0 when it can't be read)"""
     r = subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path],
                        capture_output=True, text=True).stdout.strip()
     return float(r or 0)
@@ -135,6 +138,8 @@ def h2_lines(tmp):
 
 
 def main():
+    """voice_extra/Elite_Loose rebuilt by PLAN: '<Category> N.ogg' numbered across CE's lines (duplicates by
+    hash dropped) then Halo 2's (reversed unless a SCREAMS category, faded out), plus REPLACE and sources.json"""
     od = os.path.join(OUT, 'Elite_Loose')
     os.makedirs(od, exist_ok=True)
     for f in glob.glob(os.path.join(od, '*.ogg')): os.remove(f)

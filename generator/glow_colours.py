@@ -20,10 +20,14 @@ try:
 except Exception:
     OUT = os.path.join(HERE, 'out'); MAPS = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40']
 CE_MAPS = os.environ.get('HCE_MAPS', os.path.join(HERE, 'maps'))
+# the characters whose materials are matched (add a character here to give its lights their shader colour; it must
+# have _multi.png maps under out/models/<Char>/ and its shaders must be in one of MAPS)
 COVENANT = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot', 'Grunt', 'GruntSpecOps', 'Jackal', 'JackalMajor', 'Hunter')
 
 
 def main():
+    """match every glowing COVENANT material to its Halo CE shader by multipurpose map and write glow_colours.json:
+    material -> {shader, source (self-illumination colour source), lower, upper (its animation colour bounds)}"""
     from halomap import HMap
     from bitmaps import bitmap_image
     want = {}

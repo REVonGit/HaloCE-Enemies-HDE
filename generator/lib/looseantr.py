@@ -1,12 +1,20 @@
 """Read a loose Halo CE .model_animations (antr) tag file: nodes + animations with frame data.
 
 Tag files store each struct's children after the struct array in field order (block elements, then each
-element's own children; tag_data blobs; tag reference paths), all big-endian."""
+element's own children; tag_data blobs; tag reference paths), all big-endian.
+
+    A = Antr('elite.model_animations'); names = A.nodes()
+    for a in A.animations(): frames, dx = A.decode(a, len(names))
+
+Only uncompressed frame data is decoded (every loose tag the pack reads is); a compressed animation would need
+halomodel.read_compressed adapted to big-endian offsets. This is the older, antr-only sibling of loosewalk.py."""
 import struct, re
 import numpy as np
 from tags import LAYOUT
 from halomodel import hq, qnorm
 
+# (parent struct, tag_block field) -> element struct, since the decomp headers don't name a block's element type.
+# Walking stops with ValueError at any block not listed here, so add a pair when a tag has data in a new block.
 CHILD = {
     ('animation_graph', 'object_overlays'): 'animation_graph_object_overlay',
     ('animation_graph', 'unit_seats'): 'animation_graph_unit_seat',
@@ -30,6 +38,7 @@ CHILD = {
 }
 
 def _fields(st):
+    """(struct size, [(field name, offset, bare type name)] in offset order) for decomp struct st."""
     L = LAYOUT.layout(st)
     out = []
     for fn, (o, t, n) in sorted(L['fields'].items(), key=lambda x: x[1][0]):
@@ -37,7 +46,11 @@ def _fields(st):
     return L['size'], out
 
 class Antr:
+    """A walked .model_animations file: d (bytes), root (offset of the animation_graph struct, 64), children (the
+    _children() result for it), cur (end offset: asserted equal to the file size, which checks the layouts)."""
     def __init__(s, path):
+        """read the .model_animations file at path and walk its whole block tree (asserts the 'antr' group code and
+        that the layouts consume every byte)"""
         s.d = open(path, 'rb').read()
         assert s.d[0x24:0x28] == b'antr'
         s.blocks = {}      # (struct, field) -> list of (element offset, child dict)
@@ -47,8 +60,11 @@ class Antr:
         s.children = s._children('animation_graph', s.root)
         assert s.cur == len(s.d), (s.cur, len(s.d))
 
+    # big-endian struct.unpack of f at file offset o (returns the tuple)
     def u(s, f, o): return struct.unpack_from('>' + f, s.d, o)
 
+    # tag_reference fields give their path string, tag_data fields (file offset, size), tag_block fields a list of
+    # (element offset, that element's children). s.cur advances past each child in field order.
     def _children(s, st, off):
         """walk the child data of one struct instance at `off`; returns {field: [(elem_off, children)] or bytes}"""
         _, fields = _fields(st)
@@ -72,12 +88,15 @@ class Antr:
         return res
 
     def nodes(s):
+        """Node names in graph order (32-byte fixed strings at the start of each animation_graph_node)."""
         out = []
         for off, ch in s.children['nodes']:
             name = s.d[off:off + 32].split(b'\0')[0].decode('latin1')
             out.append(name)
         return out
 
+    # Each dict has: name, type, frame_count, frame_size, frame_info_type, node_count, flags, the three 64-bit
+    # nodes_with_*_flags masks, and frame_info / default_data / data as (file offset, size) tuples for decode().
     def animations(s):
         """list of dict(name, type, frames, flags, nodes, data offsets...)"""
         L = LAYOUT.layout('animation')['fields']
@@ -97,6 +116,10 @@ class Antr:
             res.append(a)
         return res
 
+    # Same frame layout as halomodel.read_animations' uncompressed branch, big-endian: per frame, for each node in
+    # order, rotation (4 x i16 / 32767) if its rotation flag is set, translation (3 floats) if its translation flag
+    # is set, scale (float) if its scale flag is set; base animations take unflagged channels from default_data,
+    # overlays leave them None. Rotations are converted with hq. dx rows are (dx, dy, dz, dyaw) per frame.
     def decode(s, a, node_count):
         """uncompressed tag frame data -> frames[F][N] = (t, q, s); dx[F,4]"""
         F = a['frame_count']; overlay = a['type'] != 0

@@ -8,6 +8,7 @@ import hde_ce
 BLEND = os.environ.get('HCE_COMMANDO_BLEND', os.path.join(HERE, 'Commando_HDE.blend1'))
 WID = 'm_commando'
 M = '3A1912CC_-871229126_mesh_%d_3A1912CC_-871229126_mesh_%d'
+# object name -> (role, target triangles); to change a part's budget, edit its count
 PARTS = {M % (11, 11): ('lower', 330),       # lower receiver, pistol grip, magwell
          M % (24, 24): ('upper', 260),       # upper receiver
          M % (17, 17): ('mag', 90),
@@ -19,6 +20,7 @@ PARTS = {M % (11, 11): ('lower', 330),       # lower receiver, pistol grip, magw
          M % (68, 68): ('front', 60)}
 
 def build():
+    """the Commando -> out/weapons/m_commando: origin at the pistol grip's top, then hde_ce.build with its own shader colours"""
     src = hde_ce.Source(BLEND)
     lowr = src.R[M % (11, 11)]['pos']                     # +x forward, +z up already
     g = lowr[(lowr[:, 2] > -0.06) & (lowr[:, 2] < -0.02) & (lowr[:, 0] < 0.07)]

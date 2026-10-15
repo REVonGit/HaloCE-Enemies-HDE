@@ -29,6 +29,7 @@ try:
 except Exception:
     OUT = os.path.join(HERE, 'out')
 KIT = f'{OUT}/models/MarineKit'
+# kit piece id -> extract_spv3.py pack id
 BODIES = {'mr_medic_body': 'MarineMedic', 'mr_female_body': 'MarineFemale'}
 OLIVE = np.array([0.50, 0.55, 0.38])      # the change colour: the CE Marines' olive drab (their armour's mean colour, lifted)
 
@@ -62,6 +63,8 @@ def texture(pid, src, mat, mm=None):
 
 
 def main():
+    """each BODIES entry retargeted onto the kit's skeleton and written as out/models/MarineKit/<piece>.iqm with its
+    textures (mk_<piece>_*.png), and added to MarineKit.json as a whole body (slot 'body', whole=True)"""
     MJ, _, MA = read_iqm(f'{KIT}/helmet_closed.iqm')          # the kit's skeleton (the CE Marine's) and its bind animation
     alist = [dict(name=n, fps=30.0, loop=True, frames=fr) for n, fr in MA.items()]
     mw = ce_world(MJ)

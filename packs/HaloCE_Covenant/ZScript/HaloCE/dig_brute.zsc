@@ -20,6 +20,8 @@ class HCE_BruteHelmetDebris : Actor
 	}
 	int life;
 	String hce_piece;                // armour kit helmet: debris_<piece>.iqm swapped in on the first tick
+	// On the first tic, if hce_piece names an armour-kit helmet, swaps in that debris model from models/hce_dig/BruteKit
+	// and clears the name so it only happens once.
 	override void Tick()
 	{
 		if(hce_piece.Length() > 0)
@@ -65,6 +67,8 @@ class HCE_BruteCaptainFlag : Actor
 		HCEM A -1 Bright;
 		Stop;
 	}
+	// Follows its master (the Captain) each tic: copies position, angles, scale and visibility, and flickers its alpha
+	// like a hologram (a 1-in-41 dip to half). Destroys itself once the master is gone.
 	override void Tick()
 	{
 		if(!master || master.bDestroyed) { Destroy(); return; }

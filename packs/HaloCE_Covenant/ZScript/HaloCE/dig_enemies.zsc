@@ -1,3 +1,5 @@
+// ---- BlindWolf: the body every BlindWolf variant below is drawn with (characters\blind_wolf\blind_wolf): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every BlindWolf; one variant's numbers are in its own class
 class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -67,7 +69,8 @@ class HCE_BlindWolfBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\blind_wolf\blind_wolf
+// HCE_BlindWolf: Halo variant "characters\blind_wolf\blind_wolf", no gun, 90 body, 3 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BlindWolf : HCE_BlindWolfBase
 {
 	//$Category "Halo CE/Covenant/Blind Wolf"
@@ -103,6 +106,8 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -131,6 +136,7 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -155,12 +161,15 @@ class HCE_BlindWolf : HCE_BlindWolfBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
+// ---- Brute: the body every Brute variant below is drawn with (characters\brute\brute): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every Brute; one variant's numbers are in its own class
 class HCE_BruteBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -1595,7 +1604,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\brute\brute captain plasma caster
+// HCE_BruteCaptainPlasmaCaster: Halo variant "characters\brute\brute captain plasma caster", plasma caster, 200 body, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -1638,6 +1648,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -1712,6 +1724,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -1782,6 +1795,7 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -2158,7 +2172,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute captain plasma rifle
+// HCE_BruteCaptainPlasmaRifle: Halo variant "characters\brute\brute captain plasma rifle", plasma rifle, 200 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -2199,6 +2214,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -2273,6 +2290,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -2343,6 +2361,7 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -2709,7 +2728,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute captain shotgun
+// HCE_BruteCaptainShotgun: Halo variant "characters\brute\brute captain shotgun", shotgun, 200 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteCaptainShotgun : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -2750,6 +2770,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -2824,6 +2846,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -2894,6 +2917,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -3261,7 +3285,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute chieftain gravity hammer
+// HCE_BruteChieftainGravityHammer: Halo variant "characters\brute\brute chieftain gravity hammer", gravity hammer, 350 body / 150 shield, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -3299,6 +3324,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -3376,6 +3403,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -3446,6 +3474,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -3811,7 +3840,8 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 // energy-shield flare for the Brutes: the same model, every surface the glowing shield texture
 class HCE_BruteShieldShell : HCE_ShieldShell {}
 
-// characters\brute\brute honor guard assault rifle
+// HCE_BruteHonorGuardAssaultRifle: Halo variant "characters\brute\brute honor guard assault rifle", assault rifle, 150 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -3852,6 +3882,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -3926,6 +3958,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -3996,6 +4029,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -4358,7 +4392,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute honor guard plasma rifle
+// HCE_BruteHonorGuardPlasmaRifle: Halo variant "characters\brute\brute honor guard plasma rifle", plasma rifle, 150 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -4399,6 +4434,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -4473,6 +4510,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -4543,6 +4581,7 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -4905,7 +4944,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute major shotgun
+// HCE_BruteMajorShotgun: Halo variant "characters\brute\brute major shotgun", shotgun, 150 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteMajorShotgun : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -4946,6 +4986,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -5020,6 +5062,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -5090,6 +5133,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -5458,7 +5502,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute major spiker
+// HCE_BruteMajorSpiker: Halo variant "characters\brute\brute major spiker", spiker, 150 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteMajorSpiker : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -5499,6 +5544,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -5573,6 +5620,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -5643,6 +5691,7 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -6010,7 +6059,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute minor assault rifle
+// HCE_BruteMinorAssaultRifle: Halo variant "characters\brute\brute minor assault rifle", assault rifle, 175 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -6051,6 +6101,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -6125,6 +6177,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -6195,6 +6248,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -6562,7 +6616,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute minor plasma rifle
+// HCE_BruteMinorPlasmaRifle: Halo variant "characters\brute\brute minor plasma rifle", plasma rifle, 175 body, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -6603,6 +6658,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -6677,6 +6734,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -6747,6 +6805,7 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -7114,7 +7173,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	}
 }
 
-// characters\brute\brute stalker spiker
+// HCE_BruteStalkerSpiker: Halo variant "characters\brute\brute stalker spiker", spiker, 150 body, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_BruteStalkerSpiker : HCE_BruteBase
 {
 	//$Category "Halo CE/Covenant/Brute"
@@ -7156,6 +7216,8 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -7230,6 +7292,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -7300,6 +7363,7 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -7693,6 +7757,8 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	}
 }
 
+// ---- Drinol: the body every Drinol variant below is drawn with (digsite\characters\drinol\00_mac\drinol): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every Drinol; one variant's numbers are in its own class
 class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -7762,7 +7828,8 @@ class HCE_DrinolBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// digsite\characters\drinol\00_mac\drinol
+// HCE_Drinol: Halo variant "digsite\characters\drinol\00_mac\drinol", no gun, 320 body, 3 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_Drinol : HCE_DrinolBase
 {
 	//$Category "Halo CE/Covenant/Drinol"
@@ -7798,6 +7865,8 @@ class HCE_Drinol : HCE_DrinolBase
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -7838,6 +7907,7 @@ class HCE_Drinol : HCE_DrinolBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -7883,6 +7953,7 @@ class HCE_Drinol : HCE_DrinolBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -7904,6 +7975,8 @@ class HCE_Drinol : HCE_DrinolBase
 	}
 }
 
+// ---- Drone: the body every Drone variant below is drawn with (characters\drone\drone): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every Drone; one variant's numbers are in its own class
 class HCE_DroneBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -7965,6 +8038,8 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 	int hce_perch, hce_perchTics, hce_perchNext, hce_perchSide, hce_perchEnter;   // perch: 0 no, 1 flying to wall, 2 clinging
 	vector3 hce_perchPos; double hce_perchAngle;
 
+	// Rolls the drone's starting flight height above its target (40-110), its first perch time (4-10 s in) and which side
+	// it perches on. To change the perch wait, edit random(4, 10).
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -7983,6 +8058,10 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		vel.z = clamp((want - pos.z) * 0.07, -4, 4) + sin(level.maptime * 9 + tid * 31) * 0.35;
 	}
 
+	// The drone's combat tick, replacing the base ground AI: perched drones do nothing here; scattered ones flee the
+	// target; otherwise it faces the target, pursues it when unseen for 25 tics, picks a new zig-zag offset every
+	// 10-28 tics and circles at 70% speed in range (closes beyond hce_rangeMax, backs off inside hce_rangeMin), fires,
+	// and rolls a wall perch (1 in 91 per tic once hce_perchNext has passed).
 	override void HCE_Fight()
 	{
 		if(hce_perch) return;
@@ -8048,6 +8127,8 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		hce_perch = 1; hce_perchTics = 35 * 4;
 	}
 
+	// Takes the drone off its wall: plays the perch exit animation if it was clinging, clears the perch state and the
+	// animation lock, schedules the next perch 8-15 s out and pushes it off the wall along the wall's normal.
 	void HCE_LeavePerch()
 	{
 		if(hce_perch == 2) HCE_ApplyAnim(hce_perchSide ? 'perch right exit' : 'perch left exit', 3, false);
@@ -8058,6 +8139,10 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		vel.xy = AngleToVector(hce_perchAngle, 4);
 	}
 
+	// Runs the perch each tic. State 1: fly to hce_perchPos (give up after 4 s); within 10 units snap to it, face out
+	// from the wall, play the enter animation and cling for 3-6 s (8-20 s with no target). State 2: hold position and
+	// angle, keep hce_animLock set, play the perch idle, fire at a visible target within 80 deg of facing, and leave
+	// when the timer runs out or the target comes within 96 units.
 	void HCE_PerchTick()
 	{
 		if(hce_perch == 1)
@@ -8095,6 +8180,9 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		if(target && hce_canSee && abs(DeltaAngle(hce_perchAngle, AngleTo(target))) < 80) HCE_UpdateFiring(Distance2D(target));
 	}
 
+	// Per-tic extras on top of the base Tick: keeps perched drones weightless, plays the body-fall sound when a dead
+	// drone lands (hce_airPhase 1 -> 2), loops the 1.1 s wing buzz while flying, runs the perch or the altitude hold,
+	// the sideways dart after a hit (12 tics at 1.8x run speed), and lets idle drones go perch (1 in 61 per tic).
 	override void Tick()
 	{
 		if(health > 0 && !isFrozen() && hce_perch) bNOGRAVITY = true;
@@ -8517,7 +8605,8 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\drone\drone captain major needler
+// HCE_DroneCaptainMajorNeedler: Halo variant "characters\drone\drone captain major needler", needler, 60 body / 45 shield, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -8554,6 +8643,8 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -8586,6 +8677,7 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -8616,6 +8708,7 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -8625,7 +8718,8 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 // energy-shield flare for the Drones: the same model, every surface the glowing shield texture
 class HCE_DroneShieldShell : HCE_ShieldShell {}
 
-// characters\drone\drone captain major plasma rifle
+// HCE_DroneCaptainMajorPlasmaRifle: Halo variant "characters\drone\drone captain major plasma rifle", plasma rifle, 60 body / 45 shield, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneCaptainMajorPlasmaRifle : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -8662,6 +8756,8 @@ class HCE_DroneCaptainMajorPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -8694,6 +8790,7 @@ class HCE_DroneCaptainMajorPlasmaRifle : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -8724,13 +8821,15 @@ class HCE_DroneCaptainMajorPlasmaRifle : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone captain plasma pistol
+// HCE_DroneCaptainPlasmaPistol: Halo variant "characters\drone\drone captain plasma pistol", plasma pistol, 45 body / 25 shield, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -8767,6 +8866,8 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -8799,6 +8900,7 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -8829,6 +8931,7 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -8845,7 +8948,8 @@ class HCE_DroneCaptainPlasmaPistol : HCE_DroneBase
 	}
 }
 
-// characters\drone\drone captain plasma rifle
+// HCE_DroneCaptainPlasmaRifle: Halo variant "characters\drone\drone captain plasma rifle", plasma rifle, 45 body / 25 shield, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneCaptainPlasmaRifle : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -8882,6 +8986,8 @@ class HCE_DroneCaptainPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -8914,6 +9020,7 @@ class HCE_DroneCaptainPlasmaRifle : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -8944,13 +9051,15 @@ class HCE_DroneCaptainPlasmaRifle : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone major needler
+// HCE_DroneMajorNeedler: Halo variant "characters\drone\drone major needler", needler, 45 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneMajorNeedler : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -8987,6 +9096,8 @@ class HCE_DroneMajorNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9019,6 +9130,7 @@ class HCE_DroneMajorNeedler : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9049,13 +9161,15 @@ class HCE_DroneMajorNeedler : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone major plasma pistol
+// HCE_DroneMajorPlasmaPistol: Halo variant "characters\drone\drone major plasma pistol", plasma pistol, 45 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9092,6 +9206,8 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9124,6 +9240,7 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9154,6 +9271,7 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -9170,7 +9288,8 @@ class HCE_DroneMajorPlasmaPistol : HCE_DroneBase
 	}
 }
 
-// characters\drone\drone needler
+// HCE_DroneNeedler: Halo variant "characters\drone\drone needler", needler, 30 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneNeedler : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9207,6 +9326,8 @@ class HCE_DroneNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9239,6 +9360,7 @@ class HCE_DroneNeedler : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9269,13 +9391,15 @@ class HCE_DroneNeedler : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone plasma pistol
+// HCE_DronePlasmaPistol: Halo variant "characters\drone\drone plasma pistol", plasma pistol, 30 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DronePlasmaPistol : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9312,6 +9436,8 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9344,6 +9470,7 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9374,6 +9501,7 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -9390,7 +9518,8 @@ class HCE_DronePlasmaPistol : HCE_DroneBase
 	}
 }
 
-// characters\drone\drone plasma rifle
+// HCE_DronePlasmaRifle: Halo variant "characters\drone\drone plasma rifle", plasma rifle, 30 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DronePlasmaRifle : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9427,6 +9556,8 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9459,6 +9590,7 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9489,13 +9621,15 @@ class HCE_DronePlasmaRifle : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone spiker
+// HCE_DroneSpiker: Halo variant "characters\drone\drone spiker", spiker, 30 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneSpiker : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9532,6 +9666,8 @@ class HCE_DroneSpiker : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Spiker", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9564,6 +9700,7 @@ class HCE_DroneSpiker : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9594,6 +9731,7 @@ class HCE_DroneSpiker : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -9610,7 +9748,8 @@ class HCE_DroneSpiker : HCE_DroneBase
 	}
 }
 
-// characters\drone\drone ultra needler
+// HCE_DroneUltraNeedler: Halo variant "characters\drone\drone ultra needler", needler, 65 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneUltraNeedler : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9647,6 +9786,8 @@ class HCE_DroneUltraNeedler : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9679,6 +9820,7 @@ class HCE_DroneUltraNeedler : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9709,13 +9851,15 @@ class HCE_DroneUltraNeedler : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
-// characters\drone\drone ultra plasma rifle
+// HCE_DroneUltraPlasmaRifle: Halo variant "characters\drone\drone ultra plasma rifle", plasma rifle, 65 body, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DroneUltraPlasmaRifle : HCE_DroneBase
 {
 	//$Category "Halo CE/Covenant/Drone"
@@ -9752,6 +9896,8 @@ class HCE_DroneUltraPlasmaRifle : HCE_DroneBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaRifle", "None";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -9784,6 +9930,7 @@ class HCE_DroneUltraPlasmaRifle : HCE_DroneBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -9814,12 +9961,15 @@ class HCE_DroneUltraPlasmaRifle : HCE_DroneBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
 	}
 }
 
+// ---- EliteRifle: the body every EliteRifle variant below is drawn with (characters\elite\elite rifle): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every EliteRifle; one variant's numbers are in its own class
 class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -9959,7 +10109,8 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\elite\elite commander\elite commander plasma carbine
+// HCE_EliteCommanderPlasmaCarbine: Halo variant "characters\elite\elite commander\elite commander plasma carbine", plasma carbine, 100 body / 200 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -10001,6 +10152,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -10067,6 +10220,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -10143,6 +10297,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -10182,7 +10337,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite commander\elite commander pulse carbine
+// HCE_EliteCommanderPulseCarbine: Halo variant "characters\elite\elite commander\elite commander pulse carbine", pulse carbine, 100 body / 200 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -10224,6 +10380,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -10290,6 +10448,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -10366,6 +10525,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -10396,7 +10556,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite honor guard\elite honor guard plasma carbine
+// HCE_EliteHonorGuardPlasmaCarbine: Halo variant "characters\elite\elite honor guard\elite honor guard plasma carbine", plasma carbine, 100 body / 200 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -10438,6 +10599,8 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -10504,6 +10667,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -10580,6 +10744,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -10675,7 +10840,8 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite major\elite major plasma carbine
+// HCE_EliteMajorPlasmaCarbine: Halo variant "characters\elite\elite major\elite major plasma carbine", plasma carbine, 100 body / 150 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -10717,6 +10883,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -10783,6 +10951,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -10859,6 +11028,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -10898,7 +11068,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite major\elite major pulse carbine
+// HCE_EliteMajorPulseCarbine: Halo variant "characters\elite\elite major\elite major pulse carbine", pulse carbine, 100 body / 150 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -10940,6 +11111,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -11006,6 +11179,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -11082,6 +11256,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -11112,7 +11287,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite minor\elite minor plasma carbine
+// HCE_EliteMinorPlasmaCarbine: Halo variant "characters\elite\elite minor\elite minor plasma carbine", plasma carbine, 100 body / 100 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -11154,6 +11330,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -11220,6 +11398,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -11296,6 +11475,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -11335,7 +11515,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite minor\elite minor pulse carbine
+// HCE_EliteMinorPulseCarbine: Halo variant "characters\elite\elite minor\elite minor pulse carbine", pulse carbine, 100 body / 100 shield, 6 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -11377,6 +11558,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -11443,6 +11626,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -11519,6 +11703,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -11549,7 +11734,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite ranger\elite ranger plasma carbine
+// HCE_EliteRangerPlasmaCarbine: Halo variant "characters\elite\elite ranger\elite ranger plasma carbine", plasma carbine, 100 body / 100 shield, 7 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -11592,6 +11778,8 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -11658,6 +11846,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -11734,6 +11923,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -11828,7 +12018,8 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite specops\elite specops plasma carbine
+// HCE_EliteSpecopsPlasmaCarbine: Halo variant "characters\elite\elite specops\elite specops plasma carbine", plasma carbine, 125 body / 200 shield, 7 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -11871,6 +12062,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -11937,6 +12130,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -12013,6 +12207,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -12052,7 +12247,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 	}
 }
 
-// characters\elite\elite specops\elite specops pulse carbine
+// HCE_EliteSpecopsPulseCarbine: Halo variant "characters\elite\elite specops\elite specops pulse carbine", pulse carbine, 125 body / 200 shield, 7 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 {
 	//$Category "Halo CE/Covenant/Elite Rifle"
@@ -12095,6 +12291,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		+HaloDoom_EnemyBase.HCE_Surprise
 		+HaloDoom_EnemyBase.HCE_ThrowsGrenades
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -12161,6 +12359,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -12237,6 +12436,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -12267,6 +12467,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 	}
 }
 
+// ---- EliteZealot: the body every EliteZealot variant below is drawn with (characters\elite\elite ultra zealot): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every EliteZealot; one variant's numbers are in its own class
 class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -12415,7 +12617,8 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\elite\elite ultra zealot\elite ultra zealot energy sword
+// HCE_EliteUltraZealotEnergySword: Halo variant "characters\elite\elite ultra zealot\elite ultra zealot energy sword", energy sword, 130 body / 400 shield, 7 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 {
 	//$Category "Halo CE/Covenant/Elite Zealot"
@@ -12456,6 +12659,8 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		+HaloDoom_EnemyBase.HCE_ShieldStun
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -12528,6 +12733,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -12609,6 +12815,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		switch(anim)
@@ -12643,6 +12850,8 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 // energy-shield flare for the EliteZealots: the same model, every surface the glowing shield texture
 class HCE_EliteZealotShieldShell : HCE_ShieldShell {}
 
+// ---- Engineer: the body every Engineer variant below is drawn with (characters\engineer\engineer): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every Engineer; one variant's numbers are in its own class
 class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -12712,7 +12921,8 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\engineer\engineer
+// HCE_Engineer: Halo variant "characters\engineer\engineer", no gun, 150 body / 200 shield, 1 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_Engineer : HCE_EngineerBase
 {
 	//$Category "Halo CE/Covenant/Engineer"
@@ -12746,6 +12956,8 @@ class HCE_Engineer : HCE_EngineerBase
 		HaloDoom_EnemyBase.HCE_Voices "Engineer";
 		+HaloDoom_EnemyBase.HCE_Flying
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -12760,6 +12972,7 @@ class HCE_Engineer : HCE_EngineerBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -12782,6 +12995,7 @@ class HCE_Engineer : HCE_EngineerBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -12803,12 +13017,18 @@ class HCE_Engineer : HCE_EngineerBase
 	Array<bool> hce_buffGiven;
 	HaloDoom_EnemyBase hce_buffNear;
 
+	// True when e is a live, enabled ally on the Engineer's team and side that is in a fight and is not another
+	// Engineer or a Stealth (cloaked) class; those are the ones it shields.
 	bool HCE_EngAlly(HaloDoom_EnemyBase e)
 	{
 		return e && e != self && e.hce_enabled && e.health > 0 && e.hce_team == hce_team && e.bFRIENDLY == bFRIENDLY
 			&& !(e is GetClass()) && e.HCE_Alerted() && String.Format("%s", e.GetClassName()).IndexOf("Stealth") < 0;   // cloaked Elites stay shieldless
 	}
 
+	// The once-a-second gift: for every ally within 420 units in sight, gives a 40-point shield (x HCE_ShieldScale) to
+	// one that has none or tops an existing one up by 20% of its max, to 1.5x max; remembers each in hce_buffed with
+	// the time, and keeps the nearest in hce_buffNear. Then releases allies dead or unseen for over 4 s.
+	// To change the reach, edit the two 420s; the cap, the 1.5s.
 	void HCE_EngPulse()
 	{
 		hce_buffNear = null;
@@ -12840,6 +13060,8 @@ class HCE_Engineer : HCE_EngineerBase
 			if(!hce_buffed[i] || hce_buffed[i].health <= 0 || level.maptime - hce_buffAt[i] > 35 * 4) HCE_EngRelease(i);
 	}
 
+	// Takes the gift back from entry i of hce_buffed: a shield the Engineer gave is destroyed (and its loop sound
+	// stopped), a topped-up one is clamped back to its max. Drops the entry from the three parallel arrays.
 	void HCE_EngRelease(int i)
 	{
 		let e = hce_buffed[i];
@@ -12855,6 +13077,8 @@ class HCE_Engineer : HCE_EngineerBase
 		hce_buffed.Delete(i); hce_buffAt.Delete(i); hce_buffGiven.Delete(i);
 	}
 
+	// Draws the pink/violet particle tethers from the Engineer's middle to each ally it pulsed in the last 40 tics:
+	// 2-18 particles per tether, drifting along it with a slight arc. Purely visual.
 	void HCE_EngTether()
 	{
 		vector3 from = pos + (0, 0, height * 0.5);
@@ -12874,6 +13098,9 @@ class HCE_Engineer : HCE_EngineerBase
 		}
 	}
 
+	// Per tic: pulses the shields once a second (maptime % 35 == 7), redraws tethers every 3 tics, then drifts: toward
+	// its nearest shielded ally when farther than 300 or away when closer than 200 (new heading every 2 s), otherwise
+	// a random heading every 3-7 s at 0.8-1.8 speed (1 in 4 chance of hovering still). A blocked move repicks at once.
 	override void Tick()
 	{
 		super.Tick();
@@ -12906,6 +13133,9 @@ class HCE_Engineer : HCE_EngineerBase
 		A_SetAngle(angle + clamp(DeltaAngle(angle, hce_driftAngle), -2, 2), SPF_INTERPOLATE);
 	}
 
+	// Death: takes back every shield it gave, then bursts (explosion sound, quake, 40 particles) and throws 4-6 charged
+	// Plasma Caster cluster shots in a ring, scaled by HCE_DamageScale. The body is hidden; nothing lies on the floor.
+	// To change the grenade count, edit random(4, 6).
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -12933,6 +13163,8 @@ class HCE_Engineer : HCE_EngineerBase
 	}
 }
 
+// ---- H2Jackal: the body every H2Jackal variant below is drawn with (objects\characters\jackal\jackal): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every H2Jackal; one variant's numbers are in its own class
 class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -13493,7 +13725,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// objects\characters\jackal\jackal\jackal major helmet plasma rifle
+// HCE_JackalMajorHelmetPlasmaRifle: Halo variant "objects\characters\jackal\jackal\jackal major helmet plasma rifle", plasma rifle, 75 body / 250 shield, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -13534,6 +13767,8 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -13582,6 +13817,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -13630,6 +13866,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -13654,7 +13891,8 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 	}
 }
 
-// objects\characters\jackal\jackal\jackal marksman plasma carbine
+// HCE_JackalMarksmanPlasmaCarbine: Halo variant "objects\characters\jackal\jackal\jackal marksman plasma carbine", plasma carbine, 70 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -13694,6 +13932,8 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -13742,6 +13982,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -13790,6 +14031,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -13819,7 +14061,8 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 	}
 }
 
-// objects\characters\jackal\jackal\jackal marksman pulse carbine
+// HCE_JackalMarksmanPulseCarbine: Halo variant "objects\characters\jackal\jackal\jackal marksman pulse carbine", pulse carbine, 70 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -13859,6 +14102,8 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -13907,6 +14152,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -13955,6 +14201,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -13975,7 +14222,8 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 	}
 }
 
-// objects\characters\jackal\jackal\jackal sniper beam rifle
+// HCE_JackalSniperBeamRifle: Halo variant "objects\characters\jackal\jackal\jackal sniper beam rifle", beam rifle, 60 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -14016,6 +14264,8 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -14064,6 +14314,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -14112,6 +14363,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -14132,7 +14384,8 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 	}
 }
 
-// objects\characters\jackal\jackal\jackal ultra plasma rifle
+// HCE_JackalUltraPlasmaRifle: Halo variant "objects\characters\jackal\jackal\jackal ultra plasma rifle", plasma rifle, 100 body / 350 shield, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -14173,6 +14426,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -14221,6 +14476,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -14269,6 +14525,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -14293,7 +14550,8 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 	}
 }
 
-// objects\characters\jackal\jackal\jackal zealot spiker
+// HCE_JackalZealotSpiker: Halo variant "objects\characters\jackal\jackal\jackal zealot spiker", spiker, 120 body / 450 shield, 5 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalZealotSpiker : HCE_H2JackalBase
 {
 	//$Category "Halo CE/Covenant/H2 Jackal"
@@ -14334,6 +14592,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -14382,6 +14642,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -14430,6 +14691,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -14455,6 +14717,8 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 	}
 }
 
+// ---- SlugMan: the body every SlugMan variant below is drawn with (digsite\characters\slug_man\slug_man): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every SlugMan; one variant's numbers are in its own class
 class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -15053,7 +15317,8 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// digsite\characters\slug_man\slug_man major needler
+// HCE_SlugManMajorNeedler: Halo variant "digsite\characters\slug_man\slug_man major needler", needler, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorNeedler : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15093,6 +15358,8 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -15142,6 +15409,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -15204,6 +15472,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -15223,7 +15492,8 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man major particle beam
+// HCE_SlugManMajorParticleBeam: Halo variant "digsite\characters\slug_man\slug_man major particle beam", particle beam, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15263,6 +15533,8 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -15312,6 +15584,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -15373,6 +15646,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -15389,6 +15663,8 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
 		}
 	}
+	// The shot itself: one hitscan beam (HCE_BeamTrace) with the fire sound and, standing still, the fire animation.
+	// Replaces the base projectile fire entirely; this gun never spawns a projectile actor.
 	override void HCE_FireShot(bool special)
 	{
 		if(!target) return;
@@ -15396,6 +15672,9 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		HCE_PlayFireSound(true);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 	}
+	// Traces one line from the gun to the target's chest (60% height). fire=false only draws the aiming laser along it;
+	// fire=true adds spread (hce_errorAngle, +1.2 deg vs a running target, else +0.3), draws the purple/pink beam, deals
+	// 90 damage (x hce_damageMod x HCE_DamageScale) as 'Fire' to what it hit and puffs there. To change damage, edit the 90.
 	void HCE_BeamTrace(bool fire)
 	{
 		double gz = height * 0.5 + hce_gunOffset.z;
@@ -15436,7 +15715,8 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man major plasma carbine
+// HCE_SlugManMajorPlasmaCarbine: Halo variant "digsite\characters\slug_man\slug_man major plasma carbine", plasma carbine, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15476,6 +15756,8 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -15525,6 +15807,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -15586,6 +15869,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -15609,7 +15893,8 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man major plasma pistol
+// HCE_SlugManMajorPlasmaPistol: Halo variant "digsite\characters\slug_man\slug_man major plasma pistol", plasma pistol, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15649,6 +15934,8 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -15698,6 +15985,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -15760,6 +16048,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -15779,7 +16068,8 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man major plasma rifle
+// HCE_SlugManMajorPlasmaRifle: Halo variant "digsite\characters\slug_man\slug_man major plasma rifle", plasma rifle, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15819,6 +16109,8 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -15868,6 +16160,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -15930,6 +16223,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -15949,7 +16243,8 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man major pulse carbine
+// HCE_SlugManMajorPulseCarbine: Halo variant "digsite\characters\slug_man\slug_man major pulse carbine", pulse carbine, 135 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -15989,6 +16284,8 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16038,6 +16335,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16099,6 +16397,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -16113,7 +16412,8 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man minor needler
+// HCE_SlugManMinorNeedler: Halo variant "digsite\characters\slug_man\slug_man minor needler", needler, 100 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMinorNeedler : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -16153,6 +16453,8 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16202,6 +16504,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16264,6 +16567,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -16283,7 +16587,8 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man minor plasma carbine
+// HCE_SlugManMinorPlasmaCarbine: Halo variant "digsite\characters\slug_man\slug_man minor plasma carbine", plasma carbine, 100 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -16323,6 +16628,8 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16372,6 +16679,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16433,6 +16741,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -16456,7 +16765,8 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man minor plasma rifle
+// HCE_SlugManMinorPlasmaRifle: Halo variant "digsite\characters\slug_man\slug_man minor plasma rifle", plasma rifle, 100 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -16496,6 +16806,8 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16545,6 +16857,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16607,6 +16920,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -16626,7 +16940,8 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man particle beam
+// HCE_SlugManParticleBeam: Halo variant "digsite\characters\slug_man\slug_man particle beam", particle beam, 100 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -16666,6 +16981,8 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16715,6 +17032,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16776,6 +17094,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -16792,6 +17111,8 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
 		}
 	}
+	// The shot itself: one hitscan beam (HCE_BeamTrace) with the fire sound and, standing still, the fire animation.
+	// Replaces the base projectile fire entirely; this gun never spawns a projectile actor.
 	override void HCE_FireShot(bool special)
 	{
 		if(!target) return;
@@ -16799,6 +17120,9 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		HCE_PlayFireSound(true);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 	}
+	// Traces one line from the gun to the target's chest (60% height). fire=false only draws the aiming laser along it;
+	// fire=true adds spread (hce_errorAngle, +1.2 deg vs a running target, else +0.3), draws the purple/pink beam, deals
+	// 90 damage (x hce_damageMod x HCE_DamageScale) as 'Fire' to what it hit and puffs there. To change damage, edit the 90.
 	void HCE_BeamTrace(bool fire)
 	{
 		double gz = height * 0.5 + hce_gunOffset.z;
@@ -16839,7 +17163,8 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man plasma pistol
+// HCE_SlugManPlasmaPistol: Halo variant "digsite\characters\slug_man\slug_man plasma pistol", plasma pistol, 100 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -16879,6 +17204,8 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -16928,6 +17255,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -16990,6 +17318,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -17009,7 +17338,8 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man ultra particle beam
+// HCE_SlugManUltraParticleBeam: Halo variant "digsite\characters\slug_man\slug_man ultra particle beam", particle beam, 180 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -17049,6 +17379,8 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -17098,6 +17430,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -17159,6 +17492,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -17175,6 +17509,8 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
 		}
 	}
+	// The shot itself: one hitscan beam (HCE_BeamTrace) with the fire sound and, standing still, the fire animation.
+	// Replaces the base projectile fire entirely; this gun never spawns a projectile actor.
 	override void HCE_FireShot(bool special)
 	{
 		if(!target) return;
@@ -17182,6 +17518,9 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		HCE_PlayFireSound(true);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 	}
+	// Traces one line from the gun to the target's chest (60% height). fire=false only draws the aiming laser along it;
+	// fire=true adds spread (hce_errorAngle, +1.2 deg vs a running target, else +0.3), draws the purple/pink beam, deals
+	// 90 damage (x hce_damageMod x HCE_DamageScale) as 'Fire' to what it hit and puffs there. To change damage, edit the 90.
 	void HCE_BeamTrace(bool fire)
 	{
 		double gz = height * 0.5 + hce_gunOffset.z;
@@ -17222,7 +17561,8 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man ultra plasma carbine
+// HCE_SlugManUltraPlasmaCarbine: Halo variant "digsite\characters\slug_man\slug_man ultra plasma carbine", plasma carbine, 180 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -17262,6 +17602,8 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -17311,6 +17653,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -17372,6 +17715,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -17395,7 +17739,8 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 	}
 }
 
-// digsite\characters\slug_man\slug_man ultra plasma rifle
+// HCE_SlugManUltraPlasmaRifle: Halo variant "digsite\characters\slug_man\slug_man ultra plasma rifle", plasma rifle, 180 body, 4 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 {
 	//$Category "Halo CE/Covenant/Slug Man"
@@ -17435,6 +17780,8 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		+HaloDoom_EnemyBase.HCE_SeeksCover
 		+HaloDoom_EnemyBase.HCE_Surprise
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -17484,6 +17831,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -17546,6 +17894,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -17565,6 +17914,8 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 	}
 }
 
+// ---- ThornBeast: the body every ThornBeast variant below is drawn with (characters\thorn_beast\thorn_beast): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every ThornBeast; one variant's numbers are in its own class
 class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 {
 	Default
@@ -17634,7 +17985,8 @@ class HCE_ThornBeastBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// characters\thorn_beast\thorn_beast
+// HCE_ThornBeast: Halo variant "characters\thorn_beast\thorn_beast", no gun, 350 body, 2 behaviour flags
+// (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_ThornBeast : HCE_ThornBeastBase
 {
 	//$Category "Halo CE/Covenant/Thorn Beast"
@@ -17669,6 +18021,8 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 	}
+	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
+	// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here
 	override Name HCE_AnimName(int kind)
 	{
 		if(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up
@@ -17693,6 +18047,7 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 		return 'None';
 	}
 
+	// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom's 35 tics a second)
 	override int HCE_AnimTics(Name anim)
 	{
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
@@ -17718,6 +18073,7 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 		}
 		return 30;
 	}
+	// the ground each moving clip covers (none here: the AI moves the body itself)
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
@@ -17725,6 +18081,8 @@ class HCE_ThornBeast : HCE_ThornBeastBase
 
 	// heavy footfalls from its own sound set while it walks
 	int hce_stepTics;
+	// Plays the Thorn Beast's step sound every 16 tics while it is alive, on the floor and moving faster than 1.5
+	// units/tic. To change the footfall rate, edit the 16.
 	override void Tick()
 	{
 		super.Tick();

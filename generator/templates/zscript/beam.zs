@@ -10,6 +10,8 @@
 			HCE_SniperGlint(level.Vec3Diff(pos, Vec3Angle(hce_gunOffset.x, angle, height * 0.5 + hce_gunOffset.z)), hce_chargeTics);
 		}
 	}
+	// The shot itself: one hitscan beam (HCE_BeamTrace) with the fire sound and, standing still, the fire animation.
+	// Replaces the base projectile fire entirely; this gun never spawns a projectile actor.
 	override void HCE_FireShot(bool special)
 	{
 		if(!target) return;
@@ -17,6 +19,9 @@
 		HCE_PlayFireSound(true);
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 	}
+	// Traces one line from the gun to the target's chest (60% height). fire=false only draws the aiming laser along it;
+	// fire=true adds spread (hce_errorAngle, +1.2 deg vs a running target, else +0.3), draws the purple/pink beam, deals
+	// 90 damage (x hce_damageMod x HCE_DamageScale) as 'Fire' to what it hit and puffs there. To change damage, edit the 90.
 	void HCE_BeamTrace(bool fire)
 	{
 		double gz = height * 0.5 + hce_gunOffset.z;

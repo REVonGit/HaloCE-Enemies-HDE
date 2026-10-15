@@ -19,6 +19,7 @@ from scipy import ndimage
 
 
 def _rng(seed):
+    """a numpy Generator seeded from the md5 of str(seed), so the same name always gives the same noise"""
     return np.random.default_rng(int(hashlib.md5(str(seed).encode()).hexdigest()[:8], 16))
 
 

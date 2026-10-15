@@ -97,6 +97,9 @@ def armor_texture(m, hb, bms):
 
 
 def main():
+    """reads the Halo 2 Marine's odst body and head, bakes the armour texture, retargets the whole body onto the
+    kit's CE skeleton (h2_odst_body.iqm) and cuts the helmet alone, rigid on the head bone with the collar off
+    (h2_odst_helmet.iqm), then registers both in MarineKit.json (and takes the helmet out of every outfit roll)"""
     from h2map import H2Map, render_model
     import extract_h2_brute as hb
     m = H2Map(MAP01B, CACHE01B)

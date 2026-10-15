@@ -20,6 +20,7 @@ tools/                     merge_hce_packs.py (merging)
 generator/                 the extraction / generation pipeline that made packs/ (see generator/README.md):
                            the scripts you run at the top, their shared readers / codecs in generator/lib/
 docs/PACK_README.md        the full player-facing manual: AI, CVars, replacements, gore, loot ...
+docs/HACKING.md            forking and editing: where to change what, the build loop, the rules that keep forks compatible
 ```
 
 ## Compiling

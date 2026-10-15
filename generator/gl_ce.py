@@ -36,6 +36,7 @@ ROLE_FINISH = {'stock': 'olive', 'pump': 'dark'}
 
 _blend = None; _imgs = {}
 def image(name):
+    """a packed image of the open .blend as a float RGB array (halved above 1024 px), cached; None if absent"""
     global _blend
     if name in _imgs: return _imgs[name]
     from blendfile import Blend
@@ -78,6 +79,8 @@ def grade(col, nm=None, ao=None, finish=None):
     return np.clip(out, 0, 1)
 
 def material_paint(mat, info, role):
+    """the material's Halo CE colour image or None (SKIP materials): Infinite masks painted from the Bulldog palette,
+    colour maps graded by grade() with ROLE_FINISH's finish"""
     if any(k in mat.lower() for k in SKIP) or mat == 'Material': return None
     imgs = info.get('all', [])
     pick = lambda *keys: next((i for i in imgs if all(k in i for k in keys)), None)
@@ -104,6 +107,8 @@ def material_paint(mat, info, role):
     return out
 
 def build():
+    """the grenade launcher -> out/weapons/m_grenade_launcher: each PARTS object in Halo axes about the grip origin,
+    simplified and sampled with material_paint, then bulldog_ce.finish"""
     global _blend
     bc.ensure_tool()
     _blend, R = blend35.meshes(BLEND)

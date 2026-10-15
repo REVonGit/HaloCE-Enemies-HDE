@@ -8,7 +8,7 @@ Positions are in JMS units (1/100 world unit) scaled to world units, like jms.py
 import zlib, struct
 import numpy as np
 
-U = 0.01
+U = 0.01   # JMS units -> world units
 
 
 def tag_sources(path):
@@ -35,10 +35,16 @@ def bitmap_source(path):
 
 
 def read_jms(text):
+    """Parse a JMS 8210 (str or bytes) -> dict(version, nodes=[dict(name, parent, q (x y z w as stored), t)],
+    materials=[dict(name, perm, region)], markers=[dict(name, node, q, t, radius)], pos (V,3), nrm (V,3), uv (V,2)
+    first UV set, bidx (V,4) node indices, bw (V,4) weights normalised to sum 1 (the four heaviest kept),
+    tri_mat (T,) material index per triangle, tris (T,3)). Positions, marker translations and radii in world units.
+    Lines starting with ';' are comments; blank lines are skipped."""
     if isinstance(text, bytes): text = text.decode('latin1')
     toks = [l.strip() for l in text.replace('\r', '').split('\n') if l.strip() and not l.strip().startswith(';')]
     p = 0
     def nxt():
+        """the next non-comment line of the file, advancing the cursor p"""
         nonlocal p; p += 1; return toks[p - 1]
     def fl(): return [float(x) for x in nxt().split()]
     ver = int(nxt())
@@ -81,6 +87,9 @@ def read_jms(text):
                 tri_mat=TM, tris=T)
 
 
+# Returns dict(version, fps, names, parents, t (F,N,3), q (F,N,4), s (F,N)). Header lines in order: version,
+# checksum, frame count, frame rate, actor count, actor name, node count; then name/parent pairs; then per frame
+# per node three lines (translation, rotation, scale).
 def read_jma(text):
     """a Halo 2 animation source (JMA/JMM/JMO/JMR/JMT/JMZ, version 16395): frame rate, node names and parents, and per
     frame per node its translation (world units), rotation (x, y, z, w as stored) and scale"""

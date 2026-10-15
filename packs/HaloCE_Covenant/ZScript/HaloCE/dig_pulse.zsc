@@ -18,6 +18,8 @@ mixin class HCE_DigNerfMixin
 // far fewer effect actors (see hce_explosives.zsc)
 mixin class HCE_DigLitePlasma
 {
+	// Lighter version of HaloPlasma_Proj's set-up: HaloBullet's PostBeginPlay, the two core sprites, a random roll and
+	// the shade colour, without the attached lightning crackle actor.
 	override void PostBeginPlay()
 	{
 		HaloBullet.PostBeginPlay();                  // HaloPlasma_Proj's, without the attached lightning crackle
@@ -26,6 +28,8 @@ mixin class HCE_DigLitePlasma
 		A_SetRoll(frandom[PlasmaRollRNG](-180, 180));
 		SetShade(col);
 	}
+	// Spawns the plasma arcs only when a player is within 1200 units: 1 arc in flight, 2 on impact, 3 for a charged
+	// shot's hit (amt > 4), each a short random BiriBiri lightning near the bolt. To change the cutoff, edit the 1200.
 	override void A_DoLightning(class<LightningBiri> type, double amt)
 	{
 		bool near = false;
@@ -44,6 +48,8 @@ mixin class HCE_DigLitePlasma
 // the arcs alone, for a bolt with its own PostBeginPlay (the Pulse Carbine below)
 mixin class HCE_DigLiteArcs
 {
+	// Same arc spawner as HCE_DigLitePlasma's (1 in flight, 2 on impact, 3 for a charged hit, only with a player within
+	// 1200), for bolts that keep their own PostBeginPlay.
 	override void A_DoLightning(class<LightningBiri> type, double amt)
 	{
 		bool near = false;
@@ -63,6 +69,8 @@ mixin class HCE_DigLiteArcs
 // their own Tick, which does more than smoke)
 mixin class HCE_DigLitePlasmaSmoke
 {
+	// HaloBullet's Tick plus a smoke actor every third tic, trailing just behind the bolt at a tenth of its speed,
+	// in place of HDE's per-tic smoke.
 	override void Tick()
 	{
 		HaloBullet.Tick();
@@ -81,6 +89,8 @@ class HCE_PulseCarbineHoming : HaloPulseCarbine_Proj
 {
 	mixin HCE_DigNerfMixin;
 	mixin HCE_DigLiteArcs;
+	// Lighter set-up (as HCE_DigLitePlasma) plus the homing lock: when fired by a monster, tracer becomes the shooter's
+	// own target so the bolt homes on it and never on an ally.
 	override void PostBeginPlay()
 	{
 		HaloBullet.PostBeginPlay();                  // HDE's, without the attached lightning crackle (HCE_DigLitePlasma)
@@ -90,6 +100,8 @@ class HCE_PulseCarbineHoming : HaloPulseCarbine_Proj
 		SetShade(col);
 		if(target && !target.player && target.target) tracer = target.target;
 	}
+	// Homes only while it still has a tracer; with none it flies straight instead of letting HDE pick the nearest
+	// visible thing, which could be the shooter's ally.
 	override void Handle_Homing(double turnMax, bool ignoreCorpses)
 	{
 		if(!tracer) return;

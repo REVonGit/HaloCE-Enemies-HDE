@@ -12,6 +12,7 @@ import hde_ce
 BLEND = os.environ.get('HCE_CASTER_BLEND', os.path.join(HERE, 'Plasma_Caster_HDE.blend'))
 WID = 'plasma_caster'
 PC = 'Plasma Caster:Plasma Caster.%d'
+# object -> (role, target triangles); the studs are the small objects between the rails
 PARTS = {PC % 104: ('body', 900), PC % 601: ('rail_l', 160), PC % 611: ('rail_r', 160), PC % 591: ('drum', 80)}
 PARTS.update({PC % k: ('stud', 6) for k in list(range(592, 601)) + list(range(602, 611))})
 MAT = 'covenant_grenade_launcher_default.001'
@@ -27,6 +28,8 @@ Y_MID = -0.132                                     # the gun's centre line acros
 GLYPH_X, GLYPH_Z = (0.31, 0.39), (0.148, 0.172)    # where the glyph sits on the housing (metres, .blend axes)
 
 def caster_paint(src):
+    """paint(mat, role) for hde_ce.build: the gun's colour map repainted flat (GREY, PURPLE on the control map's
+    plates, CYAN where the colour map's alpha marks lights, a hint of the normal map's shading); None for other materials"""
     from scipy import ndimage
     col = src.image('covenant_grenade_launcher_default_color{pc}.png.001', alpha=True)
     ctl = src.image('covenant_grenade_launcher_default_control{pc}.png.001', alpha=True)
@@ -40,6 +43,7 @@ def caster_paint(src):
     glow = np.clip(ndimage.gaussian_filter(col[..., 3], 0.6) * 2.5, 0, 1)[..., None]
     out = np.clip(out * (1 - glow) + CYAN * glow, 0, 1)
     def paint(mat, role):
+        """the flat repaint for MAT, None for anything else"""
         return out if mat == MAT else None                      # the ADS screen materials are left out
     return paint
 
@@ -55,8 +59,11 @@ def glyph():
     return np.asarray(im).astype(np.float32) / 255
 
 def caster_hook():
+    """hook(role, pos, nrm, col) for hde_ce.build: recolours the samples by where they sit (drum and studs grey, the
+    rails and housing purple, the silver cone, the glyph on both flanks)"""
     G = glyph()
     def hook(role, pos, nrm, colr):
+        """the samples' colours by role and position (pos in .blend metres)"""
         colr = colr.copy()
         if role in ('drum', 'stud'): colr[:] = GREY; return colr
         x, y, z = pos[:, 0], pos[:, 1], pos[:, 2]
@@ -81,6 +88,7 @@ def caster_hook():
     return hook
 
 def build():
+    """the Plasma Caster -> out/weapons/plasma_caster: origin under the body, hde_ce.build with caster_paint and caster_hook"""
     src = hde_ce.Source(BLEND, maxres=1024)
     P = src.R[PC % 104]['pos']                    # +x forward, +z up
     g = P[(P[:, 2] < -0.04) & (P[:, 0] < 0.3)]

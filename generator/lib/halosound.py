@@ -1,8 +1,19 @@
-"""Halo CE loose .sound tags -> WAV (permutations of the first pitch range)."""
+"""Halo CE loose .sound tags -> WAV (permutations of the first pitch range).
+
+    info = parse('x.sound'); perm = info['pitch_ranges'][0]['perms'][0]
+    pcm = decode(perm, info['rate'], info['channels'])      # (samples, channels) int16, or None for Ogg
+    to_wav(pcm, info['rate'], info['channels'], 'x.wav')
+
+Tag files are big-endian; the sample blobs inside are little-endian Xbox ADPCM, big-endian PCM, or Ogg Vorbis."""
 import struct, wave, io
 import numpy as np
 
 def parse(path):
+    """Walk a loose .sound tag: dict(rate 22050/44100, channels 1/2, compression (0 PCM, 1 Xbox ADPCM, 3 Ogg),
+    pitch_ranges=[dict(name, perms=[dict(name, compression, samples=bytes)])], end=offset reached, size=file size).
+    Layout after the 64-byte header: sound struct (164 bytes: flags +0, sample rate enum +6, encoding/compression
+    +108, length of a trailing blob at +120 that is skipped, pitch range count +152), then the 72-byte pitch-range structs, then per pitch
+    range its 124-byte permutation structs and, in order, each permutation's samples / mouth / subtitle data."""
     d = open(path, 'rb').read()
     B = 64
     u = lambda f, o: struct.unpack_from('>' + f, d, o)
@@ -33,6 +44,7 @@ def parse(path):
     return dict(rate=44100 if sr_i == 1 else 22050, channels=2 if enc == 1 else 1, compression=comp, pitch_ranges=out, end=cur, size=len(d))
 
 # ---- Xbox ADPCM (36-byte blocks per channel: 4-byte header + 32 bytes = 64 samples + 1)
+# The standard IMA ADPCM step table (89 entries) and index-adjust table; not something to tune.
 STEP = [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41, 45, 50, 55, 60, 66, 73, 80, 88, 97,
         107, 118, 130, 143, 157, 173, 190, 209, 230, 253, 279, 307, 337, 371, 408, 449, 494, 544, 598, 658, 724, 796,
         876, 963, 1060, 1166, 1282, 1411, 1552, 1707, 1878, 2066, 2272, 2499, 2749, 3024, 3327, 3660, 4026, 4428, 4871,
@@ -41,6 +53,9 @@ STEP = [7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 21, 23, 25, 28, 31, 34, 37, 41,
 IDX = [-1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8]
 
 def xbox_adpcm(data, ch):
+    """Decode Xbox (IMA) ADPCM bytes with ch channels -> int16 array (samples, ch). Blocks are 36 bytes per channel:
+    the channels' 4-byte headers (int16 predictor, u8 step index, pad) first, then 8 rounds of one 4-byte word per
+    channel, each word holding 8 nibbles, low nibble first. Trailing partial blocks are ignored."""
     blk = 36 * ch
     out = [[] for _ in range(ch)]
     for b in range(len(data) // blk):
@@ -68,10 +83,13 @@ def xbox_adpcm(data, ch):
     return np.array(out, dtype=np.int16).T
 
 def to_wav(samples, rate, ch, path):
+    """Write an int16 (samples, ch) array as a 16-bit PCM WAV."""
     w = wave.open(path, 'wb'); w.setnchannels(ch); w.setsampwidth(2); w.setframerate(rate)
     w.writeframes(samples.astype('<i2').tobytes()); w.close()
 
 def decode(perm, rate, ch):
+    """A permutation dict from parse() -> int16 (samples, ch) PCM: big-endian PCM (0) or Xbox ADPCM (1) decoded;
+    Ogg (3) returns None so the caller copies perm['samples'] out as an .ogg. Other codecs raise ValueError."""
     c = perm['compression']; s = perm['samples']
     if c == 0:
         a = np.frombuffer(s[:len(s) // 2 * 2], '>i2').reshape(-1, ch)

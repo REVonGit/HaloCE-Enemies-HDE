@@ -60,6 +60,7 @@ JACKAL_SET = {
     'stand pistol reload-1': ('combat:pistol:pr:reload_1', 'combat:pistol:idle'),
     'stand rifle reload-1': ('combat:rifle:reload_1', 'combat:rifle:idle'),
 }
+# character -> (Halo 2 model, map, cache, set). To add a body, add it here with a set for its stances.
 CHARS = {
     'Marine': (MARINE, MAP01B, CACHE01B, MARINE_SET), 'MarineArmored': (MARINE, MAP01B, CACHE01B, MARINE_SET),
     'Elite': (ELITE, MAP08A, CACHE08A, ELITE_SET), 'EliteSpecial': (ELITE, MAP08A, CACHE08A, ELITE_SET),
@@ -68,10 +69,14 @@ CHARS = {
     'Jackal': (JACKAL, MAP08A, CACHE08A, JACKAL_SET), 'JackalMajor': (JACKAL, MAP08A, CACHE08A, JACKAL_SET),
     'H2Jackal': (JACKAL, MAP08A, CACHE08A, JACKAL_SET),
 }
+# the name fragments this script owns: removed before re-adding
 MARK = ' reload-', ' overheat'
 
 
 def h2_anims(model, path, cache, plan, ce_joints):
+    """{CE name: frames on ce_joints} for plan {CE name: (Halo 2 animation, base idle)}: overlays (type 1) laid over
+    the idle's first frame, replacements (type 2) with the idle on the bones they leave alone, moved bone for bone
+    onto the CE skeleton. Used by cover_anims.py and marine_stances.py too."""
     from h2map import H2Map, render_model
     import h2anim
     m = H2Map(path, cache)
@@ -84,6 +89,7 @@ def h2_anims(model, path, cache, plan, ce_joints):
     src = [h2i.get(j[0].replace('bip01 ', '').replace(' ', '_')) for j in ce_joints]
 
     def to_ce(fr):
+        """Halo 2 frames -> frames on the CE joints: CE offsets, Halo 2 rotations, the root's translation"""
         out = []
         for row in fr:
             r = []
@@ -97,6 +103,7 @@ def h2_anims(model, path, cache, plan, ce_joints):
         return out
 
     def base_frame(name):
+        """the first frame of the named idle (or the first animation whose name starts so), or None"""
         x = byname.get(name) or next((byname[k] for k in byname if k.startswith(name)), None)
         if not x: return None
         return h2anim.decode(x['data'], x['sizes'], x['frames'], x['nodes'], bind)[0][0]
@@ -124,6 +131,7 @@ def h2_anims(model, path, cache, plan, ce_joints):
 
 
 def add(char):
+    """replaces this script's animations in the character's IQM and json with its set (the Marine's jaw kept shut)"""
     model, path, cache, plan = CHARS[char]
     pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'
     if not os.path.exists(pi) or not os.path.exists(path): print(char, 'skipped'); return

@@ -58,6 +58,9 @@ HONOR_SECONDARY = (0.86, 0.64, 0.26)    # and gold trim
 PIECE_TINT = {'honor_body': (HONOR_PRIMARY, HONOR_SECONDARY)}
 LENS = 'ek_ranger_lens.png'
 LENS_RGB = ((0.95, 0.72, 0.30), (0.42, 0.22, 0.06))     # the Ranger's gold lens: top and bottom of its gradient
+# colour_map's baking knobs: the light direction and ambient share of the bump shading, how often the detail map
+# tiles and how much of it shows, grime in the crevices, an overall brightness lift, how the illumination maps are
+# added, and SKIP: bitmap name fragments that are never the colour map
 BUMP_LIGHT = (-0.35, 0.45, 0.82)
 BUMP_AMBIENT = 0.5
 DETAIL_TILES = 4
@@ -143,6 +146,7 @@ def bulge(P, N, tris):
     glass were domed: the visor shader's cube-map reflection then sweeps across it instead of one flat colour"""
     n = len(P); parent = list(range(n))
     def f(x):
+        """union-find root of vertex x, with path halving"""
         while parent[x] != x: parent[x] = parent[parent[x]]; x = parent[x]
         return x
     for t in tris:
@@ -168,6 +172,9 @@ INSET_CUT = 0.30          # the glyph: the panel's brightness above this (0..1)
 
 
 def inset_glow(src, rgb):
+    """a cut-out texture for an inset-light surface from the kit's torso map `src`: the glyph (brightness above
+    INSET_CUT) opaque, the rest transparent, tinted rgb (None keeps the panel's own colours), with a brightmap.
+    Returns the new file name (recorded in BRIGHT)."""
     from PIL import Image
     from scipy import ndimage
     a = np.asarray(Image.open(f'{KIT}/{src}').convert('RGB'), float) / 255.0
@@ -182,6 +189,7 @@ def inset_glow(src, rgb):
 
 
 def lens_texture():
+    """writes the Ranger's gold lens gradient (LENS_RGB, top to bottom) as the kit's LENS texture"""
     from PIL import Image
     t, b = np.array(LENS_RGB[0]), np.array(LENS_RGB[1])
     y = np.linspace(0, 1, 64)[:, None, None]
@@ -304,6 +312,9 @@ def make_gibs(J, bind, meta):
 
 
 def main():
+    """builds the kit: each PIECES entry retargeted onto the CE Elite skeleton (one surface per limb, its stumps and
+    textures), the Ranger's jump pack placed by its 'jetpack' marker, the jet_fire nozzles, the gibs, and
+    EliteKit.json listing the pieces, limbs, stumps, gibs, specular masks and brightmaps"""
     from h2map import H2Map, render_model
     import extract_h2_brute as hb
     os.makedirs(KIT, exist_ok=True)
@@ -315,6 +326,7 @@ def main():
     meta = dict(pieces={})
     tex_done = {}
     def texture_for(R, shader, tint=None):
+        """the kit texture of a shader (colour_map, once per shader name)"""
         if shader not in tex_done:
             fn = f'ek_{shader}.png'
             colour_map(m, hb, shader_bitmaps(m, R, shader), fn, tint)
@@ -359,6 +371,7 @@ def main():
     node, mt, mq = mk
     nt, nq = h2w[node]
     def place(pos, nrm):
+        """jump-pack points and normals moved from the pack's own space to the Ranger's jetpack marker"""
         q = qmul(nq, mq)
         return np.array([nt + qrot(nq, mt + qrot(mq, p)) for p in pos]), np.array([qrot(q, n) for n in nrm])
     JP = render_model(m, JETPACK)

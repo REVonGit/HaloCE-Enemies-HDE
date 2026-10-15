@@ -29,6 +29,8 @@ UZDOOM = os.environ.get('HCE_UZDOOM', 'uzdoom')
 IWAD = os.environ.get('HCE_IWAD', f'{GAME}/doom2.wad')
 HDE = os.environ.get('HCE_HDE_PK3', f'{GAME}/HDE_dev_lite.pk3')
 COVERTEST = os.environ.get('HCE_COVERTEST', f'{GAME}/covertest.wad')
+# the built pk3s (under GAME) loaded for the shoot, in load order; their mapinfo.txt lumps give the classes to
+# photograph. A new pack goes here or its enemies get no icon.
 PACKS = ['HCE_EnemyAPI_LocalDEV.pk3', 'HaloCE_Core.pk3', 'HaloCE_Covenant.pk3', 'HaloCE_Flood.pk3', 'HaloCE_Sentinels.pk3',
          'HaloCE_Marines.pk3', 'HaloCE_Enemies_Digsite.pk3']
 ICON = 80              # the icon's longest side (pixels)
@@ -163,6 +165,8 @@ def cut_out(fn, sentinel=False):
 
 
 def main():
+    """photograph every placeable class (up to three passes for the ones whose photo failed) and write the icons and
+    icons.json under $HCE_OUT/udb_icons; --missing and --only keep the icons already there (see the module docstring)"""
     classes = [c for _, c in placeable() if not c.startswith('HCE_Random')]
     od = f'{OUT}/udb_icons'
     index = {}

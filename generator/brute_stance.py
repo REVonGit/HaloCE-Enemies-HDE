@@ -19,6 +19,7 @@ from iqm import read_iqm, write_iqm
 from extract_h2_brute import MAP, CACHE, BRUTE, OUT
 from h2_elite_anims import _qmul
 
+# combat:support:<Halo 2 leaf> -> 'stand support <pack leaf>'; add a row to carry another support animation
 PLAN = {'idle': 'idle', 'move_front': 'move-front', 'move_back': 'move-back', 'move_left': 'move-left', 'move_right': 'move-right',
         'turn_left': 'turn-left', 'turn_right': 'turn-right', 'dive_front': 'dive-front', 'dive_left': 'dive-left',
         'dive_right': 'dive-right', 'evade_left': 'evade-left', 'evade_right': 'evade-right',
@@ -27,6 +28,8 @@ PLAN = {'idle': 'idle', 'move_front': 'move-front', 'move_back': 'move-back', 'm
 
 
 def main():
+    """replaces every 'stand support ' animation in the Brute's IQM and json with the PLAN set (the left-hand grip
+    pose applied) and the firing overlay baked onto the idle"""
     from h2map import H2Map
     import h2anim
     pi, pj = f'{OUT}/models/Brute/Brute.iqm', f'{OUT}/models/Brute/Brute.json'
@@ -42,6 +45,7 @@ def main():
     gfr, _ = h2anim.decode(g['data'], g['sizes'], g['frames'], g['nodes'], nanq)
     grip = {j: gfr[0][j] for j in range(NJ) if not np.isnan(np.array(gfr[0][j][1], float)).any()}
     def gripped(fr):
+        """frames with the left-hand grip pose's rotations on the bones it animates"""
         return [[(row[j][0], tuple(grip[j][1]), row[j][2]) if j in grip else row[j] for j in range(NJ)] for row in fr]
     for k in [k for k in anims if k.startswith('stand support ')]: anims.pop(k)
     for k in [k for k in meta['anims'] if k.startswith('stand support ')]: meta['anims'].pop(k)

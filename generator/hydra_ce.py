@@ -12,6 +12,7 @@ import hde_ce, bulldog_ce as bc
 BLEND = os.environ.get('HCE_HYDRA_BLEND', os.path.join(HERE, 'Hydra_HDE.blend'))
 WID = 'm_hydra'
 RES = 512
+# object -> (role, target triangles); DECALS: (object, decal material or None for any) kept as separate surfaces
 PARTS = {'Hydra': ('body', 1100),                 # receiver, stock, grip, tube housing
          'Hydra.003': ('tubes', 320),             # the six-tube missile pod
          'Hydra.001': ('cover', 110),             # pod cover
@@ -56,6 +57,8 @@ def decal_meshes(src, origin):
 
 
 def build():
+    """the Hydra -> out/weapons/m_hydra: the PARTS simplified with their UVs kept (only MAT faces), the baked map as
+    w_m_hydra_0.png, the decal surfaces with their own pictures, all in the pkl"""
     bc.ensure_tool()
     src = hde_ce.Source(BLEND, maxres=4096)
     P0 = src.R['Hydra']['pos']                    # +x forward, +z up

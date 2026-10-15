@@ -1,19 +1,38 @@
 """Minimal .blend reader (SDNA-driven), enough to pull meshes, vertex groups, materials and objects out of a
 Blender 4.x / 5.x file without Blender. Supports the old 12-byte header (BLENDER-v / _v) and the 5.0 'BLENDER17-01'
 header with 32-byte block headers.
-"""
+
+    B = Blend('x.blend')
+    for o in B.of_type('Object'):                 # blocks whose SDNA struct is Object
+        name = B.id_name(o); me = B.block(B.get('Object', o.off, 'data'))
+        nv = B.get('Mesh', me.off, 'totvert')
+
+A .blend is a list of blocks, each tagged with the SDNA struct it holds and the memory address it had when saved
+('old' pointer); pointers stored in the data are those old addresses, and block() resolves them. Field offsets are
+computed from the file's own DNA1 block, so any Blender version's layout is handled as long as the field names
+used by the callers (blend35.py, brute_kit.py, elefant_kit.py) still exist. Gzip and zstd compressed files are
+accepted (zstd needs the `zstandard` module)."""
 import struct, zlib
 import numpy as np
 
 
 class Block:
+    """One file block: code ('DATA', 'OB', 'ME', 'DNA1' ...), sdna (struct index), old (saved address), size,
+    count (struct instances), off (data offset in the file), owner (index of the last non-DATA block before it,
+    i.e. the ID datablock this DATA belongs to)."""
     __slots__ = ('code', 'sdna', 'old', 'size', 'count', 'off', 'owner')
     def __init__(s, code, sdna, old, size, count, off):
+        """store the block header fields; owner is filled in later by Blend"""
         s.code, s.sdna, s.old, s.size, s.count, s.off = code, sdna, old, size, count, off
 
 
 class Blend:
+    """A parsed .blend: d (bytes), ptr (pointer size), le (little-endian), e (struct endian char), blocks, by_old
+    (old address -> blocks), ctx (default owner for ambiguous pointers, see block()), and the DNA: names, types, tlen,
+    structs, struct_by_name."""
     def __init__(s, path):
+        """Read and decompress the file, walk the block headers (24-byte classic / 32-byte 'BLENDER17' format) and
+        parse the DNA1 block."""
         d = open(path, 'rb').read()
         if d[:2] == b'\x1f\x8b': d = zlib.decompress(d, 16 + 15)
         if d[:4] == b'\x28\xb5\x2f\xfd':
@@ -41,6 +60,8 @@ class Blend:
         s.struct_by_name = {s.types[t]: i for i, (t, _) in enumerate(s.structs)}
 
     def _dna(s, b):
+        """Parse the DNA1 block: NAME (field names with * and [] decorations), TYPE (type names), TLEN (type sizes,
+        int16), STRC (per struct: type index and (type, name) index pairs per field)."""
         d = s.d; p = b.off + 4
         def align(p): return b.off + ((p - b.off + 3) & ~3)
         assert d[p:p + 4] == b'NAME'; p += 4; n = struct.unpack_from(s.e + 'i', d, p)[0]; p += 4
@@ -66,6 +87,8 @@ class Blend:
         s.layout = {}
 
     def _field_size(s, ft, fname):
+        """Bytes a field occupies: pointer size for '*name' / '(*fn)()', else the type length (TLEN wraps past
+        32767, hence the +65536), times every [n] dimension."""
         if fname.startswith('*') or fname.startswith('(*'): base = s.ptr
         else: base = s.tlen[ft] if s.tlen[ft] >= 0 else s.tlen[ft] + 65536
         n = 1
@@ -86,6 +109,9 @@ class Blend:
         return out
 
     def get(s, sname, base, field):
+        """Read field `field` of the struct `sname` instance at file offset base. Pointers come back as the stored
+        address (resolve with block()), char arrays as str, numeric arrays as tuples, scalars as numbers, and an
+        embedded struct (or an array of structs) as its file offset for a further get()."""
         off, tn, raw, sz = s.fields(sname)[field]
         p = base + off
         if raw.startswith('*') or raw.startswith('(*'): return struct.unpack_from(s.e + 'Q', s.d, p)[0]
@@ -110,11 +136,15 @@ class Blend:
             for b in c:
                 if b.owner == ctx.owner: return b
         return c[0]
+    # name of the SDNA struct a block holds
     def stype(s, b): return s.types[s.structs[b.sdna][0]]
+    # every non-empty block holding struct sname ('Object', 'Mesh', 'Material' ...)
     def of_type(s, sname): return [b for b in s.blocks if b.size and s.stype(b) == sname]
+    # an ID datablock's name without its two-letter type prefix ('OBCube' -> 'Cube')
     def id_name(s, b): return s.get('ID', b.off, 'name')[2:]
 
     def listbase(s, base, sname):
+        """The blocks of a Blender ListBase at file offset base (a linked list of sname structs via 'next')."""
         first = s.get('ListBase', base, 'first'); out = []
         while first:
             b = s.block(first)
@@ -123,6 +153,8 @@ class Blend:
         return out
 
     def array(s, ptr, dtype, shape=None, ctx=None):
+        """The whole block a pointer refers to as a numpy array of dtype (reshaped to shape if given); None when the
+        pointer resolves to nothing."""
         b = s.block(ptr, ctx)
         if not b: return None
         a = np.frombuffer(s.d, dtype=dtype, count=b.size // np.dtype(dtype).itemsize, offset=b.off)

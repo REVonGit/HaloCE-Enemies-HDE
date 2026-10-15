@@ -29,6 +29,8 @@ BMP = r'objects\characters\jackal\bitmaps' + '\\'
 HAND_WEAPONS = ['plasma_rifle', 'spiker', 'cmt_carbine']   # + the CMT carbine (the Marksmen; blue-skinned for the pulse carbine)                 # out/weapons/<id>/<id>.pkl (CE weapon space: origin = grip)
 KEEP = {('body', 'standard'), ('shield', 'active')}
 # shader -> (base bitmap, change-colour mask or None)
+# To add a body piece, add its (region, perm) to KEEP and its shader here (the mask, if any, is what the builder
+# paints with the rank colour).
 SHADER_MAPS = {
     'jackal_torso': ('torso', 'torso_change_color'), 'jackal_legs': ('legs', 'legs_change_color'),
     'jackal_armor_torso': ('torso', 'torso_change_color'), 'jackal_armor_legs': ('legs', 'legs_change_color'),
@@ -80,10 +82,12 @@ def anim_plan():
 
 
 def bitmap(m, name):
+    """an MCC bitmap by tag name (textures.dat: TEXTURES), or a flat tan stand-in when the file isn't there"""
     return mcc_bitmap(m, name, TEXTURES) if splitfile.exists(TEXTURES) else Image.new('RGBA', (16, 16), (110, 100, 90, 255))
 
 
 def find_bitmap(m, short, under='objects\\characters\\jackal'):
+    """the full name of the 'bitm' tag ending in <short>, preferring one under `under`"""
     names = [t['name'] for t in m.tags if t['cls'] == 'bitm' and t['name'].endswith('\\' + short)]
     pref = [n for n in names if under in n]
     return (pref or names)[0]
@@ -121,6 +125,9 @@ CE_HELMET = False
 
 
 def add_ce_helmet(meshes, nodes, od, pid):
+    """appends the 'helmet.jackal_helmet' surface: Halo CE's Jackal helmet (ce_jackal_helmet.py) scaled and offset onto
+    the Halo 2 head bone (HELMET_SCALE / HELMET_OFFSET), with its base map and rank mask; without triangles unless
+    CE_HELMET. Prints and returns if no CE map is to hand."""
     try:
         import ce_jackal_helmet as cj
         h = cj.helmet(CE_MAPS)
@@ -180,10 +187,12 @@ def plus_meshes(nodes, od, pid):
     BI = bone[np.asarray(J['bidx'])].astype(np.uint8); BW = np.clip(np.round(np.asarray(J['bw']) * 255), 0, 255).astype(np.uint8)
     T = np.asarray(J['tris']); TM = np.asarray(J['tri_mat'])
     def piece(sel, uv=None):
+        """the triangles selected by mask sel as a mesh with only the vertices they use"""
         v, inv = np.unique(T[sel].ravel(), return_inverse=True)
         return dict(pos=P[v], nrm=N[v], uv=(UV if uv is None else uv)[v], bidx=BI[v], bw=BW[v],
                     tris=inv.reshape(-1, 3)[:, [0, 2, 1]])
     def join(a, b):
+        """mesh b appended to mesh a"""
         n0 = len(a['pos'])
         out = {k: np.concatenate([a[k], b[k]]) for k in ('pos', 'nrm', 'uv', 'bidx', 'bw')}
         out['tris'] = np.concatenate([a['tris'], b['tris'] + n0]); return out
@@ -225,6 +234,11 @@ def plus_meshes(nodes, od, pid):
 
 
 def extract_jackal(pid='H2Jackal'):
+    """Halo 2's Jackal -> out/models/<pid>/<pid>.iqm, its maps and <pid>.json. Surfaces: the KEEP body (or the
+    Characters+ body when that pack is there) and shield pieces, one per region.shader (the shield two-sided), the
+    helmet surface, then the HAND_WEAPONS and beam-rifle meshes baked into the left-hand marker; at most 32.
+    Animations from anim_plan (overlays baked onto the idles). The json also records the shield and helmet
+    surface indices, the shield and hand bones, the change colours per variant and the shield pop sounds."""
     m = H2Map(MAP08A, CACHE08A)
     M = render_model(m, JACKAL)
     nodes = M['nodes']; NJ = len(nodes)
@@ -301,11 +315,13 @@ def extract_jackal(pid='H2Jackal'):
     byname = {x['name']: x for x in an}
     dec = {}
     def get(nm):
+        """the decoded (frames, root movement) of Halo 2 animation nm, cached"""
         if nm not in dec:
             x = byname[nm]; dec[nm] = h2anim.decode(x['data'], x['sizes'], x['frames'], x['nodes'], defaults)
         return dec[nm]
     alist = []; info = {}
     def add(name, frames, mv, loop):
+        """records one animation for the IQM and its json entry (frames, speed, yaw, loop, net dx) from its root movement mv (F, 4)"""
         speed = float(np.hypot(mv[:, 0], mv[:, 1]).sum() / max(1, len(frames)))
         info[name] = dict(frames=len(frames), speed=speed, yaw=float(np.degrees(mv[:, 3].sum())), loop=loop, key=-1, next=-1,
                           dx=[float(mv[:, 0].sum()), float(mv[:, 1].sum())])

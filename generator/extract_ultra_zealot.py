@@ -31,9 +31,11 @@ except Exception:
 BLEND = os.environ.get('HCE_ULTRA_ZEALOT', os.path.join(HERE, 'extra', 'rev elite', 'elite.blend'))   # from Ultra_Zealot.zip
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
 CHAR = 'EliteZealot'
+# the blend objects that make up the Zealot (every one rigged to 'bip01 ...' groups, the shield to none)
 PIECES = ('base_torso', 'zealot_torso', 'basic_special', 'shoulder_general', 'zealot_arms_reach', 'special_legs',
           'zealot', 'zealot_ornament', 'shield.001')
-# blend material -> Halo CE shader
+# blend material -> Halo CE shader (its base and multipurpose maps become EliteZealot_<k>.png); a material not
+# listed here is dropped from the model
 SHADERS = {'elite arms': r'characters\elite\shaders\elite arms', 'elite head': r'characters\elite\shaders\elite head',
            'elite heada': r'characters\elite\shaders\elite heada', 'elite legs': r'characters\elite\shaders\elite legs',
            'elite teeth': r'characters\elite\shaders\elite teeth', 'elite torso': r'characters\elite\shaders\elite torso',
@@ -50,7 +52,9 @@ SHIELD_ANIMS = {'guard sword idle': 'new stand idle',
                 'guard sword move-front': 'new stand move front', 'guard sword move-back': 'new stand move back',
                 'guard sword move-left': 'new stand move left', 'guard sword move-right': 'new stand move right',
                 'crouch guard sword idle': 'new crouch idle', 'crouch guard sword move-front': 'new crouch move front'}
+# materials recoloured by lights() and listed as glow
 LIGHTS = ('elite inset lights', 'elite special inset lights')
+# the forearm shield's material (build_pack.bake_shield)
 SHIELD = 'jackal shield'
 REACH_BLUE = np.array([0.30, 0.66, 1.00], np.float32)
 
@@ -108,6 +112,10 @@ def shield_anims():
 
 
 def build():
+    """out/models/EliteZealot/: the Elite's skeleton and animations (plus the shield Elite's guard), the blend's
+    PIECES skinned to it (one surface per material, the shield on the left forearm), the Elite's energy sword
+    surfaces, Halo CE's textures per SHADERS, and EliteZealot.json carried over from the Elite's with the
+    materials, glow and shield entries replaced"""
     d = f'{OUT}/models/{CHAR}'
     os.makedirs(d, exist_ok=True)
     src = f'{OUT}/models/Elite'

@@ -1,6 +1,9 @@
 	// HCE_JawShut(): degrees about the jaw hinge from its bind pose to shut (negative: closing), per face; build_pack.jaw_shut writes it beside this
 	int hce_lipPhase;
 	double hce_lipOpen;
+	// Lip sync: every third tic (offset by hce_lipPhase) opens the jaw while the actor is talking on CHAN_VOICE, from
+	// two out-of-step sine waves plus jitter, and holds it shut (HCE_JawShut) otherwise. Rotates the 'bip01 ponytail1'
+	// bone, which is the jaw on these heads. To change how wide it opens, edit the 14.0 degrees.
 	override void Tick()
 	{
 		super.Tick();

@@ -4,6 +4,7 @@
 // off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan) read it through this.
 class HCE_HDEPickupResolver : HCE_PickupResolver
 {
+	// the weapon class a ground pickup gives, read off HDE's WeaponPickupProxy; 'None' for anything else
 	override Name WeaponOf(Actor a)
 	{
 		let p = WeaponPickupProxy(a);
@@ -15,6 +16,8 @@ class HCE_HDEPickupResolver : HCE_PickupResolver
 	// preset's weapon list is read once per map (HaloDoom_EnemyBase.HCE_SharedResolver keeps this resolver for the map).
 	bool presetRead, presetAll;
 	Array<String> presetGuns;
+	// reads the current game type once: everything is allowed when there is none or it doesn't filter weapons,
+	// otherwise its weaponClasses (lower-case class names) are the allowed guns
 	void ReadPreset()
 	{
 		presetRead = true;
@@ -23,6 +26,7 @@ class HCE_HDEPickupResolver : HCE_PickupResolver
 		if(gt) presetGuns.Copy(gt.weaponClasses);
 	}
 
+	// does the preset spawn this gun: true for anything that isn't an HDE HaloGun, else whether it is on the list
 	override bool WeaponAllowed(Name w)
 	{
 		if(!presetRead) ReadPreset();

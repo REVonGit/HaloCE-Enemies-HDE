@@ -22,6 +22,9 @@
 // DoomEdNums 30900-30931 are the 32 variant things (HCE_Variant0 .. HCE_Variant31); a number with no variant defined
 // spawns nothing. How many variants loaded is printed to the console when a map starts.
 
+// one parsed variant block. claims[i] / chance[i] are its "replaces" lines (the Doom class and the percent).
+// To add a key to the format, add a field here, a line in HCE_VariantBook.Parse, and pass it on in
+// HCE_VariantSpawner.PostBeginPlay (and HaloDoom_EnemyBase.HCE_SetVariant in the enemy API).
 class HCE_VariantDef
 {
 	int num;
@@ -40,6 +43,7 @@ class HCE_VariantBook
 	int count;
 
 	bool quiet;                                    // (the bestiary reads them again: no second round of warnings)
+	// a new book with every HCEVARS lump parsed into it, in load order (later lumps override earlier numbers)
 	static HCE_VariantBook Read(bool quiet = false)
 	{
 		let b = new("HCE_VariantBook");
@@ -79,6 +83,10 @@ class HCE_VariantBook
 		}
 	}
 
+	// parses one lump's text (from: its name, for the warnings) into defs[]: each "variant N { key value ... }" block
+	// becomes an HCE_VariantDef with the defaults from the file header, "replaces" taking two values (class, percent,
+	// 100 when left off). A block with a bad number, or a base that isn't a loaded enemy, is dropped with a warning;
+	// an unknown key is skipped. To add a key, add an "else if" to the chain here.
 	void Parse(String text, String from)
 	{
 		Array<String> t;
@@ -137,8 +145,12 @@ class HCE_VariantSpawner : Actor
 		+DONTSPLASH
 		RenderStyle "None";
 	}
+	// which defs[] slot this thing stands for; each HCE_VariantN below returns its N
 	virtual int VariantNumber() { return -1; }
 
+	// looks the variant up in the replace handler's book; if it is defined, spawns its base class in this thing's
+	// place with the thing's angle, TID, special, args, ambush, dormant and friendly flags carried over, named after
+	// the variant and changed by HCE_SetVariant. Then the spawner removes itself without counting
 	override void PostBeginPlay()
 	{
 		Super.PostBeginPlay();
@@ -173,6 +185,9 @@ class HCE_VariantSpawner : Actor
 	}
 }
 
+// the 32 variant things, one per slot: identical but for VariantNumber(). Their DoomEdNums (30900 + N) come from the
+// MAPINFO split_factions.py writes; to allow more variants, raise the 32 in HCE_VariantBook.defs and Parse, add
+// classes here, and raise the range(32) in split_factions.py.
 class HCE_Variant0 : HCE_VariantSpawner
 {
 	//$Category "Halo CE/Variants (HCEVARS)"

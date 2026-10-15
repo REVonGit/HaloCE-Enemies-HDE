@@ -29,6 +29,7 @@ except Exception:
     OUT = os.path.join(HERE, 'out')
 
 # the body's stance -> the Halo 2 weapon class whose patrol animations it takes
+# To give a new stance a low-ready set, add it to its body's table with the Halo 2 class to borrow from.
 MARINE_ST = {'rifle': 'rifle', 'h2rifle': 'rifle', 'h2br': 'rifle', 'h2smg': 'rifle', 'h2bulldog': 'rifle',
              'pistol': 'pistol', 'h2pistol': 'pistol', 'h2missile': 'missile', 'missle': 'missile'}
 ELITE_ST = {'pistol': 'pistol', 'rifle': 'rifle', 'missle': 'missile', 'sword': 'sword'}
@@ -38,10 +39,12 @@ BRUTE_ST = {'rifle': 'any:any', 'support': 'any:any', 'melee': 'melee'}
 
 
 def brute_src():
+    """the Brute's own Halo 2 model and map (imported late: extract_h2_brute reads its env at import)"""
     from extract_h2_brute import MAP, CACHE, BRUTE
     return BRUTE, MAP, CACHE
 
 
+# character -> (Halo 2 model, map, cache, stance table); the Brute's source comes from brute_src()
 CHARS = {
     'Marine': (MARINE, MAP01B, CACHE01B, MARINE_ST), 'MarineArmored': (MARINE, MAP01B, CACHE01B, MARINE_ST),
     'Elite': (ELITE, MAP08A, CACHE08A, ELITE_ST), 'EliteSpecial': (ELITE, MAP08A, CACHE08A, ELITE_ST),
@@ -55,6 +58,7 @@ MARK = (' low-idle', ' low-move')
 
 
 def stances(meta):
+    """the stance names a body has (from its 'stand / alert <stance> idle / move-front' animations)"""
     out = set()
     for k in meta['anims']:
         p = k.split()
@@ -75,6 +79,7 @@ def h2_patrol(model, path, cache, plan, ce_joints):
     src = [h2i.get(j[0].replace('bip01 ', '').replace(' ', '_')) for j in ce_joints]
 
     def to_body(fr):
+        """Halo 2 frames -> frames on the body's joints: its offsets, Halo 2 rotations, the root's translation"""
         out = []
         for row in fr:
             r = []
@@ -88,6 +93,7 @@ def h2_patrol(model, path, cache, plan, ce_joints):
         return out
 
     def first(names):
+        """the first base (type 0) animation among the names, or None"""
         return next((byname[n] for n in names if n in byname and byname[n]['type'] == 0), None)
 
     res = {}
@@ -102,6 +108,8 @@ def h2_patrol(model, path, cache, plan, ce_joints):
 
 
 def add(char):
+    """adds low-idle / low-move for every stance the body has in its table, replacing this script's earlier ones;
+    low-move keeps its root speed for stride matching"""
     model, path, cache, plan = CHARS[char]
     if char == 'Brute': model, path, cache = brute_src()
     pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'

@@ -1,6 +1,8 @@
 
 	// heavy footfalls from its own sound set while it walks
 	int hce_stepTics;
+	// Plays the Thorn Beast's step sound every 16 tics while it is alive, on the floor and moving faster than 1.5
+	// units/tic. To change the footfall rate, edit the 16.
 	override void Tick()
 	{
 		super.Tick();

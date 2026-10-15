@@ -2,7 +2,23 @@
 rifle stance.  Generated with build_pack.build() so the classes behave exactly like the main pack's.
 
 Needs out/models/{Drinol,SlugMan,EliteRifle} (extract_digsite.py, extract_elite_rifle.py) and the weapon pkls
-from extract_sketchfab.py.  Digsite content is licensed for MCC projects only: never part of a public release."""
+from extract_sketchfab.py.  Digsite content is licensed for MCC projects only: never part of a public release.
+
+    python3 build_digsite.py        # after build_pack.py, gore_kit.py, blood_kit.py and marine_arsenal.py overlays
+
+Since the first release the add-on has grown past Digsite's three: SPV3's Blind Wolf, Thorn Beast and Engineer
+(extract_spv3.py), Halo 2's Drones, Brutes and Jackals (extract_h2*.py) and the Ultra Zealot (extract_ultra_zealot.py)
+are built here too, each when its out/models/<Char>/<Char>.json exists. Everything is written to addons/digsite/
+(hce_paths.DIG_PACK), wiped first: the ZScript (bp.build with cfg tag 'dig'), modeldef.dig, gldefs.dig, sndinfo.dig,
+models/hce_dig/ and the hand-written digsite_src/ files copied in.
+
+How it works: configure() extends build_pack's tables (weapons, fire patterns, sounds, skin hooks, per-character
+overrides) with the add-on's guns and characters; load_ai() builds the add-on's variant / actor / biped tables, partly
+from Digsite's tags and partly by copying and re-statting the main pack's (bp.AI); build() hands both to
+build_pack.build() and then adds what the generic builder doesn't do (helmet debris, the Captain's flag, the kit).
+The *_skin functions are build_pack.SKIN_HOOK callbacks: (class, variant, surface index, material, model json, skin
+dir) -> the skin file name to use, or None for the default bake. DoomEdNums start at 30400; classes marked _late keep
+the first release's numbers (digsite_index.json, bp.build's late_order)."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, sys, json, copy, shutil, subprocess, glob
@@ -18,6 +34,8 @@ from hce_paths import DIGSITE, DIG_PACK as PACK, HERE, OUT
 T = DIGSITE + '/tags/'
 S = bp.S
 
+# weapon and character references as the variant tables name them (Halo tag paths, or made-up ones for guns Halo CE
+# never had); bp.WEAPON_IDS maps a weapon reference to its pkl under out/weapons (configure)
 CARBINE = r'digsite\weapons\plasma carbine'
 BEAM = r'digsite\weapons\particle beam'
 PULSE = r'digsite\weapons\pulse carbine'
@@ -39,6 +57,10 @@ CASTER_IDX = 8                          # its model attachment (the armour kit u
 # Minors, Majors and Captains wear only their body here: their helmets and armour come from the armour kit
 # (extract_brute_kit.py, KIT_JSON), rolled per Brute when it spawns (brute_code / kit_code).
 # The Chieftain is a custom rank: Tartarus's look, hammer stance and gravity hammer.
+# rank -> body (health), variants (the hlmt variants whose fur colours the loadouts cycle through), weapons (one class
+# per weapon reference), wear {(region, permutation)} the body shows (brute_skin hides the rest). To make a rank
+# tougher raise body; to arm it add a reference to weapons (and the gun to bp.WEAPONS / PATTERNS / FIRE_SOUNDS if it
+# is new); a new rank also needs its name in the class-name tests of kit_code / brute_code and in build()'s late_order.
 BRUTE_RANKS = {
     'minor': dict(body=175, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
                   wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
@@ -62,7 +84,7 @@ ZEALOT_RED = (0.55, 0.06, 0.14)          # Reach's Field Marshal maroon, deeper 
 ZEALOT_BLUE = (0.22, 0.55, 1.00)         # its shield, as its lights
 KIT_DIR = f'{bp.OUT}/models/BruteKit'
 KIT_JSON = f'{KIT_DIR}/BruteKit.json'
-KIT_RANKS = ['minor', 'major', 'captain', 'chieftain']
+KIT_RANKS = ['minor', 'major', 'captain', 'chieftain']     # the kit's rank tables in order: index r in kit_code's ZScript
 # Halo 2 Jackals (extract_h2_jackal.py): one model, three ranks. Ultra (the CE pack's plasma-rifle Ultra moved onto
 # the Halo 2 body, same class and DoomEdNum), Zealot (Spiker, gold shield) and Sniper (Halo 2's beam rifle, no shield)
 H2JACKAL = r'objects\characters\jackal\jackal'
@@ -78,6 +100,8 @@ H2J_NO_SHIELD = ('sniper', 'marksman')        # ranks that carry no arm shield (
 H2J_SUIT, H2J_PLATE = (0.18, 0.19, 0.22), (0.52, 0.47, 0.45)
 H2J_SUIT_TINT = {'default': (0.55, 0.45), 'zealot': (0.8, 0.62)}
 bp.SHINE['H2Jackal'] = 0.3; bp.SHINE_CUBE['H2Jackal'] = 'elite'
+# rank -> either a Halo 2 biped variant name (its change colours, read from H2Jackal.json) or an explicit
+# [primary, secondary, tertiary] colour list; h2jackal_skin tints the suit with the tertiary
 H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman': 'major',
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
@@ -85,6 +109,8 @@ H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman'
 SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=(0.42, 0.40, 0.50)),
               'major': dict(health=1.35, accuracy=0.9, tint=(0.58, 0.17, 0.15)),
               'ultra': dict(health=1.8, accuracy=0.75, tint=(0.80, 0.82, 0.88))}
+# weapon key -> (its reference, which of the two Digsite Slug Man variants it copies: the 'pistol' one or the 'rifle'
+# one, which sets the stance and the combat data); SLUG_RANK_WEAPONS says which keys each rank fields (one class each)
 SLUG_WEAPONS = {'plasma pistol': (r'weapons\plasma pistol\plasma pistol', 'pistol'), 'needler': (r'weapons\needler\needler', 'pistol'),
                 'plasma rifle': (r'weapons\plasma rifle\plasma rifle', 'pistol'), 'particle beam': (r'digsite\weapons\particle beam', 'rifle'),
                 'plasma carbine': (r'digsite\weapons\plasma carbine', 'rifle'), 'pulse carbine': (r'digsite\weapons\pulse carbine', 'rifle')}
@@ -113,6 +139,7 @@ def slug_skin(cls, v, si, mat, meta, skin_dir):
     m = np.clip((r - 0.06) / 0.1, 0, 1) * np.clip(1 - (g - r * 0.6) / 0.15, 0, 1)
     m = ndimage.gaussian_filter(m, 0.8)
     def norm(x):
+        """stretch x to 0..1 over the plate region (3rd..97th percentile where the mask m is on)"""
         w = m > 0.5
         lo, hi = np.percentile(x[w], 3), np.percentile(x[w], 97)
         return np.clip((x - lo) / max(hi - lo, 1e-3), 0, 1)
@@ -123,6 +150,9 @@ def slug_skin(cls, v, si, mat, meta, skin_dir):
     Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
     return fn
 
+# the Chieftain's animation table while berserk (the Brute's own, bp.BERSERK_ANIMS['Brute'], is the bare-handed
+# charge): action -> the Halo 2 animation names rolled for it ('name%4': the extractors' name for a multi-take
+# animation's fifth permutation)
 CHIEFTAIN_BERSERK = {
     'IDLE': ['berserk hammer idle'], 'ALERT': ['berserk hammer idle'], 'MOVE_F': ['berserk hammer move-front'],
     'MOVE_B': ['berserk hammer move-front'], 'MOVE_L': ['berserk hammer move-front'], 'MOVE_R': ['berserk hammer move-front'],
@@ -130,6 +160,11 @@ CHIEFTAIN_BERSERK = {
     'MELEE': ['berserk hammer melee 1', 'berserk hammer melee 2', 'stand melee melee%4', 'stand melee melee%5']}
 
 def load_ai():
+    """the add-on's AI tables in build_pack's layout: dict(variants, actors, bipeds, collisions, weapons). Digsite's
+    Drinol and Slug Man come from its loose tags; everything else is a deep copy of a main-pack variant (bp.AI)
+    re-pointed at the add-on's body and gun and re-statted (health, shield, ranges, grenades), with the private
+    keys the builder reads (_late, _rank, _ov overrides, _brute_rank / _brute_variant, _slug_rank, _helmet). Each
+    Halo 2 / SPV3 character is added only when its extracted model is present."""
     m = LooseMap()
     variants, actors, bipeds = {}, {}, {}
     for vp in [r'digsite\characters\drinol\00_mac\drinol', r'digsite\characters\slug_man\slug_man particle beam',
@@ -295,6 +330,7 @@ def load_ai():
         jb = copy.deepcopy(A['bipeds'][ultra['unit_reference']]); jb['change_colors_list'] = []
         bipeds[H2JACKAL] = jb
         def h2j(src, rank, body, shield, wref, **kw):
+            """a Halo 2 Jackal variant copied from CE variant src, with this rank, vitality and gun (kw: more keys)"""
             v = copy.deepcopy(src)
             v['unit_reference'] = H2JACKAL; v['actor_reference'] = H2JACKAL
             v['unit'] = dict(v['unit'], maximum_body_vitality=float(body), maximum_shield_vitality=float(shield))
@@ -343,6 +379,8 @@ def load_ai():
     return dict(variants=variants, actors=actors, bipeds=bipeds, collisions=colls,
                 weapons={k: A['weapons'][k] for k in (CE_PR, CE_AR, CE_SG)})     # shotgun pellets per shot etc.
 
+# the add-on's hand-written ZScript, pasted into the generated classes (configure: bp.BASE_CODE / TYPE_CODE /
+# WEAPON_CODE); edit the files under templates/zscript/, not these names
 DRONE_CODE = template('zscript/drone.zs')
 
 ENGINEER_CODE = template('zscript/engineer.zs')
@@ -357,6 +395,8 @@ BEAM_CODE = template('zscript/beam.zs')
 
 def voices():
     """Slug Man dialogue from Digsite's sound tags (Xbox ADPCM) -> ogg + SNDINFO events"""
+    # Digsite sound tag name -> the HCE_Say events it serves (every permutation of the tag goes in each event's
+    # $random); events with no tag borrow by build_voices.FALLBACK
     cat = {'sighted': ['Alert'], 'sighted_re': ['Alert'], 'taunting': ['Taunt'], 'pain': ['Pain', 'PainMed', 'PainHeavy'],
            'death_short': ['Death'], 'death_long': ['Death'], 'retreat': ['Flee', 'Panic'], 'communication': ['Regroup'],
            'evade': ['EnemyGrenade'], 'searching': ['Search'], 'idle_combat': ['Taunt']}
@@ -451,6 +491,7 @@ DRONE_SHELL = (1.00, 0.62, 0.22)       # the Captains' shield flare: the amber o
 
 
 def drone_ranks():
+    """the extracted Drone's 'ranks' table (rank -> colour/mask info) from Drone.json, {} when it hasn't been built"""
     j = f'{bp.OUT}/models/Drone/Drone.json'
     return (json.load(open(j)).get('ranks') or {}) if os.path.exists(j) else {}
 
@@ -565,6 +606,7 @@ def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
     m = np.clip(mk.max(2), 0, 1)[..., None]               # the change-colour areas: the suit; the rest: the plates
     L = rgb.mean(2, keepdims=True)
     def detail(sel):                                      # the texture's shading, about 1 over the region
+        """the bake's luminance L divided by its mean where the mask sel is on: shading normalised to ~1 there"""
         w = sel[..., 0]
         return L / max(float((L[..., 0] * w).sum() / max(w.sum(), 1)), 1e-3)
     # the suit as Halo CE's Jackal wears it: dark navy leather, its folds kept; the rank colour tints it
@@ -585,6 +627,7 @@ def h2jackal_skin(cls, v, si, mat, meta, skin_dir):
     return fn
 
 def h2jackal_code():
+    """ZScript for the Halo 2 Jackal class: the shield bone, gun-hand bone and shield surface from H2Jackal.json"""
     meta = json.load(open(H2J_JSON))
     return f'''
 	// ---- Halo 2 Jackal: its arm shield rides the 'shield' node of the right forearm, the gun is in the left hand
@@ -734,6 +777,9 @@ def kit_code():
 HOLOFLAG_SHADER = template('shaders/holoflag.fp')
 
 def brute_code():
+    """ZScript for the Brute class (bp.TYPE_CODE['Brute']): the armour kit code plus the Halo 2 Brute behaviour
+    (berserk charge, weapon toss, helmet pop, Chieftain hammer shockwaves, pack morale on death).
+    To change how Brutes fight, edit the ZScript string here"""
     return kit_code() + '''
 	// ---- Halo 2 Brute behaviour ----------------------------------------------------------------------
 	// berserk (badly hurt, or the pack is gone): roar, throw the gun away, charge on all fours with the
@@ -919,6 +965,8 @@ def brute_sounds():
     idx = json.load(open(f'{src}/index.json'))
     lines = ['', '// Brutes (Halo 2 MCC: dialogue from sounds_en.dat, effects from sounds_neutral.dat)']
     def emit(group, prefix, table):
+        """copy index.json's files for the group's leaves into the pack and add sndinfo lines: one id per file and
+        a $random <prefix>/<event> per table entry"""
         for ev, leaves in sorted(table.items()):
             ids = []
             for leaf in leaves:
@@ -932,6 +980,7 @@ def brute_sounds():
     return lines
 
 def bp_fallback():
+    """build_voices.FALLBACK (voice event -> the event to alias when a voice lacks it), imported lazily"""
     from build_voices import FALLBACK
     return FALLBACK
 
@@ -963,6 +1012,9 @@ def zealot_skin(cls, v, si, mat, meta, skin_dir):
 
 
 def configure():
+    """register the Digsite add-on's weapons, skins, voices, ZScript and character overrides in build_pack's tables
+    before bp.build() runs. To tune a Digsite character (health, scale, melee, flags), edit bp.CHAR_OVERRIDES here;
+    to tune its guns, the bp.WEAPONS / PATTERNS / FIRE_SOUNDS entries"""
     W = bp.W
     bp.WEAPONS['plasma carbine'] = ('HCE_CarbineRound', 'HaloCarbine_Bullet', 15, 6.0)   # HDE's green carbine round
     bp.WEAPONS['particle beam'] = ('HCE_BeamRifleShot', 'HCE_BeamPuff', None, 30.0)
@@ -1064,6 +1116,9 @@ def configure():
     })
 
 def build():
+    """build the Digsite add-on pack: configure(), then bp.build() with its characters (DoomEdNums from 30400), then the
+    extras bp doesn't know: brightmaps, the digsite_src ZScript, sndinfo.dig, the Cyberdemon Drinol, Brute helmet
+    debris, the Captain's hologram flag and the Brute armour kit. To add a character, add it to cou/team here"""
     configure()
     ai = load_ai()
     if os.path.exists(PACK): shutil.rmtree(PACK)

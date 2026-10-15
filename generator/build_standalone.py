@@ -9,6 +9,14 @@ enemy API, and writes standalone/out/<pack>/ trees + HaloCE_Standalone_<Pack>.pk
     explosions); weapon drops become Doom ammo (other mods' ammo replacements pick these up)
   * HDE's sounds, sprites and models those classes need are copied in under unique names
     (sounds HCES/..., sprites HZ**, models/hces/...), so nothing collides with HDE or other mods
+
+    HCE_HDE_PK3=/path/to/HDE_LocalDEV.pk3 python3 build_standalone.py    # after split_factions.py and build_digsite.py
+
+Reads factions/<pack> and addons/digsite (HCE_FACTIONS, HCE_DIG_PACK), the enemy API source (HCE_API or
+api/enemies_base.zsc), standalone/hces_{lib,loot,skulls}.zsc and HDE's pk3 (or an unpacked folder of it); writes
+standalone/out/<pack>/ (HCE_SA_OUT) and HaloCE_Standalone_<Pack>.pk3 beside this script (HCE_SA_PK3).
+To map another HDE class, add it to CLASS_MAP (and give hces_lib.zsc the HCES_ class); a new HDE sprite or model the
+ported code needs goes in SPRITES / MODELS.
 """
 import os, re, shutil, sys, zipfile
 from PIL import Image
@@ -25,10 +33,13 @@ LIB = os.path.join(HERE, 'standalone', 'hces_lib.zsc')
 LOOT = os.path.join(HERE, 'standalone', 'hces_loot.zsc')
 SKULLS = os.path.join(HERE, 'standalone', 'hces_skulls.zsc')
 VERSION = 'version "4.15.1"\n'
+# source tree key (under FACTIONS, or DIGSITE) -> the name in its pk3, HaloCE_Standalone_<name>.pk3
 PACKS = {'core': 'Core', 'covenant': 'Covenant', 'flood': 'Flood', 'sentinels': 'Sentinels', 'marines': 'Marines',
          'digsite': 'Enemies_Digsite'}
 
 # HDE class -> standalone class (word-boundary replace in every ZScript / text lump)
+# Every HDE class the generated code names must be here (or inherit from a standalone class already defined in
+# hces_lib.zsc), or the standalone pack fails to load for the missing class.
 CLASS_MAP = {
     'HaloDoom_EnemyBase': 'HCES_EnemyBase', 'LastDamageInfo': 'HCES_LastDamageInfo', 'HaloMath': 'HCES_Math',
     'BulletCasing': 'Actor', 'ShieldProcessor': 'HCES_ShieldProcessor',
@@ -69,14 +80,18 @@ DROP_MAP = {
     'Halo_LightRifle': 'Cell', 'Halo_ScatterShot': 'Shell', 'Halo_BinaryRifle': 'Cell',
 }
 # sprites copied from HDE, renamed to unique HZ** names
+# HDE sprite prefix -> ours; hces_lib.zsc's states use the new names, so a renamed prefix needs the lib changed too
 SPRITES = {'SX04': 'HZX4', 'FSH1': 'HZF1', 'IPF2': 'HZIP', 'SMOK': 'HZSM', 'L2NB': 'HZL2', 'FRAG': 'HZFG', 'PLGN': 'HZPG',
            'XTH1': 'HZT1', 'XTH2': 'HZT2', 'FSP2': 'HZFP', 'FX58': 'HZ58', 'CNFT': 'HCNF'}
+# HDE model files copied into the core's models/hces/ (by basename); MODEL_OF names them per class
 MODELS = ['Models/Weapons/tracer.md3', 'Models/Weapons/tracer1.tga', 'Models/Weapons/plasma.md3',
           'Models/Weapons/plasma_core.md3', 'Models/Weapons/laser.png', 'Models/Weapons/needle_crystal.MD3',
           'Models/Weapons/needle_crystal.png', 'Models/Weapons/rocket.MD3', 'Models/Weapons/rocket.png',
           'Models/Weapons/spike_shard.MD3', 'Models/Weapons/spike_shard.png', 'Models/Title/sky_sphere.md3',
           'Models/Lasers/lazer.png', 'Models/Lasers/beam_simple.md3', 'Models/Lasers/BEAM_detailed.png']
 # model per standalone class (subclasses in the packs get the same entry: MODELDEF is per class)
+# class -> (model file, skin file, 'x y z' scale, extra MODELDEF lines); a class derived from one of these keys gets
+# the same MODELDEF block (model_and_light_defs)
 MODEL_OF = {
     'HCES_Bullet': ('tracer.md3', 'tracer1.tga', '3.0 3.0 1.5', 'PITCHFROMMOMENTUM'),
     'HCES_ShotgunPellet': ('tracer.md3', 'tracer1.tga', '3.0 1.5 1.5', 'PITCHFROMMOMENTUM'),
@@ -89,6 +104,8 @@ MODEL_OF = {
     'HCES_Shockwave': ('sky_sphere.md3', 'lazer.png', '50.0 50.0 50.0', 'DONTCULLBACKFACES'),
     'HCE_EnemyLaser': ('beam_simple.md3', 'BEAM_detailed.png', '1.0 1.0 1.0', 'USEACTORPITCH'),   # enemy laser tracers
 }
+# class -> the dynamic light (LIGHT_DEFS) attached to it and its subclasses, on the frames LIGHT_FRAMES names (HCEM,
+# the model frame, when unlisted)
 LIGHT_OF = {'HCES_PlasmaPistolBolt': 'HCES_GreenLight', 'HCES_ChargedPlasma': 'HCES_GreenLightBig',
             'HCES_PlasmaRifleBolt': 'HCES_BlueLight', 'HCES_PulseCarbineProj': 'HCES_BlueLight',
             'HCES_Needle': 'HCES_PinkLight', 'HCES_Bullet': 'HCES_YellowLight', 'HCES_CarbineBullet': 'HCES_GreenLight',
@@ -117,6 +134,7 @@ Content Usage Rules; Halo is a trademark of Microsoft. Not for sale.
 class DirZip:
     """an unpacked HDE folder read like its pk3"""
     def __init__(self, root):
+        """root: the unpacked folder; lists every file under it with '/' separators, as a zip would"""
         self.root = root
         self.files = [os.path.relpath(os.path.join(r, f), root).replace(os.sep, '/') for r, _, fs in os.walk(root) for f in fs]
     def namelist(self): return self.files
@@ -124,11 +142,15 @@ class DirZip:
 
 
 def wordmap(text, mapping):
+    """replace every whole-word key of mapping in text by its value (longest keys first)"""
     pat = re.compile(r'\b(' + '|'.join(sorted(map(re.escape, mapping), key=len, reverse=True)) + r')\b')
     return pat.sub(lambda m: mapping[m.group(1)], text)
 
 
 def convert_text(t):
+    """a ZScript or text lump from the regular packs made standalone: HDE-only mixins and the HDE-based hard-light
+    classes cut out, CLASS_MAP applied, HDE pickups dropped (DROP_TO_NONE) or mapped (DROP_MAP), HDE sound names
+    prefixed HCES/"""
     t = re.sub(r'\tmixin HCE_(Dig)?NerfMixin;\n', '', t)     # HDE-only hook; HCES projectiles keep their fire-time damage
     t = re.sub(r'\tmixin HCE_(Dig)?Lite(Plasma|PlasmaSmoke|Arcs);\n', '', t)   # HDE's plasma effects thinned out; HCES bolts are light already
     t = re.sub(r'(?s)\t\tHaloBullet\.PostBeginPlay\(\);[^\n]*\n.*?SetShade\(col\);\n', '\t\tsuper.PostBeginPlay();\n', t)
@@ -152,6 +174,7 @@ def class_tree(texts):
 
 
 def ancestor_in(cls, par, keys):
+    """the first class up cls's parent chain (par: class -> parent) that is in keys, or None"""
     seen = 0
     while cls and seen < 50:
         if cls in keys: return cls
@@ -161,7 +184,11 @@ def ancestor_in(cls, par, keys):
 
 # ---------------------------------------------------------------- HDE sound resolution
 class Sounds:
+    """HDE's SNDINFO read from its pk3 (z: a ZipFile or DirZip): every logical name's definition (a file, a $random
+    set or an $alias) and its $volume / $limit / ... extras, so a wanted sound can be followed down to the files to
+    copy (emit)"""
     def __init__(self, z):
+        """parse sndinfo.txt in z into self.defs {name: ('file' | 'random' | 'alias', refs)} and self.extra"""
         self.z = z
         self.names = {n.lower(): n for n in z.namelist()}
         self.base = {}
@@ -185,6 +212,7 @@ class Sounds:
             if m: self.defs[m.group(1).lower()] = ('file', [m.group(2)])
 
     def lump(self, ref):
+        """the zip entry an SNDINFO file reference names (full path, or by bare name under sounds/), or None"""
         r = ref.replace('\\', '/').lower()
         if r in self.names: return self.names[r]
         return self.base.get(os.path.splitext(r.split('/')[-1])[0])
@@ -193,6 +221,8 @@ class Sounds:
         """wanted: HDE logical names -> (sndinfo lines with HCES/ names, files to copy {zip name: pack path})"""
         lines, files, done, missing = [], {}, set(), []
         def walk(name):
+            """emit the HDE sound name and, recursively, what its $random / $alias refers to; appends to lines, files
+            and missing; returns whether anything usable was found for it"""
             k = name.lower()
             if k in done: return True
             d = self.defs.get(k)
@@ -218,6 +248,8 @@ class Sounds:
 
 
 # Halo's skulls, enemy side (hces_skulls.zsc; HaloDoom Evolved has its own): CVar suffix, menu name, what it does
+# (each row becomes a 'server bool hces_skull_<suffix>' CVar and an Options > Halo CE Skulls line; the behaviour
+# itself is in hces_skulls.zsc, keyed by the same suffix)
 SKULL_LIST = [('gruntbirthdayparty', 'Grunt Birthday Party', 'Headshot kills burst into confetti.'),
               ('gruntfuneral', 'Grunt Funeral', 'Grunts explode when they die.'),
               ('zombiefuneral', 'Zombie Funeral', 'The Flood and zombies explode when they die.'),
@@ -239,6 +271,8 @@ def standalone_defaults(t):
 
 
 def copytree_text(src, dst):
+    """copy a pack source tree and convert its text lumps in place (ZScript, the def lumps, cvarinfo with the
+    standalone defaults, menudef minus the HDE-only options)"""
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns('.loudened.json'))
     for root, _, fs in os.walk(dst):
         for f in fs:
@@ -277,6 +311,9 @@ def model_and_light_defs(pack_texts, lib_par):
 
 
 def build():
+    """build every standalone tree and pk3 (OUTDIR wiped first): each source pack copied and converted, the core
+    given the API, the lib, loot and skulls, HDE's models and sprites and the skull options; every pack its MODELDEF /
+    GLDEFS entries; then the HDE sounds the code and lumps name are resolved and copied into the core; then zipped"""
     if os.path.exists(OUTDIR): shutil.rmtree(OUTDIR)
     os.makedirs(OUTDIR)
     z = DirZip(HDE) if os.path.isdir(HDE) else zipfile.ZipFile(HDE)

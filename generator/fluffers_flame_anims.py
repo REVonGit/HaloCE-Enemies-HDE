@@ -55,6 +55,7 @@ def level_fire(nodes, frame):
     loc = [(np.array(frame[k][0], float), np.array(frame[k][1], float)) for k in order]
     sp, nk = names.index('bip01 spine1'), names.index('bip01 neck')
     def pitch(l):
+        """the flamethrower's nozzle axis pitch (radians, up positive) in world space for the local pose l"""
         W = pv.world(par, l); v = pv.qmat(W[jn][1]) @ Rb.T @ R @ ax
         return np.arctan2(v[2], np.hypot(v[0], v[1]))
     for _ in range(4):
@@ -71,6 +72,8 @@ def level_fire(nodes, frame):
 
 
 def main():
+    """decodes the NAMES animations from the loose tag, makes the firing pose, and writes them onto each Marine body
+    by bone name (the jaw at rest), over whatever cyborg_flame_anims.py left under the same names"""
     A = Antr(SRC)
     nodes = A.nodes()
     made = {}

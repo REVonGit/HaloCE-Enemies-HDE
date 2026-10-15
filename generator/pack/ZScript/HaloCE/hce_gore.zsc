@@ -29,11 +29,14 @@ class HCE_HaloGoreHandler : EventHandler
 	// where it comes to rest
 	Array<Actor> bodies; Array<int> bodyUntil, bodyStill; Array<double> bodyLastX, bodyLastY; Array<bool> bodySkid, bodyAir;
 
+	// runs ahead of other handlers in the spawn event
 	override void OnRegister()
 	{
 		SetOrder(-1000);          // before NashGore's handler, so the no-blood flag is set when it reads it
 	}
 
+	// a Covenant enemy or Marine spawning gets NOBLOOD for this tic only, so NashGore's handler (which runs after this
+	// one) skips it; WorldTick puts the flag back
 	override void WorldThingSpawned(WorldEvent e)
 	{
 		let v = e.Thing;
@@ -42,6 +45,8 @@ class HCE_HaloGoreHandler : EventHandler
 		unbled.Push(v);
 	}
 
+	// a death puts the body on the watch list (bodies[] and its parallel arrays) for up to five seconds: WorldTick
+	// lays its skid marks and, once it has come to rest, its pool. A grenade kill gets no skid marks.
 	override void WorldThingDied(WorldEvent e)
 	{
 		let v = e.Thing;
@@ -54,6 +59,9 @@ class HCE_HaloGoreHandler : EventHandler
 		bodyAir.Push(false);
 	}
 
+	// restores the NOBLOOD flag on last tic's spawns, then follows each watched body: a landing sound and a smear where
+	// a flung body comes down, a smear every 22 units of slide, and once it has been still for 4 tics (or five seconds
+	// have passed) its pool and a ring splat, after which it is dropped from the list
 	override void WorldTick()
 	{
 		for(int i = 0; i < unbled.Size(); i++)
@@ -117,6 +125,9 @@ class HCE_HaloGoreHandler : EventHandler
 		while(splats.Size() > MAX_SPLATS) { if(splats[0]) splats[0].Destroy(); splats.Delete(0); }
 	}
 
+	// the two-letter sprite suffix of a species group (HS<code>, HP<code>, HK<code>: the floor splat sprites
+	// extract_halo_gore.py writes); an unknown group gets the beasts'. A new group needs a line in both arrays here,
+	// in Species(), and its sprites and decals from extract_halo_gore.py.
 	static String FloorCode(String group)
 	{
 		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human" };
@@ -136,6 +147,7 @@ class HCE_HaloGoreHandler : EventHandler
 		while(splats.Size() > MAX_SPLATS) { if(splats[0]) splats[0].Destroy(); splats.Delete(0); }
 	}
 
+	// is the Halo gore on: NashGore loaded (checked once) and hce_halogore not turned off
 	bool Active()
 	{
 		if(!checked)
@@ -149,6 +161,10 @@ class HCE_HaloGoreHandler : EventHandler
 		return !cv || cv.GetBool();
 	}
 
+	// the blood group an enemy belongs to, from its class name: "Human", "Elite", "Grunt", "Hunter", "Brute", "Drone",
+	// "Engineer" or "Beast" (the names of the HCEGore_* decal groups), "" for the Flood, the Sentinels and anything
+	// unrecognised (they keep NashGore's blood). keys[] is matched in order, so "Hunter" is tested before "Grunt".
+	// To give a new enemy Halo blood, add its class-name fragment to keys[] and its group to groups[].
 	static String Species(Actor a)
 	{
 		String n = a.GetClassName();
@@ -160,6 +176,8 @@ class HCE_HaloGoreHandler : EventHandler
 		return "";
 	}
 
+	// true if v was sprayed within the last few tics (so rapid fire doesn't paper the wall); otherwise notes it for
+	// the next tics tics and returns false
 	bool Throttled(Actor v, int tics)
 	{
 		for(int i = recent.Size() - 1; i >= 0; i--)
@@ -180,6 +198,8 @@ class HCE_HaloGoreHandler : EventHandler
 		return v.Vec3Angle(v.radius * 0.7, a, v.height * frandom[HCEGore](0.45, 0.8));
 	}
 
+	// the blood burst out of a wound at "at": puffs of the group's burst sheet and streaks (HCE_GoreStreak), tinted the
+	// victim's BloodColor, flung away from the attacker. The counts go through the hce_gorescale budget.
 	static void Burst(Actor v, String group, vector3 at, Actor from, int puffs, int streaks, double size)
 	{
 		color c = v.BloodColor;
@@ -209,6 +229,8 @@ class HCE_HaloGoreHandler : EventHandler
 		}
 	}
 
+	// one wall decal from the decal group (a DECALDEF group name: HCEGore_<species> or ..Big), sprayed 210 units away
+	// from the attacker, within +-spread degrees sideways and from 10 down to "up" degrees upward
 	static void Spray(Actor v, String group, Actor from, double spread, double up)
 	{
 		double a = (from ? from.AngleTo(v) : v.angle + 180) + frandom[HCEGore](-spread, spread);
@@ -217,6 +239,9 @@ class HCE_HaloGoreHandler : EventHandler
 		v.A_SprayDecal(group, 210, (0, 0, v.height * frandom[HCEGore](0.3, 0.7)), dir);
 	}
 
+	// every hit on a Halo-blooded enemy (not fire, ice, drowning or telefrag): a burst at the wound, scaled by the
+	// damage; a kill also sprays four big decals and 2-3 floor splats, a wound (unless throttled) one or two small
+	// decals and often a floor splat. To change how much blood a hit makes, edit the counts and sizes here.
 	override void WorldThingDamaged(WorldEvent e)
 	{
 		let v = e.Thing;
@@ -250,6 +275,7 @@ class HCE_HaloGoreHandler : EventHandler
 // the Halo blood burst: one puff of Halo CE / Halo 2's blood-burst sheet, stencilled in the victim's blood colour
 class HCE_GorePuff : Actor
 {
+	// how many frames the sheet has (Burst picks a random one); each subclass returns its own sheet's count
 	virtual int Frames() { return 12; }
 	Default
 	{
@@ -391,6 +417,7 @@ class HCE_GoreFloorSplat : Actor
 		life = 35 * 120;
 		return true;
 	}
+	// counts life down, fading over the last ten seconds, and keeps the splat on the floor if the floor moves
 	override void Tick()
 	{
 		if(isFrozen()) return;

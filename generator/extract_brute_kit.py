@@ -30,7 +30,8 @@ from hce_paths import OUT
 SRC = os.environ.get('HCE_BRUTE_KIT', 'h2_brute.zip')       # the armour set: brute.blend + its bitmaps (zip or folder)
 KH = 'bitmaps/king_hit_textures/'
 H3 = 'brute_h3/bitmaps/'
-# material -> (source bitmap in the kit, or 'Brute:<shader>' for the Halo 2 Brute's own maps; tinted by rank?)
+# material -> (source bitmap in the kit, or 'Brute:<shader>' for the Halo 2 Brute's own maps; tinted by rank?).
+# A blend material not listed here leaves its triangles out of the piece.
 MATERIALS = {
     'very common armour': (KH + 'armour_very_common_diffuse.tif', False),
     'very common armourc': (KH + 'armour_very_common_diffuse.tif', False),
@@ -49,10 +50,13 @@ MATERIALS = {
     'brute_shoulder_armor': ('Brute:brute', False),
     'tartarus_shoulder_armor': ('Brute:brute', False),
 }
-# Halo 3 armour colours by rank (multiplied into the sheet, x1.5 like the Halo 2 change colours)
+# Halo 3 armour colours by rank (multiplied into the sheet, x1.5 like the Halo 2 change colours); every tint a rank
+# uses (RANKS 'tint' and '@tint' picks) needs a key here
 TINTS = {'minor': (0.52, 0.62, 0.86), 'major': (0.86, 0.36, 0.26), 'captain': (0.98, 0.80, 0.42),
          'chieftain': (0.80, 0.60, 0.28), 'jumper': (0.62, 0.74, 0.62)}
 # blend object -> kit piece id, slot. Slots are model attachments 1..6: helmet, chest, shoulders, arms, legs, waist.
+# Only pieces some rank in RANKS picks are extracted; to add a piece, name its blend object here and put the id in
+# a rank's slot list or outfit.
 PIECES = {
     # helmets
     'helmet_small': ('h2_helmet', 'helmet'),
@@ -113,7 +117,9 @@ PIECES = {
 SLOTS = ['helmet', 'chest', 'shoulders', 'arms', 'legs', 'waist']
 
 # Rank outfits. Each slot: [(piece, weight)] with '' = nothing; tinted Halo 3 pieces take the rank's colour (or the
-# tint named after '@'). 'outfits' are whole looks that replace the slot picks at the given chance.
+# tint named after '@'). 'outfits' are whole looks that replace the slot picks at the given chance. 'keep_base' is
+# the chance the rank wears no kit at all. build_pack.py rolls these per Brute from BruteKit.json: to make a
+# helmet rarer, lower its weight; to dress a rank in a fixed look, give it an outfit with chance 1.0.
 RANKS = {
     'minor': dict(tint='minor', slots={
         'helmet': [('h2_helmet', 3), ('h3_helmet_minor', 3), ('kh_helmet_wing', 2), ('kh_helmet_enclosed', 1), ('', 1)],
@@ -148,6 +154,7 @@ RANKS = {
 
 
 def kit_dir():
+    """the kit's folder: SRC itself, or SRC (a zip) unpacked into a temp folder"""
     if os.path.isdir(SRC): return SRC
     d = tempfile.mkdtemp(prefix='brutekit_')
     zipfile.ZipFile(SRC).extractall(d)
@@ -155,7 +162,11 @@ def kit_dir():
 
 
 def tex_png(kd, src, od, tint=None):
-    """kit bitmap -> png in od (tinted copy when tint is given); returns the file name"""
+    """kit bitmap -> png in od (tinted copy when tint is given); returns the file name
+
+    Written as kit_<bitmap>[_<tint>].jpg once (an existing file is reused). The King Hit armour sheets get worn
+    metal baked in under their multipurpose map's metal mask (lib/wornmetal); tinted sheets take TINTS[tint]
+    through the Halo 3 change-colour mask."""
     base = os.path.splitext(os.path.basename(src))[0].replace(' ', '_').replace(':', '_')
     fn = f'kit_{base}' + (f'_{tint}' if tint else '') + '.jpg'
     dst = os.path.join(od, fn)
@@ -184,6 +195,10 @@ def tex_png(kd, src, od, tint=None):
 
 
 def main():
+    """out/models/BruteKit rebuilt: every piece some rank needs (each tint it needs) as <piece>[_<tint>].iqm on the
+    Brute's skeleton (weights filled from the body, helmets on the head alone), debris_<helmet>.iqm copies, the
+    textures, and BruteKit.json (slots, pieces {id: slot, source, files, tris}, ranks with the picks resolved to
+    files) for build_pack.py"""
     kd = kit_dir()
     od = f'{OUT}/models/BruteKit'
     if os.path.isdir(od): shutil.rmtree(od)
@@ -250,6 +265,7 @@ def main():
         print(f'{pid:28s} {slot:9s} {len(p["tris"]):5d} tris  {sorted(files)}')
     for rank, rd in RANKS.items():
         def ref(p, dflt):
+            """a RANKS pick ('piece' or 'piece@tint') -> the iqm file of that tint (dflt when none named), '' for nothing"""
             if not p: return ''
             pid, _, t = p.partition('@')
             f = meta['pieces'][pid]['files']

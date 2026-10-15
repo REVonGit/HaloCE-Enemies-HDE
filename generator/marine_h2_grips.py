@@ -55,6 +55,8 @@ def repose(anims, n, parents, R_ids, L_ids, lh_h, dz):
 
 
 def main():
+    """per body: lowers the 'h2br' set by what LOWER still needs (json 'h2br_lowered'), then remakes each H2_GUNS
+    stance from 'h2rifle' for the bodies listed, and rewrites the IQM and json"""
     left = mg.GUNS[STANCE][0]
     for char in CHARS:
         pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'

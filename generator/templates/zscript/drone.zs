@@ -7,6 +7,8 @@
 	int hce_perch, hce_perchTics, hce_perchNext, hce_perchSide, hce_perchEnter;   // perch: 0 no, 1 flying to wall, 2 clinging
 	vector3 hce_perchPos; double hce_perchAngle;
 
+	// Rolls the drone's starting flight height above its target (40-110), its first perch time (4-10 s in) and which side
+	// it perches on. To change the perch wait, edit random(4, 10).
 	override void PostBeginPlay()
 	{
 		super.PostBeginPlay();
@@ -25,6 +27,10 @@
 		vel.z = clamp((want - pos.z) * 0.07, -4, 4) + sin(level.maptime * 9 + tid * 31) * 0.35;
 	}
 
+	// The drone's combat tick, replacing the base ground AI: perched drones do nothing here; scattered ones flee the
+	// target; otherwise it faces the target, pursues it when unseen for 25 tics, picks a new zig-zag offset every
+	// 10-28 tics and circles at 70% speed in range (closes beyond hce_rangeMax, backs off inside hce_rangeMin), fires,
+	// and rolls a wall perch (1 in 91 per tic once hce_perchNext has passed).
 	override void HCE_Fight()
 	{
 		if(hce_perch) return;
@@ -90,6 +96,8 @@
 		hce_perch = 1; hce_perchTics = 35 * 4;
 	}
 
+	// Takes the drone off its wall: plays the perch exit animation if it was clinging, clears the perch state and the
+	// animation lock, schedules the next perch 8-15 s out and pushes it off the wall along the wall's normal.
 	void HCE_LeavePerch()
 	{
 		if(hce_perch == 2) HCE_ApplyAnim(hce_perchSide ? 'perch right exit' : 'perch left exit', 3, false);
@@ -100,6 +108,10 @@
 		vel.xy = AngleToVector(hce_perchAngle, 4);
 	}
 
+	// Runs the perch each tic. State 1: fly to hce_perchPos (give up after 4 s); within 10 units snap to it, face out
+	// from the wall, play the enter animation and cling for 3-6 s (8-20 s with no target). State 2: hold position and
+	// angle, keep hce_animLock set, play the perch idle, fire at a visible target within 80 deg of facing, and leave
+	// when the timer runs out or the target comes within 96 units.
 	void HCE_PerchTick()
 	{
 		if(hce_perch == 1)
@@ -137,6 +149,9 @@
 		if(target && hce_canSee && abs(DeltaAngle(hce_perchAngle, AngleTo(target))) < 80) HCE_UpdateFiring(Distance2D(target));
 	}
 
+	// Per-tic extras on top of the base Tick: keeps perched drones weightless, plays the body-fall sound when a dead
+	// drone lands (hce_airPhase 1 -> 2), loops the 1.1 s wing buzz while flying, runs the perch or the altitude hold,
+	// the sideways dart after a hit (12 tics at 1.8x run speed), and lets idle drones go perch (1 in 61 per tic).
 	override void Tick()
 	{
 		if(health > 0 && !isFrozen() && hce_perch) bNOGRAVITY = true;

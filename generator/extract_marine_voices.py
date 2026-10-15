@@ -26,10 +26,12 @@ CE_MAPS = os.environ.get('HCE_MAPS', 'maps')
 CE_ORDER = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40']
 H2_MAP = os.environ.get('HCE_H2_MAP', '01b_spacestation.map')   # MCC halo2\\h2_maps_win64_dx11
 H2_CACHE = os.environ.get('HCE_H2_CACHE') or None
+# raise PER_SOURCE for more variety per voice
 PER_SOURCE = 6                        # lines at most per category from each game
 PER_CAT = {'Thanks': 24, 'Trade Ok': 24, 'Worse Weapon': 24, 'Refuse': 24}     # the trade lines: every take, for variety
 
-# voice set -> (Halo CE tag prefix or None, Halo 2 voice or None)
+# voice set -> (Halo CE tag prefix or None, Halo 2 voice or None); the set name is the voice_extra folder build_voices.py
+# reads. To add a Halo 2 voice, add its sound\dialog\combat\<voice> folder name here.
 VOICES = {
     'Marine_Johnson':     ('sound\\dialog\\sargeant\\', 'sgt_johnson'),
     'Marine_Aussie':      ('sound\\dialog\\marines\\aussie\\', 'marine_aussie'),
@@ -45,7 +47,8 @@ VOICES = {
     'Marine_Sassy':       (None, 'marine_sassy'),
     'Marine_Tough':       (None, 'marine_tough'),
 }
-# category -> (Halo CE combat2 tags <group>\<name>, Halo 2 tag leaves)
+# category -> (Halo CE combat2 tags <group>\<name>, Halo 2 tag leaves): up to PER_SOURCE (PER_CAT) lines from each
+# game, in this order. To add a category, add it here and in build_voices.py's CAT.
 PLAN = {
     'Alert':         (['shouting\\newcombatalone', 'shouting\\oldenemysighted', 'shouting\\unexpectedenemy', 'groupcomm\\alertfriend'],
                       ['seefoe', 'seefoe_mjr', 'foundfoe', 'hrdfoe', 'morefoe', 'srprs']),
@@ -161,6 +164,8 @@ def h2_lines(tmp):
 
 
 def main(only=()):
+    """voice_extra/<voice>/ rebuilt for every VOICES set (or only those named): '<Category> N.ogg' per PLAN, CE's
+    lines first (duplicates by hash dropped) then Halo 2's; the counts go into voice_extra/marine_voices.json"""
     global VOICES
     if only: VOICES = {k: v for k, v in VOICES.items() if k in only}
     tmp = tempfile.mkdtemp()

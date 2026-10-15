@@ -21,6 +21,8 @@ from extract_h2_brute import tag_oggs, SOUNDS_DIR, OUT
 from h2_elite_anims import MAP01B, CACHE01B, MAP08A, CACHE08A
 
 F = 'sound\\characters\\footsteps\\'
+# set -> {surface: Halo 2 footstep folder under F}; the surfaces are the ones HCE_StepSurface tells apart. To give
+# another body its own steps, add a set here and list it in split_factions.py / sndinfo.steps.
 SETS = {
     'marine': {'hard': 'chief\\grtcement', 'metal': 'chief\\grating', 'dirt': 'chief\\dirt', 'grass': 'chief\\grass', 'water': 'chief\\water_shallow'},
     'elite':  {'hard': 'elite\\stone', 'metal': 'elite\\grating', 'dirt': 'elite\\gravel', 'grass': 'elite\\grass', 'water': 'elite\\water_shallow'},
@@ -30,11 +32,14 @@ SETS = {
 
 
 def main():
+    """out/footsteps rebuilt: every take of each set's walk and run per surface as <set>/<surface>_<gait>_NN.ogg
+    (Halo 2's own Vorbis data, copied as is) and index.json {set: {surface_gait: [files]}}"""
     from h2map import H2Map
     maps = [H2Map(MAP01B, CACHE01B), H2Map(MAP08A, CACHE08A)]           # 08a: the takes 01b can't give
     names = [{t['name'] for t in m.tags if t['cls'] == 'snd!'} for m in maps]
 
     def get(tn):
+        """the ogg takes of a sound tag from the first map that has it and can decode it, or None"""
         for m, nm in zip(maps, names):
             if tn not in nm: continue
             try:

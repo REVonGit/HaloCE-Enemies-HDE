@@ -8,6 +8,8 @@ from tags import LAYOUT
 PSEUDO = {'model_triangle': 6}     # element types the decomp headers don't spell out as structs
 
 def fields(st):
+    """(struct size, [(field name, offset, type name, count)] in offset order) for struct st from the decomp
+    layouts; PSEUDO structs give their size and no fields"""
     if st in PSEUDO: return PSEUDO[st], []
     L = LAYOUT.layout(st)
     out = []
@@ -16,7 +18,11 @@ def fields(st):
     return L['size'], out
 
 class LooseTag:
+    """A walked loose tag file: d (bytes), group (its 4-char class), root = (64, children dict of the root struct),
+    cur (end offset after the walk), complete (whether the walk consumed the whole file)."""
     def __init__(s, path, root, child):
+        """path: the tag file; root: its root struct name; child: {(struct, block field): element struct name},
+        which names the element type of every tag_block the walk meets"""
         s.d = open(path, 'rb').read()
         s.group = s.d[0x24:0x28].decode('latin1')
         s.child = child
@@ -28,6 +34,9 @@ class LooseTag:
     def u(s, f, o): return struct.unpack_from('>' + f, s.d, o)
 
     def walk(s, st, off):
+        """walk struct st at off, consuming its child data from s.cur in field order. Returns {field: value}:
+        tag_reference -> path string, tag_data -> (offset, size), tag_block -> [(element offset, its children)],
+        embedded struct -> its own dict (only when non-empty)"""
         res = {}
         _, fl = fields(st)
         for fn, o, t, n in fl:
@@ -69,4 +78,5 @@ class LooseTag:
         return v if len(v) > 1 else v[0]
 
     def cstr(s, off, n=32):
+        """NUL-terminated string in the n-byte field at off (Halo's 32-char names)"""
         return s.d[off:off + n].split(b'\0')[0].decode('latin1')

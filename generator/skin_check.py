@@ -27,13 +27,18 @@ import os, sys, json
 import numpy as np
 from PIL import Image
 
+# measure -> the most a lone texture may score (report / judge). Loosen a limit if a skin you approve of trips it.
 LIMITS = dict(blown=0.08, neon=0.30, crunch=0.55, crush=0.35)          # a texture on its own (no source)
+# measure -> the most a bake may rise over its source (crunch: the ratio bake/source; the rest: the difference)
 PAIR_LIMITS = dict(blown=0.25, crunch=2.2, crush=0.03, glare=0.12, lift=0.16)    # a bake against its source
+# file-name fragments (lowercase) of textures that are meant to be bright or flat: never judged
 SKIP = ('blade', 'shield', 'visor', 'lens', 'flag', 'light', 'glow', 'illum', 'hidden', 'brightmap', 'cube', 'gore_',
         'blood', 'camo', 'flame', 'exhaust', 'muzzle', 'hce_noblood', 'eyes', 'teeth', 'sword')
 
 
 def metrics(path):
+    """score one png: {blown, neon, crunch, crush, glare, lift} as the module docstring defines them, over its painted
+    texels; None when fewer than 64 texels are painted"""
     im = Image.open(path)
     a = np.asarray(im.convert('RGBA'), np.float32)
     rgb = a[..., :3]; alpha = a[..., 3]
@@ -56,6 +61,7 @@ def metrics(path):
 
 
 def judge(m):
+    """the measures of metrics() result m that are over LIMITS (a lone texture)"""
     return [k for k, lim in LIMITS.items() if m[k] > lim]
 
 
@@ -72,6 +78,7 @@ def report_pairs(pairs, quiet=False):
     """[(source png, baked png)] -> [(baked, {measure: rise})] for the deep-fried ones (printed); each baked file once"""
     bad = []; seen = set(); cache = {}
     def m(p):
+        """metrics(p), cached per path; None when the file is missing"""
         if p not in cache: cache[p] = metrics(p) if os.path.exists(p) else None
         return cache[p]
     for src, out in pairs:
@@ -91,6 +98,7 @@ def report_pairs(pairs, quiet=False):
 
 
 def collect(paths):
+    """every .png under the given files / directories (walked), sorted, minus the SKIP names"""
     out = []
     for p in paths:
         if os.path.isdir(p):

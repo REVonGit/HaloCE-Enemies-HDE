@@ -50,6 +50,10 @@ class HCE_DigsiteHandler : EventHandler
 		else if(rn == 'HCE_BruteChieftainGravityHammer') e.Replacee = "BaronOfHell";
 	}
 
+	// Spawn replacement for this add-on: skipped when already final, when Doom monsters are kept, or when
+	// hce_digsite_spawns is 0. Walks RULES in order for the replacee; each matching rule rolls its skill-tier chance
+	// (times the cvar unless it is 1 = always); the first hit picks a weighted class and marks the replacement final.
+	// To change the odds or the picks, edit RULES.
 	override void CheckReplacement(ReplaceEvent e)
 	{
 		if(e.IsFinal || !e.Replacee) return;

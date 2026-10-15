@@ -16,6 +16,7 @@ import splitfile
 from extract_chars import OUT
 from hce_paths import MAPS_DIR
 
+# To add an event, add its tag here (Halo CE) or in H2 (Halo 2) and name it in build_pack.SENTINEL_SOUNDS.
 CE = {  # event -> Halo CE sound tag (c20)
     'Engine': r'sound\sfx\vehicles\sent_engine',
     'BeamLoop': r'sound\sfx\vehicles\sent_laser_loop',
@@ -41,6 +42,7 @@ H2 = {  # event -> Halo 2 sound tags (06b), played in this order or picked at ra
 
 
 def ce_sounds(od, idx):
+    """Halo CE's (CE table, from c20.map): every Xbox ADPCM permutation -> od/<event>_<n>.ogg, appended to idx[event]"""
     from tags import HMap, tag
     from halosound import xbox_adpcm, to_wav
     m = HMap(os.path.join(MAPS_DIR, 'c20.map'))
@@ -66,7 +68,10 @@ def ce_sounds(od, idx):
 
 
 def h2_sounds(od, idx):
-    """Halo 2's: Opus (most) or Xbox ADPCM (the loops: extract_h2_jetpack_sound.py has the chunk layout)"""
+    """Halo 2's: Opus (most) or Xbox ADPCM (the loops: extract_h2_jetpack_sound.py has the chunk layout)
+
+    Every permutation of every tag of an H2 event, from 06b_floodzone.map and MCC's sounds_en / sounds_neutral.dat,
+    -> od/<event>_<n>.ogg (mono Vorbis), appended to idx[event]."""
     import h2opus
     from extract_h2_brute import SOUNDS_DIR
     from h2map import H2Map, sound_chunks
@@ -100,6 +105,7 @@ def h2_sounds(od, idx):
 
 
 def main():
+    """out/sounds/Sentinel/ rebuilt from both games, with index.json {event: [files]}"""
     od = f'{OUT}/sounds/Sentinel'
     if os.path.exists(od): shutil.rmtree(od)
     os.makedirs(od)

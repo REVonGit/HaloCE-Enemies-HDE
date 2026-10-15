@@ -17,11 +17,14 @@ from iqm import read_iqm, write_iqm
 from h2_elite_anims import stance_anims, MARINE, MAP01B, CACHE01B
 from reload_anims import h2_anims, OUT
 
+# the stance's replacement animations: CE name -> (Halo 2 animation, the idle its still bones take)
 EXTRA = {'stand h2missile melee': ('combat:missile:melee', 'combat:missile:idle'),
          'stand h2missile reload-1': ('combat:missile:reload_1', 'combat:missile:idle')}
 
 
 def main():
+    """rebuilds every ' h2missile ' animation on both Marine bodies: the stance from h2_elite_anims.stance_anims and
+    EXTRA from reload_anims.h2_anims, the jaw kept shut, and refreshes the json entries"""
     for char in ('Marine', 'MarineArmored'):
         pi, pj = f'{OUT}/models/{char}/{char}.iqm', f'{OUT}/models/{char}/{char}.json'
         joints, meshes, anims = read_iqm(pi)

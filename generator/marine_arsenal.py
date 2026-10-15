@@ -7,7 +7,14 @@ Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation
 prototypes (github.com/digsite/h1, JMS + TIFF) and MCC Workshop campaigns ('pc': a weapon tag in a PC/MCC cache file; the
 double barrel is SOI's 8-gauge shotgun from SOI's Singleplayer Adventure V3, HCE_SOI_C20). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
 Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py,
-and the Commando and the Hydra HDE's own (Commando_HDE.blend1, Hydra_HDE.blend) by commando_ce.py / hydra_ce.py."""
+and the Commando and the Hydra HDE's own (Commando_HDE.blend1, Hydra_HDE.blend) by commando_ce.py / hydra_ce.py.
+
+    python3 marine_arsenal.py [name ...]   # build the weapon pkls (ARSENAL; names limit it)
+    python3 marine_arsenal.py overlays     # then: the per-Marine (and per-Brute) overlay IQMs, out/models/<Char>/
+                                           # <Char>_w_<name>.iqm, recorded in the character's json under 'arsenal'
+
+The pkl layout is extract_weapons.py's: dict(id, tag, meshes=[dict(material, pos, nrm, uv, tris)]), positions in
+Halo units. build_pack.MARINE_ARSENAL names these weapons by their ARSENAL key and sets their combat numbers."""
 import os, sys, pickle, json
 import numpy as np
 from PIL import Image
@@ -26,6 +33,9 @@ PC_MAPS = {'soi': os.environ.get('HCE_SOI_C20', 'soi_c20.map')}
 
 SH = 'weapons/_shared/'
 # HDE weapon -> source. ce: an extract_weapons.py id; dig: (JMS, texture); h2: (map, tag)
+# Other kinds: pc (a PC_MAPS key, weapon tag), hde_ce (a module whose build() writes the pkl), ce_bulldog / ce_gl /
+# sticky (fixed modules). To add a gun: a row here, a FIX entry if it needs turning or centring, and a row in
+# build_pack.MARINE_ARSENAL (its stance, ranges and the HDE pickup it drops); then rebuild with 'overlays'.
 ARSENAL = {
     'magnum':           ('ce', 'pistol'),
     'ma5b':             ('ce', 'assault_rifle'),
@@ -49,20 +59,24 @@ ARSENAL = {
 }
 
 def load_tex(base):
+    """a Digsite texture by its path under DIG without extension (tif, tiff, TIF or png, whichever exists)"""
     for ext in ('.tif', '.tiff', '.TIF', '.png'):
         if os.path.exists(f'{DIG}/{base}{ext}'): return Image.open(f'{DIG}/{base}{ext}')
     raise FileNotFoundError(base)
 
 def dig_meshes(jms):
+    """a Digsite JMS model and its UVs flipped to image space (v down), as the pkls keep them"""
     w = JMS(f'{DIG}/{jms}')
     uv = w.uv.copy(); uv[:, 1] = 1.0 - uv[:, 1]
     return w, uv
 
 def save_pkl(wid, meshes, tag):
+    """write out/weapons/<wid>/<wid>.pkl (id, tag: where it came from, meshes)"""
     d = f'{OUT}/weapons/{wid}'
     pickle.dump(dict(id=wid, tag=tag, meshes=meshes), open(f'{d}/{wid}.pkl', 'wb'))
 
 def build_dig(wid, jms, tex):
+    """a Digsite prototype gun: one mesh, one material (w_<wid>_0.png from the TIFF) -> its pkl"""
     d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)
     w, uv = dig_meshes(jms)
     mat = f'w_{wid}_0.png'
@@ -71,12 +85,16 @@ def build_dig(wid, jms, tex):
 
 _maps = {}
 def h2map(key):
+    """the Halo 2 map '01b' or '08a' (H2_01B / H2_08A and their caches), opened once"""
     from h2map import H2Map
     if key not in _maps:
         _maps[key] = H2Map(*{'01b': (H2_01B, H2_01B_CACHE), '08a': (H2_08A, H2_08A_CACHE)}[key])
     return _maps[key]
 
 def build_h2(wid, key, tagname):
+    """a Halo 2 weapon's render model -> its pkl: one mesh per model part, its material the shader's base bitmap
+    (the first bitmap that isn't a bump, detail, cube or other helper map; a flat grey when none), triangles
+    rewound to the packs' order; keeps the part's region / permutation / shader names for the fix-ups"""
     from h2map import render_model
     import extract_h2_brute as hb
     m = h2map(key)
@@ -119,6 +137,7 @@ def build_pc(wid, key, tagname):
     save_pkl(wid, d['meshes'], f'{key}:' + tagname)
 
 def _rot(meshes, R, shift=(0, 0, 0)):
+    """transform every mesh in place: positions by R then + shift, normals by R; a mirroring R flips the winding"""
     R = np.asarray(R, float)
     for m in meshes:
         m['pos'] = m['pos'] @ R.T + np.asarray(shift, float); m['nrm'] = m['nrm'] @ R.T
@@ -167,6 +186,8 @@ def fix_upright(meshes):
     return _rot(meshes, [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]])
 
 # ---------------------------------------------------------------- repaints and the grenade-launcher kitbash
+# name -> the ramps repaint() maps a texture onto: metal (dark, light) for grey texels, paint (dark, light) for
+# coloured ones, wear for the sharpest highlights. Add a palette to paint a gun another way (fix_ma37 picks 'reach').
 PALETTES = {
     # Halo: Reach's MA37: near-black gunmetal receiver, dark grey furniture, worn steel edges
     'reach': dict(metal=((0.045, 0.048, 0.052), (0.36, 0.37, 0.39)), paint=((0.07, 0.072, 0.07), (0.40, 0.40, 0.37)), wear=(0.62, 0.62, 0.63)),
@@ -194,16 +215,19 @@ def repaint(img, pal, seed=0):
     return Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8))
 
 def fix_ma37(meshes):
+    """the E3 2000 assault rifle's textures repainted in Reach's MA37 palette (in place, under out/weapons/m_ma37)"""
     for m in meshes:
         f = f'{OUT}/weapons/m_ma37/{m["material"]}'
         repaint(Image.open(f), 'reach').save(f)
     return meshes
 
 def _islands(pos, tris):
+    """per triangle, the connected piece of the mesh it belongs to (vertices welded by position), as a label array"""
     key = np.round(pos / 1e-4).astype(np.int64)
     _, weld = np.unique(key, axis=0, return_inverse=True); weld = weld.ravel()
     par = np.arange(weld.max() + 1)
     def f(a):
+        """union-find root of welded vertex a, with path halving"""
         while par[a] != a: par[a] = par[par[a]]; a = par[a]
         return a
     for t in tris:
@@ -212,6 +236,7 @@ def _islands(pos, tris):
     return np.array([f(weld[t[0]]) for t in tris])
 
 def _part(m, sel_tris):
+    """a copy of mesh m holding only the selected triangles (vertices compacted)"""
     used = np.unique(m['tris'][sel_tris]); remap = -np.ones(len(m['pos']), int); remap[used] = np.arange(len(used))
     return dict(material=m['material'], pos=m['pos'][used].copy(), nrm=m['nrm'][used].copy(), uv=m['uv'][used].copy(), tris=remap[m['tris'][sel_tris]])
 
@@ -233,18 +258,22 @@ def fix_rocket_launcher(meshes):
         m['tris'] = np.concatenate([m['tris'], m['tris'][:, [0, 2, 1]]])
     return meshes
 
+# ARSENAL key -> a function run on its meshes after the pkl is first built (turning, centring, repainting); a Halo CE
+# gun listed here is copied to its own m_<name> pkl first, so Halo CE's original stays as the Covenant carry it
 FIX = {'rocket_launcher': fix_rocket_launcher, 'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_support}
 
 def summary(wid):
+    """(min corner, max corner, triangle count) of a built pkl, for the build's printout"""
     d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
     P = np.concatenate([m['pos'] for m in d['meshes']])
     return P.min(0).round(3), P.max(0).round(3), sum(len(m['tris']) for m in d['meshes'])
 
 def wid_of(name):
+    """the pkl id (out/weapons/<wid>) an ARSENAL name is built under"""
     kind, src = ARSENAL[name]
     return src if kind == 'ce' and name not in FIX else 'm_' + name      # Halo CE's own ids stay; the rest get m_ (no clash with CE's)
 
-MARINES = ['Marine', 'MarineArmored']
+MARINES = ['Marine', 'MarineArmored']       # the bodies overlays() builds a full set of weapon overlays for
 
 def hand_frame(char, ref='assault_rifle'):
     """(R, t, joint) taking Halo weapon space to the character's bind pose at its gun hand, recovered exactly from the
@@ -272,6 +301,8 @@ def hand_frame(char, ref='assault_rifle'):
     return R, t, jn, joints
 
 # Halo CE's own Marine guns not in the arsenal table: overlays too (the bodies carry no baked guns)
+# overlay name -> an existing pkl id under out/weapons (built by extract_weapons.py, the extractors or
+# build_cov_extras); the overlay IQM is <Char>_w_<name>.iqm like the arsenal's
 BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle',
                  'sticky_detonator_fired': 'm_sticky_detonator_fired',     # the sticky detonator with its charge gone
                  # the Covenant guns, so a Marine can carry any of them (picked up, traded): the models the Covenant
@@ -284,8 +315,11 @@ BASE_OVERLAYS = {'needler': 'needler', 'plasma_rifle': 'plasma_rifle',
 # the Brute's skeleton at its gun hand (where it holds its baked plasma rifle), in its overlay slot (build_digsite.CASTER_IDX)
 BRUTE_GUNS = ['bulldog', 'double_barrel', 'gpmg', 'rocket_launcher', 'grenade_launcher', 'hydra', 'flamethrower', 'ma37', 'smg']
 BRUTE_SUPPORT = ('gpmg', 'flamethrower')      # the auto-cannon and the flamethrower: the Brute Shot stance
+# (build_digsite.BRUTE_HUMAN_GUNS / BRUTE_SUPPORT list the same guns: keep the two files in step)
 
 def brute_overlays(char='Brute'):
+    """one overlay IQM per BRUTE_GUNS weapon on the Brute's skeleton (<Char>_w_<name>.iqm, its textures copied
+    beside it), recorded under 'arsenal' in the Brute's json; nothing when the Brute isn't extracted"""
     from iqm import write_iqm
     import shutil
     if not os.path.exists(f'{OUT}/models/{char}/{char}.json'): return
@@ -302,6 +336,7 @@ def brute_overlays(char='Brute'):
     _, _, an = read_iqm(f'{od}/{char}.iqm')
     par = [j[1] for j in joints]
     def hand_rot(anim):
+        """the gun hand's (jn) world rotation matrix in the first frame of the named animation"""
         W = pv.world(par, [(x[0], x[1]) for x in an[anim][0]])
         return pv.qmat(W[jn][1])
     Wb = pv.world(par, [(j[2], j[3]) for j in joints])
@@ -393,6 +428,7 @@ def overlays():
         print(char, 'weapon overlays', len(made[char]))
 
 def main(only=None):
+    """build every ARSENAL weapon's pkl (only: just these names) by its source kind, run its FIX, print its bounds"""
     for name, (kind, src) in ARSENAL.items():
         wid = wid_of(name)
         if only and name not in only: continue

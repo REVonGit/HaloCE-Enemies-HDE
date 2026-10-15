@@ -1,4 +1,34 @@
-"""Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles."""
+"""Generate the Halo CE enemy pack: ZScript classes, MODELDEF, skins, projectiles.
+
+Run: python3 build_pack.py (from generator/, after the extractors, gore_kit.py and blood_kit.py have filled out/).
+Reads (OUT = $HCE_OUT, default out/): ai_data.json (extract_ai.py: bipeds, actors, variants, weapons, collisions),
+models/<Char>/<Char>.iqm + .json + textures (extract_chars.py and the other extractors), weapons/, cubemaps/,
+spv3_ai.json / galap_ai.json (the SPV3, Mercury Rising and Galap units), udb_icons/, glow_colours.json; variants.py
+(the colour and shine tables), templates/ (ZScript and GLSL copied in), assets/elite_skins/, pack/bestiary_lore.txt
+and ednum_pins.json (the DoomEdNums already shipped).
+Writes (PACK = $HCE_PACK, default pack/): ZScript/HaloCE/hce_enemies.zsc (a base class per character and a class per
+variant), ZScript/HaloCE/hce_projectiles.zsc, modeldef.hce, gldefs.hce (brightmaps and the shield / sword / camo /
+visor shaders), shaders/, models/hce/<Char>/ (the IQM, baked skins, gibs, blood overlays), models/hce/weapons/,
+mapinfo.txt (DoomEdNums), bestiary.txt, sprites/udb/ and out/pack_index.json. split_factions.py then cuts the pack into
+the faction packs.
+
+Order of events: AI is loaded at import, then patched in place from top to bottom. The add_* functions and the
+module-level blocks (swap_jackal_ranks, add_grunt_ranks, the Sentinel Knights, Halo 2's Sentinels, Galap's, the Marine
+arsenal, pilots, ODSTs, Mercury Rising ...) add or re-stat variants in AI['variants'] (a variant with '_late' gets its
+DoomEdNum after everything released before it; '_ov' holds its per-variant overrides, see CHAR_OVERRIDES). The weapon
+tables (WEAPONS, PATTERNS, FIRE_SOUNDS, DROP_WEAPON ...) are extended the same way. build() then runs: per character,
+copies the model and writes its abstract base class (gore, blood, guns, Marine cosmetics); per variant, picks the
+stance and animation table, turns Halo's combat numbers into the HCE_* Default properties, bakes the skins, writes
+the class and its MODELDEF; then the projectile classes, the random spawners, the Doom boss stand-ins, GLDEFS, the
+DoomEdNum list (pinned by ednum_pins.json), the UDB icons and the bestiary lump.
+
+Where to start for the common edits: a stat (health, shield, speed, melee) -> CHAR_OVERRIDES (per character) or
+the add_* function that makes the variant (per variant); a weapon's feel -> PATTERNS, FIRE_SOUNDS, WEAPONS and
+MARINE_ARSENAL; a new enemy -> an add_* function copying an existing variant (and CHAR_OF_UNIT / TEAM if it is a new
+body), plus a lore entry in pack/bestiary_lore.txt; the colours and shine -> variants.py; which Doom monsters the
+enemies replace (the replacement mix) -> pack/ZScript/HaloCE/hce_handler.zsc, not this file; the AI itself -> the
+hand-written ZScript in pack/ZScript/HaloCE/ (enemies_base.zsc and friends).
+"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, os, re, math, shutil, glob, zipfile, sys
@@ -37,6 +67,8 @@ swap_jackal_ranks(AI['variants'])
 # Fuel-rod Elite (new): an Elite Major carrying the Spec Ops Grunts' fuel rod gun, in Halo 2's fuel-rod stance
 # (h2_elite_anims.py puts it on the CE skeleton). Its firing data is the fuel-rod Grunt's.
 def add_fuel_rod_elite(variants):
+    """Fuel-rod Elite (new): a deep copy of the Elite Major plasma rifle variant with the Spec Ops fuel-rod Grunt's
+    ranged_combat block, marked '_late' so it spawns in later encounters. To change its gun or ranges, edit fr here"""
     E = 'characters\\elite\\elite major\\elite major '
     base, fr = variants.get(E + 'plasma rifle'), variants.get('characters\\grunt\\grunt specops fuel rod')
     if not (base and fr) or (E + 'fuel rod') in variants: return
@@ -50,9 +82,13 @@ add_fuel_rod_elite(AI['variants'])
 
 # GRUNT_RANKS: variants.py
 def add_grunt_ranks(variants):
+    """Ultra Grunts (new) with the needler and the plasma pistol: the Major's variant, a third tougher, in
+    GRUNT_RANKS['ultra']'s colour; and the Heavy Grunt: the Spec Ops fuel-rod Grunt in GRUNT_RANKS['heavy']'s colour.
+    To change their toughness, edit the 1.33 here; their colours, GRUNT_RANKS in variants.py"""
     import copy
     G = 'characters\\grunt\\grunt '
     def colour(v, lo_hi):
+        """set the variant's first change colour to the (lower, upper) RGB range lo_hi"""
         cl = copy.deepcopy(v.get('change_colors_list') or [])
         lo, hi = lo_hi
         if cl: cl[0].update(color_lower_bound=list(lo), color_upper_bound=list(hi))
@@ -78,6 +114,8 @@ add_grunt_ranks(AI['variants'])
 # GRUNT_SHIELDS: variants.py. The Ultras and the Spec Ops Grunts carry an energy shield (with the shield flare on
 # their own bodies); the Heavies, made from the Spec Ops, don't
 def add_grunt_shields(variants):
+    """give every Grunt variant whose rank (its '_rank', else the second word of its name) is in GRUNT_SHIELDS that
+    much shield vitality. To change which ranks have shields or how much, edit GRUNT_SHIELDS in variants.py"""
     for vn, v in variants.items():
         if not vn.startswith('characters\\grunt\\grunt '): continue
         rank = v.get('_rank') or vn.split('\\')[-1].split(' ')[1]
@@ -87,6 +125,8 @@ add_grunt_shields(AI['variants'])
 
 # HEAVY_GREEN: variants.py
 def add_elite_heavy(variants):
+    """Heavy Elites (new): the Major's fuel rod, plasma rifle and needler variants on the 'elite heavy' unit, 125 body
+    / 200 shield, painted HEAVY_GREEN (variants.py; elite_skin turns the blue Minor skin green for them)"""
     import copy
     E = 'characters\\elite\\elite major\\elite major '
     H = 'characters\\elite\\elite heavy\\elite heavy '
@@ -223,6 +263,9 @@ def h2_shell_code(char, pieces, meta, pack, mdir, scs, shells):
     return zs, md
 
 def add_elite_h2_armour(variants):
+    """The Honor Guard and Ranger Elites from ELITE_H2_ARMOUR (variants.py: rank -> ({gun: the CE variant it copies},
+    armour colour, Halo 2 pieces, extra flags)): each a copy of its source variant wearing the Halo 2 body
+    (elite_kit_code) in place of the CE Elite's. Skipped when extract_h2_elite_kit.py hasn't run"""
     import copy
     if not os.path.exists(f'{ELITE_KIT}/EliteKit.json'): return
     for rank, (srcs, rgb, pieces, extra) in ELITE_H2_ARMOUR.items():
@@ -243,6 +286,8 @@ add_elite_h2_armour(AI['variants'])
 # Beam-rifle Spec Ops Elite (new): the Spec Ops plasma-rifle Elite's stats with Halo 2's beam rifle, in Halo 2's own
 # Elite rifle stance (h2_elite_anims.py), fighting from further back
 def add_beam_rifle_specops(variants):
+    """Beam-rifle Spec Ops Elite (new): the Spec Ops plasma-rifle variant re-armed with H2BEAM_REF and pushed to
+    sniper ranges (6-22 wu combat, 45 wu max), '_late'. To change its engagement distance, edit the ranges here"""
     E = 'characters\\elite\\elite specops\\elite specops '
     base = variants.get(E + 'plasma rifle')
     if not base or (E + 'beam rifle') in variants: return
@@ -261,6 +306,9 @@ add_beam_rifle_specops(AI['variants'])
 # Plasma Caster shots (charged: the three-shot cluster) from mid range
 CASTER_REF = r'hde\plasma caster'
 def add_caster_specops(variants):
+    """Plasma-Caster Spec Ops Elite (new): the Spec Ops plasma-rifle variant re-armed with CASTER_REF at mid range
+    (4-14 wu, 20 wu max), '_late', with the plasma_caster overlay model in the rifle stance ('_ov').
+    To change its ranges, edit the update() here"""
     E = 'characters\\elite\\elite specops\\elite specops '
     base = variants.get(E + 'plasma rifle')
     if not base or (E + 'plasma caster') in variants: return
@@ -290,6 +338,9 @@ for _vn, _v in AI['variants'].items():
 PINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ednum_pins.json')
 
 def pin_ednums(ednums):
+    """[(DoomEdNum, class)] as the build numbered them -> the same list with every class in ednum_pins.json on its
+    shipped number and the rest moved off any number a pin holds, sorted by number. To pin a new release's numbers,
+    add its classes to ednum_pins.json"""
     pins = json.load(open(PINS_PATH)) if os.path.exists(PINS_PATH) else {}
     used = set(pins.values())
     out = []
@@ -298,6 +349,10 @@ def pin_ednums(ednums):
         while n in used: n += 1
         used.add(n); out.append((n, cls))
     return sorted(out)
+# Halo CE unit (biped tag path, as ai_data.json keys it) -> the pack's character name: the folder under out/models
+# and models/hce, the HCE_<Char>Base class, and the key of every per-character table below (TEAM, VOICES, BLOOD,
+# CHAR_OVERRIDES, HEAD_CLEAR ...). A new body needs an entry here and in TEAM; the optional units (SPV3, Knights,
+# Sentinels, Galap, Mercury Rising) are added further down when their extracted models exist
 CHAR_OF_UNIT = {
     r'characters\grunt\grunt': 'Grunt', r'characters\grunt\grunt specops': 'GruntSpecOps',
     r'characters\jackal\jackal': 'Jackal', r'characters\jackal\jackal major': 'JackalMajor',
@@ -308,6 +363,8 @@ CHAR_OF_UNIT = {
     r'characters\marine\marine': 'Marine', r'characters\marine_armored\marine_armored': 'MarineArmored',
     r'characters\marine_odst\odst': 'MarineODST',
 }
+# character -> its side: COVENANT, FLOOD, SENTINEL or HUMAN (the Species and HCE_Team of its classes, who it fights and
+# won't harm; HUMAN is +FRIENDLY; the UDB category and the faction pack it ships in, UDB_CATEGORY / split_factions.py)
 TEAM = {'Grunt': 'COVENANT', 'GruntSpecOps': 'COVENANT', 'Jackal': 'COVENANT', 'JackalMajor': 'COVENANT',
         'Elite': 'COVENANT', 'EliteSpecial': 'COVENANT', 'Hunter': 'COVENANT', 'FloodInfection': 'FLOOD',
         'FloodCarrier': 'FLOOD', 'FloodElite': 'FLOOD', 'FloodHuman': 'FLOOD', 'Sentinel': 'SENTINEL',
@@ -361,6 +418,7 @@ KNIGHT_GUNS = {'light rifle': (r'weapons\light rifle\light rifle', 3.0, 22.0, 'l
                'scattershot': (r'weapons\scattershot\scattershot', 1.0, 6.0, 'scattershot'),
                'binary rifle': (r'weapons\binary rifle\binary rifle', 8.0, 40.0, 'binary_rifle'),
                'suppressor': (r'weapons\suppressor\suppressor', 2.0, 14.0, 'suppressor')}
+# their DoomEdNum order (one class per rank and gun, then the random spawner): appended to MAIN's late_order, never re-sorted
 KNIGHT_ORDER = [f'HCE_SentinelKnight{r.capitalize()}{"".join(w.capitalize() for w in g.split())}' for r in KNIGHT_RANKS for g in KNIGHT_GUNS] \
     + ['HCE_RandomSentinelKnight']
 if os.path.exists(KNIGHT_JSON):
@@ -393,12 +451,13 @@ if os.path.exists(KNIGHT_JSON):
 # grapple at close range; scaled to 0.6 to fit Doom's corridors)
 SENTINEL_JSON = f'{OUT}/models/Sentinel/Sentinel.json'
 H2_SENTINEL = os.path.exists(SENTINEL_JSON) and json.load(open(SENTINEL_JSON)).get('source') == 'h2'
+# Halo CE Sentinel variant -> its rank key (the skin's change colour, h2sentinel_skin; the bubble's SHIELD_TINT)
 SENTINEL_RANKS = {r'characters\sentinel\sentinel': 'sentinel_minor', r'characters\sentinel\sentinel major': 'sentinel_captain',
                   r'characters\sentinel\sentinel_defensive': 'sentinel_minor', r'characters\sentinel\sentinel_shielded': 'sentinel_minor',
                   r'characters\sentinel\sentinel_shielded major': 'sentinel_captain'}
 ENFORCER = r'objects\characters\sentinel_enforcer\sentinel_enforcer'
 ENFORCER_JSON = f'{OUT}/models/SentinelEnforcer/SentinelEnforcer.json'
-SENTINEL_ORDER = ['HCE_SentinelEliminator', 'HCE_SentinelEnforcer', 'HCE_SentinelConstructor']
+SENTINEL_ORDER = ['HCE_SentinelEliminator', 'HCE_SentinelEnforcer', 'HCE_SentinelConstructor']   # their DoomEdNum order (late_order)
 NO_RANDOM = {'SentinelEnforcer', 'SentinelConstructor'}     # one class each: no random spawner
 CONSTRUCTOR = r'objects\characters\sentinel_constructor\sentinel_constructor'
 CONSTRUCTOR_JSON = f'{OUT}/models/SentinelConstructor/SentinelConstructor.json'
@@ -451,6 +510,7 @@ if os.path.exists(CONSTRUCTOR_JSON):
 # blue beam and the Beam Gunner's the Sentinel beam, the Lancer's incinerator a flamethrower. The shielded ones wear
 # the hard-light shield lattice while it holds (sentinel_h2.zs); the ally variants fight on the player's side.
 GALAP_AI = f'{OUT}/galap_ai.json'
+# Galap's weapon tag (its leaf name) -> the weapon ref the pack fires it as (WEAPONS / the Sentinel beam)
 GALAP_WEAPONS = {'sentinel_needler': r'weapons\enforcer needler\enforcer needler', 'sentinel_beam_blue': r'characters\sentinel\sentinel',
                  'sentinel_beam_gunner': r'characters\sentinel\sentinel', 'sentinel': r'characters\sentinel\sentinel',
                  'sentinel_incinerator': r'weapons\flamethrower\flamethrower'}
@@ -469,8 +529,8 @@ GALAP_GUNNERS = {'sentinel soldier': (('beam gun a', 'beam gun b'), 'sentinel_be
                  'sentinel soldier ally': (('beam gun a', 'beam gun b'), 'sentinel_beam_gunner_ally'),
                  'sentinel dragoon': (('beam gun',), 'sentinel_beam_gunner_heavy'),
                  'sentinel dragoon ally': (('beam gun',), 'sentinel_beam_gunner_ally_heavy')}
-GALAP_ORDER = ['HCE_' + ''.join(w.capitalize() for w in n.split()) for n in GALAP_NAMES.values()]
-GALAP_CHARS = set()
+GALAP_ORDER = ['HCE_' + ''.join(w.capitalize() for w in n.split()) for n in GALAP_NAMES.values()]   # DoomEdNum order (late_order)
+GALAP_CHARS = set()     # the Galap characters whose models exist (filled below; SENTINEL_LIKE, skins, overrides)
 if os.path.exists(GALAP_AI):
     _G = json.load(open(GALAP_AI))
     _base = AI['variants'][r'characters\sentinel\sentinel']
@@ -504,6 +564,9 @@ if os.path.exists(GALAP_AI):
         AI['variants'][rf'characters\{GALAP_NAMES[_leaf]}\{GALAP_NAMES[_leaf]}'] = _v
 
 # Halo weapon -> (pack projectile class, HDE base class, Halo impact damage, Halo projectile speed WU/tick)
+# The key is the weapon tag's leaf name (wname of ranged_combat.reference). Damage None keeps the HDE base's own.
+# A new weapon needs an entry here and in PATTERNS and FIRE_SOUNDS (DROP_WEAPON if the body drops it, FIRE_CODE if its
+# fire animation has its own code); the projectile class is written by build() into hce_projectiles.zsc
 WEAPONS = {
     'plasma pistol':    ('HCE_PlasmaPistolBolt', 'HaloPlasma_Proj', 18, 0.83),
     'plasma rifle':     ('HCE_PlasmaRifleBolt', 'HaloPlasmaRifle_Proj', 13, 1.67),
@@ -597,13 +660,19 @@ class HCE_HardlightViolet : HCE_Hardlight
 	}
 }
 '''
+# projectile bases that are HaloSlowProjectile (their damage property is HaloSlowProjectile.BaseDamage, not HaloProjectile's)
 SLOW_PROJ = {'HCE_HardlightBlue', 'HCE_HardlightGreen', 'HCE_HardlightCyan', 'HCE_HardlightViolet'}
+# weapon -> the two-letter code in Halo CE's fire animation names ('stand rifle fire-1 pr baked'): anim_table picks the
+# stance's fire animation shot with this code first. A weapon with no code takes any fire animation of the stance
 FIRE_CODE = {'plasma pistol': 'pp', 'plasma rifle': 'pr', 'needler': 'ne', 'fuel rod': 'fr', 'hunter fuel rod': 'fr',
              'assault rifle': 'ar', 'shotgun': 'sg', 'pistol': 'hp', 'sniper rifle': 'sr'}
 # Fire patterns (Doom-paced; Halo's per-variant numbers only stretch them):
 # weapon: (shots min, shots max, tics between shots, pause min s, pause max s,
 #          overcharge wind-up tics, scale shots with Halo burst length,
 #          Halo baseline separation s, Halo baseline burst s)
+# build() writes them as HCE_FirePattern: the pause is scaled by the variant's burst separation against the baseline
+# (0.75x to 1.3x), the shot count by its burst length when the scale flag is set (0.75x to 1.6x). To make a gun fire
+# faster or longer for everyone carrying it, edit its row here; for one variant, its burst_geometry in the add_*
 PATTERNS = {
     'needler':         (3, 3, 12, 1.6, 2.6, 0, False, 1.0, 1.1),   # semi-auto cadence
     'plasma pistol':   (2, 4, 7, 1.1, 1.9, 28, False, 1.2, 0.5),
@@ -625,6 +694,7 @@ PATTERNS = {
     'enforcer needler': (10, 16, 2, 1.4, 2.4, 0, True, 1.0, 2.0),   # long strings from both arms
 }
 # HDE SNDINFO names: fire, fire bass, special (overcharge / loop end), charge (overcharge / loop start), looping
+# (weapon -> HCE_FireSounds and HCE_FireLoop; '' for none). The HCE/... names are shipped by split_factions.py
 W = 'Halo/Weapons/'
 FIRE_SOUNDS = {
     'plasma pistol':   (W + 'PlasmaPistol/Fire', W + 'PlasmaPistol/Fire/Bass', W + 'PlasmaPistol/Fire/Charged', W + 'PlasmaPistol/Charge/Start', False),
@@ -654,6 +724,7 @@ DROP_WEAPON = {'energy sword': 'Halo_EnergySword', 'plasma pistol': 'Halo_Plasma
                'light rifle': 'Halo_LightRifle', 'scattershot': 'Halo_ScatterShot', 'binary rifle': 'Halo_BinaryRifle'}
 # Doom boss stand-ins: unique subclasses so CheckReplacee can map them back to the Doom boss
 # (A_BossDeath map specials: E1M8/E4M6 Barons, MAP07 Mancubi/Arachnotrons, Cyberdemon/Spider levels)
+# (the handler spawns these in place of the Doom boss on those maps; add an entry to give another level's boss a stand-in)
 BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
     'HCE_BossBaronEliteMajorPlasmaRifle': ('HCE_EliteMajorPlasmaRifle', 'BaronOfHell', 1.5),
     'HCE_BossBaronEliteMajorNeedler': ('HCE_EliteMajorNeedler', 'BaronOfHell', 1.5),
@@ -668,6 +739,8 @@ BOSS_ALIASES = {  # alias class: (base class, Doom class, health multiplier)
     'HCE_BossSpiderEliteCommanderPlasmaRifle': ('HCE_EliteCommanderPlasmaRifle', 'SpiderMastermind', 4.0),
     'HCE_BossBaronFloodJuggernaut': ('HCE_FloodJuggernaut', 'BaronOfHell', 1.0),
 }
+# character -> its voice sets (HCE_Voices: comma-separated, one rolled per enemy at spawn; the names are the SNDINFO
+# prefixes build_voices.py / split_factions.py ship). A variant's '_ov' voices key overrides its character's
 VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy',
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
           'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
@@ -682,10 +755,13 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
           'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
           'FloodJuggernaut': 'FloodJuggernaut'}
-from extract_weapons import WEAPONS as WEAPON_IDS
+from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
+# melee damage of a weapon swung as one (HCE_Melee); an unlisted gun hits for 55, an unarmed body by character (build)
 MELEE = {'energy sword': 151, 'flamethrower': 75}
 # projectile bases that aren't HDE HaloProjectile/HaloSlowProjectile (or already carry the nerf mixin)
 NO_NERF_MIXIN = {'HCE_FuelRodScaled', 'HaloFlames', 'HCE_PlasmaCasterScaled', 'HCE_NeedleScaled', 'HCE_RocketScaled', 'HCE_BeamPuff', 'HCE_PulseCarbineHoming'}
+# Halo's actor type field -> the kind whose behaviour flags build() gives the class (HCE_Surprise, HCE_Berserks, HCE_Panics
+# ...: the 'emotions' block). A variant's '_ov' flags key replaces the set, add_flags extends it
 ACTOR_TYPES = {0: 'elite', 1: 'jackal', 2: 'grunt', 3: 'hunter', 4: 'engineer', 7: 'marine', 8: 'crew',
                9: 'flood', 10: 'infection', 11: 'carrier', 12: 'monitor', 13: 'sentinel'}
 
@@ -705,7 +781,7 @@ BLOOD = {
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
 }
-NO_BLOOD = {'Sentinel'}
+NO_BLOOD = {'Sentinel'}     # characters that get +NOBLOOD (machines); the optional Sentinel bodies add themselves below
 SENTINEL_LIKE = {'Sentinel'} | (GALAP_CHARS - {'SentinelCrawler'})     # flying Sentinel bodies: the fixed stance, hovering, the beam
 # the Sentinels' own sounds from the official games (extract_sentinel_sounds.py, shipped by split_factions.py as
 # HCE/Sentinel/<event>): engine hum, a hit on the hull, the death. Halo CE's for its Sentinel and Galap's (the Crawler
@@ -716,6 +792,8 @@ SENTINEL_UNIT_SOUNDS['SentinelEnforcer'] = ('HCE/Sentinel/EnforcerEngine', 'HCE/
 SENTINEL_UNIT_SOUNDS['SentinelConstructor'] = ('HCE/Sentinel/ConstructorEngine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/H2Death')
 
 def blood_props(char):
+    """the Default lines giving a character's base class its blood: +NOBLOOD (NO_BLOOD), else BloodColor from BLOOD and
+    the Halo blood type; '' for a character in neither table"""
     if char in NO_BLOOD: return '\t\t+NOBLOOD\n'
     c = BLOOD.get(char)
     if not c: return ''
@@ -727,15 +805,21 @@ def blood_props(char):
 FLOOD_RANKED = ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')
 
 def cname(s):
+    """a variant's tag path -> its class name: the leaf, each word capitalised, 'HCE_' in front
+    ('characters\\elite\\elite minor\\elite minor plasma rifle' -> 'HCE_EliteMinorPlasmaRifle')"""
     s = s.split('\\')[-1]
     return 'HCE_' + ''.join(w.capitalize() for w in re.split(r'[^a-zA-Z0-9]+', s) if w)
 
 def wname(ref):
+    """a weapon tag path -> the weapon's name, the key of WEAPONS / PATTERNS / FIRE_SOUNDS ('weapons\\needler\\needler'
+    -> 'needler'); None for no weapon"""
     return ref.split('\\')[-1] if ref else None
 
 # ---------------------------------------------------------------- animations
 class AnimSet:
+    """the animations a model's JSON lists (meta['anims']: name -> frames, speed, move), looked up by name"""
     def __init__(s, meta):
+        """meta: the model's JSON (out/models/<Char>/<Char>.json)"""
         s.meta = meta; s.names = list(meta['anims'])
     def find(s, *pats):
         """first pattern that matches; returns list of variants (name%0, name%1 ...)"""
@@ -744,13 +828,21 @@ class AnimSet:
             if exact: return sorted(exact)
         return []
     def find_contains(s, *parts, suffix=''):
+        """every animation name containing all the parts (and ending with suffix), sorted"""
         return sorted(n for n in s.names if all(x in n for x in parts) and n.endswith(suffix))
     def tics(s, n):
+        """an animation's length in Doom tics (Halo runs 30 frames a second, Doom 35 tics)"""
         return max(1, int(round(s.meta['anims'][n]['frames'] / TICK)))
     def speed(s, n):
+        """how fast an animation moves the body, in map units per tic (0 for an unknown name)"""
         return s.meta['anims'][n]['speed'] * S / TICK if n in s.meta['anims'] else 0
 
 def anim_table(A, w, weapon):
+    """{kind (KINDS): [animation names]} for a body in stance w ('pistol', 'rifle', 'unarmed', 'fixed', 'sword',
+    'missle', the Halo 2 'h2...' stances) carrying weapon: Halo CE's names ('stand rifle move-front', 's-kill front',
+    'h-ping back' ...) matched per kind, with fallbacks to the pistol / rifle / unarmed stances. A kind with an empty
+    list has no animation (zs_anim_funcs leaves it out). A variant's '_ov' anims / anims_by_weapon overrides entries.
+    To give a kind another animation for every body, change its patterns here"""
     m = {}
     st = ['stand', 'alert']
     def f(*pats): return A.find(*pats)
@@ -823,6 +915,8 @@ def anim_table(A, w, weapon):
     m['GUARD_CROUCH_MOVE'] = f(f'crouch guard {w} move-front')
     return m
 
+# every animation kind the AI asks for (HCE_A_<kind> in enemies_base.zsc), the order they are written in HCE_AnimName.
+# A new kind needs an entry here, a line in anim_table and its HCE_A_ constant in the ZScript
 KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE', 'CROUCH_MOVE', 'FLEE', 'FIRE', 'MELEE',
          'THROW', 'DIVE_L', 'DIVE_R', 'DIVE_F', 'EVADE_L', 'EVADE_R', 'SURPRISE_F', 'SURPRISE_B', 'BERSERK', 'WARN',
          'SIGNAL', 'AIRBORNE', 'LAND', 'LEAP_START', 'LEAP_AIR', 'LEAP_MELEE', 'PING_F', 'PING_B', 'PING_L', 'PING_R',
@@ -838,14 +932,20 @@ def zs_anim_move(A, used, msc=1.0):
     up), in map units: the model's own scale, with the 1.2 vertical stretch every Halo model gets"""
     mv = [(n, A.meta['anims'][n]['move']) for n in used if 'move' in A.meta['anims'].get(n, {})]
     if not mv:   # no hoist or vault of its own: no switch (an empty one is a compile warning)
-        return ['\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\treturn (0, 0, 0);', '\t}']
-    out = ['\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
+        return ['\t// the ground each moving clip covers (none here: the AI moves the body itself)', '\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\treturn (0, 0, 0);', '\t}']
+    out = ['\t// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk',
+           '\toverride vector3 HCE_AnimMove(Name anim)', '\t{', '\t\tswitch(anim)', '\t\t{']
     for n, (x, y, z) in mv:
         out.append(f"\t\tcase '{n}': return ({x * S * msc:.1f}, {y * S * msc:.1f}, {z * S * msc * 1.2:.1f});")
     return out + ['\t\t}', '\t\treturn (0, 0, 0);', '\t}']
 
 def zs_anim_funcs(A, table, bers=None, msc=1.0):
-    lines = ['\toverride Name HCE_AnimName(int kind)', '\t{',
+    """the class's animation overrides as ZScript: HCE_AnimName (kind -> a name, rolled when the kind has several;
+    bers: the table used instead while hce_berserk is set), HCE_AnimTics (name -> length) and HCE_AnimMove
+    (zs_anim_move). A gun picked up (hce_hasLoadout) asks the loadout's table first"""
+    lines = ['\t// the animation table: which IQM clip plays for each of the AI\'s animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;',
+             '\t// the list is in the enemy API). A kind with several clips rolls one each time. To swap a clip, change its name here',
+             '\toverride Name HCE_AnimName(int kind)', '\t{',
              "\t\tif(hce_hasLoadout) { Name ln = HCE_LoadoutAnim(hce_loadout, kind); if(ln != 'None') return ln; }   // a gun picked up"]
     if bers:
         lines += ['\t\tif(hce_berserk) switch(kind)', '\t\t{']
@@ -865,7 +965,8 @@ def zs_anim_funcs(A, table, bers=None, msc=1.0):
             lines.append(f"\t\tcase HCE_A_{k}: {{ static const Name o[] = {{ {', '.join(repr(x).replace(chr(34), '') for x in opts)} }}; return o[random(0, {len(opts) - 1})]; }}")
     lines += ['\t\t}', "\t\treturn 'None';", '\t}', '']
     used = sorted({n for k in KINDS for n in (table.get(k) or [])} | {n for k in KINDS for n in ((bers or {}).get(k) or []) if n in A.names})
-    lines += ['\toverride int HCE_AnimTics(Name anim)', '\t{',
+    lines += ['\t// how long each clip plays, in tics (its Halo frame count at 30 fps, in Doom\'s 35 tics a second)',
+              '\toverride int HCE_AnimTics(Name anim)', '\t{',
               '\t\tif(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }', '\t\tswitch(anim)', '\t\t{']
     for n in used:
         lines.append(f"\t\tcase '{n}': return {A.tics(n)};")
@@ -875,6 +976,8 @@ def zs_anim_funcs(A, table, bers=None, msc=1.0):
 
 # ---------------------------------------------------------------- skins
 def variant_color(v, b):
+    """the variant's armour colour (RGB 0..1): the middle of its actor variant's first change-colour range, else the
+    biped's (its first permutation's); None when neither has one (the skin is baked uncoloured)"""
     cl = v.get('change_colors_list') or []
     if cl:
         lo, hi = cl[0]['color_lower_bound'], cl[0]['color_upper_bound']
@@ -889,6 +992,8 @@ def variant_color(v, b):
     return None
 
 # SHIELD_TINT: variants.py
+# character -> the material of its hand-held energy shield (the Jackals'): baked per rank by bake_shield in the
+# rank's SHIELD_TINT and given the shield shader
 SHIELD_MAT = {'Jackal': 'Jackal_5', 'JackalMajor': 'JackalMajor_5'}
 
 def bake_shield(char, mat, tint, outpath):
@@ -1056,6 +1161,7 @@ def heavy_green(im, char, mat):
     return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
 
 def is_green(color):
+    """whether an armour colour (RGB 0..1) is a saturated green (the Heavy Elites': hue 75..170)"""
     import colorsys
     if color is None: return False
     h, l, sat = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
@@ -1225,6 +1331,10 @@ def copy_weapon_tex(src, dst):
 
 
 def bake_skin(char, mat, color, outpath, shine=1.0):
+    """the default skin bake: the material's texture with the variant's colour multiplied in where Halo's colour-change
+    mask (the multipurpose map's blue) says, the cube-map reflection added (add_shine, SHINE / SHINE_CUBE in variants.py,
+    shine scaling its strength: RANK_SHINE) and, for HUE_LOCK characters, the painted armour held to the colour's hue.
+    A cutout texture (alpha, no mask) or one with no mask / no colour is copied with only the shine"""
     src = Image.open(f'{OUT}/models/{char}/{mat}.png')
     if src.mode == 'RGBA' and np.asarray(src)[..., 3].min() < 128 and not os.path.exists(f'{OUT}/models/{char}/{mat}_multi.png'):
         src.save(outpath); return                 # a cutout (the Drones' wings): alpha kept, UZDoom alpha-tests it
@@ -1245,6 +1355,8 @@ def bake_skin(char, mat, color, outpath, shine=1.0):
 # RANK_SHINE: variants.py
 
 def hue_lock(rgb, mask, color):
+    """rgb (H, W, 3) floats -> the same with the hue turned most of the way (0.8 x mask) toward the colour's: the baked
+    reflection's own colours can't drift a rank's armour off its colour. Nothing for a grey or black colour"""
     import colorsys
     h0, l0, s0 = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
     if s0 < 0.25: return rgb                                              # black / grey ranks: nothing to hold
@@ -1260,6 +1372,9 @@ def hue_lock(rgb, mask, color):
 # UNDERSUIT: variants.py
 
 def bake_vivid(char, mat, color, outpath, shine=1.0):
+    """the gold Elites' bake (VIVID in variants.py: variant name part -> colour): the armour painted the colour outright
+    (its shading from the texture's brightness, a highlight on the edges) rather than multiplied in, the undersuit
+    tinted toward UNDERSUIT, the hands left dark, then the reflection (add_shine, VIVID_SHINE)"""
     base = Image.open(f'{OUT}/models/{char}/{mat}.png').convert('RGB')
     mp = f'{OUT}/models/{char}/{mat}_multi.png'
     if not os.path.exists(mp):
@@ -1323,6 +1438,7 @@ SWORD_SHADER = template('shaders/sword.fp')
 CAMO_SHADER = template('shaders/camo.fp')
 
 # ---------------------------------------------------------------- generation
+# gore_kit.py's limb names -> the API's limb numbers (HCE_LIMB_HEAD, HCE_LIMB_LARM, HCE_LIMB_RARM, HCE_LIMB_BACK)
 GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2, 'back': 3}
 
 # HDE plasma bolt classes the enemies fire -> also thin out the smoke trail (their own Tick does only that)
@@ -1337,6 +1453,7 @@ def gore_code(char, meta, mdir, sc):
     out = ['\toverride bool HCE_SeverLimb(int limb)\n\t{\n\t\tif(hce_severed & (1 << limb)) return false;\n\t\tswitch(limb)\n\t\t{\n']
     perms = body_perms(meta)
     def stub_and_gib(x, ind):
+        """the lines showing a limb's stump (x: its gore entry) and throwing its gib, at indent ind ({L}: the limb number)"""
         c = x['center']
         show = (f'{ind}HCE_ShowStumps(hce_severed | (1 << {{L}}));\n' if g.get('cap_model') else
                 ''.join(f'{ind}A_ChangeModel(\'None\', 0, "", \'None\', {si}, "", \'None\', CMDL_USESURFACESKIN);\n' for si in x['swap'])
@@ -1462,6 +1579,8 @@ LIP_CODE = template('zscript/lip.zs')
 
 
 MARINE_KIT = f'{OUT}/models/MarineKit'
+# the kit's slots in the order hce_kit[] holds them (index 0 head, 1 face, 3 back ...: the ZScript overrides index it
+# by position, so keep the order); each is a model attachment (MarineKit.json 'slots' gives the model index)
 KIT_SLOT_ORDER = ('head', 'face', 'chest', 'back', 'shoulders', 'arms', 'legs', 'wrists', 'waist')
 MEDIC_KIT = ('first_aid',)          # the corpsmen's kit pieces (the red-cross first-aid kit): theirs only
 
@@ -1484,6 +1603,8 @@ def marine_kit_code(char, names, mdir, sis):
     out = ['\t// ---- Elefant\'s Marine kit (extract_marine_kit.py): headgear, face and head add-ons, chest rigs and pouches,\n'
            '\t// packs, shoulder pads, gloves and the ODST\'s armour, each a model attachment riding the Marine\'s skeleton\n']
     def weighted(fn, picks, chance=None):
+        """a ZScript function fn() rolling one piece id from picks [(id, weight)] ("" for none); chance: the odds of
+        wearing anything in the slot at all"""
         tot = sum(w for _, w in picks)
         b = [f'\tString {fn}()\n\t{{\n']
         if chance is not None: b.append(f'\t\tif(frandom[HCEKit](0, 1) >= {chance:.2f}) return "";\n')
@@ -1502,6 +1623,7 @@ def marine_kit_code(char, names, mdir, sis):
         for slot, picks in o['slots'].items():
             if picks: out += weighted(f'HCE_KitOutfit{k}_{slot}', picks)
     def flag(fn, key):
+        """a static ZScript predicate fn(piece) true for the pieces whose kit entry has the flag key set"""
         ids = [pid for pid, d in P.items() if d.get(key)]
         return f'\tstatic bool {fn}(String p) {{ ' + ('return ' + ' || '.join(f'p == "{i}"' for i in ids) + ';' if ids else 'return false;') + ' }\n'
     out += [flag('HCE_KitShell', 'shell'), flag('HCE_KitEnclosed', 'enclosed'), flag('HCE_KitNeedsHelmet', 'needs_helmet')]
@@ -1682,6 +1804,7 @@ def blood_code(char, meta, mdir):
     return ''.join(out)
 
 def blood_hide(si, mdir):
+    """the ZScript line hiding surface si of the blood overlay (model BLOOD_IDX)"""
     return f'\t\t\tA_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n'
 
 
@@ -1703,6 +1826,10 @@ PICKUP_SKIP = {'energy sword', 'hunter fuel rod', 'stanchion'}       # melee, th
 
 
 def loadout_code(char, prof, A):
+    """the base class's loadouts: prof {HDE weapon class: the firing data, sounds, animation table and the model
+    changes (visual) of the pack's class that carries it, gathered in build()} -> HCE_LoadoutIndex / HCE_ApplyLoadout
+    / HCE_LoadoutVisual / HCE_LoadoutAnim / HCE_LoadoutAnimTics, one function per loadout (one big switch runs out of
+    VM registers). Which guns a body can pick up is decided in build(), not here"""
     los = sorted(prof)
     out = [f'\t// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): {", ".join(los)}',
            '\toverride bool HCE_HasLoadouts() { return true; }',
@@ -1760,6 +1887,7 @@ def loadout_code(char, prof, A):
 # thing browser by faction and kind, named and pictured. The pictures are udb_icons.py's photos of each enemy
 # ($HCE_OUT/udb_icons), shipped as sprites HUxxA0 (xx: the class's place in icons.json, base 36) in its faction's pack.
 UDB_ICONS = f'{OUT}/udb_icons'
+# TEAM -> the thing browser's category under 'Halo CE' (and the bestiary's faction, in this order)
 UDB_CATEGORY = {'COVENANT': 'Covenant', 'FLOOD': 'Flood', 'SENTINEL': 'Sentinels', 'HUMAN': 'Marines (allies)'}
 _udb = None
 
@@ -1804,6 +1932,7 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 #   L <key> <lore text, paragraphs split by |>
 # The lore is pack/bestiary_lore.txt; a class gets the entry whose key is the longest found in its class name, else its
 # character's. Random spawners and the variant things are left out (the variants from HCEVARS are listed at run time).
+# character -> its group heading in the bestiary where the character name split into words won't do (words(char))
 BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
                   'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
@@ -1816,6 +1945,7 @@ def read_lore():
     """pack/bestiary_lore.txt -> {key: text (paragraphs joined by |)}"""
     lore, key, buf = {}, None, []
     def flush():
+        """store the entry read so far (buf) under key, its paragraphs joined by |"""
         if key: lore[key] = '|'.join(p.strip().replace('\n', ' ') for p in '\n'.join(buf).strip().split('\n\n') if p.strip())
     for line in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pack', 'bestiary_lore.txt')):
         if line.startswith('#'): continue
@@ -1898,6 +2028,20 @@ def ship_udb_icons(classes, sprites_dir):
     return len(have)
 
 def build(cfg=None):
+    """Write the pack. cfg (MAIN, or an add-on's: build_digsite.py): char_of_unit and team (the characters to build),
+    ai (the patched AI data), pack (the pk3 source tree), mdir (the models/ subfolder), tag (the lump suffix:
+    hce_enemies.zsc, modeldef.hce ...), ed0 (the first DoomEdNum), main (the core pack: the hard-light bases, the boss
+    stand-ins, the placeholder sprite), handler, index, late_chars / late_order (the numbering of what came after the
+    first release), and the optional nerf_mixin, lite_mixin, glow, gl_title.
+
+    Per character (sorted by name): copies the model, kit and gore files into the pack and writes the abstract
+    HCE_<Char>Base class (collision box, blood, the gore / blood / gun / permutation / Marine code; a bubble flare for
+    the shielded Sentinels), then every variant drawn on that body (the per-variant loop: stance and animations,
+    speed, vitality, the weapon's numbers and pattern, melee, leaps, grenades, perception, the behaviour flags, the
+    skins, the Default block, the extra ZScript, the MODELDEF block, a loadout other bodies of its kind can pick up),
+    then the base class gets its loadouts. After all characters: the projectile classes, the random spawners, the
+    Doom boss stand-ins, the late classes' numbers, GLDEFS (brightmaps, shaders, visors), the lumps, mapinfo.txt,
+    the UDB icons, the bestiary and the skin check"""
     cfg = cfg or MAIN
     char_of_unit, team, ai, pack, mdir = cfg['char_of_unit'], cfg['team'], cfg['ai'], cfg['pack'], cfg['mdir']
     main = cfg.get('main', False)
@@ -1955,7 +2099,9 @@ def build(cfg=None):
         if ov.get('height_fixed'): height = ov['height_fixed']
         height = max(height, HEAD_CLEAR.get(char, 0))
         base_idx = len(zs); prof = {}
-        zs.append(f'class HCE_{char}Base : HaloDoom_EnemyBase abstract\n{{\n\tDefault\n\t{{\n'
+        zs.append(f'// ---- {char}: the body every {char} variant below is drawn with ({unit}): its size, blood and gore, the skins it\n'
+                  f'// rolls and its cosmetics. Changing a number here changes every {char}; one variant\'s numbers are in its own class\n'
+                  f'class HCE_{char}Base : HaloDoom_EnemyBase abstract\n{{\n\tDefault\n\t{{\n'
                   f'\t\tMonster;\n\t\t+DECOUPLEDANIMATIONS\n\t\t+FLOORCLIP\n\t\t+DONTHARMSPECIES\n\t\t+NOINFIGHTSPECIES\n'
                   f'\t\tSpecies "HCE_{team[char]}";\n\t\tHaloDoom_EnemyBase.HCE_Enabled true;\n'
                   f'\t\tHaloDoom_EnemyBase.HCE_Team HCE_TEAM_{team[char]};\n'
@@ -2019,6 +2165,7 @@ def build(cfg=None):
             table = anim_table(A, w, weapon)
             for k, names in list(ov.get('anims', {}).items()) + list(ov.get('anims_by_weapon', {}).get(weapon, {}).items()):
                 table[k] = [n for n in names if n in A.names]
+            # speed: the run animation's own pace (map units a tic), the walk and low-ready walk from it; ov 'speed' overrides
             mv = (table.get('MOVE_F') or [None])[0]
             run = A.speed(mv) if mv else 0
             if run < 1.5: run = 6.0 if char in SENTINEL_LIKE else {'FloodInfection': 7.0}.get(char, 5.0)
@@ -2030,6 +2177,7 @@ def build(cfg=None):
             walk = run * 0.65
             lmv = (table.get('LOW_MOVE') or [None])[0]
             low = min(walk, A.speed(lmv) * msc) if lmv else 0      # the low-ready walk's own pace
+            # vitality: Halo's body and shield (the unit's, else its collision model's); ov 'health' / 'shield' override
             body = un['maximum_body_vitality'] or coll.get('maximum_body_vitality') or 0
             shield = un['maximum_shield_vitality'] or coll.get('maximum_shield_vitality') or 0
             if 'shield' in ov: shield = ov['shield']
@@ -2037,7 +2185,9 @@ def build(cfg=None):
             if 'stealth elite' in vname and char.startswith('Elite'): shield = 0; body = body * 0.45
             if char == 'FloodInfection': body = max(body, 3)
             body = max(1, int(round(ov.get('health', body))))
-            # weapon
+            # weapon: the projectile and its speed from WEAPONS, shots per pull, rate and spread from Halo's trigger data
+            # (ov 'pellets' / 'spread' override), then the Doom-paced fire pattern (PATTERNS), sounds (FIRE_SOUNDS) and
+            # the other extra Default lines gathered in pat
             proj = 'None'; pps = 1; rof = rc['rate_of_fire']; err = rc['projectile_error_angle'] * DEG
             projspeed = 0; dmgmod = rc.get('weapon_damage_modifier') or 1.0
             trig = (wd or {}).get('triggers_list') or []
@@ -2082,6 +2232,7 @@ def build(cfg=None):
             if weapon == 'plasma caster':
                 pat += '\t\tHaloDoom_EnemyBase.HCE_SpecialShot "HCE_PlasmaCasterClusterScaled", 3;\n'
             if ov.get('voices') or char in VOICES: pat += f'\t\tHaloDoom_EnemyBase.HCE_Voices "{ov.get("voices") or VOICES[char]}";\n'
+            # ranges: how far it fires and the distance it tries to fight at (Halo world units -> map units)
             maxrange = max(rc['maximum_firing_range'], 4) * S
             rlo, rhi = rc['combat_range_lower_bound'] * S, rc['combat_range_upper_bound'] * S
             if rhi <= 0: rlo, rhi = 0, maxrange * 0.6
@@ -2101,6 +2252,7 @@ def build(cfg=None):
             # Doom-scale reach beyond both bodies' edges (Halo's melee_range is a decision radius, not arm length)
             meleer = {'Hunter': 56, 'FloodCarrier': 20, 'FloodInfection': 8}.get(char, 64 if weapon == 'energy sword' else 40 if char.startswith('Flood') else 36)
             if 'melee' in ov: meleer, meleed = ov['melee']
+            # leaps (the Flood's, the infection forms'): Halo's berserk leap, with defaults for the Flood that have none
             bz = a['berserk']
             leapmin, leapmax = bz['melee_leap_range_lower_bound'] * S, bz['melee_leap_range_upper_bound'] * S
             leapchance = bz['melee_leap_chance']; leapvel = (bz['melee_leap_velocity'] or b.get('jump_velocity') or 0.1) * S / TICK
@@ -2114,6 +2266,7 @@ def build(cfg=None):
             if gchance > 0: gtype = 2 if gc['grenade_type'] == 1 else 1
             gcount = max(v['items']['grenades_upper_bound'], 1 if gtype else 0)
             overcharge = weapon == 'plasma pistol' and char.startswith('Jackal')   # only Jackals overcharge
+            # drops: the gun (DROP_WEAPON) and the grenades it dies with (ov 'drops' False for none)
             dw = DROP_WEAPON.get(weapon or '') if ov.get('drops', True) else None
             if char == 'Hunter': dw = None if weapon == 'plasma caster' else dw     # the White Hunter's is its arm cannon
             dg = {2: 'PlasmaGrenades', 1: 'FragGrenades'}.get(gtype) if gcount else None
@@ -2128,7 +2281,8 @@ def build(cfg=None):
             fov = min(360, 2 * (pe['maximum_vision_angle'] or 1.2) * DEG)
             hearing = (pe['hearing_distance'] or 20) * S
             surprise = (a['panic']['surprise_distance'] or 2) * S
-            # emotions
+            # emotions: Halo's panic / defensive / moving blocks (written below as HCE_Panic, HCE_Defensive) and the
+            # behaviour flags by kind (ACTOR_TYPES); ov 'flags' replaces the set, 'add_flags' extends it
             pa = a['panic']; df = a['defensive']; mvp = a['moving']
             flags = []
             t = ACTOR_TYPES.get(atype, '')
@@ -2150,7 +2304,9 @@ def build(cfg=None):
             if char.startswith('Elite') and shield > 0: flags.append('HCE_ShieldStun')   # hard-ping stun when the shield pops
             flags += [f for f in ov.get('add_flags', ()) if f not in flags]
             flags = sorted(set(flags))
-            # skins
+            # skins: one baked texture per material into models/<mdir>/<Char>/skins (shared where variants look the same),
+            # weapon textures into models/<mdir>/weapons; skin_lines / weapon_lines become the MODELDEF's SurfaceSkins.
+            # Which bake: a SKIN_HOOK, bake_hunter, bake_vivid, the painted Elite skins, the Spec Ops purple, else bake_skin
             color = variant_color(v, b)
             # Flood: the change colour covers nearly the whole body on Xbox and turns them green;
             # the base maps already carry the right flesh/fatigue/armour colours
@@ -2168,6 +2324,8 @@ def build(cfg=None):
             aim = ((table.get('FIRE') or []) + (table.get('ALERT') or []) + (table.get('IDLE') or []) + [None])[0]
             lift = -meta['bounds'][0][2] if ov.get('lift') else 0.0
             def to_doom(p, lift=lift, height=height, radius=radius, msc=msc):
+                """a point in Halo model space (feet, +x forward, +y left) -> HCE_GunOffset's frame (map units, from
+                mid-height, +y right), at this model's scale"""
                 return [max(radius * 0.5, p[0] * S * msc), -p[1] * S * msc, (p[2] + lift) * S * msc * 1.2 - height * 0.5]
             anchor = None if 'gun' in ov else gun_anchor(char, meta, pack, mdir, aim, wid_equipped, ovm)
             mz = muzzle_point(anchor, aim)
@@ -2234,6 +2392,8 @@ def build(cfg=None):
                 skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{fn}"')
             friendly = '\t\t+FRIENDLY\n' if team[char] == 'HUMAN' else ''
             if ov.get('ally'): friendly = '\t\t+FRIENDLY\n\t\tHaloDoom_EnemyBase.HCE_Team HCE_TEAM_HUMAN;\n'   # fights on the player's side
+            # the class's Default block: everything above as HaloDoom_EnemyBase properties (enemies_base.zsc reads them),
+            # then pat (pattern, sounds, drops, voices) and the flags
             props = f'''\t\tHealth {body};
 {friendly}\t\tSpeed {run:.1f};
 \t\tHaloDoom_EnemyBase.HCE_Type {atype};
@@ -2258,6 +2418,9 @@ def build(cfg=None):
 \t\tHaloDoom_EnemyBase.HCE_Shield {shield:.0f}, {min(5.0, coll.get('shield_stun_time') or 3):.1f}, {min(6.0, coll.get('shield_recharge_time') or 4):.1f};
 \t\tHaloDoom_EnemyBase.HCE_FlyHeight {48 if char in SENTINEL_LIKE or ov.get('flying') else 0};
 ''' + pat + ''.join(f'\t\t+HaloDoom_EnemyBase.{f}\n' for f in flags)
+            # the class body after Default: the character's / weapon's / variant's own ZScript (TYPE_CODE, WEAPON_CODE,
+            # ov 'code' with its {HCE_...} placeholders filled in), the overlay gun, gunner seats, the shield flare's
+            # hidden surfaces, the camo blade and plain shaders, then the animation functions and the muzzle table
             extra = ('' if char in BASE_CODE else TYPE_CODE.get(char, '')) + WEAPON_CODE.get(weapon or '', '') + ov.get('code', '')
             if '{HCE_BODY_SURFS}' in extra:      # a whole Halo 2 body over this model: its own body surfaces (no guns, no gore)
                 mw = meta.get('mesh_weapon') or []
@@ -2316,7 +2479,12 @@ def build(cfg=None):
                     lsw = next((GORE_LIMBS[L] for L, d in (meta.get('gore') or {}).get('limbs', {}).items() if int(m.group(1)) in d.get('swap', [])), None)
                     plain.append(f"\t\t{'' if lsw is None else f'if(hce_severed & (1 << {lsw})) '}{line_}")   # a damaged permutation: once its limb is off
                 if plain: extra += '\toverride void HCE_PlainShaders()      // hce_simpleshaders: the camo skins without the camo shader\n\t{\n' + ''.join(plain) + '\t}\n'
-            zs.append(f'// {vname}\nclass {cls} : HCE_{char}Base\n{{\n{editor_keys(cls, char, team[char], weapon=weapon)}\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
+            # the class itself, then its companions: the camo blade, the shield flare (one per body, from the first
+            # shielded variant) and the Halo 2 bodies' own flares
+            zs.append(f'// {cls}: Halo variant "{vname}"' + (f', {weapon}' if weapon else ', no gun') + f', {body} body'
+                      + (f' / {shield:.0f} shield' if shield else '') + ', ' + (f'{len(flags)} behaviour flags' if flags else 'no behaviour flags') + '\n'
+                      f'// (the editor keys below are Ultimate Doom Builder\'s; the numbers are explained at the top of this file)\n'
+                      f'class {cls} : HCE_{char}Base\n{{\n{editor_keys(cls, char, team[char], weapon=weapon)}\tDefault\n\t{{\n{props}\t}}\n{animtxt}\n{extra}}}\n')
             if blade:
                 zs.append(f'class {cls}Blade : HCE_BladeShell {{}}\n')
                 bl = [f'\tSurfaceSkin 0 {si} "hce_hidden.png"' for si in range(len(meta['meshes']))]
@@ -2346,6 +2514,7 @@ def build(cfg=None):
                 for line in skin_lines:
                     m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
                     if m and 'hce_hidden' not in m.group(1): camo.append(f'models/{mdir}/{char}/{m.group(1)}')
+            # the MODELDEF block: the body with its skins and weapon textures, an overlay gun as a second model
             if weapon_lines: skin_lines += [f'\tPath "models/{mdir}/weapons"'] + weapon_lines
             frames = '\tFrameIndex HCEM A 0 0'
             if ov.get('overlay'):
@@ -2392,6 +2561,7 @@ def build(cfg=None):
             if ov.get('loadout_only'):             # a Covenant gun for the Marines: its loadout only, no class of its own
                 zs.pop(); md.pop()
                 continue
+            # bookkeeping: its DoomEdNum now, or after the first release's classes ('_late'); its place in the random spawner
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
             if not ov.get('unique') and not ov.get('ally') and char not in NO_RANDOM: spawners.setdefault(char, []).append(cls)
@@ -2419,6 +2589,8 @@ def build(cfg=None):
     # ---------------- random spawners per character
     late_chars = cfg.get('late_chars', [])      # characters added after a release: numbered after everything else
     def spawner(char, lst):
+        """HCE_Random<char>: a RandomSpawner over the character's classes lst, weighted by RANDOM_WEIGHTS, with the
+        next DoomEdNum"""
         nonlocal ed
         weights = {c: RANDOM_WEIGHTS.get(c, 1) for c in lst}
         pz_ = '\n'.join(f'\t\tDropItem "{c}", 255, {weights[c]};' for c in lst)
@@ -2536,12 +2708,23 @@ WEAPON_IDS[H2BEAM] = 'h2_beam_rifle'
 BEAMRIFLE_CODE = ''
 
 
-MAIN_WEAPONS = set(WEAPONS)
+MAIN_WEAPONS = set(WEAPONS)     # the weapons whose projectile classes the main pack writes (an add-on skips them)
+# the main pack's build configuration (see build(): the keys it reads). DoomEdNums start at 30200; late_chars /
+# late_order are the characters and classes added since the first release, numbered after everything else
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
             handler='HCE_ReplaceHandler', index='pack_index.json',
             late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
                        + [c for c in ('SentinelEnforcer', 'SentinelConstructor') if c in TEAM],
             late_order=['HCE_JackalMajorNeedler', 'HCE_HunterUltra'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER + GALAP_ORDER)
+# The override keys build() reads, here per character and in a variant's '_ov' (which wins; the add_* functions set
+# them): stance (the animation stance, or {weapon: stance}); anims / anims_by_weapon ({kind: [names]}); scale (shrink
+# the model); height_fixed / radius_fixed / radius (the collision box); health / shield; speed (map units a tic);
+# melee (reach, damage); leap (min, max, chance, velocity); flags (the whole behaviour set) / add_flags; melee_only;
+# gun (HCE_GunOffset by hand); flying; lift (a model built round its middle raised onto its feet); overlay /
+# overlay_idx (an arsenal gun model on the body); pellets / spread (the shot); skin_as (share another class's skins);
+# loadout_only (a Marine loadout with no class); unique (no loadouts, not in the random spawner); ally (+FRIENDLY on
+# the Covenant / Sentinel side); drops False; voices; code (ZScript appended to the class); berserk_anims; weapon_toss;
+# johnson / stacker (the sergeants' two-gun code); h2_pieces (a Halo 2 body's own shield flare); raven (an ODST skin)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
@@ -2691,10 +2874,14 @@ MEDIC_CODE = """
 """
 
 
-MEDIC_GUNS = ('assault rifle', 'shotgun', 'ma37', 'smg', 'magnum')
+MEDIC_GUNS = ('assault rifle', 'shotgun', 'ma37', 'smg', 'magnum')     # the other corpsmen's guns (HCE_MarineMedic<Gun>)
 
 
 def add_marine_arsenal(variants):
+    """The Marine arsenal classes: for each Marine body and each MARINE_ARSENAL gun a copy of the body's assault-rifle
+    variant with the gun's ranges, overlay model and stance (the Covenant guns as loadouts only), then Sergeant Johnson,
+    Sergeant Stacker and the corpsmen. To add a Marine gun: a row in MARINE_ARSENAL, its WEAPONS / PATTERNS /
+    FIRE_SOUNDS entries below, and marine_arsenal.py's overlay model"""
     import copy
     for body in ('marine', 'marine_armored'):
         base = variants.get(f'characters\\{body}\\{body} assault rifle')
@@ -2752,8 +2939,8 @@ add_marine_arsenal(AI['variants'])
 # Pilots (new): Halo 2's Pelican crews, Marines in the flight helmet with its smoked visor over one of Halo 2's faces
 # (extract_h2_pilot.py: a whole head from the kit, the CE head hidden), nothing else of the kit but a sidearm or an
 # SMG; lighter on their feet than a rifleman and a little less tough (no armour)
-PILOT_FACES = ('smith', 'banks', 'dion', 'morgan', 'perez', 'walter')
-PILOT_GUNS = {'magnum': 'marine magnum', 'smg': 'marine smg'}
+PILOT_FACES = ('smith', 'banks', 'dion', 'morgan', 'perez', 'walter')     # Halo 2's faces (h2_pilot_<face>.iqm), one rolled per pilot
+PILOT_GUNS = {'magnum': 'marine magnum', 'smg': 'marine smg'}            # pilot gun -> the Marine variant it copies
 PILOT_CODE = """
 	// a pilot (extract_h2_pilot.py): Halo 2's flight helmet over one of its faces, and none of the field kit
 	override void HCE_KitOverride()
@@ -2822,6 +3009,8 @@ RADIO_CODE = """
 """ % ', '.join(f"'{c}'" for c in RADIO_TEAM)
 
 def add_pilots_and_radio(variants):
+    """The Pilots (PILOT_GUNS: the Magnum and SMG Marines at 85% health, in Halo 2's flight helmet: PILOT_CODE) and
+    the radio operator (the assault-rifle Marine with RADIO_CODE: the radio pack and the fire team he calls in)"""
     import copy
     for gun, src in PILOT_GUNS.items():
         vn = f'characters\\marine\\marine pilot {gun}'
@@ -2889,6 +3078,9 @@ KIT_VISOR_TINT_SRC = {'red': 'mk_hellbringer_visor.png'}
 KIT_VISOR_COLOURS = {'silver': (0.80, 0.83, 0.88), 'h2odst': (0.16, 0.15, 0.40), 'red': (0.85, 0.10, 0.07)}   # red: the Hellbringer ODSTs
 
 def odst_helmet_code(piece, mdir='hce', visor=None, extras=(), surfs=None):
+    """ZScript for an ODST wearing a Marine kit piece in place of its own helmet (or, for ODST_BODIES, its whole
+    body): Spiral's surfaces surfs (default: the helmet's, or all of them) hidden on the body and its blood overlay,
+    the piece attached as model 1, extras as models 2.., the visor (KIT_VISOR_TINTS) recoloured"""
     hid = f'"models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN'
     surfs = surfs or (ODST_ALL_SURFS if piece in ODST_BODIES else ODST_HELMET_SURFS)
     hide = ''.join(f"\t\tA_ChangeModel('None', {{idx}}, \"\", 'None', {k}, {hid});\n" for k in surfs)
@@ -2906,6 +3098,9 @@ def odst_helmet_code(piece, mdir='hce', visor=None, extras=(), surfs=None):
             '\t\tHCE_ResumeAnim();\n\t}\n'
             '\toverride void HCE_BloodHideClass()\n\t{\n' + hide.replace('{idx}', str(BLOOD_IDX)) + '\t}\n')
 def add_odsts(ai):
+    """The ODST variants from ODST (pack variant -> (the Armored Marine variant it copies, Raven colour, kit helmet or
+    body, visor tint)) on the MarineODST body (the Armored Marine's biped, no colour change). Skipped without
+    extract_odst.py's model. To add an ODST, add a row to ODST (and ODST_EXTRAS for more kit on it)"""
     import copy
     if not os.path.exists(f'{OUT}/models/MarineODST/MarineODST.json'): return
     b = copy.deepcopy(ai['bipeds'].get(r'characters\marine_armored\marine_armored'))
@@ -2956,11 +3151,15 @@ KNIGHT_CORE_PALETTE = {'minor': 0, 'major': 0, 'commander': 1}     # 0 cold, 1 w
 
 
 def knight_skin(cls, v, si, mat, meta, skin_dir):
+    """SKIN_HOOK for the Sentinel Knights: surface si's skin file. The arm guns: the variant's own (_knight_gun) in its
+    rank's texture, the other three hidden; the core: the rank's palette of core textures with the core shader (an
+    EXTRA_GL material each); the rest: extract_sentinel_knight.py's per-rank bake, with its brightmap in EXTRA_GL"""
     src = f'{OUT}/models/SentinelKnight'
     name = meta['mesh_names'][si]; rank = v.get('_rank', 'minor')
     os.makedirs(skin_dir, exist_ok=True)
     rel = skin_dir[skin_dir.index('models/'):]
     def ship(fn):
+        """copy texture fn (and its _bm brightmap, if any) into the skins folder; returns the brightmap's name or None"""
         if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{src}/{fn}', f'{skin_dir}/{fn}')
         bm = fn[:-4] + '_bm.png'
         if os.path.exists(f'{src}/{bm}'):
@@ -3017,12 +3216,13 @@ if os.path.exists(KNIGHT_JSON):
 # the Aggressor's body in its rank's change colour with the Elites' cube reflection on its metal (minor: steel blue under
 # the silver cube, captain: gold under the gold); its shield bubble (the shielded ranks only) and the Enforcer's shields
 # are see-through hex lattices in the shield colour (hex_lattice), fully lit, as are the Enforcer's hover jets and eye
-SENTINEL_CC = {'sentinel_minor': 'minor', 'sentinel_captain': 'captain'}
+SENTINEL_CC = {'sentinel_minor': 'minor', 'sentinel_captain': 'captain'}     # rank key -> the biped's change-colour name (the skin's colour)
 SENTINEL_LOOK = {'sentinel_captain': (0.7, 0.35)}     # rank: (how much of its colour, how much reflection): the gold glared
-ENFORCER_SHIELD_HP = 260
+ENFORCER_SHIELD_HP = 260      # each of the Enforcer's two front shields (sentinel_enforcer.zs {SHP})
 
 
 def full_bright(skin_dir, fn):
+    """add a GLDEFS brightmap making skin fn (in skin_dir) fully lit (EXTRA_GL), writing the white brightmap if needed"""
     rel = skin_dir[skin_dir.index('models/'):]
     mdir = rel.split('/')[1]
     e = f'brightmap texture "{rel}/{fn}"\n{{\n\tmap "models/{mdir}/brightmap_full.png"\n}}'
@@ -3052,6 +3252,7 @@ def hex_lattice(tint, path, n=128, cells=4, width=0.09):
 
 
 def copy_skin(char, mat, skin_dir):
+    """a SKIN_HOOK helper: the character's texture mat copied into the skins folder as it is; returns its file name"""
     os.makedirs(skin_dir, exist_ok=True)
     fn = mat.lower()
     if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{OUT}/models/{char}/{mat}', f'{skin_dir}/{fn}')
@@ -3061,19 +3262,22 @@ def copy_skin(char, mat, skin_dir):
 BUBBLE_CHARS = set()          # Sentinel bodies with a shield bubble surface: their shield flare is the bubble
 
 
-_MUZZLE_CACHE = {}
-_IQM_CACHE = {}
+_MUZZLE_CACHE = {}     # gun_anchor's results per (char, stance, gun): the models are posed once per build
+_IQM_CACHE = {}        # path -> read_iqm's (joints, meshes, anims)
 
 def _iqm(path):
+    """read_iqm, cached per path"""
     from iqm import read_iqm
     if path not in _IQM_CACHE: _IQM_CACHE[path] = read_iqm(path)
     return _IQM_CACHE[path]
 
 def _posed_world(joints, pose):
+    """every joint's world transform (translation, rotation) in a pose (a frame's local transforms), or the bind pose"""
     import preview as pv
     return pv.world([j[1] for j in joints], pose if pose is not None else [(j[2], j[3]) for j in joints])
 
 def _poses(anims, anim):
+    """the first, middle and last frames of an animation as poses (the bind pose, as [None], for no animation)"""
     fr = anims.get(anim) if anim else None
     return [[(t, q) for (t, q, s) in fr[i]] for i in sorted({0, len(fr) // 2, len(fr) - 1})] if fr else [None]
 
@@ -3185,6 +3389,9 @@ def bubble_code(char):
 
 
 def h2sentinel_skin(cls, v, si, mat, meta, skin_dir):
+    """SKIN_HOOK for Halo 2's Aggressor body: the shield surface hidden (the bubble flare draws it), the body baked
+    once per rank in its change colour (SENTINEL_CC, toned by SENTINEL_LOOK) with the Elites' cube reflection; None
+    (the default bake) for anything else"""
     name = meta['mesh_names'][si]
     rank = v.get('_rank', 'sentinel_minor')
     os.makedirs(skin_dir, exist_ok=True)
@@ -3203,6 +3410,8 @@ def h2sentinel_skin(cls, v, si, mat, meta, skin_dir):
 
 
 def enforcer_skin(cls, v, si, mat, meta, skin_dir):
+    """SKIN_HOOK for the Enforcer: its shield surfaces the hex lattice in SHIELD_TINT['enforcer'], the rest its own
+    textures as they are; the shields, eye and hover jets fully lit"""
     name = meta['mesh_names'][si]
     os.makedirs(skin_dir, exist_ok=True)
     if name.startswith('shield_'):
@@ -3289,6 +3498,7 @@ KIT_VISOR_CUBE = 'mk_visor_cube.png'
 # KIT_OWN_VISORS: variants.py
 
 def kit_visor_tint(src, dst, rgb):
+    """write dst: the visor texture src's light and shade in the colour rgb (0..1), for KIT_VISOR_TINTS"""
     from PIL import Image
     l = np.asarray(Image.open(src).convert('L'), float)
     l = l / max(l.max(), 1)                               # the orange texture's light and shade, normalised
@@ -3335,6 +3545,11 @@ def glow_tint(mat):
     return [x / max(c) for x in c]           # its hue at full strength (the brightmap sets how bright)
 
 def glow_maps(pack, mdir, team, camo):
+    """GLDEFS brightmap entries for the Covenant's self-lit parts: for every baked skin (SKIN_PAIRS) whose multipurpose
+    map has a glow channel (its green, at least GLOW_MIN), a feathered <material>_bm.png (GLOW_SOFT, GLOW_STRENGTH in
+    variants.py) and, where Halo lit it in colour (glow_tint), that colour painted into the skin; the camo skins are
+    left out (their shader). Then the Elite kit's own brightmaps. To make the lights stronger or softer, edit
+    GLOW_STRENGTH / GLOW_SOFT"""
     out = []; made = {}
     for src, dst in SKIN_PAIRS:
         if not dst.startswith(pack + '/'): continue
@@ -3454,6 +3669,7 @@ def johnson_code(A, animtxt, char, meta, mdir):
               .replace('override int HCE_AnimTics(Name anim)', 'int HCE_AnimTicsCQC(Name anim)')
               .replace('override vector3 HCE_AnimMove(Name anim)', 'vector3 HCE_AnimMoveCQC(Name anim)'))
     def swap(name):
+        """the ZScript lines putting arsenal overlay name on the gun slot (overlay_swap without the file copies)"""
         a = meta['arsenal'][name]
         out = [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "models/{mdir}/{char}", \'{a["model"]}\');\n']
         out += [f'\t\tA_ChangeModel(\'None\', {ARSENAL_IDX}, "", \'None\', {k}, "models/{mdir}/weapons", \'{m}\', CMDL_USESURFACESKIN);\n'
@@ -3617,9 +3833,10 @@ MR_EXCAVATOR = r'dw2\weapons\excavator\excavator'
 # Mercury Rising's variant (leaf) -> the pack's (the class name: HCE_Draeth...)
 MR_DRAETH_NAMES = {'elite minor plasma rifle': 'draeth minor plasma rifle', 'elite major plasma rifle': 'draeth major plasma rifle',
                    'elite minor needler': 'draeth minor needler', 'elite commander excavator camo': 'draeth commander excavator camo'}
-MR_FEMALE_GUNS = ('assault rifle', 'battle rifle', 'ma37', 'smg', 'magnum', 'shotgun', 'sniper', 'dmr')
-MR_MEDIC_GUNS = ('magnum', 'smg')
-MR_CHARS = []
+MR_FEMALE_GUNS = ('assault rifle', 'battle rifle', 'ma37', 'smg', 'magnum', 'shotgun', 'sniper', 'dmr')   # the women's classes (HCE_MarineFemale<Gun>)
+MR_MEDIC_GUNS = ('magnum', 'smg')     # the field medics' (HCE_MarineFieldMedic<Gun>)
+MR_CHARS = []                         # the Mercury Rising characters whose models exist (add_mercury fills it)
+# their DoomEdNum order (late_order): the Sentinels, the beasts, the Draeth, then the Marines
 MR_ORDER = (['HCE_SentinelArtillery', 'HCE_SentinelBrute', 'HCE_SentinelCanoneer', 'HCE_SentinelCompiler', 'HCE_SentinelOmega',
              'HCE_SentinelScout', 'HCE_Artybug', 'HCE_Geist']
             + [cname(n) for n in MR_DRAETH_NAMES.values()] + ['HCE_DraethMajorNeedler', 'HCE_DraethCommanderExcavator', 'HCE_RandomDraeth']
@@ -3675,7 +3892,7 @@ class HCE_HardlightMortar : HCE_HardlightGreen
 }
 '''
 SLOW_PROJ.add('HCE_HardlightMortar')
-HARDLIGHT_WEAPONS = ['sentinel artillery', 'sentinel compiler']
+HARDLIGHT_WEAPONS = ['sentinel artillery', 'sentinel compiler']   # weapons needing HARDLIGHT_CODE besides the Knights' and the Enforcer's
 WEAPONS['sentinel artillery'] = ('HCE_SentinelMortar', 'HCE_HardlightMortar', 30, 0.53)
 PATTERNS['sentinel artillery'] = (1, 1, 1, 1.6, 2.6, 0, False, 2.0, 0.1)
 FIRE_SOUNDS['sentinel artillery'] = (W + 'FuelRod/Fire', W + 'FuelRod/Fire/Bass', '', '', False)
@@ -3734,6 +3951,8 @@ def add_mercury(ai):
     S3 = json.load(open(sp))
     mv = {k[len(MR):]: v for k, v in S3['variants'].items() if k.startswith(MR)}
     def body(unit, char, team):
+        """register a Mercury Rising biped as character char on side team (CHAR_OF_UNIT, TEAM, its collision model
+        under 'mercury\\'); False when its model or biped is missing"""
         if unit not in S3['bipeds'] or not os.path.exists(f'{OUT}/models/{char}/{char}.json'): return False
         CHAR_OF_UNIT[unit] = char; TEAM[char] = team; MR_CHARS.append(char)
         b = copy.deepcopy(S3['bipeds'][unit])
@@ -3743,6 +3962,8 @@ def add_mercury(ai):
         ai['bipeds'][unit] = b
         return True
     def variant(src, key, ref=None, **kw):
+        """a copy of variant src stored as ai['variants'][key] (its actor brought under 'mercury\\', weapon ref set,
+        marked late, kw fields set); returns it"""
         v = copy.deepcopy(src)
         ar = v['actor_reference']
         if not ar.startswith(MR): ai['actors'][MR + ar] = copy.deepcopy(S3['actors'][ar]); ar = MR + ar

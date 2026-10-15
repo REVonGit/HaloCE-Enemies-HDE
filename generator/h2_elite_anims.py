@@ -55,6 +55,8 @@ RIFLE = {
     'crouch:rifle:idle': 'crouch rifle idle', 'crouch:rifle:move_front': 'crouch rifle move-front',
 }
 RIFLE_FIRE = ('combat:rifle:fire_1', 'combat:rifle:idle', 'stand rifle fire-1 csr baked')
+# stance key -> (rename table, fire overlay). To add a stance: a table like the ones above, a row here and in
+# STANCE_SOURCE (which model and map it comes from), then a caller (extract_chars.py / marine_stances.py).
 STANCES = {'missile': (MISSILE, MISSILE_FIRE), 'rifle': (RIFLE, RIFLE_FIRE)}
 
 # Halo 2's Marine pistol stance (01b_spacestation.map) on the Halo CE Marine -- also one 3ds Max biped (same bone
@@ -118,6 +120,7 @@ STANCE_SOURCE = {'missile': (ELITE, MAP08A, CACHE08A), 'rifle': (ELITE, MAP08A, 
 
 
 def _qmul(a, b):
+    """a * b for (x, y, z, w) quaternions (b's rotation, then a's)"""
     x1, y1, z1, w1 = a; x2, y2, z2, w2 = b
     return np.array([w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2, w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
                      w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2, w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2])
@@ -126,12 +129,15 @@ def _qmul(a, b):
 class Anim:
     """the fields extract_chars.py reads from a Halo CE animation"""
     def __init__(s, name, frames, mv, loop):
+        """frames: per-frame local (pos, quat) per node; mv: per-frame root movement (dx, dy, dz, dyaw) or empty;
+        key/next/type start unset (-1, -1, 0)"""
         s.name, s.frames, s.nframes = name, frames, len(frames)
         s.dx = np.asarray(mv, float).reshape(-1, 4) if len(mv) else np.zeros((len(frames), 4))
         s.loop, s.key, s.next, s.type = loop, -1, -1, 0
 
 
 def missile_anims(ce_joints, path=MAP08A, cache=CACHE08A):
+    """the Elite's fuel-rod ('missle') stance: stance_anims for 'missile'"""
     return stance_anims(ce_joints, 'missile', path, cache)
 
 
@@ -154,6 +160,7 @@ def stance_anims(ce_joints, stance, path=None, cache=None):
     rest = [(tuple(j[2]), tuple(j[3])) for j in ce_joints]
 
     def to_ce(fr):
+        """Halo 2 frames -> frames on the CE joints: CE offsets, Halo 2 rotations, the root's translation"""
         out = []
         for row in fr:
             r = []

@@ -19,10 +19,14 @@ _SPEC = {48: ('<f4', 3), 49: ('<f4', 2), 11: ('<i4', 1)}
 
 
 class Kit(bk.Kit):
+    """brute_kit.Kit for a Blender 4.0 file: only attrs() differs."""
     def __init__(s, path=BLEND):
+        """open the kit; the default path is this module's BLEND (HCE_MARINE_KIT), not brute_kit's"""
         super().__init__(path)
 
     def attrs(s, me):
+        """Mesh attributes from the CustomData layers (vdata / ldata / pdata) -> {name: (array, domain)} with the
+        same shape brute_kit.Kit.attrs returns, so piece() works unchanged. Only the types in _SPEC are read."""
         B = s.B; out = {}
         sz = B.fields('CustomDataLayer')['__size__']
         counts = {'vdata': 'totvert', 'ldata': 'totloop', 'pdata': 'totpoly'}
@@ -48,5 +52,6 @@ def marine_nodes(joints):
 
 
 def load(names, nodes, path=BLEND):
+    """{object name: piece} for the named objects; nodes: marine_nodes() of the IQM joints the pieces bind to."""
     k = Kit(path)
     return {n: k.piece(n, nodes) for n in names}

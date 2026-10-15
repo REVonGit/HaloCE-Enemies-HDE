@@ -3,6 +3,8 @@
 	int hce_bubble;
 	virtual bool HCE_HasBubble() { return false; }
 
+	// Per tic shows the shield bubble surface while a bubble-wearing rank is alive with its shield up, hides it
+	// otherwise; only swaps the surface skin when the state changes.
 	override void Tick()
 	{
 		super.Tick();

@@ -1,8 +1,17 @@
-"""Blender 3.x mesh reader (MVert/MPoly/MLoop/MLoopUV) on top of enemy/blendfile.py"""
+"""Blender 3.x mesh reader (MVert/MPoly/MLoop/MLoopUV) on top of enemy/blendfile.py
+
+    B, res = meshes('x.blend')      # {object name: dict(pos, uv, tris, tmat, mats, hide, uvname)}
+    imgs = base_images(B)           # {material name: {'color': image, 'normal': image, 'all': [...]}}
+
+For files saved by Blender 3.x (and 4.0-4.2 meshes that still use the legacy CustomData layers): vertex positions
+in the MVert layer, faces in MPoly/MLoop, UVs in MLoopUV. Blender 4.3+ attribute storage is read by
+brute_kit.Kit.attrs instead. Positions come back in world space (object matrix applied), in the file's own units."""
 import sys, numpy as np
 from blendfile import Blend
 
 def layer(B, me, cd, typ, nth=0):
+    """The nth CustomData layer of type `typ` in mesh block me's `cd` ('vdata' vertex / 'ldata' loop / 'pdata'
+    polygon) -> (data block, layer name), or (None, None). Types: 0 MVert, 25 MPoly, 26 MLoop, 16 MLoopUV, 2 MDeformVert."""
     base = B.get('Mesh', me.off, cd)
     n = B.get('CustomData', base, 'totlayer'); lb = B.block(B.get('CustomData', base, 'layers'))
     lsz = B.fields('CustomDataLayer')['__size__']; k2 = 0
@@ -14,6 +23,8 @@ def layer(B, me, cd, typ, nth=0):
     return None, None
 
 def struct_array(B, blk, sname, n, fields):
+    """Columns out of an array of n `sname` structs in block blk: fields = [(field name, numpy dtype, count)] ->
+    {field name: (n,) or (n, count) array}."""
     f = B.fields(sname); sz = f['__size__']
     raw = np.frombuffer(B.d, np.uint8, n * sz, blk.off).reshape(n, sz)
     out = {}
@@ -23,6 +34,9 @@ def struct_array(B, blk, sname, n, fields):
     return out
 
 def meshes(path):
+    """Every mesh object in the file -> (Blend, {object name: dict(pos (L,3) one position per face corner, uv (L,2),
+    tris (T,3) corner indices (polygons fanned), tmat (T,) material slot, mats material names, hide flag,
+    uvname)}). Vertices are expanded per corner, so pos[tris] indexes directly."""
     B = Blend(path)
     res = {}
     for o in B.of_type('Object'):
@@ -67,6 +81,7 @@ def base_images(B):
             ts = B.block(B.get('bNodeLink', lk.off, 'tosock')); tsn = B.get('bNodeSocket', ts.off, 'name') if ts else ''
             links.append((fn, tn, tsn))
         def back(node, depth=0):
+            """the first image found walking the links backwards from node (at most 8 nodes deep), or None"""
             if depth > 8: return None
             n = nodes.get(node)
             if not n: return None

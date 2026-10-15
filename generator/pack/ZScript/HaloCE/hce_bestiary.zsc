@@ -9,6 +9,8 @@
 // Keys: up / down move, left / right jump a kind, page up / down jump a page, Escape closes. The mouse wheel scrolls
 // and a click picks an entry.
 
+// one list entry: an "E" line of an HCEBEST lump (cls .. ednum, weapons), or a variant built in Load(). extra is
+// a paragraph put before the lore (the variants' "One of the ... kind").
 class HCE_BestiaryEntry
 {
 	String cls, faction, group, title, sprite, loreKey, extra, weapons;   // weapons: the guns this kind carries
@@ -26,6 +28,7 @@ class HCE_BestiaryMenu : ListMenu
 	TextureID panel;
 
 	// ---------------------------------------------------------------- data
+	// loads the entries, picks the font (HDE's HaloFont when it's there) and the panel art, and lands on the first entry
 	override void Init(Menu parent, ListMenuDescriptor desc)
 	{
 		Super.Init(parent, desc);
@@ -37,6 +40,10 @@ class HCE_BestiaryMenu : ListMenu
 		while(sel < rows.Size() && rows[sel] < 0) sel++;
 	}
 
+	// fills entries[] and the lore from every HCEBEST lump (tab-separated lines: "E" class faction group title sprite
+	// loreKey ednum [weapons] for an entry whose class is loaded, "L" key text for a lore paragraph), adds the HCEVARS
+	// variants as their own faction, then builds rows[] with a heading wherever the faction or kind changes.
+	// The lump format is written by build_pack.py's bestiary_lump: change the columns there and here together.
 	void Load()
 	{
 		for(int lump = -1; (lump = Wads.FindLump("HCEBEST", lump + 1)) != -1;)
@@ -91,12 +98,14 @@ class HCE_BestiaryMenu : ListMenu
 		}
 	}
 
+	// "a " or "an " in front of a name
 	static String Article(String n)
 	{
 		String c = n.Left(1).MakeLower();
 		return (c == "a" || c == "e" || c == "i" || c == "o" || c == "u" ? "an " : "a ") .. n;
 	}
 
+	// a weapon class's display name: its Tag, or its class name without the "Halo_" prefix
 	static String WeaponName(Name w)
 	{
 		if(w == 'None' || w == '') return "none";
@@ -122,6 +131,7 @@ class HCE_BestiaryMenu : ListMenu
 	}
 
 	// ---------------------------------------------------------------- input
+	// moves the selection d rows (negative: up), skipping headings and stopping at the ends
 	void Move(int d)
 	{
 		int step = d > 0 ? 1 : -1;
@@ -135,6 +145,7 @@ class HCE_BestiaryMenu : ListMenu
 		MenuSound("menu/cursor");
 	}
 
+	// to the first entry of the next (dir 1) or previous (dir -1) heading
 	void JumpGroup(int dir)
 	{
 		int s = sel + dir;
@@ -144,6 +155,7 @@ class HCE_BestiaryMenu : ListMenu
 		if(s >= 0 && s < rows.Size() && rows[s] >= 0) { sel = s; MenuSound("menu/cursor"); }
 	}
 
+	// the keys listed in the file header; Enter does nothing (there is nothing to pick)
 	override bool MenuEvent(int mkey, bool fromcontroller)
 	{
 		switch(mkey)
@@ -159,6 +171,7 @@ class HCE_BestiaryMenu : ListMenu
 		return Super.MenuEvent(mkey, fromcontroller);
 	}
 
+	// the mouse wheel: three rows a notch
 	override bool OnUIEvent(UIEvent ev)
 	{
 		if(ev.type == UIEvent.Type_WheelUp) { Move(-3); return true; }
@@ -166,6 +179,7 @@ class HCE_BestiaryMenu : ListMenu
 		return Super.OnUIEvent(ev);
 	}
 
+	// a click in the list picks the row under the pointer (headings are ignored)
 	override bool MouseEvent(int type, int x, int y)
 	{
 		if(type == MOUSE_Click)
@@ -183,17 +197,20 @@ class HCE_BestiaryMenu : ListMenu
 	const LIST_X = 40; const LIST_Y = 110; const LIST_W = 520; const ROW_H = 30; const LIST_ROWS = 31;
 	const CARD_X = 600; const CARD_Y = 110; const CARD_W = 1280;     // the card: LoreTab's 1900 x 1400, scaled to this width
 
+	// the scale and screen offset of the 1920 x 1080 frame everything is laid out in, letterboxed to the screen
 	double, vector2 Frame()
 	{
 		double sc = min(Screen.GetWidth() / 1920.0, Screen.GetHeight() / 1080.0);
 		return sc, ((Screen.GetWidth() - 1920 * sc) / 2, (Screen.GetHeight() - 1080 * sc) / 2);
 	}
 
+	// a filled rectangle in frame coordinates
 	void Box(double sc, vector2 o, double x, double y, double w, double h, Color c, double a)
 	{
 		Screen.Dim(c, a, int(o.x + x * sc), int(o.y + y * sc), int(w * sc), int(h * sc));
 	}
 
+	// text in frame coordinates, px frame pixels high
 	void Text(double sc, vector2 o, String s, double x, double y, double px, int col = Font.CR_WHITE, double alpha = 1.0)
 	{
 		double f = px / fnt.GetHeight() * sc;
@@ -206,6 +223,8 @@ class HCE_BestiaryMenu : ListMenu
 		return fnt.BreakLines(s, int(w / (px / fnt.GetHeight())));
 	}
 
+	// the whole menu: title, the scrolling list (top follows sel, keeping a heading in view above it) and the card of
+	// the selected entry
 	override void Drawer()
 	{
 		double sc; vector2 o;
@@ -236,6 +255,9 @@ class HCE_BestiaryMenu : ListMenu
 		DrawCard(sc, o, entries[rows[sel]]);
 	}
 
+	// the card: the LoreTab panel (or plain boxes in its layout), the name and stats top left (read off the class's
+	// defaults: Health, hce_shieldMax, its weapon, hce_runSpeed), the editor sprite top right, and the lore paragraphs
+	// below ("Carries: ...", then extra, then the lore keys' text), cut off at the panel's bottom
 	void DrawCard(double sc, vector2 o, HCE_BestiaryEntry e)
 	{
 		double k = CARD_W / 1900.0;                      // LoreTab's pixels -> the frame's

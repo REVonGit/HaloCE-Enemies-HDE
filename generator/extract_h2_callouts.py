@@ -20,6 +20,8 @@ OUT = os.environ.get('HCE_VOICE_EXTRA', os.path.join(HERE, 'voice_extra'))
 CE_MAPS = os.environ.get('HCE_MAPS', 'maps')
 CE_ORDER = ['a10', 'a30', 'a50', 'b30', 'b40', 'c10', 'c20', 'c40', 'd20', 'd40']
 # voice set -> (Halo 2 voice, Halo CE tag prefix or None, {category: ([(H2 leaf, n)], [(CE <group>\<name>, n)])})
+# To add a category to a voice, add a key with its Halo 2 tag leaves and how many lines of each to take (and any
+# Halo CE tags); to add a voice set, add an entry and make sure build_voices.py knows the set's name.
 SETS = {
     'Jackal': ('jackal', 'sound\\dialog\\jackal\\combat2\\', {
         'Heard Gunfire': ([('hrdfoe', 4)], [('groupcomm\\search_query', 3)]),
@@ -53,6 +55,9 @@ SETS = {
 
 
 def main():
+    """extracts every SETS category: the Halo 2 lines from 08a (lines under 0.15 s are skipped) and the Halo CE lines
+    from the first campaign map that has the tag, re-encoded as '<Category> N.ogg' under voice_extra/<Voice>/;
+    a category's old files are removed first. Prints how many lines each leaf gave."""
     from extract_h2_brute import tag_oggs, SOUNDS_DIR, MAP08A, CACHE08A
     from extract_elite_loose import ogg_from_wav, duration
     from h2map import H2Map

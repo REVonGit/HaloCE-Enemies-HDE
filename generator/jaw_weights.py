@@ -14,8 +14,9 @@ import os, sys
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-JAW, HEAD = 'bip01 ponytail1', 'bip01 head'
+JAW, HEAD = 'bip01 ponytail1', 'bip01 head'     # the two bones the face is split between (Halo CE's Marine skeleton)
 RAMP = 0.006            # world units below the mouth line over which the jaw takes over (the lower lip)
+                        # (longer: a softer, wider lip; shorter: a sharper hinge)
 
 
 def mouth_line(P):
@@ -32,6 +33,9 @@ def mouth_line(P):
 
 
 def fix_mesh(m, jn, hn, zm):
+    """re-weight one surface's jaw vertices in place: the weight they share between jaw (jn) and head (hn) goes to the
+    head above the mouth line zm, to the jaw RAMP below it, ramped between, and fades toward the ears. Returns zm, or
+    None when the surface has no jaw vertices (or no mouth line was found)"""
     B, W, P = m['bidx'].copy(), m['bw'].astype(int), m['pos']
     onjaw = (B == jn) & (W > 0)
     if not onjaw.any() or zm is None: return None
@@ -55,6 +59,8 @@ def fix_mesh(m, jn, hn, zm):
 
 
 def fix(joints, meshes, names):
+    """hinge every 'head.*' surface (names: the IQM's mesh names): one mouth line per face from all its surfaces
+    together, then fix_mesh on each; returns {surface name: mouth-line z} for the ones changed"""
     jn = [j[0] for j in joints].index(JAW); hn = [j[0] for j in joints].index(HEAD)
     done = {}
     lines = {}                  # one mouth line per face: its surfaces together (a face can be split over several)
@@ -69,6 +75,8 @@ def fix(joints, meshes, names):
 
 
 def main():
+    """fix the Marine and MarineArmored IQMs under out/models in place (and their json's iqm_bytes); skips a
+    character that isn't extracted"""
     import json
     from iqm import read_iqm, write_iqm
     try:

@@ -1,5 +1,12 @@
 """Characters from a Halo CE PC / MCC map (e.g. SPV3's a30 with the Blind Wolf) -> IQM + skins + JSON,
-reusing extract_chars.extract() with gbxmodel geometry, and the AI/stat dump for the pack generator."""
+reusing extract_chars.extract() with gbxmodel geometry, and the AI/stat dump for the pack generator.
+
+    python3 extract_spv3.py [PackId ... | FloodSounds]      # -> $HCE_OUT/models/<PackId>/, spv3_ai.json, sounds/Flood/
+
+MAPS names each PC cache (env var per map, see there) and the bipeds taken from it; a map that isn't on disk is
+skipped and spv3_ai.json keeps what an earlier run took from it. The module patches extract_chars (PC bitmaps in a
+shared bitmaps.map, gbxmodel geometry, the guns each variant carries) around every call of extract().
+"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import sys, json, os, shutil
@@ -10,7 +17,9 @@ from pcmap import PCMap, gbx_geometry
 from tags import tag
 from extract_ai import dump, flatten_obj, block_dump
 
-# SPV3 maps (PC/MCC caches) and the characters taken from each
+# SPV3 maps (PC/MCC caches) and the characters taken from each: key -> (map path, {biped tag: pack id}). To take a
+# character from another mod's map, add a key with its own env var; its textures may need MAP_BITMAPS, its new guns
+# MAP_WEAPONS, and its variant names VARIANT_KEYS when they would collide with Halo CE's.
 MAPS = {
     'a30': (os.environ.get('HCE_SPV3_A30', 'a30_1.map'),
             {r'characters\blind_wolf\blind_wolf': 'BlindWolf', r'characters\thorn_beast\thorn_beast': 'ThornBeast'}),
@@ -54,7 +63,8 @@ MAP_PREFIX = {'mr1': 'mercury\\', 'mr2': 'mercury\\'}
 # into $HCE_OUT/weapons/<id>) so they are baked into the hand like Halo CE's: the Draeth Commander's Excavator (a
 # Covenant scatter gun, Mercury Rising's dw2\weapons\excavator)
 MAP_WEAPONS = {'mr1': {r'dw2\weapons\excavator\excavator': 'excavator'}}
-# variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed
+# variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed:
+# {tag name prefix: replacement prefix}, the first match wins (variant_key)
 VARIANT_KEYS = {
     r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
     r'characters\floodcombat_human\armored\floodcombat_human ': r'characters\floodcombat_human\armored\floodcombat_human armored ',
@@ -66,15 +76,19 @@ VARIANT_KEYS = {
     r'characters\floodcombat elite shield\major\floodcombat elite ': r'characters\floodcombat elite shield\floodcombat elite major ',
     r'characters\floodcombat elite shield\floodcombat commander ': r'characters\floodcombat elite shield\floodcombat elite commander ',
 }
+# a mod's weapon tag -> the Halo CE tag it stands for
 WEAPON_REFS = {r'weapons\plasma_cannon\plasma_cannon': r'weapons\fuel rod gun\fuel rod'}   # Ruby's fuel rod
 
 def variant_key(name):
+    """an actor variant's tag name with VARIANT_KEYS applied (the pack's key for it)"""
     for a, b in VARIANT_KEYS.items():
         if name.startswith(a): return b + name[len(a):]
     return name
 OUT = ec.OUT
 
 def run(only=None):
+    """every map in MAPS through run_map (only: pack ids to extract, or 'FloodSounds'), merged into
+    out/spv3_ai.json over an earlier run's contents; then flood_sounds(). Returns the merged AI dict."""
     ai = dict(variants={}, actors={}, bipeds={}, collisions={}, weapons={})
     if os.path.exists(f'{OUT}/spv3_ai.json'):          # a map not on hand keeps what an earlier run took from it
         old = json.load(open(f'{OUT}/spv3_ai.json'))
@@ -124,6 +138,9 @@ ec.bitmap_image = pc_bitmap_image
 
 
 def run_map(MAP, CHARS, only=None, prefix='', weapons=None):
+    """one PC map: its own guns (weapons: {weapon tag: id}) into out/weapons, each biped of CHARS ({tag: pack id})
+    through extract_chars.extract (geometry read as gbxmodel), then the AI dump of every variant whose name or
+    biped matches CHARS, keyed prefix + variant_key(name). Returns the AI dict in extract_ai.py's layout."""
     m = PCMap(MAP)
     _geo = hm.Model.geometry
     hm.Model.geometry = lambda s, gi: gbx_geometry(s.m, s.geoms[gi].addr) if isinstance(s.m, PCMap) else _geo(s, gi)
@@ -168,7 +185,8 @@ def run_map(MAP, CHARS, only=None, prefix='', weapons=None):
         if cm: ai['collisions'][cm] = dump(m, 'collision_model', byname[('coll', cm)]['data'])
     return ai
 
-# creature sounds that live in the map itself (ogg permutations, stored inline)
+# creature sounds that live in the map itself (ogg permutations, stored inline): pid -> (MAPS key, [sound tag
+# prefixes]); export_sounds takes every snd! tag under the prefixes
 SOUNDS = {'ThornBeast': ('a30', [r'sound\sfx\impulse\thornbeast']),
           'Engineer': ('b30', [r'sound\dialog\engineer\conditional', r'sound\sfx\impulse\impacts\engineer explosion']),
           # the Flood's voices and effects (Ruby's Rebalance's c40: Halo CE's flood set and Ruby's 'flood_new' one), for the

@@ -1,4 +1,13 @@
-"""Dump actor variants (actv), actors (actr), units, collision, weapons for the pack's characters."""
+"""Dump actor variants (actv), actors (actr), units, collision, weapons for the pack's characters.
+
+    python3 extract_ai.py      # after extract_chars.py; -> $HCE_OUT/ai_data.json
+
+Walks every Xbox campaign map in extract_chars.MAPS, takes each actor_variant whose biped is one of the pack's
+(extract_chars.CHARS) and dumps it field by field, with the actor, biped, collision model and weapon tags it points
+to, by the tag layouts in lib/tags.py (LAYOUT). build_pack.py reads ai_data.json for the enemies' health, shields,
+weapons, firing ranges and colours. synthesize() adds the ranks Halo CE never shipped (the plasma-rifle Jackal Major,
+the needler Jackal Ultra, the red and white Hunters) on top of the dumped ones.
+"""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import json, re, sys
@@ -7,9 +16,15 @@ from tags import tag, HMap, LAYOUT, FMT, VEC
 from extract_chars import CHARS, MAPS
 from hce_paths import MAPS_DIR
 
+# layout fields left out of the dump (padding and the like)
 SKIP = re.compile(r'^(unused|pad|reserved|runtime|garbage)')
 
 def dump(m, st, addr, depth=0):
+    """One struct of the map at addr, laid out by LAYOUT.layout(st), as a dict of field name -> value.
+
+    Scalars and vectors are read as is, a tag_reference becomes the referenced tag's name (None if unresolved),
+    a tag_block becomes dict(count, addr) for block_dump() to expand, nested structs recurse up to four levels and
+    tag_data is dropped. Fixed arrays of up to 8 scalars become lists; larger ones are left out."""
     L = LAYOUT.layout(st)
     out = {}
     for fn, (o, t, n) in L['fields'].items():
@@ -17,6 +32,7 @@ def dump(m, st, addr, depth=0):
         t = re.sub(r'^(struct|union)\s+', '', t.strip())
         a = addr + o
         def one(a):
+            """the value of one field of type t at address a (see dump)"""
             if t in FMT: return m.u(FMT[t], a)[0]
             if t in VEC: return list(m.u(VEC[t], a))
             if t == 'tag_reference':
@@ -48,13 +64,19 @@ def flatten_obj(d):
     return out
 
 def block_dump(m, blk, st):
+    """every element of a tag block (dump()'s dict(count, addr)) as dump()ed structs of layout st; [] when empty"""
     if not blk or not blk['count']: return []
     size = LAYOUT.layout(st)['size']
     return [dump(m, st, blk['addr'] + i * size) for i in range(blk['count'])]
 
 def synthesize(variants):
     """Jackal ranks by shield colour: Minor (blue, plasma pistol), Major (orange, plasma rifle), Ultra (pink, needler).
-    CE ships only Minor/Major plasma-pistol Jackals; Major is re-armed and Ultra is new, built on the Major biped."""
+    CE ships only Minor/Major plasma-pistol Jackals; Major is re-armed and Ultra is new, built on the Major biped.
+
+    Takes and returns the variants dict (modified in place). A made-up variant copies a dumped one and overrides
+    its ranged_combat reference, rate of fire and ranges, its vitality, and tags it with '_rank', '_hunter_color'
+    and '_late' (a new class whose DoomEdNum goes after the existing ones). To change a synthesized rank's gun or
+    health, edit the numbers here; to add another rank, deepcopy a base variant the same way and give it a new key."""
     import copy
     J = 'characters\\jackal\\'
     maj = variants.get(J + 'jackal major plasma pistol')
@@ -100,6 +122,7 @@ def synthesize(variants):
     return variants
 
 if __name__ == '__main__':
+    # every map in order: the first map that carries a variant, actor, biped, collision or weapon tag supplies it
     units = set(CHARS)
     variants = {}; actors = {}; bipeds = {}; colls = {}; weapons = {}; projs = {}
     for n in MAPS:

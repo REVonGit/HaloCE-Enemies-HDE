@@ -3,6 +3,9 @@
 	// shot drawn with HDE's laser beam; it tears what it kills apart (HCE_StanchionRail, HCE_WeaponKind)
 	const HCE_RAIL_AIM = 24;
 	bool hce_cqc;
+	// One rail shot over HCE_RAIL_AIM calls: the first 24 draw the glint and aiming laser toward HCE_AimPoint (and start
+	// the charge sound), the 25th flashes the beam, sparks at the hit and deals 150 x hce_damageMod x HCE_DamageScale
+	// 'Railgun' damage to the shootable actor hit. hce_burstShot counts the calls. To change the damage, edit the 150.
 	void HCE_FireRail()
 	{
 		if(!target) return;
@@ -34,6 +37,8 @@
 		if(hce_moveSpeed <= 0.1 && HCE_HasAnim(HCE_A_FIRE)) HCE_Play(HCE_A_FIRE, false, true, 2);
 		hce_burstShot++;
 	}
+	// Fires the rail unless the Marine is in close-quarters mode (hce_cqc) or carries a loadout gun, when the base
+	// projectile fire is used instead.
 	override void HCE_FireShot(bool special)
 	{
 		if(hce_cqc || hce_hasLoadout) { super.HCE_FireShot(special); return; }

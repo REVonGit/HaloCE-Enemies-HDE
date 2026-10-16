@@ -21,6 +21,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
+import steps
 from h2_elite_anims import MAP08A, CACHE08A, MAP01B, CACHE01B, ELITE, MARINE
 from reload_anims import GRUNT, JACKAL
 try:
@@ -132,6 +133,7 @@ def add(char):
     alist = [dict(name=n, fps=30.0, loop=True, frames=[[(tuple(t), tuple(q), tuple(s)) for t, q, s in fr] for fr in anims[n]])
              for n in sorted(anims)]
     meta['iqm_bytes'] = write_iqm(pi, [(n, p, tuple(t), tuple(q), tuple(s)) for n, p, t, q, s in joints], meshes, alist)
+    steps.stamp(meta, 'low_ready_anims', new)      # build_pack.py checks these are still there
     json.dump(meta, open(pj, 'w'), indent=1)
     print(char, {k: (v[2], len(v[0]), round(meta['anims'][k]['speed'], 4)) for k, v in new.items()})
 

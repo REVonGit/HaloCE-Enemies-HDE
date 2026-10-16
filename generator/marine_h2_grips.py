@@ -20,6 +20,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, 'lib')); sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
+import steps
 import halomodel as hm
 import marine_grip as mg
 from marine_arsenal import hand_frame
@@ -92,6 +93,8 @@ def main():
         alist = [dict(name=k, fps=30.0, loop=True, frames=[[(tuple(a), tuple(q), tuple(s)) for a, q, s in f] for f in anims[k]])
                  for k in sorted(anims)]
         meta['iqm_bytes'] = write_iqm(pi, [(n, p, tuple(a), tuple(q), tuple(s)) for n, p, a, q, s in joints], meshes, alist)
+        # build_pack.py checks these are still there: the lowered 'h2br' set and this body's H2_GUNS stances
+        steps.stamp(meta, 'marine_h2_grips', [k for k in anims if f' {STANCE} ' in f' {k} ' or any(f' {st} ' in f' {k} ' for st, (_, bodies) in H2_GUNS.items() if char in bodies)])
         json.dump(meta, open(pj, 'w'), indent=1)
 
 

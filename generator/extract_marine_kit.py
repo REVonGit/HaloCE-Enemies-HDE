@@ -274,6 +274,9 @@ def main(only=None):
             meshes.append(dict(name=f'{pid}_{len(meshes)}', material=fn, pos=p['pos'][keep], nrm=p['nrm'][keep], uv=uv[keep],
                                bidx=bi[keep].copy(), bw=bw[keep].copy(), tris=remap[t]))
             names.append('head.kit' if mn.startswith(FACES) else '')
+        if skipped:    # a surface with no texture would be dropped from the piece (the Hellbringer once lost its lens this way)
+            raise SystemExit(f'{pid}: no texture for {skipped} (is the head add-ons sheet HCE_MARINE_KIT_ADDONS={ADDONS} and the zip HCE_MARINE_KIT_ZIP={ZIP} there?); '
+                             'nothing written. HCE_KIT_ALLOW_MISSING=1 to leave such surfaces out on purpose') if not os.environ.get('HCE_KIT_ALLOW_MISSING') else None
         if not meshes: print(f'  {pid}: nothing left, skipped'); continue
         if 'head.kit' in names: jaw_weights.fix(joints, meshes, names)       # a clean jaw hinge, as the base faces
         write_iqm(f'{od}/{pid}.iqm', joints, meshes, [dict(name='bind', fps=30.0, loop=True, frames=bind)])

@@ -1201,4 +1201,7 @@ def build():
             if f.endswith(('.iqm', '.jpg', '.png')): shutil.copy(f'{KIT_DIR}/{f}', f'{kd}/{f}')
 
 if __name__ == '__main__':
+    # the add-on's bodies (the Brute, the Halo 2 Jackal) checked for skipped post-extraction steps like the main pack's
+    bp.check_steps({c: json.load(open(f'{bp.OUT}/models/{c}/{c}.json')) for c in ('Brute', 'H2Jackal')
+                    if os.path.exists(f'{bp.OUT}/models/{c}/{c}.json')})
     build()

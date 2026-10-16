@@ -27,6 +27,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
+import steps
 from h2_elite_anims import _qmul, MAP08A, CACHE08A, MAP01B, CACHE01B, ELITE, MARINE
 try:
     from extract_chars import OUT
@@ -150,6 +151,7 @@ def add(char):
     meta['iqm_bytes'] = write_iqm(pi, [(n, p, tuple(t), tuple(q), tuple(s)) for n, p, t, q, s in joints], meshes, alist)
     for k, fr in new.items():
         meta['anims'][k] = dict(frames=len(fr), speed=0.0, yaw=0.0, loop=False, key=-1, next=-1, dx=[0.0, 0.0])
+    steps.stamp(meta, 'reload_anims', new)         # build_pack.py checks these are still there
     json.dump(meta, open(pj, 'w'), indent=1)
     print(char, sorted(new))
 

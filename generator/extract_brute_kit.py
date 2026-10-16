@@ -240,7 +240,9 @@ def main():
             for k, mi in enumerate(mats):
                 mn = p['mats'][mi] if mi < len(p['mats']) else ''
                 src, can_tint = MATERIALS.get(mn, (None, False))
-                if src is None: print(f'  {pid}: no texture for material {mn!r}, skipped'); continue
+                if src is None:    # a surface with no texture would be dropped from the piece
+                    if os.environ.get('HCE_KIT_ALLOW_MISSING'): print(f'  {pid}: no texture for material {mn!r}, skipped'); continue
+                    raise SystemExit(f'{pid}: no texture for material {mn!r} (MATERIALS); nothing written. HCE_KIT_ALLOW_MISSING=1 to leave such surfaces out on purpose')
                 fn = tex_png(kd, src, od, tint if can_tint else None)
                 t = p['tris'][p['tmat'] == mi][:, [0, 2, 1]]
                 used = np.unique(t)

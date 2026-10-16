@@ -2027,6 +2027,20 @@ def ship_udb_icons(classes, sprites_dir):
     for c in have: shutil.copy(f'{UDB_ICONS}/{c}.png', f'{sprites_dir}/{sp[c]}A0.png')
     return len(have)
 
+def check_steps(metas):
+    """stops the build when a body was re-extracted and a post-extraction step not re-run after it (lib/steps.py: each
+    step stamps the animations it added; a fresh extraction drops the stamp or the animations). Which bodies each step
+    covers comes from the step's own CHARS table, so a body added there is checked from then on"""
+    import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
+    required = {}
+    for step, chars in [('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+                        ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
+        for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}')
+    problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]
+    if problems:
+        raise SystemExit('models out of date (a body re-extracted without its steps re-run):\n  ' + '\n  '.join(problems))
+
+
 def build(cfg=None):
     """Write the pack. cfg (MAIN, or an add-on's: build_digsite.py): char_of_unit and team (the characters to build),
     ai (the patched AI data), pack (the pk3 source tree), mdir (the models/ subfolder), tag (the lump suffix:
@@ -2048,6 +2062,7 @@ def build(cfg=None):
     if os.path.exists(f'{pack}/models'): shutil.rmtree(f'{pack}/models')
     os.makedirs(f'{pack}/ZScript/HaloCE', exist_ok=True)
     metas = {c: json.load(open(f'{OUT}/models/{c}/{c}.json')) for c in set(char_of_unit.values())}
+    check_steps(metas)
     zs = []; md = []; ednums = []; spawners = {}; late = []; brightmaps = []; shells = set(); camo = []; shield_tex = []; bubbles = []
     projectiles_used = set()
     ed = cfg['ed0']
@@ -4073,3 +4088,7 @@ MAIN_WEAPONS |= set(WEAPONS)
 
 if __name__ == '__main__':
     build()
+    # editor icons are taken by udb_icons.py from the built packs; a class added since has none until it is run again
+    written = set(re.findall(r'\nclass (HCE_\w+)', open(f'{PACK}/ZScript/HaloCE/hce_enemies.zsc').read()))
+    noicon = [c for c, _, _, _, spr in BESTIARY if not spr and c in written and not c.startswith('HCE_Variant')]
+    if noicon: print(f'{len(noicon)} classes without an editor icon ({", ".join(noicon[:6])}{", ..." if len(noicon) > 6 else ""}): run udb_icons.py --missing, then build again', file=sys.stderr)

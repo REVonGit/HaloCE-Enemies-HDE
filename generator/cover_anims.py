@@ -29,6 +29,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, 'lib')); sys.path.insert(0, HERE)   # readers and writers live in lib/
 from iqm import read_iqm, write_iqm
+import steps
 from h2_elite_anims import MAP08A, CACHE08A, MAP01B, CACHE01B, ELITE, MARINE
 from reload_anims import h2_anims, GRUNT, JACKAL
 try:
@@ -122,6 +123,7 @@ def add(char):
             d = np.array(fr[-1][root][0]) - np.array(fr[0][root][0])
             e['move'] = [round(float(x), 4) for x in d]
         meta['anims'][k] = e
+    steps.stamp(meta, 'cover_anims', new)          # build_pack.py checks these are still there
     json.dump(meta, open(pj, 'w'), indent=1)
     print(char, len(new), 'animations;', ', '.join(f"{k.split(' ', 2)[2]}={meta['anims'][k]['move']}" for k in sorted(new) if 'move' in meta['anims'][k]))
 

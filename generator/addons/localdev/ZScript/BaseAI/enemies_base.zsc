@@ -5133,10 +5133,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(--hce_grenadeTics > 0) return false;
 		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group
 		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER));
-		if(dist < hce_grenadeMin || dist > hce_grenadeMax) return false;
+		if(dist < max(hce_grenadeMin, HCE_GrenadeSafeDist()) || dist > hce_grenadeMax) return false;
 		if(frandom(0, 1) > hce_grenadeChance * 0.45 * HCE_D(HCE_D_GRENADE_CHANCE)) return false;
-		if(!HCE_GrenadeArcClear()) { hce_grenadeTics = 35; return false; }   // low ceiling: hold it, look again in a second
-		if(HCE_FriendNear(target.pos, 200)) { hce_grenadeTics = 35; return false; }   // a friend by the target: not now
+		if(!HCE_GrenadeArcClear()) { hce_grenadeTics = 35; return false; }   // low ceiling or a wall in the way: look again in a second
+		if(!HCE_GrenadeSafeAt(target.pos + target.vel * 20)) { hce_grenadeTics = 35; return false; }   // would land on us or a friend
 		hce_grenades--;
 		hce_grenadeTics = int(35 * frandom(12, 20) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER));
 		// squad discipline: nearby allies hold their grenades for a few seconds
@@ -5166,13 +5166,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(since < 35 || since > 35 * 12 || level.maptime < hce_flushTics) return false;
 		hce_flushTics = level.maptime + int(35 * frandom(6, 10) * HCE_GrenadeScale());
 		double d = (hce_lastKnown.xy - pos.xy).Length();
-		if(d < max(96, hce_grenadeMin) || d > max(hce_grenadeMax, 640)) return false;
+		if(d < max(hce_grenadeMin, HCE_GrenadeSafeDist()) || d > max(hce_grenadeMax, 640)) return false;
 		if(frandom(0, 1) > 0.6) return false;
 		class<Actor> gc = HCE_GrenadeClass();
 		if(!gc) return false;
 		HCE_SolveLob(pos + (0, 0, height * 0.8), hce_lastKnown, HCE_GravityOf(gc, CurSector), max(10, hce_grenadeVel));
 		if(!hce_lobClear) return false;
-		if(HCE_FriendNear(hce_lastKnown, 200)) return false;
+		if(!HCE_GrenadeSafeAt(hce_lastKnown)) return false;
 		let it = BlockThingsIterator.Create(self, 640);
 		while(it.Next())
 		{
@@ -5198,6 +5198,23 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		CVar cv = CVar.FindCVar("hce_grenadefreq");
 		return cv ? 1.0 / clamp(cv.GetFloat(), 0.1, 5.0) : 1.0;
+	}
+
+	// How far from himself a thrower lands a grenade. A frag's blast reaches 256 units and hurts its thrower at full
+	// strength (a Marine dies to his own), so frags go no nearer than its reach plus a bounce; a plasma grenade hurts
+	// its thrower a tenth as much, so it may come a little closer. To change the margins, edit the numbers here.
+	double HCE_GrenadeSafeDist()
+	{
+		return hce_grenadeType == 2 ? 200 : 320;
+	}
+
+	// True when a grenade landing at 'at' leaves the thrower and his friends out of the blast: the spot is
+	// HCE_GrenadeSafeDist() from him and no friend (a squadmate, or the player for the Marines) stands within the
+	// blast's reach of it. Checked when the throw is chosen and again when the grenade leaves the hand.
+	bool HCE_GrenadeSafeAt(vector3 at)
+	{
+		if(level.Vec3Diff(pos, at).Length() < HCE_GrenadeSafeDist()) return false;
+		return !HCE_FriendNear(at, hce_grenadeType == 2 ? 200 : 280);
 	}
 
 	// ------------------------------------------------------------------
@@ -5256,6 +5273,27 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(!sec) return false;
 			if(z > sec.ceilingplane.ZAtPoint(p) - 12) return false;                 // would hit/stick to the ceiling
 			if(i < steps && z < sec.floorplane.ZAtPoint(p) - 2) return false;      // would hit a ledge on the way
+		}
+		// a wall on the way (one the floor and ceiling samples step over: a pillar, a thin wall, a doorframe) would
+		// bounce the grenade back at the thrower: trace each leg of the arc against walls
+		let tr = new("HCE_ArcTracer");
+		vector3 a = from;
+		Sector sa = CurSector;
+		for(int i = 1; i <= steps; i++)
+		{
+			double t = tt * i / steps;
+			vector3 b = (level.Vec2Offset(from.xy, dir * vh * t), from.z + vz * t - 0.5 * grav * t * t);
+			vector3 dv = level.Vec3Diff(a, b);
+			double len = dv.Length();
+			if(len > 1)
+			{
+				sa = level.PointInSector(a.xy);
+				// the last leg may end a little short of a wall right behind the target: only a wall hit well
+				// before the leg's end counts there
+				if(tr.Trace(a, sa, dv / len, len, 0) && tr.Results.HitType == TRACE_HitWall
+					&& (i < steps || tr.Results.Distance < len - 24)) return false;
+			}
+			a = b;
 		}
 		return true;
 	}
@@ -5331,9 +5369,11 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector3 from = pos + (0, 0, height * 0.8);
 		vector3 to = atPoint ? hce_throwAt : target.pos + target.vel * 20;
 		vector3 v = HCE_SolveLob(from, to, HCE_GravityOf(gc, CurSector), max(10, hce_grenadeVel));
-		if(!hce_lobClear)
+		// the target moved under a low ceiling or behind a wall, closed in on us, or a friend ran into the blast
+		// during the wind-up: keep the grenade
+		if(!hce_lobClear || !HCE_GrenadeSafeAt(to))
 		{
-			hce_grenades++;          // target moved under a low ceiling mid-throw: keep the grenade
+			hce_grenades++;
 			return;
 		}
 		let g = Spawn(gc, from, ALLOW_REPLACE);
@@ -7359,6 +7399,15 @@ class HaloDoom_EnemyBase : Actor abstract
 //            leader passes through its own ranks and charges: the breakthrough.
 // The lance also masses its fire: members take the leader's target (concentration at the point of attack).
 // ----------------------------------------------------------------------
+// HCE_ArcClear's wall check: a trace that passes through every actor and stops at the first wall, floor or ceiling
+class HCE_ArcTracer : LineTracer
+{
+	override ETraceStatus TraceCallback()
+	{
+		return Results.HitType == TRACE_HitActor ? TRACE_Skip : TRACE_Stop;
+	}
+}
+
 class HCE_Lance : Thinker
 {
 	const PH_NONE = 0; const PH_PREP = 1; const PH_ASSAULT = 2; const PH_FEINT = 3; const PH_EXPLOIT = 4;

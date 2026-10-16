@@ -198,7 +198,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		if(x < 6) return "arms_gauntlets_gloves";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
 	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "mr_medic_body" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
@@ -11218,13 +11218,12 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	String HCE_Kit_head()
 	{
 		if(frandom[HCEKit](0, 1) >= 0.35) return "";
-		int x = random[HCEKit](0, 13);
+		int x = random[HCEKit](0, 12);
 		if(x < 5) return "helmet_strapped";
 		if(x < 8) return "helmet_fred";
 		if(x < 11) return "helmet_marcus";
 		if(x < 12) return "helmet_closed";
 		if(x < 13) return "helmet_enclosed";
-		if(x < 14) return "helmet_hellbringer";
 		return "";
 	}
 	String HCE_Kit_face()
@@ -11327,7 +11326,72 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		if(x < 4) return "";
 		return "";
 	}
-	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "helmet_hellbringer" || p == "odst_helmet_open"; }
+	String HCE_KitOutfit1_head()
+	{
+		int x = random[HCEKit](0, 0);
+		if(x < 1) return "helmet_hellbringer";
+		return "";
+	}
+	String HCE_KitOutfit1_arms()
+	{
+		int x = random[HCEKit](0, 5);
+		if(x < 3) return "arms_gloves";
+		if(x < 4) return "arms_gauntlets";
+		if(x < 6) return "arms_gauntlets_gloves";
+		return "";
+	}
+	String HCE_KitOutfit1_face()
+	{
+		int x = random[HCEKit](0, 49.0);
+		if(x < 3) return "headset_mic";
+		if(x < 6) return "headset_mic_b";
+		if(x < 8) return "headset_boom";
+		if(x < 11) return "hud_eyepiece";
+		if(x < 13) return "hud_eyepiece_tilted";
+		if(x < 16) return "helmet_strap_goggles";
+		if(x < 17) return "goggles";
+		if(x < 18) return "sniper_goggles";
+		if(x < 19) return "glasses";
+		if(x < 20) return "gas_mask";
+		if(x < 50.0) return "";
+		return "";
+	}
+	String HCE_KitOutfit1_chest()
+	{
+		int x = random[HCEKit](0, 36.78);
+		if(x < 3) return "pouches";
+		if(x < 6) return "pouches_a";
+		if(x < 8) return "pouches_grenades";
+		if(x < 10) return "pouches_grenades_b";
+		if(x < 12) return "pouches_grenades_c";
+		if(x < 13) return "chest_rig";
+		if(x < 15) return "first_aid";
+		if(x < 17) return "grenade_belt";
+		if(x < 37.78) return "";
+		return "";
+	}
+	String HCE_KitOutfit1_back()
+	{
+		int x = random[HCEKit](0, 29.0);
+		if(x < 3) return "radio_pack";
+		if(x < 6) return "backpack";
+		if(x < 8) return "bedroll";
+		if(x < 10) return "bedroll_b";
+		if(x < 12) return "ammo_pack";
+		if(x < 30.0) return "";
+		return "";
+	}
+	String HCE_KitOutfit1_shoulders()
+	{
+		int x = random[HCEKit](0, 34.0);
+		if(x < 2) return "pads_small";
+		if(x < 4) return "pads_medium";
+		if(x < 6) return "pads_long";
+		if(x < 7) return "odst_pads";
+		if(x < 35.0) return "";
+		return "";
+	}
+	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_strapped" || p == "odst_helmet_open" || p == "helmet_hellbringer"; }
 	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "mr_medic_body" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
@@ -11346,6 +11410,16 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 			hce_kit[7] = HCE_KitOutfit0_wrists();
 			hce_kit[8] = HCE_KitOutfit0_waist();
 			hce_kit[1] = HCE_KitOutfit0_face();
+		}
+		if(!outfit && frandom[HCEKit](0, 1) < 0.03)
+		{
+			outfit = true;
+			hce_kit[0] = HCE_KitOutfit1_head();
+			hce_kit[5] = HCE_KitOutfit1_arms();
+			hce_kit[1] = HCE_KitOutfit1_face();
+			hce_kit[2] = HCE_KitOutfit1_chest();
+			hce_kit[3] = HCE_KitOutfit1_back();
+			hce_kit[4] = HCE_KitOutfit1_shoulders();
 		}
 		if(!outfit)
 		{

@@ -143,7 +143,7 @@ POOLS = {
         arms=(0.2, [('arms_gloves', 3), ('arms_gauntlets', 1), ('arms_gauntlets_gloves', 2)])),
     'MarineArmored': dict(
         head=(0.35, [('helmet_strapped', 5), ('helmet_fred', 3), ('helmet_marcus', 3),
-                     ('helmet_closed', 1), ('helmet_enclosed', 1), ('helmet_hellbringer', 1)]),
+                     ('helmet_closed', 1), ('helmet_enclosed', 1)]),      # the Hellbringer helmet: HELLBRINGER_OUTFIT (gloves with it)
         face=(0.4, [('headset_mic', 3), ('headset_mic_b', 3), ('headset_boom', 2), ('hud_eyepiece', 3), ('hud_eyepiece_tilted', 2),
                      ('helmet_strap_goggles', 3),
                      ('goggles', 1), ('sniper_goggles', 1), ('glasses', 1), ('gas_mask', 1)]),
@@ -152,6 +152,20 @@ POOLS = {
         back=(0.4, [('radio_pack', 3), ('backpack', 3), ('bedroll', 2), ('bedroll_b', 2), ('ammo_pack', 2)]),
         shoulders=(0.2, [('pads_small', 2), ('pads_medium', 2), ('pads_long', 2), ('odst_pads', 1)])),
 }
+
+
+def pool_as_outfit(chance, picks):
+    """a pool's (chance, picks) as an outfit slot's picks: '' (nothing) weighted to keep the pool's chance"""
+    total = sum(w for _, w in picks)
+    return picks + [('', round(total * (1 - chance) / chance, 2))]
+
+
+# the Hellbringer helmet (Halo Wars 2's flame-trooper helmet, amber lens) only with gloves: an Armored Marine outfit
+# of its own, as rare as its place in the head pool was (about one Armored Marine in forty), the rest of him rolled as
+# usual. Rolled after the ODST outfit
+HELLBRINGER_OUTFIT = (0.03, dict(head=[('helmet_hellbringer', 1)], arms=[('arms_gloves', 3), ('arms_gauntlets', 1), ('arms_gauntlets_gloves', 2)],
+                                 **{sl: pool_as_outfit(*POOLS['MarineArmored'][sl]) for sl in ('face', 'chest', 'back', 'shoulders')}))
+OUTFITS['MarineArmored'].append(HELLBRINGER_OUTFIT)
 
 
 def material_images(B):

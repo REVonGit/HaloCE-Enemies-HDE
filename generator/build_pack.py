@@ -2784,7 +2784,7 @@ MARINE_ARSENAL = {
     'beam rifle':       ('beam_rifle', 'rifle', 8, 30, 60, None, 0.3, 'Halo_BeamRifle'),
     'plasma caster':    ('plasma_caster', 'rifle', 4, 14, 20, None, 1.0, 'Halo_PlasmaCaster'),
     'plasma carbine':   ('carbine', 'rifle', 6, 26, 50, None, 0.6, 'Halo_Carbine'),
-    'spiker':           ('spiker', 'pistol', 2, 12, 25, None, 2.0, 'Halo_Spiker'),     # one-handed, as the Brutes hold it (Halo CE's pistol set)
+    'spiker':           ('spiker', H2PISTOL_STANCE, 2, 12, 25, None, 2.0, 'Halo_Spiker'),
     'marine pulse carbine': ('pulse_carbine', 'rifle', 4, 18, 35, None, 1.0, 'Halo_PulseCarbine'),
     'needle ballista':  ('needle_ballista', 'rifle', 6, 24, 45, None, 1.0, 'Halo_NeedlerJavelin'),
 }

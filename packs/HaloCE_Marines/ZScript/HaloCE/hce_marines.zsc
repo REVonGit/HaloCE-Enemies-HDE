@@ -133,10 +133,9 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	// packs, shoulder pads, gloves and the ODST's armour, each a model attachment riding the Marine's skeleton
 	String HCE_Kit_head()
 	{
-		if(frandom[HCEKit](0, 1) >= 0.12) return "";
-		int x = random[HCEKit](0, 1);
-		if(x < 1) return "charles_balaclava";
-		if(x < 2) return "paul_cap";
+		if(frandom[HCEKit](0, 1) >= 0.06) return "";
+		int x = random[HCEKit](0, 0);
+		if(x < 1) return "paul_cap";
 		return "";
 	}
 	String HCE_Kit_face()
@@ -200,7 +199,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
-	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body" || p == "charles_balaclava"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];
@@ -2575,26 +2574,28 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand pistol idle';
-		case HCE_A_ALERT: return 'stand pistol idle';
-		case HCE_A_MOVE_F: return 'stand pistol move-front';
-		case HCE_A_MOVE_B: return 'stand pistol move-back';
-		case HCE_A_MOVE_L: return 'stand pistol move-left';
-		case HCE_A_MOVE_R: return 'stand pistol move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand pistol dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
 		case HCE_A_BERSERK: return 'stand rifle berserk%3';
-		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_WARN: return 'stand h2pistol warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand pistol airborne';
-		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -2607,14 +2608,14 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
-		case HCE_A_TURN_L: return 'stand pistol turn-left';
-		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'alert pistol idle';
-		case HCE_A_LOW_MOVE: return 'alert pistol move-front';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
@@ -13168,16 +13169,13 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	String HCE_Kit_head()
 	{
 		if(frandom[HCEKit](0, 1) >= 0.35) return "";
-		int x = random[HCEKit](0, 19);
+		int x = random[HCEKit](0, 13);
 		if(x < 5) return "helmet_strapped";
 		if(x < 8) return "helmet_fred";
 		if(x < 11) return "helmet_marcus";
 		if(x < 12) return "helmet_closed";
 		if(x < 13) return "helmet_enclosed";
 		if(x < 14) return "helmet_hellbringer";
-		if(x < 16) return "helmet_marcus_balaclava";
-		if(x < 18) return "helmet_matt_balaclava";
-		if(x < 20) return "helmet_shiek_balaclava";
 		return "";
 	}
 	String HCE_Kit_face()
@@ -13281,7 +13279,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
-	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body" || p == "charles_balaclava"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];
@@ -15656,26 +15654,28 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand pistol idle';
-		case HCE_A_ALERT: return 'stand pistol idle';
-		case HCE_A_MOVE_F: return 'stand pistol move-front';
-		case HCE_A_MOVE_B: return 'stand pistol move-back';
-		case HCE_A_MOVE_L: return 'stand pistol move-left';
-		case HCE_A_MOVE_R: return 'stand pistol move-right';
-		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
+		case HCE_A_IDLE: return 'stand h2pistol idle';
+		case HCE_A_ALERT: return 'stand h2pistol idle';
+		case HCE_A_MOVE_F: return 'stand h2pistol move-front';
+		case HCE_A_MOVE_B: return 'stand h2pistol move-back';
+		case HCE_A_MOVE_L: return 'stand h2pistol move-left';
+		case HCE_A_MOVE_R: return 'stand h2pistol move-right';
+		case HCE_A_CROUCH_IDLE: return 'crouch h2pistol idle';
+		case HCE_A_CROUCH_MOVE: return 'crouch h2pistol move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
-		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_FIRE: return 'stand h2pistol fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand pistol dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_DIVE_L: return 'stand h2pistol dive-left';
+		case HCE_A_DIVE_R: return 'stand h2pistol dive-right';
+		case HCE_A_DIVE_F: return 'stand h2pistol dive-front';
+		case HCE_A_EVADE_L: return 'stand h2pistol evade-left';
+		case HCE_A_EVADE_R: return 'stand h2pistol evade-right';
 		case HCE_A_BERSERK: return 'stand rifle berserk%3';
-		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_WARN: return 'stand h2pistol warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
-		case HCE_A_AIRBORNE: return 'stand pistol airborne';
-		case HCE_A_LAND: return 'stand pistol land-soft';
+		case HCE_A_AIRBORNE: return 'stand h2pistol airborne';
+		case HCE_A_LAND: return 'stand h2pistol land-soft';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front gut%0 baked', 's-ping front gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-leg' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back chest', 'h-ping back gut' }; return o[random(0, 1)]; }
@@ -15688,14 +15688,14 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: { static const Name o[] = { 'stand landing-dead', 'stand landing-dead%2' }; return o[random(0, 1)]; }
 		case HCE_A_CELEBRATE: { static const Name o[] = { 'stand rifle celebrate%1', 'stand rifle celebrate%2', 'stand rifle celebrate%3' }; return o[random(0, 2)]; }
-		case HCE_A_TURN_L: return 'stand pistol turn-left';
-		case HCE_A_TURN_R: return 'stand pistol turn-right';
+		case HCE_A_TURN_L: return 'stand h2pistol turn-left';
+		case HCE_A_TURN_R: return 'stand h2pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_FLAME_MOVE: return 'flaming rifle move-front';
 		case HCE_A_RELOAD: return 'stand pistol reload-1';
 		case HCE_A_VENT: return 'stand pistol overheat';
-		case HCE_A_LOW_IDLE: return 'alert pistol idle';
-		case HCE_A_LOW_MOVE: return 'alert pistol move-front';
+		case HCE_A_LOW_IDLE: return 'stand h2pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand h2pistol low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';

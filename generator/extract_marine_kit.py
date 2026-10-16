@@ -80,12 +80,10 @@ PIECES = {
     'head:fred_helmet': ('helmet_fred', 'head'), 'head:marcus_helmet': ('helmet_marcus', 'head'),
     'helm_closed': ('helmet_closed', 'head'), 'helm_enclosed': ('helmet_enclosed', 'head'),
     'helm_hellbringer': ('helmet_hellbringer', 'head'),
-    # whole heads with a balaclava or a cap (the head add-ons sheet)
-    # Elefant's Charles head is modelled from the mask up (no jaw or neck: a balaclava covers them), so his head
-    # piece carries the balaclava object with it; on his own he showed the inside of his head where his jaw should be
-    ('face_charles_bala', 'addon_balaclava'): ('charles_balaclava', 'head'), 'face_paul_cap': ('paul_cap', 'head'),
-    'head:marcus_belaclava': ('helmet_marcus_balaclava', 'head'), 'head:matt_balaclava': ('helmet_matt_balaclava', 'head'),
-    'head:shiek_helmet_bala': ('helmet_shiek_balaclava', 'head'),
+    # whole heads with a cap (the head add-ons sheet). Elefant's balaclava heads (face_charles_bala, head:marcus_belaclava,
+    # head:matt_balaclava, head:shiek_helmet_bala) are modelled from the mask up, no jaw or neck under it, and showed
+    # the inside of the head: they aren't used; a Marine wears a full face, with the face wrap or gas mask add-on over it
+    'face_paul_cap': ('paul_cap', 'head'),
     # ODST: helmets (the shock-trooper shell over the Marine's own face), headset, vest, leg armour, pads, gauntlets, cape
     'helm_odst': ('odst_helmet', 'head'), 'helm_odst_shock': ('odst_helmet_shock', 'head'), 'helm_odst_shock.003': ('odst_helmet_open', 'head'),
     # the closed ODST helmets with the blend's orphaned pair of gas-mask filters (addon_gasmask.001) on the chin
@@ -120,7 +118,7 @@ PIECES = {
 # slot -> model attachment index (6 is the gun overlay, 7 the blood_kit.py damage stage)
 SLOTS = {'head': 1, 'face': 2, 'chest': 3, 'back': 4, 'shoulders': 5, 'arms': 8, 'legs': 9, 'wrists': 10, 'waist': 11}
 ENCLOSED = {'helmet_closed', 'helmet_enclosed', 'odst_helmet', 'odst_helmet_shock', 'odst_helmet_filters', 'odst_helmet_shock_filters',
-            'charles_balaclava'}                  # no face showing (Charles: his balaclava): no face add-ons over them
+            }                  # no face showing: no face add-ons over them
 SHELLS = {'helmet_tilted', 'helmet_strapped', 'helmet_hellbringer', 'odst_helmet_open'}  # worn over the Marine's own (helmeted) face: hide only CE's helmet
 NEEDS_HELMET = {'helmet_strap_goggles'}                       # only over Halo CE's own helmet
 # a weapon's own back piece, always (and only) on the Marines carrying it
@@ -139,14 +137,13 @@ POOLS = {
                      ('glasses', 2), ('cigar', 1), ('gas_mask', 1), ('face_wrap', 2)]),
         chest=(0.45, [('pouches', 3), ('pouches_a', 3), ('pouches_grenades', 2), ('pouches_grenades_b', 2), ('pouches_grenades_c', 2),
                       ('pouch', 2), ('chest_rig', 2), ('first_aid', 2), ('grenade_belt', 2), ('scarf', 1)]),
-        head=(0.12, [('charles_balaclava', 1), ('paul_cap', 1)]),
+        head=(0.06, [('paul_cap', 1)]),
         back=(0.4, [('radio_pack', 2), ('backpack', 3), ('bedroll', 3), ('bedroll_b', 3), ('ammo_pack', 2)]),
         shoulders=(0.25, [('pads_small', 3), ('pads_medium', 2), ('pads_long', 1)]),
         arms=(0.2, [('arms_gloves', 3), ('arms_gauntlets', 1), ('arms_gauntlets_gloves', 2)])),
     'MarineArmored': dict(
         head=(0.35, [('helmet_strapped', 5), ('helmet_fred', 3), ('helmet_marcus', 3),
-                     ('helmet_closed', 1), ('helmet_enclosed', 1), ('helmet_hellbringer', 1), ('helmet_marcus_balaclava', 2),
-                     ('helmet_matt_balaclava', 2), ('helmet_shiek_balaclava', 2)]),
+                     ('helmet_closed', 1), ('helmet_enclosed', 1), ('helmet_hellbringer', 1)]),
         face=(0.4, [('headset_mic', 3), ('headset_mic_b', 3), ('headset_boom', 2), ('hud_eyepiece', 3), ('hud_eyepiece_tilted', 2),
                      ('helmet_strap_goggles', 3),
                      ('goggles', 1), ('sniper_goggles', 1), ('glasses', 1), ('gas_mask', 1)]),

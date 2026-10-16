@@ -1271,9 +1271,27 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_combatUntil, hce_flipTics;
 	bool HCE_Alerted() { return target != null || level.maptime < hce_combatUntil; }
 
-	// Picks the closest visible enemy (a squad focus target wins outright): the current target scores 0.6x its distance
-	// while seen, players score raw distance, monsters 1.15x. Uses the full 360 when alerted, else hce_visionFOV.
-	// A target gained from none calls HCE_OnAcquire. To favour players more, edit the 1.15 monster multiplier.
+	// How much an enemy's distance is shortened in HCE_ScanTargets by the threat it is: whoever hurt it in the last
+	// 3 s (x0.5), a heavy or power weapon in its hands (x0.7), a wounded one to finish (x0.8); for the Marines, an
+	// enemy that is after the player (x0.6, x0.45 with the player under half health). To change what counts, edit here.
+	double HCE_ThreatWeight(Actor o)
+	{
+		double w = 1.0;
+		if(o == hce_hurtBy && level.maptime - hce_hurtTic < 35 * 3) w *= 0.5;
+		let e = HaloDoom_EnemyBase(o);
+		int b;
+		if(e && HCE_WeaponKindOf(e.hce_dropWeapon, b) == HCE_WK_HEAVY) w *= 0.7;
+		let sh = e ? ShieldProcessor(e.FindInventory("ShieldProcessor", true)) : null;
+		if(o.bISMONSTER && o.health < o.SpawnHealth() * 0.35 && (!sh || sh.shields <= 0)) w *= 0.8;
+		if(bFRIENDLY && hce_team == HCE_TEAM_HUMAN && o.bISMONSTER && o.target && o.target.player)
+			w *= o.target.health < o.target.SpawnHealth() * 0.5 ? 0.45 : 0.6;
+		return w;
+	}
+
+	// Picks the closest visible enemy (a squad focus target wins outright), each one's distance shortened by the
+	// threat it is (HCE_ThreatWeight): the current target scores 0.6x its distance while seen, players raw distance,
+	// monsters 1.15x. Uses the full 360 when alerted, else hce_visionFOV. A target gained from none calls
+	// HCE_OnAcquire. To favour players more, edit the 1.15 monster multiplier.
 	void HCE_ScanTargets()
 	{
 		if(hce_focusTarget && (hce_focusTarget.health <= 0 || !HCE_IsEnemy(hce_focusTarget))) hce_focusTarget = null;
@@ -1281,14 +1299,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		Actor best = null; double bestScore = 1e9;
 		if(target && target.health > 0 && HCE_IsEnemy(target))
 		{
-			best = target; bestScore = Distance3D(target) * (hce_canSee ? 0.6 : 1.0);
+			best = target; bestScore = Distance3D(target) * (hce_canSee ? 0.6 : 1.0) * HCE_ThreatWeight(target);
 		}
 		for(int i = 0; i < MAXPLAYERS; i++)
 		{
 			if(!playeringame[i] || !players[i].mo) continue;
 			let p = players[i].mo;
 			if(!HCE_IsEnemy(p) || (p.player.cheats & CF_NOTARGET)) continue;
-			double d = Distance3D(p);
+			double d = Distance3D(p) * HCE_ThreatWeight(p);
 			if(d < bestScore && HCE_SightOf(p, HCE_Alerted() ? 360 : hce_visionFOV)) { best = p; bestScore = d; }
 		}
 		let it = BlockThingsIterator.Create(self, min(hce_visionDist, 2048));
@@ -1296,7 +1314,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			let o = it.thing;
 			if(!o.bISMONSTER || !HCE_IsEnemy(o)) continue;
-			double d = Distance3D(o) * 1.15;
+			double d = Distance3D(o) * 1.15 * HCE_ThreatWeight(o);
 			if(d < bestScore && HCE_SightOf(o, HCE_Alerted() ? 360 : hce_visionFOV)) { best = o; bestScore = d; }
 		}
 		if(best && best != target)
@@ -1353,6 +1371,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!HCE_IdleMove()) HCE_Play(HCE_A_IDLE);
 		if(bHCE_Flying) HCE_Hover();
 		if(HCE_SeekCorpse()) { SetStateLabel("See"); return; }
+		if(HCE_PlayerLaneCheck()) { SetStateLabel("See"); return; }
 		if(!hce_bondLooked) HCE_BondLink();
 		if(HCE_IdleReload()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
@@ -1419,6 +1438,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_button && HCE_ButtonTick()) return;
 		if(hce_liftSec && HCE_LiftTick()) return;
 		if(hce_medicFor && HCE_MedicTick()) return;
+		if(HCE_PlayerLaneTick()) return;
 		if(hce_scavItem && HCE_ScavengeTick()) return;
 		if(hce_scavOff == 0) hce_scavOff = random(1, 35);
 		if((level.maptime + hce_scavOff) % 35 == 0) HCE_ScavengeScan();
@@ -1799,7 +1819,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(--hce_panicTics <= 0) { hce_action = HCE_ACT_FIGHT; HCE_Say('Regroup', 0.5, 35 * 2); return; }
 		if(random(0, 50) == 0) HCE_Say('Flee', 1.0, 35 * 2);
-		HCE_Move(HCE_PickHeading(AngleTo(target) + 180 + frandom(-30, 30), AngleTo(target)), hce_runSpeed);
+		// stuck with a plasma grenade (Halo CE): straight at the nearest friend, not away from the thrower
+		Actor fr = level.maptime < hce_stuckRunUntil ? HCE_NearestFriend(768) : null;
+		if(fr) HCE_Move(HCE_PickHeading(AngleTo(fr) + frandom(-10, 10), AngleTo(fr)), hce_runSpeed);
+		else HCE_Move(HCE_PickHeading(AngleTo(target) + 180 + frandom(-30, 30), AngleTo(target)), hce_runSpeed);
 		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
 		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
 	}
@@ -3157,21 +3180,25 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Steps off the ledge ahead at 'spd' when the target, its last-known spot or the followed player is lower.
 	// Refuses a drop deeper than HCE_SafeDrop() or into a damaging floor. True: airborne (HCE_JumpTick lands it).
 	// To change the safe depth, edit HCE_SafeDrop (2.5 x height).
+	// A small ledge (HCE_SmallDrop: up to 80% of its height, 48 at least) is walked off whatever it is doing and
+	// wherever it is going: fleeing, strafing, searching, taking cover or following, by every walking unit (the
+	// Flood and the Sentinels' walkers too). Deeper drops still need something down there to go for.
+	double HCE_SmallDrop() { return max(48, height * 0.8); }
 	bool HCE_TryDrop(double ang, double spd)
 	{
 		if(bHCE_Flying || health <= 0 || hce_animLock > 0 || hce_jumpState > 0 || pos.z > floorz + 2 || waterlevel >= 2) return false;
-		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
-		double goalZ;
+		if(hce_squadOrder == HCE_ORDER_HOLD && HCE_InSquad()) return false;  // a holding Marine keeps his ledge
+		double goalZ = 1e9;
 		if(target && hce_canSee) goalZ = target.pos.z;
 		else if(target) goalZ = hce_lastKnown.z;
 		else if(HCE_InSquad() && HCE_SquadPlayer()) goalZ = HCE_SquadPlayer().pos.z;
-		else return false;
-		if(goalZ > pos.z - MaxStepHeight) return false;                      // nothing to go down for
+		bool wanted = goalZ <= pos.z - MaxStepHeight;                       // something to go down for
 		vector2 dir = AngleToVector(ang, 1);
 		vector2 p = pos.xy + dir * (radius + max(spd, 4) + 4);
 		double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
 		double drop = pos.z - fz;
-		if(drop <= MaxStepHeight || drop > HCE_SafeDrop()) return false;
+		if(drop <= MaxStepHeight || drop > (wanted ? HCE_SafeDrop() : HCE_SmallDrop())) return false;
+		if(!wanted && hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT && hce_team != HCE_TEAM_FLOOD) return false;
 		let sec = level.PointInSector(p);
 		if(sec && sec.damageamount > 0) return false;                        // lava, slime
 		if(!TryMove(pos.xy + dir * max(spd, 4), 1)) return false;
@@ -3588,12 +3615,36 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_isMedic;
 	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
 	// the acknowledgement.
-	void HCE_MedicOrder(Actor pl)
+	void HCE_MedicOrder(Actor pl, bool ordered = true)
 	{
 		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
 		hce_scavItem = null;
-		HCE_AckLater();
+		if(ordered) HCE_AckLater();
 		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// A corpsman with nothing in his sights (no target, or none seen for 3 s) looks once a second for a wounded Marine
+	// of the squad within 512 (under 35% health: hce_wounded), or himself, and goes to patch him up unasked; the
+	// same errand as the order, without the acknowledgement. One patient every 6 s at most.
+	int hce_medicNextTic;
+	void HCE_MedicScan()
+	{
+		if(!hce_isMedic || hce_medicFor || health <= 0 || hce_betrayed || level.maptime < hce_medicNextTic) return;
+		if(target && level.maptime - hce_lastSeen < 35 * 3) return;        // in a firefight: later
+		HaloDoom_EnemyBase best = null; double bd = 512;
+		if(hce_wounded) { best = self; bd = 0; }
+		let it = BlockThingsIterator.Create(self, 512);
+		while(it.Next())
+		{
+			let m = HaloDoom_EnemyBase(it.thing);
+			if(!m || m == self || m.health <= 0 || !m.hce_wounded || m.hce_team != hce_team || !m.HCE_InSquad()) continue;
+			double d = Distance2D(m);
+			if(d < bd && !HCE_SightBlocked(pos + (0, 0, height * 0.5), m.pos + (0, 0, m.height * 0.5))) { bd = d; best = m; }
+		}
+		if(!best) return;
+		hce_medicNextTic = level.maptime + 35 * 6;
+		HCE_MedicOrder(best, false);
+		if(best != self) best.HCE_Say('Wounded', 0.9, 35 * 2);
 	}
 
 	// Runs the medic errand each tic: runs to the patient, crouches beside him for a second, then heals 60% of his spawn
@@ -3641,14 +3692,25 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_squadOrder = o;
 		hce_onPerimeter = false;
 		if(o == HCE_ORDER_HOLD) hce_holdPos = pos;
-		if(o == HCE_ORDER_REGROUP) hce_regroupUntil = level.maptime + 35 * 8;
+		if(o == HCE_ORDER_REGROUP) { hce_regroupUntil = level.maptime + 35 * 8; hce_rgLastDist = 1e9; hce_rgCheckTic = level.maptime + 35 * 2; }
 	}
 
-	// regroup: run back to the player, even mid-fight, until close (or 8 s pass), then follow again
+	// regroup: run back to the player, even mid-fight, until close (or 8 s pass), then follow again. A Marine who
+	// can't get there (stuck behind something, on the wrong side of a wall, 1.5 s without getting 48 units nearer)
+	// teleports to the player instead (HCE_TeleportTick), as he would after a teleporter.
+	double hce_rgLastDist; int hce_rgCheckTic;
 	bool HCE_RegroupTick()
 	{
 		let p = HCE_SquadPlayer();
 		if(!p || p.health <= 0 || Distance2D(p) < 160 || level.maptime > hce_regroupUntil) { hce_squadOrder = HCE_ORDER_FOLLOW; return false; }
+		if(hce_tpAt > 0) { HCE_Brake(); return true; }                      // about to teleport
+		double d = Distance2D(p);
+		if(hce_rgLastDist > 1e8) hce_rgLastDist = d;                        // the order just came
+		else if(level.maptime >= hce_rgCheckTic)
+		{
+			if(d > hce_rgLastDist - 48 && d > 200) { hce_tpAt = level.maptime + 5; HCE_Brake(); return true; }   // no nearer: stuck
+			hce_rgLastDist = d; hce_rgCheckTic = level.maptime + int(35 * 1.5);
+		}
 		HCE_StopFireLoop();
 		HCE_Move(AngleTo(p), hce_runSpeed);
 		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
@@ -3668,6 +3730,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// wounded: under a third of its health a Marine limps and calls for help now and then
 		hce_wounded = health < SpawnHealth() * 0.35;
 		if(hce_wounded && !hce_betrayed) HCE_Say('Wounded', 0.25, 35 * 6);
+		HCE_MedicScan();
 		// Sergeant Johnson within earshot: steadier aim, and no cowering
 		hce_inspired = false;
 		Actor pl = HCE_SquadPlayer();
@@ -4519,6 +4582,51 @@ class HaloDoom_EnemyBase : Actor abstract
 		return blocked;
 	}
 
+	// The player's line of fire. A Marine standing where a player is shooting (the player's aim passes within his
+	// body, out to 1024 units, and the player has the trigger down or fired in the last 1.5 s) steps out of it to
+	// the open side, the same sidestep he uses to clear a friend out of his own line (hce_ffStepAng). A player
+	// merely looking at him (to give an order) doesn't move him. To change the reach, edit the 1024.
+	int hce_plFireUntil, hce_plLaneTic;
+	bool HCE_PlayerLaneCheck()
+	{
+		if(health <= 0 || !bFRIENDLY || hce_team != HCE_TEAM_HUMAN || hce_betrayed || hce_ffStepTics > 0 || hce_animLock > 0) return false;
+		if(level.maptime < hce_plLaneTic) return false;
+		hce_plLaneTic = level.maptime + 3;
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo || players[i].health <= 0) continue;
+			let p = players[i].mo;
+			if(players[i].cmd.buttons & (BT_ATTACK | BT_ALTATTACK)) hce_plFireUntil = level.maptime + int(35 * 1.5);
+			if(level.maptime > hce_plFireUntil) continue;
+			vector3 eye = p.pos + (0, 0, p.player.viewheight);
+			vector3 rel = level.Vec3Diff(eye, pos + (0, 0, height * 0.5));
+			double along = rel dot (cos(p.angle) * cos(p.pitch), sin(p.angle) * cos(p.pitch), -sin(p.pitch));
+			if(along < radius || along > 1024) continue;
+			vector3 off = rel - (cos(p.angle) * cos(p.pitch), sin(p.angle) * cos(p.pitch), -sin(p.pitch)) * along;
+			if(off.xy.Length() > radius + 12 || abs(off.z) > height * 0.5 + 8) continue;
+			// in his lane: step out to the open side, across the line
+			double ta = p.angle;
+			int sd = HCE_Clearance(ta + 90, 96) >= HCE_Clearance(ta - 90, 96) ? 1 : -1;
+			hce_ffStepAng = ta + 90 * sd;
+			hce_ffStepTics = random(14, 22);
+			HCE_Say('Cover', 0.2, 35 * 6);
+			return true;
+		}
+		return false;
+	}
+
+	// Runs the sidestep out of a player's line of fire when no other action would (out of a fight: following,
+	// holding, idle). HCE_Fight takes the same step itself. True: stepping this tic.
+	bool HCE_PlayerLaneTick()
+	{
+		HCE_PlayerLaneCheck();
+		if(hce_ffStepTics <= 0 || (target && hce_action == HCE_ACT_FIGHT)) return false;
+		hce_ffStepTics--;
+		HCE_Move(hce_ffStepAng, hce_runSpeed * 0.7);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
 	// Ends a pattern burst: stops the fire loop and sets the pause before the next, hce_patPauseMin-Max s times
 	// pauseScale and the hce_burstpause CVar, cut to a third while suppressing.
 	void HCE_EndBurst(double pauseScale)
@@ -5049,8 +5157,30 @@ class HaloDoom_EnemyBase : Actor abstract
 			HCE_GoBerserk(true);
 			return;
 		}
-		if(bHCE_Panics) HCE_StartPanic();
+		if(bHCE_Panics)
+		{
+			// Halo CE: a stuck Grunt doesn't run from the thrower, he runs flailing to his friends (and takes some
+			// with him, unless they see it coming: HCE_GrenadeCheck)
+			HCE_StartPanic();
+			hce_stuckRunUntil = level.maptime + 35 * 4;
+		}
 		HCE_Say('Stuck', 1.0, 35 * 2, true);
+	}
+	int hce_stuckRunUntil;               // stuck with a plasma grenade: running to the nearest friend until then
+
+	// The nearest living friend of the same team within r (not the player), or null.
+	Actor HCE_NearestFriend(double r)
+	{
+		Actor best = null; double bd = r;
+		let it = BlockThingsIterator.Create(self, r);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || e.health <= 0 || !e.hce_enabled || e.hce_team != hce_team) continue;
+			double d = Distance2D(e);
+			if(d < bd) { bd = d; best = e; }
+		}
+		return best;
 	}
 
 	// actv.ranged_combat.weapon_damage_modifier, hce_enemydamage and the hce_nerf_projectiles nerf. Only what an enemy fires or
@@ -5882,8 +6012,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// hit by an enemy it isn't already fighting in plain sight: it turns on the shooter
+	Actor hce_hurtBy; int hce_hurtTic;    // who hurt it last, and when (HCE_ScanTargets favours him for 3 s)
 	void HCE_HitBy(Actor source)
 	{
+		if(source && source != self && HCE_IsEnemy(source)) { hce_hurtBy = source; hce_hurtTic = level.maptime; }
 		if(!source || source == self || !HCE_IsEnemy(source) || (target && hce_canSee)) return;
 		bool fresh = !target;
 		target = source; hce_lastKnown = source.pos;

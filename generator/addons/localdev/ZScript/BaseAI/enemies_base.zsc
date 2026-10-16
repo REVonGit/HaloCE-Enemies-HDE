@@ -1897,7 +1897,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	// ==================================================================
 	// Getting around a Doom map
 	// ==================================================================
-	// can it walk straight there: no wall in the way at knee or chest height, a floor it can step up, climb or drop to
+	// can it walk straight there: no wall in the way at knee or chest height, a floor it can step up, climb or drop to.
+	// Walls here are what stop a walker, not a bullet: a one-sided wall, a step or lintel it can't pass, and any
+	// two-sided line flagged impassable or monster-blocking (a grate, a railing, a window: a sight line passes those
+	// and used to send Marines at the player through them, into the dead end beside the way).
 	bool HCE_Walkable(vector3 to)
 	{
 		vector2 d = to.xy - pos.xy;
@@ -1906,8 +1909,18 @@ class HaloDoom_EnemyBase : Actor abstract
 		double up = to.z - pos.z;
 		if(up > max(MaxStepHeight, hce_jumpHeight) || up < -HCE_SafeDrop()) return false;
 		vector3 knee = pos + (0, 0, MaxStepHeight + 4), chest = pos + (0, 0, height * 0.6);
-		if(HCE_SightBlocked(knee, (to.xy, max(to.z, pos.z) + MaxStepHeight + 4))) return false;
-		return !HCE_SightBlocked(chest, (to.xy, max(to.z, pos.z) + height * 0.6));
+		if(HCE_WalkBlocked(knee, (to.xy, max(to.z, pos.z) + MaxStepHeight + 4))) return false;
+		return !HCE_WalkBlocked(chest, (to.xy, max(to.z, pos.z) + height * 0.6));
+	}
+
+	// a wall, step, lintel or impassable line between two points, as a walker meets them (HCE_WalkTracer)
+	bool HCE_WalkBlocked(vector3 from, vector3 to)
+	{
+		vector3 d = to - from;
+		double l = d.Length();
+		if(l < 2) return false;
+		let tr = new("HCE_WalkTracer");
+		return tr.Trace(from, level.PointInSector(from.xy), d / l, l - 2, 0) && tr.Results.HitType != TRACE_HitNone;
 	}
 
 	// the player's trail (HCE_MissileTracker): the newest point on it, recorded between fromTic and toTic, that it can
@@ -1938,6 +1951,69 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	int PlayerNum(Actor a) { return a && a.player ? a.PlayerNumber() : -1; }
+
+	// Following the trail (a Marine catching up with the player round corners, through doors and out of dead ends).
+	// HCE_TrailGoal alone sent him to the newest point he could see, which walked him into any side room the trail
+	// passed through (the points inside it were the newest in view) and left him with nothing when the player was
+	// further ahead than the 28 newest points: he then steered straight at the player, into whatever looked like the
+	// way. This keeps a cursor on the trail (the point he last reached or set out for, by its time) and, each time:
+	//   1. the newest point past the cursor he can walk straight to (skipping ahead when the way is open);
+	//   2. else the cursor's point and then the next along the trail, reachable or not (the player walked it: each is
+	//      close to the last, and a door on the way opens for him), the cursor moving on only as each is reached,
+	//      so he walks the trail out of a dead end the way the player did;
+	//   3. else, with no cursor, the nearest point of the last 3 minutes he can reach: where he joins the trail.
+	// hce_navLost counts the looks that found nothing; HCE_Follow teleports him to the player after 10 s of that.
+	int hce_crumbTic, hce_navLost;
+	bool HCE_TrailFollow(int pn)
+	{
+		let tr = HCE_MissileTracker.Get();
+		if(!tr || pn < 0) return false;
+		int n = tr.crX.Size();
+		int cur = -1;
+		if(hce_crumbTic > 0) for(int i = n - 1; i >= 0; i--) if(tr.crP[i] == pn && tr.crT[i] == hce_crumbTic) { cur = i; break; }
+		int oldest = level.maptime - 35 * 180;
+		// 1. skip ahead: the newest reachable point past the cursor
+		int tested = 0;
+		for(int i = n - 1; i > cur && tested < 28; i--)
+		{
+			if(tr.crP[i] != pn) continue;
+			if(tr.crT[i] < oldest) break;
+			vector3 c = (tr.crX[i], tr.crY[i], tr.crZ[i]);
+			if((c.xy - pos.xy).Length() <= 1200)
+			{
+				tested++;
+				if(HCE_Walkable(c)) { hce_trailHit = c; hce_crumbTic = tr.crT[i]; return true; }
+			}
+			if(tr.crB[i]) break;                        // a teleport: nothing older on this side joins up
+		}
+		// 2. the cursor's point, then the next along the trail: the cursor moves on only as each is reached
+		if(cur >= 0)
+		{
+			for(int j = cur; j < n; j++)
+			{
+				if(tr.crP[j] != pn) continue;
+				if(j > cur && tr.crB[j]) break;         // the player teleported here: the trail ends for walking
+				vector3 c = (tr.crX[j], tr.crY[j], tr.crZ[j]);
+				if((c.xy - pos.xy).Length() < 40) { hce_crumbTic = tr.crT[j]; cur = j; continue; }    // reached: on to the next
+				hce_trailHit = c;
+				return true;
+			}
+			return false;                               // at the trail's end: the player is in reach, or gone through a teleporter
+		}
+		// 3. joining the trail: the nearest point he can reach
+		double bd = 1200; int bi = -1; tested = 0;
+		for(int i = n - 1; i >= 0 && tested < 60; i--)
+		{
+			if(tr.crP[i] != pn) continue;
+			if(tr.crT[i] < oldest) break;
+			vector3 c = (tr.crX[i], tr.crY[i], tr.crZ[i]);
+			double d = (c.xy - pos.xy).Length();
+			if(d < bd) { tested++; if(HCE_Walkable(c)) { bd = d; bi = i; } }
+		}
+		if(bi < 0) return false;
+		hce_trailHit = (tr.crX[bi], tr.crY[bi], tr.crZ[bi]); hce_crumbTic = tr.crT[bi];
+		return true;
+	}
 
 	// ------------------------------------------------------------------
 	// Teleporters: when the player takes a teleporter (or a map's scripted teleport), the Marines following him who
@@ -4206,13 +4282,18 @@ class HaloDoom_EnemyBase : Actor abstract
 			// round corners: no straight way to its place, so the newest point on the player's trail it can reach
 			if(d < 900 || CheckSight(p)) hce_nearTic = level.maptime;
 			else if(level.maptime - hce_nearTic > 35 * 20 && d > 1800 && hce_tpAt <= 0) hce_tpAt = level.maptime;
+			// no way to him for 10 s (no trail to follow, out of sight, well off): he catches up by teleporting
+			if(hce_navLost > 44 && d > 640 && !CheckSight(p) && hce_tpAt <= 0) { hce_tpAt = level.maptime; hce_navLost = 0; }
 			if(gd > 40 && d > 160 && level.maptime % 8 == (hce_scavOff & 7))
 			{
 				double fz = GetZAt(hce_formSpot.x, hce_formSpot.y, 0, GZF_ABSOLUTEPOS);
 				hce_navVia = (0, 0);
-				if(!HCE_Walkable((hce_formSpot, fz)) && HCE_TrailGoal(PlayerNum(p), level.maptime - 35 * 90, level.maptime)) hce_navVia = hce_trailHit.xy;
+				if(HCE_Walkable((hce_formSpot, fz)) || (d < 320 && CheckSight(p))) { hce_crumbTic = 0; hce_navLost = 0; }   // a straight way: off the trail
+				else if(HCE_TrailFollow(PlayerNum(p))) { hce_navVia = hce_trailHit.xy; hce_navLost = 0; }
+				else hce_navLost++;
 			}
-			if(hce_navVia != (0, 0) && gd > 40 && d > 160) { dv = hce_navVia - pos.xy; if(dv.Length() < 32) hce_navVia = (0, 0); }
+			if(d <= 160 || gd <= 40) { hce_crumbTic = 0; hce_navLost = 0; }
+			if(hce_navVia != (0, 0) && gd > 40 && d > 160) { dv = hce_navVia - pos.xy; if(dv.Length() < 32) hce_navVia = (0, 0); else gd = max(gd, dv.Length() + 41); }   // (a trail point is off his place: he keeps walking)
 			// walk to his place once he's well off it (64), and on until he's on it (20): no stop-start at its edge
 			// with the player on the move he keeps pace in his place rather than stopping on it and starting again
 			double pv = p.vel.xy.Length();
@@ -7682,6 +7763,20 @@ class HaloDoom_EnemyBase : Actor abstract
 //            leader passes through its own ranks and charges: the breakthrough.
 // The lance also masses its fire: members take the leader's target (concentration at the point of attack).
 // ----------------------------------------------------------------------
+// HCE_WalkBlocked's trace: through every actor and every two-sided line a monster may cross; stops at a one-sided
+// wall, a step or lintel (the upper or lower tier), a floor or ceiling, and any line flagged impassable,
+// monster-blocking or block-everything
+class HCE_WalkTracer : LineTracer
+{
+	override ETraceStatus TraceCallback()
+	{
+		if(Results.HitType == TRACE_HitActor) return TRACE_Skip;
+		if(Results.HitType == TRACE_HitWall && Results.HitLine && Results.HitLine.sidedef[1] && Results.Tier == TIER_Middle
+			&& !(Results.HitLine.flags & (Line.ML_BLOCKING | Line.ML_BLOCKMONSTERS | Line.ML_BLOCKEVERYTHING))) return TRACE_Skip;
+		return TRACE_Stop;
+	}
+}
+
 // HCE_ArcClear's wall check: a trace that passes through every actor and stops at the first wall, floor or ceiling
 class HCE_ArcTracer : LineTracer
 {

@@ -396,7 +396,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
     - **Female Marines:** with the assault rifle, battle rifle, MA37, SMG, Magnum, shotgun, sniper rifle or DMR (`HCE_MarineFemale<Gun>`). They speak with Halo 2's female Marine voices (Sassy and Tough). They join `HCE_RandomMarine`, the Marine fire teams of the encounters and the radio operator's reinforcements.
     - **Field medics** (`HCE_MarineFieldMedicMagnum`, `HCE_MarineFieldMedicSmg`): in the medical corps' whites, a sidearm or SMG, and corpsmen: they answer the squad's *medic* order like the other corpsmen.
 * **Sentinels:** hover at Halo's flying height and fire a hitscan beam.
-* **No death animation:** a body without one (Mercury Rising's Artybug) no longer stands dead in whatever pose it was in: its legs give out, and the hull drops to the floor and settles a little lopsided.
+* **No death animation:** a body without one (Mercury Rising's Artybug) no longer stands dead in whatever pose it was in: it blows apart, in a blast, a burst of its blood and pieces of its shell flung out tumbling, which land and lie where they fall.
 * **Deaths:** directional (front/back/left/right) soft and hard death animations, airborne deaths, and Halo's flinch ("ping") animations by hit direction.
 * **Flinches:** a heavy hit plays a **hard ping** (h-ping) every time: a quarter of its health in one hit, a blast, or a hard melee. It cuts short a soft flinch, a landing or a taunt, though not a swing, throw, dive or an earlier hard ping. Lighter hits have a chance of a soft ping (s-ping).
   * Hits a shield soaks up cause no flinch, as in Halo, but popping an Elite's shield does (see Elites).

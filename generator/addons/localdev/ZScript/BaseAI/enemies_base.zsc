@@ -6353,11 +6353,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(HCE_HasAnim(k)) HCE_Play(k, k == HCE_A_DIE_AIR, true, 3, true);
 		else
 		{
-			// a body with no death animation at all (Mercury Rising's Artybug): it stood dead in whatever pose it was
-			// in. Its idle, played once and held, and its legs give out instead: the hull sinks to the floor (floorclip
-			// draws it lower, the legs going into the ground) and settles a little lopsided
-			HCE_Play(HCE_A_IDLE, false, true, 3, true);     // once through, held on its last frame
-			hce_toppleTics = 14; hce_toppleDir = random(0, 1) ? 1 : -1;
+			// a body with no death animation at all (Mercury Rising's Beetle): it stood dead in whatever pose it was
+			// in. It blows apart instead (HCE_ShatterBody): a burst of its blood, the frag blast's flash and shockwave,
+			// and pieces of its shell flung out tumbling
+			HCE_ShatterBody();
 		}
 		HCE_StopFireLoop();
 		// no death cry from a body torn apart or shattered, a headshot kill, or one whose head came off
@@ -7706,24 +7705,44 @@ class HaloDoom_EnemyBase : Actor abstract
 		return dmg;
 	}
 
+	// A body with no death animation blows apart: the frag blast's flash, shockwave and sound (HaloDoom Evolved's,
+	// where loaded; no damage), a burst of its blood, and 'pieces' of its shell: its own model at a quarter to
+	// two-fifths size, each showing one of its surfaces, flung out and up tumbling (HCE_LimbGib), to land and lie
+	// there. To change the pieces, edit the 6 and the scale range.
+	void HCE_ShatterBody()
+	{
+		hce_gibbed = true; hce_reviveTics = 0; hce_brutality += 6;
+		class<Actor> fx = (class<Actor>)('FragGrenadeExplosion');
+		if(fx) { let e = Spawn(fx, pos + (0, 0, height * 0.4)); if(e) e.SetDamage(0); }
+		A_StartSound("Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.8);
+		HCE_GibBurst(30, 18);
+		if(!HCE_GoreOn() || HCE_ModelFile() == 'None') return;
+		int n = HCE_GoreCount(6);
+		for(int k = 0; k < n; k++)
+		{
+			vector3 at = pos + (frandom(-radius, radius) * 0.4, frandom(-radius, radius) * 0.4, height * frandom(0.3, 0.7));
+			let g = HCE_LimbGib(Spawn("HCE_LimbGib", at, ALLOW_REPLACE));
+			if(!g) continue;
+			g.hce_def = GetClassName(); g.hce_path = HCE_ModelPath(); g.hce_model = HCE_ModelFile(); g.hce_tex = 'None';
+			g.hce_hideAllBut = (k % 4) + 1;                 // one surface of the body each: hull, legs, plates...
+			g.hce_rest = 6; g.master = self;
+			g.A_SetScale(frandom(0.25, 0.4));
+			double a = frandom(0, 360), p = frandom(-70, -20);
+			g.vel = (cos(a) * cos(p), sin(a) * cos(p), -sin(p)) * frandom(7, 15);
+			g.HCE_Launch(a, p);
+		}
+	}
+	// the body's own model, for HCE_ShatterBody's pieces: its folder and file (a pack sets them on the class, as
+	// build_pack.py does for the Beetle: models/hce/<Character>/<Character>.iqm); 'None': no pieces, blood only
+	virtual String HCE_ModelPath() { return ""; }
+	virtual Name HCE_ModelFile() { return 'None'; }
+
 	int hce_toppleTics, hce_toppleDir;
-	// The corpse's tic: first-time setup, the topple roll for bodies with no death animation (18 tics about the feet),
-	// the delayed gib hide, the airborne landing, pumping stumps and the resurrection countdown.
+	// The corpse's tic: first-time setup, the delayed gib hide, the airborne landing, pumping stumps and the
+	// resurrection countdown.
 	void HCE_CorpseTick()
 	{
 		if(!hce_corpseInit) HCE_SetUpCorpse();
-		if(hce_toppleTics > 0)
-		{
-			// the legs give out: the hull drops to the floor over 14 tics (eased in, a bump at the end), listing a
-			// little to one side and nose-down. To change the drop, edit the 0.42 (of its height).
-			hce_toppleTics--;
-			double f = 1 - hce_toppleTics / 14.0;
-			double drop = height * 0.42 * (f < 0.85 ? (f / 0.85) ** 2 : 1 - 0.08 * sin((f - 0.85) / 0.15 * 180));
-			floorclip = max(0, drop);
-			A_SetRoll(hce_toppleDir * 9 * f, SPF_INTERPOLATE);
-			A_SetPitch(6 * f, SPF_INTERPOLATE);
-			vel = (0, 0, 0);
-		}
 		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
 		HCE_AirTick();
 		HCE_StumpTick();
@@ -8590,6 +8609,7 @@ class HCE_LimbGib : Actor
 	Name hce_def, hce_model, hce_tex;
 	String hce_path;
 	int hce_stub, life, hce_shieldSurf;
+	int hce_hideAllBut;                    // HCE_ShatterBody's pieces: 1 + the one surface of the model shown (0: all)
 	double hce_rest;
 	bool hce_set, isStatic;
 	vector3 angVel;
@@ -8662,7 +8682,9 @@ class HCE_LimbGib : Actor
 			// argument, 'None' clearing it), so both calls name the dead enemy's: with 'None' on the second the gib
 			// lost its MODELDEF and drew nothing
 			A_ChangeModel(hce_def, 0, hce_path, hce_model);
-			A_ChangeModel(hce_def, 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
+			if(hce_tex != 'None') A_ChangeModel(hce_def, 0, "", 'None', hce_stub, hce_path, hce_tex, CMDL_USESURFACESKIN);
+			// a shell piece (HCE_ShatterBody): the whole model with every surface but one hidden
+			if(hce_hideAllBut > 0) for(int sf = 0; sf < 8; sf++) if(sf != hce_hideAllBut - 1) A_ChangeModel(hce_def, 0, "", 'None', sf, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			if(hce_shieldSurf > 0) A_ChangeModel(hce_def, 0, "", 'None', hce_shieldSurf - 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			// only the piece: the rest of the enemy's MODELDEF (an overlay gun such as the Plasma Caster or a Marine's
 			// arsenal gun, armour pieces) would stand there in its bind pose, upright beside the gib

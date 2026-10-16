@@ -84,6 +84,9 @@ class HCE_ArtybugBase : HaloDoom_EnemyBase abstract
 	}
 	// the barrage call as it opens fire (its GrenadeThrow lines): about one shot in three (checked per bolt)
 	override void HCE_OnShot(Actor shot) { super.HCE_OnShot(shot); HCE_Say('GrenadeThrow', 0.04, 35 * 4); }
+	// no death animation: it blows apart (HCE_ShatterBody), the pieces cut from its own model
+	override String HCE_ModelPath() { return "models/hce/Artybug"; }
+	override Name HCE_ModelFile() { return 'Artybug.iqm'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;

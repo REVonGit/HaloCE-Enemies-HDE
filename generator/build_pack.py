@@ -4052,7 +4052,10 @@ if 'Artybug' in MR_CHARS:
     VOICES['Artybug'] = 'Artybug'
     BASE_CODE['Artybug'] = BASE_CODE.get('Artybug', '') + (
         "\t// the barrage call as it opens fire (its GrenadeThrow lines): about one shot in three (checked per bolt)\n"
-        "\toverride void HCE_OnShot(Actor shot) { super.HCE_OnShot(shot); HCE_Say('GrenadeThrow', 0.04, 35 * 4); }\n")
+        "\toverride void HCE_OnShot(Actor shot) { super.HCE_OnShot(shot); HCE_Say('GrenadeThrow', 0.04, 35 * 4); }\n"
+        "\t// no death animation: it blows apart (HCE_ShatterBody), the pieces cut from its own model\n"
+        "\toverride String HCE_ModelPath() { return \"models/hce/Artybug\"; }\n"
+        "\toverride Name HCE_ModelFile() { return 'Artybug.iqm'; }\n")
     BOSS_ALIASES['HCE_BossArachnotronArtybug'] = ('HCE_Artybug', 'Arachnotron', 2.0)   # the Arachnotrons' stand-in (MAP07)
     BLOOD['Artybug'] = 'FF8C1A'            # its blood is the Hunters' (Mercury Rising's own damage effects)
     CHAR_OVERRIDES['Artybug'] = dict(stance='pistol', radius_fixed=30, height_fixed=52, melee=(56, 60),

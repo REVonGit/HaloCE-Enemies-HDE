@@ -292,7 +292,10 @@ def main():
                                           'addmenukey "Squad: order wheel (hold)" +hce_wheel\n'
                                           'addmenukey "Squad: open fire" hce_openfire\naddmenukey "Squad: hold fire" hce_holdfire\n'
                                           'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
-                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: press that button" hce_button\n')
+                                          'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: press that button" hce_button\n'
+                                          '\n// the bestiary on a key (Options > Customize Controls > Halo CE Bestiary)\n'
+                                          'addkeysection "Halo CE Bestiary" hce_bestiarykeys\n'
+                                          'addmenukey "Open the bestiary" hce_bestiary\n')
     # ---------------- factions
     md = open(f'{PACK}/modeldef.hce').read()
     blocks = {re.match(r'Model (\w+)', b).group(1): b for b in re.findall(r'Model \w+\n\{.*?\n\}\n', md, re.S)}

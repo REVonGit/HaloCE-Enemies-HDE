@@ -1975,6 +1975,7 @@ def bestiary_title(t):
     t = re.sub(r'^Marine Field Medic\b', 'Field Medic', t)
     t = re.sub(r'^Marine Medic\b', 'Corpsman', t)
     t = re.sub(r'^Marine Pilot\b', 'Pilot', t)
+    if t == 'Artybug': return 'Beetle'                    # the UNSC designation (the lore gives the Covenant one)
     return t.replace('Sgt ', 'Sergeant ')
 
 def bestiary_lump(classes, path):

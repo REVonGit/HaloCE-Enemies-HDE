@@ -6354,9 +6354,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		else
 		{
 			// a body with no death animation at all (Mercury Rising's Artybug): it stood dead in whatever pose it was
-			// in. Its idle, played once and held, and the body keels over onto its side instead
+			// in. Its idle, played once and held, and its legs give out instead: the hull sinks to the floor (floorclip
+			// draws it lower, the legs going into the ground) and settles a little lopsided
 			HCE_Play(HCE_A_IDLE, false, true, 3, true);     // once through, held on its last frame
-			hce_toppleTics = 18; hce_toppleDir = random(0, 1) ? 1 : -1;
+			hce_toppleTics = 14; hce_toppleDir = random(0, 1) ? 1 : -1;
 		}
 		HCE_StopFireLoop();
 		// no death cry from a body torn apart or shattered, a headshot kill, or one whose head came off
@@ -7713,12 +7714,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_corpseInit) HCE_SetUpCorpse();
 		if(hce_toppleTics > 0)
 		{
-			// the model turns about its feet: raised as it goes over so its far side doesn't sink through the floor
+			// the legs give out: the hull drops to the floor over 14 tics (eased in, a bump at the end), listing a
+			// little to one side and nose-down. To change the drop, edit the 0.42 (of its height).
 			hce_toppleTics--;
-			double r = 80 * (1 - hce_toppleTics / 18.0) ** 2;
-			A_SetRoll(hce_toppleDir * r, SPF_INTERPOLATE);
-			bNOGRAVITY = true; vel = (0, 0, 0);
-			SetZ(floorz + radius * 0.75 * sin(r));
+			double f = 1 - hce_toppleTics / 14.0;
+			double drop = height * 0.42 * (f < 0.85 ? (f / 0.85) ** 2 : 1 - 0.08 * sin((f - 0.85) / 0.15 * 180));
+			floorclip = max(0, drop);
+			A_SetRoll(hce_toppleDir * 9 * f, SPF_INTERPOLATE);
+			A_SetPitch(6 * f, SPF_INTERPOLATE);
+			vel = (0, 0, 0);
 		}
 		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
 		HCE_AirTick();

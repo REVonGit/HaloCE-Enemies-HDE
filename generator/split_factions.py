@@ -206,6 +206,8 @@ CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'O
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
                'hold position': 'HoldPosition', 'pressbutton': 'PressButton', 'press button': 'PressButton',
                'regroup': 'Regroup'}
+# the 'Medic N' takes the Chief uses when he is calling the corpsman for himself (the others name a Marine)
+CHIEF_MEDIC_SELF = {2, 3, 5}
 
 def main():
     """cut pack/ into OUTDIR/core and one OUTDIR/<faction> tree each (OUTDIR is wiped first). In order: every class
@@ -434,6 +436,12 @@ def main():
                 ids = [f'HCE/Chief/{key}/{i}' for i in range(len(files))]
                 out += [f'{sid} "{f}"' for sid, f in zip(ids, files)]
                 out.append(f'$random HCE/Chief/{key} {{ {" ".join(ids)} }}')
+                if key == 'Medic':
+                    # the Chief asking for a corpsman for himself (the order with his own feet in the crosshair): only
+                    # the takes that fit a man calling for his own aid (CHIEF_MEDIC_SELF, by the files' numbers)
+                    nums = [int(re.search(r'_(\d+)\.ogg$', f).group(1)) for f in files]
+                    own = [sid for sid, n in zip(ids, nums) if n in CHIEF_MEDIC_SELF]
+                    if own: out.append(f'$random HCE/Chief/MedicSelf {{ {" ".join(own)} }}')
             open(f'{d}/sndinfo.chief', 'w').write('\n'.join(out) + '\n')
         if fac in STEP_SETS and os.path.exists(f'{STEPS}/index.json'):
             # footsteps: HCE/Step/<set>/<surface>_<walk|run>, one a stride (HaloDoom_EnemyBase.HCE_StepTick)

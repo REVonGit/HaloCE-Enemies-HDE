@@ -646,7 +646,11 @@ class HCE_SpawnAllHandler : EventHandler
 			if(m.hce_enabled && m.health > 0 && m.HCE_InSquad() && !m.hce_betrayed && m.Distance3D(pl) <= 1536) squad.Push(m);
 		for(int i = 0; i < squad.Size(); i++) squad[i].hce_orderPlayer = pl;     // the player who gave the order leads them (co-op)
 		// on a channel of its own: the player's pain and landing grunts (CHAN_VOICE) don't cut the order off
-		if(line[o].Length() > 0) pl.A_StartSound(line[o], 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		// "medic" with his own feet in the crosshair (looking down 50 degrees or more at no Marine): the Chief is
+		// calling the corpsman for himself, in the takes that fit that (HCE/Chief/MedicSelf, split_factions.py)
+		bool ownAid = o == 7 && pl.pitch >= 50 && !LookedAtMarine(pl);
+		if(ownAid) pl.A_StartSound("HCE/Chief/MedicSelf", 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		else if(line[o].Length() > 0) pl.A_StartSound(line[o], 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
 		if(o <= 2)
 		{
 			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o);
@@ -689,10 +693,12 @@ class HCE_SpawnAllHandler : EventHandler
 		// the one closest to the player (the medic) or to the gun (the weapon)
 		if(o == 7)
 		{
-			let hurt = LookedAtMarine(pl);
+			Actor hurt = LookedAtMarine(pl);
+			if(!hurt && ownAid) hurt = pl;                                // the Chief himself
 			if(!hurt) return;
+			let hm = HaloDoom_EnemyBase(hurt);
 			// a corpsman in the crosshair patches himself up
-			if(hurt.hce_isMedic && !hurt.hce_medicFor) { hurt.HCE_MedicOrder(hurt); return; }
+			if(hm && hm.hce_isMedic && !hm.hce_medicFor) { hm.HCE_MedicOrder(hm); return; }
 			HaloDoom_EnemyBase best = null;
 			for(int i = 0; i < squad.Size(); i++)
 				if(squad[i].hce_isMedic && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];

@@ -1253,11 +1253,26 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// True if other is within hce_visionDist, inside the given field of view (360 = all round) and there is a clear
 	// line of sight ignoring visibility and water boundaries.
+	// Darkness shortens the view (not a Sentinel's): a target standing in a sector lit under 128 is seen from less
+	// far (30% of the range at 32 or darker, and in the dark under 112 never beyond 256 + 8 x the light: 384 units
+	// at 16), unless it is the target this unit saw within the last second or a player with the trigger down (the
+	// muzzle flash gives him away). To change the curve, edit HCE_SeeingRange.
+	double HCE_SeeingRange(Actor other)
+	{
+		if(HCE_IsSentinel() || !other.CurSector) return hce_visionDist;
+		if(other == target && level.maptime - hce_lastSeen < 35) return hce_visionDist;
+		if(other.player && (other.player.cmd.buttons & (BT_ATTACK | BT_ALTATTACK))) return hce_visionDist;
+		int ll = other.CurSector.lightlevel;
+		double r = hce_visionDist * clamp(0.3 + 0.7 * (ll - 32) / 96.0, 0.3, 1.0);
+		if(ll < 112) r = min(r, 256 + ll * 8);
+		return r;
+	}
+
 	bool HCE_SightOf(Actor other, double fov)
 	{
 		if(!other) return false;
 		double d = Distance3D(other);
-		if(d > hce_visionDist) return false;
+		if(d > HCE_SeeingRange(other)) return false;
 		if(fov < 360)
 		{
 			double rel = abs(DeltaAngle(angle, AngleTo(other)));
@@ -1433,6 +1448,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_leapState > 0) { HCE_LeapTick(); return; }
 		if(hce_jumpState > 0) { HCE_JumpTick(); return; }
 		if(hce_action != HCE_ACT_KAMIKAZE && HCE_GrenadeCheck()) return;
+		if(hce_action != HCE_ACT_KAMIKAZE && HCE_BarrelDanger()) return;
 		if(hce_nadeRunTics > 0) { HCE_NadeRunTick(); return; }
 		if(!hce_bondLooked) HCE_BondLink();
 		if(hce_button && HCE_ButtonTick()) return;
@@ -1677,6 +1693,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			return;
 		}
 		hce_pursuing = false;
+		HCE_BarrelScan();
 
 		if(HCE_TryLunge(d)) return;
 		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return;
@@ -1744,6 +1761,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
 			if(HCE_TryJump(toward, false)) return;
 		}
+		// Doom's pathing knows nothing of slime or of where its friends died: a step toward the last-known spot that
+		// would go into either is a reason to hold at the edge instead
+		double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
+		vector2 ahead = pos.xy + AngleToVector(toward, radius + 40);
+		if(HCE_HazardAt(ahead) || HCE_DangerStep(ahead)) { HCE_Hold(); return; }
 		double sp = speed;
 		speed = max(1, hce_runSpeed);
 		vector2 was = pos.xy;
@@ -2700,6 +2722,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				double pz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
 				if(!level.IsPointInLevel((p, pz + 1)) || abs(pz - pos.z) > MaxStepHeight * 2) continue;
 				if(GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - pz < height + 4) continue;
+				if(HCE_HazardAt(p)) continue;                                             // no cover in the slime
 				if(HCE_SightBlocked(pos + (0, 0, MaxStepHeight + 4), (p, pz + MaxStepHeight + 4))) continue;   // no straight way there
 				int side;
 				int k = HCE_CoverAt(p, pz, target, corner, low, side);
@@ -3020,6 +3043,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			double nd = (np - hce_holdPos.xy).Length();
 			if(nd > 192 && nd > held) return false;
 		}
+		if(HCE_HazardAt(np)) return false;                                  // lava, slime, a crusher
+		if(HCE_DangerStep(np)) return false;                                // where its friends have been dying
 		if(!TryMove(np, 0))
 		{
 			// already standing over a drop (a lift has carried him up with a foot over its edge): a step that keeps
@@ -3028,6 +3053,35 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		vel.xy = (0, 0);
 		return true;
+	}
+
+	// Hazards. A step that would put a walker into a damaging floor it isn't already in (lava, slime, nukage: the
+	// sector's damageamount), or under a crusher on its way down (or one with no room left under it), is refused
+	// like a wall: the steering fans out round it. Flyers are over all of it. Cover spots are checked the same way.
+	bool HCE_HazardAt(vector2 p)
+	{
+		if(bHCE_Flying) return false;
+		Sector sec = level.PointInSector(p);
+		if(!sec) return false;
+		if(sec.damageamount > 0 && !(CurSector && CurSector.damageamount > 0)) return true;
+		let c = Ceiling(sec.ceilingdata);
+		if(c && c.getCrush() > 0 && (c.getDirection() < 0 || sec.ceilingplane.ZAtPoint(p) - sec.floorplane.ZAtPoint(p) < height + 32)) return true;
+		return false;
+	}
+
+	// Danger zones (Halo's): where two or more of its team have died within 192 units of each other in the last
+	// minute (HCE_MissileTracker remembers every death), a hostile unit with an enemy on its mind won't step in
+	// unless it is already there: it holds at the edge, firing and lobbing grenades at a target inside (HCE_TryGrenade
+	// rolls twice as often), and looks for another way round through the steering fan. Marines (the player's) and
+	// units fleeing, dodging, berserk or on a kamikaze run go where they must. To change the zone, edit
+	// HCE_MissileTracker.DangerAt (two deaths, 192 units, 60 s).
+	bool HCE_DangerStep(vector2 np)
+	{
+		if(bFRIENDLY || !target || hce_action == HCE_ACT_FLEE || hce_action == HCE_ACT_KAMIKAZE || hce_berserk || hce_nadeRunTics > 0 || hce_diveTics > 0) return false;
+		let tr = HCE_MissileTracker.Get();
+		if(!tr || tr.dX.Size() == 0) return false;
+		if(tr.DangerAt(pos.xy, hce_team)) return false;                     // already in it: get out any way it can
+		return tr.DangerAt(np, hce_team);
 	}
 
 	// ------------------------------------------------------------------
@@ -5048,8 +5102,56 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Where to aim: the target's chest led by its velocity over the flight time (allies full lead, enemies half plus the
 	// difficulty's). Allies get it exactly; enemies get hce_aimPt chasing it at hce_enemytracking units a tic, reseeded
 	// with up to 64 + 4 units of error at the start of a burst (after 30 tics without a shot).
+	// Explosive barrels. In a fight a unit looks every half second for a barrel (an ExplosiveBarrel, or anything
+	// shootable with 'barrel' in its class name) within 128 of its target, 224 or more from itself, with no friend
+	// within 180 of it and a clear view, and puts its next two seconds of fire into the barrel instead (HCE_AimPoint).
+	// And a barrel within 160 of it that someone is shooting (it has lost health) sends it running clear for half a
+	// second, as a grenade would. To change the reaches, edit the numbers here.
+	Actor hce_barrel; int hce_barrelUntil, hce_barrelScanTic;
+	static bool HCE_IsBarrel(Actor o)
+	{
+		if(!o || o.bISMONSTER || o.player || !o.bSHOOTABLE || o.health <= 0) return false;
+		if(o is "ExplosiveBarrel") return true;
+		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
+		return cn.IndexOf("barrel") >= 0;
+	}
+	void HCE_BarrelScan()
+	{
+		if(!target || !hce_canSee || level.maptime < hce_barrelScanTic || hce_holdFire) return;
+		hce_barrelScanTic = level.maptime + 17;
+		if(hce_barrel && hce_barrel.health > 0 && level.maptime < hce_barrelUntil) return;
+		hce_barrel = null;
+		let it = BlockThingsIterator.Create(target, 128);
+		while(it.Next())
+		{
+			let b = it.thing;
+			if(!HCE_IsBarrel(b) || b.Distance2D(target) > 128 || Distance3D(b) < 224) continue;
+			if(HCE_FriendNear(b.pos, 180) || !CheckSight(b, SF_IGNOREVISIBILITY)) continue;
+			hce_barrel = b; hce_barrelUntil = level.maptime + 35 * 2;
+			return;
+		}
+	}
+	bool HCE_BarrelDanger()
+	{
+		if(bHCE_Flying || health <= 0 || hce_nadeRunTics > 0 || (level.maptime & 7) != 0) return false;
+		let it = BlockThingsIterator.Create(self, 160);
+		while(it.Next())
+		{
+			let b = it.thing;
+			if(!HCE_IsBarrel(b) || Distance3D(b) > 160 || b.health >= b.SpawnHealth()) continue;
+			vector3 aw = level.Vec3Diff(b.pos, pos);
+			hce_nadeRunAngle = HCE_OpenHeading(aw.xy.Length() > 1 ? atan2(aw.y, aw.x) : angle + 180);
+			hce_nadeRunTics = 18;
+			HCE_StopFireLoop(); hce_shotsLeft = 0;
+			return true;
+		}
+		return false;
+	}
+
 	vector3 HCE_AimPoint()
 	{
+		if(hce_barrel && hce_barrel.health > 0 && level.maptime < hce_barrelUntil && !bHCE_Beam)
+			return hce_barrel.pos + (0, 0, hce_barrel.height * 0.5);      // the barrel beside the target
 		double t = min(35.0, Distance3D(target) / max(4.0, hce_projSpeed));
 		double lead = bFRIENDLY ? hce_leadFraction : min(1.0, hce_leadFraction * 0.5 + HCE_D(HCE_D_LEADING));
 		vector3 want = target.pos + (0, 0, target.height * 0.55) + target.vel * t * lead;
@@ -5261,10 +5363,13 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(hce_grenadeType <= 0 || hce_grenades <= 0 || !hce_canSee || hce_holdFire) return false;
 		if(--hce_grenadeTics > 0) return false;
-		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group
-		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER));
+		// a roll every 6-10 s; Halo's throw chance is per decision, much rarer than per tic-group. A target standing
+		// where this unit's friends have been dying (a danger zone) gets them twice as often.
+		let tr = HCE_MissileTracker.Get();
+		bool zone = !bFRIENDLY && tr && tr.DangerAt(target.pos.xy, hce_team);
+		hce_grenadeTics = int(35 * frandom(6, 10) * HCE_GrenadeScale() * HCE_D(HCE_D_GRENADE_TIMER) * (zone ? 0.5 : 1.0));
 		if(dist < max(hce_grenadeMin, HCE_GrenadeSafeDist()) || dist > hce_grenadeMax) return false;
-		if(frandom(0, 1) > hce_grenadeChance * 0.45 * HCE_D(HCE_D_GRENADE_CHANCE)) return false;
+		if(frandom(0, 1) > hce_grenadeChance * 0.45 * HCE_D(HCE_D_GRENADE_CHANCE) * (zone ? 2.0 : 1.0)) return false;
 		if(!HCE_GrenadeArcClear()) { hce_grenadeTics = 35; return false; }   // low ceiling or a wall in the way: look again in a second
 		if(!HCE_GrenadeSafeAt(target.pos + target.vel * 20)) { hce_grenadeTics = 35; return false; }   // would land on us or a friend
 		hce_grenades--;
@@ -6131,6 +6236,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual void HCE_Die()
 	{
 		hce_diedAt = level.maptime;
+		{ let tr = HCE_MissileTracker.Get(); if(tr && hce_enabled) tr.AddDeath(pos.xy, hce_team); }   // the danger zones
 		HCE_UnitEngineSound(false);
 		if(hce_unitDeath.Length()) A_StartSound(hce_unitDeath, CHAN_AUTO, CHANF_OVERLAP, 1.0);
 		hce_burnDying = false; hce_bleedOut = 0;
@@ -7064,9 +7170,54 @@ class HaloDoom_EnemyBase : Actor abstract
 		return base + HCE_WeaponBias(k);
 	}
 
+	// Health on the ground: a Marine of the player's squad under half his health, with no enemy in his face, goes for
+	// a health item within 256 (Doom's Health items, HaloDoom Evolved's medical items: a stimpack, a medikit, a
+	// bonus) and takes it, the same errand as a gun (HCE_ScavengeTick with hce_scavHeal). A bonus heals a quarter of
+	// his health, a stimpack 60%, anything else all of it. To change the threshold, edit the 0.5.
+	bool hce_scavHeal;
+	static bool HCE_IsHealthItem(Actor o)
+	{
+		if(!o || !(o is "Inventory") || o.bNOINTERACTION || !o.bSPECIAL) return false;
+		if(o is "Health" || o is "HaloMedicalItem") return true;
+		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
+		return cn.IndexOf("medikit") >= 0 || cn.IndexOf("medkit") >= 0 || cn.IndexOf("stimpack") >= 0 || cn.IndexOf("healthbonus") >= 0;
+	}
+	void HCE_HealthScan()
+	{
+		if(!HCE_InSquad() || hce_sentinelAlly || hce_betrayed || hce_scavItem || hce_medicFor || health >= SpawnHealth() * 0.5) return;
+		if(target && hce_canSee && Distance3D(target) < 640) return;
+		Actor best = null; double bd = 256;
+		let it = BlockThingsIterator.Create(self, 256);
+		while(it.Next())
+		{
+			let o = it.thing;
+			if(!HCE_IsHealthItem(o)) continue;
+			double d = Distance3D(o);
+			if(d >= bd || abs(o.pos.z - pos.z) > 32 || !CheckSight(o, SF_IGNOREVISIBILITY)) continue;
+			bool taken = false;
+			let it2 = BlockThingsIterator.Create(o, 64);
+			while(it2.Next()) { let e = HaloDoom_EnemyBase(it2.thing); if(e && e != self && e.hce_scavItem == o) { taken = true; break; } }
+			if(taken) continue;
+			best = o; bd = d;
+		}
+		if(!best) return;
+		hce_scavItem = best; hce_scavHeal = true; hce_scavPhase = 0; hce_scavTics = 35 * 6;
+	}
+	void HCE_TakeHealth(Actor o)
+	{
+		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
+		double f = cn.IndexOf("bonus") >= 0 ? 0.25 : cn.IndexOf("stim") >= 0 ? 0.6 : 1.0;
+		GiveBody(max(1, int(SpawnHealth() * f)));
+		A_StartSound("misc/health_pkup", CHAN_ITEM);
+		hce_wounded = health < SpawnHealth() * 0.35;
+		o.Destroy();
+	}
+
 	// once a second: a better gun in sight nearby?
 	void HCE_ScavengeScan()
 	{
+		HCE_HealthScan();
+		if(hce_scavItem) return;
 		if(!HCE_HasLoadouts() || level.maptime < hce_scavCooldown || hce_projectile == 'None' || hce_dropWeapon == 'None'
 			|| hce_berserk || hce_sleeping || bHCE_Flying || bFRIENDLY != (hce_team == HCE_TEAM_HUMAN) || hce_betrayed) return;
 		if(hce_action != HCE_ACT_IDLE && hce_action != HCE_ACT_FOLLOW && hce_action != HCE_ACT_FIGHT && hce_action != HCE_ACT_SEARCH) return;
@@ -7099,10 +7250,10 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool HCE_ScavengeTick()
 	{
 		let o = hce_scavItem;
-		if(!o || health <= 0 || --hce_scavTics <= 0 || HCE_GroundWeaponClass(o) == 'None' || hce_projectile == 'None'
+		if(!o || health <= 0 || --hce_scavTics <= 0 || (hce_scavHeal ? !HCE_IsHealthItem(o) : (HCE_GroundWeaponClass(o) == 'None' || hce_projectile == 'None'))
 			|| (target && hce_canSee && Distance3D(target) < 256))
 		{
-			hce_scavItem = null; hce_scavCooldown = level.maptime + 35 * 4;
+			hce_scavItem = null; hce_scavHeal = false; hce_scavCooldown = level.maptime + 35 * 4;
 			return false;
 		}
 		double d = Distance2D(o);
@@ -7125,8 +7276,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		HCE_Brake();
 		if(hce_scavTics > 2) return true;
-		HCE_TakeWeapon(o);
-		hce_scavItem = null; hce_scavCooldown = level.maptime + 35 * 3;
+		if(hce_scavHeal) HCE_TakeHealth(o); else HCE_TakeWeapon(o);
+		hce_scavItem = null; hce_scavHeal = false; hce_scavCooldown = level.maptime + 35 * 3;
 		HCE_Play(HCE_A_IDLE, true, true);
 		return true;
 	}
@@ -8093,6 +8244,26 @@ class HCE_MissileTracker : EventHandler
 	Array<Actor> missiles;
 
 	static HCE_MissileTracker Get() { return HCE_MissileTracker(EventHandler.Find("HCE_MissileTracker")); }
+
+	// ---- the danger zones: where and when each unit died, and on which team (HaloDoom_EnemyBase.HCE_DangerStep)
+	Array<double> dX, dY; Array<int> dT, dTeam;
+	void AddDeath(vector2 p, int team)
+	{
+		dX.Push(p.x); dY.Push(p.y); dT.Push(level.maptime); dTeam.Push(team);
+		if(dX.Size() > 96) { dX.Delete(0); dY.Delete(0); dT.Delete(0); dTeam.Delete(0); }
+	}
+	// True when two or more of 'team' died within 192 of p in the last 60 s.
+	bool DangerAt(vector2 p, int team)
+	{
+		int n = 0;
+		for(int i = dX.Size() - 1; i >= 0; i--)
+		{
+			if(level.maptime - dT[i] > 35 * 60) break;
+			if(dTeam[i] != team) continue;
+			if(abs(dX[i] - p.x) < 192 && abs(dY[i] - p.y) < 192 && (p - (dX[i], dY[i])).Length() < 192 && ++n >= 2) return true;
+		}
+		return false;
+	}
 
 	// Registers every missile that spawns so the AI's dodging can find them (projectiles aren't in the blockmap).
 	override void WorldThingSpawned(WorldEvent e)

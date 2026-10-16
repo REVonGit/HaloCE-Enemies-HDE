@@ -73,11 +73,13 @@
 		{
 			let r = hce_rockets[i];
 			if(!r) { hce_rockets.Delete(i); continue; }
-			if(!r.bMISSILE) { r.A_Explode(int(28 * HCE_DamageScale()), 96, 0); hce_rockets.Delete(i); continue; }     // it hit: the burst
+			// it hit: the burst, unless a friend (an allied Enforcer's Marines, the player) stands in it
+			if(!r.bMISSILE) { if(!HCE_FriendNear(r.pos, 110)) r.A_Explode(int(28 * HCE_DamageScale()), 96, 0); hce_rockets.Delete(i); continue; }
 			if(r.tracer && r.tracer.health > 0) r.A_SeekerMissile(2, 3, SMF_PRECISE);
 		}
 		if(health <= 0 || !target || hce_dummy || level.maptime < hce_rocketNext) return;
 		if(!CheckSight(target) || Distance3D(target) < 192) return;
+		if(HCE_FriendNear(target.pos, 160)) return;                                  // its bursts would take a friend too
 		hce_rocketNext = level.maptime + 35 * random(6, 10);
 		A_StartSound("Halo/Weapons/LightRifle/Fire", CHAN_7, CHANF_OVERLAP, 1.0);
 		for(int i = 0; i < 4; i++)

@@ -71,14 +71,17 @@ def main():
         L_ids = (ix['bip01 l upperarm'], ix['bip01 l forearm'], ix['bip01 l hand'])
         bt, bq = mg.world(parents, [(j[2], j[3]) for j in joints])[R_ids[2]]
         in_hand = lambda p: hm.qrot(hm.qconj(bq), R @ p + t - bt)      # weapon-space point -> right-hand space
-        # the battle rifle: lowered in place, by what is still to go
-        dz = LOWER - meta.get('h2br_lowered', 0.0)
+        # the battle rifle: lowered in place, by what is still to go. Per animation: the json lists the ones already
+        # lowered ('h2br_lowered_names'; before it existed, all of them if 'h2br_lowered' is set), so an h2br animation
+        # another step remade since (low_ready_anims.py's low-idle / low-move) gets the whole drop and the rest none
+        h2br = sorted(k for k in anims if f' {STANCE} ' in f' {k} ')
+        done = set(meta['h2br_lowered_names']) if 'h2br_lowered_names' in meta else (set(h2br) if meta.get('h2br_lowered') else set())
         made = 0
-        if abs(dz) > 1e-6:
-            for n in sorted(k for k in anims if f' {STANCE} ' in f' {k} '):
-                anims[n] = repose(anims, n, parents, R_ids, L_ids, in_hand(left), dz); made += 1
-            meta['h2br_lowered'] = LOWER
-        print(char, made, STANCE, 'animations lowered by', round(dz, 4))
+        for n in h2br:
+            dz = LOWER if n not in done else LOWER - meta.get('h2br_lowered', 0.0)
+            if abs(dz) > 1e-6: anims[n] = repose(anims, n, parents, R_ids, L_ids, in_hand(left), dz); made += 1
+        meta['h2br_lowered'] = LOWER; meta['h2br_lowered_names'] = h2br
+        print(char, made, 'of', len(h2br), STANCE, 'animations lowered')
         # the Halo 2 ODSTs' stances: fresh from 'h2rifle'
         for st, (palm, bodies) in H2_GUNS.items():
             for k in [k for k in anims if f' {st} ' in f' {k} ']: anims.pop(k)

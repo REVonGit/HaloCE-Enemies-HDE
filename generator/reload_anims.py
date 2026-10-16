@@ -141,6 +141,7 @@ def add(char):
     new = h2_anims(model, path, cache, plan, joints)
     for k in [k for k in anims if any(s in k for s in MARK) and k.startswith('stand ')]: anims.pop(k)
     for k in [k for k in meta['anims'] if any(s in k for s in MARK) and k.startswith('stand ')]: meta['anims'].pop(k)
+    if 'h2br_lowered_names' in meta: meta['h2br_lowered_names'] = [n for n in meta['h2br_lowered_names'] if n in meta['anims']]   # remade ones: marine_h2_grips.py lowers them again
     anims.update(new)
     if 'ponytail1' in ' '.join(j[0] for j in joints) and char.startswith('Marine'):
         jn = [j[0] for j in joints].index('bip01 ponytail1')               # the Marine's jaw stays shut (extract_chars.py)

@@ -22,6 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from iqm import read_iqm, write_iqm
 import steps
+import halomodel as hm
 from h2_elite_anims import MAP08A, CACHE08A, MAP01B, CACHE01B, ELITE, MARINE
 from reload_anims import GRUNT, JACKAL
 try:
@@ -108,6 +109,42 @@ def h2_patrol(model, path, cache, plan, ce_joints):
     return res
 
 
+def regrip(char, joints, new):
+    """the Marines' gun stances (marine_grip.GUNS: h2smg, h2br, h2bulldog, h2plasma) take Halo 2's rifle patrol set as
+    it is, with the left hand where Halo 2's battle rifle put it: re-solved onto the gun the stance carries (its palm
+    target, the Bulldog's butt in the shoulder), per frame, as marine_grip.derive does for the combat set. In place"""
+    import marine_grip as mg
+    from marine_arsenal import hand_frame
+    R, t, _, _ = hand_frame(char)
+    names = [j[0] for j in joints]; parents = [j[1] for j in joints]
+    ix = {n: i for i, n in enumerate(names)}
+    R_ids = (ix['bip01 r upperarm'], ix['bip01 r forearm'], ix['bip01 r hand'])
+    L_ids = (ix['bip01 l upperarm'], ix['bip01 l forearm'], ix['bip01 l hand'])
+    rh = R_ids[2]
+    bt, bq = mg.world(parents, [(j[2], j[3]) for j in joints])[rh]
+    def in_hand(p): return hm.qrot(hm.qconj(bq), R @ p + t - bt)      # weapon-space point -> right-hand space
+    for k, (fr, mv, h2n) in new.items():
+        st = k.split()[1]
+        if st not in mg.GUNS: continue
+        left, butt = mg.GUNS[st]
+        lh_h = in_hand(left); butt_h = in_hand(butt) if butt is not None else None
+        for f in fr:
+            local = [(tuple(a), tuple(q)) for (a, q, s) in f]
+            W = mg.world(parents, local); ht, hq = W[rh]
+            if butt_h is not None:
+                ua = W[R_ids[0]][0]; chest = W[ix['bip01 spine1']][0]
+                pocket = ua + (chest - ua) * 0.25
+                butt_w = ht + hm.qrot(hq, butt_h)
+                fwd = hm.qrot(hq, in_hand(np.array([1.0, 0, 0])) - in_hand(np.zeros(3))); fwd /= np.linalg.norm(fwd)
+                delta = pocket - butt_w
+                delta = fwd * np.dot(delta, fwd) + (delta - fwd * np.dot(delta, fwd)) * 0.6
+                mg.solve_arm(W, local, parents, R_ids, ht + delta, hq)
+                W = mg.world(parents, local); ht, hq = W[rh]
+            lq = W[L_ids[2]][1]
+            mg.solve_arm(W, local, parents, L_ids, ht + hm.qrot(hq, lh_h) - hm.qrot(lq, mg.PALM), lq)
+            for i, (a, q) in enumerate(local): f[i] = (a, q, f[i][2])
+
+
 def add(char):
     """adds low-idle / low-move for every stance the body has in its table, replacing this script's earlier ones;
     low-move keeps its root speed for stride matching"""
@@ -120,8 +157,10 @@ def add(char):
     have = stances(meta)
     plan = {st: c for st, c in plan.items() if st in have}
     new = h2_patrol(model, path, cache, plan, joints)
+    if char.startswith('Marine'): regrip(char, joints, new)
     for k in [k for k in anims if k.endswith(MARK)]: anims.pop(k)
     for k in [k for k in meta['anims'] if k.endswith(MARK)]: meta['anims'].pop(k)
+    if 'h2br_lowered_names' in meta: meta['h2br_lowered_names'] = [n for n in meta['h2br_lowered_names'] if n in meta['anims']]   # remade ones: marine_h2_grips.py lowers them again
     jn = [j[0] for j in joints].index('bip01 ponytail1') if char.startswith('Marine') else -1
     for k, (fr, mv, h2n) in new.items():
         if jn >= 0:                              # the Marine's jaw stays shut (extract_chars.py)

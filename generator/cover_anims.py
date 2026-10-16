@@ -109,6 +109,7 @@ def add(char):
         new[k[:-5] + '-open'] = [new[k][-1], new[k][-1]]
     for k in [k for k in anims if k.startswith('stand ') and any(s in k for s in MARK)]: anims.pop(k)
     for k in [k for k in meta['anims'] if k.startswith('stand ') and any(s in k for s in MARK)]: meta['anims'].pop(k)
+    if 'h2br_lowered_names' in meta: meta['h2br_lowered_names'] = [n for n in meta['h2br_lowered_names'] if n in meta['anims']]   # remade ones: marine_h2_grips.py lowers them again
     anims.update(new)
     if 'ponytail1' in ' '.join(j[0] for j in joints) and char.startswith('Marine'):
         jn = [j[0] for j in joints].index('bip01 ponytail1')               # the Marine's jaw stays shut (extract_chars.py)

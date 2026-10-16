@@ -2164,6 +2164,10 @@ def build(cfg=None):
             else: w = 'pistol'
             A = AnimSet(meta); A.jackal = char.startswith('Jackal')
             table = anim_table(A, w, weapon)
+            # a stance the body has no animations for would fall through to the pistol set (a Marine holding a
+            # shotgun one-handed): the Halo 2 ODSTs' stances are made by marine_h2_grips.py after extract_odst.py
+            if w.startswith('h2') and not A.find(f'stand {w} idle'):
+                raise SystemExit(f"{cls}: {char} has no '{w}' animations (stance of {vname!r}); run marine_h2_grips.py after re-extracting the body")
             for k, names in list(ov.get('anims', {}).items()) + list(ov.get('anims_by_weapon', {}).get(weapon, {}).items()):
                 table[k] = [n for n in names if n in A.names]
             # speed: the run animation's own pace (map units a tic), the walk and low-ready walk from it; ov 'speed' overrides

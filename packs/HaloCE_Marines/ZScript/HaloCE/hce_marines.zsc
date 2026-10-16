@@ -200,7 +200,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
-	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body" || p == "charles_balaclava"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];
@@ -13281,7 +13281,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		return "";
 	}
 	static bool HCE_KitShell(String p) { return p == "helmet_tilted" || p == "helmet_hellbringer" || p == "odst_helmet_open" || p == "helmet_strapped"; }
-	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body"; }
+	static bool HCE_KitEnclosed(String p) { return p == "h2_odst_helmet" || p == "h2_odst_body" || p == "h2_pilot_smith" || p == "h2_pilot_banks" || p == "h2_pilot_dion" || p == "h2_pilot_morgan" || p == "h2_pilot_perez" || p == "h2_pilot_walter" || p == "helmet_closed" || p == "helmet_enclosed" || p == "odst_helmet" || p == "odst_helmet_shock" || p == "odst_helmet_filters" || p == "odst_helmet_shock_filters" || p == "mr_medic_body" || p == "mr_female_body" || p == "charles_balaclava"; }
 	static bool HCE_KitNeedsHelmet(String p) { return p == "helmet_strap_goggles"; }
 	virtual void HCE_KitOverride() {}
 	String hce_kit[9];

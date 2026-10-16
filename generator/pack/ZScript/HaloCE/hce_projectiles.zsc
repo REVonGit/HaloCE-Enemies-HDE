@@ -173,17 +173,6 @@ class HCE_EnforcerNeedle : HCE_HardlightCyan
 	}
 }
 
-class HCE_ExcavatorBolt : HaloPlasmaRifle_Proj
-{
-	mixin HCE_NerfMixin;
-	mixin HCE_LitePlasma;
-	mixin HCE_LitePlasmaSmoke;
-	Default
-	{
-		HaloProjectile.BaseDamage 12;
-	}
-}
-
 class HCE_Flame : HaloFlames
 {
 	Default

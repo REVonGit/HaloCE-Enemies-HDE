@@ -2705,6 +2705,7 @@ FIRE_CODE['beam rifle'] = 'csr'
 DROP_WEAPON['beam rifle'] = 'Halo_BeamRifle'
 DROP_WEAPON['plasma caster'] = 'Halo_PlasmaCaster'
 WEAPON_IDS[H2BEAM] = 'h2_beam_rifle'
+WEAPON_IDS[CASTER_REF] = 'plasma_caster'      # bodies with the Caster baked in (the Draeth) show that surface
 # Halo 2's beam rifle fires through the API now (HaloDoom_EnemyBase.HCE_FireBeamRifle, for anything carrying one)
 BEAMRIFLE_CODE = ''
 
@@ -2783,7 +2784,7 @@ MARINE_ARSENAL = {
     'beam rifle':       ('beam_rifle', 'rifle', 8, 30, 60, None, 0.3, 'Halo_BeamRifle'),
     'plasma caster':    ('plasma_caster', 'rifle', 4, 14, 20, None, 1.0, 'Halo_PlasmaCaster'),
     'plasma carbine':   ('carbine', 'rifle', 6, 26, 50, None, 0.6, 'Halo_Carbine'),
-    'spiker':           ('spiker', H2PISTOL_STANCE, 2, 12, 25, None, 2.0, 'Halo_Spiker'),
+    'spiker':           ('spiker', 'pistol', 2, 12, 25, None, 2.0, 'Halo_Spiker'),     # one-handed, as the Brutes hold it (Halo CE's pistol set)
     'marine pulse carbine': ('pulse_carbine', 'rifle', 4, 18, 35, None, 1.0, 'Halo_PulseCarbine'),
     'needle ballista':  ('needle_ballista', 'rifle', 6, 24, 45, None, 1.0, 'Halo_NeedlerJavelin'),
 }
@@ -3809,8 +3810,10 @@ def stacker_code(A, animtxt, char, meta, mdir):
 #  * the Artybug (Covenant): a big Covenant war beast with a plasma shotgun (ten plasma-rifle bolts a shot)
 #  * CMT's Geist (Covenant): a little Covenant drone with a plasma rifle, in the Lost Souls' place
 #  * the 1999 Elite (Digsite's 99_mac, as Mercury Rising fields it): the Draeth, a race of its own, the UNSC's
-#    Reavers. Minors and Majors with the plasma rifle and the needler, Commanders with the Excavator (a scatter gun
-#    of eight plasma bolts), cloaked or not
+#    Reavers, armed with every Covenant gun the Elites carry but the sword (extract_spv3.MAP_EXTRA_WEAPONS bakes the
+#    ones Mercury Rising's variants don't): Minors and Majors with the plasma rifle and the needler, Majors with the
+#    fuel rod, Commanders (cloaked or not) with the beam rifle, the Plasma Caster and the fuel rod. Mercury Rising's
+#    Excavator (its scatter gun) isn't used
 #  * the medic and the female Marine (Marines pack): whole bodies over the CE Marine (extract_mr_marines.py), so they
 #    fight with all the Marines have. The women speak with Halo 2's two female Marine voices; the field medics are
 #    corpsmen (they answer the "medic" order)
@@ -3830,17 +3833,24 @@ MR_SENTINEL_GUNS = {'sentinel artillery': (r'mercury\sentinel artillery', 1.0), 
 MR_ARTYBUG = r'characters\artybug\artybug'
 MR_GEIST = r'cmt\characters\geist\geist'
 MR_DRAETH = r'digsite\characters\elite\99_mac\elite_99'
-MR_EXCAVATOR = r'dw2\weapons\excavator\excavator'
 # Mercury Rising's variant (leaf) -> the pack's (the class name: HCE_Draeth...)
 MR_DRAETH_NAMES = {'elite minor plasma rifle': 'draeth minor plasma rifle', 'elite major plasma rifle': 'draeth major plasma rifle',
-                   'elite minor needler': 'draeth minor needler', 'elite commander excavator camo': 'draeth commander excavator camo'}
+                   'elite minor needler': 'draeth minor needler', 'elite commander excavator camo': 'draeth commander beam rifle camo'}
+# the Draeth classes the pack adds beyond Mercury Rising's: (name, the variant it is cut from, the gun's tag, the Elite
+# variant whose ranged_combat (ranges, bursts, rate of fire) it takes, or None to keep its own)
+MR_DRAETH_EXTRA = [('draeth major needler', 'draeth major plasma rifle', r'weapons\needler\needler', r'characters\elite\elite minor\elite minor needler'),
+                   ('draeth major fuel rod', 'draeth major plasma rifle', r'weapons\fuel rod gun\fuel rod', r'characters\elite\elite major\elite major fuel rod'),
+                   ('draeth commander beam rifle', None, None, None),          # the cloaked Commander without the cloak (below)
+                   ('draeth commander plasma caster', 'draeth commander beam rifle', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
+                   ('draeth commander plasma caster camo', 'draeth commander beam rifle camo', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
+                   ('draeth commander fuel rod', 'draeth commander beam rifle', r'weapons\fuel rod gun\fuel rod', r'characters\elite\elite major\elite major fuel rod')]
 MR_FEMALE_GUNS = ('assault rifle', 'battle rifle', 'ma37', 'smg', 'magnum', 'shotgun', 'sniper', 'dmr')   # the women's classes (HCE_MarineFemale<Gun>)
 MR_MEDIC_GUNS = ('magnum', 'smg')     # the field medics' (HCE_MarineFieldMedic<Gun>)
 MR_CHARS = []                         # the Mercury Rising characters whose models exist (add_mercury fills it)
 # their DoomEdNum order (late_order): the Sentinels, the beasts, the Draeth, then the Marines
 MR_ORDER = (['HCE_SentinelArtillery', 'HCE_SentinelBrute', 'HCE_SentinelCanoneer', 'HCE_SentinelCompiler', 'HCE_SentinelOmega',
              'HCE_SentinelScout', 'HCE_Artybug', 'HCE_Geist']
-            + [cname(n) for n in MR_DRAETH_NAMES.values()] + ['HCE_DraethMajorNeedler', 'HCE_DraethCommanderExcavator', 'HCE_RandomDraeth']
+            + [cname(n) for n in MR_DRAETH_NAMES.values()] + [cname(n) for n, _, _, _ in MR_DRAETH_EXTRA] + ['HCE_RandomDraeth']
             + [cname(f'marine female {g}') for g in MR_FEMALE_GUNS] + [cname(f'marine field medic {g}') for g in MR_MEDIC_GUNS])
 
 # the Brute Sentinel's second gun: Mercury Rising's brute_gun fires the beam and, on its other trigger, the Artillery's shell
@@ -3906,12 +3916,6 @@ WEAPONS['plasma shotgun'] = ('HCE_PlasmaShotgunBolt', 'HaloPlasmaRifle_Proj', 13
 PATTERNS['plasma shotgun'] = (1, 2, 16, 1.4, 2.2, 0, False, 1.75, 0.1)
 FIRE_SOUNDS['plasma shotgun'] = FIRE_SOUNDS['plasma rifle']
 FIRE_CODE['plasma shotgun'] = 'pp'
-# the Draeth Commander's Excavator: eight plasma bolts in a 3-degree cone, 1.5 a second
-WEAPONS['excavator'] = ('HCE_ExcavatorBolt', 'HaloPlasmaRifle_Proj', 12, 0.9)
-PATTERNS['excavator'] = (1, 1, 1, 1.0, 1.6, 0, False, 0.5, 0.1)
-FIRE_SOUNDS['excavator'] = (W + 'PlasmaPistol/Fire/Charged', W + 'PlasmaRifle/Fire/Bass', '', '', False)
-FIRE_CODE['excavator'] = 'pp'
-WEAPON_IDS[MR_EXCAVATOR] = 'excavator'
 
 # the medic's and the women's bodies: hide the CE Marine (every body surface) and wear the whole body at the kit's
 # head slot (model 1; no kit is rolled for them)
@@ -3997,20 +4001,31 @@ def add_mercury(ai):
         v['_ov'] = dict(drops=False)
     # the Draeth
     if body(MR_DRAETH, 'Draeth', 'COVENANT'):
+        D = 'characters\\draeth\\'
         for leaf, name in MR_DRAETH_NAMES.items():
             src = next((v for k, v in mv.items() if k.split('\\')[-1] == leaf), None)
             if src is None: continue
-            v = variant(src, rf'characters\draeth\{name}')
-            if 'excavator' in name: v['ranged_combat']['rate_of_fire'] = 1.5; v['_ov'] = dict(pellets=8, spread=3.5)
-            if 'major plasma rifle' in name:       # a Major with the needler too (Mercury Rising has only Minors carry it)
-                n = variant(v, r'characters\draeth\draeth major needler', r'weapons\needler\needler')
-                n['ranged_combat'].update({k: mv[r'characters\elite\elite minor\elite minor needler']['ranged_combat'][k]
-                                           for k in ('rate_of_fire', 'burst_geometry', 'combat_range_lower_bound', 'combat_range_upper_bound')}
-                                          if r'characters\elite\elite minor\elite minor needler' in mv else {})
-            if name.endswith('camo'):              # and the Commander without the cloak, his shield up instead
-                c = variant(v, r'characters\draeth\draeth commander excavator')
-                c['flags'] = v['flags'] & ~0x30
-                c['unit'] = dict(v['unit'], maximum_body_vitality=100.0, maximum_shield_vitality=200.0)
+            v = variant(src, D + name)
+            if 'beam rifle' in name:
+                # the cloaked Commander: Mercury Rising's Excavator traded for Halo 2's beam rifle, the Spec Ops
+                # Elite's ranges and bursts (add_beam_rifle_specops), and a shield like a Major's under the cloak
+                v['ranged_combat']['reference'] = H2BEAM_REF
+                sp = ai['variants'].get(r'characters\elite\elite specops\elite specops beam rifle')
+                if sp: v['ranged_combat'] = dict(copy.deepcopy(sp['ranged_combat']), reference=H2BEAM_REF)
+        # the Draeth the pack adds: the Elites' other guns (MR_DRAETH_EXTRA), their ranges and bursts the Elites' own
+        for name, src_name, ref, elite in MR_DRAETH_EXTRA:
+            if name == 'draeth commander beam rifle':
+                b = ai['variants'].get(D + 'draeth commander beam rifle camo')
+                if not b: continue
+                c = variant(b, D + name)                # the Commander without the cloak, his shield up instead
+                c['flags'] = b['flags'] & ~0x30
+                c['unit'] = dict(b['unit'], maximum_body_vitality=100.0, maximum_shield_vitality=200.0)
+                continue
+            src = ai['variants'].get(D + src_name)
+            if not src: continue
+            n = variant(src, D + name, ref)
+            e = ai['variants'].get(elite) or mv.get(elite)
+            if e: n['ranged_combat'] = dict(copy.deepcopy(e['ranged_combat']), reference=ref)
     # the medic and the female Marines, on the CE Marine
     for gun in MR_FEMALE_GUNS:
         src = ai['variants'].get(f'characters\\marine\\marine {gun}')

@@ -398,6 +398,11 @@ def build_cov_extras():
     ms = _rot(ms, np.eye(3) * 0.85, (0, -P[:, 1].mean() * 0.85, 0.052 - P[:, 2].mean() * 0.85))
     save_pkl('m_fuel_rod', ms, 'fuel_rod (levelled)')
 
+# a gun whose model origin isn't its grip, moved onto it for the Marines' hands (weapon space): the Spiker's origin
+# is its knuckle guard at the rear, so the Marine held the guard and the gun trailed behind his hand; the Covenant's
+# bakes (the Brute, the Jackal, the Drone: their own hand markers) hold it as it is
+OVERLAY_OFFSET = {'spiker': (-0.045, 0.0, 0.01)}
+
 def overlays():
     """one overlay model per Marine body per weapon: the weapon on the gun hand's bone, on the body's own skeleton
     (build_pack.py attaches it as model 6, where it moves with the body like the blood overlays)"""
@@ -416,7 +421,7 @@ def overlays():
             for k, m in enumerate(d['meshes']):
                 n = len(m['pos'])
                 bidx = np.zeros((n, 4), np.uint8); bw = np.zeros((n, 4), np.uint8); bidx[:, 0] = jn; bw[:, 0] = 255
-                ms.append(dict(name=f'{wid}_{k}', material=m['material'], pos=m['pos'] @ R.T + t, nrm=m['nrm'] @ R.T,
+                ms.append(dict(name=f'{wid}_{k}', material=m['material'], pos=(m['pos'] + np.array(OVERLAY_OFFSET.get(name, (0, 0, 0)))) @ R.T + t, nrm=m['nrm'] @ R.T,
                                uv=m['uv'], bidx=bidx, bw=bw, tris=m['tris']))
                 shutil.copy(f'{OUT}/weapons/{wid}/{m["material"]}', f'{od}/{m["material"]}')
             fn = f'{char}_w_{name}.iqm'

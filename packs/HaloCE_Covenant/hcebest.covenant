@@ -1,7 +1,7 @@
 // the Halo CE enemies bestiary (hce_bestiary.zsc)
 E	HCE_Artybug	Covenant	Artybug	Beetle	HU00	Artybug	30509	-
-E	HCE_DraethCommanderExcavator	Covenant	Draeth (Reaver)	Draeth Commander	HU0D	DraethCommander,Draeth	30516	Excavator
-E	HCE_DraethMajorNeedler	Covenant	Draeth (Reaver)	Draeth Major	HU0F	Draeth	30515	Needler, Plasma Rifle
+E	HCE_DraethCommanderBeamRifle	Covenant	Draeth (Reaver)	Draeth Commander	-	DraethCommander,Draeth	30528	Beam Rifle, Fuel Rod, Plasma Caster
+E	HCE_DraethMajorFuelRod	Covenant	Draeth (Reaver)	Draeth Major	HU0F	Draeth	30516	Fuel Rod, Needler, Plasma Rifle
 E	HCE_DraethMinorNeedler	Covenant	Draeth (Reaver)	Draeth Minor	HU0H	Draeth	30513	Needler, Plasma Rifle
 E	HCE_EliteCommanderEnergySword	Covenant	Elite	Elite Commander	HU0W	EliteCommander,Elite	30205	Energy Sword, Plasma Rifle
 E	HCE_EliteHeavyFuelRod	Covenant	Elite	Elite Heavy	HU10	EliteHeavy,Elite	30322	Fuel Rod, Needler, Plasma Rifle
@@ -26,8 +26,8 @@ E	HCE_GruntSpecopsFuelRod	Covenant	Spec Ops Grunt	Grunt Spec Ops	HU3B	Grunt,Grun
 E	HCE_StealthElitePlasmaRifle	Covenant	Stealth Elite	Stealth Elite	HU7J	StealthElite,EliteSpecial	30211	Plasma Rifle
 E	HCE_StealthEliteMajorEnergySword	Covenant	Stealth Elite	Stealth Elite Major	HU7H	StealthElite,EliteSpecial	30209	Energy Sword, Plasma Rifle
 L	Artybug	Karo'et-pattern Siege Crawler. UNSC designation: Beetle. A Covenant war beast, a purple-shelled walker spiked with red armour plates, with a plasma cannon at its front that fires a spray of bolts like a shotgun. It takes a great deal of punishment, and it will rush anything that gets close.
-L	Draeth	A warrior race of the Covenant, kin to the Sangheili in build and bearing, in an older style of armour. UNSC troops who met them called them Reavers. They fight like Elites, behind a recharging shield, with plasma rifles and needlers, and their color tells their rank: blue Minors, red Majors.
-L	DraethCommander	A Draeth commander in white, carrying an Excavator, a short-ranged scatter gun that throws a fistful of plasma bolts at once. Many go into battle under active camouflage, trading their shield for the cloak; watch for the shimmer and the burst of bolts that gives them away.
+L	Draeth	A warrior race of the Covenant, kin to the Sangheili in build and bearing, in an older style of armour. UNSC troops who met them called them Reavers. They fight like Elites, behind a recharging shield, with the Covenant's guns: plasma rifles and needlers, and fuel rod cannons in the hands of Majors. Their color tells their rank: blue Minors, red Majors.
+L	DraethCommander	A Draeth commander in white. Commanders carry the Covenant's heavier arms: a beam rifle for the long shot, a Plasma Caster that lobs clusters of plasma over cover, or a fuel rod cannon. Many go into battle under active camouflage, trading their shield for the cloak; watch for the shimmer.
 L	Elite	Sangheili. The Covenant's warrior caste and its field officers: tall, fast, and protected by a recharging energy shield. They command the lesser races, roll out of grenade blasts, and fall back to let their shields return before pressing again. Their armor color tells their rank.
 L	EliteCommander	A gold-armored Commander, veteran of many campaigns. Commanders lead from the front and favor the energy sword.
 L	EliteHeavy	A green-armored Elite trusted with heavier weapons, the fuel rod among them. Heavies sit between Majors and Commanders in rank.

@@ -63,6 +63,9 @@ MAP_PREFIX = {'mr1': 'mercury\\', 'mr2': 'mercury\\'}
 # into $HCE_OUT/weapons/<id>) so they are baked into the hand like Halo CE's: the Draeth Commander's Excavator (a
 # Covenant scatter gun, Mercury Rising's dw2\weapons\excavator)
 MAP_WEAPONS = {'mr1': {r'dw2\weapons\excavator\excavator': 'excavator'}}
+# guns baked into a map's biped beyond the ones its variants carry (the pack's own variants arm it with them): the
+# Draeth take every Covenant gun the Elites do but the sword (build_pack.add_mercury)
+MAP_EXTRA_WEAPONS = {'mr1': {r'digsite\characters\elite\99_mac\elite_99': ['fuel_rod', 'h2_beam_rifle', 'plasma_caster']}}
 # variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed:
 # {tag name prefix: replacement prefix}, the first match wins (variant_key)
 VARIANT_KEYS = {
@@ -99,7 +102,7 @@ def run(only=None):
         if only and not any(c in only for c in chars.values()) and 'FloodSounds' not in only: continue
         keep = gore_kit.SPV3_BITMAPS
         if key in MAP_BITMAPS: gore_kit.SPV3_BITMAPS = MAP_BITMAPS[key]
-        try: sub = run_map(path, chars, only, MAP_PREFIX.get(key, ''), MAP_WEAPONS.get(key, {}))
+        try: sub = run_map(path, chars, only, MAP_PREFIX.get(key, ''), MAP_WEAPONS.get(key, {}), MAP_EXTRA_WEAPONS.get(key, {}))
         finally: gore_kit.SPV3_BITMAPS = keep
         for k in ai: ai[k].update(sub[k])
     json.dump(ai, open(f'{OUT}/spv3_ai.json', 'w'), indent=1, default=str)
@@ -137,7 +140,7 @@ def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
 ec.bitmap_image = pc_bitmap_image
 
 
-def run_map(MAP, CHARS, only=None, prefix='', weapons=None):
+def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None):
     """one PC map: its own guns (weapons: {weapon tag: id}) into out/weapons, each biped of CHARS ({tag: pack id})
     through extract_chars.extract (geometry read as gbxmodel), then the AI dump of every variant whose name or
     biped matches CHARS, keyed prefix + variant_key(name). Returns the AI dict in extract_ai.py's layout."""
@@ -158,6 +161,8 @@ def run_map(MAP, CHARS, only=None, prefix='', weapons=None):
         ref = (v.get('ranged_combat') or {}).get('reference') or ''
         w = WEAPONS.get(WEAPON_REFS.get(ref, ref))
         if w and os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'): carried.setdefault(v['unit_reference'], set()).add(w)
+    for unit, ws in (extra or {}).items():
+        carried.setdefault(unit, set()).update(w for w in ws if os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'))
     ec.char_weapons = lambda name: sorted(carried.get(name, ()))
     try:
         for name, pid in CHARS.items():

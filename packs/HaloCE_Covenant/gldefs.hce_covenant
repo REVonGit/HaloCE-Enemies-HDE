@@ -19,7 +19,19 @@ brightmap texture "models/hce/Artybug/skins/artybug_artybug_3.png"
 {
 	map "models/hce/Artybug/Artybug_3_bm.png"
 }
-brightmap texture "models/hce/Draeth/skins/draethcommanderexcavator_draeth_0.png"
+brightmap texture "models/hce/Draeth/skins/draethcommanderbeamrifle_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethcommanderfuelrod_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethcommanderplasmacaster_draeth_0.png"
+{
+	map "models/hce/Draeth/Draeth_0_bm.png"
+}
+brightmap texture "models/hce/Draeth/skins/draethmajorfuelrod_draeth_0.png"
 {
 	map "models/hce/Draeth/Draeth_0_bm.png"
 }
@@ -1319,7 +1331,12 @@ brightmap texture "models/hce/EliteKit/ek_elite_jetpack.png"
 {
 	map "models/hce/EliteKit/ek_elite_jetpack_bm.png"
 }
-HardwareShader Texture "models/hce/Draeth/skins/draethcommanderexcavatorcamo_draeth_0.png"
+HardwareShader Texture "models/hce/Draeth/skins/draethcommanderbeamriflecamo_draeth_0.png"
+{
+	Shader "shaders/hce_camo.fp"
+	Speed 1.0
+}
+HardwareShader Texture "models/hce/Draeth/skins/draethcommanderplasmacastercamo_draeth_0.png"
 {
 	Shader "shaders/hce_camo.fp"
 	Speed 1.0

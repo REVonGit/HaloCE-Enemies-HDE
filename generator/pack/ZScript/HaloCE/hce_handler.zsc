@@ -56,9 +56,9 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteMinorUnarmed*2 HCE_FloodcombatEliteMajorUnarmed*1 HCE_FloodcombatEliteShotgun*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteCommanderEnergySword*1",
 		// Spectre (invisible): Stealth Elites, stealth Flood Elites, sword-wielding Stealth Majors, cloaked Draeth Commanders
 		"Spectre",
-			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1 HCE_DraethCommanderExcavatorCamo*1",
-			"HCE_StealthElitePlasmaRifle*4 HCE_StealthEliteMajorPlasmaRifle*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorEnergySword*1 HCE_DraethCommanderExcavatorCamo*1",
-			"HCE_StealthElitePlasmaRifle*3 HCE_StealthEliteMajorPlasmaRifle*3 HCE_StealthEliteMajorEnergySword*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_DraethCommanderExcavatorCamo*2",
+			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1 HCE_DraethCommanderBeamRifleCamo*1",
+			"HCE_StealthElitePlasmaRifle*4 HCE_StealthEliteMajorPlasmaRifle*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorEnergySword*1 HCE_DraethCommanderBeamRifleCamo*1",
+			"HCE_StealthElitePlasmaRifle*3 HCE_StealthEliteMajorPlasmaRifle*3 HCE_StealthEliteMajorEnergySword*2 HCE_FloodcombatEliteStealthUnarmed*2 HCE_DraethCommanderBeamRifleCamo*1 HCE_DraethCommanderPlasmaCasterCamo*1",
 		// Lost Soul (flying kamikaze): the Covenant's Geists (Mercury Rising's little strafing drones) most of all, Halo 2's
 		// Constructors (darting, welding drones) and infection forms, now and then the XAM Flood Grunt (it bursts into more of
 		// them); before the Flood is out, the Geists and Constructors alone
@@ -74,7 +74,7 @@ class HCE_ReplaceHandler : EventHandler
 		"HellKnight",
 			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*1 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_DraethMinorPlasmaRifle*1",
 			"HCE_EliteMinorPlasmaRifle*4 HCE_EliteMinorNeedler*2 HCE_EliteMinorPlasmaRifleRanged*2 HCE_JackalUltraPlasmaRifle*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteMajorPlasmaRifle*1 HCE_EliteHeavyPlasmaRifle*1 HCE_SentinelKnightMinorLightRifle*1 HCE_SentinelKnightMinorSuppressor*1 HCE_SentinelKnightMinorScattershot*1 HCE_SentinelKnightMajorLightRifle*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1",
-			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_DraethCommanderExcavator*1",
+			"HCE_EliteMinorPlasmaRifle*3 HCE_EliteMinorNeedler*2 HCE_EliteMajorPlasmaRifle*2 HCE_JackalUltraPlasmaRifle*2 HCE_EliteMajorNeedler*1 HCE_GruntSpecopsFuelRod*1 HCE_EliteHeavyPlasmaRifle*1 HCE_EliteHeavyNeedler*1 HCE_EliteHeavyFuelRod*1 HCE_SentinelKnightMajorLightRifle*1 HCE_SentinelKnightMajorScattershot*1 HCE_SentinelKnightMajorBinaryRifle*1 HCE_SentinelKnightCommanderSuppressor*1 HCE_DraethMajorPlasmaRifle*1 HCE_DraethMajorNeedler*1 HCE_DraethCommanderBeamRifle*1 HCE_DraethCommanderFuelRod*1 HCE_DraethMajorFuelRod*1",
 		// Baron (E1M8 boss): Major Elite stand-ins (1.5x health), and on normal and hard now and then the Flood Juggernaut
 		"BaronOfHell",
 			"HCE_BossBaronEliteMajorPlasmaRifle*3 HCE_BossBaronEliteMajorNeedler*1",

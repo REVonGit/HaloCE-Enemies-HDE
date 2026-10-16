@@ -117,8 +117,10 @@ def main():
     alist = [dict(name=n, fps=30.0, loop=True, frames=[[(tuple(t), tuple(q), tuple(s)) for t, q, s in fr] for fr in MA[n]])
              for n in sorted(MA)]
     meta['iqm_bytes'] = write_iqm(f'{d}/{PID}.iqm', [(n, p, tuple(t), tuple(q), tuple(s)) for n, p, t, q, s in MJ], M, alist)
-    # the Marine's animations, overlays and hand frame
-    for k in ('anims', 'arsenal', 'hand_frame', 'markers', 'collision_height', 'collision_radius'):
+    # the Marine's animations, overlays and hand frame -- with the record of what the Marine's post-extraction steps
+    # did to them ('steps': lib/steps.py; 'h2br_lowered': marine_h2_grips.py), since the animations come over as they
+    # are: without it the ODST's battle rifle was lowered a second time
+    for k in ('anims', 'arsenal', 'hand_frame', 'markers', 'collision_height', 'collision_radius', 'steps', 'h2br_lowered'):
         if k in mmeta: meta[k] = mmeta[k]
     meta['mesh_weapon'] = [None] * len(M)
     for a in (mmeta.get('arsenal') or {}).values():

@@ -1,15 +1,14 @@
 """Marine dialogue from Halo CE and Halo 2: one voice set per Marine, for the Marines' random voices.
 
     python3 extract_marine_voices.py                 # -> voice_extra/Marine_<Name>/<Category> N.ogg
-    python3 extract_marine_voices.py Marine_Sassy    # only the sets named (the others' files and report lines stay)
+    python3 extract_marine_voices.py Marine_Perez    # only the sets named (the others' files and report lines stay)
 
 * Halo CE: sound\\dialog\\marines\\<name>\\conditional\\combat2\\* (aussie, bisenti, fitzgerald, mendoza) and
   sound\\dialog\\sargeant\\* (Sergeant Johnson) / sound\\dialog\\sarge2\\* (the second sergeant) from the Xbox
   campaign maps (HCE_MAPS), Xbox ADPCM -> Vorbis.
 * Halo 2: sound\\dialog\\combat\\marine_* and sgt_* from 01b_spacestation.map + sounds_en.dat (HCE_H2_MAP /
-  HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson, and the women's voices,
-  marine_sassy and marine_tough (Halo 2's marine_female biped uses those two): the female Marines' (Mercury Rising's
-  body, extract_mr_marines.py) and theirs alone.
+  HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson (the women's voices,
+  marine_sassy and marine_tough, aren't used).
 Halo CE's and Halo 2's Aussie and Johnson are the same men, so each pair becomes one set. The categories are
 build_voices.py's (Alert, Taunt, Pain Nrml ...); a set without one borrows a related event there (FALLBACK).
 """
@@ -44,8 +43,6 @@ VOICES = {
     'Marine_Timid':       (None, 'marine_timid'),
     'Marine_SgtCautious': (None, 'sgt_cautious'),
     'Marine_SgtGruff':    (None, 'sgt_gruff'),
-    'Marine_Sassy':       (None, 'marine_sassy'),
-    'Marine_Tough':       (None, 'marine_tough'),
 }
 # category -> (Halo CE combat2 tags <group>\<name>, Halo 2 tag leaves): up to PER_SOURCE (PER_CAT) lines from each
 # game, in this order. To add a category, add it here and in build_voices.py's CAT.

@@ -40,7 +40,7 @@ MAPS = {
     'soi': (os.environ.get('HCE_SOI_C20', 'c20.map'),
             {r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}),
     # aLTis's Mercury Rising (Steam Workshop 3021510694): its Sentinel variants, the Artybug and the 1999 Elite (the
-    # Draeth) from mercury_falling; CMT's Geist, the Marine medic and the female Marine from mercury2. Its textures are in
+    # Draeth) from mercury_falling; CMT's Geist and the Marine medic from mercury2. Its textures are in
     # the mod's own bitmaps.map (HCE_MR_BITMAPS: the file or the stem of its .001 ... pieces)
     'mr1': (os.environ.get('HCE_MR_MAP1', 'mercury_falling.map'),
             {r'characters\sentinel\variants\artillery\artillery': 'SentinelArtillery',
@@ -53,8 +53,7 @@ MAPS = {
              r'digsite\characters\elite\99_mac\elite_99': 'Draeth'}),
     'mr2': (os.environ.get('HCE_MR_MAP2', 'mercury2.map'),
             {r'cmt\characters\geist\geist': 'Geist',
-             r'characters\medic\medic': 'MarineMedic',
-             r'characters\civilian\female\civilian_female': 'MarineFemale'}),
+             r'characters\medic\medic': 'MarineMedic'}),
 }
 # maps whose textures sit in a bitmaps.map of their own, and the prefix their variant keys get (clear of Halo CE's own)
 MAP_BITMAPS = {'mr1': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'), 'mr2': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map')}

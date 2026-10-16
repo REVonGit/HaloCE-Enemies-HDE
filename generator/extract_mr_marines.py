@@ -1,19 +1,16 @@
-"""Mercury Rising's medic and female Marine -> $HCE_OUT/models/MarineKit/mr_medic_body.iqm and mr_female_body.iqm
+"""Mercury Rising's medic -> $HCE_OUT/models/MarineKit/mr_medic_body.iqm
 
-    python3 extract_mr_marines.py          # after extract_spv3.py MarineMedic MarineFemale and extract_marine_kit.py
+    python3 extract_mr_marines.py          # after extract_spv3.py MarineMedic and extract_marine_kit.py
 
-Both bodies come from aLTis's Mercury Rising (Steam Workshop 3021510694; extract_spv3.py reads them from its maps into
-out/models/MarineMedic and out/models/MarineFemale). Their skeletons are the Halo CE Marine's 20 bones, name for name,
-so each is written as one Marine kit piece on the CE Marine's own skeleton (like the Halo 2 ODST's whole body,
-extract_h2_odst.py): build_pack.py hides the Marine and wears the piece instead, so it plays every Marine animation,
-holds every gun of the arsenal and fights with everything the Marines have.
-  * the medic's bind pose is the Marine's: its vertices stay where they are
-  * the female Marine's skeleton is her own (a little shorter, narrower shoulders, her own clavicle and neck turns):
-    each vertex is carried from her bone's bind pose to the CE bone's (h2rig.retarget), blended by its weights, so
-    she animates on the Marine's skeleton without tearing
-Their armour is painted white with Halo's change-colour mask (the multipurpose map's blue): it takes the Marines'
-olive drab here, the way the CE Marines' own textures are coloured. The pieces go into MarineKit.json as whole bodies
-(no outfit or slot rolls them).
+The body comes from aLTis's Mercury Rising (Steam Workshop 3021510694; extract_spv3.py reads it from its map into
+out/models/MarineMedic). Its skeleton is the Halo CE Marine's 20 bones, name for name, so it is written as one Marine
+kit piece on the CE Marine's own skeleton (like the Halo 2 ODST's whole body, extract_h2_odst.py): build_pack.py hides
+the Marine and wears the piece instead, so it plays every Marine animation, holds every gun of the arsenal and fights
+with everything the Marines have. The medic's bind pose is the Marine's: its vertices stay where they are (a body on
+its own skeleton would be carried bone to bone by h2rig.retarget, as BODIES documents).
+Its armour is painted white with Halo's change-colour mask (the multipurpose map's blue): it takes the Marines'
+olive drab here, the way the CE Marines' own textures are coloured. The piece goes into MarineKit.json as a whole body
+(no outfit or slot rolls it).
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))
@@ -30,7 +27,7 @@ except Exception:
     OUT = os.path.join(HERE, 'out')
 KIT = f'{OUT}/models/MarineKit'
 # kit piece id -> extract_spv3.py pack id
-BODIES = {'mr_medic_body': 'MarineMedic', 'mr_female_body': 'MarineFemale'}
+BODIES = {'mr_medic_body': 'MarineMedic'}      # Mercury Rising's female Marine isn't used
 OLIVE = np.array([0.50, 0.55, 0.38])      # the change colour: the CE Marines' olive drab (their armour's mean colour, lifted)
 
 

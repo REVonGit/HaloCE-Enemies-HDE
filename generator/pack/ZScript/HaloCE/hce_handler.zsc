@@ -1005,13 +1005,12 @@ class HCE_Encounters : EventHandler
 {
 	Array<HCE_Encounter> enc;
 
-	// the fire team's make-up: mostly riflemen (men and women), a heavier gun or two, now and then a field medic (looked up at run time; missing ones are skipped)
+	// the fire team's make-up: mostly riflemen, a heavier gun or two, now and then a field medic (looked up at run time; missing ones are skipped)
 	// Each man is one draw from this list, so a class listed twice turns up twice as often; add or repeat entries to
 	// change the mix. A class that isn't loaded falls back to the rifleman.
 	static const Name TEAM[] = { 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifleMajor',
 		'HCE_MarineBattleRifle', 'HCE_MarineShotgun', 'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMedicAssaultRifle',
-		'HCE_MarineSniper', 'HCE_MarineRocketLauncher', 'HCE_MarineFemaleAssaultRifle', 'HCE_MarineFemaleAssaultRifle',
-		'HCE_MarineFemaleBattleRifle', 'HCE_MarineFemaleSmg', 'HCE_MarineFieldMedicMagnum' };
+		'HCE_MarineSniper', 'HCE_MarineRocketLauncher', 'HCE_MarineFieldMedicMagnum' };
 
 	// no encounter in a secret sector, a damaging one, or one under 72 units tall at its centre
 	static bool BadSector(Sector s) { return !s || s.IsSecret() || s.damageamount > 0 || s.ceilingplane.ZatPoint(s.centerspot) - s.floorplane.ZatPoint(s.centerspot) < 72; }

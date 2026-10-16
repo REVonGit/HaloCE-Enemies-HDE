@@ -1971,7 +1971,6 @@ def bestiary_title(t):
     t = t.replace('Combat Form: Elite Stealth Unarmed', 'Combat Form: Stealth Elite')
     t = {'Floodcarrier': 'Carrier Form', 'Flood Infection': 'Infection Form', 'Flood Grunt': 'Combat Form: Grunt'}.get(t, t)
     t = re.sub(r'^Grunt Flee (\w+)$', r'Grunt \1 (Skittish)', t)
-    t = re.sub(r'^Marine Female\b', 'Female Marine', t)
     t = re.sub(r'^Marine Field Medic\b', 'Field Medic', t)
     t = re.sub(r'^Marine Medic\b', 'Corpsman', t)
     t = re.sub(r'^Marine Pilot\b', 'Pilot', t)
@@ -2960,8 +2959,7 @@ PILOT_CODE = """
 # calls it in; some seconds later a fire team of three Marines comes up from behind him, out of the enemy's sight,
 # and joins in (Marines are allies: they fall in with the squad like any other). Once per operator.
 RADIO_TEAM = ('HCE_MarineAssaultRifle', 'HCE_MarineAssaultRifle', 'HCE_MarineBattleRifle', 'HCE_MarineShotgun',
-              'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMa37', 'HCE_MarineFemaleAssaultRifle',
-              'HCE_MarineFemaleBattleRifle')
+              'HCE_MarineSmg', 'HCE_MarineArmoredAssaultRifle', 'HCE_MarineMa37')
 RADIO_CODE = """
 	// the radio operator: the radio pack always, and one call for a fire team per fight
 	override void HCE_KitOverride()
@@ -3818,9 +3816,8 @@ def stacker_code(A, animtxt, char, meta, mdir):
 #    ones Mercury Rising's variants don't): Minors and Majors with the plasma rifle and the needler, Majors with the
 #    fuel rod, Commanders (cloaked or not) with the beam rifle, the Plasma Caster and the fuel rod. Mercury Rising's
 #    Excavator (its scatter gun) isn't used
-#  * the medic and the female Marine (Marines pack): whole bodies over the CE Marine (extract_mr_marines.py), so they
-#    fight with all the Marines have. The women speak with Halo 2's two female Marine voices; the field medics are
-#    corpsmen (they answer the "medic" order)
+#  * the medic (Marines pack): a whole body over the CE Marine (extract_mr_marines.py), so he fights with all the
+#    Marines have; the field medics are corpsmen (they answer the "medic" order). Mercury Rising's female Marine isn't used
 MR = 'mercury\\'
 MR_SENTINELS = {r'characters\sentinel\variants\artillery\artillery': ('SentinelArtillery', 'sentinel artillery'),
                 r'characters\sentinel\variants\brute\brute': ('SentinelBrute', 'sentinel brute'),
@@ -3848,14 +3845,13 @@ MR_DRAETH_EXTRA = [('draeth major needler', 'draeth major plasma rifle', r'weapo
                    ('draeth commander plasma caster', 'draeth commander beam rifle', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
                    ('draeth commander plasma caster camo', 'draeth commander beam rifle camo', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
                    ('draeth commander fuel rod', 'draeth commander beam rifle', r'weapons\fuel rod gun\fuel rod', r'characters\elite\elite major\elite major fuel rod')]
-MR_FEMALE_GUNS = ('assault rifle', 'battle rifle', 'ma37', 'smg', 'magnum', 'shotgun', 'sniper', 'dmr')   # the women's classes (HCE_MarineFemale<Gun>)
 MR_MEDIC_GUNS = ('magnum', 'smg')     # the field medics' (HCE_MarineFieldMedic<Gun>)
 MR_CHARS = []                         # the Mercury Rising characters whose models exist (add_mercury fills it)
 # their DoomEdNum order (late_order): the Sentinels, the beasts, the Draeth, then the Marines
 MR_ORDER = (['HCE_SentinelArtillery', 'HCE_SentinelBrute', 'HCE_SentinelCanoneer', 'HCE_SentinelCompiler', 'HCE_SentinelOmega',
              'HCE_SentinelScout', 'HCE_Artybug', 'HCE_Geist']
             + [cname(n) for n in MR_DRAETH_NAMES.values()] + [cname(n) for n, _, _, _ in MR_DRAETH_EXTRA] + ['HCE_RandomDraeth']
-            + [cname(f'marine female {g}') for g in MR_FEMALE_GUNS] + [cname(f'marine field medic {g}') for g in MR_MEDIC_GUNS])
+            + [cname(f'marine field medic {g}') for g in MR_MEDIC_GUNS])
 
 # the Brute Sentinel's second gun: Mercury Rising's brute_gun fires the beam and, on its other trigger, the Artillery's shell
 MR_BRUTE_CODE = """
@@ -3941,14 +3937,6 @@ MR_BODY_CODE = """
 		HCE_ResumeAnim();
 	}
 """
-# her 'bip01 ponytail1' is her ponytail, not a jaw: the Marines' lip-sync (lip.zs) is undone every tic
-MR_FEMALE_CODE = MR_BODY_CODE % ('a female Marine', '', 'mr_female_body') + """
-	override void Tick()
-	{
-		super.Tick();
-		SetNamedBoneRotation('bip01 ponytail1', Quat(0, 0, 0, 1), SB_ADD, 0);
-	}
-"""
 MR_MEDIC_CODE = MR_BODY_CODE % ('a field medic: a corpsman who answers "medic" (HCE_MedicOrder)', '\t\thce_isMedic = true;\n', 'mr_medic_body')
 
 
@@ -4030,17 +4018,7 @@ def add_mercury(ai):
             n = variant(src, D + name, ref)
             e = ai['variants'].get(elite) or mv.get(elite)
             if e: n['ranged_combat'] = dict(copy.deepcopy(e['ranged_combat']), reference=ref)
-    # the medic and the female Marines, on the CE Marine
-    for gun in MR_FEMALE_GUNS:
-        src = ai['variants'].get(f'characters\\marine\\marine {gun}')
-        if not src or not os.path.exists(f'{MARINE_KIT}/mr_female_body.iqm'): continue
-        v = copy.deepcopy(src); v['_late'] = True
-        ov = dict(v.get('_ov') or {})
-        ov['code'] = ov.get('code', '') + MR_FEMALE_CODE
-        ov['voices'] = 'Marine_Sassy,Marine_Tough'
-        ov.setdefault('skin_as', cname(f'marine {gun}'))
-        v['_ov'] = ov
-        ai['variants'][f'characters\\marine\\marine female {gun}'] = v
+    # the medic, on the CE Marine
     for gun in MR_MEDIC_GUNS:
         src = ai['variants'].get(f'characters\\marine\\marine {gun}')
         if not src or not os.path.exists(f'{MARINE_KIT}/mr_medic_body.iqm'): continue
@@ -4087,7 +4065,7 @@ if 'Draeth' in MR_CHARS:
     BASE_CODE['Draeth'] = BASE_CODE.get('Draeth', '') + "\toverride Name HCE_StepSet() { return 'reaver'; }    // the Reavers' own steps\n"
     HEAD_CLEAR['Draeth'] = HEAD_CLEAR['Elite']
     BESTIARY_GROUP['Draeth'] = 'Draeth (Reaver)'
-BESTIARY_RANK_GROUP += (('MarineFemale', 'Female Marine'), ('MarineFieldMedic', 'Field Medic'))
+BESTIARY_RANK_GROUP += (('MarineFieldMedic', 'Field Medic'),)
 MAIN['late_chars'] = MAIN['late_chars'] + [c for c in MR_CHARS if c not in NO_RANDOM]
 MAIN['late_order'] = MAIN['late_order'] + MR_ORDER
 

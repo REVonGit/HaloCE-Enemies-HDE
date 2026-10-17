@@ -213,6 +213,66 @@ Model HCE_DraethMinorPlasmaRifle
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_DraethZealotBeamRifle
+{
+	Path "models/hce/Draeth"
+	Model 0 "Draeth.iqm"
+	SurfaceSkin 0 0 "skins/draethzealotbeamrifle_draeth_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "w_h2_beam_rifle_0.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DraethZealotFuelRod
+{
+	Path "models/hce/Draeth"
+	Model 0 "Draeth.iqm"
+	SurfaceSkin 0 0 "skins/draethzealotfuelrod_draeth_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "w_fuel_rod_0.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "hce_hidden.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_DraethZealotPlasmaCaster
+{
+	Path "models/hce/Draeth"
+	Model 0 "Draeth.iqm"
+	SurfaceSkin 0 0 "skins/draethzealotplasmacaster_draeth_0.png"
+	Path "models/hce/weapons"
+	SurfaceSkin 0 1 "hce_hidden.png"
+	SurfaceSkin 0 2 "hce_hidden.png"
+	SurfaceSkin 0 3 "hce_hidden.png"
+	SurfaceSkin 0 4 "hce_hidden.png"
+	SurfaceSkin 0 5 "hce_hidden.png"
+	SurfaceSkin 0 6 "w_plasma_caster_0.png"
+	SurfaceSkin 0 7 "hce_hidden.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_EliteCommanderEnergySword
 {
 	Path "models/hce/Elite"

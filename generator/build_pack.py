@@ -340,7 +340,8 @@ PINS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ednum_pins
 def pin_ednums(ednums):
     """[(DoomEdNum, class)] as the build numbered them -> the same list with every class in ednum_pins.json on its
     shipped number and the rest moved off any number a pin holds, sorted by number. To pin a new release's numbers,
-    add its classes to ednum_pins.json"""
+    add its classes to ednum_pins.json. A class taken out of the pack keeps its entry, renamed '<class> (retired)',
+    so its number stays reserved: deleting the entry freed the number and the next unpinned classes slid onto it"""
     pins = json.load(open(PINS_PATH)) if os.path.exists(PINS_PATH) else {}
     used = set(pins.values())
     out = []
@@ -2034,9 +2035,10 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    for step, chars in [('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
-        for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}')
+        for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]
     if problems:
         raise SystemExit('models out of date (a body re-extracted without its steps re-run):\n  ' + '\n  '.join(problems))
@@ -2173,6 +2175,9 @@ def build(cfg=None):
             elif (char.startswith('Grunt') or char.startswith('Elite')) and weapon and 'fuel rod' in weapon: w = 'missle'
             elif char.startswith('Elite') and weapon == 'energy sword': w = 'sword'
             elif char.startswith('Elite') and weapon == 'beam rifle': w = 'rifle'
+            # the Draeth: Halo 2's Elite fuel-rod and rifle stances (draeth_stances.py) for its two-handed guns, else its own pistol stance
+            elif char == 'Draeth' and weapon and 'fuel rod' in weapon: w = 'missle'
+            elif char == 'Draeth' and weapon in ('beam rifle', 'plasma caster', 'plasma carbine', 'carbine'): w = 'rifle'
             elif char.startswith('Flood'): w = 'pistol' if weapon else 'unarmed'
             elif char.startswith('Marine') and weapon == 'plasma rifle': w = 'h2plasma'      # Halo 2's rifle stance, the left hand under the gun (marine_plasma_grip.py)
             elif char.startswith('Marine'): w = 'pistol' if weapon in ('pistol', 'needler', 'plasma pistol') else 'rifle'
@@ -3861,12 +3866,17 @@ MR_DRAETH_EXTRA = [('draeth major needler', 'draeth major plasma rifle', r'weapo
                    ('draeth commander plasma caster', 'draeth commander beam rifle', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
                    ('draeth commander plasma caster camo', 'draeth commander beam rifle camo', r'hde\plasma caster', r'characters\elite\elite specops\elite specops plasma caster'),
                    ('draeth commander fuel rod', 'draeth commander beam rifle', r'weapons\fuel rod gun\fuel rod', r'characters\elite\elite major\elite major fuel rod')]
+# the Draeth Zealots, gold, above the Commanders: (name, the gun's tag), each cut from the Commander with that gun
+MR_DRAETH_ZEALOT = [('draeth zealot beam rifle', H2BEAM_REF), ('draeth zealot plasma caster', r'hde\plasma caster'),
+                    ('draeth zealot fuel rod', r'weapons\fuel rod gun\fuel rod')]
+MR_ZEALOT_VITALITY = (120.0, 300.0)   # body, shield (the Commander: 100, 200; the Elites' Ultra Zealot: 130, 400)
+MR_ZEALOT_GOLD = (1.00, 0.78, 0.22)  # the Elite Commander's vivid gold (variants.VIVID)
 MR_MEDIC_GUNS = ('magnum', 'smg')     # the field medics' (HCE_MarineFieldMedic<Gun>)
 MR_CHARS = []                         # the Mercury Rising characters whose models exist (add_mercury fills it)
 # their DoomEdNum order (late_order): the Sentinels, the beasts, the Draeth, then the Marines
 MR_ORDER = (['HCE_SentinelArtillery', 'HCE_SentinelBrute', 'HCE_SentinelCanoneer', 'HCE_SentinelCompiler', 'HCE_SentinelOmega',
              'HCE_SentinelScout', 'HCE_Artybug', 'HCE_Geist']
-            + [cname(n) for n in MR_DRAETH_NAMES.values()] + [cname(n) for n, _, _, _ in MR_DRAETH_EXTRA] + ['HCE_RandomDraeth']
+            + [cname(n) for n in MR_DRAETH_NAMES.values()] + [cname(n) for n, _, _, _ in MR_DRAETH_EXTRA] + [cname(n) for n, _ in MR_DRAETH_ZEALOT] + ['HCE_RandomDraeth']
             + [cname(f'marine field medic {g}') for g in MR_MEDIC_GUNS])
 
 # the Brute Sentinel's second gun: Mercury Rising's brute_gun fires the beam and, on its other trigger, the Artillery's shell
@@ -4034,6 +4044,21 @@ def add_mercury(ai):
             n = variant(src, D + name, ref)
             e = ai['variants'].get(elite) or mv.get(elite)
             if e: n['ranged_combat'] = dict(copy.deepcopy(e['ranged_combat']), reference=ref)
+        # only the high ranks wear energy shields: the Minors and Majors fight on their body alone
+        # (the 'shield' override: a variant's 0 means 'the collision model's' to build(), as in Halo's tags)
+        for k, v in ai['variants'].items():
+            if k.startswith(D) and (' minor ' in k or ' major ' in k):
+                v['_ov'] = dict(v.get('_ov') or {}, shield=0)
+        # the Zealots (MR_DRAETH_ZEALOT): a gold rank above the Commanders, cut from the uncloaked Commander with the
+        # Commanders' guns, tougher and with a stronger shield
+        b = ai['variants'].get(D + 'draeth commander beam rifle')
+        if b:
+            for name, ref in MR_DRAETH_ZEALOT:
+                src = ai['variants'].get(D + name.replace('zealot', 'commander'))
+                if not src: continue
+                z = variant(src, D + name, ref)
+                z['unit'] = dict(src['unit'], maximum_body_vitality=MR_ZEALOT_VITALITY[0], maximum_shield_vitality=MR_ZEALOT_VITALITY[1])
+                z['change_colors_list'] = [dict(color_lower_bound=list(MR_ZEALOT_GOLD), color_upper_bound=list(MR_ZEALOT_GOLD))]
     # the medic, on the CE Marine
     for gun in MR_MEDIC_GUNS:
         src = ai['variants'].get(f'characters\\marine\\marine {gun}')

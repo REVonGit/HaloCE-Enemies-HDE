@@ -1361,7 +1361,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			HCE_PlayLocked(behind ? HCE_A_SURPRISE_B : HCE_A_SURPRISE_F, 0.8);
 			if(bHCE_Panics && random(0, 2) == 0) HCE_StartPanic();
 		}
-		else if(HCE_HasAnim(HCE_A_WARN) && random(0, 3) == 0)
+		else if(target && HCE_HasAnim(HCE_A_WARN) && random(0, 3) == 0)     // target: the See state's first tic can drop it
 		{
 			A_SetAngle(AngleTo(target));
 			HCE_PlayLocked(HCE_A_WARN, 0.6);
@@ -6207,7 +6207,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		target = source; hce_lastKnown = source.pos;
 		hce_combatUntil = max(hce_combatUntil, level.maptime + 35 * 8);
 		if(health > 0 && InStateSequence(CurState, ResolveState("Spawn"))) { hce_action = HCE_ACT_FIGHT; SetStateLabel("See"); }
-		if(fresh) HCE_OnAcquire();
+		if(fresh && target) HCE_OnAcquire();       // the See state's first action can drop the target again (notarget, a dead shooter)
 	}
 
 	// Elites: when the energy shield pops they reel in a hard ping for its full length

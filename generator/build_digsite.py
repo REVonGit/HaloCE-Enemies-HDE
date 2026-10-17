@@ -1205,3 +1205,4 @@ if __name__ == '__main__':
     bp.check_steps({c: json.load(open(f'{bp.OUT}/models/{c}/{c}.json')) for c in ('Brute', 'H2Jackal')
                     if os.path.exists(f'{bp.OUT}/models/{c}/{c}.json')})
     build()
+    bp.cap_skins(PACK)

@@ -51,6 +51,7 @@ CHARS = {
     'Marine': (MARINE, MAP01B, CACHE01B, MARINE_ST), 'MarineArmored': (MARINE, MAP01B, CACHE01B, MARINE_ST),
     'Elite': (ELITE, MAP08A, CACHE08A, ELITE_ST), 'EliteSpecial': (ELITE, MAP08A, CACHE08A, ELITE_ST),
     'EliteRifle': (ELITE, MAP08A, CACHE08A, ELITE_ST),
+    'Draeth': (ELITE, MAP08A, CACHE08A, ELITE_ST),     # the 1999 Elite: the Elite's biped, bones by name
     'Grunt': (GRUNT, MAP08A, CACHE08A, GRUNT_ST), 'GruntSpecOps': (GRUNT, MAP08A, CACHE08A, GRUNT_ST),
     'Jackal': (JACKAL, MAP08A, CACHE08A, JACKAL_ST), 'JackalMajor': (JACKAL, MAP08A, CACHE08A, JACKAL_ST),
     'H2Jackal': (JACKAL, MAP08A, CACHE08A, JACKAL_ST),

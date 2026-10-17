@@ -861,7 +861,8 @@ def anim_table(A, w, weapon):
     fires = [n for n in A.names if n.endswith('baked') and 'fire-' in n]
     pick = [n for n in fires if f' {w} ' in n and f' {code} ' in n] or [n for n in fires if f' {w} ' in n] or fires
     m['FIRE'] = pick[:1]
-    m['MELEE'] = f(f'stand {w} melee', 'stand pistol melee', 'stand unarmed melee')
+    # Halo CE's Marines have no melee animation in either stance: Halo 2's rifle / pistol melee (the h2 sets' butt strike)
+    m['MELEE'] = f(f'stand {w} melee', f'stand h2{w} melee', 'stand pistol melee', 'stand unarmed melee')
     m['THROW'] = f(f'stand {w} throw-grenade', 'stand pistol throw-grenade', 'stand rifle throw-grenade')
     for k, n in [('DIVE_L', 'dive-left'), ('DIVE_R', 'dive-right'), ('DIVE_F', 'dive-front'),
                  ('EVADE_L', 'evade-left'), ('EVADE_R', 'evade-right'), ('SURPRISE_F', 'surprise-front'),
@@ -4086,8 +4087,31 @@ MAIN['late_order'] = MAIN['late_order'] + MR_ORDER
 
 MAIN_WEAPONS |= set(WEAPONS)
 
+# Texture size: body and armour skins are capped at SKIN_CAP px (the Draeth's, the Flood's and a few more came at 1024:
+# at Doom's distances 512 reads the same and loads faster). Weapons, faces, visors and cube maps keep their size
+SKIN_CAP = 512
+SKIN_CAP_KEEP = ('face', 'visor', 'cube', 'glass', 'lens')       # file-name parts left at full size
+
+def cap_skins(root):
+    """every model texture under root/models wider or taller than SKIN_CAP shrunk to fit it (aspect kept), but those
+    in a weapons folder or named with a SKIN_CAP_KEEP part; prints what it changed"""
+    n = saved = 0
+    for p in glob.glob(f'{root}/models/**/*.png', recursive=True):
+        rel = os.path.relpath(p, root).lower()
+        if '/weapons/' in rel or any(k in os.path.basename(rel) for k in SKIN_CAP_KEEP): continue
+        with Image.open(p) as im:
+            im.load()
+            if max(im.size) <= SKIN_CAP: continue
+            k = SKIN_CAP / max(im.size)
+            before = os.path.getsize(p)
+            im.resize((max(1, round(im.width * k)), max(1, round(im.height * k))), Image.LANCZOS).save(p, optimize=True)
+        n += 1; saved += before - os.path.getsize(p)
+    if n: print(f'skins capped at {SKIN_CAP}px: {n} textures, {saved // 1024} KB smaller')
+
+
 if __name__ == '__main__':
     build()
+    cap_skins(PACK)
     # editor icons are taken by udb_icons.py from the built packs; a class added since has none until it is run again
     written = set(re.findall(r'\nclass (HCE_\w+)', open(f'{PACK}/ZScript/HaloCE/hce_enemies.zsc').read()))
     noicon = [c for c, _, _, _, spr in BESTIARY if not spr and c in written and not c.startswith('HCE_Variant')]

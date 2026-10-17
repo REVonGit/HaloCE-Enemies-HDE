@@ -967,6 +967,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1092,6 +1093,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1217,6 +1219,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1279,6 +1282,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1341,6 +1345,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1403,6 +1408,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1588,6 +1594,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1650,6 +1657,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1712,6 +1720,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1774,6 +1783,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1898,6 +1908,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -1960,6 +1971,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -2022,6 +2034,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -2208,6 +2221,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -2395,6 +2409,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -2520,6 +2535,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -2844,6 +2860,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 		case 'stand h2plasma turn-left': return 16;
 		case 'stand h2plasma turn-right': return 16;
 		case 'stand h2plasma warn': return 51;
+		case 'stand h2rifle melee': return 23;
 		case 'stand h2smg airborne': return 55;
 		case 'stand h2smg berserk': return 51;
 		case 'stand h2smg celebrate': return 72;
@@ -3017,6 +3034,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -3096,6 +3114,7 @@ class HCE_MarineAssaultRifle : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -3238,6 +3257,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -3317,6 +3337,7 @@ class HCE_MarineAssaultRifleMajor : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -3900,6 +3921,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -3979,6 +4001,7 @@ class HCE_MarineCommando : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -4119,6 +4142,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -4198,6 +4222,7 @@ class HCE_MarineDmr : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -4338,6 +4363,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -4417,6 +4443,7 @@ class HCE_MarineDoubleBarrel : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -5258,6 +5285,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -5337,6 +5365,7 @@ class HCE_MarineGpmg : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -5477,6 +5506,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -5556,6 +5586,7 @@ class HCE_MarineGrenadeLauncher : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -5696,6 +5727,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -5775,6 +5807,7 @@ class HCE_MarineHydra : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -5918,6 +5951,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -5997,6 +6031,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -6589,6 +6624,7 @@ class HCE_MarineMedicAssaultRifle : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -6668,6 +6704,7 @@ class HCE_MarineMedicAssaultRifle : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -6817,6 +6854,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -6896,6 +6934,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -7274,6 +7313,7 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -7353,6 +7393,7 @@ class HCE_MarineMedicShotgun : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -7728,6 +7769,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -7806,6 +7848,7 @@ class HCE_MarineNeedler : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2pistol melee': return 28;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand pistol airborne': return 93;
@@ -8622,6 +8665,7 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -8701,6 +8745,7 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -9115,6 +9160,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -9194,6 +9240,7 @@ class HCE_MarineShotgun : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -9777,6 +9824,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -9856,6 +9904,7 @@ class HCE_MarineSniper : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -10253,6 +10302,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -10332,6 +10382,7 @@ class HCE_SgtJohnson : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -10724,6 +10775,7 @@ class HCE_SgtStacker : HCE_MarineBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -10803,6 +10855,7 @@ class HCE_SgtStacker : HCE_MarineBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -12162,6 +12215,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12287,6 +12341,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12412,6 +12467,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12474,6 +12530,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12536,6 +12593,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12598,6 +12656,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12783,6 +12842,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12845,6 +12905,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12907,6 +12968,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -12969,6 +13031,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13093,6 +13156,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13155,6 +13219,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13217,6 +13282,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13403,6 +13469,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13590,6 +13657,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -13715,6 +13783,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -14039,6 +14108,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 		case 'stand h2plasma turn-left': return 16;
 		case 'stand h2plasma turn-right': return 16;
 		case 'stand h2plasma warn': return 51;
+		case 'stand h2rifle melee': return 23;
 		case 'stand h2smg airborne': return 55;
 		case 'stand h2smg berserk': return 51;
 		case 'stand h2smg celebrate': return 72;
@@ -14212,6 +14282,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -14291,6 +14362,7 @@ class HCE_MarineArmoredAssaultRifle : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -14433,6 +14505,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -14512,6 +14585,7 @@ class HCE_MarineArmoredAssaultRifleMajor : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -15095,6 +15169,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -15174,6 +15249,7 @@ class HCE_MarineArmoredCommando : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -15314,6 +15390,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -15393,6 +15470,7 @@ class HCE_MarineArmoredDmr : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -15533,6 +15611,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -15612,6 +15691,7 @@ class HCE_MarineArmoredDoubleBarrel : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -15974,6 +16054,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -16053,6 +16134,7 @@ class HCE_MarineArmoredGpmg : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -16193,6 +16275,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -16272,6 +16355,7 @@ class HCE_MarineArmoredGrenadeLauncher : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -16412,6 +16496,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -16491,6 +16576,7 @@ class HCE_MarineArmoredHydra : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -16634,6 +16720,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -16713,6 +16800,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -17076,6 +17164,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_IDLE: return 'crouch pistol idle';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand pistol hp fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2pistol melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -17154,6 +17243,7 @@ class HCE_MarineArmoredNeedler : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2pistol melee': return 28;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand pistol airborne': return 93;
@@ -17949,6 +18039,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -18028,6 +18119,7 @@ class HCE_MarineArmoredShotgunMajor : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -18611,6 +18703,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -18690,6 +18783,7 @@ class HCE_MarineArmoredSniper : HCE_MarineArmoredBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -19406,6 +19500,7 @@ class HCE_MarineODSTBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -19530,6 +19625,7 @@ class HCE_MarineODSTBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -19592,6 +19688,7 @@ class HCE_MarineODSTBase : HaloDoom_EnemyBase abstract
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -19716,6 +19813,7 @@ class HCE_MarineODSTBase : HaloDoom_EnemyBase abstract
 		case 'stand h2missile throw-grenade': return 66;
 		case 'stand h2missile turn-left': return 16;
 		case 'stand h2missile turn-right': return 16;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand missle hoist': return 34;
@@ -19840,6 +19938,7 @@ class HCE_MarineOdstAssaultRifle : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -19919,6 +20018,7 @@ class HCE_MarineOdstAssaultRifle : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -20061,6 +20161,7 @@ class HCE_MarineOdstAssaultRifleMajor : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -20140,6 +20241,7 @@ class HCE_MarineOdstAssaultRifleMajor : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -20519,6 +20621,7 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -20598,6 +20701,7 @@ class HCE_MarineOdstEnclosedHelmet : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -21713,6 +21817,7 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -21792,6 +21897,7 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -21934,6 +22040,7 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -22013,6 +22120,7 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -22378,6 +22486,7 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -22457,6 +22566,7 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -22836,6 +22946,7 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle sg fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -22915,6 +23026,7 @@ class HCE_MarineOdstShotgun : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;
@@ -23058,6 +23170,7 @@ class HCE_MarineOdstSniper : HCE_MarineODSTBase
 		case HCE_A_CROUCH_MOVE: return 'crouch rifle move-front';
 		case HCE_A_FLEE: return 'flee rifle move-front';
 		case HCE_A_FIRE: return 'stand rifle ar fire-1 baked';
+		case HCE_A_MELEE: return 'stand h2rifle melee';
 		case HCE_A_THROW: return 'stand rifle throw-grenade';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
@@ -23137,6 +23250,7 @@ class HCE_MarineOdstSniper : HCE_MarineODSTBase
 		case 's-ping front gut%0 baked': return 12;
 		case 's-ping front gut%1 baked': return 12;
 		case 'stand airborne-dead': return 43;
+		case 'stand h2rifle melee': return 23;
 		case 'stand landing-dead': return 43;
 		case 'stand landing-dead%2': return 66;
 		case 'stand rifle airborne': return 92;

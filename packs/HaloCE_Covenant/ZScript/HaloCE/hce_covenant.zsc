@@ -435,6 +435,23 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -482,6 +499,23 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -529,6 +563,24 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -576,6 +628,23 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -613,25 +682,43 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 0;
@@ -653,7 +740,7 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth commander beam rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_H2BeamShot", 1, 10.00, 0.75, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -729,6 +816,23 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -769,18 +873,34 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -788,13 +908,19 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -804,6 +930,8 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		case 'alert pistol idle': return (34.2, -10.3, 0.7);
 		case 'crouch pistol idle': return (53.2, 7.2, -0.5);
 		case 'crouch pistol move-front': return (53.0, 1.3, 4.2);
+		case 'stand pistol cover-left-open': return (25.9, 12.2, -13.8);
+		case 'stand pistol cover-right-open': return (26.5, -4.3, -1.6);
 		case 'stand pistol move-back': return (50.4, -0.1, 23.4);
 		case 'stand pistol move-front': return (40.3, 11.1, -2.2);
 		case 'stand pistol move-left': return (51.1, -5.9, 24.1);
@@ -828,7 +956,7 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth commander beam rifle camo";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_H2BeamShot", 1, 10.00, 0.75, 3600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 2800.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -905,6 +1033,23 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -945,18 +1090,34 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -964,13 +1125,19 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -980,6 +1147,8 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		case 'alert pistol idle': return (34.2, -10.3, 0.7);
 		case 'crouch pistol idle': return (53.2, 7.2, -0.5);
 		case 'crouch pistol move-front': return (53.0, 1.3, 4.2);
+		case 'stand pistol cover-left-open': return (25.9, 12.2, -13.8);
+		case 'stand pistol cover-right-open': return (26.5, -4.3, -1.6);
 		case 'stand pistol move-back': return (50.4, -0.1, 23.4);
 		case 'stand pistol move-front': return (40.3, 11.1, -2.2);
 		case 'stand pistol move-left': return (51.1, -5.9, 24.1);
@@ -1008,7 +1177,7 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth commander fuel rod";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_FuelRodBolt", 1, 0.80, 3.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 43.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1083,6 +1252,23 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -1123,18 +1309,34 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1142,13 +1344,19 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -1158,6 +1366,8 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		case 'alert pistol idle': return (31.6, -5.8, 12.1);
 		case 'crouch pistol idle': return (45.2, 9.2, 7.7);
 		case 'crouch pistol move-front': return (45.0, 3.1, 12.5);
+		case 'stand pistol cover-left-open': return (19.9, 15.0, -3.6);
+		case 'stand pistol cover-right-open': return (19.6, -2.3, 7.9);
 		case 'stand pistol idle%0': return (38.7, 6.9, 32.5);
 		case 'stand pistol move-back': return (42.4, 2.0, 31.7);
 		case 'stand pistol move-front': return (33.8, 13.9, 7.5);
@@ -1183,7 +1393,7 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth commander plasma caster";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaCasterGrenade", 1, 10.00, 0.75, 1600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 26.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -1260,6 +1470,23 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -1300,18 +1527,34 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1319,13 +1562,19 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -1335,6 +1584,8 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		case 'alert pistol idle': return (29.3, -7.3, 7.5);
 		case 'crouch pistol idle': return (45.6, 7.5, 2.4);
 		case 'crouch pistol move-front': return (45.5, 1.5, 7.2);
+		case 'stand pistol cover-left-open': return (19.5, 12.0, -8.0);
+		case 'stand pistol cover-right-open': return (19.7, -4.9, 3.1);
 		case 'stand pistol move-back': return (42.8, 0.2, 26.4);
 		case 'stand pistol move-front': return (33.6, 11.1, 2.9);
 		case 'stand pistol move-left': return (43.6, -6.4, 27.2);
@@ -1359,7 +1610,7 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth commander plasma caster camo";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaCasterGrenade", 1, 10.00, 0.75, 1600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 26.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
@@ -1437,6 +1688,23 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -1477,18 +1745,34 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1496,13 +1780,19 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -1512,6 +1802,8 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		case 'alert pistol idle': return (29.3, -7.3, 7.5);
 		case 'crouch pistol idle': return (45.6, 7.5, 2.4);
 		case 'crouch pistol move-front': return (45.5, 1.5, 7.2);
+		case 'stand pistol cover-left-open': return (19.5, 12.0, -8.0);
+		case 'stand pistol cover-right-open': return (19.7, -4.9, 3.1);
 		case 'stand pistol move-back': return (42.8, 0.2, 26.4);
 		case 'stand pistol move-front': return (33.6, 11.1, 2.9);
 		case 'stand pistol move-left': return (43.6, -6.4, 27.2);
@@ -1540,7 +1832,7 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth major fuel rod";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_FuelRodBolt", 1, 0.80, 3.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 43.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1615,6 +1907,23 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -1655,18 +1964,34 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -1674,13 +1999,19 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -1690,6 +2021,8 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		case 'alert pistol idle': return (31.6, -5.8, 12.1);
 		case 'crouch pistol idle': return (45.2, 9.2, 7.7);
 		case 'crouch pistol move-front': return (45.0, 3.1, 12.5);
+		case 'stand pistol cover-left-open': return (19.9, 15.0, -3.6);
+		case 'stand pistol cover-right-open': return (19.6, -2.3, 7.9);
 		case 'stand pistol idle%0': return (38.7, 6.9, 32.5);
 		case 'stand pistol move-back': return (42.4, 2.0, 31.7);
 		case 'stand pistol move-front': return (33.8, 13.9, 7.5);
@@ -1715,7 +2048,7 @@ class HCE_DraethMajorNeedler : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth major needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 3.00, 4.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1790,6 +2123,24 @@ class HCE_DraethMajorNeedler : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -1830,32 +2181,55 @@ class HCE_DraethMajorNeedler : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -1865,6 +2239,8 @@ class HCE_DraethMajorNeedler : HCE_DraethBase
 		case 'alert pistol idle': return (19.5, -0.8, 6.8);
 		case 'crouch pistol idle': return (35.6, 10.4, -4.2);
 		case 'crouch pistol move-front': return (35.4, 4.3, 0.7);
+		case 'stand pistol cover-left-open': return (8.0, 11.2, -10.7);
+		case 'stand pistol cover-right-open': return (8.4, -5.4, -1.1);
 		case 'stand pistol move-back': return (32.7, 2.7, 19.9);
 		case 'stand pistol move-front': return (22.2, 11.1, -0.8);
 		case 'stand pistol move-left': return (33.4, -2.8, 21.8);
@@ -1889,7 +2265,7 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth major plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 7.00, 1.00, 1760;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -1964,6 +2340,23 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -2004,18 +2397,34 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -2023,13 +2432,19 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -2039,6 +2454,8 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		case 'alert pistol idle': return (18.9, -0.5, 4.1);
 		case 'crouch pistol idle': return (36.1, 10.9, -7.0);
 		case 'crouch pistol move-front': return (35.9, 4.8, -2.0);
+		case 'stand pistol cover-left-open': return (8.0, 10.9, -13.5);
+		case 'stand pistol cover-right-open': return (8.4, -5.5, -4.0);
 		case 'stand pistol move-back': return (33.1, 3.0, 17.1);
 		case 'stand pistol move-front': return (22.1, 10.9, -3.6);
 		case 'stand pistol move-left': return (33.8, -1.9, 19.2);
@@ -2063,7 +2480,7 @@ class HCE_DraethMinorNeedler : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth minor needler";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_Needle", 1, 3.00, 4.00, 800;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 12.1;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -2137,6 +2554,24 @@ class HCE_DraethMinorNeedler : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_RELOAD: return 'stand pistol reload-ne';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -2177,32 +2612,55 @@ class HCE_DraethMinorNeedler : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
+		case 'stand pistol reload-ne': return 75;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
 		case 'stand pistol surprise-front': return 24;
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -2212,6 +2670,8 @@ class HCE_DraethMinorNeedler : HCE_DraethBase
 		case 'alert pistol idle': return (19.5, -0.8, 6.8);
 		case 'crouch pistol idle': return (35.6, 10.4, -4.2);
 		case 'crouch pistol move-front': return (35.4, 4.3, 0.7);
+		case 'stand pistol cover-left-open': return (8.0, 11.2, -10.7);
+		case 'stand pistol cover-right-open': return (8.4, -5.4, -1.1);
 		case 'stand pistol move-back': return (32.7, 2.7, 19.9);
 		case 'stand pistol move-front': return (22.2, 11.1, -0.8);
 		case 'stand pistol move-left': return (33.4, -2.8, 21.8);
@@ -2236,7 +2696,7 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Variant "draeth minor plasma rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 2400, 240;
 		HaloDoom_EnemyBase.HCE_Movement 5.25, 8.08, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
+		HaloDoom_EnemyBase.HCE_LowWalk 1.78;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_PlasmaRifleBolt", 1, 5.00, 1.50, 1600;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 155.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
@@ -2311,6 +2771,23 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		case HCE_A_TURN_L: return 'stand pistol turn-left';
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming pistol idle';
+		case HCE_A_VENT: return 'stand pistol overheat';
+		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
+		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
+		case HCE_A_COVER_L_ENTER: return 'stand pistol cover-left-enter';
+		case HCE_A_COVER_L_IDLE: return 'stand pistol cover-left-idle';
+		case HCE_A_COVER_L_PEEK: return 'stand pistol cover-left-peek';
+		case HCE_A_COVER_L_OPEN: return 'stand pistol cover-left-open';
+		case HCE_A_COVER_L_UNPEEK: return 'stand pistol cover-left-unpeek';
+		case HCE_A_COVER_L_EXIT: return 'stand pistol cover-left-exit';
+		case HCE_A_COVER_R_ENTER: return 'stand pistol cover-right-enter';
+		case HCE_A_COVER_R_IDLE: return 'stand pistol cover-right-idle';
+		case HCE_A_COVER_R_PEEK: return 'stand pistol cover-right-peek';
+		case HCE_A_COVER_R_OPEN: return 'stand pistol cover-right-open';
+		case HCE_A_COVER_R_UNPEEK: return 'stand pistol cover-right-unpeek';
+		case HCE_A_COVER_R_EXIT: return 'stand pistol cover-right-exit';
+		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_VAULT: return 'stand pistol vault';
 		}
 		return 'None';
 	}
@@ -2351,18 +2828,34 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		case 'stand landing-dead': return 47;
 		case 'stand pistol airborne': return 74;
 		case 'stand pistol berserk': return 52;
+		case 'stand pistol cover-left-enter': return 24;
+		case 'stand pistol cover-left-exit': return 10;
+		case 'stand pistol cover-left-idle': return 104;
+		case 'stand pistol cover-left-open': return 2;
+		case 'stand pistol cover-left-peek': return 22;
+		case 'stand pistol cover-left-unpeek': return 22;
+		case 'stand pistol cover-right-enter': return 24;
+		case 'stand pistol cover-right-exit': return 10;
+		case 'stand pistol cover-right-idle': return 104;
+		case 'stand pistol cover-right-open': return 2;
+		case 'stand pistol cover-right-peek': return 22;
+		case 'stand pistol cover-right-unpeek': return 22;
 		case 'stand pistol dive-front': return 46;
 		case 'stand pistol dive-left': return 46;
 		case 'stand pistol dive-right': return 46;
 		case 'stand pistol evade-left': return 35;
 		case 'stand pistol evade-right': return 35;
+		case 'stand pistol hoist': return 65;
 		case 'stand pistol idle%0': return 70;
 		case 'stand pistol land-soft': return 43;
+		case 'stand pistol low-idle': return 70;
+		case 'stand pistol low-move': return 40;
 		case 'stand pistol melee': return 47;
 		case 'stand pistol move-back': return 30;
 		case 'stand pistol move-front': return 30;
 		case 'stand pistol move-left': return 30;
 		case 'stand pistol move-right': return 30;
+		case 'stand pistol overheat': return 36;
 		case 'stand pistol pp fire-1 baked': return 7;
 		case 'stand pistol signal-attack': return 64;
 		case 'stand pistol surprise-back': return 30;
@@ -2370,13 +2863,19 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		case 'stand pistol throw-grenade': return 63;
 		case 'stand pistol turn-left': return 16;
 		case 'stand pistol turn-right': return 16;
+		case 'stand pistol vault': return 22;
 		case 'stand pistol warn': return 33;
 		}
 		return 30;
 	}
-	// the ground each moving clip covers (none here: the AI moves the body itself)
+	// the ground each moving clip covers in map units a tic (its root motion), so the stride matches the walk
 	override vector3 HCE_AnimMove(Name anim)
 	{
+		switch(anim)
+		{
+		case 'stand pistol hoist': return (91.4, -0.0, 84.4);
+		case 'stand pistol vault': return (71.4, -0.0, 1.8);
+		}
 		return (0, 0, 0);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
@@ -2386,6 +2885,8 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		case 'alert pistol idle': return (18.9, -0.5, 4.1);
 		case 'crouch pistol idle': return (36.1, 10.9, -7.0);
 		case 'crouch pistol move-front': return (35.9, 4.8, -2.0);
+		case 'stand pistol cover-left-open': return (8.0, 10.9, -13.5);
+		case 'stand pistol cover-right-open': return (8.4, -5.5, -4.0);
 		case 'stand pistol move-back': return (33.1, 3.0, 17.1);
 		case 'stand pistol move-front': return (22.1, 10.9, -3.6);
 		case 'stand pistol move-left': return (33.8, -1.9, 19.2);

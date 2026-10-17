@@ -2035,8 +2035,8 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    import draeth_stances
-    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances, flood_leap_anims
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
         for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]

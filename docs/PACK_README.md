@@ -367,7 +367,8 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
 * **Flood:**
-  * Infection forms swarm, leap and nibble, then crawl to dead Marines and Elites. The feed animation raises the corpse as a Flood combat form.
+  * Infection forms swarm, leap and nibble, and take the dead. A dead Marine, ODST, Armored Marine, Elite or Grunt is raised as the Flood form of its own kind (an ODST or Armored Marine as an armored human form, a Minor or Major Elite in its own colours, a Grunt as the Flood Grunt), holding the gun it dropped if that still lies by the body; otherwise it rises unarmed. A fallen combat form is reanimated as it was. Out of a fight they go for any body within 512 units; in one, only a body nearer than their target. One infection form to a body. Brutes and the Draeth aren't taken.
+  * Fallen combat forms get back up on their own again, as intended (corpses had been refusing to rise).
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
   * Combat forms leap and fire whatever weapon they carry. Dead combat forms can be revived.
   * **XAM skins:** the human and Elite combat forms wear the XAM Campaign Overhaul's Flood skins (Tropical Thunder 98; SPV3's c40 map): raw, reddish flesh on the human forms and purple on the Elite forms, with matching torn-stump textures. They're painted for Halo CE's own meshes, so the models are unchanged.
@@ -468,6 +469,7 @@ Halo 2's hoist and vault animations (`cover_anims.py`) are used where they fit, 
 
 * **Hoist:** a ledge about as high as the body's hoist climbs is climbed, not jumped. Elites and Brutes hoist about 85–95 units, so they now get onto ledges higher than they can jump. Marines hoist about 35 units, Jackals about 40 and Grunts about 45.
 * **Vault:** a low wall or a crate with floor beyond it, up to about 60% of the body's height, is vaulted in one movement.
+* **Flood leap:** the Flood have no hoist or vault; they leap, as in Halo 2. A ledge higher than a combat form can jump (but within its leap, well above its own height) it springs straight up onto with Halo 2's Flood `leap_pit` (`flood_leap_anims.py`), the human forms and the Elite forms each with their own.
 * The body moves with the animation, and the actor is put where the body ended up when it finishes. It's under `hce_jumping`, like the jumps.
 
 ## Picking up weapons

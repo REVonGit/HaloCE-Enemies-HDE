@@ -655,6 +655,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	double hce_frontShieldHP, hce_frontShieldMax;
 	int    hce_frontShieldRegen;
 	Actor  hce_feedTarget;
+	Actor  hce_feedBy;                 // a corpse: the infection form on its way to it (others leave it be)
 	bool   hce_resurrected;
 	vector2 hce_dieDir;
 	bool   hce_hardKill;
@@ -1501,6 +1502,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Emotions();
 		if(hce_cvState > 0 && hce_action != HCE_ACT_FIGHT && hce_action != HCE_ACT_COVER) hce_cvState = 0;
 
+		if(hce_action != HCE_ACT_FEED && HCE_SeekCorpse()) {}      // the infection forms: a body nearer than the fight
 		switch(hce_action)
 		{
 		case HCE_ACT_FLEE:   HCE_Flee(); break;
@@ -3172,17 +3174,22 @@ class HaloDoom_EnemyBase : Actor abstract
 	// taller than the animation) and is put where the body ended up when it finishes.
 	// ------------------------------------------------------------------
 	vector3 hce_climbFrom, hce_climbTo;
+	vector2 hce_climbSlide;
 	int hce_climbTics, hce_climbDur;
 	double hce_climbExtra;
 	bool hce_noBlend;
 
-	// Hoist or vault (human / Covenant only, both arms): a low wall (rise <= 60% of height) with floor beyond is
-	// vaulted; a ledge within 75-125% of the hoist clip's climb is hoisted. Checks the landing, headroom, walls and
-	// bodies there, then locks the animation, freezes gravity and starts HCE_ClimbTick. Returns true when started.
+	// Hoist or vault (human / Covenant, both arms): a low wall (rise <= 60% of height) with floor beyond is
+	// vaulted; a ledge within 75-125% of the hoist clip's climb is hoisted. The Flood combat forms leap instead
+	// (flood_leap_anims.py: Halo 2's pit leap, straight up): any ledge above their jump and within 125% of the leap,
+	// arms or not, the body carried forward onto it as it rises (HCE_ClimbTick). Checks the landing, headroom, walls
+	// and bodies there, then locks the animation, freezes gravity and starts HCE_ClimbTick. True when started.
 	bool HCE_TryClimb(double ang, double rise, double top, bool overThing, Actor bm)
 	{
-		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT) return false;
-		if(hce_offArmLost) return false;                  // hoists and vaults take both hands
+		bool leap = hce_team == HCE_TEAM_FLOOD;
+		if(hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT && !leap) return false;
+		if(hce_offArmLost && !leap) return false;          // hoists and vaults take both hands
+		if(leap && rise <= hce_jumpHeight) return false;   // its own jump does those
 		vector2 dir = AngleToVector(ang, 1);
 		double fwdMin = radius * 2 + 12 + (overThing && bm ? bm.radius * 2 : 0);
 		vector2 far = pos.xy + dir * fwdMin;
@@ -3202,8 +3209,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		Name n = HCE_AnimName(kind);
 		if(n == 'None') return false;
 		vector3 mv = HCE_AnimMove(n);
-		if(mv.x <= 4) return false;
-		if(!vault && (mv.z < 8 || rise < mv.z * 0.75 || rise > mv.z * 1.25)) return false;
+		if(mv.x <= 4 && !leap) return false;
+		if(!vault && (mv.z < 8 || (rise < mv.z * 0.75 && !leap) || rise > mv.z * 1.25)) return false;
 		double fwd = max(mv.x, fwdMin);
 		vector2 land = pos.xy + dir * fwd;
 		double lz = GetZAt(land.x, land.y, 0, GZF_ABSOLUTEPOS);
@@ -3223,7 +3230,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_StopFireLoop();
 		hce_climbFrom = pos;
 		hce_climbTo = (land, lz);
-		hce_climbExtra = vault ? 0 : max(0, (lz - pos.z) - mv.z);
+		hce_climbExtra = vault ? 0 : leap ? (lz - pos.z) - mv.z : max(0, (lz - pos.z) - mv.z);   // a leap may land lower than it springs
+		hce_climbSlide = dir * max(0, fwd - mv.x);           // what the clip doesn't carry the body forward, the actor does
 		vel = (0, 0, 0);
 		bNOGRAVITY = true;
 		hce_climbDur = max(1, HCE_PlayLocked(kind));
@@ -3233,12 +3241,14 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// One tic of a hoist / vault: holds the body still, raises it by hce_climbExtra on a smoothstep over the clip's
-	// length (the ledge's excess over what the animation climbs), and ends the climb when the tics run out.
+	// length (the ledge's excess over what the animation climbs), slides it by hce_climbSlide over the middle of the
+	// clip (after the rise: what the clip itself doesn't carry forward), and ends the climb when the tics run out.
 	void HCE_ClimbTick()
 	{
 		vel = (0, 0, 0);
 		double t = 1.0 - (hce_climbTics - 1) / double(hce_climbDur);
-		SetZ(hce_climbFrom.z + hce_climbExtra * t * t * (3 - 2 * t));
+		double u = clamp((t - 0.2) / 0.5, 0., 1.);
+		SetOrigin((hce_climbFrom.xy + hce_climbSlide * u * u * (3 - 2 * u), hce_climbFrom.z + hce_climbExtra * t * t * (3 - 2 * t)), true);
 		if(--hce_climbTics <= 0) HCE_EndClimb(true);
 	}
 
@@ -7749,12 +7759,17 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_reviveTics > 0 && --hce_reviveTics == 0) HCE_Revive();
 	}
 
-	// Brings a resurrecting corpse back up (RaiseActor): restores the corpse flags, shows the gun again if its arm is still
+	// Brings a resurrecting corpse back up (Revive, into its Raise state): restores the corpse flags, shows the gun again if its arm is still
 	// on, goes straight to fighting and plays the directional resurrect animation.
 	void HCE_Revive()
 	{
 		if(!bHCE_Resurrects || !bCORPSE) return;
-		if(!RaiseActor(self, RF_NOCHECKPOSITION)) return;
+		// not RaiseActor: it refuses a corpse whose state isn't a -1 tic frame, and the corpse ticks every tic (Dead:
+		// HCE_CorpseTick); flagging that state CanRaise would let Doom's Arch-viles raise every body too
+		let rs = FindState("Raise");
+		if(!rs) return;
+		Revive();
+		SetState(rs);
 		hce_resurrected = true;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED; bISMONSTER = default.bISMONSTER;
 		int gl = HCE_GunLimb();

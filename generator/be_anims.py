@@ -96,8 +96,11 @@ def add_brute(char):
     others = {n for k, v in st.items() if k != STEP for n in v}      # other scripts' (low ready, cover, hoist ...): kept
     plan = {}
     for n, a in B.items():
-        if a.type != 0: continue
         w = n.split(' ')
+        if a.type != 0:
+            # the carbine stance's fire, baked onto its idle (the rifle and support stances keep Halo 2's per-gun fire)
+            if n.startswith('stand carbine') and 'fire-1' in n: plan[n] = 'stand carbine fire-1 baked'
+            continue
         if w[0] in ('stand', 'flaming') and len(w) > 2 and w[1] in H3_STANCE:
             plan[n] = ' '.join([w[0], H3_STANCE[w[1]]] + w[2:])
         elif w[0] == 'asleep' or n == 'h-kill front head':
@@ -109,6 +112,10 @@ def add_brute(char):
             anims.pop(k); meta['anims'].pop(k, None)
     for n, nm in sorted(plan.items()):
         a = B[n]
+        if a.type != 0:                                     # an overlay: laid over its stance's idle
+            base = B['stand carbine idle']
+            a = copy.copy(base); a.frames = hm.bake_overlay(base.frames[0], B[n].frames); a.nframes = len(a.frames)
+            a.dx = np.zeros((a.nframes, 4))
         frames = []
         for fr in a.frames:
             r = []

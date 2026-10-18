@@ -334,6 +334,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
   * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
   * **Animations:** SOI7's, from *Halo: Brutality Evolved* (see [Animations from Halo: Brutality Evolved](#animations-from-halo-brutality-evolved)).
+  * **Leaping spin:** from 120 to 320 units off, now and then a Hunter springs at its enemy and spins through the air into it, spikes first, hitting with its full melee (Cursed Halo Again's animation).
 * **Hunter ranks by colour:**
 
   | Hunter | Weapon | Class (DoomEdNum) |
@@ -471,7 +472,7 @@ Under fire, or now and then of their own accord, Marines and the Covenant fight 
 * **Elites:** four pistol-stance melee swings and two warnings in place of one each, a second gut-shot death, reworked pistol and sword idles, walks, berserks and sword swings, and a full rifle stance with its crouched set. Sword Elites draw their sword the first time they see an enemy.
 * **Grunts:** a grenade pull before a suicide run, and a cowering idle when cornered while fleeing.
 * **Jackals:** a reworked crouched idle, plus a rifle stance and a knife melee that no Jackal uses yet.
-* **Brutes:** Halo 3-style stances in place of Halo 2's: the gravity hammer's (its overhead smashes, leaping smash, four charging runs), the rifle's and the Brute Shot's, each with its own melees, dives, evades, warnings, signals, surprise and berserk. They also get burning idles, sleeping idles and a head-shot death; a carbine stance comes along unused. Halo 2's low ready, corner cover, hoist, vault and firing stay.
+* **Brutes:** Halo 3-style stances in place of Halo 2's: the gravity hammer's (its overhead smashes, leaping smash, four charging runs), the rifle's and the Brute Shot's, each with its own melees, dives, evades, warnings, signals, surprise and berserk. Their two-handed guns (the assault rifle and the shotgun, and the human guns they pick up) are held in the set's two-handed carbine stance, with its own fire; the plasma rifle, Spiker and Plasma Caster stay one-handed. They also get burning idles, sleeping idles and a head-shot death. Halo 2's low ready, corner cover, hoist, vault and firing stay.
 
 ## Climbing and vaulting
 
@@ -1357,6 +1358,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
 * **Hunter, Elite, Grunt and Jackal animations:** by SOI7, from *Halo: Brutality Evolved* by RoxanneGoat (MCC Steam Workshop 3014096841).
+* **Hunter leaping spin:** the animation is from *Cursed Halo Again* by InfernoPlus (MCC Steam Workshop 2962107814).
 * **Brute animations (Halo 3 style):** from *Halo: Brutality Evolved*'s Brutes, credited in the mod to “Elite”.
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
 * **ODSTs:** the Halo CE ODST model and textures by Spiral.

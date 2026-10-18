@@ -5775,6 +5775,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		return true;
 	}
 
+	// A body with no leap-melee animation strikes with its airborne one (the Hunter's spin: cursed_anims.py): when the
+	// leap ends, by contact or on landing, that animation is let play out to its end instead of being cut off
+	void HCE_LeapStrikeFinish()
+	{
+		if(hce_curAnimKind != HCE_A_LEAP_AIR) return;
+		int left = HCE_AnimTics(hce_curAnim) - (level.maptime - hce_animStartTic);
+		if(left > 0) { hce_animLock = max(hce_animLock, left); hce_lockPing = 0; }
+	}
+
 	// infection_swarm_aim_jump: ballistic hop at the target, capped vertical speed
 	void HCE_LeapTick()
 	{
@@ -5809,13 +5818,15 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_leapState = 0;
 			hce_meleeTics = level.maptime + 35;
 			if(HCE_HasAnim(HCE_A_LEAP_MELEE)) HCE_PlayLocked(HCE_A_LEAP_MELEE, 0.7);
+			else HCE_LeapStrikeFinish();
 			return;
 		}
 		if((pos.z <= floorz + 1 && vel.z <= 0) || --hce_actionTics <= 0)
 		{
 			hce_leapState = 0;
 			hce_meleeTics = level.maptime + 20;
-			if(HCE_HasAnim(HCE_A_LAND)) HCE_PlayLocked(HCE_A_LAND, 0.4);
+			if(!HCE_HasAnim(HCE_A_LEAP_MELEE) && hce_curAnimKind == HCE_A_LEAP_AIR) HCE_LeapStrikeFinish();   // the strike plays out
+			else if(HCE_HasAnim(HCE_A_LAND)) HCE_PlayLocked(HCE_A_LAND, 0.4);
 		}
 	}
 

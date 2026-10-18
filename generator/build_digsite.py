@@ -320,7 +320,7 @@ def load_ai():
             v['ranged_combat']['reference'] = bp.ARSENAL_REF.get(key, 'hde\\' + key)
             v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
             v['_ov'] = dict(overlay=ovl, overlay_idx=CASTER_IDX, loadout_only=True, pellets=_r[4], spread=_r[5],
-                            stance='support' if ovl in BRUTE_SUPPORT else 'rifle')
+                            stance='support' if ovl in BRUTE_SUPPORT else 'carbine')    # human guns are two-handed
             variants[f'{BRUTE} minor {key} loadout'] = v
     # Halo 2 Jackals: the Ultra keeps the CE Ultra's combat data (moved out of the main pack, build_pack.MOVED); the
     # Zealot is a tougher Ultra with the Spiker; the Sniper starts from the CE Minor and keeps its distance
@@ -1106,7 +1106,9 @@ def configure():
         # Halo 2 Brutes: scaled to 115%, a head and more over an Elite (its rifle idle is 0.90 WU tall against the
         # Elite's 0.80), hulking as in Halo 2; the hitbox stays door-sized (76 high). Melee 2.0 WU / 1.5 WU from
         # their char tag, berserk charge that throws the gun away, plasma grenades
-        'Brute': dict(stance={'gravity hammer': 'melee', None: 'rifle'}, scale=BRUTE_SCALE,
+        # stances: the gravity hammer's ('melee'); the two-handed guns (assault rifle, shotgun) in the Halo 3-style
+        # carbine stance (be_anims.py); the one-handed ones (plasma rifle, Spiker, Plasma Caster) in the rifle stance
+        'Brute': dict(stance={'gravity hammer': 'melee', 'assault rifle': 'carbine', 'shotgun': 'carbine', None: 'rifle'}, scale=BRUTE_SCALE,
                       height_fixed=76, radius_fixed=30, melee=(130, 35), weapon_toss=True, shield=0, speed=6.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'H2Jackal': dict(stance='pistol'),

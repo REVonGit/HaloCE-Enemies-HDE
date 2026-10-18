@@ -744,26 +744,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -781,11 +780,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -807,26 +804,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -844,11 +840,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -870,26 +864,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -907,11 +900,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1059,26 +1050,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1096,11 +1086,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1122,26 +1110,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1159,11 +1146,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1185,26 +1170,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1222,11 +1206,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1311,26 +1293,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1348,11 +1329,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1374,26 +1353,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1411,11 +1389,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1437,26 +1413,25 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -1474,11 +1449,9 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -1565,6 +1538,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		{
 		case 'asleep any idle%0': return 155;
 		case 'asleep any idle%1': return 139;
+		case 'flaming carbine idle': return 91;
 		case 'flaming rifle idle': return 91;
 		case 'flaming support idle': return 91;
 		case 'h-kill back gut': return 48;
@@ -1581,6 +1555,30 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 's-ping left gut baked': return 16;
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
+		case 'stand carbine berserk': return 50;
+		case 'stand carbine dive-front': return 77;
+		case 'stand carbine dive-left': return 66;
+		case 'stand carbine dive-right': return 74;
+		case 'stand carbine evade-left': return 33;
+		case 'stand carbine evade-right': return 34;
+		case 'stand carbine fire-1 baked': return 12;
+		case 'stand carbine idle': return 64;
+		case 'stand carbine melee%0': return 42;
+		case 'stand carbine melee%1': return 43;
+		case 'stand carbine move-back': return 29;
+		case 'stand carbine move-front': return 28;
+		case 'stand carbine move-left': return 30;
+		case 'stand carbine move-right': return 29;
+		case 'stand carbine signal-attack%0': return 80;
+		case 'stand carbine signal-attack%1': return 51;
+		case 'stand carbine signal-attack%2': return 86;
+		case 'stand carbine signal-attack%3': return 55;
+		case 'stand carbine signal-attack%4': return 57;
+		case 'stand carbine surprise-front': return 78;
+		case 'stand carbine throw-grenade%1': return 77;
+		case 'stand carbine turn-left': return 27;
+		case 'stand carbine turn-right': return 28;
+		case 'stand carbine warn': return 57;
 		case 'stand landing-dead': return 34;
 		case 'stand rifle airborne': return 91;
 		case 'stand rifle berserk': return 50;
@@ -1602,9 +1600,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle dive-right': return 75;
 		case 'stand rifle evade-left': return 33;
 		case 'stand rifle evade-right': return 34;
-		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle fire-1 pr baked': return 10;
-		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle hoist': return 51;
 		case 'stand rifle idle': return 69;
@@ -2833,13 +2829,13 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute captain shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 7.00, 10.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (53.0, 10.3, 11.7);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.3, -1.1, 30.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -2880,26 +2876,25 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -2917,11 +2912,9 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -2959,7 +2952,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
-		case 'flaming rifle idle': return 91;
+		case 'flaming carbine idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
 		case 'h-kill front head': return 105;
@@ -2974,9 +2967,32 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 's-ping left gut baked': return 16;
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
+		case 'stand carbine berserk': return 50;
+		case 'stand carbine dive-front': return 77;
+		case 'stand carbine dive-left': return 66;
+		case 'stand carbine dive-right': return 74;
+		case 'stand carbine evade-left': return 33;
+		case 'stand carbine evade-right': return 34;
+		case 'stand carbine fire-1 baked': return 12;
+		case 'stand carbine idle': return 64;
+		case 'stand carbine melee%0': return 42;
+		case 'stand carbine melee%1': return 43;
+		case 'stand carbine move-back': return 29;
+		case 'stand carbine move-front': return 28;
+		case 'stand carbine move-left': return 30;
+		case 'stand carbine move-right': return 29;
+		case 'stand carbine signal-attack%0': return 80;
+		case 'stand carbine signal-attack%1': return 51;
+		case 'stand carbine signal-attack%2': return 86;
+		case 'stand carbine signal-attack%3': return 55;
+		case 'stand carbine signal-attack%4': return 57;
+		case 'stand carbine surprise-front': return 78;
+		case 'stand carbine throw-grenade%1': return 77;
+		case 'stand carbine turn-left': return 27;
+		case 'stand carbine turn-right': return 28;
+		case 'stand carbine warn': return 57;
 		case 'stand landing-dead': return 34;
 		case 'stand rifle airborne': return 91;
-		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -2990,29 +3006,7 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 77;
-		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 75;
-		case 'stand rifle evade-left': return 33;
-		case 'stand rifle evade-right': return 34;
-		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 69;
-		case 'stand rifle land-soft': return 38;
-		case 'stand rifle low-idle': return 140;
-		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee%0': return 42;
-		case 'stand rifle melee%1': return 43;
-		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 27;
-		case 'stand rifle move-left': return 33;
-		case 'stand rifle move-right': return 30;
-		case 'stand rifle signal-attack': return 80;
-		case 'stand rifle surprise-front': return 78;
-		case 'stand rifle throw-grenade%1': return 77;
-		case 'stand rifle turn-left': return 27;
-		case 'stand rifle turn-right': return 28;
-		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
 		case 'stand unarmed melee%0': return 42;
 		case 'stand unarmed melee%1': return 42;
@@ -3375,13 +3369,13 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	{
 		switch(anim)
 		{
+		case 'stand carbine idle': return (40.3, -1.0, 26.8);
+		case 'stand carbine move-back': return (39.3, -0.5, 21.8);
+		case 'stand carbine move-front': return (57.9, -6.1, 30.6);
+		case 'stand carbine move-left': return (41.2, -5.3, 23.0);
+		case 'stand carbine move-right': return (41.8, 4.0, 23.3);
 		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
 		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
-		case 'stand rifle idle': return (62.1, 7.1, 30.5);
-		case 'stand rifle move-back': return (55.5, 12.3, 18.6);
-		case 'stand rifle move-front': return (60.9, 11.0, 25.6);
-		case 'stand rifle move-left': return (51.3, 10.1, 31.7);
-		case 'stand rifle move-right': return (56.1, 22.3, 24.1);
 		}
 		return hce_gunOffset;
 	}
@@ -3960,13 +3954,13 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute honor guard assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 7.00, 2.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (48.2, 6.4, 13.9);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.4, 2.4, 31.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -4007,26 +4001,25 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -4044,11 +4037,9 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -4086,7 +4077,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
-		case 'flaming rifle idle': return 91;
+		case 'flaming carbine idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
 		case 'h-kill front head': return 105;
@@ -4101,9 +4092,32 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 's-ping left gut baked': return 16;
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
+		case 'stand carbine berserk': return 50;
+		case 'stand carbine dive-front': return 77;
+		case 'stand carbine dive-left': return 66;
+		case 'stand carbine dive-right': return 74;
+		case 'stand carbine evade-left': return 33;
+		case 'stand carbine evade-right': return 34;
+		case 'stand carbine fire-1 baked': return 12;
+		case 'stand carbine idle': return 64;
+		case 'stand carbine melee%0': return 42;
+		case 'stand carbine melee%1': return 43;
+		case 'stand carbine move-back': return 29;
+		case 'stand carbine move-front': return 28;
+		case 'stand carbine move-left': return 30;
+		case 'stand carbine move-right': return 29;
+		case 'stand carbine signal-attack%0': return 80;
+		case 'stand carbine signal-attack%1': return 51;
+		case 'stand carbine signal-attack%2': return 86;
+		case 'stand carbine signal-attack%3': return 55;
+		case 'stand carbine signal-attack%4': return 57;
+		case 'stand carbine surprise-front': return 78;
+		case 'stand carbine throw-grenade%1': return 77;
+		case 'stand carbine turn-left': return 27;
+		case 'stand carbine turn-right': return 28;
+		case 'stand carbine warn': return 57;
 		case 'stand landing-dead': return 34;
 		case 'stand rifle airborne': return 91;
-		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -4117,29 +4131,7 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 77;
-		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 75;
-		case 'stand rifle evade-left': return 33;
-		case 'stand rifle evade-right': return 34;
-		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 69;
-		case 'stand rifle land-soft': return 38;
-		case 'stand rifle low-idle': return 140;
-		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee%0': return 42;
-		case 'stand rifle melee%1': return 43;
-		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 27;
-		case 'stand rifle move-left': return 33;
-		case 'stand rifle move-right': return 30;
-		case 'stand rifle signal-attack': return 80;
-		case 'stand rifle surprise-front': return 78;
-		case 'stand rifle throw-grenade%1': return 77;
-		case 'stand rifle turn-left': return 27;
-		case 'stand rifle turn-right': return 28;
-		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
 		case 'stand unarmed melee%0': return 42;
 		case 'stand unarmed melee%1': return 42;
@@ -4498,13 +4490,13 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	{
 		switch(anim)
 		{
-		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
-		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
-		case 'stand rifle idle': return (55.2, 6.9, 32.5);
-		case 'stand rifle move-back': return (48.6, 12.0, 20.5);
-		case 'stand rifle move-front': return (53.9, 11.0, 27.3);
-		case 'stand rifle move-left': return (44.4, 10.2, 33.8);
-		case 'stand rifle move-right': return (49.3, 22.1, 26.4);
+		case 'stand carbine idle': return (34.5, 2.5, 29.0);
+		case 'stand carbine move-back': return (33.7, 3.0, 24.8);
+		case 'stand carbine move-front': return (51.9, -2.5, 32.1);
+		case 'stand carbine move-left': return (35.3, -1.7, 25.2);
+		case 'stand carbine move-right': return (36.0, 7.6, 25.8);
+		case 'stand rifle cover-left-open': return (15.0, 6.3, 1.0);
+		case 'stand rifle cover-right-open': return (21.1, -9.6, 13.5);
 		}
 		return hce_gunOffset;
 	}
@@ -5090,13 +5082,13 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute major shotgun";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ShotgunPellet", 15, 7.00, 10.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 435.9;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.05, 0.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (53.0, 10.3, 11.7);
+		HaloDoom_EnemyBase.HCE_GunOffset (39.3, -1.1, 30.0);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -5137,26 +5129,25 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -5174,11 +5165,9 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -5216,7 +5205,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
-		case 'flaming rifle idle': return 91;
+		case 'flaming carbine idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
 		case 'h-kill front head': return 105;
@@ -5231,9 +5220,32 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 's-ping left gut baked': return 16;
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
+		case 'stand carbine berserk': return 50;
+		case 'stand carbine dive-front': return 77;
+		case 'stand carbine dive-left': return 66;
+		case 'stand carbine dive-right': return 74;
+		case 'stand carbine evade-left': return 33;
+		case 'stand carbine evade-right': return 34;
+		case 'stand carbine fire-1 baked': return 12;
+		case 'stand carbine idle': return 64;
+		case 'stand carbine melee%0': return 42;
+		case 'stand carbine melee%1': return 43;
+		case 'stand carbine move-back': return 29;
+		case 'stand carbine move-front': return 28;
+		case 'stand carbine move-left': return 30;
+		case 'stand carbine move-right': return 29;
+		case 'stand carbine signal-attack%0': return 80;
+		case 'stand carbine signal-attack%1': return 51;
+		case 'stand carbine signal-attack%2': return 86;
+		case 'stand carbine signal-attack%3': return 55;
+		case 'stand carbine signal-attack%4': return 57;
+		case 'stand carbine surprise-front': return 78;
+		case 'stand carbine throw-grenade%1': return 77;
+		case 'stand carbine turn-left': return 27;
+		case 'stand carbine turn-right': return 28;
+		case 'stand carbine warn': return 57;
 		case 'stand landing-dead': return 34;
 		case 'stand rifle airborne': return 91;
-		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -5247,29 +5259,7 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 77;
-		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 75;
-		case 'stand rifle evade-left': return 33;
-		case 'stand rifle evade-right': return 34;
-		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 69;
-		case 'stand rifle land-soft': return 38;
-		case 'stand rifle low-idle': return 140;
-		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee%0': return 42;
-		case 'stand rifle melee%1': return 43;
-		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 27;
-		case 'stand rifle move-left': return 33;
-		case 'stand rifle move-right': return 30;
-		case 'stand rifle signal-attack': return 80;
-		case 'stand rifle surprise-front': return 78;
-		case 'stand rifle throw-grenade%1': return 77;
-		case 'stand rifle turn-left': return 27;
-		case 'stand rifle turn-right': return 28;
-		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
 		case 'stand unarmed melee%0': return 42;
 		case 'stand unarmed melee%1': return 42;
@@ -5633,13 +5623,13 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	{
 		switch(anim)
 		{
+		case 'stand carbine idle': return (40.3, -1.0, 26.8);
+		case 'stand carbine move-back': return (39.3, -0.5, 21.8);
+		case 'stand carbine move-front': return (57.9, -6.1, 30.6);
+		case 'stand carbine move-left': return (41.2, -5.3, 23.0);
+		case 'stand carbine move-right': return (41.8, 4.0, 23.3);
 		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
 		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
-		case 'stand rifle idle': return (62.1, 7.1, 30.5);
-		case 'stand rifle move-back': return (55.5, 12.3, 18.6);
-		case 'stand rifle move-front': return (60.9, 11.0, 25.6);
-		case 'stand rifle move-left': return (51.3, 10.1, 31.7);
-		case 'stand rifle move-right': return (56.1, 22.3, 24.1);
 		}
 		return hce_gunOffset;
 	}
@@ -6230,13 +6220,13 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		HaloDoom_EnemyBase.HCE_Variant "brute minor assault rifle";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 160;
 		HaloDoom_EnemyBase.HCE_Movement 4.23, 6.50, 12;
-		HaloDoom_EnemyBase.HCE_LowWalk 1.42;
+		HaloDoom_EnemyBase.HCE_LowWalk 0.00;
 		HaloDoom_EnemyBase.HCE_Weapon "HCE_ARBullet", 1, 7.00, 2.00, 1120;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 1008.0;
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.50;
 		HaloDoom_EnemyBase.HCE_CombatRange 320, 640;
 		HaloDoom_EnemyBase.HCE_Burst 0.75, 1.10, 0.30, 1.20, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (48.2, 6.4, 13.9);
+		HaloDoom_EnemyBase.HCE_GunOffset (33.4, 2.4, 31.6);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 130, 35;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -6277,26 +6267,25 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		}
 		switch(kind)
 		{
-		case HCE_A_IDLE: return 'stand rifle idle';
-		case HCE_A_ALERT: return 'stand rifle idle';
-		case HCE_A_MOVE_F: return 'stand rifle move-front';
-		case HCE_A_MOVE_B: return 'stand rifle move-back';
-		case HCE_A_MOVE_L: return 'stand rifle move-left';
-		case HCE_A_MOVE_R: return 'stand rifle move-right';
-		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
-		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_IDLE: return 'stand carbine idle';
+		case HCE_A_ALERT: return 'stand carbine idle';
+		case HCE_A_MOVE_F: return 'stand carbine move-front';
+		case HCE_A_MOVE_B: return 'stand carbine move-back';
+		case HCE_A_MOVE_L: return 'stand carbine move-left';
+		case HCE_A_MOVE_R: return 'stand carbine move-right';
+		case HCE_A_FIRE: return 'stand carbine fire-1 baked';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand carbine melee%0', 'stand carbine melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand carbine throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand carbine dive-left';
+		case HCE_A_DIVE_R: return 'stand carbine dive-right';
+		case HCE_A_DIVE_F: return 'stand carbine dive-front';
+		case HCE_A_EVADE_L: return 'stand carbine evade-left';
+		case HCE_A_EVADE_R: return 'stand carbine evade-right';
+		case HCE_A_SURPRISE_F: return 'stand carbine surprise-front';
+		case HCE_A_BERSERK: return 'stand carbine berserk';
+		case HCE_A_WARN: return 'stand carbine warn';
+		case HCE_A_SIGNAL: { static const Name o[] = { 'stand carbine signal-attack%0', 'stand carbine signal-attack%1', 'stand carbine signal-attack%2', 'stand carbine signal-attack%3', 'stand carbine signal-attack%4' }; return o[random(0, 4)]; }
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
-		case HCE_A_LAND: return 'stand rifle land-soft';
 		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
@@ -6314,11 +6303,9 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
 		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
-		case HCE_A_TURN_L: return 'stand rifle turn-left';
-		case HCE_A_TURN_R: return 'stand rifle turn-right';
-		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
-		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
-		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
+		case HCE_A_TURN_L: return 'stand carbine turn-left';
+		case HCE_A_TURN_R: return 'stand carbine turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming carbine idle';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
 		case HCE_A_COVER_L_IDLE: return 'stand rifle cover-left-idle';
 		case HCE_A_COVER_L_PEEK: return 'stand rifle cover-left-peek';
@@ -6356,7 +6343,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
-		case 'flaming rifle idle': return 91;
+		case 'flaming carbine idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
 		case 'h-kill front head': return 105;
@@ -6371,9 +6358,32 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 's-ping left gut baked': return 16;
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
+		case 'stand carbine berserk': return 50;
+		case 'stand carbine dive-front': return 77;
+		case 'stand carbine dive-left': return 66;
+		case 'stand carbine dive-right': return 74;
+		case 'stand carbine evade-left': return 33;
+		case 'stand carbine evade-right': return 34;
+		case 'stand carbine fire-1 baked': return 12;
+		case 'stand carbine idle': return 64;
+		case 'stand carbine melee%0': return 42;
+		case 'stand carbine melee%1': return 43;
+		case 'stand carbine move-back': return 29;
+		case 'stand carbine move-front': return 28;
+		case 'stand carbine move-left': return 30;
+		case 'stand carbine move-right': return 29;
+		case 'stand carbine signal-attack%0': return 80;
+		case 'stand carbine signal-attack%1': return 51;
+		case 'stand carbine signal-attack%2': return 86;
+		case 'stand carbine signal-attack%3': return 55;
+		case 'stand carbine signal-attack%4': return 57;
+		case 'stand carbine surprise-front': return 78;
+		case 'stand carbine throw-grenade%1': return 77;
+		case 'stand carbine turn-left': return 27;
+		case 'stand carbine turn-right': return 28;
+		case 'stand carbine warn': return 57;
 		case 'stand landing-dead': return 34;
 		case 'stand rifle airborne': return 91;
-		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -6387,29 +6397,7 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 77;
-		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 75;
-		case 'stand rifle evade-left': return 33;
-		case 'stand rifle evade-right': return 34;
-		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 69;
-		case 'stand rifle land-soft': return 38;
-		case 'stand rifle low-idle': return 140;
-		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee%0': return 42;
-		case 'stand rifle melee%1': return 43;
-		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 27;
-		case 'stand rifle move-left': return 33;
-		case 'stand rifle move-right': return 30;
-		case 'stand rifle signal-attack': return 80;
-		case 'stand rifle surprise-front': return 78;
-		case 'stand rifle throw-grenade%1': return 77;
-		case 'stand rifle turn-left': return 27;
-		case 'stand rifle turn-right': return 28;
-		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
 		case 'stand unarmed melee%0': return 42;
 		case 'stand unarmed melee%1': return 42;
@@ -6773,13 +6761,13 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	{
 		switch(anim)
 		{
-		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
-		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
-		case 'stand rifle idle': return (55.2, 6.9, 32.5);
-		case 'stand rifle move-back': return (48.6, 12.0, 20.5);
-		case 'stand rifle move-front': return (53.9, 11.0, 27.3);
-		case 'stand rifle move-left': return (44.4, 10.2, 33.8);
-		case 'stand rifle move-right': return (49.3, 22.1, 26.4);
+		case 'stand carbine idle': return (34.5, 2.5, 29.0);
+		case 'stand carbine move-back': return (33.7, 3.0, 24.8);
+		case 'stand carbine move-front': return (51.9, -2.5, 32.1);
+		case 'stand carbine move-left': return (35.3, -1.7, 25.2);
+		case 'stand carbine move-right': return (36.0, 7.6, 25.8);
+		case 'stand rifle cover-left-open': return (15.0, 6.3, 1.0);
+		case 'stand rifle cover-right-open': return (21.1, -9.6, 13.5);
 		}
 		return hce_gunOffset;
 	}

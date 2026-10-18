@@ -2040,8 +2040,8 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    import draeth_stances, flood_leap_anims, be_anims
-    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances, flood_leap_anims, be_anims, cursed_anims
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('cursed_anims', cursed_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
         for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]
@@ -2195,6 +2195,10 @@ def build(cfg=None):
                 raise SystemExit(f"{cls}: {char} has no '{w}' animations (stance of {vname!r}); run marine_h2_grips.py after re-extracting the body")
             for k, names in list(ov.get('anims', {}).items()) + list(ov.get('anims_by_weapon', {}).get(weapon, {}).items()):
                 table[k] = [n for n in names if n in A.names]
+            # Cursed Halo's leaping spin (cursed_anims.py): the Hunter springs and spins through the air into its target;
+            # the spin is the strike (no swing after it)
+            hunter_spin = char == 'Hunter' and HUNTER_SPIN in A.names
+            if hunter_spin and 'LEAP_AIR' not in ov.get('anims', {}): table['LEAP_AIR'] = [HUNTER_SPIN]; table['LEAP_MELEE'] = []
             # speed: the run animation's own pace (map units a tic), the walk and low-ready walk from it; ov 'speed' overrides
             mv = (table.get('MOVE_F') or [None])[0]
             run = A.speed(mv) if mv else 0
@@ -2289,6 +2293,7 @@ def build(cfg=None):
             if char == 'FloodInfection': leapmin, leapmax, leapchance, leapvel = 24, 3.5 * S, 1.0, max(8, 0.12 * S / TICK)
             if char.startswith('Flood') and char not in ('FloodInfection', 'FloodCarrier') and leapmax <= 0:
                 leapmin, leapmax, leapchance, leapvel = 1.5 * S, 5 * S, 0.5, 0.16 * S / TICK
+            if hunter_spin: leapmin, leapmax, leapchance, leapvel = HUNTER_LEAP
             if 'leap' in ov: leapmin, leapmax, leapchance, leapvel = ov['leap']
             # grenades
             gtype = 0
@@ -2319,7 +2324,7 @@ def build(cfg=None):
             if t in ('elite',): flags += ['HCE_Surprise', 'HCE_Berserks', 'HCE_SeeksCover', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']
             if t == 'jackal': flags += ['HCE_Surprise', 'HCE_Panics', 'HCE_SeeksCover', 'HCE_Evades', 'HCE_FrontShield']
             if t == 'grunt': flags += ['HCE_Surprise', 'HCE_Panics', 'HCE_Evades', 'HCE_ThrowsGrenades']
-            if t == 'hunter': flags += ['HCE_Berserks', 'HCE_FrontArmor', 'HCE_PairBond']
+            if t == 'hunter': flags += ['HCE_Berserks', 'HCE_FrontArmor', 'HCE_PairBond'] + (['HCE_Leaps'] if hunter_spin else [])
             if t == 'marine': flags += ['HCE_Panics', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_FollowPlayer']
             if t == 'flood': flags += ['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Resurrects']
             if t == 'infection': flags += ['HCE_Swarm', 'HCE_Leaps', 'HCE_Explodes']
@@ -2756,6 +2761,10 @@ MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', 
 # loadout_only (a Marine loadout with no class); unique (no loadouts, not in the random spawner); ally (+FRIENDLY on
 # the Covenant / Sentinel side); drops False; voices; code (ZScript appended to the class); berserk_anims; weapon_toss;
 # johnson / stacker (the sergeants' two-gun code); h2_pieces (a Halo 2 body's own shield flare); raven (an ODST skin)
+# Cursed Halo's Hunter leap (cursed_anims.py): the spin animation, and the leap's (min, max distance, chance, speed in
+# map units a tic): from 120 to 320 units away, half as eager as the Flood, a heavy spring
+HUNTER_SPIN = 'stand unarmed melee-airborne'
+HUNTER_LEAP = (120, 320, 0.5, 11.0)
 CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see build_digsite.py)
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)

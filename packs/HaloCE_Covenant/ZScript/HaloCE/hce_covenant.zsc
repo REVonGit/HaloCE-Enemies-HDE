@@ -13673,7 +13673,7 @@ class HCE_HunterBase : HaloDoom_EnemyBase abstract
 	}
 }
 
-// HCE_Hunter: Halo variant "characters\hunter\hunter", hunter fuel rod, 225 body, 3 behaviour flags
+// HCE_Hunter: Halo variant "characters\hunter\hunter", hunter fuel rod, 225 body, 4 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_Hunter : HCE_HunterBase
 {
@@ -13697,7 +13697,7 @@ class HCE_Hunter : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_GunOffset (24.9, 19.1, 9.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 56, 80;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Leap 120, 320, 0.50, 11.0;
 		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
 		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.25, 0;
@@ -13711,6 +13711,7 @@ class HCE_Hunter : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_FuelRod";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
+		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_PairBond
 	}
 	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
@@ -13733,8 +13734,8 @@ class HCE_Hunter : HCE_HunterBase
 		case HCE_A_BERSERK: return 'stand unarmed berserk';
 		case HCE_A_AIRBORNE: return 'stand unarmed airborne';
 		case HCE_A_LAND: return 'stand unarmed land-soft';
-		case HCE_A_LEAP_AIR: return 'stand unarmed airborne';
-		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1', 'stand unarmed melee%2', 'stand unarmed melee%3' }; return o[random(0, 3)]; }
+		case HCE_A_LEAP_START: return 'stand unarmed leap-start';
+		case HCE_A_LEAP_AIR: return 'stand unarmed melee-airborne';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front chest%0 baked', 's-ping front chest%1 baked', 's-ping front gut baked' }; return o[random(0, 2)]; }
 		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -13786,10 +13787,12 @@ class HCE_Hunter : HCE_HunterBase
 		case 'stand unarmed dive-right': return 55;
 		case 'stand unarmed idle': return 52;
 		case 'stand unarmed land-soft': return 24;
+		case 'stand unarmed leap-start': return 10;
 		case 'stand unarmed melee%0': return 71;
 		case 'stand unarmed melee%1': return 66;
 		case 'stand unarmed melee%2': return 66;
 		case 'stand unarmed melee%3': return 82;
+		case 'stand unarmed melee-airborne': return 55;
 		case 'stand unarmed move-front': return 30;
 		}
 		return 30;
@@ -13819,7 +13822,7 @@ class HCE_Hunter : HCE_HunterBase
 	}
 }
 
-// HCE_HunterMajor: Halo variant "characters\hunter\hunter major", flamethrower, 350 body, 3 behaviour flags
+// HCE_HunterMajor: Halo variant "characters\hunter\hunter major", flamethrower, 350 body, 4 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_HunterMajor : HCE_HunterBase
 {
@@ -13843,7 +13846,7 @@ class HCE_HunterMajor : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_GunOffset (24.9, 19.1, 9.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 56, 80;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Leap 120, 320, 0.50, 11.0;
 		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
 		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.25, 0;
@@ -13858,6 +13861,7 @@ class HCE_HunterMajor : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Flamethrower", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
+		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_PairBond
 	}
 	// the animation table: which IQM clip plays for each of the AI's animation kinds (HCE_A_IDLE, HCE_A_MOVE_F ...;
@@ -13880,8 +13884,8 @@ class HCE_HunterMajor : HCE_HunterBase
 		case HCE_A_BERSERK: return 'stand unarmed berserk';
 		case HCE_A_AIRBORNE: return 'stand unarmed airborne';
 		case HCE_A_LAND: return 'stand unarmed land-soft';
-		case HCE_A_LEAP_AIR: return 'stand unarmed airborne';
-		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1', 'stand unarmed melee%2', 'stand unarmed melee%3' }; return o[random(0, 3)]; }
+		case HCE_A_LEAP_START: return 'stand unarmed leap-start';
+		case HCE_A_LEAP_AIR: return 'stand unarmed melee-airborne';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front chest%0 baked', 's-ping front chest%1 baked', 's-ping front gut baked' }; return o[random(0, 2)]; }
 		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -13933,10 +13937,12 @@ class HCE_HunterMajor : HCE_HunterBase
 		case 'stand unarmed dive-right': return 55;
 		case 'stand unarmed idle': return 52;
 		case 'stand unarmed land-soft': return 24;
+		case 'stand unarmed leap-start': return 10;
 		case 'stand unarmed melee%0': return 71;
 		case 'stand unarmed melee%1': return 66;
 		case 'stand unarmed melee%2': return 66;
 		case 'stand unarmed melee%3': return 82;
+		case 'stand unarmed melee-airborne': return 55;
 		case 'stand unarmed move-front': return 30;
 		}
 		return 30;
@@ -13965,7 +13971,7 @@ class HCE_HunterMajor : HCE_HunterBase
 	}
 }
 
-// HCE_HunterUltra: Halo variant "characters\hunter\hunter ultra", plasma caster, 450 body, 4 behaviour flags
+// HCE_HunterUltra: Halo variant "characters\hunter\hunter ultra", plasma caster, 450 body, 5 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_HunterUltra : HCE_HunterBase
 {
@@ -13989,7 +13995,7 @@ class HCE_HunterUltra : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_GunOffset (24.9, 19.1, 9.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 1, 0.3;
 		HaloDoom_EnemyBase.HCE_Melee 56, 80;
-		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
+		HaloDoom_EnemyBase.HCE_Leap 120, 320, 0.50, 11.0;
 		HaloDoom_EnemyBase.HCE_Grenades 0, 0, 0.00, 0.0, 0, 960, 18.7;
 		HaloDoom_EnemyBase.HCE_Panic 0.00, 0.00, 0.0, 0.0;
 		HaloDoom_EnemyBase.HCE_Berserk 0.00, 0.25, 0;
@@ -14004,6 +14010,7 @@ class HCE_HunterUltra : HCE_HunterBase
 		HaloDoom_EnemyBase.HCE_ArmWeapon "Halo_PlasmaCaster";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_FrontArmor
+		+HaloDoom_EnemyBase.HCE_Leaps
 		+HaloDoom_EnemyBase.HCE_Lobbed
 		+HaloDoom_EnemyBase.HCE_PairBond
 	}
@@ -14027,8 +14034,8 @@ class HCE_HunterUltra : HCE_HunterBase
 		case HCE_A_BERSERK: return 'stand unarmed berserk';
 		case HCE_A_AIRBORNE: return 'stand unarmed airborne';
 		case HCE_A_LAND: return 'stand unarmed land-soft';
-		case HCE_A_LEAP_AIR: return 'stand unarmed airborne';
-		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1', 'stand unarmed melee%2', 'stand unarmed melee%3' }; return o[random(0, 3)]; }
+		case HCE_A_LEAP_START: return 'stand unarmed leap-start';
+		case HCE_A_LEAP_AIR: return 'stand unarmed melee-airborne';
 		case HCE_A_PING_F: { static const Name o[] = { 's-ping front chest%0 baked', 's-ping front chest%1 baked', 's-ping front gut baked' }; return o[random(0, 2)]; }
 		case HCE_A_PING_B: { static const Name o[] = { 's-ping back gut%0 baked', 's-ping back gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -14080,10 +14087,12 @@ class HCE_HunterUltra : HCE_HunterBase
 		case 'stand unarmed dive-right': return 55;
 		case 'stand unarmed idle': return 52;
 		case 'stand unarmed land-soft': return 24;
+		case 'stand unarmed leap-start': return 10;
 		case 'stand unarmed melee%0': return 71;
 		case 'stand unarmed melee%1': return 66;
 		case 'stand unarmed melee%2': return 66;
 		case 'stand unarmed melee%3': return 82;
+		case 'stand unarmed melee-airborne': return 55;
 		case 'stand unarmed move-front': return 30;
 		}
 		return 30;

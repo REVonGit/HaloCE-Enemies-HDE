@@ -333,7 +333,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Belly:** the gap at the stomach takes 1.5× even from the front, within 30° of dead ahead and at 30–55% of their height.
   * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
   * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
-  * **Animations:** SOI7's Hunter animations from *Halo: Brutality Evolved*: a standing idle, a berserk roar, four different melee swings in place of Halo CE's one, and a reworked crouched idle, crouched walk and turns. Its aiming, firing and flinches are Halo CE's.
+  * **Animations:** SOI7's, from *Halo: Brutality Evolved* (see [Animations from Halo: Brutality Evolved](#animations-from-halo-brutality-evolved)).
 * **Hunter ranks by colour:**
 
   | Hunter | Weapon | Class (DoomEdNum) |
@@ -462,6 +462,16 @@ Under fire, or now and then of their own accord, Marines and the Covenant fight 
 * **Squads:** a unit tied to a squad (Covenant squads, Marines following you) only takes cover close to where its squad wants it, and not while a battle drill or lance manoeuvre is moving it.
 * **Difficulty:** the harder the difficulty, the shorter they hide between peeks (Halo's burst separation).
 * **How spots are found:** by sampling round the unit with line traces when it wants cover. There is no precomputed graph, so it works on any map and against a moving target. Two units never take the same spot.
+
+## Animations from Halo: Brutality Evolved
+
+*Halo: Brutality Evolved* (RoxanneGoat) gives Halo CE's Covenant SOI7's reworked and extended animation sets, and its Brutes a Halo 3-style set. What they add or redo over Halo CE's (and the Brutes' Halo 2) animations is used (`be_anims.py`):
+
+* **Hunters:** a standing idle, a berserk roar, four melee swings in place of one, a reworked crouched idle, walk and turns.
+* **Elites:** four pistol-stance melee swings and two warnings in place of one each, a second gut-shot death, reworked pistol and sword idles, walks, berserks and sword swings, and a full rifle stance with its crouched set. Sword Elites draw their sword the first time they see an enemy.
+* **Grunts:** a grenade pull before a suicide run, and a cowering idle when cornered while fleeing.
+* **Jackals:** a reworked crouched idle, plus a rifle stance and a knife melee that no Jackal uses yet.
+* **Brutes:** Halo 3-style stances in place of Halo 2's: the gravity hammer's (its overhead smashes, leaping smash, four charging runs), the rifle's and the Brute Shot's, each with its own melees, dives, evades, warnings, signals, surprise and berserk. They also get burning idles, sleeping idles and a head-shot death; a carbine stance comes along unused. Halo 2's low ready, corner cover, hoist, vault and firing stay.
 
 ## Climbing and vaulting
 
@@ -1346,7 +1356,8 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Thorn Beast:** created by omargabagu, its sounds by Ruby of Blue (from SPV3's a30 map).
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
-* **Hunter animations:** by SOI7, from *Halo: Brutality Evolved* by RoxanneGoat (MCC Steam Workshop 3014096841).
+* **Hunter, Elite, Grunt and Jackal animations:** by SOI7, from *Halo: Brutality Evolved* by RoxanneGoat (MCC Steam Workshop 3014096841).
+* **Brute animations (Halo 3 style):** from *Halo: Brutality Evolved*'s Brutes, credited in the mod to “Elite”.
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
 * **ODSTs:** the Halo CE ODST model and textures by Spiral.
 * **Fire Team Raven:** the Fire Team Raven ODST models by Connor Dawn.

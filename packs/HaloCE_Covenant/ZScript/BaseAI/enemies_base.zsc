@@ -104,6 +104,9 @@ enum HCE_AnimKinds
 	HCE_A_COVER_L_ENTER, HCE_A_COVER_L_IDLE, HCE_A_COVER_L_PEEK, HCE_A_COVER_L_OPEN, HCE_A_COVER_L_UNPEEK, HCE_A_COVER_L_EXIT,
 	HCE_A_COVER_R_ENTER, HCE_A_COVER_R_IDLE, HCE_A_COVER_R_PEEK, HCE_A_COVER_R_OPEN, HCE_A_COVER_R_UNPEEK, HCE_A_COVER_R_EXIT,
 	HCE_A_HOIST, HCE_A_VAULT,
+	// SOI7's (Halo: Brutality Evolved, be_anims.py): a Grunt pulling its grenades for a suicide run, cowering cornered
+	// mid-flight, an Elite drawing its sword when it first sees an enemy
+	HCE_A_KAMIKAZE, HCE_A_FLEE_IDLE, HCE_A_DRAW,
 	HCE_A_COUNT
 };
 
@@ -1345,6 +1348,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// First contact with a new target: wakes, alerts the squad, resets the burst and sets the first-burst delay (at
 	// least 0.4 s, scaled by difficulty), says the sighting line, delays grenades 3-6 s, and plays a surprise (within
 	// hce_surpriseDist; 1 in 3 panic) or a warn animation (1 in 4). Always-berserk types go berserk here.
+	bool hce_drawn;          // the sword has been drawn (HCE_A_DRAW, once)
 	virtual void HCE_OnAcquire()
 	{
 		if(hce_sleeping) HCE_Wake(false);
@@ -1361,6 +1365,12 @@ class HaloDoom_EnemyBase : Actor abstract
 			A_SetAngle(AngleTo(target));
 			HCE_PlayLocked(behind ? HCE_A_SURPRISE_B : HCE_A_SURPRISE_F, 0.8);
 			if(bHCE_Panics && random(0, 2) == 0) HCE_StartPanic();
+		}
+		else if(target && !hce_drawn && HCE_HasAnim(HCE_A_DRAW))           // the first enemy it sees: it draws its sword
+		{
+			hce_drawn = true;
+			A_SetAngle(AngleTo(target));
+			HCE_PlayLocked(HCE_A_DRAW, 0.8);
 		}
 		else if(target && HCE_HasAnim(HCE_A_WARN) && random(0, 3) == 0)     // target: the See state's first tic can drop it
 		{
@@ -1845,8 +1855,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(random(0, 50) == 0) HCE_Say('Flee', 1.0, 35 * 2);
 		// stuck with a plasma grenade (Halo CE): straight at the nearest friend, not away from the thrower
 		Actor fr = level.maptime < hce_stuckRunUntil ? HCE_NearestFriend(768) : null;
-		if(fr) HCE_Move(HCE_PickHeading(AngleTo(fr) + frandom(-10, 10), AngleTo(fr)), hce_runSpeed);
-		else HCE_Move(HCE_PickHeading(AngleTo(target) + 180 + frandom(-30, 30), AngleTo(target)), hce_runSpeed);
+		bool moved = fr ? HCE_Move(HCE_PickHeading(AngleTo(fr) + frandom(-10, 10), AngleTo(fr)), hce_runSpeed)
+		                : HCE_Move(HCE_PickHeading(AngleTo(target) + 180 + frandom(-30, 30), AngleTo(target)), hce_runSpeed);
+		if(!moved && HCE_HasAnim(HCE_A_FLEE_IDLE)) { HCE_Play(HCE_A_FLEE_IDLE); return; }   // cornered: it cowers
 		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
 		HCE_Play(HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
 	}
@@ -7537,7 +7548,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_kamiTics = 35 * 6;
 		HCE_StopFireLoop(); hce_shotsLeft = 0; hce_chargeTics = 0;
 		A_SetAngle(AngleTo(target));
-		HCE_PlayLocked(HCE_A_SURPRISE_F);                 // the jumping alert = pulling the grenades
+		HCE_PlayLocked(HCE_HasAnim(HCE_A_KAMIKAZE) ? HCE_A_KAMIKAZE : HCE_A_SURPRISE_F);   // pulling the grenades (else the jumping alert)
 		HCE_Say('Kamikaze', 1.0, 35 * 3, true);
 		for(int side = -1; side <= 1; side += 2)
 		{

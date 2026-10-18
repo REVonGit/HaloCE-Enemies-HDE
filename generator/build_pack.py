@@ -858,6 +858,10 @@ def anim_table(A, w, weapon):
     m['CROUCH_IDLE'] = f(f'crouch {w} idle')
     m['CROUCH_MOVE'] = f(f'crouch {w} move-front')
     m['FLEE'] = f(f'flee {w} move-front', 'flee pistol move-front', 'flee rifle move-front')
+    # SOI7's (be_anims.py): the Grunt's grenade pull for its suicide run, a cornered panic, the Elite's sword draw
+    m['KAMIKAZE'] = f('suicide enter')
+    m['FLEE_IDLE'] = f(f'flee {w} idle', 'flee pistol idle')
+    m['DRAW'] = f(f'stand {w} enter')
     code = FIRE_CODE.get(weapon or '', '')
     fires = [n for n in A.names if n.endswith('baked') and 'fire-' in n]
     pick = [n for n in fires if f' {w} ' in n and f' {code} ' in n] or [n for n in fires if f' {w} ' in n] or fires
@@ -889,7 +893,7 @@ def anim_table(A, w, weapon):
     m['RESURRECT_F'] = f('stand unarmed resurrect-front')
     m['RESURRECT_B'] = f('stand unarmed resurrect-back')
     m['FEED'] = f('stand unarmed feeding')
-    m['SLEEP'] = f(f'asleep {w} idle')
+    m['SLEEP'] = f(f'asleep {w} idle', 'asleep any idle')      # (the Brutes' Halo 3-style sleep: be_anims.py)
     # Halo CE's burning animations (Elites, Grunts and Jackals flail in place; Jackals, Marines and Slug Men also run)
     m['FLAME_IDLE'] = f(f'flaming {w} idle', 'flaming pistol idle', 'flaming rifle idle', 'flaming unarmed idle')
     m['FLAME_MOVE'] = f(f'flaming {w} move-front', 'flaming pistol move-front', 'flaming rifle move-front', 'flaming unarmed move-front')
@@ -927,7 +931,8 @@ KINDS = ['IDLE', 'ALERT', 'MOVE_F', 'MOVE_B', 'MOVE_L', 'MOVE_R', 'CROUCH_IDLE',
          'RELOAD', 'VENT', 'LOW_IDLE', 'LOW_MOVE', 'GUARD_IDLE', 'GUARD_MOVE_F', 'GUARD_MOVE_B', 'GUARD_MOVE_L',
          'GUARD_MOVE_R', 'GUARD_CROUCH_IDLE', 'GUARD_CROUCH_MOVE',
          'COVER_L_ENTER', 'COVER_L_IDLE', 'COVER_L_PEEK', 'COVER_L_OPEN', 'COVER_L_UNPEEK', 'COVER_L_EXIT',
-         'COVER_R_ENTER', 'COVER_R_IDLE', 'COVER_R_PEEK', 'COVER_R_OPEN', 'COVER_R_UNPEEK', 'COVER_R_EXIT', 'HOIST', 'VAULT']
+         'COVER_R_ENTER', 'COVER_R_IDLE', 'COVER_R_PEEK', 'COVER_R_OPEN', 'COVER_R_UNPEEK', 'COVER_R_EXIT', 'HOIST', 'VAULT',
+         'KAMIKAZE', 'FLEE_IDLE', 'DRAW']
 
 def zs_anim_move(A, used, msc=1.0):
     """HCE_AnimMove: how far a hoist / vault carries the body (cover_anims.py's 'move', Halo world units forward, left,
@@ -2035,8 +2040,8 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    import draeth_stances, flood_leap_anims, hunter_be_anims
-    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('hunter_be_anims', hunter_be_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances, flood_leap_anims, be_anims
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
         for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]

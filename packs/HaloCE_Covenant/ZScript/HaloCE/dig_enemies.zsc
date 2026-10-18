@@ -751,18 +751,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -773,13 +775,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -810,18 +814,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -832,13 +838,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -869,18 +877,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -891,13 +901,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -929,17 +941,19 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_R: return 'stand support move-right';
 		case HCE_A_FIRE: return 'stand support fire-1 baked';
 		case HCE_A_MELEE: return 'stand support melee';
-		case HCE_A_THROW: return 'stand support throw-grenade';
+		case HCE_A_THROW: return 'stand support throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand support dive-left';
 		case HCE_A_DIVE_R: return 'stand support dive-right';
 		case HCE_A_DIVE_F: return 'stand support dive-front';
 		case HCE_A_EVADE_L: return 'stand support evade-left';
 		case HCE_A_EVADE_R: return 'stand support evade-right';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
+		case HCE_A_SURPRISE_F: return 'stand support surprise-front';
+		case HCE_A_BERSERK: return 'stand support berserk';
 		case HCE_A_WARN: return 'stand support warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_SIGNAL: return 'stand support signal-attack';
 		case HCE_A_AIRBORNE: return 'stand support airborne';
 		case HCE_A_LAND: return 'stand support land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -950,13 +964,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand support celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand support turn-left';
 		case HCE_A_TURN_R: return 'stand support turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming support idle';
 		case HCE_A_LOW_IDLE: return 'stand support low-idle';
 		case HCE_A_LOW_MOVE: return 'stand support low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand support cover-left-enter';
@@ -988,17 +1004,19 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_R: return 'stand support move-right';
 		case HCE_A_FIRE: return 'stand support fire-1 baked';
 		case HCE_A_MELEE: return 'stand support melee';
-		case HCE_A_THROW: return 'stand support throw-grenade';
+		case HCE_A_THROW: return 'stand support throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand support dive-left';
 		case HCE_A_DIVE_R: return 'stand support dive-right';
 		case HCE_A_DIVE_F: return 'stand support dive-front';
 		case HCE_A_EVADE_L: return 'stand support evade-left';
 		case HCE_A_EVADE_R: return 'stand support evade-right';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
+		case HCE_A_SURPRISE_F: return 'stand support surprise-front';
+		case HCE_A_BERSERK: return 'stand support berserk';
 		case HCE_A_WARN: return 'stand support warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_SIGNAL: return 'stand support signal-attack';
 		case HCE_A_AIRBORNE: return 'stand support airborne';
 		case HCE_A_LAND: return 'stand support land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1009,13 +1027,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand support celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand support turn-left';
 		case HCE_A_TURN_R: return 'stand support turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming support idle';
 		case HCE_A_LOW_IDLE: return 'stand support low-idle';
 		case HCE_A_LOW_MOVE: return 'stand support low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand support cover-left-enter';
@@ -1046,18 +1066,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1068,13 +1090,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1105,18 +1129,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1127,13 +1153,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1164,18 +1192,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1186,13 +1216,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1223,18 +1255,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1245,13 +1279,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1282,18 +1318,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1304,13 +1342,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1341,18 +1381,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1363,13 +1405,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1400,18 +1444,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1422,13 +1468,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1459,18 +1507,20 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sk baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1481,13 +1531,15 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1511,8 +1563,13 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 	{
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
+		case 'flaming rifle idle': return 91;
+		case 'flaming support idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -1525,8 +1582,8 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -1540,31 +1597,34 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support airborne': return 69;
+		case 'stand support berserk': return 50;
 		case 'stand support celebrate': return 66;
 		case 'stand support cover-left-enter': return 24;
 		case 'stand support cover-left-exit': return 10;
@@ -1578,27 +1638,31 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		case 'stand support cover-right-open': return 2;
 		case 'stand support cover-right-peek': return 22;
 		case 'stand support cover-right-unpeek': return 22;
-		case 'stand support dive-front': return 66;
+		case 'stand support dive-front': return 77;
 		case 'stand support dive-left': return 66;
-		case 'stand support dive-right': return 66;
-		case 'stand support evade-left': return 47;
-		case 'stand support evade-right': return 47;
+		case 'stand support dive-right': return 75;
+		case 'stand support evade-left': return 36;
+		case 'stand support evade-right': return 36;
 		case 'stand support fire-1 baked': return 28;
 		case 'stand support hoist': return 51;
-		case 'stand support idle': return 104;
+		case 'stand support idle': return 50;
 		case 'stand support land-soft': return 29;
 		case 'stand support low-idle': return 140;
 		case 'stand support low-move': return 60;
-		case 'stand support melee': return 57;
-		case 'stand support move-back': return 29;
-		case 'stand support move-front': return 29;
-		case 'stand support move-left': return 29;
+		case 'stand support melee': return 42;
+		case 'stand support move-back': return 27;
+		case 'stand support move-front': return 27;
+		case 'stand support move-left': return 30;
 		case 'stand support move-right': return 29;
-		case 'stand support throw-grenade': return 69;
-		case 'stand support turn-left': return 16;
-		case 'stand support turn-right': return 16;
+		case 'stand support signal-attack': return 80;
+		case 'stand support surprise-front': return 78;
+		case 'stand support throw-grenade%1': return 77;
+		case 'stand support turn-left': return 28;
+		case 'stand support turn-right': return 28;
 		case 'stand support vault': return 21;
-		case 'stand support warn': return 63;
+		case 'stand support warn': return 57;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 0;
 	}
@@ -1675,18 +1739,20 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -1697,13 +1763,15 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -1730,6 +1798,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -1741,8 +1811,10 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -1755,8 +1827,8 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -1770,28 +1842,32 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -2163,10 +2239,11 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (16.4, 6.7, -0.5);
 		case 'stand rifle cover-right-open': return (24.9, -8.9, 11.9);
-		case 'stand rifle move-back': return (59.4, 5.8, 17.5);
-		case 'stand rifle move-front': return (58.8, 10.9, 6.7);
-		case 'stand rifle move-left': return (62.7, 5.6, 10.1);
-		case 'stand rifle move-right': return (62.8, -0.5, 10.1);
+		case 'stand rifle idle': return (59.0, 7.0, 30.6);
+		case 'stand rifle move-back': return (52.5, 12.2, 18.7);
+		case 'stand rifle move-front': return (57.8, 11.0, 25.6);
+		case 'stand rifle move-left': return (48.3, 10.1, 31.8);
+		case 'stand rifle move-right': return (53.1, 22.2, 24.3);
 		}
 		return hce_gunOffset;
 	}
@@ -2241,18 +2318,20 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -2263,13 +2342,15 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -2296,6 +2377,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -2307,8 +2390,10 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -2321,8 +2406,8 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -2336,28 +2421,32 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -2719,10 +2808,11 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
 		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
-		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
-		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
-		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
-		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		case 'stand rifle idle': return (46.0, 6.8, 24.9);
+		case 'stand rifle move-back': return (39.5, 11.7, 12.8);
+		case 'stand rifle move-front': return (44.9, 11.3, 19.4);
+		case 'stand rifle move-left': return (35.2, 9.7, 26.4);
+		case 'stand rifle move-right': return (39.9, 22.1, 19.1);
 		}
 		return hce_gunOffset;
 	}
@@ -2797,18 +2887,20 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -2819,13 +2911,15 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -2852,6 +2946,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -2863,8 +2959,10 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -2877,8 +2975,8 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -2892,28 +2990,32 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -3275,11 +3377,11 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
 		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
-		case 'stand rifle idle': return (56.4, 8.8, 10.7);
-		case 'stand rifle move-back': return (62.5, 5.8, 17.1);
-		case 'stand rifle move-front': return (61.8, 11.0, 6.3);
-		case 'stand rifle move-left': return (65.7, 5.7, 9.8);
-		case 'stand rifle move-right': return (65.8, -0.5, 9.7);
+		case 'stand rifle idle': return (62.1, 7.1, 30.5);
+		case 'stand rifle move-back': return (55.5, 12.3, 18.6);
+		case 'stand rifle move-front': return (60.9, 11.0, 25.6);
+		case 'stand rifle move-left': return (51.3, 10.1, 31.7);
+		case 'stand rifle move-right': return (56.1, 22.3, 24.1);
 		}
 		return hce_gunOffset;
 	}
@@ -3338,7 +3440,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'berserk hammer move-front';
 		case HCE_A_MOVE_R: return 'berserk hammer move-front';
 		case HCE_A_FLEE: return 'berserk hammer move-front';
-		case HCE_A_MELEE: { static const Name o[] = { 'berserk hammer melee 1', 'berserk hammer melee 2', 'stand melee melee%4', 'stand melee melee%5' }; return o[random(0, 3)]; }
+		case HCE_A_MELEE: { static const Name o[] = { 'berserk hammer melee 1', 'berserk hammer melee 2' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand melee turn-left';
 		case HCE_A_TURN_R: return 'stand melee turn-right';
 		}
@@ -3346,21 +3448,22 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		{
 		case HCE_A_IDLE: return 'stand melee idle';
 		case HCE_A_ALERT: return 'stand melee idle';
-		case HCE_A_MOVE_F: return 'stand melee move-front';
+		case HCE_A_MOVE_F: { static const Name o[] = { 'stand melee move-front%0', 'stand melee move-front%1', 'stand melee move-front%2', 'stand melee move-front%3' }; return o[random(0, 3)]; }
 		case HCE_A_MOVE_B: return 'stand melee move-back';
 		case HCE_A_MOVE_L: return 'stand melee move-left';
 		case HCE_A_MOVE_R: return 'stand melee move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: { static const Name o[] = { 'stand melee melee%1', 'stand melee melee%2', 'stand melee melee%3', 'stand melee melee%4', 'stand melee melee%5' }; return o[random(0, 4)]; }
-		case HCE_A_THROW: return 'stand melee throw-grenade';
-		case HCE_A_DIVE_L: return 'stand rifle dive-left';
-		case HCE_A_DIVE_R: return 'stand rifle dive-right';
-		case HCE_A_DIVE_F: return 'stand rifle dive-front';
-		case HCE_A_EVADE_L: return 'stand rifle evade-left';
-		case HCE_A_EVADE_R: return 'stand rifle evade-right';
-		case HCE_A_BERSERK: return 'stand rifle berserk';
-		case HCE_A_WARN: return 'stand rifle warn';
-		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand melee melee%0', 'stand melee melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand melee throw-grenade%1';
+		case HCE_A_DIVE_L: return 'stand melee dive-left';
+		case HCE_A_DIVE_R: return 'stand melee dive-right';
+		case HCE_A_DIVE_F: return 'stand melee dive-front';
+		case HCE_A_EVADE_L: return 'stand melee evade-left';
+		case HCE_A_EVADE_R: return 'stand melee evade-right';
+		case HCE_A_SURPRISE_F: return 'stand melee surprise-front';
+		case HCE_A_BERSERK: return 'stand melee berserk';
+		case HCE_A_WARN: return 'stand melee warn';
+		case HCE_A_SIGNAL: return 'stand melee signal-attack';
 		case HCE_A_AIRBORNE: return 'stand melee airborne';
 		case HCE_A_LAND: return 'stand melee land-soft';
 		case HCE_A_LEAP_START: return 'stand melee leap-start';
@@ -3376,13 +3479,15 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand melee turn-left';
 		case HCE_A_TURN_R: return 'stand melee turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming melee idle';
 		case HCE_A_LOW_IDLE: return 'stand melee low-idle';
 		case HCE_A_LOW_MOVE: return 'stand melee low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -3409,12 +3514,16 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk hammer idle': return 69;
 		case 'berserk hammer melee 1': return 35;
 		case 'berserk hammer melee 2': return 56;
 		case 'berserk hammer move-front': return 27;
+		case 'flaming melee idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -3428,28 +3537,36 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
 		case 'stand melee airborne': return 69;
+		case 'stand melee berserk': return 92;
+		case 'stand melee dive-front': return 77;
+		case 'stand melee dive-left': return 66;
+		case 'stand melee dive-right': return 75;
+		case 'stand melee evade-left': return 34;
+		case 'stand melee evade-right': return 34;
 		case 'stand melee hoist': return 48;
-		case 'stand melee idle': return 69;
+		case 'stand melee idle': return 50;
 		case 'stand melee land-soft': return 29;
-		case 'stand melee leap-airborne': return 19;
-		case 'stand melee leap-melee': return 28;
-		case 'stand melee leap-start': return 26;
+		case 'stand melee leap-airborne': return 34;
+		case 'stand melee leap-melee': return 14;
+		case 'stand melee leap-start': return 22;
 		case 'stand melee low-idle': return 140;
 		case 'stand melee low-move': return 60;
-		case 'stand melee melee%1': return 43;
-		case 'stand melee melee%2': return 58;
-		case 'stand melee melee%3': return 43;
-		case 'stand melee melee%4': return 58;
-		case 'stand melee melee%5': return 47;
+		case 'stand melee melee%0': return 52;
+		case 'stand melee melee%1': return 69;
 		case 'stand melee move-back': return 29;
-		case 'stand melee move-front': return 29;
-		case 'stand melee move-left': return 29;
-		case 'stand melee move-right': return 29;
-		case 'stand melee throw-grenade': return 35;
-		case 'stand melee turn-left': return 16;
-		case 'stand melee turn-right': return 16;
+		case 'stand melee move-front%0': return 27;
+		case 'stand melee move-front%1': return 27;
+		case 'stand melee move-front%2': return 56;
+		case 'stand melee move-front%3': return 30;
+		case 'stand melee move-left': return 30;
+		case 'stand melee move-right': return 30;
+		case 'stand melee signal-attack': return 80;
+		case 'stand melee surprise-front': return 78;
+		case 'stand melee throw-grenade%1': return 68;
+		case 'stand melee turn-left': return 20;
+		case 'stand melee turn-right': return 20;
 		case 'stand melee vault': return 21;
-		case 'stand rifle berserk': return 51;
+		case 'stand melee warn': return 57;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -3463,14 +3580,7 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
-		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
 		case 'stand rifle fire-1 pr baked': return 10;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle warn': return 63;
 		}
 		return 30;
 	}
@@ -3825,11 +3935,6 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	{
 		switch(anim)
 		{
-		case 'stand melee idle': return (52.4, -3.7, 13.6);
-		case 'stand melee move-back': return (59.3, -2.4, 34.2);
-		case 'stand melee move-front': return (51.4, 11.5, 18.4);
-		case 'stand melee move-left': return (54.4, 6.0, 15.4);
-		case 'stand melee move-right': return (50.3, -12.3, 2.0);
 		case 'stand rifle cover-left-open': return (18.8, -5.6, 51.4);
 		case 'stand rifle cover-right-open': return (29.0, -30.0, 59.4);
 		}
@@ -3909,18 +4014,20 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -3931,13 +4038,15 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -3964,6 +4073,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -3975,8 +4086,10 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -3989,8 +4102,8 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -4004,28 +4117,32 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -4383,10 +4500,11 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
 		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
-		case 'stand rifle move-back': return (55.7, 4.8, 19.3);
-		case 'stand rifle move-front': return (55.1, 9.8, 8.4);
-		case 'stand rifle move-left': return (58.9, 4.5, 11.8);
-		case 'stand rifle move-right': return (59.0, -1.6, 11.8);
+		case 'stand rifle idle': return (55.2, 6.9, 32.5);
+		case 'stand rifle move-back': return (48.6, 12.0, 20.5);
+		case 'stand rifle move-front': return (53.9, 11.0, 27.3);
+		case 'stand rifle move-left': return (44.4, 10.2, 33.8);
+		case 'stand rifle move-right': return (49.3, 22.1, 26.4);
 		}
 		return hce_gunOffset;
 	}
@@ -4461,18 +4579,20 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -4483,13 +4603,15 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -4516,6 +4638,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -4527,8 +4651,10 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -4541,8 +4667,8 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -4556,28 +4682,32 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -4935,10 +5065,11 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
 		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
-		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
-		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
-		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
-		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		case 'stand rifle idle': return (46.0, 6.8, 24.9);
+		case 'stand rifle move-back': return (39.5, 11.7, 12.8);
+		case 'stand rifle move-front': return (44.9, 11.3, 19.4);
+		case 'stand rifle move-left': return (35.2, 9.7, 26.4);
+		case 'stand rifle move-right': return (39.9, 22.1, 19.1);
 		}
 		return hce_gunOffset;
 	}
@@ -5013,18 +5144,20 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sg baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -5035,13 +5168,15 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -5068,6 +5203,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -5079,8 +5216,10 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -5093,8 +5232,8 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -5108,28 +5247,32 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 sg baked': return 12;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -5492,11 +5635,11 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (19.5, 6.9, -0.4);
 		case 'stand rifle cover-right-open': return (28.0, -8.8, 11.9);
-		case 'stand rifle idle': return (56.4, 8.8, 10.7);
-		case 'stand rifle move-back': return (62.5, 5.8, 17.1);
-		case 'stand rifle move-front': return (61.8, 11.0, 6.3);
-		case 'stand rifle move-left': return (65.7, 5.7, 9.8);
-		case 'stand rifle move-right': return (65.8, -0.5, 9.7);
+		case 'stand rifle idle': return (62.1, 7.1, 30.5);
+		case 'stand rifle move-back': return (55.5, 12.3, 18.6);
+		case 'stand rifle move-front': return (60.9, 11.0, 25.6);
+		case 'stand rifle move-left': return (51.3, 10.1, 31.7);
+		case 'stand rifle move-right': return (56.1, 22.3, 24.1);
 		}
 		return hce_gunOffset;
 	}
@@ -5571,18 +5714,20 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sk baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -5593,13 +5738,15 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -5626,6 +5773,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -5637,8 +5786,10 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -5651,8 +5802,8 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -5666,28 +5817,32 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -6050,10 +6205,11 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.9, 8.2, -5.8);
 		case 'stand rifle cover-right-open': return (24.2, -6.5, 7.2);
-		case 'stand rifle move-back': return (58.4, 8.7, 13.3);
-		case 'stand rifle move-front': return (57.8, 14.2, 2.9);
-		case 'stand rifle move-left': return (61.7, 8.9, 6.3);
-		case 'stand rifle move-right': return (61.8, 2.7, 6.2);
+		case 'stand rifle idle': return (58.2, 7.0, 25.0);
+		case 'stand rifle move-back': return (51.8, 12.2, 13.1);
+		case 'stand rifle move-front': return (57.2, 11.2, 20.0);
+		case 'stand rifle move-left': return (47.4, 9.8, 26.3);
+		case 'stand rifle move-right': return (52.2, 22.3, 18.8);
 		}
 		return hce_gunOffset;
 	}
@@ -6128,18 +6284,20 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 ar baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -6150,13 +6308,15 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -6183,6 +6343,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -6194,8 +6356,10 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -6208,8 +6372,8 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -6223,28 +6387,32 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 ar baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -6607,10 +6775,11 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.0, 6.1, 1.1);
 		case 'stand rifle cover-right-open': return (21.1, -9.8, 13.5);
-		case 'stand rifle move-back': return (55.7, 4.8, 19.3);
-		case 'stand rifle move-front': return (55.1, 9.8, 8.4);
-		case 'stand rifle move-left': return (58.9, 4.5, 11.8);
-		case 'stand rifle move-right': return (59.0, -1.6, 11.8);
+		case 'stand rifle idle': return (55.2, 6.9, 32.5);
+		case 'stand rifle move-back': return (48.6, 12.0, 20.5);
+		case 'stand rifle move-front': return (53.9, 11.0, 27.3);
+		case 'stand rifle move-left': return (44.4, 10.2, 33.8);
+		case 'stand rifle move-right': return (49.3, 22.1, 26.4);
 		}
 		return hce_gunOffset;
 	}
@@ -6685,18 +6854,20 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 pr baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -6707,13 +6878,15 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -6740,6 +6913,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -6751,8 +6926,10 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -6765,8 +6942,8 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -6780,28 +6957,32 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 pr baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -7164,10 +7345,11 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.0, 7.8, -6.7);
 		case 'stand rifle cover-right-open': return (15.0, -6.8, 6.8);
-		case 'stand rifle move-back': return (46.2, 8.9, 14.3);
-		case 'stand rifle move-front': return (45.6, 14.3, 3.9);
-		case 'stand rifle move-left': return (49.5, 9.0, 7.3);
-		case 'stand rifle move-right': return (49.5, 2.8, 7.2);
+		case 'stand rifle idle': return (46.0, 6.8, 24.9);
+		case 'stand rifle move-back': return (39.5, 11.7, 12.8);
+		case 'stand rifle move-front': return (44.9, 11.3, 19.4);
+		case 'stand rifle move-left': return (35.2, 9.7, 26.4);
+		case 'stand rifle move-right': return (39.9, 22.1, 19.1);
 		}
 		return hce_gunOffset;
 	}
@@ -7243,18 +7425,20 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		case HCE_A_MOVE_L: return 'stand rifle move-left';
 		case HCE_A_MOVE_R: return 'stand rifle move-right';
 		case HCE_A_FIRE: return 'stand rifle fire-1 sk baked';
-		case HCE_A_MELEE: return 'stand rifle melee';
-		case HCE_A_THROW: return 'stand rifle throw-grenade';
+		case HCE_A_MELEE: { static const Name o[] = { 'stand rifle melee%0', 'stand rifle melee%1' }; return o[random(0, 1)]; }
+		case HCE_A_THROW: return 'stand rifle throw-grenade%1';
 		case HCE_A_DIVE_L: return 'stand rifle dive-left';
 		case HCE_A_DIVE_R: return 'stand rifle dive-right';
 		case HCE_A_DIVE_F: return 'stand rifle dive-front';
 		case HCE_A_EVADE_L: return 'stand rifle evade-left';
 		case HCE_A_EVADE_R: return 'stand rifle evade-right';
+		case HCE_A_SURPRISE_F: return 'stand rifle surprise-front';
 		case HCE_A_BERSERK: return 'stand rifle berserk';
 		case HCE_A_WARN: return 'stand rifle warn';
 		case HCE_A_SIGNAL: return 'stand rifle signal-attack';
 		case HCE_A_AIRBORNE: return 'stand rifle airborne';
 		case HCE_A_LAND: return 'stand rifle land-soft';
+		case HCE_A_LEAP_MELEE: { static const Name o[] = { 'stand unarmed melee%0', 'stand unarmed melee%1' }; return o[random(0, 1)]; }
 		case HCE_A_PING_F: return 's-ping front gut baked';
 		case HCE_A_PING_B: return 's-ping back gut baked';
 		case HCE_A_PING_L: return 's-ping left gut baked';
@@ -7265,13 +7449,15 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
-		case HCE_A_DIE_HARD_F: return 'h-kill front gut';
+		case HCE_A_DIE_HARD_F: { static const Name o[] = { 'h-kill front gut', 'h-kill front head' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_HARD_B: return 'h-kill back gut';
 		case HCE_A_DIE_AIR: return 'stand airborne-dead';
 		case HCE_A_DIE_LAND: return 'stand landing-dead';
 		case HCE_A_CELEBRATE: return 'stand rifle celebrate';
+		case HCE_A_SLEEP: { static const Name o[] = { 'asleep any idle%0', 'asleep any idle%1' }; return o[random(0, 1)]; }
 		case HCE_A_TURN_L: return 'stand rifle turn-left';
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
+		case HCE_A_FLAME_IDLE: return 'flaming rifle idle';
 		case HCE_A_LOW_IDLE: return 'stand rifle low-idle';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_COVER_L_ENTER: return 'stand rifle cover-left-enter';
@@ -7298,6 +7484,8 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		if(hce_hasLoadout) { int lt = HCE_LoadoutAnimTics(anim); if(lt > 0) return lt; }
 		switch(anim)
 		{
+		case 'asleep any idle%0': return 155;
+		case 'asleep any idle%1': return 139;
 		case 'berserk idle': return 51;
 		case 'berserk melee 1': return 20;
 		case 'berserk melee 2': return 20;
@@ -7309,8 +7497,10 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		case 'berserk tackle 2': return 61;
 		case 'berserk turn-left': return 16;
 		case 'berserk turn-right': return 16;
+		case 'flaming rifle idle': return 91;
 		case 'h-kill back gut': return 48;
 		case 'h-kill front gut': return 69;
+		case 'h-kill front head': return 105;
 		case 'h-ping back gut': return 27;
 		case 'h-ping front gut': return 22;
 		case 's-kill back gut': return 48;
@@ -7323,8 +7513,8 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		case 's-ping right gut baked': return 16;
 		case 'stand airborne-dead': return 49;
 		case 'stand landing-dead': return 34;
-		case 'stand rifle airborne': return 69;
-		case 'stand rifle berserk': return 51;
+		case 'stand rifle airborne': return 91;
+		case 'stand rifle berserk': return 50;
 		case 'stand rifle celebrate': return 66;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
@@ -7338,28 +7528,32 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		case 'stand rifle cover-right-open': return 2;
 		case 'stand rifle cover-right-peek': return 22;
 		case 'stand rifle cover-right-unpeek': return 22;
-		case 'stand rifle dive-front': return 66;
+		case 'stand rifle dive-front': return 77;
 		case 'stand rifle dive-left': return 66;
-		case 'stand rifle dive-right': return 66;
-		case 'stand rifle evade-left': return 47;
-		case 'stand rifle evade-right': return 48;
+		case 'stand rifle dive-right': return 75;
+		case 'stand rifle evade-left': return 33;
+		case 'stand rifle evade-right': return 34;
 		case 'stand rifle fire-1 sk baked': return 10;
 		case 'stand rifle hoist': return 51;
-		case 'stand rifle idle': return 104;
-		case 'stand rifle land-soft': return 29;
+		case 'stand rifle idle': return 69;
+		case 'stand rifle land-soft': return 38;
 		case 'stand rifle low-idle': return 140;
 		case 'stand rifle low-move': return 60;
-		case 'stand rifle melee': return 57;
+		case 'stand rifle melee%0': return 42;
+		case 'stand rifle melee%1': return 43;
 		case 'stand rifle move-back': return 29;
-		case 'stand rifle move-front': return 29;
-		case 'stand rifle move-left': return 29;
-		case 'stand rifle move-right': return 29;
-		case 'stand rifle signal-attack': return 37;
-		case 'stand rifle throw-grenade': return 69;
-		case 'stand rifle turn-left': return 16;
-		case 'stand rifle turn-right': return 16;
-		case 'stand rifle warn': return 63;
+		case 'stand rifle move-front': return 27;
+		case 'stand rifle move-left': return 33;
+		case 'stand rifle move-right': return 30;
+		case 'stand rifle signal-attack': return 80;
+		case 'stand rifle surprise-front': return 78;
+		case 'stand rifle throw-grenade%1': return 77;
+		case 'stand rifle turn-left': return 27;
+		case 'stand rifle turn-right': return 28;
+		case 'stand rifle warn': return 57;
 		case 'stand support vault': return 21;
+		case 'stand unarmed melee%0': return 42;
+		case 'stand unarmed melee%1': return 42;
 		}
 		return 30;
 	}
@@ -7722,10 +7916,11 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		{
 		case 'stand rifle cover-left-open': return (15.9, 8.2, -5.8);
 		case 'stand rifle cover-right-open': return (24.2, -6.5, 7.2);
-		case 'stand rifle move-back': return (58.4, 8.7, 13.3);
-		case 'stand rifle move-front': return (57.8, 14.2, 2.9);
-		case 'stand rifle move-left': return (61.7, 8.9, 6.3);
-		case 'stand rifle move-right': return (61.8, 2.7, 6.2);
+		case 'stand rifle idle': return (58.2, 7.0, 25.0);
+		case 'stand rifle move-back': return (51.8, 12.2, 13.1);
+		case 'stand rifle move-front': return (57.2, 11.2, 20.0);
+		case 'stand rifle move-left': return (47.4, 9.8, 26.3);
+		case 'stand rifle move-right': return (52.2, 22.3, 18.8);
 		}
 		return hce_gunOffset;
 	}
@@ -10188,7 +10383,7 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -10239,7 +10434,8 @@ class HCE_EliteCommanderPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -10416,7 +10612,7 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -10467,7 +10663,8 @@ class HCE_EliteCommanderPulseCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -10635,7 +10832,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -10686,7 +10883,8 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -10919,7 +11117,7 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -10970,7 +11168,8 @@ class HCE_EliteMajorPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -11147,7 +11346,7 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -11198,7 +11397,8 @@ class HCE_EliteMajorPulseCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -11366,7 +11566,7 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -11417,7 +11617,8 @@ class HCE_EliteMinorPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -11594,7 +11795,7 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -11645,7 +11846,8 @@ class HCE_EliteMinorPulseCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -11814,7 +12016,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -11865,7 +12067,8 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -12098,7 +12301,7 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -12149,7 +12352,8 @@ class HCE_EliteSpecopsPlasmaCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -12327,7 +12531,7 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -12378,7 +12582,8 @@ class HCE_EliteSpecopsPulseCarbine : HCE_EliteRifleBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -12627,11 +12832,11 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 	Default
 	{
 		Health 130;
-		Speed 9.3;
+		Speed 6.5;
 		HaloDoom_EnemyBase.HCE_Type 0;
 		HaloDoom_EnemyBase.HCE_Variant "elite ultra zealot energy sword";
 		HaloDoom_EnemyBase.HCE_Perception 3200, 140, 3200, 80;
-		HaloDoom_EnemyBase.HCE_Movement 6.06, 9.32, 12;
+		HaloDoom_EnemyBase.HCE_Movement 4.22, 6.50, 12;
 		HaloDoom_EnemyBase.HCE_LowWalk 1.23;
 		HaloDoom_EnemyBase.HCE_Weapon "None", 1, 3.00, 0.00, 960;
 		HaloDoom_EnemyBase.HCE_ProjectileSpeed 0.0;
@@ -12685,7 +12890,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case HCE_A_SURPRISE_F: return 'stand sword surprise-front';
 		case HCE_A_SURPRISE_B: return 'stand sword surprise-back';
 		case HCE_A_BERSERK: return 'stand sword berserk';
-		case HCE_A_WARN: return 'stand pistol warn';
+		case HCE_A_WARN: { static const Name o[] = { 'stand pistol warn%0', 'stand pistol warn%1' }; return o[random(0, 1)]; }
 		case HCE_A_SIGNAL: return 'stand pistol signal-attack';
 		case HCE_A_AIRBORNE: return 'stand sword airborne';
 		case HCE_A_LAND: return 'stand sword land-soft';
@@ -12695,7 +12900,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case HCE_A_PING_R: { static const Name o[] = { 's-ping right gut%0 baked', 's-ping right gut%1 baked' }; return o[random(0, 1)]; }
 		case HCE_A_HPING_F: { static const Name o[] = { 'h-ping front chest', 'h-ping front gut', 'h-ping front l-arm', 'h-ping front l-foot' }; return o[random(0, 3)]; }
 		case HCE_A_HPING_B: { static const Name o[] = { 'h-ping back gut', 'h-ping back l-arm', 'h-ping back r-arm' }; return o[random(0, 2)]; }
-		case HCE_A_DIE_F: return 's-kill front gut';
+		case HCE_A_DIE_F: { static const Name o[] = { 's-kill front gut%0', 's-kill front gut%1' }; return o[random(0, 1)]; }
 		case HCE_A_DIE_B: return 's-kill back gut';
 		case HCE_A_DIE_L: return 's-kill left gut';
 		case HCE_A_DIE_R: return 's-kill right gut';
@@ -12729,6 +12934,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case HCE_A_COVER_R_EXIT: return 'stand rifle cover-right-exit';
 		case HCE_A_HOIST: return 'stand sword hoist';
 		case HCE_A_VAULT: return 'stand sword vault';
+		case HCE_A_DRAW: return 'stand sword enter';
 		}
 		return 'None';
 	}
@@ -12759,7 +12965,8 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'h-ping front l-arm': return 43;
 		case 'h-ping front l-foot': return 69;
 		case 's-kill back gut': return 77;
-		case 's-kill front gut': return 77;
+		case 's-kill front gut%0': return 70;
+		case 's-kill front gut%1': return 77;
 		case 's-kill left gut': return 43;
 		case 's-kill right gut': return 49;
 		case 's-ping back gut%0 baked': return 6;
@@ -12775,7 +12982,8 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand landing-dead': return 47;
 		case 'stand missle fire-1 fr baked': return 13;
 		case 'stand pistol signal-attack': return 64;
-		case 'stand pistol warn': return 33;
+		case 'stand pistol warn%0': return 40;
+		case 'stand pistol warn%1': return 69;
 		case 'stand rifle cover-left-enter': return 24;
 		case 'stand rifle cover-left-exit': return 10;
 		case 'stand rifle cover-left-idle': return 104;
@@ -12793,6 +13001,7 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand sword dive-front': return 47;
 		case 'stand sword dive-left': return 47;
 		case 'stand sword dive-right': return 47;
+		case 'stand sword enter': return 46;
 		case 'stand sword evade-left': return 37;
 		case 'stand sword evade-right': return 36;
 		case 'stand sword hoist': return 65;
@@ -12800,14 +13009,14 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand sword land-soft': return 47;
 		case 'stand sword low-idle': return 70;
 		case 'stand sword low-move': return 48;
-		case 'stand sword melee%0': return 33;
-		case 'stand sword melee%1': return 41;
-		case 'stand sword move-back': return 30;
-		case 'stand sword move-front': return 30;
-		case 'stand sword move-left': return 30;
-		case 'stand sword move-right': return 30;
+		case 'stand sword melee%0': return 46;
+		case 'stand sword melee%1': return 46;
+		case 'stand sword move-back': return 23;
+		case 'stand sword move-front': return 23;
+		case 'stand sword move-left': return 23;
+		case 'stand sword move-right': return 23;
 		case 'stand sword surprise-back': return 30;
-		case 'stand sword surprise-front': return 32;
+		case 'stand sword surprise-front': return 24;
 		case 'stand sword throw-grenade': return 63;
 		case 'stand sword turn-left': return 16;
 		case 'stand sword turn-right': return 16;
@@ -12839,9 +13048,11 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 		case 'stand rifle cover-left-open': return (28.0, 11.2, 5.5);
 		case 'stand rifle cover-left-peek': return (9.8, 7.1, 3.6);
 		case 'stand rifle cover-right-open': return (26.2, -6.2, 5.3);
-		case 'stand sword move-back': return (30.6, 19.1, -15.5);
-		case 'stand sword move-left': return (26.7, 34.6, -4.4);
-		case 'stand sword move-right': return (32.7, 25.5, -17.9);
+		case 'stand sword idle': return (30.4, 23.3, -8.9);
+		case 'stand sword move-back': return (23.9, 23.1, -6.7);
+		case 'stand sword move-front': return (28.0, 35.2, -4.6);
+		case 'stand sword move-left': return (28.5, 14.6, -17.2);
+		case 'stand sword move-right': return (27.9, 29.6, -12.3);
 		}
 		return hce_gunOffset;
 	}
@@ -13515,6 +13726,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -13566,6 +13778,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -13614,6 +13827,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -13665,6 +13879,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -13676,6 +13891,7 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		case 'crouch pistol move-front': return 42;
 		case 'crouch rifle idle': return 69;
 		case 'crouch rifle move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -13839,6 +14055,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -13851,6 +14068,7 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		{
 		case 'crouch pistol idle': return 70;
 		case 'crouch pistol move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -14015,6 +14233,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -14027,6 +14246,7 @@ class HCE_JackalMarksmanPlasmaCarbine : HCE_H2JackalBase
 		{
 		case 'crouch rifle idle': return 69;
 		case 'crouch rifle move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -14193,6 +14413,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -14205,6 +14426,7 @@ class HCE_JackalMarksmanPulseCarbine : HCE_H2JackalBase
 		{
 		case 'crouch rifle idle': return 69;
 		case 'crouch rifle move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -14363,6 +14585,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_LOW_MOVE: return 'stand rifle low-move';
 		case HCE_A_HOIST: return 'stand rifle hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -14375,6 +14598,7 @@ class HCE_JackalSniperBeamRifle : HCE_H2JackalBase
 		{
 		case 'crouch rifle idle': return 69;
 		case 'crouch rifle move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -14536,6 +14760,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -14548,6 +14773,7 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 		{
 		case 'crouch pistol idle': return 70;
 		case 'crouch pistol move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -14716,6 +14942,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		case HCE_A_LOW_IDLE: return 'stand pistol low-idle';
 		case HCE_A_LOW_MOVE: return 'stand pistol low-move';
 		case HCE_A_HOIST: return 'stand pistol hoist';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -14728,6 +14955,7 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		{
 		case 'crouch pistol idle': return 70;
 		case 'crouch pistol move-front': return 42;
+		case 'flee pistol idle': return 70;
 		case 'flee pistol move-front': return 23;
 		case 'h-kill back gut': return 49;
 		case 'h-kill front gut': return 41;
@@ -15172,6 +15400,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15219,6 +15448,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15266,6 +15496,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15313,6 +15544,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15331,6 +15563,7 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -15492,6 +15725,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15508,6 +15742,7 @@ class HCE_SlugManMajorNeedler : HCE_SlugManBase
 		case 'crouch pistol ne fire-1 baked': return 8;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -15667,6 +15902,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15683,6 +15919,7 @@ class HCE_SlugManMajorParticleBeam : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -15890,6 +16127,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -15906,6 +16144,7 @@ class HCE_SlugManMajorPlasmaCarbine : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16068,6 +16307,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16083,6 +16323,7 @@ class HCE_SlugManMajorPlasmaPistol : HCE_SlugManBase
 		case 'crouch pistol move-front': return 43;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16243,6 +16484,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16259,6 +16501,7 @@ class HCE_SlugManMajorPlasmaRifle : HCE_SlugManBase
 		case 'crouch pistol pr fire-1 baked': return 8;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16418,6 +16661,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16434,6 +16678,7 @@ class HCE_SlugManMajorPulseCarbine : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16587,6 +16832,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16603,6 +16849,7 @@ class HCE_SlugManMinorNeedler : HCE_SlugManBase
 		case 'crouch pistol ne fire-1 baked': return 8;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16762,6 +17009,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16778,6 +17026,7 @@ class HCE_SlugManMinorPlasmaCarbine : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -16940,6 +17189,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -16956,6 +17206,7 @@ class HCE_SlugManMinorPlasmaRifle : HCE_SlugManBase
 		case 'crouch pistol pr fire-1 baked': return 8;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -17115,6 +17366,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -17131,6 +17383,7 @@ class HCE_SlugManParticleBeam : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -17338,6 +17591,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -17353,6 +17607,7 @@ class HCE_SlugManPlasmaPistol : HCE_SlugManBase
 		case 'crouch pistol move-front': return 43;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -17513,6 +17768,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -17529,6 +17785,7 @@ class HCE_SlugManUltraParticleBeam : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -17736,6 +17993,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand rifle turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -17752,6 +18010,7 @@ class HCE_SlugManUltraPlasmaCarbine : HCE_SlugManBase
 		case 'crouch rifle sr fire-1%0 baked': return 13;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;
@@ -17914,6 +18173,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		case HCE_A_TURN_R: return 'stand pistol turn-right';
 		case HCE_A_FLAME_IDLE: return 'flaming unarmed idle';
 		case HCE_A_FLAME_MOVE: return 'flaming unarmed move-front';
+		case HCE_A_FLEE_IDLE: return 'flee pistol idle';
 		}
 		return 'None';
 	}
@@ -17930,6 +18190,7 @@ class HCE_SlugManUltraPlasmaRifle : HCE_SlugManBase
 		case 'crouch pistol pr fire-1 baked': return 8;
 		case 'flaming unarmed idle': return 63;
 		case 'flaming unarmed move-front': return 20;
+		case 'flee pistol idle': return 71;
 		case 'flee pistol move-front': return 24;
 		case 'h-kill back gut': return 50;
 		case 'h-kill front gut': return 42;

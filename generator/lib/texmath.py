@@ -25,9 +25,10 @@ def height_from_normals(n):
     return np.real(np.fft.ifft2(z))
 
 
-def raster_normals(meshes, matfile, size):
+def raster_normals(meshes, matfile, size, coverage=False):
     """(H, W, 3) normals per texel of the meshes using 'matfile' (gaps filled from the nearest covered texel).
-    meshes: IQM meshes (iqm.read_iqm) with material, uv, nrm and tris; size: (W, H)"""
+    meshes: IQM meshes (iqm.read_iqm) with material, uv, nrm and tris; size: (W, H); coverage: also return the
+    (H, W) mask of the texels the meshes actually cover"""
     from scipy import ndimage
     W_, H_ = size
     N = np.zeros((H_, W_, 3), np.float32); hit = np.zeros((H_, W_), bool)
@@ -52,7 +53,7 @@ def raster_normals(meshes, matfile, size):
         _, (iy, ix) = ndimage.distance_transform_edt(~hit, return_indices=True)
         N = N[iy, ix]
     N /= np.maximum(np.linalg.norm(N, axis=2, keepdims=True), 1e-6)
-    return N
+    return (N, hit) if coverage else N
 
 
 def sample_cube(faces, r):

@@ -24,7 +24,7 @@ _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 
 import os, sys, json, copy, shutil, subprocess, glob
 import numpy as np
 from templates import template   # templates/: the ZScript and GLSL written into the pack as-is
-from PIL import Image
+from PIL import Image, ImageFilter
 import build_pack as bp
 from looset import LooseMap
 from extract_ai import dump, flatten_obj
@@ -113,7 +113,7 @@ H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman'
                'zealot': [[1.0, 0.84, 0.32], [0.95, 0.92, 0.80], [0.85, 0.62, 0.16]]}
 
 # Slug Man ranks: health and aim (error-angle multiplier) and the armour colour repainted over the skin (slug_skin)
-SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=(0.42, 0.40, 0.50)),
+SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=bp.MINOR_BLUE),          # the Elites' Minor blue
               'major': dict(health=1.35, accuracy=0.9, tint=(0.58, 0.17, 0.15)),
               'ultra': dict(health=1.8, accuracy=0.75, tint=(0.80, 0.82, 0.88))}
 # weapon key -> (its reference, which of the two Digsite Slug Man variants it copies: the 'pistol' one or the 'rifle'
@@ -125,6 +125,34 @@ SLUG_RANK_WEAPONS = {'minor': ['needler', 'plasma rifle', 'plasma carbine'],
                      'major': ['plasma pistol', 'needler', 'plasma rifle', 'particle beam', 'plasma carbine', 'pulse carbine'],
                      'ultra': ['plasma rifle', 'particle beam', 'plasma carbine']}
 
+# the Slug Men's armour reflection (slug_skin_act): the Elite cube of each rank's colour, and its strength
+SLUG_CUBE = {'minor': 0, 'major': 1, 'ultra': 3}
+SLUG_SHINE_K = 0.3
+
+
+def slug_skin_act(rank, mat, act, skin_dir):
+    """the Slug Man's skin from the Assorted Character Tags Pack's multipurpose map (act_slugman.py): its plates
+    (alpha) repainted in the rank's colour over the map's clean armour shading (blue), the flesh and the dark metal
+    left as Digsite's colour map has them, then the Elites' baked cube-map reflection on the plates"""
+    from scipy import ndimage
+    from texmath import bake_reflection
+    fn = f'slugman_{rank}_{mat[:-4].lower()}.png'
+    dst = f'{skin_dir}/{fn}'
+    if os.path.exists(dst): return fn
+    os.makedirs(skin_dir, exist_ok=True)
+    a = np.asarray(Image.open(f'{bp.OUT}/models/SlugMan/{mat}').convert('RGB')).astype(float) / 255.0
+    mu = np.asarray(Image.open(act).convert('RGBA').resize(a.shape[1::-1])).astype(float) / 255.0
+    shade, m = mu[..., 2], ndimage.gaussian_filter(mu[..., 3], 0.7)
+    c = np.array(SLUG_RANKS[rank]["tint"])[None, None] * (0.15 + 0.8 * shade[..., None]) + shade[..., None] ** 4 * 0.08
+    out = a * (1 - m[..., None]) + np.clip(c, 0, 1) * m[..., None]
+    faces = bp.cube_faces('elite', SLUG_CUBE.get(rank, 0))
+    if faces is not None:
+        n = bp.normal_map('SlugMan', mat[:-4], out.shape[1::-1]).copy()
+        out = bake_reflection(out.astype(np.float32), n, (m * 0.75).astype(np.float32), faces, SLUG_SHINE_K)
+    Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(dst)
+    return fn
+
+
 def slug_skin(cls, v, si, mat, meta, skin_dir):
     """Slug Man armour, repainted clean. Digsite's armour texture is grainy and scuffed; the plates (where the
     multipurpose map's specular mask says metal, the flesh it marks green left alone) are repainted in the rank's
@@ -133,6 +161,8 @@ def slug_skin(cls, v, si, mat, meta, skin_dir):
     Every Slug Man gets it; the original two (no rank) are Minors."""
     rank = v.get('_slug_rank') or 'minor'
     if not mat.startswith('SlugMan_'): return None
+    act = f'{bp.OUT}/models/SlugMan/{mat[:-4]}_act_multi.png'
+    if os.path.exists(act): return slug_skin_act(rank, mat, act, skin_dir)
     multi = f'{bp.OUT}/models/SlugMan/{mat[:-4]}_multi.png'
     if not os.path.exists(multi): return None
     fn = f'slugman_{rank}_{mat[:-4].lower()}.png'
@@ -692,6 +722,72 @@ def h2jackal_sounds():
     if ids: lines.append(f'$random HCE/Jackal/ShieldPop {{ {" ".join(ids)} }}')
     return lines
 
+# The kit's grey helmets and shoulders (King Hit's and Halo 2's: KIT_GREY) come in each rank's colour too: per rank a
+# copy of the piece (and of its knocked-off debris) on a copy of its texture, the grey metal tinted the rank's colour
+# (the median colour of the rank's own Halo 3 armour texture, KIT_TINT_FROM, so the pieces match it) and given the
+# Elites' shine (armour_shine). kit_rank_file names the copy, kit_tint_pieces makes them.
+KIT_GREY_SLOTS = ('helmet', 'shoulders')
+KIT_GREY_PREFIX = ('kh_', 'h2_')
+KIT_TINT_FROM = {'minor': 'kit_minor_major_armorwork_minor.jpg', 'major': 'kit_minor_major_armorwork_major.jpg',
+                 'captain': 'kit_minor_major_armorwork_captain.jpg'}
+
+
+def kit_grey(kit):
+    """the grey helmet and shoulder piece files that get rank-coloured copies"""
+    return {f for p in kit['pieces'].values() if p['slot'] in KIT_GREY_SLOTS for f in p['files'].values()
+            if f.startswith(KIT_GREY_PREFIX)}
+
+
+def kit_rank_file(rank, f, grey):
+    """the file a rank wears for kit piece f: its rank-coloured copy for a grey helmet or shoulder piece"""
+    return f'{f[:-4]}_{rank}.iqm' if f in grey and rank in KIT_TINT_FROM else f
+
+
+def kit_tint_pieces(kd):
+    """the rank-coloured copies of the grey pieces, their debris and their textures, into the pack's kit folder kd"""
+    from iqm import read_iqm, write_iqm
+    from texmath import raster_normals
+    kit = json.load(open(KIT_JSON))
+    grey = kit_grey(kit)
+    texs = set()
+    for rank in KIT_TINT_FROM:
+        for f in sorted(grey):
+            for src in (f, 'debris_' + f):
+                if not os.path.exists(f'{KIT_DIR}/{src}'): continue
+                joints, meshes, anims = read_iqm(f'{KIT_DIR}/{src}')
+                for m in meshes:
+                    if 'chain' in m['material']: continue          # chain mail stays bare metal
+                    texs.add(m['material'])
+                    stem, ext = os.path.splitext(m['material']); m['material'] = f'{stem}_{rank}{ext}'
+                alist = [dict(name=k, fps=30.0, loop=True, frames=v) for k, v in anims.items()]
+                dst = ('debris_' if src != f else '') + kit_rank_file(rank, f, grey)
+                write_iqm(f'{kd}/{dst}', [(n, p, tuple(t), tuple(q), tuple(sc)) for n, p, t, q, sc in joints], meshes, alist)
+    meshes_of = {}
+    for f in sorted(grey):
+        for m in read_iqm(f'{KIT_DIR}/{f}')[1]: meshes_of.setdefault(m['material'], []).append(m)
+    for rank, ref in KIT_TINT_FROM.items():
+        rim = np.asarray(Image.open(f'{KIT_DIR}/{ref}').convert('RGB')).astype(np.float32) / 255.0
+        hsv = np.asarray(Image.open(f'{KIT_DIR}/{ref}').convert('HSV')).astype(np.float32) / 255.0
+        col = np.median(rim[hsv[..., 1] > 0.3], axis=0)                     # the rank's paint colour
+        for tex in sorted(texs):
+            im = Image.open(f'{KIT_DIR}/{tex}').convert('RGB')
+            rgb = np.asarray(im).astype(np.float32) / 255.0
+            th = np.asarray(im.convert('HSV')).astype(np.float32) / 255.0
+            lum = rgb.mean(2)
+            m = np.clip((lum - 0.08) / 0.15, 0, 1) * np.clip(1 - (th[..., 1] - 0.15) / 0.2, 0, 1)    # the grey metal
+            ref_l = np.median(lum[m > 0.5]) if (m > 0.5).any() else 0.5
+            tint = np.clip((lum / max(ref_l, 1e-3))[..., None] * col[None, None] * 0.9, 0, 1)
+            n, cov = raster_normals(meshes_of.get(tex, []), tex, im.size, coverage=True) if meshes_of.get(tex) else (None, None)
+            if n is not None and cov.any():                                   # only where the grey pieces map onto it
+                cov = cov.astype(np.float32)
+                m = m * np.asarray(Image.fromarray((cov * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))).astype(np.float32) / 255.0
+            out = rgb * (1 - m[..., None]) + tint * m[..., None]
+            if n is not None and np.abs(n).sum(): out = armour_shine(out, n.copy())
+            stem, ext = os.path.splitext(tex)
+            Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(f'{kd}/{stem}_{rank}{ext}', quality=95)
+    print('kit: rank-coloured grey pieces', len(grey), 'x', len(KIT_TINT_FROM), 'textures', len(texs))
+
+
 def kit_code():
     """armour kit dressing: per rank, a weighted pick per slot (model attachments 1-6) or a whole outfit"""
     if not os.path.exists(KIT_JSON): return '\tvoid HCE_DressArmour() {}\n'
@@ -699,9 +795,10 @@ def kit_code():
     meta = json.load(open(OUT + '/models/Brute/Brute.json'))
     armour = [i for i, n in enumerate(meta['mesh_names']) if not n.startswith('weapon_') and n.split('.')[0] not in ('body', 'head', 'hair', 'sensors')]
     pools, outfits, keep = [], [], []
+    grey = kit_grey(kit)
     for r in KIT_RANKS:
         rd = kit['ranks'][r]
-        for slot in kit['slots']: pools.append('|'.join(f'{f}:{w}' for f, w in rd['slots'][slot]))
+        for slot in kit['slots']: pools.append('|'.join(f'{kit_rank_file(r, f, grey) if f else f}:{w}' for f, w in rd['slots'][slot]))
         outfits.append('|'.join(f'{c};' + ','.join(o[slot] for slot in kit['slots']) for c, o in rd['outfits']))
         keep.append(rd['keep_base'])
     pool_cases = ''.join(f'\t\t\tcase {i}: return "{p}";\n' for i, p in enumerate(pools))
@@ -1269,6 +1366,7 @@ def build():
             if not np.abs(n).sum(): continue
             rgb = armour_shine(np.asarray(im).astype(np.float32) / 255.0, n.copy())
             Image.fromarray((rgb * 255).astype(np.uint8)).save(f'{kd}/{f}', quality=95)
+        kit_tint_pieces(kd)
 
 if __name__ == '__main__':
     # the add-on's bodies (the Brute, the Halo 2 Jackal) checked for skipped post-extraction steps like the main pack's

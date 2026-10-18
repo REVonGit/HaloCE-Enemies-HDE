@@ -122,8 +122,13 @@ def add_brute(char):
     R, t0, rj, _ = hand_frame(char, 'assault_rifle')                   # Halo weapon space -> bind pose, at the gun hand
     bt, bq = mg.world(parents, [(j[2], j[3]) for j in joints])[rj]
     palm_h = hm.qrot(hm.qconj(bq), R @ BRUTE_LEFT_PALM + t0 - bt)      # the handguard in the gun hand's frame
-    # the left palm: the wrist out to the knuckles' middle (index and ring), in the left hand's own frame
-    lpalm = 0.6 * (np.asarray(joints[ix['l_index1']][2]) + np.asarray(joints[ix['l_ring1']][2])) / 2
+    # where the left hand's closed fingers hold: the right hand's grip (the gun's grip origin, where Halo puts it in the
+    # gun hand) mirrored across the body onto the left hand, in the left hand's own frame
+    Wb = mg.world(parents, [(j[2], j[3]) for j in joints])
+    grip_w = R @ np.zeros(3) + t0                                        # the gun's grip, bind pose (model space)
+    mirror = grip_w * np.array([1.0, -1.0, 1.0])                         # across the body (model y)
+    lt_b, lq_b = Wb[L_ids[2]]
+    lpalm = hm.qrot(hm.qconj(lq_b), mirror - lt_b)
 
     def grip(frames, nm):
         """fingers at rest; in the two-handed stance the left hand on the gun's handguard"""

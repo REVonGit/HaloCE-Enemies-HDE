@@ -2098,21 +2098,21 @@ class HCE_BruteCaptainBeamRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -2681,21 +2681,21 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -3260,21 +3260,21 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -3827,21 +3827,21 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -4392,21 +4392,21 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -4952,21 +4952,21 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -5515,21 +5515,21 @@ class HCE_BruteHonorGuardFuelRod : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -6093,21 +6093,21 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -6656,21 +6656,21 @@ class HCE_BruteMajorPlasmaCarbine : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -7247,21 +7247,21 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -7817,21 +7817,21 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -8385,21 +8385,21 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -8955,21 +8955,21 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";
@@ -9526,21 +9526,21 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 	{
 		switch(i)
 		{
-			case 0: return "h2_helmet.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing.iqm:2|kh_helmet_enclosed.iqm:1|:1";
+			case 0: return "h2_helmet_minor.iqm:3|h3_helmet_minor_minor.iqm:3|kh_helmet_wing_minor.iqm:2|kh_helmet_enclosed_minor.iqm:1|:1";
 			case 1: return ":2|h3_chest_minor_minor.iqm:3|kh_chest_wires.iqm:1|h2_bandolier.iqm:2|kh_chest_superlight.iqm:2";
-			case 2: return "h2_shoulders.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
+			case 2: return "h2_shoulders_minor.iqm:3|h3_shoulders_minor_minor.iqm:3|:2";
 			case 3: return ":3|kh_wrists.iqm:2";
 			case 4: return ":3|h3_kneeguards_minor.iqm:2|h2_leg_plates.iqm:1";
 			case 5: return ":3|kh_belt.iqm:1";
-			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine.iqm:2|kh_helmet_crusader.iqm:2|kh_helmet_enclosed_sides.iqm:2|kh_helmet_enclosed.iqm:1";
+			case 6: return "h3_helmet_minor_major.iqm:3|kh_helmet_spine_major.iqm:2|kh_helmet_crusader_major.iqm:2|kh_helmet_enclosed_sides_major.iqm:2|kh_helmet_enclosed_major.iqm:1";
 			case 7: return "h3_chest_major_major.iqm:3|kh_chest_medium.iqm:2|kh_chest_light.iqm:2|kh_bandolier.iqm:2";
-			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts.iqm:2|h2_shoulders.iqm:1";
+			case 8: return "h3_shoulder_major_major.iqm:3|kh_shoulders_parts_major.iqm:2|h2_shoulders_major.iqm:1";
 			case 9: return "kh_wrist_plates.iqm:2|kh_handguard.iqm:2|h3_arm_pads_major.iqm:2|:1";
 			case 10: return "h3_legs_medium_major.iqm:2|h3_legs_spiked_major.iqm:2|kh_kneeguards.iqm:2|h3_shins_major.iqm:2";
 			case 11: return "kh_belt.iqm:2|kh_groin_plates.iqm:1|:2";
-			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn.iqm:2|kh_helmet_heavy.iqm:2|kh_helmet_crusader_chain.iqm:2";
+			case 12: return "h3_helmet_captain_captain.iqm:3|kh_helmet_bighorn_captain.iqm:2|kh_helmet_heavy_captain.iqm:2|kh_helmet_crusader_chain_captain.iqm:2";
 			case 13: return "kh_chest_heavy.iqm:3|h3_chest_major_captain.iqm:2|kh_chest_light.iqm:2";
-			case 14: return "kh_shoulder_big.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge.iqm:1";
+			case 14: return "kh_shoulder_big_captain.iqm:3|h3_shoulder_major_captain.iqm:2|h2_shoulders_huge_captain.iqm:1";
 			case 15: return "kh_wrist_plates.iqm:2|h3_arm_pads_captain.iqm:2|kh_handguard.iqm:1";
 			case 16: return "kh_legs_thick.iqm:2|kh_legs_heavy.iqm:2|h3_shins_captain.iqm:1|kh_kneeguards.iqm:1";
 			case 17: return "kh_belt_long.iqm:2|kh_groin_plates.iqm:2";

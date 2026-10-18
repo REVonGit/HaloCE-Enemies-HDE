@@ -333,6 +333,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Belly:** the gap at the stomach takes 1.5× even from the front, within 30° of dead ahead and at 30–55% of their height.
   * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
   * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
+  * **Animations:** SOI7's Hunter animations from *Halo: Brutality Evolved*: a standing idle, a berserk roar, four different melee swings in place of Halo CE's one, and a reworked crouched idle, crouched walk and turns. Its aiming, firing and flinches are Halo CE's.
 * **Hunter ranks by colour:**
 
   | Hunter | Weapon | Class (DoomEdNum) |
@@ -1345,6 +1346,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Thorn Beast:** created by omargabagu, its sounds by Ruby of Blue (from SPV3's a30 map).
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
+* **Hunter animations:** by SOI7, from *Halo: Brutality Evolved* by RoxanneGoat (MCC Steam Workshop 3014096841).
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations: the Ultra Zealot's guard and sword actions).
 * **ODSTs:** the Halo CE ODST model and textures by Spiral.
 * **Fire Team Raven:** the Fire Team Raven ODST models by Connor Dawn.

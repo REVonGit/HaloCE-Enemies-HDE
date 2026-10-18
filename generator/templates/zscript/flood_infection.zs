@@ -93,7 +93,17 @@
 		if(hce_curAnimKind != HCE_A_FEED) { HCE_Play(HCE_A_FEED, true, true); hce_leapState = 0; hce_reviveTics = 35 * 3; return; }
 		if(--hce_reviveTics > 0) return;
 		c.hce_feedBy = null;
-		if(c.hce_team == HCE_TEAM_FLOOD) { c.HCE_Revive(); Destroy(); return; }
+		if(c.hce_team == HCE_TEAM_FLOOD)
+		{
+			// it gets up holding its gun again: the one it dropped is taken back off the floor (and drops again when it dies)
+			Name w = c.hce_dropWeapon;
+			let it = BlockThingsIterator.Create(c, 64);
+			while(w != 'None' && it.Next())
+				if(it.thing != c && c.Distance2D(it.thing) < 64 && HCE_GroundWeaponClass(it.thing) == w) { it.thing.Destroy(); c.hce_gunDropped = false; break; }
+			c.HCE_Revive();
+			Destroy();
+			return;
+		}
 		Actor gun;
 		Name nc = HCE_HostForm(c, gun);
 		class<Actor> cc = nc;

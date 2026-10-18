@@ -460,6 +460,36 @@ def main(only=None):
             save_pkl(wid, FIX[name](d['meshes']), d.get('tag'))
         print(f'{wid:20s}', *summary(wid))
 
+# the Covenant's two-handed guns the Brutes carry as classes of their own (build_digsite.BRUTE_RANKS), held in the
+# Halo 3-style two-handed carbine stance (be_anims.py): overlay name -> the weapon's pkl (out/weapons/<id>)
+BRUTE_COV_GUNS = {'plasma_carbine': 'cmt_carbine', 'beam_rifle': 'h2_beam_rifle', 'fuel_rod': 'fuel_rod'}
+
+def brute_cov_overlays(char='Brute'):
+    """one overlay IQM per BRUTE_COV_GUNS gun on the Brute's skeleton, placed in the gun hand as Halo places a held
+    weapon (the hand frame of the plasma rifle baked on it), recorded under 'arsenal' in the Brute's json"""
+    from iqm import write_iqm
+    import shutil
+    if not os.path.exists(f'{OUT}/models/{char}/{char}.json'): return
+    R, t, jn, joints = hand_frame(char, 'plasma_rifle')
+    bind = [[(j[2], j[3], (1.0, 1.0, 1.0)) for j in joints]]
+    od = f'{OUT}/models/{char}'
+    meta = json.load(open(f'{od}/{char}.json'))
+    for name, wid in BRUTE_COV_GUNS.items():
+        d = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
+        ms = []
+        for k, m in enumerate(d['meshes']):
+            n = len(m['pos'])
+            bidx = np.zeros((n, 4), np.uint8); bw = np.zeros((n, 4), np.uint8); bidx[:, 0] = jn; bw[:, 0] = 255
+            ms.append(dict(name=f'{wid}_{k}', material=m['material'], pos=m['pos'] @ R.T + t, nrm=m['nrm'] @ R.T,
+                           uv=m['uv'], bidx=bidx, bw=bw, tris=m['tris']))
+            shutil.copy(f'{OUT}/weapons/{wid}/{m["material"]}', f'{od}/{m["material"]}')
+        fn = f'{char}_w_{name}.iqm'
+        write_iqm(f'{od}/{fn}', joints, ms, [dict(name='bind', fps=30.0, loop=True, frames=bind)])
+        meta.setdefault('arsenal', {})[name] = dict(model=fn, wid=wid, materials=[m['material'] for m in d['meshes']])
+    json.dump(meta, open(f'{od}/{char}.json', 'w'), indent=1)
+    print(char, 'Covenant two-handed gun overlays', len(BRUTE_COV_GUNS))
+
 if __name__ == '__main__':
-    if sys.argv[1:2] == ['overlays']: overlays(); brute_overlays()
+    if sys.argv[1:2] == ['brute_cov']: brute_cov_overlays()
+    elif sys.argv[1:2] == ['overlays']: overlays(); brute_overlays(); brute_cov_overlays()
     else: main(sys.argv[1:])

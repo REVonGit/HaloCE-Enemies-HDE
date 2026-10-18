@@ -62,6 +62,9 @@ OptionMenu "HCE_AIOptions"
 	StaticText "Off: they are hostile, as in Halo CE.", 1
 	Option "Follow HDE's weapon preset", "hce_presets", "OnOff"
 	StaticText "Enemies only carry guns the HaloDoom game type spawns.", 1
+	Slider "Human guns in the world", "hce_humanweapons", 0, 1, 0.05, 2
+	StaticText "How often a Covenant gun HaloDoom places for a map's own", 1
+	StaticText "weapons becomes a human gun (enemy drops aren't touched).", 1
 	Slider "Digsite enemy spawns", "hce_digsite_spawns", 0, 2, 0.1, 1
 }
 

@@ -20,13 +20,13 @@ class HCE_DigsiteHandler : EventHandler
 		// Hell Knight: the Thorn Beast rolls first (a slow, tough brute), then the carbine Elites
 		"HellKnight",     "0.10 0.15 0.20", "HCE_ThornBeast*1",
 		// then Halo 2 Brute Minors and Majors
-		"HellKnight",     "0.25 0.30 0.35", "HCE_BruteMinorPlasmaRifle*3 HCE_BruteMinorAssaultRifle*2 HCE_BruteMajorSpiker*2 HCE_BruteMajorShotgun*1",
+		"HellKnight",     "0.25 0.30 0.35", "HCE_BruteMinorPlasmaRifle*3 HCE_BruteMinorAssaultRifle*2 HCE_BruteMajorSpiker*2 HCE_BruteMajorShotgun*1 HCE_BruteMajorPlasmaCarbine*1",
 		"HellKnight",     "0.15 0.20 0.25", "HCE_EliteMajorPlasmaCarbine*3 HCE_EliteMajorPulseCarbine*2 HCE_EliteMinorPlasmaCarbine*2 HCE_EliteSpecopsPlasmaCarbine*1",
 		// Revenant (homing missiles): homing Pulse Carbines fit best
 		// Brute Captains and Spiker Majors roll first
-		"Revenant",       "0.20 0.25 0.30", "HCE_BruteCaptainShotgun*2 HCE_BruteMajorSpiker*2 HCE_BruteCaptainPlasmaRifle*1 HCE_BruteHonorGuardAssaultRifle*1",
+		"Revenant",       "0.20 0.25 0.30", "HCE_BruteCaptainShotgun*2 HCE_BruteMajorSpiker*2 HCE_BruteCaptainPlasmaRifle*1 HCE_BruteHonorGuardAssaultRifle*1 HCE_BruteCaptainBeamRifle*1",
 		"Revenant",       "0.15 0.20 0.25", "HCE_EliteSpecopsPulseCarbine*3 HCE_EliteMajorPulseCarbine*2 HCE_EliteSpecopsPlasmaCarbine*1 HCE_SlugManParticleBeam*1",
-		"Archvile",       "0.20 0.25 0.30", "HCE_BruteHonorGuardPlasmaRifle*2 HCE_BruteHonorGuardAssaultRifle*1",
+		"Archvile",       "0.20 0.25 0.30", "HCE_BruteHonorGuardPlasmaRifle*2 HCE_BruteHonorGuardAssaultRifle*1 HCE_BruteHonorGuardFuelRod*1",
 		"Archvile",       "0.10 0.12 0.15", "HCE_EliteCommanderPlasmaCarbine*1 HCE_EliteCommanderPulseCarbine*1",
 		// Baron of Hell: some become Brute Chieftains (Tartarus's look, gravity hammer); still a Baron for boss deaths
 		"BaronOfHell",    "0.20 0.25 0.30", "HCE_BruteChieftainGravityHammer*1",

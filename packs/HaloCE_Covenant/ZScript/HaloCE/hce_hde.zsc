@@ -38,6 +38,50 @@ class HCE_HDEPickupResolver : HCE_PickupResolver
 		return presetGuns.Find(low) != presetGuns.Size();
 	}
 
+	// Human guns in the world more often (hce_humanweapons): this pack fills the maps with Covenant drops, so a Covenant
+	// gun HDE picks for a map's own Doom weapon or ammo (not a dropped one, nor a Halo gun the map places) is swapped,
+	// that often, for a human gun HDE's game type spawns sharing one of its power tiers (spawn tier: the Doom weapon
+	// slot it fills). To weigh it differently, change hce_humanweapons (0: HDE's own mix, 1: every Covenant gun swapped)
+	override Name WorldWeapon(Name replacee, Name w)
+	{
+		String rs = replacee, ws = w;
+		class<HaloGun> rc = rs;
+		class<HaloGun> gc = ws;
+		if(rc || !gc) return w;                               // a Halo gun placed or dropped as itself; not a gun
+		let d = GetDefaultByType(gc);
+		if(d.faction != 'Covenant') return w;
+		CVar cv = CVar.FindCVar("hce_humanweapons");
+		if(frandom[HCEWorldGun](0, 1) >= (cv ? cv.GetFloat() : 0.5)) return w;
+		int tier = SlotTier(replacee);
+		if(!tier) tier = d.SpawnTier & ~HaloGun.P_ANY;
+		Array<Name> ok;
+		for(int i = 0; i < AllActorClasses.Size(); i++)
+		{
+			class<HaloGun> c = (class<HaloGun>)(AllActorClasses[i]);
+			if(!c || c.GetClassName() == 'HaloGun') continue;
+			let cd = GetDefaultByType(c);
+			if(cd.faction != 'Human' || cd.SpawnRarity == 0 || !(cd.SpawnTier & (tier | HaloGun.P_ANY))) continue;
+			if(WeaponAllowed(c.GetClassName())) ok.Push(c.GetClassName());
+		}
+		return ok.Size() ? ok[random[HCEWorldGun](0, ok.Size() - 1)] : w;
+	}
+
+	// the power tier HaloDoom Evolved fills a Doom weapon or ammo slot from (its CheckReplacement: the pistol and chaingun
+	// basic, the shotgun mid, the super shotgun strong, the rocket launcher power, the plasma rifle energy, the BFG uber,
+	// the chainsaw melee; their ammo likewise); 0 for anything else
+	static int SlotTier(Name item)
+	{
+		String n = item; n = n.MakeLower();
+		if(n.IndexOf("chainsaw") >= 0 || n.IndexOf("fist") >= 0) return HaloGun.P_MELEE;
+		if(n.IndexOf("supershotgun") >= 0 || n == "shellbox") return HaloGun.P_STRONG;
+		if(n.IndexOf("shotgun") >= 0 || n == "shell") return HaloGun.P_MID;
+		if(n.IndexOf("pistol") >= 0 || n.IndexOf("chaingun") >= 0 || n == "clip" || n == "clipbox") return HaloGun.P_NORM;
+		if(n.IndexOf("rocket") >= 0) return HaloGun.P_POWER;
+		if(n.IndexOf("plasmarifle") >= 0 || n == "cell") return HaloGun.P_ENERGY;
+		if(n.IndexOf("bfg") >= 0 || n == "cellpack") return HaloGun.P_UBER;
+		return 0;
+	}
+
 	// an allowed HDE gun sharing a spawn tier with w, picked at random; 'None' when the preset has none of that tier
 	override Name SubstituteWeapon(Name w)
 	{

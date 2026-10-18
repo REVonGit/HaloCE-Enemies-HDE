@@ -26,6 +26,7 @@ server bool hce_cover = true;          // enemies and Marines fight from cover: 
 server int hce_difficulty = -1;        // Halo difficulty (Halo CE's own table): -1 = from the skill level (ITYTD/HNTR Easy, HMP Normal, UV Heroic, NM Legendary), 0 Easy, 1 Normal, 2 Heroic, 3 Legendary
 server bool hce_search = true;         // the Covenant search for a target they lost (its tracks, the spots round where it vanished) and go back to their post when they give up; enemies investigate explosions they hear and notice a flashlight's beam
 server float hce_corpseshoot = 0.25;   // chance a Marine or Covenant soldier with a gun that does not blow up puts a few more rounds into an enemy it just killed (0 off)
+server float hce_humanweapons = 0.5;   // HaloDoom Evolved's world weapon spawns (not drops): the chance a Covenant gun it picks for a map's Doom weapon or ammo becomes a human gun of the same tier instead (this pack makes Covenant guns common)
 server bool hce_presets = true;        // HaloDoom Evolved's weapon presets (its game types) apply to the enemies too: replacements skip enemies whose gun the preset doesn't spawn, placed ones re-arm, drops swap to an allowed gun of the same tier
 server float hce_gorescale = 1.0;      // performance: share of blood spurts, gibs and gore puffs spawned (1 all, 0.5 half, 0 none)
 server bool hce_simpleshaders = false; // performance: the active camo drawn as a plain faint body instead of its shimmer shader

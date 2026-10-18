@@ -275,6 +275,16 @@ class HCE_ReplaceHandler : EventHandler
 	{
 		if(e.IsFinal || !e.Replacee) return;
 		Name rn = e.Replacee.GetClassName();
+		// a gun HaloDoom Evolved put in for the map's Doom weapon or ammo (its handler runs before this one): human guns
+		// more often than its own mix gives (HCE_HDEPickupResolver.WorldWeapon, hce_humanweapons)
+		if(e.Replacement)
+		{
+			let r = HaloDoom_EnemyBase.HCE_SharedResolver();
+			Name wn = e.Replacement.GetClassName();
+			Name nn = r ? r.WorldWeapon(rn, wn) : wn;
+			class<Actor> nc = nn;
+			if(nn != wn && nc) { e.Replacement = nc; return; }
+		}
 		for(int i = 0; i < MARINES.Size(); i += 2)
 		{
 			if(rn == MARINES[i])

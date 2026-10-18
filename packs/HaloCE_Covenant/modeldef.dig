@@ -10,6 +10,56 @@ Model HCE_BlindWolf
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_BruteCaptainBeamRifle
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_captain_crl_brute.png"
+	SurfaceSkin 0 1 "skins/brute_captain_crl_brute.png"
+	SurfaceSkin 0 2 "skins/brute_captain_crl_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_captain_crl_brute_head.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	SurfaceSkin 0 8 "skins/hce_hidden.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/hce_hidden.png"
+	SurfaceSkin 0 11 "skins/hce_hidden.png"
+	SurfaceSkin 0 12 "skins/hce_hidden.png"
+	SurfaceSkin 0 13 "skins/hce_hidden.png"
+	SurfaceSkin 0 14 "skins/brute_captain_crl_brute.png"
+	SurfaceSkin 0 15 "skins/hce_hidden.png"
+	SurfaceSkin 0 16 "skins/hce_hidden.png"
+	SurfaceSkin 0 17 "skins/hce_hidden.png"
+	SurfaceSkin 0 18 "skins/hce_hidden.png"
+	SurfaceSkin 0 19 "skins/hce_hidden.png"
+	SurfaceSkin 0 28 "skins/brute_captain_crl_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_captain_crl_brute_head.png"
+	SurfaceSkin 0 30 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_beam_rifle.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 8 0 "w_h2_beam_rifle_0.png"
+	SurfaceSkin 8 1 "w_h2_beam_rifle_0.png"
+	SurfaceSkin 8 2 "w_h2_beam_rifle_0.png"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
 Model HCE_BruteCaptainPlasmaCaster
 {
 	Path "models/hce_dig/Brute"
@@ -95,9 +145,11 @@ Model HCE_BruteCaptainPlasmaRifle
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -143,9 +195,11 @@ Model HCE_BruteCaptainShotgun
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -233,9 +287,11 @@ Model HCE_BruteChieftainGravityHammer
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "w_gravity_hammer_0.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -281,9 +337,62 @@ Model HCE_BruteHonorGuardAssaultRifle
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
+Model HCE_BruteHonorGuardFuelRod
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_minor_bth_brute.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	SurfaceSkin 0 2 "skins/brute_minor_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_minor_bth_brute_head.png"
+	SurfaceSkin 0 4 "skins/brute_minor_bth_brute_honor_armor.png"
+	SurfaceSkin 0 5 "skins/brute_minor_bth_brute_honor_inset_lights.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	SurfaceSkin 0 8 "skins/hce_hidden.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/brute_minor_bth_brute_honor_armor.png"
+	SurfaceSkin 0 11 "skins/hce_hidden.png"
+	SurfaceSkin 0 12 "skins/brute_minor_bth_brute_honor_armor.png"
+	SurfaceSkin 0 13 "skins/hce_hidden.png"
+	SurfaceSkin 0 14 "skins/hce_hidden.png"
+	SurfaceSkin 0 15 "skins/brute_minor_bth_brute_honor_armor.png"
+	SurfaceSkin 0 16 "skins/hce_hidden.png"
+	SurfaceSkin 0 17 "skins/brute_minor_bth_brute_honor_armor.png"
+	SurfaceSkin 0 18 "skins/hce_hidden.png"
+	SurfaceSkin 0 19 "skins/hce_hidden.png"
+	SurfaceSkin 0 28 "skins/brute_minor_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_minor_bth_brute_head.png"
+	SurfaceSkin 0 30 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_fuel_rod.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 8 0 "w_fuel_rod_0.png"
+	SurfaceSkin 8 1 "w_fuel_rod_0.png"
+	SurfaceSkin 8 2 "w_fuel_rod_0.png"
+	SurfaceSkin 8 3 "w_fuel_rod_0.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -329,9 +438,63 @@ Model HCE_BruteHonorGuardPlasmaRifle
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
+Model HCE_BruteMajorPlasmaCarbine
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 1 "skins/hce_hidden.png"
+	SurfaceSkin 0 2 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 4 "skins/hce_hidden.png"
+	SurfaceSkin 0 5 "skins/hce_hidden.png"
+	SurfaceSkin 0 6 "skins/hce_hidden.png"
+	SurfaceSkin 0 7 "skins/hce_hidden.png"
+	SurfaceSkin 0 8 "skins/hce_hidden.png"
+	SurfaceSkin 0 9 "skins/hce_hidden.png"
+	SurfaceSkin 0 10 "skins/hce_hidden.png"
+	SurfaceSkin 0 11 "skins/hce_hidden.png"
+	SurfaceSkin 0 12 "skins/hce_hidden.png"
+	SurfaceSkin 0 13 "skins/hce_hidden.png"
+	SurfaceSkin 0 14 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 15 "skins/hce_hidden.png"
+	SurfaceSkin 0 16 "skins/hce_hidden.png"
+	SurfaceSkin 0 17 "skins/hce_hidden.png"
+	SurfaceSkin 0 18 "skins/hce_hidden.png"
+	SurfaceSkin 0 19 "skins/hce_hidden.png"
+	SurfaceSkin 0 28 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 30 "skins/hce_hidden.png"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 0 20 "hce_hidden.png"
+	SurfaceSkin 0 21 "hce_hidden.png"
+	SurfaceSkin 0 22 "hce_hidden.png"
+	SurfaceSkin 0 23 "hce_hidden.png"
+	SurfaceSkin 0 24 "hce_hidden.png"
+	SurfaceSkin 0 25 "hce_hidden.png"
+	SurfaceSkin 0 26 "hce_hidden.png"
+	SurfaceSkin 0 27 "hce_hidden.png"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_plasma_carbine.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 8 0 "w_cmt_carbine_gray.png"
+	SurfaceSkin 8 1 "w_cmt_carbine_lights.png"
+	SurfaceSkin 8 2 "w_cmt_carbine_icon.png"
+	SurfaceSkin 8 3 "w_cmt_carbine_meter.png"
+	SurfaceSkin 8 4 "w_cmt_carbine_purple.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -377,9 +540,11 @@ Model HCE_BruteMajorShotgun
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -425,9 +590,11 @@ Model HCE_BruteMajorSpiker
 	SurfaceSkin 0 26 "w_spiker_clip.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -473,9 +640,11 @@ Model HCE_BruteMinorAssaultRifle
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -521,9 +690,11 @@ Model HCE_BruteMinorPlasmaRifle
 	SurfaceSkin 0 26 "hce_hidden.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll
@@ -569,9 +740,11 @@ Model HCE_BruteStalkerSpiker
 	SurfaceSkin 0 26 "w_spiker_clip.png"
 	SurfaceSkin 0 27 "hce_hidden.png"
 	Path "models/hce_dig/Brute"
-	Model 8 "Brute_w_bulldog.iqm"
+	Model 8 "Brute_w_beam_rifle.iqm"
 	Path "models/hce_dig/weapons"
 	SurfaceSkin 8 0 "hce_hidden.png"
+	SurfaceSkin 8 1 "hce_hidden.png"
+	SurfaceSkin 8 2 "hce_hidden.png"
 	Scale 92 92 110
 	UseActorPitch
 	UseActorRoll

@@ -43,6 +43,14 @@ BRUTE_GRAPH = r'tftu\characters\brute\h3'
 # the mod's Halo 3 Brute stance -> the Brute's stance name (build_digsite: the gravity hammer's is 'melee', the
 # two-handed support guns' 'support', every other gun's 'rifle')
 H3_STANCE = {'hammer': 'melee', 'rifle': 'rifle', 's-low': 'support', 'carbine': 'carbine', 'unarmed': 'unarmed'}
+# The mod's Halo 3-style rig bends the fingers from a different rest pose: on Halo 2's Brute they splay open off the
+# gun. Halo 2's own animations hold every finger at the model's rest pose (its gripping hand), so these do too
+BRUTE_FINGERS = ('index', 'ring', 'thumb')
+# the two-handed stance's left hand: on the assault rifle's handguard (Halo weapon space, as marine_h2_grips.H2_GUNS;
+# the shotgun's pump is within a hair of it), placed by two-bone IK in every carbine animation but the ones where the
+# left hand lets go (BRUTE_FREE_LEFT)
+BRUTE_LEFT_PALM = np.array([0.112, 0.000, 0.010])
+BRUTE_FREE_LEFT = ('throw-grenade', 'signal-attack', 'taunt', 'warn', 'celebrate')
 STEP = 'be_anims'
 _graphs = {}
 
@@ -105,6 +113,34 @@ def add_brute(char):
             plan[n] = ' '.join([w[0], H3_STANCE[w[1]]] + w[2:])
         elif w[0] == 'asleep' or n == 'h-kill front head':
             plan[n] = n
+    import marine_grip as mg
+    from marine_arsenal import hand_frame
+    parents = [j[1] for j in joints]
+    fingers = [i for i, n in enumerate(jn) if any(f in n for f in BRUTE_FINGERS)]
+    ix = {n: i for i, n in enumerate(jn)}
+    L_ids = (ix['l_upperarm'], ix['l_forearm'], ix['l_hand'])
+    R, t0, rj, _ = hand_frame(char, 'assault_rifle')                   # Halo weapon space -> bind pose, at the gun hand
+    bt, bq = mg.world(parents, [(j[2], j[3]) for j in joints])[rj]
+    palm_h = hm.qrot(hm.qconj(bq), R @ BRUTE_LEFT_PALM + t0 - bt)      # the handguard in the gun hand's frame
+    # the left palm: the wrist out to the knuckles' middle (index and ring), in the left hand's own frame
+    lpalm = 0.6 * (np.asarray(joints[ix['l_index1']][2]) + np.asarray(joints[ix['l_ring1']][2])) / 2
+
+    def grip(frames, nm):
+        """fingers at rest; in the two-handed stance the left hand on the gun's handguard"""
+        two = nm.startswith('stand carbine') and not any(k in nm for k in BRUTE_FREE_LEFT)
+        out = []
+        for fr in frames:
+            fr = list(fr)
+            for i in fingers: fr[i] = (fr[i][0], tuple(joints[i][3]), fr[i][2])
+            if two:
+                local = [(x[0], x[1]) for x in fr]
+                W = mg.world(parents, local)
+                ht, hq = W[rj]
+                lq = W[L_ids[2]][1]
+                mg.solve_arm(W, local, parents, L_ids, ht + hm.qrot(hq, palm_h) - hm.qrot(lq, lpalm), lq)
+                fr = [(tuple(local[i][0]), tuple(local[i][1]), fr[i][2]) for i in range(len(fr))]
+            out.append(fr)
+        return out
     new = []
     for n, nm in sorted(plan.items()):
         base = re.sub(r'%\d+$', '', nm)
@@ -124,7 +160,7 @@ def add_brute(char):
                 r.append((tuple(joints[j][2]) if t is None else tuple(t), tuple(joints[j][3]) if q is None else tuple(q),
                           (1.0, 1.0, 1.0) if sc is None else ((sc, sc, sc) if np.isscalar(sc) else tuple(sc))))
             frames.append(r)
-        anims[nm] = frames
+        anims[nm] = grip(frames, nm)
         meta['anims'][nm] = dict(frames=a.nframes, speed=float(np.hypot(a.dx[:, 0], a.dx[:, 1]).sum() / max(1, a.nframes)),
                                  yaw=float(a.dx[:, 3].sum()), loop=a.loop, key=a.key, next=-1,
                                  dx=[float(a.dx[:, 0].sum()), float(a.dx[:, 1].sum())])

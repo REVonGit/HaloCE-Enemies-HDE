@@ -50,6 +50,13 @@ CASTER = r'hde\plasma caster'           # HDE's Plasma Caster as a Halo CE gun (
 BRUTE_HUMAN_GUNS = ('bulldog', 'double_barrel', 'gpmg', 'rocket_launcher', 'grenade_launcher', 'hydra', 'flamethrower', 'ma37', 'smg')
 BRUTE_SUPPORT = ('gpmg', 'flamethrower')  # held in Halo 2's Brute Shot stance; the rest one-handed (the rifle stance)
 CASTER_IDX = 8                          # its model attachment (the armour kit uses 1-6, blood 7)
+FUEL_ROD = r'weapons\fuel rod gun\fuel rod'
+# the Covenant's two-handed guns the Brutes carry (Halo 2 and 3's Brutes do), held in the two-handed carbine stance:
+# weapon reference -> (its overlay model: marine_arsenal.BRUTE_COV_GUNS, combat range low / high, firing range, in
+# world units: the carbine like the Jackal Marksmen's, the beam rifle like the Jackal Snipers', the fuel rod mid-range)
+BRUTE_COV_TWO_HANDED = {r'digsite\weapons\plasma carbine': ('plasma_carbine', 6.0, 22.0, 40.0),
+                        r'h2\weapons\beam rifle': ('beam_rifle', 8.0, 28.0, 48.0),
+                        FUEL_ROD: ('fuel_rod', 4.0, 16.0, 30.0)}
 # Halo 2 Brute ranks: body vitality from their char tags (08b: the honor guard inherits brute_major's); hlmt
 # variant -> region permutations they wear; fur colours come from the biped's per-variant change colours.
 # Loadouts (all rifle stance): CE plasma rifle / assault rifle / shotgun, the Majors carry the Spiker, Captains
@@ -64,11 +71,11 @@ CASTER_IDX = 8                          # its model attachment (the armour kit u
 BRUTE_RANKS = {
     'minor': dict(body=175, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
                   wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
-    'major': dict(body=150, variants=('major_bth', 'major_crl'), weapons=(SPIKER, CE_SG),
+    'major': dict(body=150, variants=('major_bth', 'major_crl'), weapons=(SPIKER, CE_SG, CARBINE),
                   wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
-    'captain': dict(body=200, variants=('captain_bth', 'captain_crl'), weapons=(CE_PR, CE_SG, CASTER),
+    'captain': dict(body=200, variants=('captain_bth', 'captain_crl'), weapons=(CE_PR, CE_SG, CASTER, bp.H2BEAM_REF),
                     wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default'), ('flag', 'captain')}),
-    'honor guard': dict(body=150, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR),
+    'honor guard': dict(body=150, variants=('minor_bth', 'minor_crl'), weapons=(CE_PR, CE_AR, FUEL_ROD),
                         wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('helmet', 'honor_on'), ('sensors', 'honor_on'),
                               ('sh_armor', 'honor_on'), ('hg_arm', 'honor_on'), ('hg_legs', 'honor_on')}),
     # the Stalker (Halo 3): a Major in active camo with the Spiker, no armour kit (its camo would show the pieces up)
@@ -298,6 +305,10 @@ def load_ai():
                 v['_late'] = True; v['_brute_rank'] = rank; v['_brute_variant'] = rd['variants'][fur % len(rd['variants'])]
                 if wref == CASTER:
                     v['_ov'] = dict(overlay='plasma_caster', overlay_idx=CASTER_IDX)
+                if wref in BRUTE_COV_TWO_HANDED:                 # the Covenant long guns: drawn in the hand (overlay),
+                    ovl, lo, hi, mx = BRUTE_COV_TWO_HANDED[wref]   # their own combat ranges
+                    v['_ov'] = dict(overlay=ovl, overlay_idx=CASTER_IDX)
+                    v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
                 if rank == 'stalker':      # active camo (the Brutes' class flags replace the variant's: added on top)
                     v['flags'] = v.get('flags', 0) | (1 << 4)
                     v['_ov'] = dict(v.get('_ov') or {}, add_flags=['HCE_ActiveCamo'])
@@ -518,6 +529,37 @@ def drone_skin(cls, v, si, mat, meta, skin_dir):
     return fn
 
 
+# The Brutes' coloured armour (the Honor Guard's red-and-blue plate, the Halo 3-style kit's blue, red, gold and teal)
+# shines like the Elites' armour: the same cube-map reflection (texmath.bake_reflection), the Elite cube of the paint's
+# colour (blue, red / magenta, gold) on its painted parts. BRUTE_SHINE: the body's armour textures; the kit's are
+# matched by KIT_SHINE_TEX. k: the reflection's strength (the Elites' armour: 1.0)
+BRUTE_SHINE = ('brute_honor_armor',)
+KIT_SHINE_TEX = 'armorwork'
+BRUTE_SHINE_K = 0.4
+
+
+def armour_shine(rgb, n, k=BRUTE_SHINE_K):
+    """rgb (H, W, 3) 0..1 and its model-space normals -> the Elites' armour reflection baked onto its painted parts:
+    each paint colour reflects its own Elite cube map (blue 0, red 1, gold 2); grey metal, leather, fur and the green
+    lights stay as they are"""
+    import colorsys
+    from texmath import bake_reflection
+    hsv = np.asarray(Image.fromarray((np.clip(rgb, 0, 1) * 255).astype(np.uint8)).convert('HSV')).astype(np.float32) / 255.0
+    h, sat, val = hsv[..., 0] * 360, hsv[..., 1], hsv[..., 2]
+    paint = np.clip((sat - 0.22) / 0.3, 0, 0.8) * np.clip((val - 0.12) / 0.25, 0, 1)
+    paint *= 1 - ((h > 80) & (h < 170) & (val > 0.55)).astype(np.float32)        # the inset lights' greens
+    hues = {0: (h > 170) & (h < 290), 1: (h >= 290) | (h < 22), 2: (h >= 22) & (h <= 80)}
+    out = rgb.copy()
+    for cube, m in hues.items():
+        spec = paint * m.astype(np.float32)
+        if spec.max() < 0.05: continue
+        faces = bp.cube_faces('elite', cube)
+        if faces is None: continue
+        baked = bake_reflection(rgb, n, spec, faces, k)
+        out = out * (1 - spec[..., None]) + baked * spec[..., None]
+    return out
+
+
 def brute_skin(cls, v, si, mat, meta, skin_dir):
     """per-rank Brute skins: hide the armour pieces a rank doesn't wear, bake the variant's fur change colours"""
     names = meta.get('mesh_names')
@@ -548,6 +590,8 @@ def brute_skin(cls, v, si, mat, meta, skin_dir):
             if m_ is None: continue
             rgb = rgb * (1 - m_) + rgb * np.array(col) * 1.5 * m_
         a[..., :3] = rgb
+    if shader in BRUTE_SHINE:                                       # the coloured armour shines like the Elites'
+        a[..., :3] = armour_shine(a[..., :3], bp.normal_map('Brute', f'Brute_{shader}', im.size).copy())
     out = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8), 'RGBA')
     (out if has_a else out.convert('RGB')).save(dst)
     return fn
@@ -1074,6 +1118,16 @@ def configure():
         bp.SHINE['EliteZealot'] = 1.0; bp.SHINE_CUBE['EliteZealot'] = 'elite'
         bp.SHELL_TINT['EliteZealot'] = bp.SHELL_TINT['Elite']
         bp.VOICES['EliteZealot'] = 'Elite_Dogmatic,Elite_Loose'
+        # the forearm shield's energy field goes out when the Zealot dies (its surface hidden, as a broken Jackal shield's)
+        zsurf = zm['meshes'].index(zm['shield'] + '.png')
+        bp.BASE_CODE['EliteZealot'] = bp.BASE_CODE.get('EliteZealot', '') + f"""
+	override void HCE_Die()
+	{{
+		super.HCE_Die();
+		A_ChangeModel('None', 0, "", 'None', {zsurf}, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ResumeAnim();      // (A_ChangeModel restarts the model's animation: the death animation goes on)
+	}}
+"""
     bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.SKIN_HOOK['Drone'] = drone_skin
@@ -1108,7 +1162,8 @@ def configure():
         # their char tag, berserk charge that throws the gun away, plasma grenades
         # stances: the gravity hammer's ('melee'); the two-handed guns (assault rifle, shotgun) in the Halo 3-style
         # carbine stance (be_anims.py); the one-handed ones (plasma rifle, Spiker, Plasma Caster) in the rifle stance
-        'Brute': dict(stance={'gravity hammer': 'melee', 'assault rifle': 'carbine', 'shotgun': 'carbine', None: 'rifle'}, scale=BRUTE_SCALE,
+        'Brute': dict(stance={'gravity hammer': 'melee', 'assault rifle': 'carbine', 'shotgun': 'carbine', 'plasma carbine': 'carbine',
+                              'beam rifle': 'carbine', 'fuel rod': 'carbine', None: 'rifle'}, scale=BRUTE_SCALE,
                       height_fixed=76, radius_fixed=30, melee=(130, 35), weapon_toss=True, shield=0, speed=6.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'H2Jackal': dict(stance='pistol'),
@@ -1139,6 +1194,7 @@ def build():
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
                            'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
                            'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster',
+                           'HCE_BruteMajorPlasmaCarbine', 'HCE_BruteCaptainBeamRifle', 'HCE_BruteHonorGuardFuelRod',
                            'HCE_EliteUltraZealotEnergySword',
                            'HCE_DroneMajorPlasmaPistol', 'HCE_DroneMajorNeedler', 'HCE_DroneUltraNeedler', 'HCE_DroneUltraPlasmaRifle',
                            'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
@@ -1201,6 +1257,18 @@ def build():
         kd = f'{PACK}/models/hce_dig/BruteKit'; os.makedirs(kd, exist_ok=True)
         for f in os.listdir(KIT_DIR):
             if f.endswith(('.iqm', '.jpg', '.png')): shutil.copy(f'{KIT_DIR}/{f}', f'{kd}/{f}')
+        # the coloured kit armour shines like the Elites' (armour_shine), its normals from the kit pieces wearing it
+        from iqm import read_iqm
+        from texmath import raster_normals
+        kit_meshes = [m for f in sorted(os.listdir(KIT_DIR)) if f.endswith('.iqm') and not f.startswith('debris_')
+                      for m in read_iqm(f'{KIT_DIR}/{f}')[1]]
+        for f in sorted(os.listdir(KIT_DIR)):
+            if KIT_SHINE_TEX not in f or not f.endswith(('.jpg', '.png')): continue
+            im = Image.open(f'{KIT_DIR}/{f}').convert('RGB')
+            n = raster_normals(kit_meshes, f, im.size)
+            if not np.abs(n).sum(): continue
+            rgb = armour_shine(np.asarray(im).astype(np.float32) / 255.0, n.copy())
+            Image.fromarray((rgb * 255).astype(np.uint8)).save(f'{kd}/{f}', quality=95)
 
 if __name__ == '__main__':
     # the add-on's bodies (the Brute, the Halo 2 Jackal) checked for skipped post-extraction steps like the main pack's

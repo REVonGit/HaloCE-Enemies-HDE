@@ -319,6 +319,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		double shBefore = shp ? shp.shields : 0;
 		int dealt = super.DamageMobJ(inflictor, source, dmg, mod, flags, angle);
 		if(shp) hce_shieldTook += max(0, shBefore - shp.shields);
+		// any hit that does damage, to the shield or (once it is down) to the body, restarts the wait before the shield
+		// recharges, as Halo does for the player (HDE's ShieldProcessor only restarts it on hits to the shield)
+		if(shp && (dealt > 0 || shBefore > shp.shields)) shp.regenTimer = 0;
 		// Doom's damage code makes monsters retaliate against any attacker; Halo teams don't turn on allies
 		if(hce_enabled && target != keepTarget && target && !HCE_IsEnemy(target)) target = keepTarget;
 		if(hce_enabled) HCE_OnDamaged(inflictor, source, dealt, mod);
@@ -6318,7 +6321,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_IceShatter()
 	{
 		hce_gibbed = true;
-		hce_reviveTics = 0;
+		HCE_FeignOver();
 		vel = (0, 0, 0);                                     // the burst stays where the ice block stood
 		HCE_GibBurst(40, 24);
 	}
@@ -6399,14 +6402,29 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_ActiveCamo) A_SetRenderStyle(1.0, STYLE_Normal);
 		if(bHCE_Leader || bHCE_PairBond) HCE_LeaderDied(self);
 		if(hce_kamiNades.Size() > 0) HCE_KamikazeFling();
-		HCE_DropLoot();
-		HCE_ShowGun(false);      // the gun leaves the hand (it dropped as a pickup, or its arm is gone)
+		// a Flood form only feigning death (it will get up again) keeps its gun in its hand; it drops it if it never does
+		// (HCE_FeignOver: torn apart while down). One whose gun arm is already off dropped the gun with the arm
+		bool feign = bHCE_Resurrects && !hard && !hce_gibbed && frandom(0, 1) < max(0.25, hce_feignChance);
+		if(!feign)
+		{
+			HCE_DropLoot();
+			HCE_ShowGun(false);  // the gun leaves the hand (it dropped as a pickup, or its arm is gone)
+		}
 		HCE_ResumeAnim();        // (an actor's first A_ChangeModel resets its animation: the death animation goes on)
 		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
 		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
-		if(bHCE_Resurrects && !hard && frandom(0, 1) < max(0.25, hce_feignChance)) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
+		if(feign) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
 	}
 	int hce_reviveTics;
+	// a body that was feigning death and won't get up after all (torn apart, frozen and shattered): its gun, kept in the
+	// hand while it lay feigning, drops now
+	void HCE_FeignOver()
+	{
+		if(hce_reviveTics <= 0 || hce_gunDropped) { hce_reviveTics = 0; return; }
+		hce_reviveTics = 0;
+		HCE_DropLoot();
+		HCE_ShowGun(false);
+	}
 
 	// ------------------------------------------------------------------
 	// Dismemberment (gore_kit.py): heads and arms come off on hard kills. The packs generate HCE_SeverLimb per
@@ -6612,7 +6630,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	void HCE_GibBody()
 	{
 		hce_gibbed = true;
-		hce_reviveTics = 0;
+		HCE_FeignOver();
 		hce_brutality += 6;
 		for(int l = 0; l < HCE_LIMBS; l++) HCE_SeverLimb(l);
 		hce_stumpTics = 0;
@@ -7469,9 +7487,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	// At death (or losing the gun arm): tosses the gun (the preset's substitute if needed; the Covenant always leave theirs,
 	// others at HDE's half chance) and a grenade half the time if it has any. Nothing with hce_dropweapons off or after a
 	// Flood revive.
+	bool hce_gunDropped;
 	void HCE_DropLoot()
 	{
-		if(hce_resurrected) return;            // a revived Flood form already dropped its gun
+		if(hce_gunDropped) return;             // once: a gun arm shot off already dropped it (a revived Flood form too)
+		hce_gunDropped = true;
 		CVar cv = CVar.FindCVar("hce_dropweapons");
 		if(cv && !cv.GetBool()) return;
 		Name dw = HCE_PresetDrop(hce_dropWeapon);             // a gun the HDE preset leaves out: an allowed one of its tier
@@ -7743,7 +7763,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// there. To change the pieces, edit the 6 and the scale range.
 	void HCE_ShatterBody()
 	{
-		hce_gibbed = true; hce_reviveTics = 0; hce_brutality += 6;
+		hce_gibbed = true; HCE_FeignOver(); hce_brutality += 6;
 		class<Actor> fx = (class<Actor>)('FragGrenadeExplosion');
 		if(fx) { let e = Spawn(fx, pos + (0, 0, height * 0.4)); if(e) e.SetDamage(0); }
 		A_StartSound("Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.8);
@@ -8193,6 +8213,13 @@ class HCE_Shield : ShieldProcessor
 		RenderStyle "None";
 	}
 	bool hce_started;
+	// HDE's ShieldProcessor counts the recharge wait twice a tic while the shield is empty: once here, so it waits its
+	// full delay (Halo's shield stun), as the player's does
+	override void updateShields()
+	{
+		if(Owner && Owner.health > 0 && shields <= 0 && regenTimer < regenDelay) regenTimer--;
+		super.updateShields();
+	}
 	// Per-tic shield display: no flare for the starting shield; fires OnShieldBreak when it drops to 0; flashes the shell
 	// model on hits, on recharge from empty, and glows faintly while recharging; sparks (blue, red under 25%) on each hit.
 	override void DisplayShields()
@@ -8910,6 +8937,9 @@ class HCE_PickupResolver play
 	// and an allowed gun of the same power tier to drop in its place ('None': nothing). Everything is allowed without HDE.
 	virtual bool WeaponAllowed(Name w) { return true; }
 	virtual Name SubstituteWeapon(Name w) { return w; }
+	// a weapon HaloDoom Evolved puts in the world for a map's Doom weapon or ammo (replacee: the Doom item): the gun
+	// to spawn instead, or w itself. Unchanged without HDE
+	virtual Name WorldWeapon(Name replacee, Name w) { return w; }
 }
 
 // One resolver per map, shared by every enemy and the replacement handler (HaloDoom_EnemyBase.HCE_Presets): it caches

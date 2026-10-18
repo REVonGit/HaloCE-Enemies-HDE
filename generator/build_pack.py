@@ -4044,10 +4044,11 @@ def add_mercury(ai):
             n = variant(src, D + name, ref)
             e = ai['variants'].get(elite) or mv.get(elite)
             if e: n['ranged_combat'] = dict(copy.deepcopy(e['ranged_combat']), reference=ref)
-        # only the high ranks wear energy shields: the Minors and Majors fight on their body alone
-        # (the 'shield' override: a variant's 0 means 'the collision model's' to build(), as in Halo's tags)
+        # only the high ranks wear energy shields: the Minors and Majors fight on their body alone, and the cloaked
+        # Commanders on their camo alone (the 'shield' override: a variant's 0 means 'the collision model's' to build(),
+        # as in Halo's tags)
         for k, v in ai['variants'].items():
-            if k.startswith(D) and (' minor ' in k or ' major ' in k):
+            if k.startswith(D) and (' minor ' in k or ' major ' in k or k.endswith(' camo')):
                 v['_ov'] = dict(v.get('_ov') or {}, shield=0)
         # the Zealots (MR_DRAETH_ZEALOT): a gold rank above the Commanders, cut from the uncloaked Commander with the
         # Commanders' guns, tougher and with a stronger shield

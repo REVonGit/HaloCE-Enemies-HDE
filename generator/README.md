@@ -14,12 +14,12 @@ python3 extract_ai.py      # actv/actr/bipd/coll/weap tags                      
 python3 extract_weapons.py # third-person weapon models + textures                 -> $HCE_OUT/weapons
 python3 extract_weapon_shine.py  # Covenant weapons' reflection masks + cube maps  -> $HCE_OUT/weapons/<id>/shine.json, $HCE_OUT/cubemaps/w_<id>
 python3 extract_chars.py   # IQM models + animations + skins + held weapons         -> $HCE_OUT/models
-HCE_XAM_C40=/path/to/c40_1.map HCE_SPV3_BITMAPS=/path/to/bitmaps.map python3 xam_flood.py   # the XAM Campaign Overhaul's Flood skins on the Flood combat forms (before gore_kit.py)
 HCE_SOI_C20=/path/to/soi/maps/c20.map python3 marine_arsenal.py double_barrel   # the double barrel: SOI's 8-gauge shotgun (MCC Workshop 2906165512), then marine_arsenal.py overlays
 HCE_PROMETHEAN_BLEND=/path/to/HDE_promethian_weapons.blend python3 promethean_ce.py   # the Sentinel Knights' Forerunner arm guns
 HCE_H2_TAGPACK=/path/to/H2EK-Tags python3 extract_sentinel_knight.py    # the Sentinel Knight (after promethean_ce.py)
 HCE_H2_MAP06B=/path/to/06b_floodzone.map HCE_H2_TEXTURES=/path/to/textures.dat python3 extract_h2_sentinels.py    # Halo 2's Sentinel, Enforcer and Constructor (after extract_chars.py)
 HCE_SPV3_B40=/path/to/b40_1.map HCE_SPV3_BITMAPS=/path/to/bitmaps.map python3 gore_kit.py   # dismemberment: limb surfaces, stumps, gibs (in place)
+python3 ce_flood_skins.py  # Halo CE's own skins back on the Halo CE Flood combat forms (after gore_kit.py)
 python3 extract_cubemaps.py # Halo's Elite / Grunt reflection cube maps -> $HCE_OUT/cubemaps (the baked armour shine)
 python3 blood_kit.py       # blood on the body: per-character blood-splatter overlays (after gore_kit.py)
 HCE_DIGSITE=/path/to/h1 HCE_BULLDOG_BLEND=/path/to/Bulldog_HDE.blend HCE_GL_BLEND=/path/to/GL_HDE.blend1 HCE_COMMANDO_BLEND=/path/to/Commando_HDE.blend1 HCE_HYDRA_BLEND=/path/to/Hydra_HDE.blend HCE_STICKYBOMB_BLEND=/path/to/Stickybomb.blend python3 marine_arsenal.py && python3 marine_arsenal.py overlays   # the Marines' guns (after blood_kit.py)
@@ -186,7 +186,7 @@ cd addons/digsite && zip -r9 ../../HaloCE_Enemies_Digsite.pk3 .
 | `promethean_ce.py` | The Knights' arm guns from `HDE_promethian_weapons.blend` (`HCE_PROMETHEAN_BLEND`): the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor (the Knight arm versions), cut to about 1,800 triangles each with one 512 px atlas (`hde_ce.build`), each material's node tree baked (`BLEND_MATS`: colour map x control green x its grey; metal from control blue, polish from control red; the normal map's bevels; the lights in the material's emission colour), plus a brightmap of the lights -> `$HCE_OUT/weapons/sk_<gun>` |
 | `extract_h2_drone_ranks.py` | Ruby of Blue's H2 Drone Rank Tags (`HCE_H2_DRONE_RANKS`: the mod's zip) -> the Drone's ranks: the plate mask from its change-colour bitmap's import source, each rank's colour from the biped's change-colour permutations and its legendary body/shield from `ai/bugger_<rank>.character`, into `Drone_rank_mask.png` and `Drone.json` `ranks`. `build_digsite.py` makes a class per rank and loadout (`DRONE_RANKS`) and paints the plates (`drone_skin`). Run after `extract_h2.py` |
 | `lib/h2jms.py` | Halo 2 (H2EK) tag files: the source files their import info keeps zlib-compressed (`tag_sources`: a render model's JMS, a bitmap's BGRA original), a JMS 8210 reader and a JMA (16395) animation reader |
-| `xam_flood.py` | The XAM Campaign Overhaul's Flood skins (Tropical Thunder 98; `HCE_XAM_C40` and `HCE_SPV3_BITMAPS`): the reddish human form and the purple Elite form, each with its damaged texture, replace Halo CE's base and damaged materials of `FloodHuman` / `FloodElite` at 1024 px. They're painted for Halo CE's own meshes and UV layouts. Run after `extract_chars.py`, before `gore_kit.py`. Without the map or bitmaps.map the Halo CE skins stay |
+| `ce_flood_skins.py` | Halo CE's own skins back on `FloodHuman` and `FloodElite` (the base and damaged materials, and the damaged one as `gore_<Char>.png`), re-extracted through `extract_chars.extract()` into a scratch folder: undoes the XAM Campaign Overhaul's red and purple reskin that the retired `xam_flood.py` painted over them. Textures only; the model and its later steps are kept. Run after `gore_kit.py` (the blood overlays don't use the skin) |
 | `cmt_weapon.py` | Loose `.gbxmodel` weapon geometry (triangle strips, LOD 0) |
 | `lib/halosound.py` | Loose `.sound` reader + Xbox ADPCM decoder |
 | `lib/preview.py` | Software renderer for checking skinned poses |

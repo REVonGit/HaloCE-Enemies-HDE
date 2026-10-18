@@ -1010,7 +1010,7 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 	}
 }
 
-// HCE_DraethCommanderBeamRifleCamo: Halo variant "characters\draeth\draeth commander beam rifle camo", beam rifle, 80 body / 100 shield, 7 behaviour flags
+// HCE_DraethCommanderBeamRifleCamo: Halo variant "characters\draeth\draeth commander beam rifle camo", beam rifle, 80 body, 7 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 {
@@ -1040,7 +1040,7 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.20, 0.80, 200;
 		HaloDoom_EnemyBase.HCE_Defensive 0.75, 0.80, 0.10, 0.30, 0.30;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 60, 75, 1, 1.80, 2.55, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/BeamRifle/Laser/Loop", "", "Halo/Weapons/BeamRifle/Laser/LoopEnd", "Halo/Weapons/BeamRifle/Laser/Fire";
@@ -1669,7 +1669,7 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 	}
 }
 
-// HCE_DraethCommanderPlasmaCasterCamo: Halo variant "characters\draeth\draeth commander plasma caster camo", plasma caster, 80 body / 100 shield, 8 behaviour flags
+// HCE_DraethCommanderPlasmaCasterCamo: Halo variant "characters\draeth\draeth commander plasma caster camo", plasma caster, 80 body, 8 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 {
@@ -1699,7 +1699,7 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		HaloDoom_EnemyBase.HCE_Berserk 0.20, 0.80, 200;
 		HaloDoom_EnemyBase.HCE_Defensive 0.75, 0.80, 0.10, 0.30, 0.30;
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
-		HaloDoom_EnemyBase.HCE_Shield 100, 5.0, 6.0;
+		HaloDoom_EnemyBase.HCE_Shield 0, 5.0, 6.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 2, 18, 1.80, 2.55, 30;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaCaster/Fire", "", "Halo/Weapons/PlasmaCaster/ChargedFire", "Halo/Weapons/PlasmaCaster/ChargeBegin";

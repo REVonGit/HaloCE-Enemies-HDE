@@ -115,7 +115,8 @@ H2J_COLOURS = {'ultra': 'major', 'major': 'major', 'sniper': 'minor', 'marksman'
 # Slug Man ranks: health and aim (error-angle multiplier) and the armour colour repainted over the skin (slug_skin)
 SLUG_RANKS = {'minor': dict(health=1.0, accuracy=1.0, tint=bp.MINOR_BLUE),          # the Elites' Minor blue
               'major': dict(health=1.35, accuracy=0.9, tint=(0.58, 0.17, 0.15)),
-              'ultra': dict(health=1.8, accuracy=0.75, tint=(0.80, 0.82, 0.88))}
+              'ultra': dict(health=1.8, accuracy=0.75, tint=(0.80, 0.82, 0.88)),
+              'zealot': dict(health=2.2, accuracy=0.65, tint=(0.86, 0.64, 0.16))}       # gold, the top rank (rarest)
 # weapon key -> (its reference, which of the two Digsite Slug Man variants it copies: the 'pistol' one or the 'rifle'
 # one, which sets the stance and the combat data); SLUG_RANK_WEAPONS says which keys each rank fields (one class each)
 SLUG_WEAPONS = {'plasma pistol': (r'weapons\plasma pistol\plasma pistol', 'pistol'), 'needler': (r'weapons\needler\needler', 'pistol'),
@@ -123,10 +124,11 @@ SLUG_WEAPONS = {'plasma pistol': (r'weapons\plasma pistol\plasma pistol', 'pisto
                 'plasma carbine': (r'digsite\weapons\plasma carbine', 'rifle'), 'pulse carbine': (r'digsite\weapons\pulse carbine', 'rifle')}
 SLUG_RANK_WEAPONS = {'minor': ['needler', 'plasma rifle', 'plasma carbine'],
                      'major': ['plasma pistol', 'needler', 'plasma rifle', 'particle beam', 'plasma carbine', 'pulse carbine'],
-                     'ultra': ['plasma rifle', 'particle beam', 'plasma carbine']}
+                     'ultra': ['plasma rifle', 'particle beam', 'plasma carbine'],
+                     'zealot': ['plasma rifle', 'particle beam', 'pulse carbine']}
 
 # the Slug Men's armour reflection (slug_skin_act): the Elite cube of each rank's colour, and its strength
-SLUG_CUBE = {'minor': 0, 'major': 1, 'ultra': 3}
+SLUG_CUBE = {'minor': 0, 'major': 1, 'ultra': 3, 'zealot': 2}
 SLUG_SHINE_K = 0.3
 
 
@@ -1229,6 +1231,10 @@ def configure():
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.SKIN_HOOK['Drone'] = drone_skin
     # a swarm is mostly Minors: they come up three times as often as each ranked loadout
+    # the gold Zealot Slug Men are the rarest pick: every other Slug Man counts twice in HCE_RandomSlugMan
+    bp.RANDOM_WEIGHTS.update({f'HCE_SlugMan{r.capitalize()}{"".join(w.title() for w in k.split())}': 2
+                              for r, ks in SLUG_RANK_WEAPONS.items() if r != 'zealot' for k in ks})
+    bp.RANDOM_WEIGHTS.update({c: 2 for c in ('HCE_SlugManParticleBeam', 'HCE_SlugManPlasmaPistol')})
     bp.RANDOM_WEIGHTS.update({c: 3 for c in ('HCE_DronePlasmaPistol', 'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker')})
     bp.SHELL_TINT['Drone'] = DRONE_SHELL
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
@@ -1296,7 +1302,8 @@ def build():
                            'HCE_DroneMajorPlasmaPistol', 'HCE_DroneMajorNeedler', 'HCE_DroneUltraNeedler', 'HCE_DroneUltraPlasmaRifle',
                            'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
                            'HCE_DroneCaptainMajorPlasmaRifle',
-                           'HCE_JackalMajorHelmetPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_JackalMajorHelmetPlasmaRifle',
+                           'HCE_SlugManZealotParticleBeam', 'HCE_SlugManZealotPlasmaRifle', 'HCE_SlugManZealotPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     if H2J_BRIGHT:                               # the H2 sniper helmet's lenses glow

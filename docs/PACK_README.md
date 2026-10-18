@@ -367,7 +367,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
 * **Flood:**
-  * Infection forms swarm, leap and nibble, and take the dead. A dead Marine, ODST, Armored Marine, Elite or Grunt is raised as the Flood form of its own kind (an ODST or Armored Marine as an armored human form, an Elite as the Elite form, a Grunt as the Flood Grunt), holding the gun it dropped if that still lies by the body; otherwise it rises unarmed. A fallen combat form is reanimated as it was. Out of a fight they go for any body within 512 units; in one, only a body nearer than their target. One infection form to a body. Brutes and the Draeth aren't taken.
+  * Infection forms swarm, leap and nibble, and take the dead. A dead Marine, ODST, Armored Marine, Elite or Grunt is raised as the Flood form of its own kind (an ODST or Armored Marine as an armored human form, a Minor or Major Elite in its own colours, a Grunt as the Flood Grunt), holding the gun it dropped if that still lies by the body; otherwise it rises unarmed. A fallen combat form is reanimated as it was. Out of a fight they go for any body within 512 units; in one, only a body nearer than their target. One infection form to a body. Brutes and the Draeth aren't taken.
   * Fallen combat forms get back up on their own again, as intended (corpses had been refusing to rise).
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
   * Combat forms leap and fire whatever weapon they carry. Dead combat forms can be revived.
@@ -378,7 +378,10 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
     - **Flood ODST** (150 health): assault rifle, shotgun or sniper rifle (`HCE_FloodcombatOdst*`).
     - **Flood Marine**, unarmoured: assault rifle, pistol or unarmed (`HCE_FloodcombatHumanUnarmored*`).
     - **Flood Armored Marine**: assault rifle, pistol, shotgun, rocket launcher, sniper rifle or unarmed (`HCE_FloodcombatHumanArmored*`).
-    - They join the Flood among the Pinkies (the unarmed hosts) and the Wolfenstein SS (the armed hosts). DoomEdNums 30461–30475, with `HCE_RandomFloodODST`, `HCE_RandomFloodMarine` and `HCE_RandomFloodArmored`. (Ruby's shielded Flood Elites, Commander and Ultra were taken out; their numbers, 30476–30488, stay reserved.)
+    - **Shielded Flood Elites**, Minor (45 body, 70 shield, blue armour) and Major (45 body, 100 shield, red armour): needler, plasma pistol, plasma rifle or unarmed (`HCE_FloodcombatEliteMinor*`, `HCE_FloodcombatEliteMajor*`).
+    - **Flood Elite Commander** (300 body, 300 shield, gold armour): the energy sword, swung with Ruby's own sword animations (`HCE_FloodcombatEliteCommanderEnergySword`).
+    - **Flood Elite Ultra** (125 body, 100 shield, white armour): the fuel rod (`HCE_FloodcombatEliteUltraFuelRod`).
+    - They join the Flood among the Pinkies (the unarmed hosts, the Commander on hard) and the Wolfenstein SS (the armed hosts, the shielded Elites and the Ultra on hard). DoomEdNums 30461–30488, with `HCE_RandomFloodODST`, `HCE_RandomFloodMarine`, `HCE_RandomFloodArmored`, `HCE_RandomFloodEliteArmored`, `HCE_RandomFloodEliteCommander` and `HCE_RandomFloodEliteUltra`.
 * **Mercury Rising's units (new):** from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694; its two maps, `HCE_MR_MAP1` / `HCE_MR_MAP2`, with its own `bitmaps.map`, `HCE_MR_BITMAPS`): models, skins, animations and stats as the mod fields them (`extract_spv3.py`).
   * **Sentinels (Sentinels pack):** six of its own, each its own body on Halo CE's Sentinel animations, flying like Galap's and allied like every Sentinel by default. Their guns are the bipeds' own weapons from the mod:
     - **Artillery** (`HCE_SentinelArtillery`, 35 health): lobs a heavy green hard-light mortar shell on an arc (the plasma caster's lob, under the ceiling), bursting where it lands (40 within 112 units).
@@ -1266,6 +1269,19 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30473 | `HCE_FloodcombatHumanArmoredSniperRifle` |
 | 30474 | `HCE_FloodcombatHumanArmoredUnarmed` |
 | 30475 | `HCE_RandomFloodArmored` |
+| 30476 | `HCE_FloodcombatEliteMinorNeedler` |
+| 30477 | `HCE_FloodcombatEliteMinorPlasmaPistol` |
+| 30478 | `HCE_FloodcombatEliteMinorPlasmaRifle` |
+| 30479 | `HCE_FloodcombatEliteMinorUnarmed` |
+| 30480 | `HCE_FloodcombatEliteMajorNeedler` |
+| 30481 | `HCE_FloodcombatEliteMajorPlasmaPistol` |
+| 30482 | `HCE_FloodcombatEliteMajorPlasmaRifle` |
+| 30483 | `HCE_FloodcombatEliteMajorUnarmed` |
+| 30484 | `HCE_RandomFloodEliteArmored` |
+| 30485 | `HCE_FloodcombatEliteCommanderEnergySword` |
+| 30486 | `HCE_FloodcombatEliteUltraFuelRod` |
+| 30487 | `HCE_RandomFloodEliteCommander` |
+| 30488 | `HCE_RandomFloodEliteUltra` |
 | 30489 | `HCE_DroneMajorPlasmaPistol` |
 | 30490 | `HCE_DroneMajorNeedler` |
 | 30491 | `HCE_DroneUltraNeedler` |
@@ -1322,7 +1338,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt (model, skins, animations) is by Tropical Thunder 98, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Engineer:** from Halo CE Ruby's Rebalance.
-* **Ruby's Rebalance Flood:** the Flood ODSTs, Marines and Armored Marines are by mynameislol, from Ruby's Rebalance (its c40 map).
+* **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
 * **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick, MA37 and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
 * **Covenant carbine:** CMT's (the Elites' carbine, and its blue re-tint on the Pulse Carbine Elites).
 * **Blind Wolf:** created by SOI_7 (from SPV3's a30 map).

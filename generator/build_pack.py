@@ -377,6 +377,9 @@ SPV3_FLOOD = {r'characters\flood grunt\flood grunt': 'FloodGrunt',
               r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',
               r'characters\floodcombat_marine\floodcombat_marine': 'FloodMarine',
               r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored',
+              r'characters\floodcombat elite new\armored\floodcombat elite armored': 'FloodEliteArmored',
+              r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
+              r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra',
               # SOI's Singleplayer Adventure V3's Flood Juggernaut (its c20: Halo 2's Juggernaut)
               r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}
 # their DoomEdNums, in this order after everything released before them (the Flood Grunt keeps the number it shipped with)
@@ -386,9 +389,9 @@ SPV3_FLOOD_ORDER = (
      'HCE_FloodcombatHumanUnarmoredAssaultRifle', 'HCE_FloodcombatHumanUnarmoredPistol', 'HCE_FloodcombatHumanUnarmoredUnarmed', 'HCE_RandomFloodMarine',
      'HCE_FloodcombatHumanArmoredAssaultRifle', 'HCE_FloodcombatHumanArmoredPistol', 'HCE_FloodcombatHumanArmoredShotgun',
      'HCE_FloodcombatHumanArmoredRocketLauncher', 'HCE_FloodcombatHumanArmoredSniperRifle', 'HCE_FloodcombatHumanArmoredUnarmed', 'HCE_RandomFloodArmored']
-    + ['HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut'])
-# Ruby's armoured Flood Elites (Minor, Major, Commander, Ultra: FloodEliteArmored / Commander / Ultra) were taken out;
-# their numbers stay reserved in ednum_pins.json
+    + [f'HCE_FloodcombatElite{r}{w}' for r in ('Minor', 'Major') for w in ('Needler', 'PlasmaPistol', 'PlasmaRifle', 'Unarmed')]
+    + ['HCE_RandomFloodEliteArmored', 'HCE_FloodcombatEliteCommanderEnergySword', 'HCE_FloodcombatEliteUltraFuelRod',
+       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra', 'HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut'])
 _sp = f'{OUT}/spv3_ai.json'
 if os.path.exists(_sp):
     _S3 = json.load(open(_sp))
@@ -750,7 +753,7 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           # the infection forms' squeals and the carriers' gurgles, and the XAM Campaign Overhaul's own (human and Elite idles,
           # the Flood Grunt's attack)
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
-          'FloodElite': 'FloodElite',
+          'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
           'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
           'FloodJuggernaut': 'FloodJuggernaut'}
 from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
@@ -774,7 +777,7 @@ BLOOD = {
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
     'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
-    'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
+    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
@@ -799,6 +802,8 @@ def blood_props(char):
     bt = '' if char.startswith('Flood') else '\t\tBloodType "HCE_HaloBlood";\n'
     return f'\t\tBloodColor "{c[0:2]} {c[2:4]} {c[4:6]}";\n' + bt
 
+# Ruby's Rebalance's armoured Flood Elites (build_digsite.py) keep their rank's change colour on the armour
+FLOOD_RANKED = ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')
 
 def cname(s):
     """a variant's tag path -> its class name: the leaf, each word capitalised, 'HCE_' in front
@@ -1934,7 +1939,8 @@ BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Gr
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
                   'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
                   'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
-                  'FloodJuggernaut': 'Flood Juggernaut', 'MarineArmored': 'Armored Marine',
+                  'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
+                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'MarineArmored': 'Armored Marine',
                   'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
 
 def read_lore():
@@ -2329,7 +2335,7 @@ def build(cfg=None):
             color = variant_color(v, b)
             # Flood: the change colour covers nearly the whole body on Xbox and turns them green;
             # the base maps already carry the right flesh/fatigue/armour colours
-            if char.startswith('Flood'): color = None
+            if char.startswith('Flood') and char not in FLOOD_RANKED: color = None
             skin_lines = []; weapon_lines = []
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
             if not ov.get('overlay') and meta.get('hand_frame') and wid_equipped:
@@ -2391,7 +2397,7 @@ def build(cfg=None):
                         skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/{r}"')
                         continue
                 fn = f'{ov.get("skin_as", cls)[4:].lower()}_{matn.lower()}.png'     # arsenal Marines share their AR twin's
-                if char.startswith('Flood') and 'HCE_ActiveCamo' not in flags:
+                if char.startswith('Flood') and char not in FLOOD_RANKED and 'HCE_ActiveCamo' not in flags:
                     fn = f'{char.lower()}_{matn.lower()}.png'      # the Flood's skins are the same for every gun: one copy
                 dst = f'{pack}/models/{mdir}/{char}/skins/{fn}'
                 if not os.path.exists(dst):
@@ -2754,6 +2760,11 @@ CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see bu
     'FloodJuggernaut': dict(stance='unarmed', scale=0.6, height_fixed=96, radius_fixed=36, health=700, shield=0,
                             melee=(64, 85), speed=7.0, leap=(140, 420, 0.6, 12.0),
                             flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
+    # Ruby's Flood Elite Commander: the sword in Ruby's own sword melee and dives
+    'FloodEliteCommander': dict(stance='pistol', anims={'MELEE': ['stand sword melee%0', 'stand sword melee%1'],
+                                                       'DIVE_F': ['stand sword dive-front'], 'DIVE_L': ['stand sword dive-left'],
+                                                       'DIVE_R': ['stand sword dive-right'], 'EVADE_L': ['stand sword evade-left'],
+                                                       'EVADE_R': ['stand sword evade-right']}),
 }
 WEAPON_CODE = {}      # extra ZScript for every variant carrying a weapon
 SPECIAL_FIRE = {}     # weapon -> chance a burst becomes the charged special shot

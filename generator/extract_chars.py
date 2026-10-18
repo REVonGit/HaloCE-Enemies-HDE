@@ -83,9 +83,6 @@ MULTI_PERMS = {        # None: every permutation (Halo CE's Marine cosmetics: fa
     'FloodODST': {'head': None, 'corpse head': None, 'left_arm': None, 'right_arm': None},
     'FloodMarine': {r: ['base-01', '~damaged'] for r in ('head', 'corpse head', 'left_arm', 'right_arm')},
     'FloodArmored': {r: ['__base', '~damaged'] for r in ('head', 'corpse head', 'left_arm', 'right_arm')},
-    'FloodEliteArmored': {r: ['base00', '~damaged'] for r in ('head', 'corpse head', 'left arm', 'right arm')},
-    'FloodEliteCommander': {'head': None, 'corpse head': None, 'left arm': None, 'right arm': None},
-    'FloodEliteUltra': {'head': None, 'corpse head': None, 'left arm': None, 'right arm': None},
 }
 # bodies whose guns are separate overlay models on their own skeleton (marine_arsenal.py overlays, attached as
 # model 6) rather than baked into the body: the freed surfaces carry every cosmetic permutation (UZDoom: 32 max)

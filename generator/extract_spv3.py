@@ -32,10 +32,7 @@ MAPS = {
     'c40r': (os.environ.get('HCE_RUBY_C40', 'c40_2.map'),
              {r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',
               r'characters\floodcombat_marine\floodcombat_marine': 'FloodMarine',
-              r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored',
-              r'characters\floodcombat elite new\armored\floodcombat elite armored': 'FloodEliteArmored',
-              r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
-              r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra'}),
+              r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored'}),
     # SOI's Singleplayer Adventure V3 (Steam Workshop 2906165512): its Flood Juggernaut, from its c20 (The Library)
     'soi': (os.environ.get('HCE_SOI_C20', 'c20.map'),
             {r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}),
@@ -71,12 +68,6 @@ VARIANT_KEYS = {
     r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
     r'characters\floodcombat_human\armored\floodcombat_human ': r'characters\floodcombat_human\armored\floodcombat_human armored ',
     r'characters\floodcombat_human\floodcombat_human sniper rifle': r'characters\floodcombat_human\armored\floodcombat_human armored sniper rifle',
-    r'characters\floodcombat elite shield\minor\floodcombat elite minor ': r'characters\floodcombat elite shield\floodcombat elite minor ',
-    r'characters\floodcombat elite shield\major\floodcombat elite major ': r'characters\floodcombat elite shield\floodcombat elite major ',
-    r'characters\floodcombat elite shield\minor\floodcombat elite ': r'characters\floodcombat elite shield\floodcombat elite minor ',
-    r'characters\floodcombat elite shield\major\floodcombat elite fuel rod': r'characters\floodcombat elite shield\floodcombat elite ultra fuel rod',
-    r'characters\floodcombat elite shield\major\floodcombat elite ': r'characters\floodcombat elite shield\floodcombat elite major ',
-    r'characters\floodcombat elite shield\floodcombat commander ': r'characters\floodcombat elite shield\floodcombat elite commander ',
 }
 # a mod's weapon tag -> the Halo CE tag it stands for
 WEAPON_REFS = {r'weapons\plasma_cannon\plasma_cannon': r'weapons\fuel rod gun\fuel rod'}   # Ruby's fuel rod

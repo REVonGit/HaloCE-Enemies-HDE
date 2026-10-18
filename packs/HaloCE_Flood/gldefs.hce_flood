@@ -18,9 +18,3 @@ HardwareShader Texture "models/hce/FloodElite/skins/floodcombatelitestealthunarm
 	Shader "shaders/hce_camo.fp"
 	Speed 1.0
 }
-material texture "models/hce/weapons/w_energy_sword_glow.png"
-{
-	shader "shaders/hce_sword.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}

@@ -90,9 +90,6 @@ GORE = {
     **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left_arm', 'rarm': 'right_arm'}, gun='rarm',
                roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
        for c in ('FloodODST', 'FloodMarine', 'FloodArmored')},
-    **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
-               roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
-       for c in ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')},
     # the XAM Campaign Overhaul's Flood Grunt (extract_spv3.py): no head bone of its own (the infection sits on the stump of
     # the neck), so its arms only
     'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'frame upperarm left', 'rarm': 'frame upperarm right'}),

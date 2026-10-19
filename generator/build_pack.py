@@ -4124,7 +4124,7 @@ if 'Artybug' in MR_CHARS:
     CHAR_OVERRIDES['Artybug'] = dict(stance='pistol', radius_fixed=30, height_fixed=52, melee=(56, 60),
                                      flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades'])
 if 'Draeth' in MR_CHARS:
-    BLOOD['Draeth'] = BLOOD['Elite']
+    BLOOD['Draeth'] = '1FA055'            # emerald green: a colour of their own among the Covenant races
     # their own voice (voice_extra/Reaver, Black Mesa's Alien Grunt: growls, roars, pain and death cries, no words) and heavy steps (reaver_steps/,
     # split_factions.py's 'reaver' footstep set)
     VOICES['Draeth'] = 'Reaver'

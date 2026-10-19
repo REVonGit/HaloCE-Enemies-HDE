@@ -12,7 +12,8 @@
 Halo draws its decals multiplied (white background) or added (black background); both become plain coloured RGBA
 here (alpha from how much the decal changes the wall), so they look the same on a mid-grey wall. Puffs become white
 alpha masks, shaded with the victim's blood colour at run time.
-DECALDEF: one decal per cut-out, grouped per species (HCEGore_<Species>, HCEGore_<Species>Big for deaths).
+DECALDEF: one decal per cut-out, grouped per species (HCEGore_<Species>, HCEGore_<Species>Big for deaths). A species
+with no blood of its own in the games (RECOLOURED: the Reavers) takes another's shapes in its own colour.
 """
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
@@ -60,7 +61,29 @@ STREAKS = [('h2', 'effects\\bitmaps\\solids\\blood_trails')]
 # fist-sized. Halo spreads them over a body's width and more: this many times bigger
 DECAL_GROW = 2.0
 # floor splat sprite codes per species (HS<code> hits, HP<code> deaths)
-FLOOR = {'Elite': 'EL', 'Grunt': 'GR', 'Hunter': 'HU', 'Brute': 'BR', 'Drone': 'DR', 'Engineer': 'EN', 'Beast': 'BE', 'Human': 'HM'}
+FLOOR = {'Elite': 'EL', 'Grunt': 'GR', 'Hunter': 'HU', 'Brute': 'BR', 'Drone': 'DR', 'Engineer': 'EN', 'Beast': 'BE', 'Human': 'HM',
+         'Reaver': 'RV'}
+# species with no blood of their own in the games: another species' decal shapes, recoloured to their blood colour
+# (build_pack.BLOOD) with the shapes' own shading kept. The Reavers (the Draeth, Mercury Rising's): the Elite's
+# splats and smears in emerald green
+RECOLOURED = {'Reaver': ('Elite', 'Draeth')}
+
+
+def blood_rgb(char):
+    """a character's blood colour (build_pack.BLOOD) as (r, g, b) in 0..1"""
+    import build_pack as bp
+    c = bp.BLOOD[char]
+    return np.array([int(c[i:i + 2], 16) for i in (0, 2, 4)]) / 255.0
+
+
+def recolour(im, tint):
+    """a blood decal in another colour: its shading (luminance about its alpha-weighted mean) on tint, alpha kept"""
+    a = np.asarray(im.convert('RGBA')).astype(float) / 255
+    lum = a[..., :3].mean(-1, keepdims=True)
+    w = a[..., 3:]
+    mean_l = max(1e-3, float((lum * w).sum() / max(1e-6, w.sum())))
+    rgb = np.clip(tint * (0.7 + 0.6 * lum / mean_l), 0, 1)
+    return Image.fromarray((np.dstack([rgb, w]) * 255).astype(np.uint8), 'RGBA')
 
 
 def png_grab(path, im, ox, oy):
@@ -194,6 +217,18 @@ def main():
     for sp, src in BIG.items(): add_group(f'HCEGore_{sp}Big', src + SPLATS[sp])
     for sp in SPLATS:
         if f'HCEGore_{sp}Big' not in groups: groups[f'HCEGore_{sp}Big'] = groups[f'HCEGore_{sp}']
+    for sp, (base, char) in RECOLOURED.items():
+        tint = blood_rgb(char)
+        for suffix in ('', 'Big'):
+            names = []
+            for dn in groups[f'HCEGore_{base}{suffix}']:
+                stem = f'{sp.lower()}_{dn[5:]}'
+                if not os.path.exists(f'{gdir}/{stem}.png'):
+                    recolour(Image.open(f'{gdir}/{dn[5:]}.png'), tint).save(f'{gdir}/{stem}.png')
+                    src = next(e for e in dec if e.startswith(f'Decal {dn}\n'))
+                    dec.append(src.replace(f'Decal {dn}\n', f'Decal HCEG_{stem}\n').replace(f'/{dn[5:]}.png', f'/{stem}.png'))
+                names.append(f'HCEG_{stem}')
+            groups[f'HCEGore_{sp}{suffix}'] = names
     for g, names in groups.items():
         dec.append(f'DecalGroup {g}\n{{\n' + ''.join(f'\t{n} 1\n' for n in names) + '}\n')
     open(f'{od}/decaldef.hcegore', 'w').write('\n'.join(dec))
@@ -237,6 +272,8 @@ def main():
     # skid marks (HK<code>): Halo CE's long and medium blood smears, laid along the floor behind a body that slides;
     # the Elites and Grunts have their own smears, every other species gets the Elite's shapes in its own blood colour
     smears = {sp: sorted(f for f in os.listdir(gdir) if f.startswith(f'ce_blood_smear_{sp.lower()}_')) for sp in ('Elite', 'Grunt')}
+    smears.update({sp: sorted(f for f in os.listdir(gdir) if f.startswith(f'{sp.lower()}_ce_blood_smear_{base.lower()}_'))
+                   for sp, (base, _) in RECOLOURED.items()})
     for sp, code in FLOOR.items():
         own = smears.get(sp)
         files = own or smears['Elite']

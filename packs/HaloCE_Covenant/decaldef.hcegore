@@ -724,6 +724,138 @@ Decal HCEG_ce_blood_pool_0
 	Animator HCEGoreFade
 }
 
+Decal HCEG_reaver_ce_blood_splat_elite_0
+{
+	Pic "graphics/hcegore/reaver_ce_blood_splat_elite_0.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_splat_elite_1
+{
+	Pic "graphics/hcegore/reaver_ce_blood_splat_elite_1.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_splat_elite_2
+{
+	Pic "graphics/hcegore/reaver_ce_blood_splat_elite_2.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_splat_elite_3
+{
+	Pic "graphics/hcegore/reaver_ce_blood_splat_elite_3.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_h2_blood_splat_elite_0
+{
+	Pic "graphics/hcegore/reaver_h2_blood_splat_elite_0.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_h2_blood_splat_elite_1
+{
+	Pic "graphics/hcegore/reaver_h2_blood_splat_elite_1.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_h2_blood_splat_elite_2
+{
+	Pic "graphics/hcegore/reaver_h2_blood_splat_elite_2.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_h2_blood_splat_elite_3
+{
+	Pic "graphics/hcegore/reaver_h2_blood_splat_elite_3.png"
+	Translucent 0.95
+	X-Scale 1.60
+	Y-Scale 1.60
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_smear_elite_lg_0
+{
+	Pic "graphics/hcegore/reaver_ce_blood_smear_elite_lg_0.png"
+	Translucent 0.95
+	X-Scale 1.40
+	Y-Scale 1.40
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_smear_elite_lg_1
+{
+	Pic "graphics/hcegore/reaver_ce_blood_smear_elite_lg_1.png"
+	Translucent 0.95
+	X-Scale 1.40
+	Y-Scale 1.40
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_smear_elite_med_0
+{
+	Pic "graphics/hcegore/reaver_ce_blood_smear_elite_med_0.png"
+	Translucent 0.95
+	X-Scale 1.40
+	Y-Scale 1.40
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
+Decal HCEG_reaver_ce_blood_smear_elite_med_1
+{
+	Pic "graphics/hcegore/reaver_ce_blood_smear_elite_med_1.png"
+	Translucent 0.95
+	X-Scale 1.40
+	Y-Scale 1.40
+	RandomFlipX
+	RandomFlipY
+	Animator HCEGoreFade
+}
+
 DecalGroup HCEGore_Elite
 {
 	HCEG_ce_blood_splat_elite_0 1
@@ -923,4 +1055,32 @@ DecalGroup HCEGore_EngineerBig
 	HCEG_ce_blood_splat_engineer_1 1
 	HCEG_ce_blood_splat_engineer_2 1
 	HCEG_ce_blood_splat_engineer_3 1
+}
+
+DecalGroup HCEGore_Reaver
+{
+	HCEG_reaver_ce_blood_splat_elite_0 1
+	HCEG_reaver_ce_blood_splat_elite_1 1
+	HCEG_reaver_ce_blood_splat_elite_2 1
+	HCEG_reaver_ce_blood_splat_elite_3 1
+	HCEG_reaver_h2_blood_splat_elite_0 1
+	HCEG_reaver_h2_blood_splat_elite_1 1
+	HCEG_reaver_h2_blood_splat_elite_2 1
+	HCEG_reaver_h2_blood_splat_elite_3 1
+}
+
+DecalGroup HCEGore_ReaverBig
+{
+	HCEG_reaver_ce_blood_smear_elite_lg_0 1
+	HCEG_reaver_ce_blood_smear_elite_lg_1 1
+	HCEG_reaver_ce_blood_smear_elite_med_0 1
+	HCEG_reaver_ce_blood_smear_elite_med_1 1
+	HCEG_reaver_ce_blood_splat_elite_0 1
+	HCEG_reaver_ce_blood_splat_elite_1 1
+	HCEG_reaver_ce_blood_splat_elite_2 1
+	HCEG_reaver_ce_blood_splat_elite_3 1
+	HCEG_reaver_h2_blood_splat_elite_0 1
+	HCEG_reaver_h2_blood_splat_elite_1 1
+	HCEG_reaver_h2_blood_splat_elite_2 1
+	HCEG_reaver_h2_blood_splat_elite_3 1
 }

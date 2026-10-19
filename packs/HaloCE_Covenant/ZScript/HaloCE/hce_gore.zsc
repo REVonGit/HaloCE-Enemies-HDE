@@ -130,8 +130,8 @@ class HCE_HaloGoreHandler : EventHandler
 	// in Species(), and its sprites and decals from extract_halo_gore.py.
 	static String FloorCode(String group)
 	{
-		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human" };
-		static const String c[] = { "EL", "GR", "HU", "BR", "DR", "EN", "BE", "HM" };
+		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human", "Reaver" };
+		static const String c[] = { "EL", "GR", "HU", "BR", "DR", "EN", "BE", "HM", "RV" };
 		for(int i = 0; i < g.Size(); i++) if(g[i] == group) return c[i];
 		return "BE";
 	}
@@ -170,8 +170,8 @@ class HCE_HaloGoreHandler : EventHandler
 		String n = a.GetClassName();
 		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
 		if(n.IndexOf("Marine") >= 0 || n.IndexOf("Johnson") >= 0) return "Human";
-		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
-		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Elite", "Elite", "Beast", "Beast", "Beast" };
+		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Draeth", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
+		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Reaver", "Elite", "Elite", "Beast", "Beast", "Beast" };
 		for(int i = 0; i < keys.Size(); i++) if(n.IndexOf(keys[i]) >= 0) return groups[i];
 		return "";
 	}
@@ -395,6 +395,7 @@ class HCE_GoreFloorSplat : Actor
 		HSEL A 0; HPEL A 0; HSGR A 0; HPGR A 0; HSHU A 0; HPHU A 0; HSBR A 0; HPBR A 0;
 		HSDR A 0; HPDR A 0; HSEN A 0; HPEN A 0; HSBE A 0; HPBE A 0; HSHM A 0; HPHM A 0;
 		HKEL A 0; HKGR A 0; HKHU A 0; HKBR A 0; HKDR A 0; HKEN A 0; HKBE A 0; HKHM A 0;
+		HSRV A 0; HPRV A 0; HKRV A 0;
 		Stop;
 	Spawn:
 		HSBE A -1;

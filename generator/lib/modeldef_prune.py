@@ -29,7 +29,7 @@ def materials(path):
     return _mats[path]
 
 
-def _exists(pack, rel):
+def _file(pack, rel):
     """rel (a path in the pack, any case) is a file"""
     d = pack
     for part in rel.replace('\\', '/').split('/'):
@@ -38,6 +38,17 @@ def _exists(pack, rel):
         if part.lower() not in low: return False
         d = os.path.join(d, low[part.lower()])
     return os.path.isfile(d)
+
+
+GFX_EXTS = ('.png', '.jpg', '.tga', '.pcx')
+
+
+def _exists(pack, rel):
+    """the engine would find a texture for rel: UZDoom's FindGFXFile takes the name as it is, else the name with its
+    extension swapped for .png, .jpg, .tga or .pcx"""
+    if _file(pack, rel): return True
+    stem = rel.rsplit('.', 1)[0] if '.' in os.path.basename(rel) else rel
+    return any(_file(pack, stem + e) for e in GFX_EXTS)
 
 
 def prune_block(pack, b):
@@ -217,14 +228,17 @@ def prune(pack):
 
 def unresolve_material(iqm_path, material):
     """make the IQM's meshes using 'material' fall back to nothing (skipped, as prune wants) when no MODELDEF line
-    skins them: the name in the IQM's text block becomes one of the same length that is no file ('.png' -> '.pnx').
+    skins them: the name in the IQM's text block becomes one of the same length that is no file ('gore_X.png' -> 'gore_~.png' style).
     For the gore stumps, whose texture sits in the model's folder but which the ZScript always skins by name when it
     shows them. Returns whether the name was found."""
     import struct
     data = bytearray(open(iqm_path, 'rb').read())
     num_text, ofs_text = struct.unpack_from('<II', data, 16 + 3 * 4)
     old = material.encode()
-    new = (material[:-1] + ('x' if material[-1] != 'x' else 'y')).encode()
+    # same length, and a stem no file has under any extension (the engine tries .png/.jpg/.tga/.pcx for a name it
+    # can't find, so only the stem can hide it): the stem's last character becomes '~'
+    stem, ext = os.path.splitext(material)
+    new = (stem[:-1] + '~' + ext).encode()
     text = bytes(data[ofs_text:ofs_text + num_text])
     hit, i = False, 0
     while True:

@@ -56,7 +56,8 @@ mixin class HCE_LitePlasma
 		{
 			vector2 view = (angle + frandom[PlasmaProjRNG](-60, 60) + 180, pitch + frandom[PlasmaProjRNG](-35, 35));
 			vector3 rp = (frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1), frandom[PlasmaProjRNG](-1, 1)) * frandom[PlasmaProjRNG](-5, 5);
-			BiriBiri.DoLightning(level.Vec3Offset(pos, rp), view, type: type, dist: frandom[PlasmaProjRNG](10, 30), 1.5, 20.0, 10.0, 30, 0);
+			// 3-unit links (HDE's: 1.5): half the segment actors, each twice as long; at this size the arc looks the same
+			BiriBiri.DoLightning(level.Vec3Offset(pos, rp), view, type: type, dist: frandom[PlasmaProjRNG](10, 30), 3.0, 20.0, 10.0, 30, 0);
 		}
 	}
 }
@@ -74,11 +75,26 @@ mixin class HCE_LitePlasmaSmoke
 			HaloDoom_EnemyBase.HCE_Glow(self, col, 3, 30, alpha: 0.5, grow: -3);
 			HaloDoom_EnemyBase.HCE_Glow(self, col, 6, 18, -vel * 0.5, vel * 0.1, 0.45, -2.5);
 		}
-		if(!bDESTROYED && !(GetAge() % 3))
+		if(!bDESTROYED && !(GetAge() % 3)) HCE_SmokePuff();
+	}
+	// HDE's plasma smoke (PlasmaSmoke: one of its smoke sprites, added, rolling, growing a little, drifting after the
+	// bolt) as a particle in the bolt's colour: the same puff without an actor thinking for its 40 tics. HDE's eases in
+	// to 0.7 and fades out; the particle (drawn a little larger: a particle's sprite reads smaller and dimmer) starts at full and fades over the same life. No smoke sprite: HDE's actor.
+	void HCE_SmokePuff()
+	{
+		TextureID tx = TexMan.CheckForTexture(String.Format("SMKE%c0", 68 + random[PlasmaSmoke](0, 8)), TexMan.Type_Any);
+		if(!tx.IsValid())
 		{
 			let smk = Spawn(smokeType, level.Vec3Offset(pos, vel));
 			if(smk) smk.vel = vel * 0.1;
+			return;
 		}
+		double sz = 56 * 0.42 * frandom[PlasmaSmoke](0.75, 1.5);
+		// HDE's smoke colours (its PlasmaSmoke_Green / _Blue translations), brighter than the bolt's own shade
+		Color sc = smokeType is 'PlasmaSmoke_Blue' ? Color(81, 77, 250) : smokeType is 'PlasmaSmoke_Green' ? Color(81, 250, 77) : col;
+		A_SpawnParticleEx(sc, tx, STYLE_Add, SPF_FULLBRIGHT | SPF_ROLL, 40, sz, 0, vel.x, vel.y, vel.z,
+			vel.x * 0.03, vel.y * 0.03, vel.z * 0.03, 0, 0, 0, 1.0, -1, sz * 0.1 / 40,
+			frandom[PlasmaSmoke](-180, 180), frandom[PlasmaSmoke](-0.5, 0.5));
 	}
 }
 

@@ -38,6 +38,7 @@ from variants import *            # the variants' colours, ranks and looks: the 
 from templates import template   # templates/: the ZScript and GLSL written into the pack as-is
 from PIL import Image
 from texmath import raster_normals, sample_cube, bake_reflection   # texture maths shared with the extractors
+import modeldef_prune                 # hidden model surfaces left undrawn (lib/modeldef_prune.py)
 
 from hce_paths import OUT, PACK
 S = 80.0                     # map units per Halo world unit
@@ -1550,9 +1551,10 @@ def gun_code(meta, mdir, slot=None):
     ws = [i for i, w in enumerate(meta.get('mesh_weapon') or []) if w]
     if not ws: return ''
     return ('\toverride void HCE_ShowGun(bool show)\n\t{\n\t\tsuper.HCE_ShowGun(show);\n'
-            "\t\tName sk = show ? 'None' : 'hce_hidden.png';\n"
             f'\t\tstatic const int W[] = {{ {", ".join(map(str, ws))} }};\n'
-            f'\t\tfor(int i = 0; i < W.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "models/{mdir}/weapons", sk, CMDL_USESURFACESKIN);\n'
+            '\t\tfor(int i = 0; i < W.Size(); i++)\n'
+            '\t\t{\n\t\t\tif(show) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "", \'None\', CMDL_USESURFACESKIN);\n'
+            '\t\t\telse HCE_HideSurface(W[i]);    // the guns it never held stay undrawn\n\t\t}\n'
             + (f'\t\tif(!show && hce_hasLoadout) A_ChangeModel(\'None\', {slot}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);   // a picked-up overlay gun\n'
                if slot is not None else '') + '\t}\n')
 
@@ -2084,6 +2086,8 @@ def build(cfg=None):
         ov = CHAR_OVERRIDES.get(char, {})
         os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
         shutil.copy(f'{OUT}/models/{char}/{char}.iqm', f'{pack}/models/{mdir}/{char}/{char}.iqm')
+        if meta.get('gore'):                       # the stumps are skinned by name when shown: undrawn until then
+            modeldef_prune.unresolve_material(f'{pack}/models/{mdir}/{char}/{char}.iqm', meta['gore']['tex'])
         if char.startswith('Elite') and mdir == 'hce' and os.path.exists(f'{ELITE_KIT}/EliteKit.json'):   # Halo 2's Elite armour (the main pack's; the add-on's carbine Elites use it from there)
             os.makedirs(f'{pack}/models/{mdir}/EliteKit', exist_ok=True)
             for f in os.listdir(ELITE_KIT):
@@ -2105,7 +2109,7 @@ def build(cfg=None):
                 shutil.copy(f'{OUT}/models/{char}/{meta["gore"]["cap_model"]}', f'{pack}/models/{mdir}/{char}/{meta["gore"]["cap_model"]}')
         if meta.get('blood'):                      # blood on the body (blood_kit.py): overlay models and textures
             for f in meta['blood']['models'] + meta['blood']['textures']: shutil.copy(f'{OUT}/models/{char}/{f}', f'{pack}/models/{mdir}/{char}/{f}')
-            Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{pack}/models/{mdir}/{char}/hce_noblood.png')
+            # (the overlay's empty surfaces keep their material 'hce_noblood.png', no file: the engine skips them)
             os.makedirs(f'{pack}/models/{mdir}/weapons', exist_ok=True)
             hid = f'{pack}/models/{mdir}/weapons/hce_hidden.png'
             if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
@@ -2700,9 +2704,15 @@ def build(cfg=None):
     if main:
         os.makedirs(f'{pack}/sprites', exist_ok=True)
         Image.new('RGBA', (4, 4), (0, 0, 0, 0)).save(f'{pack}/sprites/HCEMA0.png')
-    open(f'{pack}/ZScript/HaloCE/{tg}_enemies.zsc', 'w').write('\n'.join(zs))
+    # hidden surfaces not drawn at all (lib/modeldef_prune.py): the MODELDEF lines hiding them dropped, each enemy
+    # class told which of its surfaces those are (HCE_HideSurface) and its own run-time hides routed through it
+    other = '\n'.join(open(f).read() for d in {pack, PACK} for f in glob.glob(f'{d}/ZScript/**/*.zsc', recursive=True)
+                      if not f.endswith((f'{tg}_enemies.zsc', f'{tg}_projectiles.zsc')))
+    other += '\n'.join(open(f).read() for f in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'addons', 'localdev', 'ZScript', '**', '*.zsc'), recursive=True))
+    md_text, zs_text = modeldef_prune.apply(pack, '\n'.join(md), '\n'.join(zs), other)
+    open(f'{pack}/ZScript/HaloCE/{tg}_enemies.zsc', 'w').write(zs_text)
     open(f'{pack}/ZScript/HaloCE/{tg}_projectiles.zsc', 'w').write('\n'.join(pz))
-    open(f'{pack}/modeldef.{tg}', 'w').write('\n'.join(md))
+    open(f'{pack}/modeldef.{tg}', 'w').write(md_text)
     ednums = pin_ednums(ednums)
     if os.path.exists(f'{pack}/sprites/udb'): shutil.rmtree(f'{pack}/sprites/udb')
     n_icons = ship_udb_icons([c for _, c in ednums], f'{pack}/sprites/udb')     # UDB thing icons (split_factions.py: per faction)

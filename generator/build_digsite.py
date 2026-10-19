@@ -1381,3 +1381,8 @@ if __name__ == '__main__':
                     if os.path.exists(f'{bp.OUT}/models/{c}/{c}.json')})
     build()
     bp.cap_skins(PACK)
+    bp.modeldef_prune.prune(PACK)               # the blocks build() appended after the main build's pass too
+    # both packs' code is final now: the bodies keep only the animations it names (lib/anim_trim.py)
+    import anim_trim
+    _HERE = os.path.dirname(os.path.abspath(__file__))
+    anim_trim.trim([bp.PACK, PACK], [bp.PACK, PACK, os.path.join(_HERE, 'addons', 'localdev'), os.path.join(_HERE, 'standalone')])

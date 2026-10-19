@@ -228,8 +228,8 @@ class HCE_JackalShield : Actor
 		let e = HaloDoom_EnemyBase(j);
 		if(!e || !e.bHCE_FrontShield) return;
 		int SURF = e.HCE_ShieldSurface();                   // the model surface the shield's energy field is drawn on
-		if(on) j.A_ChangeModel('None', 0, "", 'None', SURF, "", 'None', CMDL_USESURFACESKIN);
-		else j.A_ChangeModel('None', 0, "", 'None', SURF, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(on) e.HCE_ShowSurface(SURF);
+		else e.HCE_HideSurface(SURF);     // the Jackal's own: its MODELDEF leaves the shield to it, so a downed one isn't drawn
 	}
 
 	// every tic: first-time setup (size, hp, bones), then follow the shield bone (or a point in front of the Jackal

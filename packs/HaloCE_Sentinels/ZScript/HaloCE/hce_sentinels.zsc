@@ -100,6 +100,15 @@ class HCE_SentinelBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_Sentinel : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel"
 	//$Sprite "HU5YA0"
@@ -201,6 +210,15 @@ class HCE_Sentinel : HCE_SentinelBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelEliminator : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Eliminator"
 	//$Sprite "HU68A0"
@@ -303,6 +321,15 @@ class HCE_SentinelEliminator : HCE_SentinelBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelMajor : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Major"
 	//$Sprite "HU6SA0"
@@ -404,6 +431,15 @@ class HCE_SentinelMajor : HCE_SentinelBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelDefensive : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Defensive"
 	//$Sprite "HU65A0"
@@ -505,6 +541,15 @@ class HCE_SentinelDefensive : HCE_SentinelBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelShielded : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded"
 	//$Sprite "HU6YA0"
@@ -607,6 +652,15 @@ class HCE_SentinelShielded : HCE_SentinelBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelShieldedMajor : HCE_SentinelBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel"
 	//$Title "Sentinel Shielded Major"
 	//$Sprite "HU6ZA0"
@@ -770,6 +824,13 @@ class HCE_SentinelArtilleryBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelArtillery : HCE_SentinelArtilleryBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Artillery"
 	//$Title "Sentinel Artillery"
 	//$Sprite "HU5ZA0"
@@ -984,6 +1045,13 @@ class HCE_SentinelBruteBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelBrute : HCE_SentinelBruteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Brute"
 	//$Title "Sentinel Brute"
 	//$Sprite "HU60A0"
@@ -1157,6 +1225,13 @@ class HCE_SentinelCanoneerBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelCanoneer : HCE_SentinelCanoneerBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Canoneer"
 	//$Title "Sentinel Canoneer"
 	//$Sprite "HU61A0"
@@ -1303,6 +1378,13 @@ class HCE_SentinelCompilerBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelCompiler : HCE_SentinelCompilerBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Compiler"
 	//$Title "Sentinel Compiler"
 	//$Sprite "HU62A0"
@@ -1508,6 +1590,13 @@ class HCE_SentinelConstructorBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelConstructor : HCE_SentinelConstructorBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Constructor"
 	//$Title "Sentinel Constructor"
 	//$Sprite "HU63A0"
@@ -1654,6 +1743,13 @@ class HCE_SentinelCrawlerBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelCrawler : HCE_SentinelCrawlerBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Crawler"
 	//$Title "Sentinel Crawler"
 	//$Sprite "HU64A0"
@@ -1805,6 +1901,15 @@ class HCE_SentinelDragoonBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelDragoonAlly : HCE_SentinelDragoonBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Dragoon"
 	//$Title "Sentinel Dragoon Ally"
 	//$Sprite "HU67A0"
@@ -1897,6 +2002,15 @@ class HCE_SentinelDragoonAlly : HCE_SentinelDragoonBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelDragoon : HCE_SentinelDragoonBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Dragoon"
 	//$Title "Sentinel Dragoon"
 	//$Sprite "HU66A0"
@@ -2163,6 +2277,13 @@ class HCE_SentinelEnforcerBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelEnforcer : HCE_SentinelEnforcerBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Enforcer"
 	//$Title "Sentinel Enforcer"
 	//$Sprite "HU69A0"
@@ -2317,6 +2438,15 @@ class HCE_SentinelGoldBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelGoldMajor : HCE_SentinelGoldBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Major"
 	//$Sprite "HU6BA0"
@@ -2402,6 +2532,15 @@ class HCE_SentinelGoldMajor : HCE_SentinelGoldBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelGoldShieldedMajor : HCE_SentinelGoldBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Shielded Major"
 	//$Sprite "HU6DA0"
@@ -2488,6 +2627,15 @@ class HCE_SentinelGoldShieldedMajor : HCE_SentinelGoldBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelGoldShielded : HCE_SentinelGoldBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold Shielded"
 	//$Sprite "HU6CA0"
@@ -2574,6 +2722,15 @@ class HCE_SentinelGoldShielded : HCE_SentinelGoldBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelGold : HCE_SentinelGoldBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Gold"
 	//$Title "Sentinel Gold"
 	//$Sprite "HU6AA0"
@@ -2720,6 +2877,13 @@ class HCE_SentinelInterceptorBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelInterceptor : HCE_SentinelInterceptorBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Interceptor"
 	//$Title "Sentinel Interceptor"
 	//$Sprite "HU6EA0"
@@ -3191,6 +3355,15 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Binary Rifle)"
 	//$Sprite "HU6FA0"
@@ -3333,6 +3506,15 @@ class HCE_SentinelKnightShieldShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 5, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Light Rifle)"
 	//$Sprite "HU6GA0"
@@ -3472,6 +3654,15 @@ class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Scattershot)"
 	//$Sprite "HU6HA0"
@@ -3611,6 +3802,15 @@ class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 6 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Commander (Suppressor)"
 	//$Sprite "HU6IA0"
@@ -3749,6 +3949,15 @@ class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Binary Rifle)"
 	//$Sprite "HU6JA0"
@@ -3887,6 +4096,15 @@ class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 5, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Light Rifle)"
 	//$Sprite "HU6KA0"
@@ -4025,6 +4243,15 @@ class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Scattershot)"
 	//$Sprite "HU6LA0"
@@ -4163,6 +4390,15 @@ class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 6 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Major (Suppressor)"
 	//$Sprite "HU6MA0"
@@ -4300,6 +4536,15 @@ class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Binary Rifle)"
 	//$Sprite "HU6NA0"
@@ -4438,6 +4683,15 @@ class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 5, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Light Rifle)"
 	//$Sprite "HU6OA0"
@@ -4576,6 +4830,15 @@ class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Scattershot)"
 	//$Sprite "HU6PA0"
@@ -4714,6 +4977,15 @@ class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelKnightMinorSuppressor : HCE_SentinelKnightBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 4, 5, 6 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Knight"
 	//$Title "Sentinel Knight Minor (Suppressor)"
 	//$Sprite "HU6QA0"
@@ -4912,6 +5184,13 @@ class HCE_SentinelLancerBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelLancer : HCE_SentinelLancerBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Lancer"
 	//$Title "Sentinel Lancer"
 	//$Sprite "HU6RA0"
@@ -5059,6 +5338,13 @@ class HCE_SentinelMarauderBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelMarauder : HCE_SentinelMarauderBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Marauder"
 	//$Title "Sentinel Marauder"
 	//$Sprite "HU6TA0"
@@ -5197,6 +5483,13 @@ class HCE_SentinelOmegaBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelOmega : HCE_SentinelOmegaBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Omega"
 	//$Title "Sentinel Omega"
 	//$Sprite "HU6UA0"
@@ -5349,6 +5642,15 @@ class HCE_SentinelOnyxBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelOnyx : HCE_SentinelOnyxBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Onyx"
 	//$Title "Sentinel Onyx"
 	//$Sprite "HU6VA0"
@@ -5496,6 +5798,13 @@ class HCE_SentinelProtectorBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelProtector : HCE_SentinelProtectorBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Protector"
 	//$Title "Sentinel Protector"
 	//$Sprite "HU6WA0"
@@ -5640,6 +5949,13 @@ class HCE_SentinelScoutBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelScout : HCE_SentinelScoutBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Scout"
 	//$Title "Sentinel Scout"
 	//$Sprite "HU6XA0"
@@ -5790,6 +6106,15 @@ class HCE_SentinelSoldierBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelSoldierAlly : HCE_SentinelSoldierBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Soldier"
 	//$Title "Sentinel Soldier Ally"
 	//$Sprite "HU71A0"
@@ -5885,6 +6210,15 @@ class HCE_SentinelSoldierAlly : HCE_SentinelSoldierBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelSoldier : HCE_SentinelSoldierBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Soldier"
 	//$Title "Sentinel Soldier"
 	//$Sprite "HU70A0"
@@ -6044,6 +6378,15 @@ class HCE_SentinelWardenBubbleShell : HCE_ShieldShell {}
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_SentinelWarden : HCE_SentinelWardenBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Sentinels/Sentinel Warden"
 	//$Title "Sentinel Warden"
 	//$Sprite "HU72A0"

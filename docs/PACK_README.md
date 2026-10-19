@@ -1019,6 +1019,11 @@ Options > Halo CE Performance:
 * **Simple active camo** (`hce_simpleshaders`): the cloaked enemies (the stealth Elites, the Flood's stealth Elites) wear plain copies of their skins without the camo shader, so they show as a faint body. The other glowing surfaces stay as they are: the engine can't switch brightmaps or material shaders off from an option, and they cost little.
 * **Garbage collector** (`hce_cleanup`, off by default): every three seconds it fades out and removes the oldest enemy bodies past **Bodies kept** (`hce_maxcorpses`, 48), severed heads and limbs past **Severed limbs kept** (`hce_maxgibs`, 32) and Halo gore floor splats past **Gore splats kept** (`hce_maxgore`, 64). It never touches anything a player can see or is standing near, removes a dozen things at most a sweep, and leaves living enemies alone. In testing, 31 bodies out of sight were brought down to a limit of 10 in two sweeps.
 
+Under the hood, with nothing to set:
+* **Only what an enemy wears and holds is drawn.** Each body model carries every gun its kind can hold, the other ranks' armour, both Grunt backs, the Marine kit's pieces and the gore stumps. They used to be hidden behind a see-through skin, which the engine still draws every frame; now the engine skips them altogether. That's up to 83% fewer triangles and far fewer draw calls per enemy (Slug Man 7,975 → at most 1,348 triangles; Brute 14,091 → 3,956; Halo 2 Jackal 13,345 → 3,992; Flood human 10,378 → 3,203; Elite 4,083 → 2,696), and a corpse no longer draws its gun or a broken Jackal shield. Nothing looks different.
+* **Smaller models.** Animations no enemy ever plays are left out of the models (949 of them across 51 bodies, about a fifth of the animation data), so the packs load faster and take less memory.
+* **The AI is cheap.** Measured in a fight against the player: 0.01–0.05 ms of game time per enemy per tic (a vanilla Imp: 0.01 ms), so even 100 enemies fighting take a few milliseconds of the 28 ms a tic allows. The biggest bursts in a firefight are the plasma bolts' spark and smoke effects (HaloDoom Evolved's).
+
 ## Not included / known limits
 
 * The Sentinels have no dialogue beyond the Knights' voice and their engine, hit and death sounds; the Flood growl and shriek with Halo CE's and Ruby's Rebalance's Flood sounds rather than speaking lines.

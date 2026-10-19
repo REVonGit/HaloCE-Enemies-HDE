@@ -87,35 +87,35 @@ class HCE_FloodArmoredBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(3);
+			HCE_HideSurface(4);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(2);
+			HCE_ShowSurface(5);
 			HCE_SpawnLimb(0, (0.0229, -0.0124, 0.5779), 80.00, "models/hce/FloodArmored", 'FloodArmored_gib_head.iqm', 22, 'gore_FloodArmored.png', 0.0550);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 7, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 8, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(6);
+			HCE_ShowSurface(7);
+			HCE_ShowSurface(8);
 			HCE_SpawnLimb(1, (-0.0201, 0.2195, 0.3933), 80.00, "models/hce/FloodArmored", 'FloodArmored_gib_larm.iqm', 22, 'gore_FloodArmored.png', 0.0640);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(10);
+			HCE_HideSurface(12);
+			HCE_HideSurface(13);
+			HCE_HideSurface(14);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_HideSurface(17);
+			HCE_HideSurface(18);
+			HCE_HideSurface(19);
+			HCE_HideSurface(20);
+			HCE_HideSurface(21);
+			HCE_ShowSurface(11);
 			HCE_SpawnLimb(2, (-0.0294, -0.1604, 0.4415), 80.00, "models/hce/FloodArmored", 'FloodArmored_gib_rarm.iqm', 22, 'gore_FloodArmored.png', 0.0366);
 			HCE_OnSever(2, true);
 			return true;
@@ -126,7 +126,7 @@ class HCE_FloodArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 2, 5, 7, 8, 11 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -176,9 +176,12 @@ class HCE_FloodArmoredBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -186,6 +189,41 @@ class HCE_FloodArmoredBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredAssaultRifle : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored (Assault Rifle)"
 	//$Sprite "HU2QA0"
@@ -322,6 +360,39 @@ class HCE_FloodcombatHumanArmoredAssaultRifle : HCE_FloodArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredPistol : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored (Pistol)"
 	//$Sprite "HU2RA0"
@@ -458,6 +529,43 @@ class HCE_FloodcombatHumanArmoredPistol : HCE_FloodArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredRocketLauncher : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored (Rocket Launcher)"
 	//$Sprite "HU2SA0"
@@ -594,6 +702,41 @@ class HCE_FloodcombatHumanArmoredRocketLauncher : HCE_FloodArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredShotgun : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 18: A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN); return;
+		case 19: A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored (Shotgun)"
 	//$Sprite "HU2TA0"
@@ -732,6 +875,41 @@ class HCE_FloodcombatHumanArmoredShotgun : HCE_FloodArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredSniperRifle : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 20: A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 21: A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored (Sniper Rifle)"
 	//$Sprite "HU2UA0"
@@ -869,6 +1047,37 @@ class HCE_FloodcombatHumanArmoredSniperRifle : HCE_FloodArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanArmoredUnarmed : HCE_FloodArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodArmored", 'skins/floodarmored_floodarmored_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Armored"
 	//$Title "Floodcombat Human Armored Unarmed"
 	//$Sprite "HU2VA0"
@@ -1074,6 +1283,13 @@ class HCE_FloodCarrierBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_Floodcarrier : HCE_FloodCarrierBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Carrier"
 	//$Title "Floodcarrier"
 	//$Sprite "HU24A0"
@@ -1250,36 +1466,36 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_ShowSurface(1);
 			HCE_SpawnLimb(0, (-0.0666, -0.0788, 0.6369), 80.00, "models/hce/FloodElite", 'FloodElite_gib_head.iqm', 24, 'gore_FloodElite.png', 0.0598);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(2);
+			HCE_ShowSurface(3);
 			HCE_SpawnLimb(1, (0.0045, 0.1705, 0.3773), 80.00, "models/hce/FloodElite", 'FloodElite_gib_larm.iqm', 24, 'gore_FloodElite.png', 0.0695);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(5);
+			HCE_HideSurface(8);
+			HCE_HideSurface(9);
+			HCE_HideSurface(10);
+			HCE_HideSurface(11);
+			HCE_HideSurface(12);
+			HCE_HideSurface(13);
+			HCE_HideSurface(14);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_HideSurface(17);
+			HCE_HideSurface(18);
+			HCE_HideSurface(19);
+			HCE_HideSurface(20);
+			HCE_HideSurface(21);
+			HCE_HideSurface(22);
+			HCE_HideSurface(23);
+			HCE_ShowSurface(6);
 			HCE_SpawnLimb(2, (0.0126, -0.1390, 0.4222), 80.00, "models/hce/FloodElite", 'FloodElite_gib_rarm.iqm', 24, 'gore_FloodElite.png', 0.0624);
 			HCE_OnSever(2, true);
 			return true;
@@ -1290,7 +1506,7 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 3, 6 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -1338,9 +1554,12 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -1348,6 +1567,35 @@ class HCE_FloodEliteBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 9: A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 9, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Assault Rifle)"
 	//$Sprite "HU25A0"
@@ -1502,6 +1750,35 @@ class HCE_FloodcombatEliteAssaultRifle : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 10: A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'w_flamethrower_0.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'w_flamethrower_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'w_flamethrower_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'w_flamethrower_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite Flame Thrower"
 	//$Sprite "HU27A0"
@@ -1659,6 +1936,35 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN); return;
+		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Needler)"
 	//$Sprite "HU2GA0"
@@ -1814,6 +2120,33 @@ class HCE_FloodcombatEliteNeedler : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Pistol)"
 	//$Sprite "HU2HA0"
@@ -1969,6 +2302,33 @@ class HCE_FloodcombatElitePistol : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Plasma Pistol)"
 	//$Sprite "HU2IA0"
@@ -2124,6 +2484,33 @@ class HCE_FloodcombatElitePlasmaPistol : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Plasma Rifle)"
 	//$Sprite "HU2JA0"
@@ -2279,6 +2666,37 @@ class HCE_FloodcombatElitePlasmaRifle : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN); return;
+		case 18: A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN); return;
+		case 19: A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Rocket Launcher)"
 	//$Sprite "HU2KA0"
@@ -2433,6 +2851,35 @@ class HCE_FloodcombatEliteRocketLauncher : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 20: A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN); return;
+		case 21: A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Shotgun)"
 	//$Sprite "HU2LA0"
@@ -2587,6 +3034,35 @@ class HCE_FloodcombatEliteShotgun : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 22: A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 23: A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite (Sniper Rifle)"
 	//$Sprite "HU2MA0"
@@ -2743,6 +3219,31 @@ class HCE_FloodcombatEliteSniperRifle : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodcombatelitestealthunarmed_floodelite_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite Stealth Unarmed"
 	//$Sprite "HU2NA0"
@@ -2910,6 +3411,31 @@ class HCE_FloodcombatEliteStealthUnarmed : HCE_FloodEliteBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteUnarmed : HCE_FloodEliteBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodElite", 'skins/floodelite_floodelite_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite"
 	//$Title "Floodcombat Elite Unarmed"
 	//$Sprite "HU2PA0"
@@ -3119,28 +3645,28 @@ class HCE_FloodEliteArmoredBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(2);
+			HCE_HideSurface(3);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(4);
 			HCE_SpawnLimb(0, (0.0711, 0.0016, 0.6552), 80.00, "models/hce/FloodEliteArmored", 'FloodEliteArmored_gib_head.iqm', 18, 'gore_FloodEliteArmored.png', 0.0753);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(5);
+			HCE_ShowSurface(6);
 			HCE_SpawnLimb(1, (0.0045, 0.1705, 0.3773), 80.00, "models/hce/FloodEliteArmored", 'FloodEliteArmored_gib_larm.iqm', 18, 'gore_FloodEliteArmored.png', 0.0695);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(10);
+			HCE_HideSurface(11);
+			HCE_HideSurface(14);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_HideSurface(17);
+			HCE_ShowSurface(12);
 			HCE_SpawnLimb(2, (0.0113, -0.1403, 0.4113), 80.00, "models/hce/FloodEliteArmored", 'FloodEliteArmored_gib_rarm.iqm', 18, 'gore_FloodEliteArmored.png', 0.0641);
 			HCE_OnSever(2, true);
 			return true;
@@ -3151,7 +3677,7 @@ class HCE_FloodEliteArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 4, 6, 12 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -3202,9 +3728,12 @@ class HCE_FloodEliteArmoredBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 14, 15, 16, 17 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -3212,6 +3741,37 @@ class HCE_FloodEliteArmoredBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMajorNeedler : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Major (Needler)"
 	//$Sprite "HU28A0"
@@ -3367,6 +3927,35 @@ class HCE_FloodcombatEliteMajorNeedler : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMajorPlasmaPistol : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Major (Plasma Pistol)"
 	//$Sprite "HU29A0"
@@ -3522,6 +4111,35 @@ class HCE_FloodcombatEliteMajorPlasmaPistol : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMajorPlasmaRifle : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Major (Plasma Rifle)"
 	//$Sprite "HU2AA0"
@@ -3677,6 +4295,33 @@ class HCE_FloodcombatEliteMajorPlasmaRifle : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMajorUnarmed : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombatelitemajorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Major Unarmed"
 	//$Sprite "HU2BA0"
@@ -3832,6 +4477,37 @@ class HCE_FloodcombatEliteMajorUnarmed : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMinorNeedler : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorneedler_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Minor (Needler)"
 	//$Sprite "HU2CA0"
@@ -3987,6 +4663,35 @@ class HCE_FloodcombatEliteMinorNeedler : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMinorPlasmaPistol : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Minor (Plasma Pistol)"
 	//$Sprite "HU2DA0"
@@ -4142,6 +4847,35 @@ class HCE_FloodcombatEliteMinorPlasmaPistol : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMinorPlasmaRifle : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Minor (Plasma Rifle)"
 	//$Sprite "HU2EA0"
@@ -4297,6 +5031,33 @@ class HCE_FloodcombatEliteMinorPlasmaRifle : HCE_FloodEliteArmoredBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteMinorUnarmed : HCE_FloodEliteArmoredBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 14, 15, 16, 17 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteArmored", 'skins/floodcombateliteminorunarmed_floodelitearmored_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Armored"
 	//$Title "Floodcombat Elite Minor Unarmed"
 	//$Sprite "HU2FA0"
@@ -4506,26 +5267,26 @@ class HCE_FloodEliteCommanderBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(2);
+			HCE_HideSurface(3);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(4);
 			HCE_SpawnLimb(0, (0.0711, 0.0016, 0.6552), 80.00, "models/hce/FloodEliteCommander", 'FloodEliteCommander_gib_head.iqm', 17, 'gore_FloodEliteCommander.png', 0.0753);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(5);
+			HCE_ShowSurface(6);
 			HCE_SpawnLimb(1, (0.0045, 0.1705, 0.3773), 80.00, "models/hce/FloodEliteCommander", 'FloodEliteCommander_gib_larm.iqm', 17, 'gore_FloodEliteCommander.png', 0.0695);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(10);
+			HCE_HideSurface(11);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_ShowSurface(12);
 			HCE_SpawnLimb(2, (0.0122, -0.1464, 0.4520), 80.00, "models/hce/FloodEliteCommander", 'FloodEliteCommander_gib_rarm.iqm', 17, 'gore_FloodEliteCommander.png', 0.0658);
 			HCE_OnSever(2, true);
 			return true;
@@ -4536,7 +5297,7 @@ class HCE_FloodEliteCommanderBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 4, 6, 12 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -4587,9 +5348,12 @@ class HCE_FloodEliteCommanderBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 15, 16 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -4597,6 +5361,37 @@ class HCE_FloodEliteCommanderBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteCommanderEnergySword : HCE_FloodEliteCommanderBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 15, 16 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_energy_sword_0.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_energy_sword_glow.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteCommander", 'skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_energy_sword_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_energy_sword_glow.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Commander"
 	//$Title "Floodcombat Elite Commander (Energy Sword)"
 	//$Sprite "HU26A0"
@@ -4815,25 +5610,25 @@ class HCE_FloodEliteUltraBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(2);
+			HCE_HideSurface(3);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(4);
 			HCE_SpawnLimb(0, (0.0711, 0.0016, 0.6552), 80.00, "models/hce/FloodEliteUltra", 'FloodEliteUltra_gib_head.iqm', 16, 'gore_FloodEliteUltra.png', 0.0753);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(5);
+			HCE_ShowSurface(6);
 			HCE_SpawnLimb(1, (0.0045, 0.1705, 0.3773), 80.00, "models/hce/FloodEliteUltra", 'FloodEliteUltra_gib_larm.iqm', 16, 'gore_FloodEliteUltra.png', 0.0695);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(10);
+			HCE_HideSurface(11);
+			HCE_HideSurface(15);
+			HCE_ShowSurface(12);
 			HCE_SpawnLimb(2, (0.0122, -0.1464, 0.4520), 80.00, "models/hce/FloodEliteUltra", 'FloodEliteUltra_gib_rarm.iqm', 16, 'gore_FloodEliteUltra.png', 0.0658);
 			HCE_OnSever(2, true);
 			return true;
@@ -4844,7 +5639,7 @@ class HCE_FloodEliteUltraBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 4, 6, 12 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -4895,9 +5690,12 @@ class HCE_FloodEliteUltraBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 15 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -4905,6 +5703,35 @@ class HCE_FloodEliteUltraBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatEliteUltraFuelRod : HCE_FloodEliteUltraBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 4, 6, 12, 15 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodEliteUltra", 'skins/floodcombateliteultrafuelrod_floodeliteultra_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Elite Ultra"
 	//$Title "Floodcombat Elite Ultra (Fuel Rod)"
 	//$Sprite "HU2OA0"
@@ -5114,13 +5941,13 @@ class HCE_FloodGruntBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(4);
 			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodGrunt", 'gore_FloodGrunt.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (0.1748, 0.0991, 0.2276), 80.00, "models/hce/FloodGrunt", 'FloodGrunt_gib_larm.iqm', 6, 'gore_FloodGrunt.png', 0.0381);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(5);
 			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodGrunt", 'gore_FloodGrunt.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (0.1803, -0.1152, 0.2109), 80.00, "models/hce/FloodGrunt", 'FloodGrunt_gib_rarm.iqm', 7, 'gore_FloodGrunt.png', 0.0385);
 			HCE_OnSever(2, false);
@@ -5171,6 +5998,15 @@ class HCE_FloodGruntBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodGrunt : HCE_FloodGruntBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 6, 7 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Grunt"
 	//$Title "Flood Grunt"
 	//$Sprite "HU21A0"
@@ -5341,36 +6177,36 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(2);
 			HCE_SpawnLimb(0, (-0.0086, -0.0329, 0.5808), 80.00, "models/hce/FloodHuman", 'FloodHuman_gib_head.iqm', 24, 'gore_FloodHuman.png', 0.0393);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(3);
+			HCE_ShowSurface(4);
+			HCE_ShowSurface(5);
 			HCE_SpawnLimb(1, (-0.0207, 0.2149, 0.3975), 80.00, "models/hce/FloodHuman", 'FloodHuman_gib_larm.iqm', 24, 'gore_FloodHuman.png', 0.0640);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 8, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(7);
+			HCE_HideSurface(10);
+			HCE_HideSurface(11);
+			HCE_HideSurface(12);
+			HCE_HideSurface(13);
+			HCE_HideSurface(14);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_HideSurface(17);
+			HCE_HideSurface(18);
+			HCE_HideSurface(19);
+			HCE_HideSurface(20);
+			HCE_HideSurface(21);
+			HCE_HideSurface(22);
+			HCE_HideSurface(23);
+			HCE_ShowSurface(8);
 			HCE_SpawnLimb(2, (-0.0237, -0.1656, 0.4311), 80.00, "models/hce/FloodHuman", 'FloodHuman_gib_rarm.iqm', 24, 'gore_FloodHuman.png', 0.0322);
 			HCE_OnSever(2, true);
 			return true;
@@ -5381,7 +6217,7 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 2, 4, 5, 8 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -5429,9 +6265,12 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -5439,6 +6278,39 @@ class HCE_FloodHumanBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 10: A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Assault Rifle)"
 	//$Sprite "HU2WA0"
@@ -5575,6 +6447,39 @@ class HCE_FloodcombatHumanAssaultRifle : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_flamethrower_0.png', CMDL_USESURFACESKIN); return;
+		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_flamethrower_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_flamethrower_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_flamethrower_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human Flame Thrower"
 	//$Sprite "HU2XA0"
@@ -5711,6 +6616,39 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Needler)"
 	//$Sprite "HU2YA0"
@@ -5847,6 +6785,37 @@ class HCE_FloodcombatHumanNeedler : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Pistol)"
 	//$Sprite "HU2ZA0"
@@ -5983,6 +6952,37 @@ class HCE_FloodcombatHumanPistol : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Plasma Pistol)"
 	//$Sprite "HU30A0"
@@ -6119,6 +7119,37 @@ class HCE_FloodcombatHumanPlasmaPistol : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 18: A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Plasma Rifle)"
 	//$Sprite "HU31A0"
@@ -6255,6 +7286,41 @@ class HCE_FloodcombatHumanPlasmaRifle : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 19: A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN); return;
+		case 20: A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN); return;
+		case 21: A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 19, "models/hce/weapons", 'w_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 20, "models/hce/weapons", 'w_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 21, "models/hce/weapons", 'w_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Rocket Launcher)"
 	//$Sprite "HU32A0"
@@ -6391,6 +7457,39 @@ class HCE_FloodcombatHumanRocketLauncher : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 22: A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN); return;
+		case 23: A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 22, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 23, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human (Shotgun)"
 	//$Sprite "HU33A0"
@@ -6529,6 +7628,35 @@ class HCE_FloodcombatHumanShotgun : HCE_FloodHumanBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 4, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 4: A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 4, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodHuman", 'skins/floodhuman_floodhuman_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Human"
 	//$Title "Floodcombat Human Unarmed"
 	//$Sprite "HU34A0"
@@ -6734,6 +7862,13 @@ class HCE_FloodInfectionBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodInfection : HCE_FloodInfectionBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Infection"
 	//$Title "Flood Infection"
 	//$Sprite "HU22A0"
@@ -7012,6 +8147,13 @@ class HCE_FloodJuggernautBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodJuggernaut : HCE_FloodJuggernautBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Juggernaut"
 	//$Title "Flood Juggernaut"
 	//$Sprite "HU23A0"
@@ -7183,28 +8325,28 @@ class HCE_FloodMarineBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(3);
+			HCE_HideSurface(4);
+			HCE_ShowSurface(1);
+			HCE_ShowSurface(2);
+			HCE_ShowSurface(5);
 			HCE_SpawnLimb(0, (0.0595, -0.0473, 0.4908), 80.00, "models/hce/FloodMarine", 'FloodMarine_gib_head.iqm', 15, 'gore_FloodMarine.png', 0.0470);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 7, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 8, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(6);
+			HCE_ShowSurface(7);
+			HCE_ShowSurface(8);
 			HCE_SpawnLimb(1, (-0.0808, 0.0749, 0.3321), 80.00, "models/hce/FloodMarine", 'FloodMarine_gib_larm.iqm', 15, 'gore_FloodMarine.png', 0.0535);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 10, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 11, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(10);
+			HCE_HideSurface(12);
+			HCE_HideSurface(13);
+			HCE_HideSurface(14);
+			HCE_ShowSurface(11);
 			HCE_SpawnLimb(2, (0.1846, -0.0936, 0.3912), 80.00, "models/hce/FloodMarine", 'FloodMarine_gib_rarm.iqm', 15, 'gore_FloodMarine.png', 0.0277);
 			HCE_OnSever(2, true);
 			return true;
@@ -7215,7 +8357,7 @@ class HCE_FloodMarineBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 1, 2, 5, 7, 8, 11 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -7265,9 +8407,12 @@ class HCE_FloodMarineBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 12, 13, 14 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -7275,6 +8420,41 @@ class HCE_FloodMarineBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanUnarmoredAssaultRifle : HCE_FloodMarineBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Marine"
 	//$Title "Floodcombat Human Unarmored (Assault Rifle)"
 	//$Sprite "HU35A0"
@@ -7411,6 +8591,39 @@ class HCE_FloodcombatHumanUnarmoredAssaultRifle : HCE_FloodMarineBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanUnarmoredPistol : HCE_FloodMarineBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Marine"
 	//$Title "Floodcombat Human Unarmored (Pistol)"
 	//$Sprite "HU36A0"
@@ -7547,6 +8760,37 @@ class HCE_FloodcombatHumanUnarmoredPistol : HCE_FloodMarineBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatHumanUnarmoredUnarmed : HCE_FloodMarineBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 1, 2, 5, 7, 8, 11, 12, 13, 14 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 1: A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		case 11: A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 1, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_1.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 11, "models/hce/FloodMarine", 'skins/floodmarine_floodmarine_2.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood Marine"
 	//$Title "Floodcombat Human Unarmored Unarmed"
 	//$Sprite "HU37A0"
@@ -7736,32 +8980,32 @@ class HCE_FloodODSTBase : HaloDoom_EnemyBase abstract
 		switch(limb)
 		{
 		case 0:
-			A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 1, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 4, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 2, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 3, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 6, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(0);
+			HCE_HideSurface(1);
+			HCE_HideSurface(4);
+			HCE_HideSurface(5);
+			HCE_ShowSurface(2);
+			HCE_ShowSurface(3);
+			HCE_ShowSurface(6);
 			HCE_SpawnLimb(0, (0.0170, -0.0169, 0.5832), 80.00, "models/hce/FloodODST", 'FloodODST_gib_head.iqm', 19, 'gore_FloodODST.png', 0.0550);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
-			A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 8, "", 'None', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 9, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(7);
+			HCE_ShowSurface(8);
+			HCE_ShowSurface(9);
 			HCE_SpawnLimb(1, (-0.0207, 0.2149, 0.3975), 80.00, "models/hce/FloodODST", 'FloodODST_gib_larm.iqm', 19, 'gore_FloodODST.png', 0.0640);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
-			A_ChangeModel('None', 0, "", 'None', 11, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-			A_ChangeModel('None', 0, "", 'None', 12, "", 'None', CMDL_USESURFACESKIN);
+			HCE_HideSurface(11);
+			HCE_HideSurface(13);
+			HCE_HideSurface(14);
+			HCE_HideSurface(15);
+			HCE_HideSurface(16);
+			HCE_HideSurface(17);
+			HCE_HideSurface(18);
+			HCE_ShowSurface(12);
 			HCE_SpawnLimb(2, (-0.0302, -0.1492, 0.4660), 80.00, "models/hce/FloodODST", 'FloodODST_gib_rarm.iqm', 19, 'gore_FloodODST.png', 0.0394);
 			HCE_OnSever(2, true);
 			return true;
@@ -7772,7 +9016,7 @@ class HCE_FloodODSTBase : HaloDoom_EnemyBase abstract
 	{
 		super.PostBeginPlay();
 		static const int D[] = { 2, 3, 6, 8, 9, 12 };
-		for(int i = 0; i < D.Size(); i++) A_ChangeModel('None', 0, "", 'None', D[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		for(int i = 0; i < D.Size(); i++) HCE_HideSurface(D[i]);
 		HCE_ResumeAnim();
 	}
 	override vector3 HCE_LimbOffset(int limb)
@@ -7823,9 +9067,12 @@ class HCE_FloodODSTBase : HaloDoom_EnemyBase abstract
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
-		Name sk = show ? 'None' : 'hce_hidden.png';
 		static const int W[] = { 13, 14, 15, 16, 17, 18 };
-		for(int i = 0; i < W.Size(); i++) A_ChangeModel('None', 0, "", 'None', W[i], "models/hce/weapons", sk, CMDL_USESURFACESKIN);
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
 	}
 }
 
@@ -7833,6 +9080,41 @@ class HCE_FloodODSTBase : HaloDoom_EnemyBase abstract
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatOdstAssaultRifle : HCE_FloodODSTBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 2, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 9: A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 13, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 14, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood ODST"
 	//$Title "Floodcombat Odst (Assault Rifle)"
 	//$Sprite "HU38A0"
@@ -7987,6 +9269,41 @@ class HCE_FloodcombatOdstAssaultRifle : HCE_FloodODSTBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatOdstShotgun : HCE_FloodODSTBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 2, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 9: A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN); return;
+		case 16: A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 15, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 16, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood ODST"
 	//$Title "Floodcombat Odst (Shotgun)"
 	//$Sprite "HU39A0"
@@ -8143,6 +9460,41 @@ class HCE_FloodcombatOdstShotgun : HCE_FloodODSTBase
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_FloodcombatOdstSniperRifle : HCE_FloodODSTBase
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		static const int K[] = { 2, 3, 6, 8, 9, 12, 13, 14, 15, 16, 17, 18 };
+		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override void HCE_ShowSurface(int s)
+	{
+		switch(s)
+		{
+		case 2: A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 3: A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN); return;
+		case 9: A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN); return;
+		case 17: A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN); return;
+		case 18: A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN); return;
+		}
+		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+	}
+	override void HCE_DressSurfaces()
+	{
+		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/FloodODST", 'skins/floododst_floododst_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 9, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 12, "models/hce/FloodODST", 'skins/floododst_floododst_2.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 17, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+		A_ChangeModel('None', 0, "", 'None', 18, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+	}
+
 	//$Category "Halo CE/Flood/Flood ODST"
 	//$Title "Floodcombat Odst (Sniper Rifle)"
 	//$Sprite "HU3AA0"
@@ -8359,6 +9711,13 @@ class HCE_RandomFloodInfection : RandomSpawner
 // stands in for Doom's BaronOfHell: CheckReplacee maps it back so A_BossDeath map specials fire
 class HCE_BossBaronFloodJuggernaut : HCE_FloodJuggernaut
 {
+	// lib/modeldef_prune.py: the surfaces this class's MODELDEF leaves undrawn are hidden by setting them back
+	// to it (the engine skips them); the ones its spawn dressing may hide get their skins here as it spawns
+	override void HCE_HideSurface(int s)
+	{
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+
 	Default
 	{
 		Health 700;

@@ -226,6 +226,50 @@ Model HCE_BruteHonorGuardPlasmaRifle
 	FrameIndex HCEM A 8 0
 }
 
+Model HCE_BruteJumpPackPlasmaRifle
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_major_crl_brute.png"
+	SurfaceSkin 0 2 "skins/brute_major_crl_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_major_crl_brute_head.png"
+	SurfaceSkin 0 14 "skins/brute_major_crl_brute.png"
+	SurfaceSkin 0 28 "skins/brute_major_crl_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_major_crl_brute_head.png"
+	Path "models/hce_dig/weapons"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_beam_rifle.iqm"
+	Path "models/hce_dig/weapons"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
+Model HCE_BruteJumpPackSpiker
+{
+	Path "models/hce_dig/Brute"
+	Model 0 "Brute.iqm"
+	SurfaceSkin 0 0 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 2 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 3 "skins/brute_major_bth_brute_head.png"
+	SurfaceSkin 0 14 "skins/brute_major_bth_brute.png"
+	SurfaceSkin 0 28 "skins/brute_major_bth_brute_hair.png"
+	SurfaceSkin 0 29 "skins/brute_major_bth_brute_head.png"
+	Path "models/hce_dig/weapons"
+	Path "models/hce_dig/Brute"
+	Model 8 "Brute_w_beam_rifle.iqm"
+	Path "models/hce_dig/weapons"
+	Scale 92 92 110
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 8 0
+}
+
 Model HCE_BruteMajorPlasmaCarbine
 {
 	Path "models/hce_dig/Brute"

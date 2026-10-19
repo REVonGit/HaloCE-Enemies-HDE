@@ -81,6 +81,10 @@ BRUTE_RANKS = {
     # the Stalker (Halo 3): a Major in active camo with the Spiker, no armour kit (its camo would show the pieces up)
     'stalker': dict(body=150, variants=('major_bth',), weapons=(SPIKER,),
                     wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
+    # the jump-pack Brute (Halo 3): a Major always in the kit's Halo 3 jump-pack suit, hopping about the fight on it
+    # (HCE_Jetpack: the Elite Rangers' jump-pack hops), with the Spiker or the plasma rifle
+    'jump pack': dict(body=150, variants=('major_bth', 'major_crl'), weapons=(SPIKER, CE_PR),
+                      wear={('body', 'default'), ('head', 'default'), ('hair', 'default'), ('sensors', 'default')}),
     'chieftain': dict(body=350, variants=('tartarus',), weapons=(HAMMER,),
                       wear={('body', 'default'), ('head', 'default'), ('helmet', 'honor_off'), ('helmet', 'tartarus'),
                             ('sensors', 'default'), ('sh_armor', 'skull'), ('hg_arm', 'honor_off'), ('hg_legs', 'honor_off')}),
@@ -341,6 +345,8 @@ def load_ai():
                     ovl, lo, hi, mx = BRUTE_COV_TWO_HANDED[wref]   # their own combat ranges
                     v['_ov'] = dict(overlay=ovl, overlay_idx=CASTER_IDX)
                     v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
+                if rank == 'jump pack':    # the Rangers' jump-pack hops (enemies_base.zsc HCE_TryJet)
+                    v['_ov'] = dict(v.get('_ov') or {}, add_flags=['HCE_Jetpack'])
                 if rank == 'stalker':      # active camo (the Brutes' class flags replace the variant's: added on top)
                     v['flags'] = v.get('flags', 0) | (1 << 4)
                     v['_ov'] = dict(v.get('_ov') or {}, add_flags=['HCE_ActiveCamo'])
@@ -876,10 +882,11 @@ def kit_code():
 	void HCE_DressArmour()
 	{{
 		String cn = GetClassName();
-		int r = cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
+		bool jumper = cn.IndexOf("JumpPack") >= 0;      // the jump-pack Brutes: always the Majors' first outfit, the jump-pack suit
+		int r = jumper || cn.IndexOf("Major") >= 0 ? 1 : cn.IndexOf("Minor") >= 0 ? 0 : cn.IndexOf("Captain") >= 0 ? 2 : cn.IndexOf("Chieftain") >= 0 ? 3 : -1;
 		if(r < 0) return;
 		double keep = HCE_KitKeepBase(r);
-		int look = (r == 3) ? hce_lineupLook - 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
+		int look = (r == 3) ? hce_lineupLook - 1 : jumper ? 1 : -1;   // punkassbitches: 0 his own look, 1.. the outfits in turn
 		if(look == 0 || (look < 0 && keep > 0 && frandom[HCEKit](0, 1) < keep)) return;
 		Array<String> pick;
 		for(int s = 0; s < {n}; s++) pick.Push("");
@@ -1303,7 +1310,8 @@ def build():
                            'HCE_DroneCaptainPlasmaPistol', 'HCE_DroneCaptainPlasmaRifle', 'HCE_DroneCaptainMajorNeedler',
                            'HCE_DroneCaptainMajorPlasmaRifle',
                            'HCE_JackalMajorHelmetPlasmaRifle',
-                           'HCE_SlugManZealotParticleBeam', 'HCE_SlugManZealotPlasmaRifle', 'HCE_SlugManZealotPulseCarbine'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_SlugManZealotParticleBeam', 'HCE_SlugManZealotPlasmaRifle', 'HCE_SlugManZealotPulseCarbine',
+                           'HCE_BruteJumpPackSpiker', 'HCE_BruteJumpPackPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     if H2J_BRIGHT:                               # the H2 sniper helmet's lenses glow

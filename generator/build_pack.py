@@ -103,6 +103,15 @@ def add_grunt_ranks(variants):
         colour(v, GRUNT_RANKS['ultra'])
         v['_rank'] = 'ultra'; v['_late'] = True
         variants[G + 'ultra ' + w] = v
+    # the Ultra with the fuel rod (Halo 2 / 3): the Spec Ops fuel-rod Grunt (its body carries the gun) in the Ultras'
+    # white, as tough as the other Ultras
+    base, ult = variants.get(G + 'specops fuel rod'), variants.get(G + 'ultra needler')
+    if base and ult and (G + 'ultra fuel rod') not in variants:
+        v = copy.deepcopy(base)
+        v['unit']['maximum_body_vitality'] = ult['unit']['maximum_body_vitality']
+        colour(v, GRUNT_RANKS['ultra'])
+        v['_rank'] = 'ultra'; v['_late'] = True
+        variants[G + 'ultra fuel rod'] = v
     base = variants.get(G + 'specops fuel rod')
     if base and (G + 'heavy fuel rod') not in variants:
         v = copy.deepcopy(base)
@@ -144,6 +153,46 @@ def add_elite_heavy(variants):
         variants[H + w] = v
 
 add_elite_heavy(AI['variants'])
+
+# ULTRA_WHITE: variants.py
+def add_elite_ultra(variants):
+    """Ultra Elites (new, Halo 2's white rank on the Halo CE Elite): the Major's plasma rifle, needler and fuel rod
+    variants, 125 body / 250 shield (above the Heavy, below the Commander's sword), a quarter tighter aim, painted
+    ULTRA_WHITE (variants.py; elite_skin whitens the blue Minor skin's plates for them, the silver shine)"""
+    import copy
+    E = 'characters\\elite\\elite major\\elite major '
+    U = 'characters\\elite\\elite ultra\\elite ultra '
+    for w in ('plasma rifle', 'needler', 'fuel rod'):
+        base = variants.get(E + w)
+        if not base or (U + w) in variants: continue
+        v = copy.deepcopy(base)
+        v['unit']['maximum_body_vitality'] = 125.0
+        v['unit']['maximum_shield_vitality'] = 250.0
+        v['ranged_combat']['projectile_error_angle'] = base['ranged_combat']['projectile_error_angle'] * 0.75
+        cl = copy.deepcopy(v.get('change_colors_list') or [{}])
+        cl[0].update(color_lower_bound=list(ULTRA_WHITE), color_upper_bound=list(ULTRA_WHITE))
+        v['change_colors_list'] = cl
+        v['_rank'] = 'ultra'; v['_late'] = True
+        variants[U + w] = v
+
+add_elite_ultra(AI['variants'])
+
+def add_jackal_loadouts(variants):
+    """the Halo CE Jackals' other loadouts (new): the Major with the plasma pistol (Halo CE's own 'jackal major plasma
+    pistol', which extract_ai.synthesize re-armed) and the Minor with the needler; each keeps its rank's stats and
+    shield, and takes the other's ranged_combat block"""
+    import copy
+    J = 'characters\\jackal\\jackal '
+    mpp, mnd = variants.get(J + 'minor plasma pistol'), variants.get(J + 'major needler')
+    if not (mpp and mnd): return
+    for name, rank_v, gun_v, rank in (('major plasma pistol', mnd, mpp, 'major'), ('minor needler', mpp, mnd, 'minor')):
+        if (J + name) in variants: continue
+        v = copy.deepcopy(rank_v)
+        v['ranged_combat'] = copy.deepcopy(gun_v['ranged_combat'])
+        v['_rank'] = rank; v['_late'] = True
+        variants[J + name] = v
+
+add_jackal_loadouts(AI['variants'])
 
 # Halo 2's Honor Guard and Ranger Elites (new), in Halo 2's armour worn over the Halo CE Elite (extract_h2_elite_kit.py:
 # the pieces carried bone by bone onto the CE skeleton, attached as models 1-3 riding its animation; ELITE_KIT_CODE).
@@ -1143,7 +1192,7 @@ def elite_skin(char, mat, color, outpath, specops=False):
     src = {0: 'blue', 1: 'red', 3: 'blue'}.get(ci)
     if not src or not os.path.exists(f'{ELITE_SKINS}/{src}/Elite_{k}.png'): return False
     im = Image.open(f'{ELITE_SKINS}/{src}/Elite_{k}.png').convert('RGB')
-    if ci == 3: im = purple(im)
+    if ci == 3: im = ultra_white(im, char, mat) if is_white(color) else purple(im)
     elif ci == 0 and is_green(color): im = heavy_green(im, char, mat)    # the Heavy: the blue skin's armour in green
     im.save(outpath)
     return True
@@ -1167,6 +1216,35 @@ def heavy_green(im, char, mat):
     h = h * (1 - arm) + (HEAVY_HUE * 255 / 360) * arm
     sat = np.clip(sat * (1 + 0.1 * arm), 0, 255); val = val * (1 - 0.3 * arm)
     return Image.fromarray(np.stack([h, sat, val], -1).astype(np.uint8), 'HSV').convert('RGB')
+
+def ultra_white(im, char, mat):
+    """the blue Minor skin's armour plates whitened for the Ultras (Halo 2's white rank), only where Halo's colour-change
+    mask is: the plates' shading and baked shine kept as brightness, their colour taken out"""
+    from scipy import ndimage
+    mp = f'{OUT}/models/{char}/{mat}_multi.png'
+    hsv = np.asarray(im.convert('HSV')).astype(np.float32)
+    h, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    blue = np.clip(1 - (np.abs(h * 360 / 255 - 210) - 45) / 20, 0, 1)
+    if os.path.exists(mp):
+        m = np.asarray(Image.open(mp).convert('RGBA').resize(im.size)).astype(np.float32)[..., 2] / 255.0
+        m = np.clip(ndimage.gaussian_filter(m, 0.6), 0, 1)
+        arm = m * blue
+        near = ndimage.grey_dilation(m, size=(7, 7))
+        arm = np.maximum(arm, near * blue * np.clip((sat - 110) / 40, 0, 1))
+    else:                                   # no colour-change mask for this material: the plates by their vivid blue
+        arm = blue * np.clip((sat - 90) / 40, 0, 1)
+    rgb = np.asarray(im).astype(np.float32)
+    lum = val[..., None] / 255.0
+    white = np.clip((0.35 + 0.75 * lum) * np.array(ULTRA_WHITE) * 255 / max(ULTRA_WHITE), 0, 255)
+    out = rgb * (1 - arm[..., None]) + white * arm[..., None]
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+def is_white(color):
+    """whether an armour colour (RGB 0..1) is a light grey-white (the Ultra Elites')"""
+    import colorsys
+    if color is None: return False
+    h, l, sat = colorsys.rgb_to_hls(*[float(c) for c in color[:3]])
+    return sat < 0.25 and l > 0.6
 
 def is_green(color):
     """whether an armour colour (RGB 0..1) is a saturated green (the Heavy Elites': hue 75..170)"""

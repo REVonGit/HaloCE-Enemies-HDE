@@ -2,7 +2,7 @@
 tuned without reading the build code. Colours are (r, g, b) in 0..1; strengths are 0..1 unless noted. build_pack.py
 reads them all (from variants import *); build_digsite.py adds its own entries to some (bp.SHINE['EliteZealot'], ...).
 
-    GRUNT_RANKS, HEAVY_GREEN, HEAVY_HUE        new Grunt and Elite ranks and their armour colours
+    GRUNT_RANKS, HEAVY_GREEN, HEAVY_HUE, ULTRA_WHITE   new Grunt and Elite ranks and their armour colours
     HONOR_RED, RANGER_STEEL, ELITE_H2_ARMOUR   the Honor Guard and Ranger Elites in Halo 2's armour
     SHIELD_TINT, SHELL_TINT                    Jackal shields and the shield flare by rank / character
     GRUNT_SHIELDS                              the shielded Grunt ranks
@@ -19,6 +19,8 @@ reads them all (from variants import *); build_digsite.py adds its own entries t
 # rank -> (armour colour lower bound, upper bound): Halo's change-colour range, so a rank can vary a little from
 # Grunt to Grunt (same colour twice = one fixed colour). To recolour a rank, change its pair; to add a rank, add a key
 # here and teach build_pack.add_grunt_ranks which variant it copies. Health lives there too (the 1.33 on the Ultra).
+# Ultra Elites (new, Halo 2's white rank; build_pack.add_elite_ultra): their armour colour
+ULTRA_WHITE = (0.80, 0.82, 0.86)       # the Grunt Ultras' white (GRUNT_RANKS), so both Ultras match
 GRUNT_RANKS = {'ultra': ((0.86, 0.88, 0.92), (0.70, 0.72, 0.78)), 'heavy': ((0.30, 0.52, 0.14), (0.20, 0.38, 0.08))}
 
 # Elite Heavy (new): a green rank between the Major and the Commander, carrying heavier guns: the fuel rod (in Halo 2's

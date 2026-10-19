@@ -39,6 +39,7 @@ mixin class HCE_LitePlasma
 		HaloBullet.PostBeginPlay();                  // HaloPlasma_Proj's, without the attached lightning crackle
 		HaloPlasma_ProjCore.SpawnCore(self, coreColorOne, scaleMod: 1.0);
 		HaloPlasma_ProjCore.SpawnCore(self, coreColorTwo, scaleMod: 0.70);
+		smokeType = HCE_PlasmaSmokePuff.StandIn(smokeType);   // HDE's per-tic smoke as one-tic stand-ins drawing a particle
 		A_SetRoll(frandom[PlasmaRollRNG](-180, 180));
 		SetShade(col);
 		A_AttachLight('glow', DynamicLight.PointLight, col, 40, 0);   // Halo CE's bolts light the walls they pass
@@ -91,11 +92,52 @@ mixin class HCE_LitePlasmaSmoke
 		}
 		double sz = 56 * 0.42 * frandom[PlasmaSmoke](0.75, 1.5);
 		// HDE's smoke colours (its PlasmaSmoke_Green / _Blue translations), brighter than the bolt's own shade
-		Color sc = smokeType is 'PlasmaSmoke_Blue' ? Color(81, 77, 250) : smokeType is 'PlasmaSmoke_Green' ? Color(81, 250, 77) : col;
+		Color sc = (smokeType == 'PlasmaSmoke_Blue' || smokeType == 'HCE_PlasmaSmokePuffBlue') ? Color(81, 77, 250)
+			: (smokeType == 'PlasmaSmoke_Green' || smokeType == 'HCE_PlasmaSmokePuff') ? Color(81, 250, 77) : col;
 		A_SpawnParticleEx(sc, tx, STYLE_Add, SPF_FULLBRIGHT | SPF_ROLL, 40, sz, 0, vel.x, vel.y, vel.z,
 			vel.x * 0.03, vel.y * 0.03, vel.z * 0.03, 0, 0, 0, 1.0, -1, sz * 0.1 / 40,
 			frandom[PlasmaSmoke](-180, 180), frandom[PlasmaSmoke](-0.5, 0.5));
 	}
+}
+
+// HDE's plasma smoke for the bolts that keep HDE's own Tick (the Pulse Carbine's, the charged shot's): it spawns a smoke
+// actor every tic, each thinking for 40 tics. HCE_LitePlasma swaps its smokeType for one of these: on its first tic it
+// draws the same puff as a particle (one of HDE's smoke sprites in its colour, rolling, growing a little, drifting
+// on the velocity the bolt gave it) and goes. Fainter than the pistol's every-third-tic puffs, as HDE's own ease in.
+class HCE_PlasmaSmokePuff : Actor
+{
+	Default { +NOINTERACTION; +NOBLOCKMAP; RenderStyle "None"; }
+	virtual Color PuffColour() { return Color(81, 250, 77); }
+	virtual class<Actor> Original() { return 'PlasmaSmoke_Green'; }
+	// the stand-in for a bolt's smoke class (HDE's green and blue); any other stays as it is
+	static class<Actor> StandIn(class<Actor> smoke)
+	{
+		if(smoke == 'PlasmaSmoke_Blue') return 'HCE_PlasmaSmokePuffBlue';
+		if(smoke == 'PlasmaSmoke_Green') return 'HCE_PlasmaSmokePuff';
+		return smoke;
+	}
+	override void Tick()
+	{
+		TextureID tx = TexMan.CheckForTexture(String.Format("SMKE%c0", 68 + random[PlasmaSmoke](0, 8)), TexMan.Type_Any);
+		if(tx.IsValid())
+		{
+			double sz = 56 * 0.42 * frandom[PlasmaSmoke](0.75, 1.5);
+			A_SpawnParticleEx(PuffColour(), tx, STYLE_Add, SPF_FULLBRIGHT | SPF_ROLL, 40, sz, 0, 0, 0, 0,
+				vel.x * 0.3, vel.y * 0.3, vel.z * 0.3, 0, 0, 0, 0.4, -1, sz * 0.1 / 40,
+				frandom[PlasmaSmoke](-180, 180), frandom[PlasmaSmoke](-0.5, 0.5));
+		}
+		else
+		{
+			let s = Spawn(Original(), pos);
+			if(s) s.vel = vel;
+		}
+		Destroy();
+	}
+}
+class HCE_PlasmaSmokePuffBlue : HCE_PlasmaSmokePuff
+{
+	override Color PuffColour() { return Color(81, 77, 250); }
+	override class<Actor> Original() { return 'PlasmaSmoke_Blue'; }
 }
 
 // ---------------------------------------------------------------- grenades

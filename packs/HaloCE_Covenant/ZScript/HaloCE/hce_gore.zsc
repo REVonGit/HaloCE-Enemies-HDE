@@ -170,8 +170,8 @@ class HCE_HaloGoreHandler : EventHandler
 		String n = a.GetClassName();
 		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
 		if(n.IndexOf("Marine") >= 0 || n.IndexOf("Johnson") >= 0) return "Human";
-		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Grunt", "Draeth", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
-		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Grunt", "Reaver", "Elite", "Elite", "Beast", "Beast", "Beast" };
+		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Artybug", "Grunt", "Draeth", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
+		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Hunter", "Grunt", "Reaver", "Elite", "Elite", "Beast", "Beast", "Beast" };
 		for(int i = 0; i < keys.Size(); i++) if(n.IndexOf(keys[i]) >= 0) return groups[i];
 		return "";
 	}

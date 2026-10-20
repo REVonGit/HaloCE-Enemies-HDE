@@ -4220,6 +4220,25 @@ BESTIARY_RANK_GROUP += (('MarineFieldMedic', 'Field Medic'),)
 MAIN['late_chars'] = MAIN['late_chars'] + [c for c in MR_CHARS if c not in NO_RANDOM]
 MAIN['late_order'] = MAIN['late_order'] + MR_ORDER
 
+# Shigure's Marine rifleman (extract_shigure_marine.py: from Sabopool's Halo CE Overhaul 2.0, his armour brown and his
+# hands in the ODST's gloves), a whole body on the CE Marine like the field medic: a Marine like the others (their AI,
+# voices, arsenal and pick-ups), with the assault rifle, the battle rifle or the shotgun (HCE_MarineRifleman<Gun>)
+SHIGURE_GUNS = ('assault rifle', 'battle rifle', 'shotgun')
+SHIGURE_ORDER = [cname(f'marine rifleman {g}') for g in SHIGURE_GUNS]
+SHIGURE_CODE = MR_BODY_CODE.replace("(Mercury Rising's body: extract_mr_marines.py)", "(Shigure's body: extract_shigure_marine.py)") \
+    % ("a rifleman in Shigure's armour", '', 'shigure_body')
+for _g in SHIGURE_GUNS:
+    _src = AI['variants'].get(f'characters\\marine\\marine {_g}')
+    if not _src or not os.path.exists(f'{MARINE_KIT}/shigure_body.iqm'): continue
+    _v = copy.deepcopy(_src); _v['_late'] = True
+    _ov = dict(_v.get('_ov') or {})
+    _ov['code'] = _ov.get('code', '') + SHIGURE_CODE
+    _ov.setdefault('skin_as', cname(f'marine {_g}'))
+    _v['_ov'] = _ov
+    AI['variants'][f'characters\\marine\\marine rifleman {_g}'] = _v
+BESTIARY_RANK_GROUP += (('MarineRifleman', 'Rifleman'),)
+MAIN['late_order'] = MAIN['late_order'] + SHIGURE_ORDER
+
 MAIN_WEAPONS |= set(WEAPONS)
 
 # Texture size: body and armour skins are capped at SKIN_CAP px (the Draeth's, the Flood's and a few more came at 1024:

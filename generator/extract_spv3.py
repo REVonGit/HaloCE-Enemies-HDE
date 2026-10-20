@@ -33,7 +33,9 @@ MAPS = {
     # is drawn with, with its plasma pistol and needler in the hand; and its two armed Flood Grunts' AI (the needler
     # one's 'heavy' biped is the same model and skins: UNIT_ALIASES)
     'sabo': (os.environ.get('HCE_SABO_C40', 'sabo_c40.map'),
-             {r'characters\floodcombat_grunt\floodcombat grunt': 'FloodGrunt'}),
+             {r'characters\floodcombat_grunt\floodcombat grunt': 'FloodGrunt',
+              # and Shigure's Marine rifleman, for extract_shigure_marine.py (the Marines' rifleman body)
+              r'characters\marine shigure\marine rifleman': 'MarineShigure'}),
     # Ruby's Rebalance's c40 (mynameislol): its new Flood hosts, each with its own model, skins and damaged stumps
     'c40r': (os.environ.get('HCE_RUBY_C40', 'c40_2.map'),
              {r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',

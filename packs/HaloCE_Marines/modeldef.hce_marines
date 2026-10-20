@@ -474,6 +474,63 @@ Model HCE_MarineRadioOperator
 	FrameIndex HCEM A 6 0
 }
 
+Model HCE_MarineRiflemanAssaultRifle
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_ma5b.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_assault_rifle_0.png"
+	SurfaceSkin 6 1 "w_assault_rifle_0.png"
+	SurfaceSkin 6 2 "w_assault_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineRiflemanBattleRifle
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_battle_rifle.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_battle_rifle_0.png"
+	SurfaceSkin 6 1 "w_m_battle_rifle_1.png"
+	SurfaceSkin 6 2 "w_m_battle_rifle_2.png"
+	SurfaceSkin 6 3 "w_m_battle_rifle_3.png"
+	SurfaceSkin 6 4 "w_m_battle_rifle_4.png"
+	SurfaceSkin 6 5 "w_m_battle_rifle_5.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineRiflemanShotgun
+{
+	Path "models/hce/Marine"
+	Model 0 "Marine.iqm"
+	Path "models/hce/Marine"
+	Model 6 "Marine_w_pump_shotgun.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_shotgun_0.png"
+	SurfaceSkin 6 1 "w_shotgun_1.png"
+	SurfaceSkin 6 2 "w_shotgun_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineRocketLauncher
 {
 	Path "models/hce/Marine"

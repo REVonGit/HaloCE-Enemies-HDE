@@ -97,9 +97,8 @@ GORE = {
     **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
                roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
        for c in ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')},
-    # the XAM Campaign Overhaul's Flood Grunt (extract_spv3.py): no head bone of its own (the infection sits on the stump of
-    # the neck), so its arms only
-    'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'frame upperarm left', 'rarm': 'frame upperarm right'}),
+    # the Flood Grunt (extract_spv3.py: Sabopool's body): its arms (the gun goes with the right one)
+    'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'Hunter':       dict(style='worm', blood='FF8C1A', limbs={'head': 'frame head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),  # the cannon arm, the shield arm
     'Drone':        dict(style='insect', blood='DDF0D2', limbs={'head': 'head', 'larm': 'l_upperarm', 'rarm': 'r_upperarm'}),
     'SlugMan':      dict(style='worm', blood='FF8C1A', limbs={'head': 'Bip01 Head', 'larm': 'Bip01 L UpperArm', 'rarm': 'Bip01 R UpperArm'}),

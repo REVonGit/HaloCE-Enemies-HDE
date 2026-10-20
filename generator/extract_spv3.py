@@ -25,9 +25,15 @@ MAPS = {
             {r'characters\blind_wolf\blind_wolf': 'BlindWolf', r'characters\thorn_beast\thorn_beast': 'ThornBeast'}),
     'b30': (os.environ.get('HCE_SPV3_B30', 'b30_1.map'),
             {r'characters\engineer\engineer': 'Engineer'}),
-    # the XAM Campaign Overhaul's c40 (Tropical Thunder 98): its Flood Grunt, an Unggoy combat form (claws, no gun)
+    # the XAM Campaign Overhaul's c40 (Tropical Thunder 98): its Flood Grunt, an Unggoy combat form (claws, no gun):
+    # its AI and sounds (its body is Sabopool's: MODEL_ELSEWHERE)
     'c40': (os.environ.get('HCE_XAM_C40', 'c40_1.map'),
             {r'characters\flood grunt\flood grunt': 'FloodGrunt'}),
+    # Sabopool's Halo CE Overhaul 2.0's c40 (Steam Workshop 3735328357): its Flood Grunt, the body every Flood Grunt
+    # is drawn with, with its plasma pistol and needler in the hand; and its two armed Flood Grunts' AI (the needler
+    # one's 'heavy' biped is the same model and skins: UNIT_ALIASES)
+    'sabo': (os.environ.get('HCE_SABO_C40', 'sabo_c40.map'),
+             {r'characters\floodcombat_grunt\floodcombat grunt': 'FloodGrunt'}),
     # Ruby's Rebalance's c40 (mynameislol): its new Flood hosts, each with its own model, skins and damaged stumps
     'c40r': (os.environ.get('HCE_RUBY_C40', 'c40_2.map'),
              {r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',
@@ -56,7 +62,14 @@ MAPS = {
              r'characters\medic\medic': 'MarineMedic'}),
 }
 # maps whose textures sit in a bitmaps.map of their own, and the prefix their variant keys get (clear of Halo CE's own)
-MAP_BITMAPS = {'mr1': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'), 'mr2': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map')}
+MAP_BITMAPS = {'mr1': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'), 'mr2': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'),
+               'sabo': os.environ.get('HCE_SABO_BITMAPS', 'sabo_bitmaps.map')}
+# characters a map gives only its AI (and sounds): their body comes from another map's run (the XAM Flood Grunt wears
+# Sabopool's)
+MODEL_ELSEWHERE = {'c40': {'FloodGrunt'}}
+# bipeds that are another one's model under a second tag: their variants are re-pointed at it (Sabopool's 'heavy' Flood
+# Grunt, the needler one, has the plain one's model and skins)
+UNIT_ALIASES = {'sabo': {r'characters\floodcombat_grunt\floodcombat grunt heavy': r'characters\floodcombat_grunt\floodcombat grunt'}}
 MAP_PREFIX = {'mr1': 'mercury\\', 'mr2': 'mercury\\'}
 # guns a map's characters carry that Halo CE has none of: extracted from the map itself (extract_weapons.extract_weapon,
 # into $HCE_OUT/weapons/<id>) so they are baked into the hand like Halo CE's: the Draeth Commander's Excavator (a
@@ -64,11 +77,14 @@ MAP_PREFIX = {'mr1': 'mercury\\', 'mr2': 'mercury\\'}
 MAP_WEAPONS = {'mr1': {r'dw2\weapons\excavator\excavator': 'excavator'}}
 # guns baked into a map's biped beyond the ones its variants carry (the pack's own variants arm it with them): the
 # Draeth take every Covenant gun the Elites do but the sword (build_pack.add_mercury)
-MAP_EXTRA_WEAPONS = {'mr1': {r'digsite\characters\elite\99_mac\elite_99': ['fuel_rod', 'h2_beam_rifle', 'plasma_caster']}}
+MAP_EXTRA_WEAPONS = {'mr1': {r'digsite\characters\elite\99_mac\elite_99': ['fuel_rod', 'h2_beam_rifle', 'plasma_caster']},
+                     'sabo': {r'characters\floodcombat_grunt\floodcombat grunt': ['plasma_pistol', 'needler']}}
 # variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed:
 # {tag name prefix: replacement prefix}, the first match wins (variant_key)
 VARIANT_KEYS = {
     r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
+    r'characters\floodcombat_grunt\flood grunt bois\f g pp': r'characters\flood grunt\flood grunt plasma pistol',   # HCE_FloodGruntPlasmaPistol
+    r'characters\floodcombat_grunt\flood grunt bois\f g n': r'characters\flood grunt\flood grunt needler',          # HCE_FloodGruntNeedler
     r'characters\floodcombat_human\armored\floodcombat_human ': r'characters\floodcombat_human\armored\floodcombat_human armored ',
     r'characters\floodcombat_human\floodcombat_human sniper rifle': r'characters\floodcombat_human\armored\floodcombat_human armored sniper rifle',
     r'characters\floodcombat elite shield\minor\floodcombat elite minor ': r'characters\floodcombat elite shield\floodcombat elite minor ',
@@ -101,7 +117,8 @@ def run(only=None):
         if only and not any(c in only for c in chars.values()) and 'FloodSounds' not in only: continue
         keep = gore_kit.SPV3_BITMAPS
         if key in MAP_BITMAPS: gore_kit.SPV3_BITMAPS = MAP_BITMAPS[key]
-        try: sub = run_map(path, chars, only, MAP_PREFIX.get(key, ''), MAP_WEAPONS.get(key, {}), MAP_EXTRA_WEAPONS.get(key, {}))
+        try: sub = run_map(path, chars, only, MAP_PREFIX.get(key, ''), MAP_WEAPONS.get(key, {}), MAP_EXTRA_WEAPONS.get(key, {}),
+                           MODEL_ELSEWHERE.get(key, ()), UNIT_ALIASES.get(key))
         finally: gore_kit.SPV3_BITMAPS = keep
         for k in ai: ai[k].update(sub[k])
     json.dump(ai, open(f'{OUT}/spv3_ai.json', 'w'), indent=1, default=str)
@@ -139,10 +156,12 @@ def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
 ec.bitmap_image = pc_bitmap_image
 
 
-def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None):
+def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None, no_model=(), aliases=None):
     """one PC map: its own guns (weapons: {weapon tag: id}) into out/weapons, each biped of CHARS ({tag: pack id})
-    through extract_chars.extract (geometry read as gbxmodel), then the AI dump of every variant whose name or
-    biped matches CHARS, keyed prefix + variant_key(name). Returns the AI dict in extract_ai.py's layout."""
+    but no_model's through extract_chars.extract (geometry read as gbxmodel), then the AI dump of every variant whose
+    name or biped matches CHARS (aliases: {biped tag: the CHARS biped its variants are re-pointed at}), keyed prefix +
+    variant_key(name). Returns the AI dict in extract_ai.py's layout."""
+    aliases = aliases or {}
     m = PCMap(MAP)
     _geo = hm.Model.geometry
     hm.Model.geometry = lambda s, gi: gbx_geometry(s.m, s.geoms[gi].addr) if isinstance(s.m, PCMap) else _geo(s, gi)
@@ -159,13 +178,13 @@ def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None):
         v = dump(m, 'actor_variant_definition', t['data'])
         ref = (v.get('ranged_combat') or {}).get('reference') or ''
         w = WEAPONS.get(WEAPON_REFS.get(ref, ref))
-        if w and os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'): carried.setdefault(v['unit_reference'], set()).add(w)
+        if w and os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'): carried.setdefault(aliases.get(v['unit_reference'], v['unit_reference']), set()).add(w)
     for unit, ws in (extra or {}).items():
         carried.setdefault(unit, set()).update(w for w in ws if os.path.exists(f'{OUT}/weapons/{w}/{w}.pkl'))
     ec.char_weapons = lambda name: sorted(carried.get(name, ()))
     try:
         for name, pid in CHARS.items():
-            if only and pid not in only: continue
+            if (only and pid not in only) or pid in no_model: continue
             meta = ec.extract(name, pid, ['spv3'], {'spv3': m})
             print(pid, 'anims', len(meta['anims']), 'joints', len(meta['joints']), 'iqm', meta['iqm_bytes'] // 1024, 'KB',
                   'h', round(meta['collision_height'], 2), 'r', round(meta['collision_radius'], 2))
@@ -176,6 +195,7 @@ def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None):
     ai = dict(variants={}, actors={}, bipeds={}, collisions={}, weapons={})
     for t in m.find('actv'):
         v = dump(m, 'actor_variant_definition', t['data'])
+        v['unit_reference'] = aliases.get(v['unit_reference'], v['unit_reference'])
         if not any(t['name'].startswith(c) for c in CHARS) and v['unit_reference'] not in CHARS: continue
         rc = v.get('ranged_combat') or {}
         if rc.get('reference') in WEAPON_REFS: rc['reference'] = WEAPON_REFS[rc['reference']]

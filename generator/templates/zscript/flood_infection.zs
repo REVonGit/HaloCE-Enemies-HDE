@@ -58,9 +58,10 @@
 		String BCAPTAIN = "HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteCaptainShotgun HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMajorSpiker HCE_FloodcombatBruteCaptainUnarmed";
 		String BHONOR = "HCE_FloodcombatBruteHonorGuardAssaultRifle HCE_FloodcombatBruteHonorGuardSpiker HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteHonorGuardUnarmed";
 		String ELITE = "HCE_FloodcombatEliteCommanderEnergySword HCE_FloodcombatEliteUltraFuelRod HCE_FloodcombatEliteAssaultRifle HCE_FloodcombatEliteFlameThrower HCE_FloodcombatEliteNeedler HCE_FloodcombatElitePistol HCE_FloodcombatElitePlasmaPistol HCE_FloodcombatElitePlasmaRifle HCE_FloodcombatEliteRocketLauncher HCE_FloodcombatEliteShotgun HCE_FloodcombatEliteSniperRifle HCE_FloodcombatEliteUnarmed";
+		// a Grunt: the armed Flood Grunt carrying its gun, else the bursting one
+		String GRUNT = "HCE_FloodGruntPlasmaPistol HCE_FloodGruntNeedler HCE_FloodGrunt";
 		gun = null;
 		String cn = c.GetClassName();
-		if(c.hce_type == 2) return 'HCE_FloodGrunt';
 		if(c.hce_type == 0 && cn.IndexOf("Stealth") >= 0) return 'HCE_FloodcombatEliteStealthUnarmed';
 		// the host's dropped gun, if it still lies by the body
 		Name w = c.hce_dropWeapon;
@@ -71,6 +72,7 @@
 				if(it.thing != c && c.Distance2D(it.thing) < 64 && HCE_GroundWeaponClass(it.thing) == w) { gun = it.thing; break; }
 		}
 		Name wn = gun ? w : 'None';
+		if(c.hce_type == 2) return HCE_PickForm(GRUNT, wn);
 		if(cn.IndexOf("Brute") >= 0)
 			return HCE_PickForm(cn.IndexOf("HonorGuard") >= 0 ? BHONOR : cn.IndexOf("Captain") >= 0 || cn.IndexOf("Chieftain") >= 0 ? BCAPTAIN
 				: cn.IndexOf("Minor") >= 0 ? BMINOR : BMAJOR, wn);

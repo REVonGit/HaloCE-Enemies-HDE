@@ -535,8 +535,50 @@ Model HCE_FloodGrunt
 	SurfaceSkin 0 1 "skins/floodgrunt_floodgrunt_1.png"
 	SurfaceSkin 0 2 "skins/floodgrunt_floodgrunt_2.png"
 	SurfaceSkin 0 3 "skins/floodgrunt_floodgrunt_3.png"
-	SurfaceSkin 0 4 "skins/floodgrunt_floodgrunt_0.png"
-	SurfaceSkin 0 5 "skins/floodgrunt_floodgrunt_0.png"
+	SurfaceSkin 0 4 "skins/floodgrunt_floodgrunt_4.png"
+	SurfaceSkin 0 5 "skins/floodgrunt_floodgrunt_5.png"
+	SurfaceSkin 0 9 "skins/floodgrunt_floodgrunt_2.png"
+	SurfaceSkin 0 10 "skins/floodgrunt_floodgrunt_5.png"
+	Path "models/hce/weapons"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_FloodGruntNeedler
+{
+	Path "models/hce/FloodGrunt"
+	Model 0 "FloodGrunt.iqm"
+	SurfaceSkin 0 0 "skins/floodgrunt_floodgrunt_0.png"
+	SurfaceSkin 0 1 "skins/floodgrunt_floodgrunt_1.png"
+	SurfaceSkin 0 2 "skins/floodgrunt_floodgrunt_2.png"
+	SurfaceSkin 0 3 "skins/floodgrunt_floodgrunt_3.png"
+	SurfaceSkin 0 4 "skins/floodgrunt_floodgrunt_4.png"
+	SurfaceSkin 0 5 "skins/floodgrunt_floodgrunt_5.png"
+	SurfaceSkin 0 9 "skins/floodgrunt_floodgrunt_2.png"
+	SurfaceSkin 0 10 "skins/floodgrunt_floodgrunt_5.png"
+	Path "models/hce/weapons"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_FloodGruntPlasmaPistol
+{
+	Path "models/hce/FloodGrunt"
+	Model 0 "FloodGrunt.iqm"
+	SurfaceSkin 0 0 "skins/floodgrunt_floodgrunt_0.png"
+	SurfaceSkin 0 1 "skins/floodgrunt_floodgrunt_1.png"
+	SurfaceSkin 0 2 "skins/floodgrunt_floodgrunt_2.png"
+	SurfaceSkin 0 3 "skins/floodgrunt_floodgrunt_3.png"
+	SurfaceSkin 0 4 "skins/floodgrunt_floodgrunt_4.png"
+	SurfaceSkin 0 5 "skins/floodgrunt_floodgrunt_5.png"
+	SurfaceSkin 0 9 "skins/floodgrunt_floodgrunt_2.png"
+	SurfaceSkin 0 10 "skins/floodgrunt_floodgrunt_5.png"
 	Path "models/hce/weapons"
 	Scale 80 80 96
 	UseActorPitch

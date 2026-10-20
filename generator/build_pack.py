@@ -424,6 +424,9 @@ TEAM = {'Grunt': 'COVENANT', 'GruntSpecOps': 'COVENANT', 'Jackal': 'COVENANT', '
 # Flood forms from SPV3 maps (extract_spv3.py -> spv3_ai.json), in the Flood pack with the Halo CE Flood: the XAM Campaign
 # Overhaul's Flood Grunt (Tropical Thunder 98) and Ruby's Rebalance's Flood hosts (mynameislol), from their c40 maps
 SPV3_FLOOD = {r'characters\flood grunt\flood grunt': 'FloodGrunt',
+              # Sabopool's Halo CE Overhaul 2.0's armed Flood Grunts (its c40): the plasma pistol and the needler, in the
+              # same body (theirs: every Flood Grunt wears it)
+              r'characters\floodcombat_grunt\floodcombat grunt': 'FloodGrunt',
               r'characters\floodcombat_odst\floodcombat_odst': 'FloodODST',
               r'characters\floodcombat_marine\floodcombat_marine': 'FloodMarine',
               r'characters\floodcombat_human\floodcombat_human armored': 'FloodArmored',
@@ -441,7 +444,10 @@ SPV3_FLOOD_ORDER = (
      'HCE_FloodcombatHumanArmoredRocketLauncher', 'HCE_FloodcombatHumanArmoredSniperRifle', 'HCE_FloodcombatHumanArmoredUnarmed', 'HCE_RandomFloodArmored']
     + [f'HCE_FloodcombatElite{r}{w}' for r in ('Minor', 'Major') for w in ('Needler', 'PlasmaPistol', 'PlasmaRifle', 'Unarmed')]
     + ['HCE_RandomFloodEliteArmored', 'HCE_FloodcombatEliteCommanderEnergySword', 'HCE_FloodcombatEliteUltraFuelRod',
-       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra', 'HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut'])
+       'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra', 'HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut',
+       'HCE_FloodGruntPlasmaPistol', 'HCE_FloodGruntNeedler'])
+# the armed Flood Grunts fight as the combat forms do (their own actor's kind: Flood), not as the XAM one bursting like a carrier
+FLOOD_GRUNT_ARMED = dict(stance='pistol', flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Resurrects'])
 _sp = f'{OUT}/spv3_ai.json'
 if os.path.exists(_sp):
     _S3 = json.load(open(_sp))
@@ -452,6 +458,7 @@ if os.path.exists(_sp):
         for _k, _v in _S3['variants'].items():
             if _v['unit_reference'] != _u: continue
             _v['_late'] = True
+            if _u == r'characters\floodcombat_grunt\floodcombat grunt': _v['_ov'] = dict(FLOOD_GRUNT_ARMED)
             AI['variants'][_k] = _v
             AI['actors'][_v['actor_reference']] = _S3['actors'][_v['actor_reference']]
         _cm = _S3['bipeds'][_u].get('collision_model')
@@ -2837,7 +2844,7 @@ MAIN_WEAPONS = set(WEAPONS)     # the weapons whose projectile classes the main 
 # late_order are the characters and classes added since the first release, numbered after everything else
 MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', tag='hce', ed0=30200, main=True,
             handler='HCE_ReplaceHandler', index='pack_index.json',
-            late_chars=[c for c in SPV3_FLOOD.values() if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
+            late_chars=[c for c in dict.fromkeys(SPV3_FLOOD.values()) if c in TEAM] + (['SentinelKnight'] if 'SentinelKnight' in TEAM else [])
                        + [c for c in ('SentinelEnforcer', 'SentinelConstructor') if c in TEAM],
             late_order=['HCE_JackalMajorNeedler', 'HCE_HunterUltra'] + SPV3_FLOOD_ORDER + KNIGHT_ORDER + SENTINEL_ORDER + GALAP_ORDER)
 # The override keys build() reads, here per character and in a variant's '_ov' (which wins; the add_* functions set

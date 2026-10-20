@@ -425,6 +425,25 @@ def load_ai():
         variants[ULTRA_ZEALOT + '\\elite ultra zealot energy sword'] = v
         actors[v['actor_reference']] = A['actors'][v['actor_reference']]
         bipeds[ULTRA_ZEALOT] = copy.deepcopy(A['bipeds'][r'characters\elite\elite'])
+    # the Flood Brute: Ruby's armored Flood human's Flood AI on the Brute's frame, per rank (FLOOD_BRUTE_RANKS)
+    fb_ar, fb_un = variants.get(FLOOD_BRUTE_BASE + ' assault rifle'), variants.get(FLOOD_BRUTE_BASE + ' unarmed')
+    if os.path.exists(FLOOD_BRUTE_JSON) and fb_ar and fb_un:
+        actors[FLOOD_BRUTE] = copy.deepcopy(actors[fb_ar['actor_reference']])
+        fbb = copy.deepcopy(bipeds[fb_ar['unit_reference']])
+        fbb.update(collision_height_standing=0.95, collision_radius=0.32); fbb['change_colors_list'] = []
+        bipeds[FLOOD_BRUTE] = fbb
+        for rank, rd in FLOOD_BRUTE_RANKS.items():
+            for wref in rd['weapons'] + (None,):
+                v = copy.deepcopy(fb_ar if wref else fb_un)
+                v['unit_reference'] = FLOOD_BRUTE; v['actor_reference'] = FLOOD_BRUTE
+                v['unit'] = dict(v['unit'], maximum_body_vitality=float(rd['body']), maximum_shield_vitality=0.0)
+                v['ranged_combat']['reference'] = wref
+                if wref == SPIKER:     # (its combat ranges: the Brute Major's Spiker's)
+                    v['ranged_combat'].update({k: A['variants'][r'characters\elite\elite major\elite major plasma rifle']['ranged_combat'][k]
+                                               for k in ('combat_range_lower_bound', 'combat_range_upper_bound', 'maximum_firing_range')})
+                v['change_colors'] = None; v['change_colors_list'] = []
+                v['_late'] = True; v['_brute_rank'] = rank
+                variants[f'{FLOOD_BRUTE} {rank} {wref.split(chr(92))[-1] if wref else "unarmed"}'] = v
     return dict(variants=variants, actors=actors, bipeds=bipeds, collisions=colls,
                 weapons={k: A['weapons'][k] for k in (CE_PR, CE_AR, CE_SG)})     # shotgun pellets per shot etc.
 
@@ -437,6 +456,17 @@ ENGINEER_CODE = template('zscript/engineer.zs')
 THORN_CODE = template('zscript/thorn.zs')
 
 BRUTE_SCALE = 1.15     # Halo 2 Brutes are drawn at 115% (model, armour kit and helmet debris)
+# The Flood Brute (extract_flood_brute.py: Halo 2's cut Brute combat form, from blackandfan's H2EK-Tags), with the Brutes
+# it is made from: Flood AI (Ruby's Rebalance's armored Flood human's actor and combat data), the Brute's ranks and fur
+# colours (extract_flood_brute.RANKS: what each rank wears), each rank with two guns and bare-handed. Infection forms
+# raise a fallen Brute as the Flood Brute of its rank (flood_infection.zs)
+FLOOD_BRUTE = r'characters\floodcombat_brute\floodcombat_brute'
+FLOOD_BRUTE_JSON = f'{bp.OUT}/models/FloodBrute/FloodBrute.json'
+FLOOD_BRUTE_BASE = r'characters\floodcombat_human\armored\floodcombat_human armored'    # + ' assault rifle' / ' unarmed'
+FLOOD_BRUTE_RANKS = {'minor': dict(body=175, weapons=(CE_AR, CE_PR)), 'major': dict(body=200, weapons=(SPIKER, CE_SG)),
+                     'captain': dict(body=250, weapons=(CE_PR, CE_SG)), 'honor guard': dict(body=250, weapons=(CE_AR, SPIKER))}
+FLOOD_BRUTE_ORDER = [f'HCE_FloodcombatBrute{"".join(w.capitalize() for w in r.split())}{"".join(w.capitalize() for w in g.split(chr(92))[-1].split())}'
+                     for r, rd in FLOOD_BRUTE_RANKS.items() for g in rd['weapons'] + ('unarmed',)] + ['HCE_RandomFloodBrute']
 
 CARBINE_CODE = template('zscript/carbine.zs')
 
@@ -633,6 +663,24 @@ def brute_skin(cls, v, si, mat, meta, skin_dir):
     out = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8), 'RGBA')
     (out if has_a else out.convert('RGB')).save(dst)
     return fn
+
+def flood_brute_skin(cls, v, si, mat, meta, skin_dir):
+    """SKIN_HOOK for the Flood Brute: the pieces its rank doesn't wear (meta 'wear', extract_flood_brute.RANKS) hidden;
+    the fur and hair in the rank's own tint (the extractor's per-rank bakes); the rest as extracted (None)"""
+    names = meta.get('mesh_names')
+    if not names or si >= len(names) or names[si].startswith('weapon_'): return None
+    region, perm = names[si].split('.')[:2]
+    rank = v['_brute_rank']
+    os.makedirs(skin_dir, exist_ok=True)
+    if region != 'body' and [region, perm] not in meta['wear'][rank]:
+        hid = f'{skin_dir}/hce_hidden.png'
+        if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+        return 'hce_hidden.png'
+    fn = mat.replace('_minor.png', f'_{rank.replace(" ", "_")}.png')
+    if fn == mat: return None
+    if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{bp.OUT}/models/FloodBrute/{fn}', f'{skin_dir}/{fn}')
+    return fn
+
 
 H2J_BRIGHT = []          # helmet skins with lit parts (the sniper helmet's lenses): (skin file, its brightmap)
 
@@ -1190,6 +1238,7 @@ def configure():
     bp.WEAPON_IDS[HAMMER] = 'gravity_hammer'
     bp.FIRE_CODE['spiker'] = 'sk'
     bp.SKIN_HOOK['Brute'] = brute_skin
+    bp.SKIN_HOOK['FloodBrute'] = flood_brute_skin
     bp.SKIN_HOOK['SlugMan'] = slug_skin
     bp.OVERLAY_SLOT['Brute'] = CASTER_IDX            # its Plasma Caster's slot, which the human guns it picks up use too
     bp.OVERLAY_PLACEHOLDER.add('Brute')
@@ -1207,7 +1256,7 @@ def configure():
     bp.WEAPON_IDS.update({CARBINE: 'cmt_carbine', BEAM: 'particle_beam_dig'})
     bp.VOICES.update({'SlugMan': 'Slug', 'EliteRifle': 'Elite_Dogmatic,Elite_Loose', 'Drinol': 'Drinol', 'BlindWolf': 'Blind_Wolf',
                       'ThornBeast': 'ThornBeast', 'Engineer': 'Engineer', 'Drone': 'Drone',
-                      'Brute': 'Brute_Bloodthirsty,Brute_Cruel'})
+                      'Brute': 'Brute_Bloodthirsty,Brute_Cruel', 'FloodBrute': 'Flood'})
     # Halo 2 Jackals and Halo 2's beam rifle (it behaves like HaloDoom's: a held beam whose damage climbs while it
     # stays on a target, fired in ~1 s bursts with a cool-down between them; HDE's laser sounds)
     if os.path.exists(H2J_JSON):
@@ -1277,6 +1326,10 @@ def configure():
                       height_fixed=76, radius_fixed=30, melee=(130, 35), weapon_toss=True, shield=0, speed=6.5,
                       flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Evades', 'HCE_ThrowsGrenades', 'HCE_Leader']),
         'H2Jackal': dict(stance='pistol'),
+        # the Flood Brute: a Brute's frame at the Brutes' scale and hitbox, the Flood combat forms' charge, leap and
+        # claw (Halo 2's own leap set); its claw hits like the Brute's fist, a little harder
+        'FloodBrute': dict(scale=BRUTE_SCALE, height_fixed=76, radius_fixed=30, melee=(130, 40), shield=0,
+                           leap=(160, 400, 0.6, 14.0)),    # (its behaviour flags: the Flood actor's, as the other forms')
         'Drone': dict(stance='pistol', flying=True, radius_fixed=22, height_fixed=48, shield=0, speed=9.5, flags=['HCE_Flying']),
         'BlindWolf': dict(stance='unarmed', health=90, melee=(30, 22),
                           flags=['HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps'], leap=(48, 300, 0.7, 14.0)),
@@ -1293,10 +1346,10 @@ def build():
     cou = {r'digsite\characters\drinol\00_mac\drinol': 'Drinol', r'digsite\characters\slug_man\slug_man': 'SlugMan',
            ELITE_RIFLE: 'EliteRifle', r'characters\blind_wolf\blind_wolf': 'BlindWolf',
            r'characters\thorn_beast\thorn_beast': 'ThornBeast', r'characters\engineer\engineer': 'Engineer',
-           DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal', ULTRA_ZEALOT: 'EliteZealot'}
-    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT'}
+           DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal', ULTRA_ZEALOT: 'EliteZealot', FLOOD_BRUTE: 'FloodBrute'}
+    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT', 'FloodBrute': 'FLOOD'}
     cfg = dict(char_of_unit=cou, team=team, ai=ai, pack=PACK, mdir='hce_dig', tag='dig', ed0=30400, main=False,
-               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal'],
+               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal', 'FloodBrute'],
                late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf', 'HCE_ThornBeast', 'HCE_RandomThornBeast',
                            'HCE_EliteMinorPulseCarbine', 'HCE_EliteMajorPulseCarbine', 'HCE_EliteSpecopsPulseCarbine',
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
@@ -1311,7 +1364,7 @@ def build():
                            'HCE_DroneCaptainMajorPlasmaRifle',
                            'HCE_JackalMajorHelmetPlasmaRifle',
                            'HCE_SlugManZealotParticleBeam', 'HCE_SlugManZealotPlasmaRifle', 'HCE_SlugManZealotPulseCarbine',
-                           'HCE_BruteJumpPackSpiker', 'HCE_BruteJumpPackPlasmaRifle'], index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
+                           'HCE_BruteJumpPackSpiker', 'HCE_BruteJumpPackPlasmaRifle'] + FLOOD_BRUTE_ORDER, index='digsite_index.json', glow=[f'w_cmt_carbine_{b}{k}.png' for b in ('', 'blue_') for k in ('lights', 'icon', 'meter')] + ['w_spiker_heat.png'],
                gl_title='// Digsite add-on: glowing surfaces')
     bp.build(cfg)
     if H2J_BRIGHT:                               # the H2 sniper helmet's lenses glow

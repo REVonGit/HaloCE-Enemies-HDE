@@ -24,14 +24,20 @@
 		hce_action = HCE_ACT_FEED;
 		return true;
 	}
-	// a body this infection form can take: a fallen Flood combat form that rises again, or a Marine, Elite or Grunt
-	// with a Flood form of its own (not the Draeth or the Brutes)
+	// a body this infection form can take: a fallen Flood combat form that rises again, or a Marine, Elite, Grunt or
+	// Brute with a Flood form of its own (not the Draeth; the Brutes only with the Digsite add-on's Flood Brute loaded)
 	bool HCE_CanInfect(HaloDoom_EnemyBase c)
 	{
 		if(c.hce_team == HCE_TEAM_FLOOD) return c.bHCE_Resurrects && c.hce_reviveTics <= 0;
 		if(c.bHCE_Resurrects) return false;
 		String cn = c.GetClassName();
-		if(cn.IndexOf("Draeth") >= 0 || cn.IndexOf("Brute") >= 0) return false;
+		if(cn.IndexOf("Draeth") >= 0) return false;
+		if(cn.IndexOf("Brute") >= 0)
+		{
+			String fb = "HCE_FloodcombatBruteMinorUnarmed";      // (looked up at run time: the add-on may not be loaded)
+			class<Actor> k = fb;
+			return c.hce_team == HCE_TEAM_COVENANT && k != null;
+		}
 		if(c.hce_team == HCE_TEAM_HUMAN) return c.hce_type == 7;
 		if(c.hce_team == HCE_TEAM_COVENANT) return (c.hce_type == 0 && cn.IndexOf("Elite") >= 0) || (c.hce_type == 2 && cn.IndexOf("Grunt") >= 0);
 		return false;
@@ -46,6 +52,11 @@
 		String MARINE = "HCE_FloodcombatHumanUnarmoredAssaultRifle HCE_FloodcombatHumanUnarmoredPistol HCE_FloodcombatHumanFlameThrower HCE_FloodcombatHumanNeedler HCE_FloodcombatHumanPlasmaPistol HCE_FloodcombatHumanPlasmaRifle HCE_FloodcombatHumanRocketLauncher HCE_FloodcombatHumanShotgun HCE_FloodcombatHumanUnarmoredUnarmed";
 		String MINOR = "HCE_FloodcombatEliteMinorNeedler HCE_FloodcombatEliteMinorPlasmaPistol HCE_FloodcombatEliteMinorPlasmaRifle HCE_FloodcombatEliteMinorUnarmed";
 		String MAJOR = "HCE_FloodcombatEliteMajorNeedler HCE_FloodcombatEliteMajorPlasmaPistol HCE_FloodcombatEliteMajorPlasmaRifle HCE_FloodcombatEliteMajorUnarmed";
+		// the Flood Brutes by the Brute's rank (the Majors take the Stalkers and the jump-pack Brutes, the Captains the Chieftain)
+		String BMINOR = "HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMinorPlasmaRifle HCE_FloodcombatBruteHonorGuardSpiker HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteMinorUnarmed";
+		String BMAJOR = "HCE_FloodcombatBruteMajorSpiker HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMinorPlasmaRifle HCE_FloodcombatBruteMajorUnarmed";
+		String BCAPTAIN = "HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteCaptainShotgun HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMajorSpiker HCE_FloodcombatBruteCaptainUnarmed";
+		String BHONOR = "HCE_FloodcombatBruteHonorGuardAssaultRifle HCE_FloodcombatBruteHonorGuardSpiker HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteHonorGuardUnarmed";
 		String ELITE = "HCE_FloodcombatEliteCommanderEnergySword HCE_FloodcombatEliteUltraFuelRod HCE_FloodcombatEliteAssaultRifle HCE_FloodcombatEliteFlameThrower HCE_FloodcombatEliteNeedler HCE_FloodcombatElitePistol HCE_FloodcombatElitePlasmaPistol HCE_FloodcombatElitePlasmaRifle HCE_FloodcombatEliteRocketLauncher HCE_FloodcombatEliteShotgun HCE_FloodcombatEliteSniperRifle HCE_FloodcombatEliteUnarmed";
 		gun = null;
 		String cn = c.GetClassName();
@@ -60,6 +71,9 @@
 				if(it.thing != c && c.Distance2D(it.thing) < 64 && HCE_GroundWeaponClass(it.thing) == w) { gun = it.thing; break; }
 		}
 		Name wn = gun ? w : 'None';
+		if(cn.IndexOf("Brute") >= 0)
+			return HCE_PickForm(cn.IndexOf("HonorGuard") >= 0 ? BHONOR : cn.IndexOf("Captain") >= 0 || cn.IndexOf("Chieftain") >= 0 ? BCAPTAIN
+				: cn.IndexOf("Minor") >= 0 ? BMINOR : BMAJOR, wn);
 		if(c.hce_type == 7) return cn.IndexOf("Odst") >= 0 ? HCE_PickForm(ODST, wn) : cn.IndexOf("Armored") >= 0 ? HCE_PickForm(ARMORED, wn) : HCE_PickForm(MARINE, wn);
 		return cn.IndexOf("Minor") >= 0 ? HCE_PickForm(MINOR, wn) : cn.IndexOf("Major") >= 0 ? HCE_PickForm(MAJOR, wn) : HCE_PickForm(ELITE, wn);
 	}

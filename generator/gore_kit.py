@@ -80,6 +80,10 @@ GORE = {
     # time), and its stumps are a model of their own (attachment 9: the kit uses 1-6, blood 7, a held gun 8)
     'Brute':        dict(style='bone', blood='161C40', prune=True, limbs={'head': 'head'}, cap_model=9,
                          collapse={'larm': 'l_upperarm', 'rarm': 'r_upperarm'}, cap_from='body.'),
+    # the Flood Brute (extract_flood_brute.py): the Brute's body, so the Brute's treatment; its head is the Brute's own
+    # head slumped off the shoulder ('b_corpse_head'), its left arm the Flood's claw
+    'FloodBrute':   dict(style='bone', blood='76703A', prune=True, limbs={'head': 'b_corpse_head'}, cap_model=9,
+                         collapse={'larm': 'b_l_upperarm', 'rarm': 'b_r_upperarm'}, cap_from='body.'),
     # swapped limbs: Halo CE's own damage permutations (extract_chars.MULTI_PERMS): the region's base parts hidden, its
     # '~damaged' parts (a torn stump, in the Flood's damaged texture) shown; the gun goes with the right arm
     'FloodHuman':   dict(swap={'head': 'head', 'larm': 'left_arm', 'rarm': 'right_arm'}, gun='rarm',
@@ -111,7 +115,8 @@ GORE_TEX = {'Elite': ('jackal gore', False, True), 'EliteSpecial': ('jackal gore
             'Grunt': ('grunt_gore', False, True), 'GruntSpecOps': ('grunt_gore', False, True),
             'Jackal': ('jackal gore', False, True), 'JackalMajor': ('jackal gore', False, True), 'H2Jackal': ('jackal gore', False, True),
             'Brute': ('jackal gore', True, True), 'Hunter': ('grunt_gore', True, False), 'SlugMan': ('grunt_gore', True, False),
-            'Drone': ('grunt_gore', True, False), 'FloodGrunt': ('grunt_gore', True, True)}
+            'Drone': ('grunt_gore', True, False), 'FloodGrunt': ('grunt_gore', True, True),
+            'FloodBrute': ('jackal gore', True, True)}
 SPV3_MODEL = {'elite_new': r'characters\elite_new\elite_new', 'grunt_new': r'characters\grunt_new\grunt_new',
               'jackal_new': r'characters\jackal_new\jackal_new'}
 

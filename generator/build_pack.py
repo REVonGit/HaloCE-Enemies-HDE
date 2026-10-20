@@ -805,7 +805,7 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
           'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
-          'FloodJuggernaut': 'FloodJuggernaut'}
+          'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood'}
 from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
 # melee damage of a weapon swung as one (HCE_Melee); an unlisted gun hits for 55, an unarmed body by character (build)
 MELEE = {'energy sword': 151, 'flamethrower': 75}
@@ -827,7 +827,7 @@ BLOOD = {
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
     'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
-    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A',  # Flood: brownish green
+    'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A', 'FloodBrute': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
     'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
@@ -2025,7 +2025,7 @@ BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Gr
                   'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
                   'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
                   'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
-                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'MarineArmored': 'Armored Marine',
+                  'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'FloodBrute': 'Flood (Brute host)', 'MarineArmored': 'Armored Marine',
                   'MarineODST': 'ODST', 'EliteRifle': 'Elite (carbines)', 'EliteZealot': 'Elite Zealot'}
 
 def read_lore():

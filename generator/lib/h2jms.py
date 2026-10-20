@@ -55,8 +55,9 @@ def read_jms(text):
     mats = []
     for _ in range(int(nxt())):
         name = nxt(); desc = nxt().split()
-        # '(slot) Lx permutation region'
-        perm, region = (desc[2], desc[3]) if len(desc) >= 4 else ('', '')
+        # '(slot) [Lx] permutation region': the level of detail is left out of a piece drawn at every level
+        if len(desc) >= 2 and desc[1][:1] == 'L' and desc[1][1:].isdigit(): desc = desc[:1] + desc[2:]
+        perm, region = (desc[1], desc[2]) if len(desc) >= 3 else ('', '')
         mats.append(dict(name=name, perm=perm, region=region))
     markers = []
     for _ in range(int(nxt())):

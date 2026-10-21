@@ -205,7 +205,8 @@ REAVER_STEPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reaver_
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
                'focus': 'Focus', 'suppress': 'Suppress', 'medic': 'Medic', 'weapon order': 'Weapon', 'weapon': 'Weapon',
                'hold position': 'HoldPosition', 'pressbutton': 'PressButton', 'press button': 'PressButton',
-               'regroup': 'Regroup'}
+               'regroup': 'Regroup', 'reload command': 'Reload', 'reload': 'Reload', 'stack up': 'StackUp',
+               'take position there': 'TakePosition', 'take position': 'TakePosition', 'frag and clear': 'FragClear'}
 # the 'Medic N' takes the Chief uses when he is calling the corpsman for himself (the others name a Marine)
 CHIEF_MEDIC_SELF = {2, 3, 5}
 
@@ -281,18 +282,22 @@ def main():
                                           'alias reclaimer "netevent hce_spawnsentinels"\n'
                                           'alias hce_bestiary "openmenu HCE_Bestiary"\n'
                                           '\n// squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on\n'
-                                          '// the order wheel (hold its key, point with the mouse, let go); the combat orders and the button order have keys of their own.\n'
+                                          '// the order wheel (hold its key, point with the mouse, let go; the mouse wheel turns its page); the combat orders, the\n// button order, reload, take position, stack up and frag and clear have keys of their own.\n'
                                           '// The rest stay bindable from the console (bind <key> hce_regroup, and so on)\n'
                                           'alias +hce_wheel "event hce_wheel_open"\nalias -hce_wheel "event hce_wheel_close"\n'
                                           'alias hce_follow "netevent hce_squad 0"\nalias hce_hold "netevent hce_squad 1"\nalias hce_regroup "netevent hce_squad 2"\n'
                                           'alias hce_holdfire "netevent hce_squad 3"\nalias hce_openfire "netevent hce_squad 4"\nalias hce_focus "netevent hce_squad 5"\n'
                                           'alias hce_suppress "netevent hce_squad 6"\nalias hce_medic "netevent hce_squad 7"\nalias hce_weapon "netevent hce_squad 8"\n'
-                                          'alias hce_button "netevent hce_squad 9"\n'
+                                          'alias hce_button "netevent hce_squad 9"\nalias hce_reload "netevent hce_squad 10"\n'
+                                          'alias hce_stackup "netevent hce_squad 11"\nalias hce_takeposition "netevent hce_squad 12"\n'
+                                          'alias hce_fragclear "netevent hce_squad 13"\n'
                                           'addkeysection "Halo CE Squad" hce_squad\n'
                                           'addmenukey "Squad: order wheel (hold)" +hce_wheel\n'
                                           'addmenukey "Squad: open fire" hce_openfire\naddmenukey "Squad: hold fire" hce_holdfire\n'
                                           'addmenukey "Squad: focus on my target" hce_focus\naddmenukey "Squad: suppress" hce_suppress\n'
                                           'addmenukey "Squad: medic" hce_medic\naddmenukey "Squad: press that button" hce_button\n'
+                                          'addmenukey "Squad: reload" hce_reload\naddmenukey "Squad: take position there" hce_takeposition\n'
+                                          'addmenukey "Squad: stack up on that door" hce_stackup\naddmenukey "Squad: frag and clear" hce_fragclear\n'
                                           '\n// the bestiary on a key (Options > Customize Controls > Halo CE Bestiary)\n'
                                           'addkeysection "Halo CE Bestiary" hce_bestiarykeys\n'
                                           'addmenukey "Open the bestiary" hce_bestiary\n')

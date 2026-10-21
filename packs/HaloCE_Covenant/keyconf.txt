@@ -10,7 +10,8 @@ alias reclaimer "netevent hce_spawnsentinels"
 alias hce_bestiary "openmenu HCE_Bestiary"
 
 // squad orders to the Marines following you (Options > Customize Controls > Halo CE Squad): every order is on
-// the order wheel (hold its key, point with the mouse, let go); the combat orders and the button order have keys of their own.
+// the order wheel (hold its key, point with the mouse, let go; the mouse wheel turns its page); the combat orders, the
+// button order, reload, take position, stack up and frag and clear have keys of their own.
 // The rest stay bindable from the console (bind <key> hce_regroup, and so on)
 alias +hce_wheel "event hce_wheel_open"
 alias -hce_wheel "event hce_wheel_close"
@@ -24,6 +25,10 @@ alias hce_suppress "netevent hce_squad 6"
 alias hce_medic "netevent hce_squad 7"
 alias hce_weapon "netevent hce_squad 8"
 alias hce_button "netevent hce_squad 9"
+alias hce_reload "netevent hce_squad 10"
+alias hce_stackup "netevent hce_squad 11"
+alias hce_takeposition "netevent hce_squad 12"
+alias hce_fragclear "netevent hce_squad 13"
 addkeysection "Halo CE Squad" hce_squad
 addmenukey "Squad: order wheel (hold)" +hce_wheel
 addmenukey "Squad: open fire" hce_openfire
@@ -32,6 +37,10 @@ addmenukey "Squad: focus on my target" hce_focus
 addmenukey "Squad: suppress" hce_suppress
 addmenukey "Squad: medic" hce_medic
 addmenukey "Squad: press that button" hce_button
+addmenukey "Squad: reload" hce_reload
+addmenukey "Squad: take position there" hce_takeposition
+addmenukey "Squad: stack up on that door" hce_stackup
+addmenukey "Squad: frag and clear" hce_fragclear
 
 // the bestiary on a key (Options > Customize Controls > Halo CE Bestiary)
 addkeysection "Halo CE Bestiary" hce_bestiarykeys

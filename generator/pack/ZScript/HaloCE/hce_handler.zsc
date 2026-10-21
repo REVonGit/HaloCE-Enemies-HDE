@@ -567,7 +567,9 @@ class HCE_SpawnAllHandler : EventHandler
 	//   crosshair, 6 suppress (it, or whatever they're fighting), 7 medic (the nearest corpsman patches up the Marine
 	//   in the crosshair),
 	//   8 weapon (the nearest one that can use it fetches the gun in the crosshair), 9 press that button (the nearest
-	//   one goes and uses the switch in the crosshair)
+	//   one goes and uses the switch in the crosshair), 10 reload (everyone tops up his magazine), 11 stack up (on
+	//   the door in the crosshair, waiting for the player to go in: HCE_Breach), 12 take position (where the
+	//   crosshair points; a lift: onto its floor), 13 frag and clear (stack up, open the door, a grenade in, then in)
 	// One of the Marines answers, a moment later (HaloDoom_EnemyBase.HCE_AckLater): whoever was given the job, or one
 	// picked at random.
 	// The Master Chief says the order (HCE/Chief/*: the Marines pack's sounds); nothing is printed.
@@ -646,9 +648,10 @@ class HCE_SpawnAllHandler : EventHandler
 	{
 		if(e.Player < 0 || e.Player >= MAXPLAYERS || !playeringame[e.Player] || !players[e.Player].mo) return;
 		let pl = players[e.Player].mo;
-		int o = clamp(e.Args[0], 0, 9);
+		int o = clamp(e.Args[0], 0, 13);
 		static const String line[] = { "HCE/Chief/FollowMe", "HCE/Chief/HoldPosition", "HCE/Chief/Regroup", "HCE/Chief/HoldFire", "HCE/Chief/OpenFire",
-			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon", "HCE/Chief/PressButton" };
+			"HCE/Chief/Focus", "HCE/Chief/Suppress", "HCE/Chief/Medic", "HCE/Chief/Weapon", "HCE/Chief/PressButton",
+			"HCE/Chief/Reload", "HCE/Chief/StackUp", "HCE/Chief/TakePosition", "HCE/Chief/FragClear" };
 		Array<HaloDoom_EnemyBase> squad;
 		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
 		HaloDoom_EnemyBase m;
@@ -661,6 +664,13 @@ class HCE_SpawnAllHandler : EventHandler
 		bool ownAid = o == 7 && pl.pitch >= 50 && !LookedAtMarine(pl);
 		if(ownAid) pl.A_StartSound("HCE/Chief/MedicSelf", 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
 		else if(line[o].Length() > 0) pl.A_StartSound(line[o], 47, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		if(o == 10)
+		{
+			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_ReloadOrder();
+			AckRandom(squad); return;
+		}
+		if(o == 12) { HaloDoom_EnemyBase.HCE_TakePosition(squad, pl); AckRandom(squad); return; }
+		if(o == 11 || o == 13) { if(HCE_Breach.Start(squad, pl, o == 13)) AckRandom(squad); return; }
 		if(o <= 2)
 		{
 			for(int i = 0; i < squad.Size(); i++) squad[i].HCE_Order(o);
@@ -846,22 +856,27 @@ class HCE_SpawnAllHandler : EventHandler
 }
 
 // The Master Chief's order wheel. Hold the "Squad: order wheel" key (+hce_wheel), point the mouse at an order and let
-// go to give it (or click; right-click or Escape puts it away; 1-0 pick one straight off). Every squad order is on
-// it; only the combat ones also have keys of their own (Options > Customize Controls > Halo CE Squad). While it is
+// go to give it (or click; right-click or Escape puts it away; 1-7 pick one straight off). Every squad order is on
+// it, on two pages of seven (Movement, Combat): the mouse wheel turns the page while it is up, and it opens on the
+// page last used. All but follow, hold, regroup and weapon also have keys of their own (Options > Customize Controls >
+// Halo CE Squad). While it is
 // up the mouse moves the pointer, not the view, and the fire button gives the order instead of shooting.
 class HCE_SquadWheel : EventHandler
 {
 	ui bool wOpen;
 	ui double wx, wy;          // the pointer, from the wheel's centre (mouse units, +y up)
 	ui int wSel;               // the slice under it, -1: none (the middle)
-	const SLICES = 10;
+	ui int wPage;              // the page showing (kept from one opening to the next)
+	const SLICES = 7;          // orders on a page
+	const PAGES = 2;
 	const REACH = 240.0;       // how far the pointer goes
 	const DEAD = 48.0;         // the middle: nothing picked
 
-	// clockwise from the top: the squad order (HCE_SpawnAllHandler.SquadOrder) and its name
-	static const int ORDER[] = { 0, 2, 1, 4, 5, 6, 3, 7, 8, 9 };
-	static const String LABEL[] = { "Follow", "Regroup", "Hold", "Open fire", "Focus", "Suppress",
-		"Hold fire", "Medic", "Weapon", "Button" };
+	// page by page, clockwise from the top: the squad order (HCE_SpawnAllHandler.SquadOrder) and its name; the pages' names
+	static const int ORDER[] = { 0, 2, 1, 12, 11, 13, 9,          4, 3, 5, 6, 10, 7, 8 };
+	static const String LABEL[] = { "Follow", "Regroup", "Hold", "Take position", "Stack up", "Frag and clear", "Button",
+		"Open fire", "Hold fire", "Focus", "Suppress", "Reload", "Medic", "Weapon" };
+	static const String PAGE[] = { "Movement", "Combat" };
 
 	// the wheel's own (local, ui-side) events from the +hce_wheel key: hce_wheel_open on press, hce_wheel_close on
 	// release (gives whatever is under the pointer), hce_wheel_pick <slice> from the console
@@ -873,7 +888,12 @@ class HCE_SquadWheel : EventHandler
 			wOpen = true; wx = wy = 0; wSel = -1;
 		}
 		else if(e.Name == "hce_wheel_close") { if(wOpen) Give(); }
-		else if(e.Name == "hce_wheel_pick") { wOpen = true; wSel = clamp(e.Args[0], 0, SLICES - 1); Give(); }    // console / tests
+		else if(e.Name == "hce_wheel_pick")                       // console / tests: the order's place across the pages
+		{
+			int k = clamp(e.Args[0], 0, SLICES * PAGES - 1);
+			wOpen = true; wPage = k / SLICES; wSel = k % SLICES; Give();
+		}
+		else if(e.Name == "hce_wheel_page" && wOpen) wPage = (wPage + 1) % PAGES;
 	}
 
 	// the Marine add-on's text font: HaloDoom Evolved's HUD font (HaloFont) where it's loaded, else NewSmallFont.
@@ -892,7 +912,7 @@ class HCE_SquadWheel : EventHandler
 		wOpen = false;
 		if(wSel >= 0 && wSel < SLICES)
 		{
-			EventHandler.SendNetworkEvent("hce_squad", ORDER[wSel]);
+			EventHandler.SendNetworkEvent("hce_squad", ORDER[wPage * SLICES + wSel]);
 		}
 	}
 
@@ -917,7 +937,10 @@ class HCE_SquadWheel : EventHandler
 		{
 			if(e.KeyScan == InputEvent.Key_Mouse1) { Give(); return true; }
 			if(e.KeyScan == InputEvent.Key_Mouse2 || e.KeyScan == InputEvent.Key_Escape) { wOpen = false; return true; }
-			if(e.KeyScan >= 2 && e.KeyScan <= 11) { wSel = e.KeyScan - 2; Give(); return true; }     // the 1-0 keys
+			// the mouse wheel: the other page
+			if(e.KeyScan == InputEvent.Key_MWheelUp) { wPage = (wPage + PAGES - 1) % PAGES; return true; }
+			if(e.KeyScan == InputEvent.Key_MWheelDown) { wPage = (wPage + 1) % PAGES; return true; }
+			if(e.KeyScan >= 2 && e.KeyScan < 2 + SLICES) { wSel = e.KeyScan - 2; Give(); return true; }     // the 1-7 keys
 		}
 		return false;
 	}
@@ -960,13 +983,27 @@ class HCE_SquadWheel : EventHandler
 			// their point, the right ones start there, the top and bottom ones centred), so none crowd the next
 			double a = i * slice, sa = sin(a), ca = cos(a);
 			double x = cx + sa * rLab * 1.35, y = cy - ca * rLab * 1.05;
-			String t = LABEL[i];
+			String t = LABEL[wPage * SLICES + i];
 			double tw = f.StringWidth(t) * ts, th = f.GetHeight() * ts;
 			double lx = abs(sa) < 0.2 ? x - tw / 2 : sa > 0 ? x - tw * 0.15 : x - tw * 0.85;
 			bool on = i == wSel;
 			if(on) Screen.Dim(tab, 0.55, int(lx - 8 * sc), int(y - th / 2 - 3 * sc), int(tw + 16 * sc), int(th + 6 * sc));
 			Screen.DrawText(f, on ? Font.CR_WHITE : Font.CR_LIGHTBLUE, lx, y - th / 2, t,
 				DTA_ScaleX, ts, DTA_ScaleY, ts, DTA_Alpha, on ? 1.0 : 0.6);
+		}
+		// the page in the middle, with a dot for each page (the one showing lit) and the hint to turn it
+		{
+			String pn = PAGE[wPage];
+			double ps = 1.2 * sc * fk, pw = f.StringWidth(pn) * ps, ph = f.GetHeight() * ps;
+			Screen.DrawText(f, Font.CR_WHITE, cx - pw / 2, cy - rRing * 0.42 - ph / 2, pn, DTA_ScaleX, ps, DTA_ScaleY, ps, DTA_Alpha, 0.85);
+			for(int k = 0; k < PAGES; k++)
+			{
+				double dx = cx + (k - (PAGES - 1) / 2.0) * 14 * sc, dy = cy + rRing * 0.42, dr = 3 * sc;
+				Screen.Dim(k == wPage ? lit : ring, k == wPage ? 0.9 : 0.4, int(dx - dr), int(dy - dr), int(dr * 2 + 1), int(dr * 2 + 1));
+			}
+			String hint = "Mouse wheel: next page";
+			double hs = 0.9 * sc * fk, hw = f.StringWidth(hint) * hs;
+			Screen.DrawText(f, Font.CR_LIGHTBLUE, cx - hw / 2, cy + rRing * 0.42 + 8 * sc, hint, DTA_ScaleX, hs, DTA_ScaleY, hs, DTA_Alpha, 0.8);
 		}
 		// the pointer: a dot inside the ring
 		double pr = min(sqrt(wx * wx + wy * wy) / REACH, 1.0) * (rRing - 14 * sc);

@@ -717,11 +717,11 @@ class HCE_SpawnAllHandler : EventHandler
 			if(!hurt && ownAid) hurt = pl;                                // the Chief himself
 			if(!hurt) return;
 			let hm = HaloDoom_EnemyBase(hurt);
-			// a corpsman in the crosshair patches himself up
-			if(hm && hm.hce_isMedic && !hm.hce_medicFor) { hm.HCE_MedicOrder(hm); return; }
+			// a corpsman in the crosshair patches himself up (corpsmen out of biofoam can't patch anyone)
+			if(hm && hm.hce_isMedic && !hm.hce_medicFor && hm.HCE_MedicCharges() > 0) { hm.HCE_MedicOrder(hm); return; }
 			HaloDoom_EnemyBase best = null;
 			for(int i = 0; i < squad.Size(); i++)
-				if(squad[i].hce_isMedic && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];
+				if(squad[i].hce_isMedic && squad[i].HCE_MedicCharges() > 0 && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];
 			if(best) best.HCE_MedicOrder(hurt);
 			return;
 		}
@@ -1002,8 +1002,12 @@ class HCE_SquadWheel : EventHandler
 				Screen.Dim(k == wPage ? lit : ring, k == wPage ? 0.9 : 0.4, int(dx - dr), int(dy - dr), int(dr * 2 + 1), int(dr * 2 + 1));
 			}
 			String hint = "Mouse wheel: next page";
-			double hs = 0.9 * sc * fk, hw = f.StringWidth(hint) * hs;
-			Screen.DrawText(f, Font.CR_LIGHTBLUE, cx - hw / 2, cy + rRing * 0.42 + 8 * sc, hint, DTA_ScaleX, hs, DTA_ScaleY, hs, DTA_Alpha, 0.8);
+			// as big as fits across the ring at that height (with a margin), never bigger than the page's name
+			double hy = rRing * 0.42 + 8 * sc, hs = 0.9 * sc * fk;
+			double hh = f.GetHeight() * hs, room = 2 * sqrt(max(0, (rRing - 10 * sc) ** 2 - (hy + hh) ** 2));
+			hs = min(hs, room / max(1, f.StringWidth(hint)));
+			double hw = f.StringWidth(hint) * hs;
+			Screen.DrawText(f, Font.CR_LIGHTBLUE, cx - hw / 2, cy + hy, hint, DTA_ScaleX, hs, DTA_ScaleY, hs, DTA_Alpha, 0.8);
 		}
 		// the pointer: a dot inside the ring
 		double pr = min(sqrt(wx * wx + wy * wy) / REACH, 1.0) * (rRing - 14 * sc);
@@ -1033,7 +1037,8 @@ class HCE_FadeAway : Thinker
 // Encounters: on maps not made for these packs, a Marine fire team turns up fighting a group of the Covenant or the
 // Flood somewhere along the way, so a player can come upon a firefight already going. At a map's start a few groups of
 // hostile Halo enemies (two or more together, well away from the players' start, out of secret and damaging sectors)
-// get a fire team of 3 to 5 Marines placed in the open a few hundred units off, in sight of them. Their fight is held
+// get a fire team of 3 to 5 Marines placed in the open a few hundred units off, in sight of them (never in a small room
+// with enemies in it: RoomFits). Their fight is held
 // until a player comes (HaloDoom_EnemyBase.HCE_EncounterScale: AI hits do little while the players are far, and leave
 // everyone at 40% health), so it is still going when one arrives, and heard from afar. The Marines left standing join
 // the player's squad when he reaches them: once their foes are down (a "thanks"), or straight away if he walks right up.
@@ -1061,6 +1066,76 @@ class HCE_Encounters : EventHandler
 
 	// no encounter in a secret sector, a damaging one, or one under 72 units tall at its centre
 	static bool BadSector(Sector s) { return !s || s.IsSecret() || s.damageamount > 0 || s.ceilingplane.ZatPoint(s.centerspot) - s.floorplane.ZatPoint(s.centerspot) < 72; }
+
+	// Rooms: the map's sectors joined across every two-sided line a Marine could walk through at the map's start (an
+	// opening 56 tall or more, a step of 24 or less, not a line that blocks walkers: a shut door parts two rooms), each
+	// with its floor area and the hostile monsters standing in it. A fire team isn't placed in a room smaller than
+	// SMALL_ROOM (in square map units) with an enemy in it (a cramped dead end like a key alcove holds them in a
+	// slaughter); an empty small room is fine.
+	const SMALL_ROOM = 640.0 * 512.0;
+	Array<int> roomOf;                  // per sector: its room
+	Array<double> roomArea;             // per room: its floor area
+	Array<int> roomFoes;                // per room: the hostile monsters in it
+	static double SectorArea(Sector s)
+	{
+		double a = 0;
+		for(int i = 0; i < s.Lines.Size(); i++)
+		{
+			Line l = s.Lines[i];
+			double c = l.v1.p.x * l.v2.p.y - l.v2.p.x * l.v1.p.y;
+			if(l.frontsector == s) a += c;
+			if(l.backsector == s) a -= c;
+		}
+		return abs(a) / 2;
+	}
+	static bool Walkable(Line l)
+	{
+		if(!l.backsector || l.frontsector == l.backsector) return l.backsector != null;
+		if(l.flags & (Line.ML_BLOCKING | Line.ML_BLOCKEVERYTHING | Line.ML_BLOCKMONSTERS)) return false;
+		vector2 m = l.v1.p + l.delta / 2;
+		double f1 = l.frontsector.floorplane.ZatPoint(m), f2 = l.backsector.floorplane.ZatPoint(m);
+		double top = min(l.frontsector.ceilingplane.ZatPoint(m), l.backsector.ceilingplane.ZatPoint(m));
+		return abs(f1 - f2) <= 24 && top - max(f1, f2) >= 56;
+	}
+	void FindRooms()
+	{
+		roomOf.Clear(); roomArea.Clear(); roomFoes.Clear();
+		for(int i = 0; i < level.Sectors.Size(); i++) roomOf.Push(-1);
+		Array<int> q;
+		for(int s0 = 0; s0 < level.Sectors.Size(); s0++)
+		{
+			if(roomOf[s0] >= 0) continue;
+			int r = roomArea.Size();
+			roomArea.Push(0); roomFoes.Push(0);
+			roomOf[s0] = r; q.Clear(); q.Push(s0);
+			while(q.Size())
+			{
+				Sector s = level.Sectors[q[q.Size() - 1]];
+				q.Pop();
+				roomArea[r] += SectorArea(s);
+				for(int i = 0; i < s.Lines.Size(); i++)
+				{
+					Line l = s.Lines[i];
+					if(!Walkable(l)) continue;
+					Sector o = l.frontsector == s ? l.backsector : l.frontsector;
+					if(roomOf[o.Index()] >= 0) continue;
+					roomOf[o.Index()] = r; q.Push(o.Index());
+				}
+			}
+		}
+		let it = ThinkerIterator.Create("Actor");
+		Actor a;
+		while(a = Actor(it.Next()))
+			if(a.bISMONSTER && !a.bFRIENDLY && a.health > 0 && a.CurSector && !(a is "HaloDoom_EnemyBase" && HaloDoom_EnemyBase(a).hce_team == HCE_TEAM_HUMAN))
+				roomFoes[roomOf[a.CurSector.Index()]]++;
+	}
+	// may a Marine of the fire team stand in this sector's room?
+	bool RoomFits(Sector s)
+	{
+		if(!s || roomOf.Size() != level.Sectors.Size()) return true;
+		int r = roomOf[s.Index()];
+		return roomArea[r] >= SMALL_ROOM || roomFoes[r] == 0;
+	}
 
 	// the distance from p to the closest player in the game (1e9 with none)
 	static double NearestPlayer(vector3 p)
@@ -1097,6 +1172,7 @@ class HCE_Encounters : EventHandler
 			cand.Push(h);
 		}
 		for(int i = cand.Size() - 1; i > 0; i--) { int j = random[HCEEnc](0, i); let t = cand[i]; cand[i] = cand[j]; cand[j] = t; }
+		FindRooms();
 		for(int i = 0; i < cand.Size() && enc.Size() < n; i++)
 		{
 			let c = cand[i];
@@ -1125,7 +1201,7 @@ class HCE_Encounters : EventHandler
 			if(d < 256) continue;
 			vector2 xy = c.pos.xy + Actor.AngleToVector(a, d);
 			Sector s = level.PointInSector(xy);
-			if(BadSector(s)) continue;
+			if(BadSector(s) || !RoomFits(s)) continue;
 			double z = s.floorplane.ZatPoint(xy);
 			if(abs(z - c.pos.z) > 64 || NearestPlayer((xy, z)) < 1792) continue;
 			// the men side by side across the line to the foe, 44 apart
@@ -1140,7 +1216,7 @@ class HCE_Encounters : EventHandler
 				if(!mc) { Name fb = 'HCE_MarineAssaultRifle'; mc = (class<Actor>)(fb); }
 				vector2 p = xy + side * (m - (men - 1) * 0.5);
 				Sector ps = level.PointInSector(p);
-				if(BadSector(ps)) continue;
+				if(BadSector(ps) || !RoomFits(ps)) continue;
 				let mo = HaloDoom_EnemyBase(Actor.Spawn(mc, (p, ps.floorplane.ZatPoint(p)), ALLOW_REPLACE));
 				if(!mo) continue;
 				if(!mo.TestMobjLocation() || !mo.CheckSight(c)) { mo.ClearCounters(); mo.Destroy(); continue; }

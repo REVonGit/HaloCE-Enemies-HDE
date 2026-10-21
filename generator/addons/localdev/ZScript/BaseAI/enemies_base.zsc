@@ -4077,6 +4077,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	// patches him up (true: busy with it this tic). A corpsman who is himself in the crosshair is his own patient: he
 	// kneels where he stands and dresses his own wounds.
 	bool hce_isMedic;
+	// his biofoam: HCE_MEDIC_CHARGES patients' worth; each patch-up uses one, and every biofoam canister he picks up
+	// off the ground (a health bonus) puts one back (HCE_HealthScan). Out of it, he patches no one.
+	const HCE_MEDIC_CHARGES = 6;
+	int hce_medicUsed;
+	int HCE_MedicCharges() { return hce_isMedic ? max(0, HCE_MEDIC_CHARGES - hce_medicUsed) : 0; }
 	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
 	// the acknowledgement.
 	void HCE_MedicOrder(Actor pl, bool ordered = true)
@@ -4093,7 +4098,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	int hce_medicNextTic;
 	void HCE_MedicScan()
 	{
-		if(!hce_isMedic || hce_medicFor || health <= 0 || hce_betrayed || level.maptime < hce_medicNextTic) return;
+		if(!hce_isMedic || hce_medicFor || health <= 0 || hce_betrayed || level.maptime < hce_medicNextTic || HCE_MedicCharges() <= 0) return;
 		if(target && level.maptime - hce_lastSeen < 35 * 3) return;        // in a firefight: later
 		HaloDoom_EnemyBase best = null; double bd = 512;
 		if(hce_wounded) { best = self; bd = 0; }
@@ -4112,12 +4117,13 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 
 	// Runs the medic errand each tic: runs to the patient, crouches beside him for a second, then heals 60% of his spawn
-	// health (20 at least) and clears his wounded flag. False once done, timed out, or either is dead.
+	// health (20 at least), using a charge, and clears his wounded flag. False once done, timed out, out of charges, or
+	// either is dead.
 	// To change the heal, edit the GiveBody line.
 	bool HCE_MedicTick()
 	{
 		let pl = hce_medicFor;
-		if(!pl || pl.health <= 0 || health <= 0 || --hce_medicTics <= 0) { hce_medicFor = null; return false; }
+		if(!pl || pl.health <= 0 || health <= 0 || --hce_medicTics <= 0 || HCE_MedicCharges() <= 0) { hce_medicFor = null; return false; }
 		double d = Distance2D(pl);
 		if(hce_medicPhase == 0)
 		{
@@ -4138,6 +4144,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_Brake();
 		if(hce_medicTics > 2) return true;
 		pl.GiveBody(int(max(20, pl.SpawnHealth() * 0.6)));   // a field dressing: 60% of his health, never past his maximum
+		hce_medicUsed++;                                      // one charge of biofoam
 		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
 		let pm = HaloDoom_EnemyBase(pl);
 		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; if(pm != self) pm.HCE_Say('Thanks', 0.8, 35); }
@@ -7658,16 +7665,25 @@ class HaloDoom_EnemyBase : Actor abstract
 		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
 		return cn.IndexOf("medikit") >= 0 || cn.IndexOf("medkit") >= 0 || cn.IndexOf("stimpack") >= 0 || cn.IndexOf("healthbonus") >= 0;
 	}
+	static bool HCE_IsBiofoam(Actor o)
+	{
+		if(!HCE_IsHealthItem(o)) return false;
+		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
+		return cn.IndexOf("healthbonus") >= 0;
+	}
 	void HCE_HealthScan()
 	{
-		if(!HCE_InSquad() || hce_sentinelAlly || hce_betrayed || hce_scavItem || hce_medicFor || health >= SpawnHealth() * 0.5) return;
+		// a corpsman short of biofoam goes for canisters on the ground (within 384), hurt or not
+		bool restock = hce_isMedic && hce_medicUsed > 0;
+		if(!HCE_InSquad() || hce_sentinelAlly || hce_betrayed || hce_scavItem || hce_medicFor || (health >= SpawnHealth() * 0.5 && !restock)) return;
 		if(target && hce_canSee && Distance3D(target) < 640) return;
-		Actor best = null; double bd = 256;
-		let it = BlockThingsIterator.Create(self, 256);
+		bool hurt = health < SpawnHealth() * 0.5;
+		Actor best = null; double bd = restock ? 384 : 256;
+		let it = BlockThingsIterator.Create(self, bd);
 		while(it.Next())
 		{
 			let o = it.thing;
-			if(!HCE_IsHealthItem(o)) continue;
+			if(!HCE_IsHealthItem(o) || (!hurt && !HCE_IsBiofoam(o))) continue;
 			double d = Distance3D(o);
 			if(d >= bd || abs(o.pos.z - pos.z) > 32 || !CheckSight(o, SF_IGNOREVISIBILITY)) continue;
 			bool taken = false;
@@ -7681,6 +7697,13 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	void HCE_TakeHealth(Actor o)
 	{
+		if(hce_isMedic && hce_medicUsed > 0 && HCE_IsBiofoam(o))      // a corpsman's biofoam: back in his kit, a charge
+		{
+			hce_medicUsed--;
+			A_StartSound("misc/health_pkup", CHAN_ITEM);
+			o.Destroy();
+			return;
+		}
 		String cn = String.Format("%s", o.GetClassName()); cn = cn.MakeLower();
 		double f = cn.IndexOf("bonus") >= 0 ? 0.25 : cn.IndexOf("stim") >= 0 ? 0.6 : 1.0;
 		GiveBody(max(1, int(SpawnHealth() * f)));

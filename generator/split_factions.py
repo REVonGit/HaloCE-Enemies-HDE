@@ -111,6 +111,8 @@ HEALTHBAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'hud_health
 # the Master Chief's squad-order lines (file 'Follow Me 3.mp3' -> HCE/Chief/FollowMe), shipped in the Marines pack
 CHIEF = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'chief_commands')
 CHIEF_GAIN_DB = 16          # the Chief's orders, raised over the fight (a fast limiter holds the peaks)
+CHIEF_SOURCE_LUFS = -21.2   # every take first brought to this loudness: the average of the reload, stack up, take position
+                            # and frag and clear takes, so all the orders come out as loud as those
 # Halo 2's footsteps (extract_footsteps.py): the sets each faction's bodies use (Jackals step as Grunts, Hunters as
 # Brutes, the Flood's combat forms as the body they were)
 from build_pack import OUT as _OUT
@@ -200,6 +202,13 @@ def knight_voice(d):
 STEP_SETS = {'covenant': ['elite', 'grunt', 'brute', 'reaver'], 'marines': ['marine'], 'flood': ['marine', 'elite']}
 # the Draeth's (Reavers') own heavy steps (reaver_steps/, with their voice): the same takes on every surface, walk and run
 REAVER_STEPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reaver_steps')
+def chief_lufs(path):
+    """a sound file's integrated loudness (EBU R128, LUFS), by ffmpeg"""
+    r = subprocess.run(['ffmpeg', '-nostats', '-i', path, '-af', 'ebur128', '-f', 'null', '-'], capture_output=True, text=True)
+    m = re.findall(r'I:\s+(-?[\d.]+) LUFS', r.stderr)
+    return float(m[-1]) if m else CHIEF_SOURCE_LUFS
+
+
 # file stem in chief_commands/ (lowercased, before its ' N.ext' number) -> the HCE/Chief/<key> it becomes; a file
 # whose stem isn't here is skipped
 CHIEF_LINES = {'follow me': 'FollowMe', 'hold fire': 'HoldFire', 'open fire': 'OpenFire', 'focus single enemy': 'Focus',
@@ -433,10 +442,11 @@ def main():
                 if not m or m.group(1).lower() not in CHIEF_LINES: continue
                 key = CHIEF_LINES[m.group(1).lower()]
                 dst = f'sounds/hce_chief/{key.lower()}_{int(m.group(2))}.ogg'
-                # raised CHIEF_GAIN_DB (from about -20 LUFS to about -10: as loud as speech goes without breaking up), a
-                # fast limiter holding the peaks under full scale
+                # each take brought to CHIEF_SOURCE_LUFS, then raised CHIEF_GAIN_DB (to about -10 LUFS: as loud as
+                # speech goes without breaking up), a fast limiter holding the peaks under full scale
+                gain = CHIEF_GAIN_DB + CHIEF_SOURCE_LUFS - chief_lufs(f'{CHIEF}/{fn}')
                 subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{CHIEF}/{fn}', '-af',
-                                f'volume={CHIEF_GAIN_DB}dB,alimiter=limit=0.97:attack=1:release=30:level=disabled',
+                                f'volume={gain:.2f}dB,alimiter=limit=0.97:attack=1:release=30:level=disabled',
                                 '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5', f'{d}/{dst}'], check=True)
                 groups.setdefault(key, []).append(dst)
             out = ['// the Master Chief\'s squad orders (the Halo CE Squad keys)']

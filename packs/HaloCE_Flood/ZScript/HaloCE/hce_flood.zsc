@@ -1796,7 +1796,7 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 200;
 		HaloDoom_EnemyBase.HCE_Burst 4.00, 5.00, 2.00, 3.00, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (32.7, 12.8, 27.0);
+		HaloDoom_EnemyBase.HCE_GunOffset (41.2, 8.5, 5.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 40, 75;
 		HaloDoom_EnemyBase.HCE_Leap 160, 360, 0.60, 14.0;
@@ -1922,11 +1922,10 @@ class HCE_FloodcombatEliteFlameThrower : HCE_FloodEliteBase
 	{
 		switch(anim)
 		{
-		case 'crouch pistol move-front': return (33.9, 7.3, 25.2);
-		case 'flee pistol move-front': return (34.8, 12.4, 29.3);
-		case 'stand pistol idle': return (34.2, 10.3, 26.4);
-		case 'stand pistol move-front%0': return (29.8, -1.6, 5.3);
-		case 'stand pistol move-front%1': return (29.4, -1.5, 5.0);
+		case 'crouch pistol move-front': return (42.7, 11.1, 3.0);
+		case 'flee pistol move-front': return (37.2, 29.4, 21.1);
+		case 'stand pistol move-front%0': return (34.7, 13.8, -10.5);
+		case 'stand pistol move-front%1': return (35.1, 14.1, -9.7);
 		}
 		return hce_gunOffset;
 	}
@@ -6894,7 +6893,7 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 80, 200;
 		HaloDoom_EnemyBase.HCE_Burst 4.00, 5.00, 2.00, 3.00, 0.00, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (35.0, 13.0, 50.8);
+		HaloDoom_EnemyBase.HCE_GunOffset (42.9, 10.1, 3.4);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 40, 75;
 		HaloDoom_EnemyBase.HCE_Leap 200, 400, 0.80, 16.8;
@@ -7003,7 +7002,8 @@ class HCE_FloodcombatHumanFlameThrower : HCE_FloodHumanBase
 	{
 		switch(anim)
 		{
-		case 'stand pistol move-back': return (31.4, -15.8, -13.5);
+		case 'crouch pistol move-front': return (38.2, 5.7, 6.2);
+		case 'stand pistol idle%1': return (43.9, 9.9, 9.9);
 		}
 		return hce_gunOffset;
 	}

@@ -140,6 +140,22 @@ def char_weapons(name):
 # weapons a biped carries only in variants the pack adds (build_pack.py): the fuel-rod Elite, the beam-rifle Spec Ops
 EXTRA_WEAPONS = {r'characters\elite\elite': ['fuel_rod'], r'characters\elite\elite special': ['h2_beam_rifle']}
 
+# weapons whose model stands on end, the way Halo's 'support' stance holds it at the hip (Halo CE's flamethrower):
+# baked into a hand that holds its gun forward (the Flood's pistol stance) they are laid nozzle-forward and held by
+# their top handle (the post on the flamethrower's back, where Halo's own stance puts the other hand), the gun hanging
+# under the hand
+LAY_FORWARD = {'flamethrower'}
+
+
+def lay_forward(meshes):
+    """a LAY_FORWARD weapon's meshes (weapon space) laid nozzle-forward (marine_arsenal.fix_upright) with the middle of
+    its top handle (the vertices within 4 cm of its top) on the origin, where the hand holds a weapon"""
+    from marine_arsenal import fix_upright
+    meshes = fix_upright(meshes)
+    P = np.concatenate([m['pos'] for m in meshes])
+    h = P[P[:, 2] > P[:, 2].max() - 0.04].mean(0)
+    return [dict(m, pos=m['pos'] - h) for m in meshes]
+
 def attach_weapons(pid, name, model, markers, meshes):
     """Bake each weapon rigidly onto the hand node at Halo's hand marker (weapon origin = marker).
 
@@ -157,6 +173,7 @@ def attach_weapons(pid, name, model, markers, meshes):
     added = []
     for wid in char_weapons(name):
         wd = pickle.load(open(f'{OUT}/weapons/{wid}/{wid}.pkl', 'rb'))
+        if wid in LAY_FORWARD: wd['meshes'] = lay_forward(wd['meshes'])   # held by its top handle, nozzle forward
         for k, wm in enumerate(wd['meshes']):
             pos = np.array([wt + hm.qrot(wq, mt + hm.qrot(mq, v)) for v in wm['pos']])
             nrm = np.array([hm.qrot(tq, n) for n in wm['nrm']])

@@ -5,7 +5,7 @@
 The Fluffers made a full heavy-weapon stance for the Halo CE Marine biped (marine_flamethrower_mk13.model_animations,
 HCE_FLUFFERS_FLAME: the loose tag; 'zstand flame ...' and 'zcrouch flame ...'): idle, moves, turns, melee and grenade
 throw, standing and crouched, made on the Marine's own skeleton (the same 20 'bip01' bones), so they play as they
-are. The firing pose is the idle leaned into the shot (level_fire). They replace the cyborg's support set from cyborg_flame_anims.py where they have an action; what they lack (the
+are. The firing pose is the idle leaned into the shot (level_fire). The left hand is moved onto Halo CE's gun's top handle (left_grip). They replace the cyborg's support set from cyborg_flame_anims.py where they have an action; what they lack (the
 airborne and landing animations, the flinch, the reload) stays the cyborg's. The jaw stays shut (extract_chars.py).
 Credit: the Fluffers (animations), Spiral (help).
 """
@@ -71,6 +71,93 @@ def level_fire(nodes, frame):
     return out
 
 
+# The left hand's grip. The Fluffers made their stance for their own flamethrower; on Halo CE's (marine_arsenal's
+# overlay, carried in the right hand) their left hand sits some 5 cm down the gun, inside its body. Halo's own stance
+# for this gun, the cyborg's (cyborg_flame_anims.py: its support idle, retargeted onto the Marine), has the left hand on
+# the top handle. left_grip moves the left hand there in every Fluffers animation where it holds the gun: per frame,
+# the hand's place and turn relative to the gun hand shifted by the idle's difference from the cyborg's (so the
+# motion is kept), reached with a two-bone IK of the left arm (the elbow kept on its side). Where the left hand leaves
+# the gun (the grenade throw) the shift fades out: in full within GRIP_HOLD of the idle's grip, none past GRIP_FREE.
+GRIP_HOLD, GRIP_FREE = 0.03, 0.10
+_GRIP = {}
+
+
+def _cyborg_grip(joints):
+    """(left wrist place, left hand turn) relative to the gun hand in the cyborg's support idle, on this skeleton;
+    None without the cyborg's map"""
+    key = tuple(j[0] for j in joints)
+    if key in _GRIP: return _GRIP[key]
+    import preview as pv
+    import cyborg_flame_anims as cf
+    if not os.path.exists(cf.MAP): print('  no', cf.MAP, ': the left hand kept where the Fluffers put it'); _GRIP[key] = None; return None
+    nodes, crest, an = cf.cyborg_anims()
+    fr = cf.retarget(joints, nodes, crest, [an['stand support idle'].frames[0]])[0]
+    _GRIP[key] = _rel(joints, [(x[0], x[1]) for x in fr])
+    return _GRIP[key]
+
+
+def _rel(joints, loc):
+    """(left wrist place, left hand rotation matrix) in the right hand's frame for local pose loc"""
+    import preview as pv
+    names = [j[0] for j in joints]; par = [j[1] for j in joints]
+    rh, lh = names.index('bip01 r hand'), names.index('bip01 l hand')
+    W = pv.world(par, loc)
+    Rr = pv.qmat(W[rh][1])
+    return Rr.T @ (np.asarray(W[lh][0], float) - W[rh][0]), Rr.T @ pv.qmat(W[lh][1])
+
+
+def _mat_q(M):
+    """rotation matrix -> (x, y, z, w) quaternion"""
+    from scipy.spatial.transform import Rotation
+    return Rotation.from_matrix(M).as_quat()
+
+
+def left_grip(joints, frames, idle_loc):
+    """frames (rows of (t, q, s) per joint) with the left hand on the flamethrower's top handle (see left_grip's note)"""
+    import preview as pv
+    from halomodel import qmul, qconj, qnorm
+    cy = _cyborg_grip(joints)
+    if cy is None: return frames
+    names = [j[0] for j in joints]; par = [j[1] for j in joints]
+    ua, fa, lh, rh = (names.index(n) for n in ('bip01 l upperarm', 'bip01 l forearm', 'bip01 l hand', 'bip01 r hand'))
+    ip, iR = _rel(joints, idle_loc)
+    dp, dR = cy[0] - ip, iR.T @ cy[1]                    # the idle's grip -> Halo's
+    out = []
+    for f in frames:
+        loc = [(np.asarray(t, float), np.asarray(q, float)) for t, q, _ in f]
+        W = pv.world(par, loc)
+        Rr = pv.qmat(W[rh][1])
+        p, Rl = _rel(joints, loc)
+        w = float(np.clip((GRIP_FREE - np.linalg.norm(p - ip)) / (GRIP_FREE - GRIP_HOLD), 0, 1))   # still on the gun?
+        if w <= 0: out.append(f); continue
+        T = W[rh][0] + Rr @ (p + dp * w)                 # where the wrist goes (world)
+        S, E, H = (np.asarray(W[k][0], float) for k in (ua, fa, lh))
+        a, b = np.linalg.norm(E - S), np.linalg.norm(H - E)
+        d = T - S; L = min(np.linalg.norm(d), a + b - 1e-4); u = d / np.linalg.norm(d)
+        pole = (E - S) - np.dot(E - S, u) * u
+        pole = pole / (np.linalg.norm(pole) or 1)
+        x = (a * a - b * b + L * L) / (2 * L)
+        E2 = S + u * x + pole * np.sqrt(max(a * a - x * x, 0))
+        def turn(q_world, v0, v1):
+            """q_world turned by the shortest rotation taking direction v0 to v1"""
+            v0 = v0 / np.linalg.norm(v0); v1 = v1 / np.linalg.norm(v1)
+            c = np.cross(v0, v1); w = 1 + np.dot(v0, v1)
+            r = qnorm(np.array([c[0], c[1], c[2], w])) if w > 1e-6 else np.array([0, 0, 1.0, 0])
+            return qnorm(qmul(r, q_world))
+        qu = turn(W[ua][1], E - S, E2 - S)
+        T2 = S + u * L                                   # (the reachable wrist)
+        qf0 = qnorm(qmul(qu, qmul(qconj(W[ua][1]), W[fa][1])))       # the forearm carried with the upper arm
+        Hc = E2 + pv.qmat(qf0) @ pv.qmat(W[fa][1]).T @ (H - E)
+        qf = turn(qf0, Hc - E2, T2 - E2)
+        from scipy.spatial.transform import Rotation
+        qh = _mat_q(Rr @ Rl @ Rotation.from_matrix(dR).__pow__(w).as_matrix())   # the hand turned onto the handle
+        loc[ua] = (loc[ua][0], qnorm(qmul(qconj(W[par[ua]][1]), qu)))
+        loc[fa] = (loc[fa][0], qnorm(qmul(qconj(qu), qf)))
+        loc[lh] = (loc[lh][0], qnorm(qmul(qconj(qf), qh)))
+        out.append([(tuple(loc[k][0]), tuple(loc[k][1]), tuple(f[k][2])) for k in range(len(f))])
+    return out
+
+
 def main():
     """decodes the NAMES animations from the loose tag, makes the firing pose, and writes them onto each Marine body
     by bone name (the jaw at rest), over whatever cyborg_flame_anims.py left under the same names"""
@@ -93,6 +180,10 @@ def main():
         assert all(n in names for n in nodes), (char, 'skeleton differs')
         src = [nodes.index(n) if n in nodes else None for n in names]
         jn = names.index('bip01 ponytail1') if 'bip01 ponytail1' in names else -1
+        # the Fluffers' idle on this body (its left hand's grip is what left_grip corrects)
+        idle_loc = [(np.asarray(made['stand support idle'][0][0][k][0], float), np.asarray(made['stand support idle'][0][0][k][1], float))
+                    if k is not None and j != jn else (np.asarray(joints[j][2], float), np.asarray(joints[j][3], float))
+                    for j, k in enumerate(src)]
         for pn, (frames, dx) in made.items():
             fr = []
             for f in frames:
@@ -103,6 +194,7 @@ def main():
                         t, q = tuple(f[k][0]), tuple(f[k][1])
                     row.append((t, q, (1.0, 1.0, 1.0)))
                 fr.append(row)
+            fr = left_grip(joints, fr, idle_loc)
             anims[pn] = fr
             speed = float(np.hypot(dx[:, 0], dx[:, 1]).sum() / max(1, len(fr)))
             meta['anims'][pn] = dict(frames=len(fr), speed=speed, yaw=float(dx[:, 3].sum()), loop=True, key=-1, next=-1,

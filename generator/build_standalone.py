@@ -147,6 +147,12 @@ def wordmap(text, mapping):
     return pat.sub(lambda m: mapping[m.group(1)], text)
 
 
+def api_text():
+    """the API source with its #include lines (hce_squad.zsc, beside it) pasted in: one file for hces_api.zsc"""
+    t = open(API).read()
+    return re.sub(r'^#include "ZScript/BaseAI/(\w+\.zsc)"\n', lambda m: open(os.path.join(os.path.dirname(API), m.group(1))).read(), t, flags=re.M)
+
+
 def convert_text(t):
     """a ZScript or text lump from the regular packs made standalone: HDE-only mixins and the HDE-based hard-light
     classes cut out, CLASS_MAP applied, HDE pickups dropped (DROP_TO_NONE) or mapped (DROP_MAP), HDE sound names
@@ -329,7 +335,7 @@ def build():
         zs_dir = os.path.join(dst, 'ZScript', 'HaloCE')
         texts = [open(os.path.join(r, f)).read() for r, _, fs in os.walk(dst) for f in fs if f.endswith('.zsc')]
         if key == 'core':
-            api = convert_text(open(API).read())
+            api = convert_text(api_text())
             open(os.path.join(zs_dir, 'hces_api.zsc'), 'w').write(api)
             shutil.copy(LIB, os.path.join(zs_dir, 'hces_lib.zsc'))
             shutil.copy(LOOT, os.path.join(zs_dir, 'hces_loot.zsc'))

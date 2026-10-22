@@ -1,0 +1,1553 @@
+// ============================================================================
+// hce_squad.zsc -- the player's squad: everything a Marine does as one of the Master Chief's men. Mixed into
+// HaloDoom_EnemyBase (enemies_base.zsc: "mixin HCE_SquadCode"), so every field and method here is a member of
+// the API class; the two files are one class in two places. The Covenant's own squads (leaders, lances) and
+// the doctrine shared by both sides stay in enemies_base.zsc.
+//
+// What's here:
+//   orders (HCE_Order, HCE_FireOrder, the reload, button, medic, weapon and take-position orders) and the hold
+//   perimeter; following (HCE_Follow, the formation slots, the trail round corners, teleporting to catch up);
+//   stacking on and breaching doors (HCE_Breach); keeping out of the player's line of fire; watching each
+//   other's backs; trading guns; betrayal and forgiveness.
+// The interface the rest of the code relies on:
+//   HCE_InSquad(), HCE_SquadPlayer()            is he the player's, and whose
+//   HCE_Order(o) / HCE_ORDER_*                  the squad orders (HCE_SpawnAllHandler.SquadOrder sends them)
+//   HCE_Follow()                                his per-tic movement while following or holding (See state)
+//   HCE_SquadTick()                             the once-a-second squad housekeeping (See and Spawn states)
+//   HCE_PlayerTeleported(), HCE_TeleportTick()  catching up after a teleporter
+//   hce_breach / HCE_Breach.Start()             the stack-up and frag-and-clear orders
+// Mixin rule: no static const arrays in here (the engine can't resolve them inside a mixin): a switch or
+// arithmetic instead.
+// ============================================================================
+
+mixin class HCE_SquadCode
+{
+	// ------------------------------------------------------------------
+	// The player's squad: Marines following the player take orders (follow / hold here / regroup on me, from the
+	// "Halo CE Squad" keys), scold friendly fire and turn on a player who keeps shooting them (hce_betrayal),
+	// forgiving them 30 s after the last hit; badly hurt they limp and call for help; the last Marine standing
+	// with the player far off cowers; and Sergeant Johnson steadies the Marines around him.
+	// ------------------------------------------------------------------
+	const HCE_ORDER_FOLLOW = 0;
+	const HCE_ORDER_HOLD = 1;
+	const HCE_ORDER_REGROUP = 2;
+	int hce_squadOrder;
+	vector3 hce_holdPos;
+	int hce_regroupUntil;
+	Actor hce_betrayed;                  // the player this Marine turned on
+	int hce_betrayUntil;
+	int hce_ffHits, hce_ffUntil;
+	double hce_ffDamage;
+	Actor hce_lastHurter;
+	bool hce_wounded, hce_inspired, hce_squadDeathDone;
+	int hce_squadScanTics, hce_cowerCooldown;
+
+	bool hce_holdFire;                   // "hold fire": no shots or grenades until "open fire"
+	Actor hce_focusTarget;               // "focus": the enemy the player pointed out
+	int hce_suppressUntil;               // "suppress": long bursts, short pauses until then
+	Actor hce_medicFor;                  // "medic": the player this Marine is running to patch up
+	int hce_medicTics, hce_medicPhase;
+
+	bool HCE_InSquad() { return bHCE_FollowPlayer && hce_team == HCE_TEAM_HUMAN; }
+
+	// part of an encounter (HCE_Encounters): its fight with the other side is held until a player is near
+	bool hce_encounter;
+	// how hard AI hits land in an encounter: the nearest living player 768 or closer, in full; 1792 or further, a
+	// twentieth; between, in proportion
+	// how much of a hit lands in an encounter: a twentieth while no player is near, rising to all of it as a player who
+	// can see this one comes from 1792 to 768 units off. A player close by on the far side of a wall (another room, a
+	// corridor round the back) doesn't count: the fight was lost unseen that way
+	double HCE_EncounterScale()
+	{
+		double d = 1e9;
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo || players[i].mo.health <= 0) continue;
+			let pm = players[i].mo;
+			double pd = Distance3D(pm);
+			if(pd < 1792 && pd > 256 && !CheckSight(pm, SF_IGNOREVISIBILITY)) continue;
+			d = min(d, pd);
+		}
+		return 0.05 + 0.95 * clamp((1792 - d) / (1792 - 768), 0, 1);
+	}
+
+	// the player a squad Marine follows: the one who last gave his squad an order (HCE_SpawnAllHandler.SquadOrder), else
+	// the nearest one alive, kept until that player dies or leaves. Single player: always the player. (Game logic never
+	// asks for consoleplayer, which differs from machine to machine in a netgame.)
+	Actor hce_orderPlayer;
+	// Returns the player this squad Marine follows: hce_orderPlayer while alive and in the game, else the nearest player
+	// (a living one first), which it then remembers. Null with no players in the game.
+	PlayerPawn HCE_SquadPlayer()
+	{
+		let cur = PlayerPawn(hce_orderPlayer);
+		if(cur && cur.player && cur.player.mo == cur && cur.health > 0) return cur;
+		PlayerPawn best = null; double bd = 0;
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo) continue;
+			let m = players[i].mo;
+			double d = Distance3D(m) + (m.health > 0 ? 0 : 1e7);          // a living player first
+			if(!best || d < bd) { best = m; bd = d; }
+		}
+		hce_orderPlayer = best;
+		return best;
+	}
+
+	// answering an order: "Yes sir" once the Chief has said it (1.6 to 2.3 s later), not on top of his line
+	int hce_ackAt;
+	void HCE_AckLater() { hce_ackAt = level.maptime + random(55, 80); }
+
+	// "take position", "stack up", "frag and clear": a hold on an exact spot (hce_holdTight: stopping within 10 units,
+	// not 40), reached through hce_holdVia first when hce_viaOn (a doorway), and the breach this Marine is part of
+	bool hce_holdTight, hce_viaOn;
+	vector2 hce_holdVia;
+	Array<double> hce_pathX, hce_pathY;  // the way to the held spot, point by point (HCE_PlanPath), the spot last
+	HCE_Breach hce_breach;
+	bool hce_wantReload;                 // "reload": top up the magazine as soon as he's free
+
+	// Holds an exact spot (take position, a stack by a door, a place in a cleared room): the hold order on spot, facing
+	// face; via: a point to pass through on the way (the doorway). The way there is planned round walls, ledges and
+	// hazards (HCE_PlanPath), through via first when there is one.
+	void HCE_HoldSpot(vector2 spot, double face, vector2 via = (0, 0), bool useVia = false)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		hce_pathX.Clear(); hce_pathY.Clear();
+		vector2 from = pos.xy;
+		if(useVia) { HCE_PlanPath(from, via); from = via; }
+		HCE_PlanPath(from, spot);
+		useVia = false;
+		hce_squadOrder = HCE_ORDER_HOLD;
+		hce_holdPos = (spot, pos.z);
+		hce_holdFace = face; hce_onPerimeter = true;      // (faces hce_holdFace once there, as on a perimeter)
+		hce_holdTight = true;
+		hce_holdVia = via; hce_viaOn = useVia;
+		hce_scavItem = null;
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// The way from a to b for this body, added to hce_pathX / Y (the turning points, then b): an A* search over a
+	// 32-unit grid round the two (to 384 units past them, 6000 cells at most) whose cells are open floor he fits on
+	// (headroom, no wall within his radius, no hazard he isn't already in) and whose steps are walkable (a rise or
+	// drop of 24 at most, no wall or impassable line crossed), the corners then cut wherever a straight walk does as
+	// well. No way found: straight there.
+	void HCE_PlanPath(vector2 a, vector2 b)
+	{
+		double STEP = 32.0;
+		double x0 = min(a.x, b.x) - 384, y0 = min(a.y, b.y) - 384;
+		int W = int((max(a.x, b.x) + 384 - x0) / STEP) + 1, H = int((max(a.y, b.y) + 384 - y0) / STEP) + 1;
+		if(W * H > 40000 || (b - a).Length() < 24 || HCE_PathClear(a, b)) { hce_pathX.Push(b.x); hce_pathY.Push(b.y); return; }
+		int si = int((a.x - x0) / STEP + 0.5) + W * int((a.y - y0) / STEP + 0.5);
+		int gi = int((b.x - x0) / STEP + 0.5) + W * int((b.y - y0) / STEP + 0.5);
+		Array<double> g; Array<int> prev; Array<int> cst;  // cst: 0 unseen, 1 open, 2 closed, 3 blocked
+		g.Resize(W * H); prev.Resize(W * H); cst.Resize(W * H);
+		for(int i = 0; i < W * H; i++) { g[i] = 1e9; prev[i] = -1; cst[i] = 0; }
+		Array<int> open;
+		g[si] = 0; cst[si] = 1; open.Push(si);
+		int found = -1, n = 0;
+		while(open.Size() > 0 && n++ < 6000)
+		{
+			int bi = 0; double bf = 1e18;
+			for(int k = 0; k < open.Size(); k++)
+			{
+				int c = open[k];
+				double f = g[c] + (HCE_Cell(c, W, x0, y0, STEP) - b).Length();
+				if(f < bf) { bf = f; bi = k; }
+			}
+			int c = open[bi]; open.Delete(bi); cst[c] = 2;
+			if(c == gi || (HCE_Cell(c, W, x0, y0, STEP) - b).Length() < STEP) { found = c; break; }
+			vector2 cp = HCE_Cell(c, W, x0, y0, STEP);
+			for(int dy = -1; dy <= 1; dy++) for(int dx = -1; dx <= 1; dx++)
+			{
+				if(!dx && !dy) continue;
+				int cx = c % W + dx, cy = c / W + dy;
+				if(cx < 0 || cy < 0 || cx >= W || cy >= H) continue;
+				int nb = cx + cy * W;
+				if(cst[nb] >= 2) continue;
+				vector2 np = HCE_Cell(nb, W, x0, y0, STEP);
+				if(!HCE_PathCell(np)) { cst[nb] = 3; continue; }
+				if(!HCE_PathClear(cp, np)) continue;
+				double ng = g[c] + (np - cp).Length();
+				if(ng < g[nb]) { g[nb] = ng; prev[nb] = c; if(cst[nb] == 0) { cst[nb] = 1; open.Push(nb); } }
+			}
+		}
+		if(found < 0) { hce_pathX.Push(b.x); hce_pathY.Push(b.y); return; }
+		Array<double> px, py;
+		px.Push(b.x); py.Push(b.y);
+		for(int c = found; c >= 0 && c != si; c = prev[c]) { vector2 q = HCE_Cell(c, W, x0, y0, STEP); px.Push(q.x); py.Push(q.y); }
+		// reversed: a first; then the corners cut wherever a straight walk does as well
+		vector2 at = a;
+		int k = px.Size() - 1;
+		while(k >= 0)
+		{
+			int far = k;
+			for(int j = 0; j <= k; j++) if(HCE_PathClear(at, (px[j], py[j]))) { far = j; break; }
+			hce_pathX.Push(px[far]); hce_pathY.Push(py[far]);
+			at = (px[far], py[far]);
+			k = far - 1;
+		}
+	}
+	static vector2 HCE_Cell(int c, int W, double x0, double y0, double step) { return (x0 + (c % W) * step, y0 + (c / W) * step); }
+	// a grid cell he can stand in (HCE_PlanPath)
+	// a line this walker can't cross: impassable or block-everything, and monster-blocking unless it may cross those
+	bool HCE_LineBlocks(Line l)
+	{
+		return !l.backsector || (l.flags & (Line.ML_BLOCKING | Line.ML_BLOCKEVERYTHING)) || (!bNOBLOCKMONST && (l.flags & Line.ML_BLOCKMONSTERS));
+	}
+	bool HCE_PathCell(vector2 p)
+	{
+		Sector sec = level.PointInSector(p);
+		if(!sec || HCE_HazardAt(p)) return false;
+		double fz = sec.floorplane.ZatPoint(p);
+		if(sec.ceilingplane.ZatPoint(p) - fz < height) return false;
+		let it = BlockLinesIterator.CreateFromPos((p, fz), 64, radius);
+		while(it.Next())
+		{
+			Line l = it.CurLine;
+			if((HCE_LinePoint(l, p) - p).Length() >= radius) continue;
+			if(HCE_LineBlocks(l)) return false;
+		}
+		return true;
+	}
+	// a straight walk from a to b: no impassable line crossed, no rise or drop over 24 or low ceiling where a line
+	// is crossed, no hazard on the way (sampled every 16 units)
+	bool HCE_PathClear(vector2 a, vector2 b)
+	{
+		double len = (b - a).Length();
+		for(int k = 1; k * 16 < len; k++) if(HCE_HazardAt(a + (b - a) * (k * 16 / len))) return false;
+		vector2 mid = (a + b) / 2;
+		let it = BlockLinesIterator.CreateFromPos((mid, pos.z), 64, len / 2 + 8);
+		while(it.Next())
+		{
+			Line l = it.CurLine;
+			vector2 p = l.v1.p, d = l.delta, e = b - a;
+			double den = d.x * e.y - d.y * e.x;
+			if(abs(den) < 1e-6) continue;
+			double u = ((a.x - p.x) * e.y - (a.y - p.y) * e.x) / den, v = ((a.x - p.x) * d.y - (a.y - p.y) * d.x) / den;
+			if(u < 0 || u > 1 || v < 0 || v > 1) continue;
+			if(HCE_LineBlocks(l)) return false;
+			vector2 x = p + d * u;
+			double f1 = l.frontsector.floorplane.ZatPoint(x), f2 = l.backsector.floorplane.ZatPoint(x);
+			if(abs(f1 - f2) > 24) return false;
+			if(min(l.frontsector.ceilingplane.ZatPoint(x), l.backsector.ceilingplane.ZatPoint(x)) - max(f1, f2) < height) return false;
+		}
+		return true;
+	}
+
+	// "reload": a part-spent magazine is topped up as soon as he's free (between bursts, out of an animation)
+	void HCE_ReloadOrder()
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		hce_wantReload = true;
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// Runs a reload order (true: reloading now). Guns with no magazine (the plasma weapons) have nothing to top up
+	bool HCE_ReloadOrderTick()
+	{
+		hce_wantReload = false;
+		if(hce_ammoFor != hce_projectile) HCE_SetupAmmo();
+		if(hce_magSize <= 0 || hce_mag >= hce_magSize) return false;
+		HCE_StartReload(false);
+		return true;
+	}
+
+	// "frag and clear": a frag grenade thrown at a point (through a doorway the squad has stacked on). A Marine with
+	// none left is given one: the order is the throw
+	void HCE_BreachThrow(vector3 at)
+	{
+		if(hce_grenadeType <= 0) hce_grenadeType = 1;
+		if(hce_grenades <= 0) hce_grenades = 1;
+		hce_grenades--;
+		hce_throwAt = at; hce_throwAtPoint = true; hce_breachToss = true;
+		HCE_StopFireLoop(); hce_shotsLeft = 0;
+		HCE_Say('GrenadeThrow', 1.0, 35 * 2, true);
+		A_SetAngle(atan2(at.y - pos.y, at.x - pos.x));
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+		if(HCE_HasAnim(HCE_A_THROW)) { HCE_PlayLocked(HCE_A_THROW, 0.9); hce_pendingGrenade = max(4, int(hce_animLock * 0.45)); }
+		else HCE_ThrowGrenadeNow();
+	}
+
+	// A grenade thrown through a doorway: safe when the thrower and every friend in the blast (280 units) has a wall
+	// between him and it (a blast doesn't go through walls)
+	bool hce_breachToss;
+	bool HCE_BreachSafeAt(vector3 at)
+	{
+		double r = 280;
+		let it = BlockThingsIterator.CreateFromPos(at.x, at.y, at.z - r, r * 2, r + 32, false);
+		while(it.Next())
+		{
+			Actor a = it.thing;
+			if(a != self && !HCE_IsFriendOf(a)) continue;
+			if(level.Vec3Diff(at, a.pos).Length() >= r + a.radius) continue;
+			vector3 from = a.pos + (0, 0, a.height * 0.5);
+			vector3 dv = level.Vec3Diff(from, at + (0, 0, 8));
+			double len = dv.Length();
+			FLineTraceData d;
+			a.LineTrace(atan2(dv.y, dv.x), len, -atan2(dv.z, dv.xy.Length()), TRF_THRUACTORS, a.height * 0.5, data: d);
+			if(d.HitType == TRACE_HitNone || d.Distance > len - 8) return false;      // in the open: in the blast
+		}
+		return true;
+	}
+
+	// Is the spot p (floor height refZ) clear for a body of radius r: headroom, a floor within a step of refZ, and no wall
+	// or ledge closer than r + 2
+	static bool HCE_SpotFits(vector2 p, double r, double refZ)
+	{
+		Sector sec = level.PointInSector(p);
+		if(!sec) return false;
+		double fz = sec.floorplane.ZatPoint(p);
+		if(abs(fz - refZ) > 24 || sec.ceilingplane.ZatPoint(p) - fz < 60) return false;
+		let it = BlockLinesIterator.CreateFromPos((p, fz), 64, r + 2);
+		while(it.Next())
+		{
+			Line l = it.CurLine;
+			if((HCE_LinePoint(l, p) - p).Length() >= r + 2) continue;
+			if(!l.backsector || (l.flags & (Line.ML_BLOCKING | Line.ML_BLOCKEVERYTHING))) return false;   // (squad Marines cross monster-blocking lines)
+			Sector o = l.frontsector == sec ? l.backsector : l.frontsector;
+			if(abs(o.floorplane.ZatPoint(p) - refZ) > 24 || o.ceilingplane.ZatPoint(p) - o.floorplane.ZatPoint(p) < 60) return false;
+		}
+		return true;
+	}
+
+	// Is the straight way from a to b (floor height refZ) cut by a wall, a ledge or a closed door?
+	static bool HCE_WayBlocked(vector2 a, vector2 b, double refZ)
+	{
+		vector2 mid = (a + b) / 2;
+		let it = BlockLinesIterator.CreateFromPos((mid, refZ), 64, (b - a).Length() / 2 + 8);
+		while(it.Next())
+		{
+			Line l = it.CurLine;
+			vector2 p = l.v1.p, d = l.delta, e = b - a;
+			double den = d.x * e.y - d.y * e.x;
+			if(abs(den) < 1e-6) continue;
+			double u = ((a.x - p.x) * e.y - (a.y - p.y) * e.x) / den, v = ((a.x - p.x) * d.y - (a.y - p.y) * d.x) / den;
+			if(u < 0 || u > 1 || v < 0 || v > 1) continue;
+			if(!l.backsector || (l.flags & (Line.ML_BLOCKING | Line.ML_BLOCKEVERYTHING))) return true;    // (squad Marines cross monster-blocking lines)
+			vector2 x = p + d * u;
+			for(int k = 0; k < 2; k++)
+			{
+				Sector o = k == 0 ? l.frontsector : l.backsector;
+				if(abs(o.floorplane.ZatPoint(x) - refZ) > 24 || o.ceilingplane.ZatPoint(x) - o.floorplane.ZatPoint(x) < 60) return true;
+			}
+		}
+		return false;
+	}
+
+	// a lift: a sector some line raises or lowers as a platform or elevator (Plat_* / Elevator_* / Generic_Lift; tag 0:
+	// the line's own back sector), or one moving now
+	static bool HCE_IsLift(Sector s)
+	{
+		if(!s) return false;
+		if(s.floordata) return true;
+		for(int i = 0; i < level.Lines.Size(); i++)
+		{
+			Line l = level.Lines[i];
+			switch(l.special)
+			{
+			case 60: case 62: case 63: case 64: case 65: case 172: case 203: case 206: case 207: case 228: case 230:
+			case 245: case 246: case 247: break;
+			default: continue;
+			}
+			int tag = l.Args[0];
+			if(tag == 0) { if(l.backsector == s) return true; continue; }
+			let it = level.CreateSectorTagIterator(tag);
+			int j;
+			while((j = it.Next()) >= 0) if(level.Sectors[j] == s) return true;
+		}
+		return false;
+	}
+
+	// "take position": the squad goes to where the player points, each to a spot of his own around it (rings 2.2
+	// radii apart, on the same floor, with a clear way from the point), facing the way the player looks. Pointed at
+	// a lift, they crowd onto its floor: spots inside that sector only, and whoever doesn't fit waits beside it
+	static void HCE_TakePosition(Array<HaloDoom_EnemyBase> squad, PlayerPawn pl)
+	{
+		if(squad.Size() == 0 || !pl || !pl.player) return;
+		FLineTraceData d;
+		pl.LineTrace(pl.angle, 4096, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
+		vector2 at = d.HitLocation.xy;
+		if(d.HitType == TRACE_HitWall)                    // a wall: the floor in front of it
+			at -= Actor.AngleToVector(pl.angle, squad[0].radius * 2);
+		Sector sec = level.PointInSector(at);
+		if(!sec) return;
+		double z = sec.floorplane.ZatPoint(at);
+		bool lift = HCE_IsLift(sec);
+		double r = 0;
+		for(int i = 0; i < squad.Size(); i++) r = max(r, squad[i].radius);
+		double gap = r * 2.2;
+		Array<double> sx, sy; Array<bool> onLift;
+		for(int ring = 0; ring <= 8 && sx.Size() < squad.Size() * 3; ring++)
+		{
+			int n = ring == 0 ? 1 : ring * 6;
+			for(int k = 0; k < n; k++)
+			{
+				vector2 p = at + (ring == 0 ? (0, 0) : Actor.AngleToVector(k * 360.0 / n + ring * 17, ring * gap));
+				if(!HCE_SpotFits(p, r, z) || (ring > 0 && HCE_WayBlocked(at, p, z))) continue;
+				// on the lift: the whole body on it (one with a foot off its edge would stay up on the floor beside it)
+				bool inLift = level.PointInSector(p) == sec;
+				for(int q = 0; q < 4 && inLift && lift; q++) inLift = level.PointInSector(p + ((q & 1) ? r + 2 : -r - 2, (q & 2) ? r + 2 : -r - 2)) == sec;
+				if(lift && !inLift && ring == 0) continue;
+				sx.Push(p.x); sy.Push(p.y); onLift.Push(inLift);
+			}
+		}
+		if(sx.Size() == 0) { sx.Push(at.x); sy.Push(at.y); onLift.Push(true); }
+		// on a lift, its own spots first; then the rest, nearest the point first (the order they were found in)
+		Array<double> ox, oy;
+		if(lift) for(int i = 0; i < sx.Size(); i++) if(onLift[i]) { ox.Push(sx[i]); oy.Push(sy[i]); }
+		for(int i = 0; i < sx.Size(); i++) if(!lift || !onLift[i]) { ox.Push(sx[i]); oy.Push(sy[i]); }
+		// each spot in turn to the nearest Marine still without one
+		Array<HaloDoom_EnemyBase> left;
+		for(int i = 0; i < squad.Size(); i++) left.Push(squad[i]);
+		for(int i = 0; i < ox.Size() && left.Size() > 0; i++)
+		{
+			vector2 p = (ox[i], oy[i]);
+			int best = 0;
+			for(int j = 1; j < left.Size(); j++) if((left[j].pos.xy - p).Length() < (left[best].pos.xy - p).Length()) best = j;
+			left[best].HCE_HoldSpot(p, pl.angle);
+			left.Delete(best);
+		}
+		for(int i = 0; i < left.Size(); i++) left[i].HCE_HoldSpot((ox[ox.Size() - 1], oy[oy.Size() - 1]), pl.angle);
+	}
+
+	// "press that button": walk to the switch the player pointed at and use it
+	Line hce_button; int hce_buttonSide, hce_buttonTics, hce_buttonAct; vector3 hce_buttonAt;
+	// 'Press that button' order: remembers the switch line and side, gives the errand 15 s, drops any scavenging or medic
+	// run and queues the 'Yes sir'. Ignored by a Marine not in the squad, dead or betrayed.
+	void HCE_ButtonOrder(Line l, int side, vector3 at)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		HCE_SetButton(l, SPAC_Use);                                   // by the switch, on the side he comes from
+		hce_buttonTics = 35 * 15;
+		hce_scavItem = null; hce_medicFor = null;
+		HCE_AckLater();
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// Runs the button errand each tic: runs to within radius + 24 of the switch, then brakes, faces it, activates the line
+	// (HCE_PressLine) and clears the errand. False when there is none, it timed out or he's dead; true while busy this tic.
+	bool HCE_ButtonTick()
+	{
+		if(!hce_button || health <= 0 || --hce_buttonTics <= 0) { hce_button = null; return false; }
+		vector2 dv = hce_buttonAt.xy - pos.xy;
+		if(dv.Length() > radius + 24)
+		{
+			HCE_StopFireLoop(); hce_shotsLeft = 0;
+			HCE_Move(atan2(dv.y, dv.x), hce_runSpeed);
+			A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+			HCE_PickMoveAnim();
+			return true;
+		}
+		HCE_Brake();
+		A_SetAngle(atan2(dv.y, dv.x), SPF_INTERPOLATE);
+		HCE_PressLine(hce_button, hce_buttonSide, hce_buttonAct ? hce_buttonAct : SPAC_Use);
+		hce_button = null;
+		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
+
+	HCE_Formation hce_formation;
+	vector2 hce_formSpot, hce_navVia;
+	double hce_formFace;
+	int hce_formTics;
+	vector2 hce_fmNewSpot; double hce_fmNewFace;     // the formation's latest slot for him, before he takes it up
+	bool hce_fmWalking, hce_fmTurning, hce_fmHurry;
+	int hce_fmStuck;                       // tics walking without getting anywhere (blocked by the others)
+	vector2 hce_fmLastPos;                 // where he was last tic (he moves by TryMove: his velocity says nothing)
+	double hce_fmSettledZ;                 // the height he settled at
+	bool hce_fmFwd;                        // following and turning into his way: walks forward through the turn (HCE_PickMoveAnim)
+	vector2 hce_fmSettledBy;               // settled short of his place (blocked): where the player was; (0,0) none   // following: on his way to his place / turning to his sector / running (each with hysteresis)
+	// The squad follower's per-tic movement: holds its spot (facing out on a perimeter), regroups, rides a lift up to the
+	// player, or walks to its slot in the player's HCE_Formation: a new slot only once it moved enough, trail navigation
+	// round corners, walk / run hysteresis, settling when blocked, matching pace beside a walking player, and turning to
+	// its sector in place. Ends with the move animation and a target scan every 10 tics.
+	virtual void HCE_Follow()
+	{
+		let p = HCE_SquadPlayer();
+		if(hce_squadOrder == HCE_ORDER_HOLD)
+		{
+			// hold here: back to the spot it was told to hold (along its planned way, point by point)
+			while(hce_pathX.Size() > 0 && ((hce_pathX[0], hce_pathY[0]) - pos.xy).Length() < 24) { hce_pathX.Delete(0); hce_pathY.Delete(0); }
+			hce_viaOn = hce_pathX.Size() > 0;
+			vector2 dv = (hce_viaOn ? (hce_pathX[0], hce_pathY[0]) : hce_holdPos.xy) - pos.xy;
+			double hd = dv.Length();
+			if(hd > (hce_holdTight ? 10 : 40) || hce_viaOn) { HCE_Move(atan2(dv.y, dv.x), (hd > 300 || hce_breach != null) ? hce_runSpeed : hce_walkSpeed); A_SetAngle(hce_moveAngle, SPF_INTERPOLATE); }
+			else
+			{
+				HCE_Brake();
+				if(hce_onPerimeter)                       // all-round defence: each man faces out over his own sector
+				{
+					double dd = DeltaAngle(angle, hce_holdFace);
+					if(abs(dd) > 2) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.5, hce_turnRate * 0.5), SPF_INTERPOLATE);
+				}
+			}
+		}
+		else if(!p) { HCE_Brake(); HCE_Play(HCE_A_IDLE); return; }
+		else
+		{
+			if(hce_squadOrder == HCE_ORDER_REGROUP && HCE_RegroupTick()) return;
+			// on a lift that's working, with the player up above: he stays on and rides it up to him
+			if(CurSector && CurSector.floordata && pos.z <= floorz + 2 && p.pos.z > pos.z + MaxStepHeight)
+			{
+				HCE_Brake(); hce_moveSpeed = 0; hce_fmStuck = 0; hce_doorWait = level.maptime;
+				HCE_PickMoveAnim();
+				return;
+			}
+			// a place in the squad's formation (HCE_Formation): a wedge behind the player in the open, a file down
+			// his own path where it's tight
+			if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
+			hce_fmFwd = false;
+			if(level.maptime >= hce_formTics)
+			{
+				// a new place only when it has really moved: small shifts of the slot don't send him shuffling about
+				hce_formation.Spot(self, hce_fmNewSpot, hce_fmNewFace);      // (fields: the JIT can't take a local vector as an out)
+				// settled short of his place: he stays put until the player has moved on
+				if(hce_fmSettledBy != (0, 0) && ((p.pos.xy - hce_fmSettledBy).Length() > 128 || abs(pos.z - hce_fmSettledZ) > 24)) hce_fmSettledBy = (0, 0);   // (or a lift has carried him on)
+				if(hce_fmSettledBy == (0, 0) && (hce_formSpot == (0, 0) || (hce_fmNewSpot - hce_formSpot).Length() > (hce_fmWalking ? 8 : 40))) hce_formSpot = hce_fmNewSpot;
+				if(abs(DeltaAngle(hce_fmNewFace, hce_formFace)) > 20 || hce_fmTurning) hce_formFace = hce_fmNewFace;
+				hce_formTics = level.maptime + 6;
+			}
+			vector2 dv = hce_formSpot - pos.xy;
+			double gd = dv.Length(), d = Distance2D(p);
+			// round corners: no straight way to its place, so the newest point on the player's trail it can reach
+			if(d < 900 || CheckSight(p)) hce_nearTic = level.maptime;
+			else if(level.maptime - hce_nearTic > 35 * 20 && d > 1800 && hce_tpAt <= 0) hce_tpAt = level.maptime;
+			// no way to him for 10 s (no trail to follow, out of sight, well off): he catches up by teleporting
+			if(hce_navLost > 44 && d > 640 && !CheckSight(p) && hce_tpAt <= 0) { hce_tpAt = level.maptime; hce_navLost = 0; }
+			// stuck in plain sight of him (down a pit with no way up, behind a window): well off for 12 s and not
+			// getting anywhere for 4 s, he teleports too
+			if(d < 320) hce_fmNearTic = level.maptime;
+			if(level.maptime - hce_fmProgTic >= 35 * 4)
+			{
+				if(d > 448 && level.maptime - hce_fmNearTic > 35 * 12 && (pos.xy - hce_fmProgPos).Length() < 48 && hce_tpAt <= 0) hce_tpAt = level.maptime;
+				hce_fmProgPos = pos.xy; hce_fmProgTic = level.maptime;
+			}
+			if(gd > 40 && d > 160 && level.maptime % 8 == (hce_scavOff & 7))
+			{
+				double fz = GetZAt(hce_formSpot.x, hce_formSpot.y, 0, GZF_ABSOLUTEPOS);
+				hce_navVia = (0, 0);
+				if(HCE_Walkable((hce_formSpot, fz)) || (d < 320 && CheckSight(p))) { hce_crumbTic = 0; hce_navLost = 0; }   // a straight way: off the trail
+				else if(HCE_TrailFollow(PlayerNum(p))) { hce_navVia = hce_trailHit.xy; hce_navLost = 0; }
+				else hce_navLost++;
+			}
+			if(d <= 160 || gd <= 40) { hce_crumbTic = 0; hce_navLost = 0; }
+			if(hce_navVia != (0, 0) && gd > 40 && d > 160) { dv = hce_navVia - pos.xy; if(dv.Length() < 32) hce_navVia = (0, 0); else gd = max(gd, dv.Length() + 41); }   // (a trail point is off his place: he keeps walking)
+			// walk to his place once he's well off it (64), and on until he's on it (20): no stop-start at its edge
+			// with the player on the move he keeps pace in his place rather than stopping on it and starting again
+			double pv = p.vel.xy.Length();
+			bool pMoving = pv > 1.5;
+			if(!pMoving && (d <= 72 || gd < 20)) { hce_fmWalking = false; hce_fmHurry = false; }
+			else if(!hce_fmWalking && gd > (pMoving ? 32 : 64)) { hce_fmWalking = true; hce_fmStuck = 0; }
+			// blocked by the men round him or by the ground: he settles where he is until the player moves on
+			if(hce_fmWalking) hce_fmStuck = HCE_OnMovingLift() ? 0 : (pos.xy - hce_fmLastPos).Length() < 1.0 ? hce_fmStuck + 1 : max(0, hce_fmStuck - 1);   // riding a lift isn't being stuck
+			hce_fmLastPos = pos.xy;
+			if(hce_fmWalking && !pMoving && (hce_fmStuck > 14 && gd < 110 || hce_fmStuck > 45))
+			{
+				hce_fmWalking = false; hce_fmHurry = false; hce_formSpot = pos.xy; hce_fmSettledBy = p.pos.xy; hce_fmSettledZ = pos.z;
+			}
+			if(hce_fmWalking)
+			{
+				bool fast = gd > 160 || d > 500 || p.vel.xy.Length() > hce_walkSpeed * 1.2;
+				if(fast) hce_fmHurry = true;
+				else if(gd < 96 && d < 400 && p.vel.xy.Length() < hce_walkSpeed * 0.8) hce_fmHurry = false;   // runs on until nearly there
+				double spd = hce_fmHurry ? hce_runSpeed : hce_walkSpeed;
+				double mang = atan2(dv.y, dv.x);
+				if(pMoving && gd < 48)
+				{
+					// in his place and the player walking: his pace and his way, eased back onto the slot
+					spd = clamp(pv * (0.85 + gd / 160), 1, hce_runSpeed);
+					vector2 want = p.vel.xy.Unit() * pv + dv * 0.15;
+					mang = atan2(want.y, want.x);
+				}
+				HCE_Move(mang, spd);
+				// turns into his way at his own rate: steering round the others mustn't snap him about every tic
+				double td = DeltaAngle(angle, hce_moveAngle);
+				double tr = min(hce_turnRate * 2.5, 30);                 // quick enough to keep him walking forward
+				hce_fmFwd = true;                                         // he turns round to go his way, never backpedals to it
+				if(abs(td) > 6) A_SetAngle(angle + clamp(td, -tr, tr), SPF_INTERPOLATE);   // small wobbles ignored
+			}
+			else
+			{
+				HCE_Brake();
+				hce_fmFwd = hce_curAnimKind == HCE_A_MOVE_F || hce_curAnimKind == HCE_A_LOW_MOVE;   // slows to a stop walking forward
+				double dd = DeltaAngle(angle, hce_formFace);              // in place: watch its sector
+				if(abs(dd) > 30) hce_fmTurning = true;                   // turns once it's well off, all the way round
+				else if(abs(dd) < 3) hce_fmTurning = false;
+				if(hce_fmTurning) A_SetAngle(angle + clamp(dd, -hce_turnRate * 0.35, hce_turnRate * 0.35), SPF_INTERPOLATE);
+			}
+		}
+		HCE_PickMoveAnim();
+		if(++hce_scanTimer >= 10) { hce_scanTimer = 0; HCE_ScanTargets(); if(target) hce_action = HCE_ACT_FIGHT; }   // (ScanTargets runs HCE_OnAcquire)
+	}
+
+	// Following the trail (a Marine catching up with the player round corners, through doors and out of dead ends).
+	// HCE_TrailGoal alone sent him to the newest point he could see, which walked him into any side room the trail
+	// passed through (the points inside it were the newest in view) and left him with nothing when the player was
+	// further ahead than the 28 newest points: he then steered straight at the player, into whatever looked like the
+	// way. This keeps a cursor on the trail (the point he last reached or set out for, by its time) and, each time:
+	//   1. the newest point past the cursor he can walk straight to (skipping ahead when the way is open);
+	//   2. else the cursor's point and then the next along the trail, reachable or not (the player walked it: each is
+	//      close to the last, and a door on the way opens for him), the cursor moving on only as each is reached,
+	//      so he walks the trail out of a dead end the way the player did;
+	//   3. else, with no cursor, the nearest point of the last 3 minutes he can reach: where he joins the trail.
+	// hce_navLost counts the looks that found nothing; HCE_Follow teleports him to the player after 10 s of that.
+	int hce_crumbTic, hce_navLost;
+	vector2 hce_fmProgPos; int hce_fmProgTic, hce_fmNearTic;   // where he was 4 s ago; when he was last within 320 of the player
+	bool HCE_TrailFollow(int pn)
+	{
+		let tr = HCE_MissileTracker.Get();
+		if(!tr || pn < 0) return false;
+		int n = tr.crX.Size();
+		int cur = -1;
+		if(hce_crumbTic > 0) for(int i = n - 1; i >= 0; i--) if(tr.crP[i] == pn && tr.crT[i] == hce_crumbTic) { cur = i; break; }
+		int oldest = level.maptime - 35 * 180;
+		// 1. skip ahead: the newest reachable point past the cursor
+		int tested = 0;
+		for(int i = n - 1; i > cur && tested < 28; i--)
+		{
+			if(tr.crP[i] != pn) continue;
+			if(tr.crT[i] < oldest) break;
+			vector3 c = (tr.crX[i], tr.crY[i], tr.crZ[i]);
+			if((c.xy - pos.xy).Length() <= 1200)
+			{
+				tested++;
+				if(HCE_Walkable(c)) { hce_trailHit = c; hce_crumbTic = tr.crT[i]; return true; }
+			}
+			if(tr.crB[i]) break;                        // a teleport: nothing older on this side joins up
+		}
+		// 2. the cursor's point, then the next along the trail: the cursor moves on only as each is reached
+		if(cur >= 0)
+		{
+			for(int j = cur; j < n; j++)
+			{
+				if(tr.crP[j] != pn) continue;
+				if(j > cur && tr.crB[j]) break;         // the player teleported here: the trail ends for walking
+				vector3 c = (tr.crX[j], tr.crY[j], tr.crZ[j]);
+				if((c.xy - pos.xy).Length() < 40) { hce_crumbTic = tr.crT[j]; cur = j; continue; }    // reached: on to the next
+				hce_trailHit = c;
+				return true;
+			}
+			return false;                               // at the trail's end: the player is in reach, or gone through a teleporter
+		}
+		// 3. joining the trail: the nearest point he can reach
+		double bd = 1200; int bi = -1; tested = 0;
+		for(int i = n - 1; i >= 0 && tested < 60; i--)
+		{
+			if(tr.crP[i] != pn) continue;
+			if(tr.crT[i] < oldest) break;
+			vector3 c = (tr.crX[i], tr.crY[i], tr.crZ[i]);
+			double d = (c.xy - pos.xy).Length();
+			if(d < bd) { tested++; if(HCE_Walkable(c)) { bd = d; bi = i; } }
+		}
+		if(bi < 0) return false;
+		hce_trailHit = (tr.crX[bi], tr.crY[bi], tr.crZ[bi]); hce_crumbTic = tr.crT[bi];
+		return true;
+	}
+
+	// ------------------------------------------------------------------
+	// Teleporters: when the player takes a teleporter (or a map's scripted teleport), the Marines following him who
+	// were with him come through after him a moment later, one by one, with the teleport fog, and take up places
+	// round where he came out. A Marine left far behind (out of sight, 1800 units or more, for 20 seconds) catches
+	// up the same way. Holding Marines stay put.
+	// ------------------------------------------------------------------
+	int hce_tpAt, hce_nearTic;
+
+	// Called when a player teleports: every living squad member not holding, within 1536 of where he left and not
+	// already within 400 of where he arrived, is scheduled to teleport after him (20 tics, then 12 more each, +0-6).
+	static void HCE_PlayerTeleported(Actor pl, vector3 from, vector3 to)
+	{
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase m;
+		int k = 0;
+		while(m = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(m.health <= 0 || !m.HCE_InSquad() || m.hce_betrayed || m.hce_squadOrder == HCE_ORDER_HOLD) continue;
+			if((m.pos.xy - from.xy).Length() > 1536 || (m.pos.xy - to.xy).Length() < 400) continue;
+			m.hce_tpAt = level.maptime + 20 + 12 * k++ + random(0, 6);
+		}
+	}
+
+	// When its scheduled hce_tpAt comes, teleports the Marine (with fog) to a free spot behind the squad's player,
+	// trying rings of 72-216 units at 40-degree steps with floor, headroom and sight checks, and resets cover and
+	// stuck state. Returns true on arrival; retries in a second if nowhere is free.
+	bool HCE_TeleportTick()
+	{
+		if(hce_tpAt <= 0 || level.maptime < hce_tpAt || hce_animLock > 0 || hce_climbTics > 0) return false;
+		hce_tpAt = 0;
+		let p = HCE_SquadPlayer();
+		if(!p || health <= 0) return false;
+		double a0 = p.angle + 180;
+		for(int r = 0; r < 4; r++)
+			for(int i = 0; i < 8; i++)
+			{
+				double a = a0 + ((i % 2) ? 1 : -1) * ((i + 1) / 2) * 40;
+				vector2 sp = p.pos.xy + AngleToVector(a, 72 + 48 * r);
+				double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+				if(!level.IsPointInLevel((sp, fz + 1)) || abs(fz - p.floorz) > MaxStepHeight) continue;
+				if(GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - fz < height + 2) continue;
+				if(HCE_SightBlocked(p.pos + (0, 0, p.height * 0.5), (sp, fz + height * 0.5))) continue;
+				if(!CheckPosition(sp)) continue;
+				vector3 old = pos;
+				if(!Teleport((sp, fz), p.angle, TELF_SOURCEFOG | TELF_DESTFOG)) continue;
+				hce_cvState = 0; hce_peekTics = 0; hce_doorWait = 0;
+				hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy; hce_nearTic = level.maptime;
+				return true;
+			}
+		hce_tpAt = level.maptime + 35;            // nowhere free yet: try again in a second
+		return false;
+	}
+
+
+	// The player's line of fire. A Marine standing where a player is shooting (the player's aim passes within his
+	// body, out to 1024 units, and the player has the trigger down or fired in the last 1.5 s) steps out of it to
+	// the open side, the same sidestep he uses to clear a friend out of his own line (hce_ffStepAng). A player
+	// merely looking at him (to give an order) doesn't move him. To change the reach, edit the 1024.
+	int hce_plFireUntil, hce_plLaneTic;
+	bool HCE_PlayerLaneCheck()
+	{
+		if(health <= 0 || !bFRIENDLY || hce_team != HCE_TEAM_HUMAN || hce_betrayed || hce_ffStepTics > 0 || hce_animLock > 0) return false;
+		if(level.maptime < hce_plLaneTic) return false;
+		hce_plLaneTic = level.maptime + 3;
+		for(int i = 0; i < MAXPLAYERS; i++)
+		{
+			if(!playeringame[i] || !players[i].mo || players[i].health <= 0) continue;
+			let p = players[i].mo;
+			if(players[i].cmd.buttons & (BT_ATTACK | BT_ALTATTACK)) hce_plFireUntil = level.maptime + int(35 * 1.5);
+			if(level.maptime > hce_plFireUntil) continue;
+			vector3 eye = p.pos + (0, 0, p.player.viewheight);
+			vector3 rel = level.Vec3Diff(eye, pos + (0, 0, height * 0.5));
+			double along = rel dot (cos(p.angle) * cos(p.pitch), sin(p.angle) * cos(p.pitch), -sin(p.pitch));
+			if(along < radius || along > 1024) continue;
+			vector3 off = rel - (cos(p.angle) * cos(p.pitch), sin(p.angle) * cos(p.pitch), -sin(p.pitch)) * along;
+			if(off.xy.Length() > radius + 12 || abs(off.z) > height * 0.5 + 8) continue;
+			// in his lane: step out to the open side, across the line
+			double ta = p.angle;
+			int sd = HCE_Clearance(ta + 90, 96) >= HCE_Clearance(ta - 90, 96) ? 1 : -1;
+			hce_ffStepAng = ta + 90 * sd;
+			hce_ffStepTics = random(14, 22);
+			HCE_Say('Cover', 0.2, 35 * 6);
+			return true;
+		}
+		return false;
+	}
+
+	// Runs the sidestep out of a player's line of fire when no other action would (out of a fight: following,
+	// holding, idle). HCE_Fight takes the same step itself. True: stepping this tic.
+	bool HCE_PlayerLaneTick()
+	{
+		HCE_PlayerLaneCheck();
+		if(hce_ffStepTics <= 0 || (target && hce_action == HCE_ACT_FIGHT)) return false;
+		hce_ffStepTics--;
+		HCE_Move(hce_ffStepAng, hce_runSpeed * 0.7);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
+	// ------------------------------------------------------------------
+	// Watching each other's backs (Marines): hit from behind, a Marine calls it and the nearest squadmate not already
+	// on that enemy turns on it; HCE_Formation also sends someone at any enemy coming from the squad's rear or flank
+	// that nobody is engaging
+	// ------------------------------------------------------------------
+	int hce_behindNext;
+	// A Marine hit from behind: says Behind and hands foe to the nearest squadmate within 900 that can see it and isn't
+	// already on it. Won't repeat for 6 s (hce_behindNext).
+	void HCE_CoverMyBack(Actor foe)
+	{
+		hce_behindNext = level.maptime + 35 * 6;
+		HCE_Say('Behind', 1.0, 35 * 5, true);
+		HaloDoom_EnemyBase best = null; double bd = 900;
+		let it = BlockThingsIterator.Create(self, 900);
+		while(it.Next())
+		{
+			let m = HaloDoom_EnemyBase(it.thing);
+			if(!m || m == self || m.health <= 0 || !m.HCE_InSquad() || m.target == foe || m.hce_betrayed) continue;
+			double dd = m.Distance3D(foe);
+			if(dd < bd && m.CheckSight(foe)) { bd = dd; best = m; }
+		}
+		if(best) { best.target = foe; best.hce_lastKnown = foe.pos; best.hce_cvState = 0; }
+	}
+
+
+	// hold: the squad spreads into a ring round where it stands, each facing out over his sector
+	static void HCE_Perimeter(Array<HaloDoom_EnemyBase> s)
+	{
+		int n = s.Size();
+		if(n < 2) return;
+		vector2 c = (0, 0);
+		for(int i = 0; i < n; i++) c += s[i].pos.xy;
+		c /= n;
+		double r = clamp(n * 40 / 3.14159, 72, 224);
+		for(int i = 0; i < n; i++)
+		{
+			let m = s[i];
+			double a = i * 360.0 / n;
+			vector2 spot = c + Actor.AngleToVector(a, r);
+			vector2 dv = spot - m.pos.xy;
+			FLineTraceData tr;
+			if(dv.Length() > 1 && m.LineTrace(atan2(dv.y, dv.x), dv.Length() + m.radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, m.height * 0.5, data: tr))
+				spot = m.pos.xy;              // no clear way there: hold where it is, still facing out
+			m.hce_holdPos = (spot, m.pos.z);
+			m.hce_holdFace = a;
+			m.hce_onPerimeter = true;
+		}
+	}
+
+	// ------------------------------------------------------------------
+	// Trading guns: the player presses use on a Marine following them. If the Marine can carry the player's gun
+	// (a loadout of his body), they swap: the player gets the Marine's gun and the Marine takes the player's.
+	// ------------------------------------------------------------------
+	override bool Used(Actor user)
+	{
+		if(!hce_enabled || !user || !user.player || health <= 0 || !HCE_InSquad() || hce_betrayed) return super.Used(user);
+		return HCE_TradeWith(user);
+	}
+
+	// The weapon swap on use: refuses (with a line) a gun he can't carry or one the player already holds a copy of;
+	// otherwise gives the player his gun, takes theirs (HCE_EquipGun) and rates the deal by the HCE_WeaponScore gain.
+	// False: nothing to trade. To change the thanks / scorn thresholds, edit the gain >= 6 and >= -3.
+	bool HCE_TradeWith(Actor user)
+	{
+		let pw = user.player.ReadyWeapon;
+		if(!pw || hce_dropWeapon == 'None' || hce_projectile == 'None') return false;
+		Name pc = pw.GetClassName();
+		if(pc == hce_dropWeapon) return false;
+		class<Weapon> mc = (class<Weapon>)(hce_dropWeapon);
+		if(!HCE_CanCarry(pc) || !mc) { HCE_Say('Refuse', 1.0, 35 * 2, true); return true; }      // not a gun he can use
+		// the player already carries the Marine's gun (as his other weapon): handing it over would only top up its ammo
+		// while the player's gun went to the Marine, so the player would end up a weapon short. He refuses.
+		if(user.FindInventory(mc, true)) { HCE_Say('Refuse', 1.0, 35 * 2, true); return true; }
+		int gain = HCE_WeaponScore(pc) - HCE_WeaponScore(hce_dropWeapon);
+		user.TakeInventory(pc, 1);
+		user.GiveInventory(mc, 1);
+		let nw = Weapon(user.FindInventory(mc));
+		if(nw) user.player.PendingWeapon = nw;
+		HCE_EquipGun(pc);
+		// grateful for a clearly better gun, fine with a fair swap, scornful of a worse one (his own liking:
+		// HCE_WeaponScore); each from its own set of Halo 2 lines, every take of them (extract_marine_voices.py)
+		HCE_Say(gain >= 6 ? 'Thanks' : gain >= -3 ? 'TradeOk' : 'WorseWeapon', 1.0, 35, true);
+		return true;
+	}
+
+	// the fire orders (the squad keys; the Chief's own lines play from the handler)
+	void HCE_FireOrder(int o, Actor aimed)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		bool enemy = aimed && aimed.health > 0 && HCE_IsEnemy(aimed);
+		switch(o)
+		{
+		case 3: hce_holdFire = true; hce_suppressUntil = 0; HCE_StopFireLoop(); hce_shotsLeft = 0; break;
+		case 4: hce_holdFire = false; break;
+		case 5: if(enemy) { hce_holdFire = false; hce_focusTarget = aimed; target = aimed; hce_lastKnown = aimed.pos; hce_action = HCE_ACT_FIGHT; } break;
+		case 6:
+			hce_holdFire = false; hce_suppressUntil = level.maptime + 35 * 8;
+			if(enemy) { target = aimed; hce_lastKnown = aimed.pos; hce_action = HCE_ACT_FIGHT; }
+			break;
+		}
+		if(target && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// "medic": a corpsman (hce_isMedic) runs to the Marine the player has in the crosshair, crouches beside him and
+	// patches him up (true: busy with it this tic). A corpsman who is himself in the crosshair is his own patient: he
+	// kneels where he stands and dresses his own wounds.
+	bool hce_isMedic;
+	// his biofoam: HCE_MEDIC_CHARGES patients' worth; each patch-up uses one, and every biofoam canister he picks up
+	// off the ground (a health bonus) puts one back (HCE_HealthScan). Out of it, he patches no one.
+	const HCE_MEDIC_CHARGES = 6;
+	int hce_medicUsed;
+	int HCE_MedicCharges() { return hce_isMedic ? max(0, HCE_MEDIC_CHARGES - hce_medicUsed) : 0; }
+	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
+	// the acknowledgement.
+	void HCE_MedicOrder(Actor pl, bool ordered = true)
+	{
+		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
+		hce_scavItem = null;
+		if(ordered) HCE_AckLater();
+		if(InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// A corpsman with nothing in his sights (no target, or none seen for 3 s) looks once a second for a wounded Marine
+	// of the squad within 512 (under 35% health: hce_wounded), or himself, and goes to patch him up unasked; the
+	// same errand as the order, without the acknowledgement. One patient every 6 s at most.
+	int hce_medicNextTic;
+	void HCE_MedicScan()
+	{
+		if(!hce_isMedic || hce_medicFor || health <= 0 || hce_betrayed || level.maptime < hce_medicNextTic || HCE_MedicCharges() <= 0) return;
+		if(target && level.maptime - hce_lastSeen < 35 * 3) return;        // in a firefight: later
+		HaloDoom_EnemyBase best = null; double bd = 512;
+		if(hce_wounded) { best = self; bd = 0; }
+		let it = BlockThingsIterator.Create(self, 512);
+		while(it.Next())
+		{
+			let m = HaloDoom_EnemyBase(it.thing);
+			if(!m || m == self || m.health <= 0 || !m.hce_wounded || m.hce_team != hce_team || !m.HCE_InSquad()) continue;
+			double d = Distance2D(m);
+			if(d < bd && !HCE_SightBlocked(pos + (0, 0, height * 0.5), m.pos + (0, 0, m.height * 0.5))) { bd = d; best = m; }
+		}
+		if(!best) return;
+		hce_medicNextTic = level.maptime + 35 * 6;
+		HCE_MedicOrder(best, false);
+		if(best != self) best.HCE_Say('Wounded', 0.9, 35 * 2);
+	}
+
+	// Runs the medic errand each tic: runs to the patient, crouches beside him for a second, then heals 60% of his spawn
+	// health (20 at least), using a charge, and clears his wounded flag. False once done, timed out, out of charges, or
+	// either is dead.
+	// To change the heal, edit the GiveBody line.
+	bool HCE_MedicTick()
+	{
+		let pl = hce_medicFor;
+		if(!pl || pl.health <= 0 || health <= 0 || --hce_medicTics <= 0 || HCE_MedicCharges() <= 0) { hce_medicFor = null; return false; }
+		double d = Distance2D(pl);
+		if(hce_medicPhase == 0)
+		{
+			if(d > radius + pl.radius + 20)
+			{
+				HCE_StopFireLoop(); hce_shotsLeft = 0;
+				HCE_Move(AngleTo(pl), hce_runSpeed);
+				A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+				HCE_PickMoveAnim();
+				return true;
+			}
+			HCE_Brake();
+			if(pl != self) A_SetAngle(AngleTo(pl), SPF_INTERPOLATE);
+			hce_medicPhase = 1; hce_medicTics = 35;
+			HCE_Play(HCE_HasAnim(HCE_A_CROUCH_IDLE) ? HCE_A_CROUCH_IDLE : HCE_A_IDLE, true, true);
+			return true;
+		}
+		HCE_Brake();
+		if(hce_medicTics > 2) return true;
+		pl.GiveBody(int(max(20, pl.SpawnHealth() * 0.6)));   // a field dressing: 60% of his health, never past his maximum
+		hce_medicUsed++;                                      // one charge of biofoam
+		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
+		let pm = HaloDoom_EnemyBase(pl);
+		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; if(pm != self) pm.HCE_Say('Thanks', 0.8, 35); }
+		hce_medicFor = null;
+		HCE_Play(HCE_A_IDLE, true, true);
+		return true;
+	}
+
+	bool HCE_IsJohnson() { return hce_voice == 'Marine_Johnson'; }
+
+	// Takes a squad order (HCE_ORDER_FOLLOW / HOLD / REGROUP): hold remembers the spot it stands on, regroup runs for 8 s.
+	// Ignored when not in the squad, dead or betrayed.
+	void HCE_Order(int o)
+	{
+		if(!HCE_InSquad() || health <= 0 || hce_betrayed) return;
+		hce_squadOrder = o;
+		hce_onPerimeter = false;
+		hce_holdTight = false; hce_viaOn = false; hce_pathX.Clear(); hce_pathY.Clear();
+		if(hce_breach) { hce_breach.Leave(self); hce_breach = null; }
+		if(o == HCE_ORDER_HOLD) hce_holdPos = pos;
+		if(o == HCE_ORDER_REGROUP) { hce_regroupUntil = level.maptime + 35 * 8; hce_rgLastDist = 1e9; hce_rgCheckTic = level.maptime + 35 * 2; }
+	}
+
+	// regroup: run back to the player, even mid-fight, until close (or 8 s pass), then follow again. A Marine who
+	// can't get there (stuck behind something, on the wrong side of a wall, 1.5 s without getting 48 units nearer)
+	// teleports to the player instead (HCE_TeleportTick), as he would after a teleporter.
+	double hce_rgLastDist; int hce_rgCheckTic;
+	bool HCE_RegroupTick()
+	{
+		let p = HCE_SquadPlayer();
+		if(!p || p.health <= 0 || Distance2D(p) < 160 || level.maptime > hce_regroupUntil) { hce_squadOrder = HCE_ORDER_FOLLOW; return false; }
+		if(hce_tpAt > 0) { HCE_Brake(); return true; }                      // about to teleport
+		double d = Distance2D(p);
+		if(hce_rgLastDist > 1e8) hce_rgLastDist = d;                        // the order just came
+		else if(level.maptime >= hce_rgCheckTic)
+		{
+			if(d > hce_rgLastDist - 48 && d > 200) { hce_tpAt = level.maptime + 5; HCE_Brake(); return true; }   // no nearer: stuck
+			hce_rgLastDist = d; hce_rgCheckTic = level.maptime + int(35 * 1.5);
+		}
+		HCE_StopFireLoop();
+		HCE_Move(AngleTo(p), hce_runSpeed);
+		A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
+	// Once a second for squad Marines (and betrayers): forgives a dead or expired betrayal, sets hce_wounded under 35%
+	// health (with the odd call for help), counts friends within 640 and notes Johnson (hce_inspired), and the last Marine
+	// standing with the player over 768 off cowers in cover for 5 s (12 s cooldown). To change the threshold, edit the 0.35.
+	virtual void HCE_SquadTick()
+	{
+		// the player's squad goes wherever he goes: monster-blocking lines (a map's "keep the monsters off the start",
+		// a pen's edge) don't hold his Marines (the engine's NOBLOCKMONST, MBF's rule for friendly monsters)
+		if(hce_team == HCE_TEAM_HUMAN) bNOBLOCKMONST = HCE_InSquad() && !hce_betrayed;
+		if(!HCE_InSquad() && !hce_betrayed) return;
+		if(hce_betrayed && (hce_betrayed.health <= 0 || level.maptime > hce_betrayUntil)) HCE_Forgive();
+		if(++hce_squadScanTics < 35) return;
+		hce_squadScanTics = 0;
+		// wounded: under a third of its health a Marine limps and calls for help now and then
+		hce_wounded = health < SpawnHealth() * 0.35;
+		if(hce_wounded && !hce_betrayed) HCE_Say('Wounded', 0.25, 35 * 6);
+		HCE_MedicScan();
+		// Sergeant Johnson within earshot: steadier aim, and no cowering
+		hce_inspired = false;
+		Actor pl = HCE_SquadPlayer();
+		int friends = 0;
+		let it = BlockThingsIterator.Create(self, 640);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e == self || !e.hce_enabled || e.health <= 0 || e.hce_team != HCE_TEAM_HUMAN || e.hce_betrayed || Distance2D(e) > 640) continue;
+			friends++;
+			if(e.HCE_IsJohnson()) hce_inspired = true;
+		}
+		// the last Marine standing, the player far off: it ducks into cover and panics instead of fighting
+		if(target && !hce_betrayed && !hce_inspired && !HCE_IsJohnson() && !hce_sentinelAlly && friends == 0 && hce_action == HCE_ACT_FIGHT
+			&& level.maptime > hce_cowerCooldown && (!pl || pl.health <= 0 || Distance2D(pl) > 768))
+		{
+			hce_action = HCE_ACT_COVER;
+			hce_coverTics = 35 * 5;
+			hce_cowerCooldown = level.maptime + 35 * 12;
+			HCE_Say('Panic', 1.0, 35 * 3);
+		}
+	}
+
+	// the player shot this Marine: a scolding, and after repeated hits (4 within 12 s, or 60% of its health)
+	// it turns on them
+	virtual void HCE_FriendlyFire(Actor pl, int dealt)
+	{
+		if(hce_betrayed) { if(pl == hce_betrayed) hce_betrayUntil = level.maptime + 35 * 30; return; }
+		if(level.maptime > hce_ffUntil) { hce_ffHits = 0; hce_ffDamage = 0; }
+		hce_ffUntil = level.maptime + 35 * 12;
+		hce_ffHits++;
+		hce_ffDamage += dealt / double(max(1, SpawnHealth()));
+		if(HCE_CVarF('hce_betrayal', 1) > 0 && (hce_ffHits >= 4 || hce_ffDamage >= 0.6)) { HCE_Betray(pl); return; }
+		HCE_Say('Scold', 1.0, 35 * 2, true);
+	}
+
+	// Turns this Marine on pl for 30 s: drops FRIENDLY, targets them, fights and says the betrayal line.
+	void HCE_Betray(Actor pl)
+	{
+		hce_betrayed = pl;
+		hce_betrayUntil = level.maptime + 35 * 30;
+		bFRIENDLY = false;
+		hce_squadOrder = HCE_ORDER_FOLLOW;
+		target = pl; hce_lastKnown = pl.pos;
+		hce_action = HCE_ACT_FIGHT;
+		HCE_Say('Betrayal', 1.0, 35 * 3, true);
+		if(health > 0 && InStateSequence(CurState, ResolveState("Spawn"))) SetStateLabel("See");
+	}
+
+	// Ends a betrayal: friendly again, the friendly-fire tally cleared, a player target dropped, and the forgiveness line
+	// if alive.
+	void HCE_Forgive()
+	{
+		hce_betrayed = null;
+		bFRIENDLY = true;
+		hce_ffHits = 0; hce_ffDamage = 0;
+		if(target && target.player) { HCE_StopFireLoop(); target = null; }
+		if(health > 0) HCE_Say('Forgive', 1.0, 35 * 2, true);
+	}
+
+}
+
+// ----------------------------------------------------------------------
+class HCE_Formation : Thinker
+{
+	const INTERVAL = 112;        // between neighbours on a wedge arm (diagonal)
+	const FILE_GAP = 80;         // between men in file
+	const ARM = 4;               // men per arm before the rest fall in down the middle
+	Actor leader;
+	Array<double> tx, ty;        // the leader's path, newest first, a point every 16 units
+	double heading;
+	bool tight;
+	vector2 lead;                // the leader's velocity, smoothed: the slots lead it, so a tap or a stop doesn't throw them
+	double ringHeading;          // a big squad's rear arcs turn after him slowly, so his every turn doesn't swing them round
+	Array<HaloDoom_EnemyBase> roster;
+	// in a fight (HaloDoom_EnemyBase.HCE_DoctrineUNSC): the drill (1 attack, 2 break contact), which fire team is
+	// rushing (-1 neither: reacting to contact), when it swaps, the side the maneuver element flanks on
+	int drill, bounding, boundAt, flank, lastEngaged;
+	double maxStrength;
+
+	// The formation thinker for a leader (the player), found among the STAT_USER thinkers or made now.
+	static HCE_Formation Get(Actor leader)
+	{
+		let it = ThinkerIterator.Create("HCE_Formation", STAT_USER);
+		HCE_Formation f;
+		while(f = HCE_Formation(it.Next())) if(f.leader == leader) return f;
+		f = new("HCE_Formation");
+		f.ChangeStatNum(STAT_USER);
+		f.leader = leader; f.heading = leader.angle; f.ringHeading = leader.angle;
+		return f;
+	}
+
+	// Each tic: prunes the roster, runs the fight drill, smooths the leader's heading / velocity / ring heading, records
+	// his path every 16 units (160 points), and every 10 tics switches wedge <-> file by the room either side
+	// (file under 224 units, wedge again over 300).
+	override void Tick()
+	{
+		if(!leader) { Destroy(); return; }
+		for(int i = roster.Size() - 1; i >= 0; i--)
+		{
+			let m = roster[i];
+			if(!m || m.health <= 0 || !m.HCE_InSquad() || m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD) roster.Delete(i);
+		}
+		FightTick();
+		vector2 v = leader.vel.xy;
+		if(v.Length() > 1.5) heading += Actor.DeltaAngle(heading, atan2(v.y, v.x)) * 0.12;   // the way he's going
+		lead += (v - lead) * 0.08;
+		ringHeading += Actor.DeltaAngle(ringHeading, heading) * 0.025;
+		if(!tx.Size() || (leader.pos.xy - (tx[0], ty[0])).Length() >= 16)
+		{
+			tx.Insert(0, leader.pos.x); ty.Insert(0, leader.pos.y);
+			if(tx.Size() > 160) { tx.Pop(); ty.Pop(); }
+		}
+		if(level.maptime % 10 == 0)
+		{
+			// room either side of the leader: a wedge needs ~9 m across, it goes back to file under ~7
+			double w = Room(heading + 90) + Room(heading - 90);
+			if(tight && w > 300) tight = false;
+			else if(!tight && w < 224) tight = true;
+		}
+	}
+
+	// The squad's battle drill: shares the first man's target with everyone within 1536, reacts to contact for 2 s, then
+	// alternates which fire team rushes every 3-5 s; drops to break-contact (drill 2) when the squad is under 45% of its
+	// peak strength. Contact ends after 4 s unseen, strength resets after 15. Calls WatchRear every second.
+	void FightTick()
+	{
+		bool engaged = false;
+		double str = 0;
+		for(int i = 0; i < roster.Size(); i++)
+		{
+			let m = roster[i];
+			str += m.health / double(max(1, m.SpawnHealth()));
+			if(m.target && m.target.health > 0 && level.maptime - m.hce_lastSeen < 35 * 8) engaged = true;
+		}
+		if(engaged) lastEngaged = level.maptime;
+		else
+		{
+			if(level.maptime - lastEngaged > 35 * 4) drill = 0;                    // contact broken off
+			if(level.maptime - lastEngaged > 35 * 15) maxStrength = 0;             // a new fight, fresh
+			return;
+		}
+		// contact for one is contact for all: the rest of the squad turns on what the first man engaged
+		Actor foe = null;
+		for(int i = 0; i < roster.Size() && !foe; i++) if(roster[i].target && roster[i].target.health > 0) foe = roster[i].target;
+		if(foe && level.maptime % 17 == 0)
+			for(int i = 0; i < roster.Size(); i++)
+			{
+				let m = roster[i];
+				if(!m.target && m.Distance3D(foe) < 1536) { m.target = foe; m.hce_lastKnown = foe.pos; m.HCE_OnAcquire(); }
+			}
+		if(drill == 0)
+		{
+			// react to contact: everyone down and returning fire for two seconds, then the drill
+			drill = 1; bounding = -1; boundAt = level.maptime + 70; flank = random(0, 1) ? 1 : -1;
+		}
+		maxStrength = max(maxStrength, str);
+		if(drill == 1 && roster.Size() >= 2 && str < maxStrength * 0.45)
+		{
+			drill = 2; bounding = 0; boundAt = level.maptime + 35 * 3;
+			roster[random(0, roster.Size() - 1)].HCE_Say('FallBack', 1.0, 35 * 5, true);
+		}
+		if(level.maptime >= boundAt)
+		{
+			bounding = bounding == 0 ? 1 : 0;                        // the other team's rush
+			boundAt = level.maptime + random(35 * 3, 35 * 5);
+			if(drill == 1 && roster.Size() > bounding && random(0, 3) == 0) roster[bounding].HCE_Say('Advance', 1.0, 35 * 6);
+		}
+		if(level.maptime % 35 == 11) WatchRear();
+	}
+
+	// the squad's rear and flanks: an enemy in sight of a man but well off the way the fight faces (100 degrees or
+	// more), that nobody is on, gets the nearest man who isn't busy, with a shout
+	void WatchRear()
+	{
+		if(roster.Size() < 2) return;
+		vector2 c = (0, 0), dir = (0, 0);
+		for(int i = 0; i < roster.Size(); i++)
+		{
+			c += roster[i].pos.xy;
+			if(roster[i].target) dir += (roster[i].target.pos.xy - roster[i].pos.xy).Unit();
+		}
+		c /= roster.Size();
+		if(dir.Length() < 0.01) return;
+		double main = atan2(dir.y, dir.x);
+		let it = BlockThingsIterator.Create(leader, 1280);
+		while(it.Next())
+		{
+			let e = HaloDoom_EnemyBase(it.thing);
+			if(!e || e.health <= 0 || e.hce_team == HCE_TEAM_HUMAN || e.bFRIENDLY) continue;
+			vector2 to = e.pos.xy - c;
+			if(abs(Actor.DeltaAngle(main, atan2(to.y, to.x))) < 100) continue;
+			bool covered = false;
+			for(int i = 0; i < roster.Size() && !covered; i++) if(roster[i].target == e) covered = true;
+			if(covered) continue;
+			HaloDoom_EnemyBase best = null; double bd = 1e9;
+			for(int i = 0; i < roster.Size(); i++)
+			{
+				let m = roster[i];
+				if(m.hce_cvState >= HaloDoom_EnemyBase.HCE_CV_HIDE || m.hce_medicFor || m.hce_button) continue;
+				double dd = m.Distance3D(e);
+				if(dd < bd && m.CheckSight(e)) { bd = dd; best = m; }
+			}
+			if(!best) continue;
+			best.target = e; best.hce_lastKnown = e.pos;
+			best.HCE_Say('Behind', 1.0, 35 * 5, true);
+			return;                                     // one at a time
+		}
+	}
+
+	// Distance to the nearest wall from the leader in direction 'ang', up to 192 units (192 when nothing is hit).
+	double Room(double ang)
+	{
+		FLineTraceData tr;
+		if(leader.LineTrace(ang, 192, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, leader.height * 0.5, data: tr)) return tr.Distance;
+		return 192;
+	}
+
+	// the point 'dist' units back along the leader's path (straight back past its end)
+	vector2 TrailPoint(double dist)
+	{
+		vector2 a = leader.pos.xy;
+		for(int i = 0; i < tx.Size(); i++)
+		{
+			vector2 b = (tx[i], ty[i]);
+			double l = (b - a).Length();
+			if(l >= dist && l > 0) return a + (b - a) * (dist / l);
+			dist -= l; a = b;
+		}
+		return a - Actor.AngleToVector(heading, dist);
+	}
+
+	// reachable from the leader on his level: no wall between, no big step up or down
+	bool Open(vector2 p)
+	{
+		vector2 d = p - leader.pos.xy;
+		double l = d.Length();
+		if(l < 1) return true;
+		FLineTraceData tr;
+		if(leader.LineTrace(atan2(d.y, d.x), l + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, leader.height * 0.5, data: tr)) return false;
+		double fz = leader.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		return abs(fz - leader.floorz) <= 32;
+	}
+
+	// A member's slot and facing: in file, k+1 gaps back along the leader's path; in the wedge, alternating left / right
+	// arms (4 a side) then down the middle, the last man facing rear; a big squad's overflow stands in arcs behind the
+	// wedge. A slot inside a wall falls back onto the leader's path. Spacing: INTERVAL, FILE_GAP, ARM above.
+	void Spot(HaloDoom_EnemyBase m, out vector2 spot, out double face)
+	{
+		int k = roster.Find(m);
+		if(k == roster.Size()) { roster.Push(m); k = roster.Size() - 1; }
+		int n = roster.Size();
+		bool last = k == n - 1 && n > 2;
+		if(tight)
+		{
+			double back = FILE_GAP * (k + 1) + 16;
+			spot = TrailPoint(back);
+			vector2 ahead = TrailPoint(max(0, back - 32));
+			face = last ? atan2(spot.y - ahead.y, spot.x - ahead.x) : atan2(ahead.y - spot.y, ahead.x - spot.x);
+			return;
+		}
+		double back, lat;
+		if(k >= ARM * 2 && n > ARM * 2 + 4)
+		{
+			// a big squad (more than the wedge and a short file): the rest stand in arcs round the back of the
+			// wedge, 68 units apart, ring after ring 72 out, facing out over the rear -- a compact group round him
+			// rather than a column trailing far behind (which had its tail running to and fro along his path)
+			int j = k - ARM * 2;
+			double r = 200, cnt = 1;
+			for(int g = 0; g < 40; g++)
+			{
+				cnt = max(1, int(r * (220.0 / 57.2958) / 68));
+				if(j < cnt) break;
+				j -= int(cnt); r += 72;
+			}
+			double a = ringHeading + 180 - 110 + 220.0 * (j + 0.5) / cnt;
+			spot = leader.pos.xy + Actor.AngleToVector(a, r) + lead * 10;
+			face = a;
+			if(!Open(spot)) spot = TrailPoint(r + j * 40);          // in a wall: down his path, each man his own distance
+			return;
+		}
+		if(k < ARM * 2)
+		{
+			int r = k / 2 + 1;
+			double side = (k % 2 == 0) ? 1 : -1;        // left arm first, then right
+			back = r * INTERVAL * 0.72; lat = r * INTERVAL * 0.70 * side;
+			face = heading + 40 * side;
+		}
+		else
+		{
+			back = (ARM - 1 + (k - ARM * 2)) * INTERVAL * 0.72 + INTERVAL * 0.5; lat = 0;
+			face = heading;
+		}
+		if(last) face = heading + 180;
+		vector2 fw = Actor.AngleToVector(heading, 1), lf = Actor.AngleToVector(heading + 90, 1);
+		spot = leader.pos.xy - fw * back + lf * lat + lead * 10;             // keeping pace: where he'll be shortly
+		if(!Open(spot)) spot = TrailPoint(back + abs(lat) * 0.5);   // his slot is in a wall: on the path instead
+	}
+}
+
+// ---------------------------------------------------------------------------
+// "Stack up" and "frag and clear" (the squad keys): the squad lines up along the wall on both sides of the door the
+// player points at, on his side, facing it (HaloDoom_EnemyBase.HCE_HoldSpot; alternate sides, the nearest spots to
+// the frame first; a man who can't fit by the wall stands further back). Stack up: they wait there; once the player
+// opens the door and goes through (or stands in the doorway), they follow him in. Frag and clear: once they're in
+// place (or after 8 s) the man nearest the frame opens the door, the one nearest it with a grenade throws a frag
+// through the doorway to a point 160 units inside, and after the blast (3 s) they go in through the doorway to spots
+// spread across the room just inside, hold there 6 s, and follow again. The player can start the breach himself:
+// open the door and go in before the grenade, and they follow him in instead. A door that won't open (locked) ends it
+// after 5 s. Any squad order ends it too. Works on an open doorway as well (no door to open: straight to the throw).
+// ---------------------------------------------------------------------------
+class HCE_Breach : Thinker
+{
+	Line door;                       // the line pointed at
+	int side;                        // the side of it the player (and the stack) is on
+	vector2 c, n, t;                 // the doorway's middle, the normal toward the stack, the way along the wall
+	double w;                        // the doorway's width
+	Sector doorSec;                  // the sector beyond the line (the door, or the room through an open doorway)
+	bool frag;
+	int phase, tics;
+	Array<HaloDoom_EnemyBase> men;
+	PlayerPawn chief;
+	const PH_STACK = 0;
+	const PH_OPEN = 1;
+	const PH_THROW = 2;
+	const PH_ENTER = 3;
+
+	// door specials (Door_Close, Door_Open, Door_Raise, Door_LockedRaise, Door_Animated, Door_WaitRaise,
+	// Door_WaitClose, Generic_Door, Door_CloseWaitOpen)
+	static bool IsDoorSpecial(int sp)
+	{
+		switch(sp)
+		{
+		case 10: case 11: case 12: case 13: case 14: case 105: case 106: case 202: case 249: return true;
+		}
+		return false;
+	}
+	// a line that is a doorway: two-sided, with a door special of its own, or a shut sector (ceiling at the floor)
+	// on one side that some door works (a line of its own with a door special, or a door special elsewhere with
+	// its tag: a zero-height detail sector isn't a door). doorTags: the tags of every door special on the map
+	// (DoorTags), gathered once per breach
+	static bool IsDoorLine(Line l, Array<int> doorTags)
+	{
+		if(!l || !l.backsector) return false;
+		if(IsDoorSpecial(l.special)) return true;
+		for(int k = 0; k < 2; k++)
+		{
+			Sector s = k == 0 ? l.frontsector : l.backsector;
+			if(s.ceilingplane.ZatPoint(l.v1.p) - s.floorplane.ZatPoint(l.v1.p) >= 8) continue;
+			for(int i = 0; i < s.Lines.Size(); i++) if(IsDoorSpecial(s.Lines[i].special) && s.Lines[i].Args[0] == 0) return true;
+			for(int i = 0; i < s.CountTags(); i++) if(s.GetTag(i) != 0 && doorTags.Find(s.GetTag(i)) != doorTags.Size()) return true;
+		}
+		return false;
+	}
+	static void DoorTags(Array<int> doorTags)
+	{
+		doorTags.Clear();
+		for(int i = 0; i < level.Lines.Size(); i++)
+			if(IsDoorSpecial(level.Lines[i].special) && level.Lines[i].Args[0] != 0 && doorTags.Find(level.Lines[i].Args[0]) == doorTags.Size()) doorTags.Push(level.Lines[i].Args[0]);
+	}
+
+	// The breach on the door the player points at (on it, or the doorway nearest where the crosshair lands within 96
+	// units), with the squad stacked by it. False: no doorway there (nothing happens)
+	static bool Start(Array<HaloDoom_EnemyBase> squad, PlayerPawn pl, bool frag)
+	{
+		if(squad.Size() == 0 || !pl || !pl.player) return false;
+		FLineTraceData d;
+		pl.LineTrace(pl.angle, 2048, pl.pitch, TRF_THRUACTORS, pl.player.viewheight, data: d);
+		Array<int> doorTags;
+		DoorTags(doorTags);
+		Line l = d.HitType == TRACE_HitWall && IsDoorLine(d.HitLine, doorTags) ? d.HitLine : null;
+		if(!l)
+		{
+			double bd = 96;
+			for(int i = 0; i < level.Lines.Size(); i++)
+			{
+				Line k = level.Lines[i];
+				if(!IsDoorLine(k, doorTags)) continue;
+				double dd = (HaloDoom_EnemyBase.HCE_LinePoint(k, d.HitLocation.xy) - d.HitLocation.xy).Length();
+				if(dd < bd) { bd = dd; l = k; }
+			}
+		}
+		if(!l) return false;
+		let b = new('HCE_Breach');
+		b.door = l; b.chief = pl; b.frag = frag;
+		b.side = level.PointOnLineSide(pl.pos.xy, l);
+		b.doorSec = b.side == 0 ? l.backsector : l.frontsector;
+		b.w = l.delta.Length();
+		b.t = l.delta / b.w;
+		b.c = l.v1.p + l.delta / 2;
+		b.n = (l.delta.y, -l.delta.x) / b.w;              // the front side's normal
+		if(b.side == 1) b.n = -b.n;
+		for(int i = 0; i < squad.Size(); i++)
+		{
+			if(squad[i].hce_breach) squad[i].hce_breach.Leave(squad[i]);
+			squad[i].HCE_Order(HaloDoom_EnemyBase.HCE_ORDER_HOLD);
+			squad[i].hce_breach = b;
+			b.men.Push(squad[i]);
+		}
+		b.Stack();
+		return true;
+	}
+
+	// the stack: spots along the wall either side of the frame, a body's width out from it, alternating sides; where
+	// the wall runs out or is cluttered, further out from it; each man to the nearest free spot
+	void Stack()
+	{
+		double r = 0;
+		for(int i = 0; i < men.Size(); i++) r = max(r, men[i].radius);
+		Sector mine = level.PointInSector(c + n * (r + 12));
+		double z = mine ? mine.floorplane.ZatPoint(c + n * (r + 12)) : chief.pos.z;
+		Array<double> sx, sy;
+		for(int k = 0; k < 8 && sx.Size() < men.Size(); k++)
+		{
+			for(int sd = -1; sd <= 1; sd += 2)
+			{
+				for(int back = 0; back < 4; back++)
+				{
+					vector2 p = c + t * sd * (w / 2 + r + 6 + k * (r * 2 + 6)) + n * (r + 10 + back * (r * 2 + 6));
+					if(!HaloDoom_EnemyBase.HCE_SpotFits(p, r, z) || HaloDoom_EnemyBase.HCE_WayBlocked(c + n * (r + 10), p, z)) continue;
+					bool taken = false;
+					for(int j = 0; j < sx.Size(); j++) if((p - (sx[j], sy[j])).Length() < r * 2) taken = true;
+					if(taken) continue;
+					sx.Push(p.x); sy.Push(p.y);
+					break;
+				}
+			}
+		}
+		for(int k = 0; sx.Size() < men.Size() && k < men.Size(); k++)      // no room by the wall: a file straight back
+		{
+			vector2 p = c + n * (r * 3 + 16 + k * (r * 2 + 6));
+			sx.Push(p.x); sy.Push(p.y);
+		}
+		Array<HaloDoom_EnemyBase> left;
+		for(int i = 0; i < men.Size(); i++) left.Push(men[i]);
+		for(int i = 0; i < sx.Size() && left.Size() > 0; i++)
+		{
+			vector2 p = (sx[i], sy[i]);
+			int best = 0;
+			for(int j = 1; j < left.Size(); j++) if((left[j].pos.xy - p).Length() < (left[best].pos.xy - p).Length()) best = j;
+			vector2 to = c - p;
+			left[best].HCE_HoldSpot(p, atan2(to.y, to.x));
+			left[best].hce_breach = self;
+			left.Delete(best);
+		}
+		// the order of the stack: nearest the frame first (the opener, the thrower)
+		for(int i = 1; i < men.Size(); i++)
+		{
+			let m = men[i]; int j = i - 1;
+			while(j >= 0 && (men[j].hce_holdPos.xy - c).Length() > (m.hce_holdPos.xy - c).Length()) { men[j + 1] = men[j]; j--; }
+			men[j + 1] = m;
+		}
+	}
+
+	// a member leaves (another order, death)
+	void Leave(HaloDoom_EnemyBase m)
+	{
+		int i = men.Find(m);
+		if(i < men.Size()) men.Delete(i);
+	}
+
+	// the door is open: room to walk through at its middle
+	bool IsOpen()
+	{
+		if(!doorSec) return true;
+		return doorSec.ceilingplane.ZatPoint(c) - doorSec.floorplane.ZatPoint(c) >= 56;
+	}
+	// the player has gone through (past the line, or into the doorway)
+	bool ChiefIn()
+	{
+		if(!chief || chief.health <= 0) return false;
+		return level.PointOnLineSide(chief.pos.xy, door) != side || chief.CurSector == doorSec;
+	}
+	// over: everyone follows the player again
+	void Done()
+	{
+		for(int i = 0; i < men.Size(); i++)
+			if(men[i] && men[i].hce_breach == self) { men[i].hce_breach = null; men[i].HCE_Order(HaloDoom_EnemyBase.HCE_ORDER_FOLLOW); }
+		men.Clear();
+		Destroy();
+	}
+	// the line the opener works: the door line itself, or the one of the door's sector facing the stack nearest the
+	// middle with a door special
+	Line OpenLine()
+	{
+		if(IsDoorSpecial(door.special) || !doorSec) return door;
+		Line best = door; double bd = 1e9;
+		for(int i = 0; i < doorSec.Lines.Size(); i++)
+		{
+			Line l = doorSec.Lines[i];
+			if(!IsDoorSpecial(l.special)) continue;
+			double dd = (HaloDoom_EnemyBase.HCE_LinePoint(l, c) - c).Length();
+			if(dd < bd) { bd = dd; best = l; }
+		}
+		return best;
+	}
+
+	// in through the middle of the doorway, each to a spot fanned out across the room (alternating sides, deeper for
+	// each pair)
+	void Enter()
+	{
+		phase = PH_ENTER; tics = 0;
+		for(int i = 0; i < men.Size(); i++)
+		{
+			int sd = i % 2 == 0 ? 1 : -1;
+			vector2 p = c - n * (72 + 40 * (i / 2)) + t * sd * min(w / 2 + 24 + 32 * (i / 2), 160);
+			double z = doorSec ? doorSec.floorplane.ZatPoint(c) : men[i].pos.z;
+			if(!HaloDoom_EnemyBase.HCE_SpotFits(p, men[i].radius, z) || HaloDoom_EnemyBase.HCE_WayBlocked(c - n * 16, p, z)) p = c - n * (56 + 36 * i);
+			vector2 face = p - c;
+			men[i].HCE_HoldSpot(p, atan2(face.y, face.x), c + n * (men[i].radius + 4), true);
+			men[i].hce_breach = self;
+		}
+	}
+
+	override void Tick()
+	{
+		for(int i = men.Size() - 1; i >= 0; i--)
+			if(!men[i] || men[i].health <= 0 || men[i].hce_breach != self) men.Delete(i);
+		if(men.Size() == 0 || !door) { Destroy(); return; }
+		tics++;
+		if(phase < PH_THROW && IsOpen() && ChiefIn()) { Enter(); return; }    // the player went in first: in after him
+		switch(phase)
+		{
+		case PH_STACK:
+		{
+			if(!frag) { if(tics > 35 * 120) Done(); return; }           // stacked for the player (2 minutes at most)
+			bool ready = true;
+			for(int i = 0; i < men.Size(); i++) if((men[i].pos.xy - men[i].hce_holdPos.xy).Length() > 24) ready = false;
+			if(!ready && tics < 35 * 8) return;
+			phase = PH_OPEN; tics = 0;
+			if(!IsOpen())
+			{
+				Line ol = OpenLine();
+				men[0].HCE_PressLine(ol, level.PointOnLineSide(men[0].pos.xy, ol), SPAC_Use);
+			}
+			return;
+		}
+		case PH_OPEN:
+			if(!IsOpen()) { if(tics > 35 * 5) Done(); return; }        // locked, or not a door that opens: given up
+			if(doorSec && doorSec.ceilingdata && tics < 35 * 4) return;   // still rising: the throw waits till it's all the way up
+			phase = PH_THROW; tics = 0;
+			{
+				// the thrower: the nearest the frame with a grenade, else the nearest
+				HaloDoom_EnemyBase th = men[0];
+				for(int i = 0; i < men.Size(); i++) if(men[i].hce_grenades > 0) { th = men[i]; break; }
+				// on the line from him through the middle of the doorway (he throws round the frame from cover), as deep
+				// into the room as it goes
+				vector2 u = c - th.pos.xy;
+				u = u.Length() > 1 ? u.Unit() : -n;
+				if(u dot -n < 0.2) u = -n;
+				double fz = doorSec ? doorSec.floorplane.ZatPoint(c) : th.pos.z;
+				vector2 inside = c - n * 64;
+				for(int k = 0; k < 4; k++)
+				{
+					vector2 p = c + u * (224 - 48 * k);
+					if(level.PointInSector(p) && !HaloDoom_EnemyBase.HCE_WayBlocked(c, p, fz)) { inside = p; break; }
+				}
+				Sector s = level.PointInSector(inside);
+				th.HCE_BreachThrow((inside, s ? s.floorplane.ZatPoint(inside) : th.pos.z));
+			}
+			return;
+		case PH_THROW:
+			if(tics < 35 * 3) return;                                     // the blast
+			Enter();
+			return;
+		case PH_ENTER:
+			if(tics > 35 * 6) Done();                                     // the room's clear: follow again
+			return;
+		}
+	}
+}

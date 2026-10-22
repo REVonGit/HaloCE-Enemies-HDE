@@ -42,7 +42,7 @@ The replacement table lives in the Covenant pack's core. Any pick whose faction 
 
 UZDoom resolves every `#include` to the **last-loaded** file with that path.
 
-* **`HaloCE_Covenant.pk3`** carries `ZScript/BaseAI/enemies_base.zsc`. HDE's own `ZSCRIPT.txt` already includes that path, so loading the pack after HDE swaps in the extended API; HDE's files stay untouched and the class is never defined twice.
+* **`HaloCE_Covenant.pk3`** carries `ZScript/BaseAI/enemies_base.zsc` (and `hce_squad.zsc`, which it includes). HDE's own `ZSCRIPT.txt` already includes that path, so loading the pack after HDE swaps in the extended API; HDE's files stay untouched and the class is never defined twice.
   * The file keeps every member of Local_DEV's original `HaloDoom_EnemyBase` and `LastDamageInfo`, plus its usage example.
   * It compiles under Local_DEV's `version "4.10.0"`. The one 4.12+ call (`SetAnimation`) sits behind a virtual hook, `HCE_ApplyAnim`, which the enemy pack implements in its own 4.15.1 unit.
 * That's why the pack must load **after** HDE.

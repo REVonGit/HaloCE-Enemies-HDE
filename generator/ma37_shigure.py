@@ -13,7 +13,7 @@ counter) on top, at TEX_SIZE (texture()).
 """
 import os, sys, io, pickle, zipfile, tempfile
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, 'lib')); sys.path.insert(0, HERE)
 from hce_paths import OUT
@@ -150,13 +150,62 @@ def texture(texdir, pos, nrm, uv, tris):
     return im.resize((TEX_SIZE, TEX_SIZE), Image.LANCZOS)
 
 
+def uv_gas(gas, others, texdir):
+    """The gas block over the barrel (its hex nut stands out in front of the cowling) has no UVs of its own: all on
+    one line of the atlas, so it bakes flat grey. Unroll it (along the barrel, round its axis; the end faces radius
+    outwards) at the gun's own texel density into the cleanest patch of the gun's metal (a square wholly inside the
+    other pieces' UVs, near their usual shade), so it takes the same colour, wear and normal detail."""
+    base = np.asarray(Image.open(f'{texdir}/ma37_body_BaseColor.png').convert('L').resize((256, 256)), np.float32) / 255
+    mask = Image.new('L', (256, 256), 0); d = ImageDraw.Draw(mask); dens = []
+    for p in others:
+        CP, CU, CT = p['pos'] * 100, p['uv'], p['tris']
+        l3 = np.linalg.norm(CP[CT[:, 1]] - CP[CT[:, 0]], axis=1); l2 = np.linalg.norm(CU[CT[:, 1]] - CU[CT[:, 0]], axis=1)
+        dens.extend(l2[l3 > 0.05] / l3[l3 > 0.05])
+        for t in CT:
+            d.polygon([(u * 256, (1 - v) * 256) for u, v in CU[t]], fill=255)
+    k = np.median(dens)                                                           # the gun's texel density, UV per unit
+    mask = np.asarray(mask) > 0
+    GP, GT = gas['pos'] * 100, gas['tris']
+    gv = np.unique(GT)
+    gc = (GP[gv, 1].mean(), (GP[gv, 2].min() + GP[gv, 2].max()) / 2)
+    GR = np.hypot(GP[:, 1] - gc[0], GP[:, 2] - gc[1]); R = GR[gv].max()
+    n = int(np.ceil(max(np.ptp(GP[gv, 0]) + 2 * R, 2 * np.pi * R) * k * 256)) + 2   # the unrolled block, in texels
+    vals = base[mask]; med = np.median(vals)
+    best, score = None, None
+    for y in range(0, 256 - n):
+        for x in range(0, 256 - n):
+            if not mask[y:y + n, x:x + n].all(): continue
+            v = base[y:y + n, x:x + n]
+            sc = abs(v.mean() - med) + 0.5 * v.std()
+            if score is None or sc < score: best, score = (x, y), sc
+    cen = np.array([(best[0] + n / 2) / 256, 1 - (best[1] + n / 2) / 256])       # the clean patch's middle (raw UV)
+    th = np.arctan2(GP[:, 2] - gc[1], GP[:, 1] - gc[0])
+    pos, nrm, uv, tris = [], [], [], []
+    for t in GT:
+        a = np.column_stack([GP[t, 0], th[t]])
+        a[:, 1] = a[0, 1] + (a[:, 1] - a[0, 1] + np.pi) % (2 * np.pi) - np.pi          # no wrap inside a triangle
+        e3 = np.cross(GP[t[1]] - GP[t[0]], GP[t[2]] - GP[t[0]])
+        if abs(e3[0]) > 0.7 * np.linalg.norm(e3):                                   # an end face: radius along the tube
+            a[:, 0] = a[:, 0].mean() + np.sign(a[:, 0].mean() - GP[gv, 0].mean()) * (GR[t] - R)
+        q = np.column_stack([a[:, 0] - GP[gv, 0].mean(), (a[:, 1] % (2 * np.pi) - np.pi) * R])
+        q[:, 1] = q[0, 1] + (q[:, 1] - q[0, 1] + np.pi * R) % (2 * np.pi * R) - np.pi * R
+        b = len(pos)
+        pos.extend(gas['pos'][t]); nrm.extend(gas['nrm'][t]); uv.extend(cen + q * k); tris.append([b, b + 1, b + 2])
+    out = dict(gas)
+    out.update(pos=np.array(pos), nrm=np.array(nrm), uv=np.array(uv), tris=np.array(tris))
+    return out
+
+
 def build(src=SRC):
     """out/weapons/m_ma37/{m_ma37.pkl, w_m_ma37_body.png}"""
     blend, texdir = unpack(src)
     K = brute_kit.Kit(blend)
     B = K.B
-    pieces = [K.piece(nm, []) for nm, o in K.objects.items() if B.get('Object', o.off, 'type') == 1]
-    P = np.concatenate([p['pos'] for p in pieces]) * 100            # piece() divides by 100 (Halo 2 render units)
+    named = {nm: K.piece(nm, []) for nm, o in K.objects.items() if B.get('Object', o.off, 'type') == 1}
+    if 'gas' in named:
+        named['gas'] = uv_gas(named['gas'], [p for nm, p in named.items() if nm != 'gas'], texdir)
+    pieces = list(named.values())
+    P =np.concatenate([p['pos'] for p in pieces]) * 100            # piece() divides by 100 (Halo 2 render units)
     s = LENGTH / (P[:, 0].max() - P[:, 0].min())
     g = np.array(GRIP)
     pos, nrm, uv, tris = [], [], [], []

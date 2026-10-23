@@ -26857,6 +26857,8 @@ class HCE_MarineOdstRavenBlue : HCE_MarineODSTBase
 		}
 		return (0, 0, 0);
 	}
+	// Fire Team Raven: SSGT. Ethan A. Graves
+	override void HCE_RollName() { hce_rankName = "SSGT. Ethan A. Graves"; }
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -27087,6 +27089,8 @@ class HCE_MarineOdstRavenGreen : HCE_MarineODSTBase
 		}
 		return (0, 0, 0);
 	}
+	// Fire Team Raven: CPL. Victor C. Ramos
+	override void HCE_RollName() { hce_rankName = "CPL. Victor C. Ramos"; }
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -27316,6 +27320,8 @@ class HCE_MarineOdstRavenOrange : HCE_MarineODSTBase
 		}
 		return (0, 0, 0);
 	}
+	// Fire Team Raven: SGT. Marcus B. Hudson
+	override void HCE_RollName() { hce_rankName = "SGT. Marcus B. Hudson"; }
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);
@@ -27389,7 +27395,7 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 1, 1, 1, 2.86, 3.96, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Sniper/Fire", "Halo/Weapons/Sniper/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff";
+		HaloDoom_EnemyBase.HCE_Voices "Marine_Tough";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_SniperRifle", "FragGrenades";
 		+HaloDoom_EnemyBase.HCE_Evades
 		+HaloDoom_EnemyBase.HCE_FollowPlayer
@@ -27547,6 +27553,8 @@ class HCE_MarineOdstRavenPurple : HCE_MarineODSTBase
 		}
 		return (0, 0, 0);
 	}
+	// Fire Team Raven: CPL. Ava D. Lang
+	override void HCE_RollName() { hce_rankName = "CPL. Ava D. Lang"; }
 	override void HCE_ShowGun(bool show)
 	{
 		super.HCE_ShowGun(show);

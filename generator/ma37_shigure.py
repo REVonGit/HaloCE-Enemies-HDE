@@ -39,28 +39,27 @@ def unpack(src):
     raise FileNotFoundError(f'no .blend under {src}')
 
 
-# The PBR set's base colour has no shading of its own (its detail lives in the normal, height, metal and roughness maps,
-# which the engine doesn't use), so the gun looked flat beside Halo CE's MA5B, whose texture has its lighting painted in.
-# texture() bakes that detail into the colour, keeping Shigure's colour scheme:
+# The PBR set's base colour is a flat mid grey (its detail lives in the normal, height, metal and roughness maps, which
+# the engine doesn't use), so it looked flat beside Halo CE's MA5B, whose texture is near black with its lighting
+# painted in: lighter on top, darker underneath, bright edges. texture() bakes the same into the colour:
 #   light      the gun's own lighting, baked texel by texel: each triangle is drawn into the texture (its UVs) with its
 #              normals, the normal map's detail added in each triangle's tangent frame, and lit by a key light from
 #              above and a little in front (KEY: no sideways part, so the mirrored halves, which share texels, light
 #              the same) over an ambient (AMBIENT) and a sky-over-ground fill (SKY); metal also takes a soft reflection
 #              of a bright sky (REFLECT)
-#   tone       the base colour as Shigure painted it (DARK_METAL / DARK_POLY at 1): the light is scaled to average 1
-#              over the gun, so the detail is added without changing the gun's colours
+#   tone       the base colour darkened into the MA5B's range: metal (the metallic map) by DARK_METAL, the polymer
+#              furniture by DARK_POLY, keeping its own variation (tint, wear marks)
 #   cavity     grooves and recesses (the height map below its own blur) darkened, to CAVITY
 #   bevels     edges (where the normal map tilts) and polished metal (low roughness) lit, by EDGE: worn steel
 #   grime      a faint low-frequency mottle
 #   emission   the ammo counter and the green light on top, untouched
 KEY = (0.35, 0.0, 1.0)     # gun space: +x the muzzle, +z up
 AMBIENT, DIFFUSE, SKY = 0.30, 0.75, 0.25
-REFLECT = 0.20
-DARK_METAL = 1.0           # the base colour's lightness is multiplied by these (1: the model's own colour scheme)
-DARK_POLY = 1.0
-LIGHT_RANGE = 0.35         # the baked light's swing either side of 1 (0.35: 0.65 in shadow .. 1.35 lit)
-CAVITY = 0.45              # how dark a deep groove gets (1: not at all)
-EDGE = 0.30                # how bright a full bevel or a polished edge gets (added, before the clamp)
+REFLECT = 0.35
+DARK_METAL = 0.47          # the base colour's lightness is multiplied by these
+DARK_POLY = 0.60
+CAVITY = 0.50              # how dark a deep groove gets (1: not at all)
+EDGE = 0.45                # how bright a full bevel or a polished edge gets (added, before the clamp)
 GRIME = 0.10
 
 
@@ -125,9 +124,6 @@ def texture(texdir, pos, nrm, uv, tris):
     sky = 0.5 + 0.5 * N[..., 2]
     light = AMBIENT + DIFFUSE * diff + SKY * sky
     light = np.where(covered, light, AMBIENT + DIFFUSE * 0.6 + SKY * 0.5)
-    # (scaled to average 1 over the gun, swinging LIGHT_RANGE either side: shading, not a darker or lighter gun)
-    lm, ls = light[covered].mean(), max(light[covered].std(), 1e-6)
-    light = np.clip(1 + (light - lm) / ls * LIGHT_RANGE / 2, 1 - LIGHT_RANGE, 1 + LIGHT_RANGE)
     refl = REFLECT * metal * np.clip(N[..., 2] * 0.5 + 0.5, 0, 1) ** 3 * np.clip((0.8 - rough) / 0.6, 0, 1) * covered
     # tone: darker overall, metal darker than the polymer
     tone = base * (DARK_POLY + (DARK_METAL - DARK_POLY) * metal)[..., None]
@@ -138,7 +134,7 @@ def texture(texdir, pos, nrm, uv, tris):
     nx, ny = nmap[..., 0] * 2 - 1, nmap[..., 1] * 2 - 1
     tilt = np.clip((np.sqrt(nx * nx + ny * ny) - 0.12) / 0.35, 0, 1)
     polish = metal * np.clip((0.55 - rough) / 0.35, 0, 1)
-    edge = np.clip(tilt * 0.8 + polish * 0.35, 0, 1) * np.clip(light / (1 + LIGHT_RANGE), 0.3, 1)
+    edge = np.clip(tilt * 0.8 + polish * 0.35, 0, 1) * np.clip(light / (AMBIENT + DIFFUSE + SKY), 0.3, 1)
     # grime: low-frequency mottle
     rng = np.random.default_rng(37)
     g = _blur(rng.random(height.shape).astype(np.float32), 18)

@@ -675,7 +675,7 @@ class HCE_MarineBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
-			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual1()
@@ -6828,7 +6828,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.2, 6.3, 19.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -7005,7 +7005,7 @@ class HCE_MarineMa37 : HCE_MarineBase
 		if(show)
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
-			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
@@ -7013,15 +7013,15 @@ class HCE_MarineMa37 : HCE_MarineBase
 	{
 		switch(anim)
 		{
-		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
-		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
-		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
-		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
-		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
-		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
-		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
-		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
-		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		case 'crouch rifle idle': return (25.3, 4.9, 2.6);
+		case 'crouch rifle move-front': return (23.8, 7.3, 9.4);
+		case 'flee rifle move-front': return (16.6, -6.2, 0.4);
+		case 'stand rifle cover-left-open': return (14.4, 27.2, 14.1);
+		case 'stand rifle cover-right-open': return (16.6, -0.9, 15.7);
+		case 'stand rifle move-back': return (24.2, 6.1, 14.5);
+		case 'stand rifle move-front': return (25.5, 6.0, 16.3);
+		case 'stand rifle move-left': return (23.0, 7.3, 14.1);
+		case 'stand rifle move-right': return (23.0, 7.3, 14.7);
 		}
 		return hce_gunOffset;
 	}
@@ -7991,7 +7991,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.40;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.60, 0.80, 1.00, 1.50, 0.25, 0.50;
-		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.2, 6.3, 19.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -8175,7 +8175,7 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 		if(show)
 		{
 			A_ChangeModel('None', 6, "models/hce/Marine", 'Marine_w_ma37.iqm');
-			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
@@ -8183,15 +8183,15 @@ class HCE_MarineMedicMa37 : HCE_MarineBase
 	{
 		switch(anim)
 		{
-		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
-		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
-		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
-		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
-		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
-		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
-		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
-		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
-		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		case 'crouch rifle idle': return (25.3, 4.9, 2.6);
+		case 'crouch rifle move-front': return (23.8, 7.3, 9.4);
+		case 'flee rifle move-front': return (16.6, -6.2, 0.4);
+		case 'stand rifle cover-left-open': return (14.4, 27.2, 14.1);
+		case 'stand rifle cover-right-open': return (16.6, -0.9, 15.7);
+		case 'stand rifle move-back': return (24.2, 6.1, 14.5);
+		case 'stand rifle move-front': return (25.5, 6.0, 16.3);
+		case 'stand rifle move-left': return (23.0, 7.3, 14.1);
+		case 'stand rifle move-right': return (23.0, 7.3, 14.7);
 		}
 		return hce_gunOffset;
 	}
@@ -15058,7 +15058,7 @@ class HCE_MarineArmoredBase : HaloDoom_EnemyBase abstract
 	{
 		{
 			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
-			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual1()
@@ -20358,7 +20358,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		HaloDoom_EnemyBase.HCE_DamageModifier 0.60;
 		HaloDoom_EnemyBase.HCE_CombatRange 240, 1200;
 		HaloDoom_EnemyBase.HCE_Burst 0.15, 0.35, 1.00, 1.20, 0.25, 0.80;
-		HaloDoom_EnemyBase.HCE_GunOffset (20.7, 6.3, 20.9);
+		HaloDoom_EnemyBase.HCE_GunOffset (21.2, 6.3, 19.2);
 		HaloDoom_EnemyBase.HCE_SpecialFire 0, 0;
 		HaloDoom_EnemyBase.HCE_Melee 36, 55;
 		HaloDoom_EnemyBase.HCE_Leap 0, 0, 0.00, 6.5;
@@ -20535,7 +20535,7 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 		if(show)
 		{
 			A_ChangeModel('None', 6, "models/hce/MarineArmored", 'MarineArmored_w_ma37.iqm');
-			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 		else A_ChangeModel('None', 6, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
@@ -20543,15 +20543,15 @@ class HCE_MarineArmoredMa37 : HCE_MarineArmoredBase
 	{
 		switch(anim)
 		{
-		case 'crouch rifle idle': return (24.7, 4.8, 4.3);
-		case 'crouch rifle move-front': return (23.2, 7.2, 11.2);
-		case 'flee rifle move-front': return (17.0, -5.8, 2.1);
-		case 'stand rifle cover-left-open': return (13.8, 26.8, 15.8);
-		case 'stand rifle cover-right-open': return (16.2, -1.5, 17.4);
-		case 'stand rifle move-back': return (23.6, 6.1, 16.2);
-		case 'stand rifle move-front': return (25.0, 6.1, 18.0);
-		case 'stand rifle move-left': return (22.5, 7.5, 15.8);
-		case 'stand rifle move-right': return (22.5, 7.4, 16.5);
+		case 'crouch rifle idle': return (25.3, 4.9, 2.6);
+		case 'crouch rifle move-front': return (23.8, 7.3, 9.4);
+		case 'flee rifle move-front': return (16.6, -6.2, 0.4);
+		case 'stand rifle cover-left-open': return (14.4, 27.2, 14.1);
+		case 'stand rifle cover-right-open': return (16.6, -0.9, 15.7);
+		case 'stand rifle move-back': return (24.2, 6.1, 14.5);
+		case 'stand rifle move-front': return (25.5, 6.0, 16.3);
+		case 'stand rifle move-left': return (23.0, 7.3, 14.1);
+		case 'stand rifle move-right': return (23.0, 7.3, 14.7);
 		}
 		return hce_gunOffset;
 	}

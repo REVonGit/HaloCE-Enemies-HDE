@@ -178,7 +178,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 |---|---|---|---|
 | `Magnum` | Halo CE's pistol | Halo CE pistol rounds (25), pairs and triples | `Halo_Magnum` |
 | `Sidekick` | the Macworld 2000 pistol (Digsite) | HDE Sidekick rounds (18) | `Halo_Sidekick` |
-| `Ma37` | the E3 2000 assault rifle (Digsite), repainted Reach-style: near-black gunmetal, dark grey furniture, worn steel edges | HDE assault-rifle rounds (9), long bursts | `Halo_AssaultRifle` |
+| `Ma37` | Halo: Reach's MA37, Shigure's model and textures (`Raw Assets/ma37.zip`, `ma37_shigure.py`) | HDE assault-rifle rounds (9), long bursts | `Halo_AssaultRifle` |
 | `AssaultRifle` (unchanged) | Halo CE's assault rifle | MA5B rounds | `Halo_MA5B` |
 | `Commando` | HaloDoom Evolved's own Commando (Halo Infinite's), reinterpreted as a Halo CE gun in its own colours: black lower receiver, grey upper and handguard | HDE Commando rounds (14), short bursts | `Halo_Commando` |
 | `BattleRifle` | Halo 2's battle rifle | three-round bursts (12 a round) | `Halo_BattleRifle` |
@@ -1231,6 +1231,31 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30366 | `HCE_SentinelEliminator` |
 | 30367 | `HCE_SentinelEnforcer` |
 | 30368 | `HCE_SentinelConstructor` |
+| 30370 | `HCE_RandomSentinelCrawler` |
+| 30371 | `HCE_RandomSentinelDragoon` |
+| 30372 | `HCE_RandomSentinelGold` |
+| 30373 | `HCE_RandomSentinelInterceptor` |
+| 30374 | `HCE_RandomSentinelLancer` |
+| 30375 | `HCE_RandomSentinelMarauder` |
+| 30376 | `HCE_RandomSentinelOnyx` |
+| 30377 | `HCE_RandomSentinelProtector` |
+| 30378 | `HCE_RandomSentinelSoldier` |
+| 30379 | `HCE_RandomSentinelWarden` |
+| 30380 | `HCE_SentinelSoldier` |
+| 30381 | `HCE_SentinelSoldierAlly` |
+| 30382 | `HCE_SentinelDragoon` |
+| 30383 | `HCE_SentinelDragoonAlly` |
+| 30384 | `HCE_SentinelGold` |
+| 30385 | `HCE_SentinelGoldMajor` |
+| 30386 | `HCE_SentinelGoldShielded` |
+| 30387 | `HCE_SentinelGoldShieldedMajor` |
+| 30388 | `HCE_SentinelOnyx` |
+| 30389 | `HCE_SentinelWarden` |
+| 30390 | `HCE_SentinelProtector` |
+| 30391 | `HCE_SentinelLancer` |
+| 30392 | `HCE_SentinelInterceptor` |
+| 30393 | `HCE_SentinelMarauder` |
+| 30394 | `HCE_SentinelCrawler` |
 | 30400 | `HCE_Drinol` |
 | 30401 | `HCE_EliteCommanderPlasmaCarbine` |
 | 30402 | `HCE_EliteMajorPlasmaCarbine` |
@@ -1408,10 +1433,10 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt's model, skins and animations, and the armed Flood Grunts, are from Sabopool's Halo CE Overhaul 2.0 (MCC Steam Workshop 3735328357, its c40 map); the bursting Flood Grunt's AI and sounds are Tropical Thunder 98's, from the XAM Campaign Overhaul (SPV3's c40 map).
-* **Marine riflemen:** Shigure.
+* **Marine riflemen, and the MA37:** Shigure.
 * **Engineer:** from Halo CE Ruby's Rebalance.
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
-* **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick, MA37 and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
+* **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
 * **Covenant carbine:** CMT's (the Elites' carbine, and its blue re-tint on the Pulse Carbine Elites).
 * **Blind Wolf:** created by SOI_7 (from SPV3's a30 map).
 * **Thorn Beast:** created by omargabagu, its sounds by Ruby of Blue (from SPV3's a30 map).

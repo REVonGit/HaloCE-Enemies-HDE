@@ -563,7 +563,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 			HCE_HideSurface(26);
 			HCE_HideSurface(27);
 			A_ChangeModel('None', 8, "models/hce_dig/Brute", 'Brute_w_ma37.iqm');
-			A_ChangeModel('None', 8, "", 'None', 0, "models/hce_dig/weapons", 'w_m_ma37_0.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 8, "", 'None', 0, "models/hce_dig/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
 		}
 	}
 	void HCE_LoadoutVisual1()

@@ -49,7 +49,7 @@ ARSENAL = {
     'double_barrel':    ('pc', ('soi', r'soi\weapons\shotgun\shotgun')),    # SOI's 8-gauge shotgun (SOI's Singleplayer Adventure)
     'commando':         ('hde_ce', 'commando_ce'),   # HDE's own Commando, reinterpreted as a Halo CE gun in its own colours
     'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
-    'ma37':             ('dig', ('weapons/assault_rifle/00_e3/models/h assault rifle.JMS', SH + '00_e3/bitmaps/h small arms ARGL SG')),
+    'ma37':             ('shigure_ma37', None),   # Shigure's MA37 (Raw Assets/ma37.zip, ma37_shigure.py)
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
     'bulldog':          ('ce_bulldog', None),     # HDE's own Bulldog, reinterpreted as a Halo CE gun (bulldog_ce.py)
     'grenade_launcher': ('ce_gl', None),         # HDE's own grenade launcher, reinterpreted as a Halo CE gun (gl_ce.py)
@@ -187,7 +187,8 @@ def fix_upright(meshes):
 
 # ---------------------------------------------------------------- repaints and the grenade-launcher kitbash
 # name -> the ramps repaint() maps a texture onto: metal (dark, light) for grey texels, paint (dark, light) for
-# coloured ones, wear for the sharpest highlights. Add a palette to paint a gun another way (fix_ma37 picks 'reach').
+# coloured ones, wear for the sharpest highlights. Add a palette to paint a gun another way ('reach' painted the
+# Digsite rifle as the MA37 until Shigure's model replaced it: fix_ma37, kept for a gun that wants those colours).
 PALETTES = {
     # Halo: Reach's MA37: near-black gunmetal receiver, dark grey furniture, worn steel edges
     'reach': dict(metal=((0.045, 0.048, 0.052), (0.36, 0.37, 0.39)), paint=((0.07, 0.072, 0.07), (0.40, 0.40, 0.37)), wear=(0.62, 0.62, 0.63)),
@@ -260,7 +261,7 @@ def fix_rocket_launcher(meshes):
 
 # ARSENAL key -> a function run on its meshes after the pkl is first built (turning, centring, repainting); a Halo CE
 # gun listed here is copied to its own m_<name> pkl first, so Halo CE's original stays as the Covenant carry it
-FIX = {'rocket_launcher': fix_rocket_launcher, 'ma37': fix_ma37, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_support}
+FIX = {'rocket_launcher': fix_rocket_launcher, 'sidekick': fix_sidekick, 'gpmg': fix_gpmg, 'flamethrower': fix_support}
 
 def summary(wid):
     """(min corner, max corner, triangle count) of a built pkl, for the build's printout"""
@@ -446,6 +447,8 @@ def main(only=None):
             import gl_ce; gl_ce.build()
         elif kind == 'sticky':                  # after the Sidekick (it is built from it)
             import sticky_ce; sticky_ce.build()
+        elif kind == 'shigure_ma37':            # Shigure's MA37 (ma37_shigure.py)
+            import ma37_shigure; ma37_shigure.build()
         elif kind == 'hde_ce':                  # hde_ce.py: commando_ce, hydra_ce
             __import__(src).build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy

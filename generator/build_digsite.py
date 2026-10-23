@@ -2,7 +2,8 @@
 rifle stance.  Generated with build_pack.build() so the classes behave exactly like the main pack's.
 
 Needs out/models/{Drinol,SlugMan,EliteRifle} (extract_digsite.py, extract_elite_rifle.py) and the weapon pkls
-from extract_sketchfab.py.  Digsite content is licensed for MCC projects only: never part of a public release.
+(extract_weapons.py, extract_h2.py; the Covenant carbine is CMT's, the beam rifle Halo 2's: nothing from Sketchfab
+ships any more).  Digsite content is licensed for MCC projects only: never part of a public release.
 
     python3 build_digsite.py        # after build_pack.py, gore_kit.py, blood_kit.py and marine_arsenal.py overlays
 

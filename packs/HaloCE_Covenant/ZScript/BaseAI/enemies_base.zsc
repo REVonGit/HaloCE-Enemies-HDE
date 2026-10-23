@@ -1699,6 +1699,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_strafeDir = -hce_strafeDir; hce_strafeTics = random(20, 40); hce_flipTics = level.maptime + 35;
 		}
 		if(hce_canSee && hce_srPhase > 0) { hce_srPhase = 0; HCE_Say('FoundFoe', 0.8, 35 * 4); HCE_AlertSquad(target); }
+		// the player's squad fights from posts (hce_squad.zsc): to the post, and from it
+		if(HCE_PostFight(d, AngleTo(target))) { if(bHCE_ThrowsGrenades) HCE_TryGrenade(d); return; }
 		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25 && HCE_Searches() && level.maptime - hce_lastSeen > 35 * 3)
 		{
 			if(HCE_TryFlush()) return;

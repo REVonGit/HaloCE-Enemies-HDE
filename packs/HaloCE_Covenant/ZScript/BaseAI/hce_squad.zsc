@@ -118,7 +118,8 @@ mixin class HCE_SquadCode
 		useVia = false;
 		hce_squadOrder = HCE_ORDER_HOLD;
 		hce_holdPos = (spot, pos.z);
-		hce_holdFace = face; hce_onPerimeter = true;      // (faces hce_holdFace once there, as on a perimeter)
+		if(hce_cvState > 0) HCE_LeaveCover();              // a new spot: out of the cover he was in
+		hce_holdFace = face; hce_holdFace0 = face; hce_onPerimeter = true;      // (faces hce_holdFace once there, as on a perimeter)
 		hce_holdTight = true;
 		hce_holdVia = via; hce_viaOn = useVia;
 		hce_scavItem = null;
@@ -787,7 +788,7 @@ mixin class HCE_SquadCode
 			if(dv.Length() > 1 && m.LineTrace(atan2(dv.y, dv.x), dv.Length() + m.radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, m.height * 0.5, data: tr))
 				spot = m.pos.xy;              // no clear way there: hold where it is, still facing out
 			m.hce_holdPos = (spot, m.pos.z);
-			m.hce_holdFace = a;
+			m.hce_holdFace = a; m.hce_holdFace0 = a;
 			m.hce_onPerimeter = true;
 		}
 	}
@@ -1040,6 +1041,87 @@ mixin class HCE_SquadCode
 		if(health > 0) HCE_Say('Forgive', 1.0, 35 * 2, true);
 	}
 
+	// ------------------------------------------------------------------
+	// Posts. In a fight every squad Marine has a post: a spot, a facing and what to do there (stand, crouch behind a
+	// low wall, lean out past a corner), chosen by the squad's HCE_Formation (Plan) from spots sampled round his
+	// anchor and scored: cover from the enemies the squad knows of, a line of fire to his target, closeness to the
+	// anchor, room from his squadmates and their lines of fire, out of the player's aim and his way forward. His
+	// anchor is his place in the drill: his formation slot (the base of fire), the next bound toward the flank (the
+	// maneuver element, cover to cover), the spot he was told to hold (within its leash: a holding, stacked or
+	// positioned squad fights from where it is, never chases). The fighting move is then "to the post, and fight from
+	// it" (HCE_PostFight): the cover code runs the lean and peek once he is in. hce_posting 0: the older fight
+	// (the strafe band, HCE_DoctrineUNSC's headings, cover found on the spot).
+	// ------------------------------------------------------------------
+	vector2 hce_post; double hce_postZ;
+	int hce_postKind, hce_postSide, hce_postTic;     // kind: 0 none, 1 standing, 2 a low wall to crouch behind, 3 a corner (side: the way out)
+	bool hce_postOn, hce_postRush;                    // he has a post; he is the bounding team on its way (no shooting on the move)
+	double hce_postScore, hce_holdFace0;             // the hold facing as ordered (hce_holdFace turns to a known enemy)
+	static bool HCE_PostingOn() { return HCE_CVarF('hce_posting', 1) > 0; }
+	// the formation he posts with: his squad player's
+	bool HCE_PostFormation()
+	{
+		let p = HCE_SquadPlayer();
+		if(!p) return false;
+		if(!hce_formation || hce_formation.leader != p) hce_formation = HCE_Formation.Get(p);
+		return hce_formation != null;
+	}
+	// The fighting move of a squad Marine with a post (true: handled this tic, the caller only throws grenades). To his
+	// post (running when far, a walk when near; shooting as he goes unless he is the team bounding), then in its cover
+	// (HCE_CoverTick runs the lean and peek, and he goes back in once its leave timer is up) or standing on it, firing.
+	// A target unseen for 12 s is given up. Melee when it comes to that.
+	bool HCE_PostFight(double d, double toT)
+	{
+		if(!HCE_PostingOn() || !HCE_InSquad() || hce_berserk || !target) return false;
+		if(!HCE_PostFormation()) return false;
+		hce_formation.Enroll(self);
+		if(!hce_postOn || level.maptime - hce_postTic > 35 * 3) return false;        // no post yet (or a stale one): the usual fight this tic
+		if(!hce_canSee && level.maptime - hce_lastSeen > 35 * 12) { HCE_StopFireLoop(); target = null; return true; }
+		if(HCE_InMeleeRange(d) && HCE_TryMelee()) return true;
+		double moveA = angle, spd = 0; bool fire = true;
+		if(hce_cvState > 0 && (hce_post - hce_cvSpot.xy).Length() > 48) HCE_LeaveCover();   // his post moved on: out of this cover
+		if(hce_cvState > 0)
+		{
+			int r = HCE_CoverTick(d, toT, true, moveA, spd, fire);     // (busy: it never looks for a spot of its own)
+			if(r == 2) return true;
+			if(r == 1) { HCE_Move(moveA, spd); if(fire) HCE_UpdateFiring(d); HCE_PickMoveAnim(); return true; }
+		}
+		// holding, with a way planned to the spot (through a doorway: HCE_HoldSpot's via) and the post at the spot: along
+		// the way, point by point, not straight at it through the frame
+		vector2 goal = hce_post;
+		if(hce_squadOrder == HCE_ORDER_HOLD && hce_pathX.Size() > 0 && (hce_post - hce_holdPos.xy).Length() < 32)
+		{
+			while(hce_pathX.Size() > 0 && ((hce_pathX[0], hce_pathY[0]) - pos.xy).Length() < 24) { hce_pathX.Delete(0); hce_pathY.Delete(0); }
+			if(hce_pathX.Size() > 0) goal = (hce_pathX[0], hce_pathY[0]);
+		}
+		vector2 dv = goal - pos.xy;
+		double l = dv.Length();
+		if(l > 16)
+		{
+			moveA = atan2(dv.y, dv.x);
+			spd = l > 96 || hce_breach ? hce_runSpeed : hce_walkSpeed;
+			fire = !hce_postRush && hce_canSee && l < 160;
+			if(hce_ffStepTics > 0) { hce_ffStepTics--; moveA = hce_ffStepAng; spd = hce_runSpeed * 0.7; }
+			HCE_Move(HCE_PickHeading(moveA, toT), spd);
+			if(fire) HCE_UpdateFiring(d);
+			HCE_PickMoveAnim();
+			return true;
+		}
+		// at the post: into its cover (the cover code takes him from here), or standing on it and firing
+		if(hce_postKind >= 2 && hce_cvState == 0 && hce_animLock <= 0 && level.maptime >= hce_cvNext && HCE_CoverCapable() && hce_canSee)
+		{
+			hce_cvSpot = (hce_post, hce_postZ); hce_cvSide = hce_postSide; hce_cvLow = hce_postKind == 2;
+			HCE_CvBegin();
+			HCE_Brake();
+			return true;
+		}
+		if(hce_ffStepTics > 0) { hce_ffStepTics--; HCE_Move(hce_ffStepAng, hce_runSpeed * 0.7); }
+		else HCE_Brake();
+		HCE_UpdateFiring(d);
+		HCE_PickMoveAnim();
+		return true;
+	}
+
+
 }
 
 // ----------------------------------------------------------------------
@@ -1059,6 +1141,14 @@ class HCE_Formation : Thinker
 	// rushing (-1 neither: reacting to contact), when it swaps, the side the maneuver element flanks on
 	int drill, bounding, boundAt, flank, lastEngaged;
 	double maxStrength;
+
+	// posts (HaloDoom_EnemyBase.HCE_PostFight): every squad Marine of this leader (the roster is only the followers:
+	// holders post too), the enemies the squad knows of (foes), and whose turn it is to be planned
+	Array<HaloDoom_EnemyBase> all;
+	Array<Actor> foes;
+	int knownTic, planIdx;
+	vector2 aPos, spotTmp; double aR, faceTmp; bool aRush;     // Anchor's answer, and Spot's (fields: the JIT can't take a local vector as an out)
+	void Enroll(HaloDoom_EnemyBase m) { if(all.Find(m) == all.Size()) all.Push(m); }
 
 	// The formation thinker for a leader (the player), found among the STAT_USER thinkers or made now.
 	static HCE_Formation Get(Actor leader)
@@ -1084,6 +1174,7 @@ class HCE_Formation : Thinker
 			if(!m || m.health <= 0 || !m.HCE_InSquad() || m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD) roster.Delete(i);
 		}
 		FightTick();
+		PostTick();
 		vector2 v = leader.vel.xy;
 		if(v.Length() > 1.5) heading += Actor.DeltaAngle(heading, atan2(v.y, v.x)) * 0.12;   // the way he's going
 		lead += (v - lead) * 0.08;
@@ -1188,6 +1279,173 @@ class HCE_Formation : Thinker
 			best.HCE_Say('Behind', 1.0, 35 * 5, true);
 			return;                                     // one at a time
 		}
+	}
+
+
+	// ---- posts ----
+	// Each tic: prunes the posting squad; every second gathers the enemies it knows of; every 3 tics plans one man's
+	// post in turn (a squad of 6 is replanned every half second or so)
+	void PostTick()
+	{
+		for(int i = all.Size() - 1; i >= 0; i--)
+		{
+			let m = all[i];
+			if(!m || m.health <= 0 || !m.HCE_InSquad() || m.hce_betrayed || m.HCE_SquadPlayer() != leader) { if(m) m.hce_postOn = false; all.Delete(i); }
+		}
+		if(all.Size() == 0 || !HaloDoom_EnemyBase.HCE_PostingOn()) return;
+		if(level.maptime >= knownTic) { knownTic = level.maptime + 35; Known(); }
+		if(level.maptime % 3) return;
+		planIdx = (planIdx + 1) % all.Size();
+		Plan(all[planIdx]);
+	}
+
+	// the enemies the squad knows of: its members' targets, and hostiles within 1024 of the player in sight of one of them
+	void Known()
+	{
+		foes.Clear();
+		for(int i = 0; i < all.Size(); i++)
+		{
+			let t = all[i].target;
+			if(t && t.health > 0 && all[i].HCE_IsEnemy(t) && foes.Find(t) == foes.Size()) foes.Push(t);
+		}
+		let it = BlockThingsIterator.Create(leader, 1024);
+		while(it.Next())
+		{
+			let e = it.thing;
+			if(!e.bISMONSTER || e.health <= 0 || e.bFRIENDLY || foes.Size() >= 12 || foes.Find(e) != foes.Size() || !all[0].HCE_IsEnemy(e)) continue;
+			for(int i = 0; i < all.Size() && i < 3; i++) if(all[i].CheckSight(e)) { foes.Push(e); break; }
+		}
+	}
+
+	// Where m's post should be near (aPos), how far from there he may post (aR; 0: just there) and whether he is a
+	// team on its bound (aRush: no shooting on the way). Holding: the spot he holds, within its leash (a stacked man: just
+	// there). Following, out of the drill: his formation slot. In the drill: Alpha (even slots) is the base of fire,
+	// anchored on its slot by the player; Bravo (odd) the maneuver element, anchored a bound (224) at a time toward
+	// its place round the enemy's flank while it is bounding, else on its post; breaking contact, both back past the
+	// player, a team either side.
+	void Anchor(HaloDoom_EnemyBase m)
+	{
+		if(m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD)
+		{
+			aPos = m.hce_holdPos.xy; aR = m.hce_breach ? 0 : (m.hce_holdTight ? 96 : 160); aRush = false;
+			return;
+		}
+		int k = roster.Find(m);
+		if(k == roster.Size()) { roster.Push(m); k = roster.Size() - 1; }
+		Actor foe = m.target;
+		if(drill == 0 || !foe) { Spot(m, spotTmp, faceTmp); aPos = spotTmp; aR = 64; aRush = false; return; }
+		int team = k % 2;
+		bool moving = bounding == team;
+		double away = foe.AngleTo(leader);
+		if(drill == 2)
+		{
+			aPos = leader.pos.xy + Actor.AngleToVector(away, 192) + Actor.AngleToVector(away + 90, team ? 72 : -72);
+			aR = 96; aRush = moving;
+			return;
+		}
+		if(team == 1)
+		{
+			double rr = clamp((m.hce_rangeMin + m.hce_rangeMax) * 0.5, 192, 448);
+			vector2 goal = foe.pos.xy + Actor.AngleToVector(away + flank * 75, rr);
+			vector2 off = goal - leader.pos.xy;
+			if(off.Length() > 640) goal = leader.pos.xy + off.Unit() * 640;
+			if(moving)
+			{
+				vector2 dv = goal - m.pos.xy;
+				aPos = dv.Length() > 224 ? m.pos.xy + dv.Unit() * 224 : goal;
+				aR = 96; aRush = true;
+			}
+			else { aPos = m.hce_postOn ? m.hce_post : m.pos.xy; aR = 64; aRush = false; }
+			return;
+		}
+		Spot(m, spotTmp, faceTmp); aPos = spotTmp; aR = 128; aRush = moving;
+	}
+
+	// distance from p to the segment ab
+	static double SegDist(vector2 p, vector2 a, vector2 b)
+	{
+		vector2 d = b - a;
+		double l2 = d dot d;
+		double t = l2 < 1 ? 0 : clamp(((p - a) dot d) / l2, 0, 1);
+		return (p - (a + d * t)).Length();
+	}
+
+	// what a spot costs for being in the player's way: in his aim (out to 1024) 60, in his way forward (256) 40
+	double LaneCost(vector2 p, double rad)
+	{
+		double c = 0;
+		vector2 lp = leader.pos.xy;
+		if(SegDist(p, lp, lp + Actor.AngleToVector(leader.angle, 1024)) < rad + 24) c += 60;
+		vector2 v = leader.vel.xy;
+		if(v.Length() > 2 && SegDist(p, lp, lp + v.Unit() * 256) < rad + 24) c += 40;
+		return c;
+	}
+
+	// m's post: his anchor, his present post and spots on up to three rings round the anchor out to its leash (8 a ring),
+	// each that is in the level on the anchor's floor with headroom, out of hazards, clear of walls and reachable, scored:
+	//   +40 a corner to lean out past, +35 a low wall, against his target; +/-6 per other foes enemy it hides from / shows him to
+	//   -30 standing with no line of fire to his target; -0.15 a unit from the anchor; the player's lane (LaneCost)
+	//   -100 another man's post; -50 in a squadmate's line of fire; +12 his present post (he keeps it unless beaten)
+	// The facing of a holding man turns to the nearest foes enemy, else back to the one ordered.
+	void Plan(HaloDoom_EnemyBase m)
+	{
+		Anchor(m);
+		vector2 a = aPos; double r = aR;
+		m.hce_postRush = aRush;
+		Actor foe = m.target && m.target.health > 0 ? m.target : null;
+		if(!foe)
+		{
+			double bd = 1e9;
+			for(int i = 0; i < foes.Size(); i++) { double dd = m.Distance2D(foes[i]); if(dd < bd) { bd = dd; foe = foes[i]; } }
+		}
+		double az = m.GetZAt(a.x, a.y, 0, GZF_ABSOLUTEPOS);
+		bool corner = m.HCE_HasAnim(HCE_A_COVER_L_IDLE) && m.HCE_HasAnim(HCE_A_COVER_R_IDLE);
+		bool low = m.HCE_HasAnim(HCE_A_CROUCH_IDLE);
+		vector2 best = a; double bestS = -1e9, bestZ = az; int bestK = 1, bestSd = 0;
+		int rings = r <= 0 ? 0 : (r < 72 ? 1 : r < 120 ? 2 : 3);     // rings over the whole leash
+		double step = rings ? r / rings : 0, a0 = frandom[HCEPost](0, 45);
+		for(int c = 0; c < 2 + rings * 8; c++)
+		{
+			vector2 p;
+			if(c == 0) p = a;
+			else if(c == 1) { if(!m.hce_postOn) continue; p = m.hce_post; }
+			else { int j = c - 2; p = a + Actor.AngleToVector(a0 + (j % 8) * 45 + (j / 8) * 22, step * (j / 8 + 1)); }
+			if((p - a).Length() > r + 1) continue;
+			double pz = m.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+			if(!level.IsPointInLevel((p, pz + 1)) || abs(pz - az) > 24) continue;
+			if(m.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - pz < m.height + 4) continue;
+			if(m.HCE_HazardAt(p) || !HaloDoom_EnemyBase.HCE_SpotFits(p, m.radius, pz)) continue;
+			if(c > 0 && m.HCE_WalkBlocked(m.pos + (0, 0, m.MaxStepHeight + 4), (p, pz + m.MaxStepHeight + 4))) continue;
+			int kind = 1, sd = 0; double sc = 0;
+			if(foe)
+			{
+				int k = m.HCE_CoverAt(p, pz, foe, corner, low, sd);
+				if(k == 1) { kind = 3; sc += 40; }
+				else if(k == 2) { kind = 2; sc += 35; }
+				else if(m.HCE_SightBlocked((p, pz + m.height * 0.85), foe.pos + (0, 0, foe.height * 0.6))) sc -= 30;
+			}
+			for(int e = 0, seen = 0; e < foes.Size() && seen < 5; e++)
+			{
+				if(foes[e] == foe) continue;
+				seen++;
+				sc += m.HCE_SightBlocked((p, pz + m.height * 0.85), foes[e].pos + (0, 0, foes[e].height * 0.75)) ? 6 : -6;
+			}
+			sc -= 0.15 * (p - a).Length();
+			sc -= LaneCost(p, m.radius);
+			for(int i = 0; i < all.Size(); i++)
+			{
+				let o = all[i];
+				if(o == m) continue;
+				if(o.hce_postOn && (o.hce_post - p).Length() < m.radius + o.radius + 16) sc -= 100;
+				if(o.target && o.target.health > 0 && SegDist(p, o.pos.xy, o.target.pos.xy) < m.radius + 18) sc -= 50;
+			}
+			if(m.hce_postOn && (p - m.hce_post).Length() < 24) sc += 12;
+			if(sc > bestS) { bestS = sc; best = p; bestZ = pz; bestK = kind; bestSd = sd; }
+		}
+		m.hce_post = best; m.hce_postZ = bestZ; m.hce_postKind = bestK; m.hce_postSide = bestSd;
+		m.hce_postScore = bestS; m.hce_postOn = true; m.hce_postTic = level.maptime;
+		if(m.hce_squadOrder == HaloDoom_EnemyBase.HCE_ORDER_HOLD && m.hce_onPerimeter)
+			m.hce_holdFace = foe ? atan2(foe.pos.y - best.y, foe.pos.x - best.x) : m.hce_holdFace0;
 	}
 
 	// Distance to the nearest wall from the leader in direction 'ang', up to 192 units (192 when nothing is hit).

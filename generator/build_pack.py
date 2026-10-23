@@ -803,9 +803,9 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'Elite': 'Elite_Dogmatic,Elite_Loose', 'EliteSpecial': 'Elite_Dogmatic,Elite_Loose',
           'Jackal': 'Jackal', 'JackalMajor': 'Jackal', 'Hunter': 'Hunter',
           # Marines: a random white Marine's voice from Halo CE and Halo 2 (Sergeant Johnson's face: always Johnson, marine_code)
-          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
-          'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious,Marine_SgtGruff',
+          'Marine': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious',
+          'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious',
+          'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious',
           # the Flood (extract_spv3.flood_sounds, shipped in the Flood pack by split_factions.py): the combat forms' growls,
           # the infection forms' squeals and the carriers' gurgles, and the XAM Campaign Overhaul's own (human and Elite idles,
           # the Flood Grunt's attack)
@@ -3040,7 +3040,8 @@ def add_marine_arsenal(variants):
         v['_late'] = True
         v['_ov'] = dict(overlay='stanchion', stance='rifle', spread=0.2, unique=True, johnson=True, melee=(40, 90), health=75, skin_as='HCE_MarineAssaultRifle')
         variants['characters\\marine\\sgt johnson'] = v
-    # Sergeant Stacker: the white sergeant (Halo CE's second sergeant's voice, 'sarge2', recorded by Pete Stacker),
+    # Sergeant Stacker: the white sergeant (Halo CE's second sergeant's voice, 'sarge2', merged with Halo 2's gruff
+    # sergeant, the same actor),
     # the sergeant's cap, full sleeves and the Battle Rifle he carries in Halo 2
     if base and 'characters\\marine\\sgt stacker' not in variants:
         v = copy.deepcopy(base)

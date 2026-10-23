@@ -9,7 +9,9 @@
 * Halo 2: sound\\dialog\\combat\\marine_* and sgt_* from 01b_spacestation.map + sounds_en.dat (HCE_H2_MAP /
   HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson, and marine_tough (a
   woman's voice, kept out of the random pool: Fire Team Raven's Lang speaks with it; marine_sassy isn't used).
-Halo CE's and Halo 2's Aussie and Johnson are the same men, so each pair becomes one set. The categories are
+Bisenti, Fitzgerald and Mendoza also get their recorded trade lines (NEW_TRADE). Halo CE's and Halo 2's Aussie and
+Johnson are the same men, and so are CE's second sergeant and Halo 2's gruff
+sergeant (Stacker's voice, Marine_Sarge), so each pair becomes one set. The categories are
 build_voices.py's (Alert, Taunt, Pain Nrml ...); a set without one borrows a related event there (FALLBACK).
 """
 import os as _os, sys as _sys
@@ -37,14 +39,31 @@ VOICES = {
     'Marine_Bisenti':     ('sound\\dialog\\marines\\bisenti\\', None),
     'Marine_Fitzgerald':  ('sound\\dialog\\marines\\fitzgerald\\', None),
     'Marine_Mendoza':     ('sound\\dialog\\marines\\mendoza\\', None),
-    'Marine_Sarge':       ('sound\\dialog\\sarge2\\', None),
+    'Marine_Sarge':       ('sound\\dialog\\sarge2\\', 'sgt_gruff'),   # Stacker: CE's second sergeant and Halo 2's gruff sergeant, one actor
     'Marine_Cross':       (None, 'marine_cross'),
     'Marine_Perez':       (None, 'marine_perez'),
     'Marine_Timid':       (None, 'marine_timid'),
     'Marine_SgtCautious': (None, 'sgt_cautious'),
-    'Marine_SgtGruff':    (None, 'sgt_gruff'),
     'Marine_Tough':       (None, 'marine_tough'),      # a woman's voice: only Fire Team Raven's Lang (build_pack.RAVEN_NAMES)
 }
+# Weapon-trade lines recorded for the Halo CE Marines who never reached Halo 2 (voices cloned from their CE lines):
+# 'Raw Assets/New Trade clips/<Name>/<Kind> N.mp3', <Name> the set without 'Marine_', each kind into its category
+NEW_TRADE = os.environ.get('HCE_NEW_TRADE', os.path.join(HERE, '..', 'Raw Assets', 'New Trade clips'))
+NEW_TRADE_CATS = {'Trade Pos': 'Thanks', 'Trade Mid': 'Trade Ok', 'Trade Neg': 'Worse Weapon', "Can't use": 'Refuse'}
+TRIM = 'silenceremove=start_periods=1:start_threshold=-50dB,areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse'
+
+
+def new_trade(voice, cat):
+    """the recorded trade lines of one set and category, in take order"""
+    d = os.path.join(NEW_TRADE, voice.replace('Marine_', '', 1))
+    if not os.path.isdir(d): return []
+    kinds = [k for k, c in NEW_TRADE_CATS.items() if c == cat]
+    def take(fn):
+        k, _, n = os.path.splitext(fn)[0].rpartition(' ')
+        return (k, int(n)) if k in kinds and n.isdigit() else None
+    return [os.path.join(d, fn) for fn in sorted((f for f in os.listdir(d) if take(f)), key=take)]
+
+
 # category -> (Halo CE combat2 tags <group>\<name>, Halo 2 tag leaves): up to PER_SOURCE (PER_CAT) lines from each
 # game, in this order. To add a category, add it here and in build_voices.py's CAT.
 PLAN = {
@@ -194,6 +213,9 @@ def main(only=()):
                     if duration(p) < 0.15: continue
                     n += 1; took += 1
                     ogg_from_wav(p, os.path.join(od, f'{cat} {n}.ogg'))
+            for p in new_trade(voice, cat):
+                n += 1
+                ogg_from_wav(p, os.path.join(od, f'{cat} {n}.ogg'), TRIM)
             if n: counts[cat] = n
         report[voice] = counts
         print(f'{voice:20s}', sum(counts.values()), 'lines', counts)

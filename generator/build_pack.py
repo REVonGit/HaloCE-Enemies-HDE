@@ -3175,6 +3175,7 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst assault rifle':       ('marine_armored assault rifle', None),
     'marine odst assault rifle major': ('marine_armored assault rifle major', None),
     'marine odst shotgun':             ('marine_armored shotgun major', None),
+    'marine odst ma37':                ('marine_armored ma37', None),          # Shigure's MA37
     'marine odst raven green':         ('marine_armored shotgun major', 'green'),
     'marine odst raven orange':        ('marine_armored battle rifle', 'orange'),
     'marine odst raven blue':          ('marine_armored assault rifle', 'blue'),
@@ -3184,6 +3185,7 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst halo2':               ('marine_armored assault rifle', None, 'h2_odst_body'),
     'marine odst halo2 shotgun':       ('marine_armored shotgun major', None, 'h2_odst_body'),
     'marine odst halo2 battle rifle':  ('marine_armored battle rifle', None, 'h2_odst_body'),
+    'marine odst halo2 ma37':          ('marine_armored ma37', None, 'h2_odst_body'),
     # Elefant's two closed kit helmets on Spiral's body in place of its own helmet (odst_helmet_code)
     'marine odst closed helmet':       ('marine_armored battle rifle', None, 'helmet_closed', 'silver'),
     'marine odst enclosed helmet':     ('marine_armored shotgun major', None, 'helmet_enclosed'),
@@ -3195,6 +3197,18 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst rocketeer':           ('marine_armored rocket launcher', None, 'helmet_enclosed'),
     'marine odst sniper':              ('marine_armored sniper', None, 'helmet_closed', 'silver'),
 }
+# Fire Team Raven by name: colour -> (the name over them, voice set or None for the usual random Marine voice). Their
+# a10 colours: blue (Raven Actual), orange (called red), green, purple. Lang speaks with Halo 2's female Marine voice
+# (marine_tough: extract_marine_voices.py's Marine_Tough)
+RAVEN_NAMES = {'blue':   ('SSGT. Ethan A. Graves', None),
+               'orange': ('SGT. Marcus B. Hudson', None),
+               'green':  ('CPL. Victor C. Ramos', None),
+               'purple': ('CPL. Ava D. Lang', 'Marine_Tough')}
+def raven_code(colour):
+    """ZScript giving a Fire Team Raven member his (or her) own name in place of a rolled one"""
+    name = RAVEN_NAMES[colour][0]
+    return (f'\t// Fire Team Raven: {name}\n'
+            f'\toverride void HCE_RollName() {{ hce_rankName = "{name}"; }}\n')
 ODST_HELMET_SURFS = (1, 2)        # Spiral's ODST: its helmet and visor surfaces (MarineODST.iqm meshes head_1, head_2)
 ODST_ALL_SURFS = (0, 1, 2, 3, 4)  # all of it (arms, head_1, head_2, legs_3, legs_4): hidden under a whole body
 ODST_BODIES = {'h2_odst_body'}    # kit pieces that are a whole body, not a helmet
@@ -3256,10 +3270,13 @@ def add_odsts(ai):
         v['_late'] = True
         ov = dict(v.get('_ov') or {})
         ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
-        if raven: ov['raven'] = raven
+        if raven:
+            ov['raven'] = raven
+            ov['code'] = ov.get('code', '') + raven_code(raven)
+            if RAVEN_NAMES[raven][1]: ov['voices'] = RAVEN_NAMES[raven][1]
         ex, sf = ODST_EXTRAS.get(vn, ((), None))
         if helmet: ov['code'] = ov.get('code', '') + odst_helmet_code(helmet, visor=visor, extras=ex, surfs=sf)
-        if helmet in ODST_BODIES and not ov.get('stance'): ov['stance'] = dict(ODST_BODY_STANCE)
+        if helmet in ODST_BODIES and ov.get('stance') in (None, '', 'rifle'): ov['stance'] = dict(ODST_BODY_STANCE)   # (an arsenal gun's CE rifle stance too)
         v['_ov'] = ov
         ai['variants'][key] = v
 

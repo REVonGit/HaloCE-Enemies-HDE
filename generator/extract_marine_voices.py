@@ -7,8 +7,8 @@
   sound\\dialog\\sargeant\\* (Sergeant Johnson) / sound\\dialog\\sarge2\\* (the second sergeant) from the Xbox
   campaign maps (HCE_MAPS), Xbox ADPCM -> Vorbis.
 * Halo 2: sound\\dialog\\combat\\marine_* and sgt_* from 01b_spacestation.map + sounds_en.dat (HCE_H2_MAP /
-  HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson (the women's voices,
-  marine_sassy and marine_tough, aren't used).
+  HCE_H2_SOUNDS): aussie, cross, perez, timid, the cautious and gruff sergeants and Johnson, and marine_tough (a
+  woman's voice, kept out of the random pool: Fire Team Raven's Lang speaks with it; marine_sassy isn't used).
 Halo CE's and Halo 2's Aussie and Johnson are the same men, so each pair becomes one set. The categories are
 build_voices.py's (Alert, Taunt, Pain Nrml ...); a set without one borrows a related event there (FALLBACK).
 """
@@ -43,6 +43,7 @@ VOICES = {
     'Marine_Timid':       (None, 'marine_timid'),
     'Marine_SgtCautious': (None, 'sgt_cautious'),
     'Marine_SgtGruff':    (None, 'sgt_gruff'),
+    'Marine_Tough':       (None, 'marine_tough'),      # a woman's voice: only Fire Team Raven's Lang (build_pack.RAVEN_NAMES)
 }
 # category -> (Halo CE combat2 tags <group>\<name>, Halo 2 tag leaves): up to PER_SOURCE (PER_CAT) lines from each
 # game, in this order. To add a category, add it here and in build_voices.py's CAT.

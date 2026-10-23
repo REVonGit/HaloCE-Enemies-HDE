@@ -275,6 +275,7 @@ def wid_of(name):
     return src if kind == 'ce' and name not in FIX else 'm_' + name      # Halo CE's own ids stay; the rest get m_ (no clash with CE's)
 
 MARINES = ['Marine', 'MarineArmored']       # the bodies overlays() builds a full set of weapon overlays for
+SHARES_OVERLAYS = {'MarineODST': 'Marine'}   # bodies that wear another's overlays (the same skeleton and hand)
 
 def hand_frame(char, ref='assault_rifle'):
     """(R, t, joint) taking Halo weapon space to the character's bind pose at its gun hand, recovered exactly from the
@@ -432,6 +433,17 @@ def overlays():
         meta['arsenal'] = made[char]
         json.dump(meta, open(f'{od}/{char}.json', 'w'), indent=1)
         print(char, 'weapon overlays', len(made[char]))
+    # bodies on the Marine's skeleton that carry the Marine's own overlays (extract_odst.py copied them when it ran):
+    # given the fresh set, so a rebuilt gun reaches them too
+    for char, src in SHARES_OVERLAYS.items():
+        od, sd = f'{OUT}/models/{char}', f'{OUT}/models/{src}'
+        if not os.path.exists(f'{od}/{char}.json') or src not in made: continue
+        meta = json.load(open(f'{od}/{char}.json'))
+        meta['arsenal'] = made[src]
+        for a in made[src].values():
+            for fn in [a['model']] + a['materials']: shutil.copy(f'{sd}/{fn}', f'{od}/{fn}')
+        json.dump(meta, open(f'{od}/{char}.json', 'w'), indent=1)
+        print(char, 'weapon overlays', len(made[src]), '(the', src + "'s)")
 
 def main(only=None):
     """build every ARSENAL weapon's pkl (only: just these names) by its source kind, run its FIX, print its bounds"""

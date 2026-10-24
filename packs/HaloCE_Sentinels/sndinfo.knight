@@ -90,10 +90,38 @@ HCE/KnightSnd/spot_player_spartan_ii_enemy_1 "sounds/hce_knight/spot_player_spar
 HCE/KnightSnd/spot_player_spartan_ii_enemy_2 "sounds/hce_knight/spot_player_spartan_ii_enemy_2.ogg"
 HCE/KnightSnd/spot_player_spartan_iii_enemy "sounds/hce_knight/spot_player_spartan_iii_enemy.ogg"
 HCE/KnightSnd/spot_player_spartan_iv_enemy "sounds/hce_knight/spot_player_spartan_iv_enemy.ogg"
+HCE/KnightSnd/h4_death_1 "sounds/hce_knight/h4_death_1.ogg"
+HCE/KnightSnd/h4_death_2 "sounds/hce_knight/h4_death_2.ogg"
+HCE/KnightSnd/h4_death_3 "sounds/hce_knight/h4_death_3.ogg"
+HCE/KnightSnd/h4_death_4 "sounds/hce_knight/h4_death_4.ogg"
+HCE/KnightSnd/h4_death_5 "sounds/hce_knight/h4_death_5.ogg"
+HCE/KnightSnd/h4_death_6 "sounds/hce_knight/h4_death_6.ogg"
+HCE/KnightSnd/h4_death_7 "sounds/hce_knight/h4_death_7.ogg"
+HCE/KnightSnd/h4_death_8 "sounds/hce_knight/h4_death_8.ogg"
+HCE/KnightSnd/h4_death_fall_1 "sounds/hce_knight/h4_death_fall_1.ogg"
+HCE/KnightSnd/h4_death_fall_2 "sounds/hce_knight/h4_death_fall_2.ogg"
+HCE/KnightSnd/h4_death_fall_3 "sounds/hce_knight/h4_death_fall_3.ogg"
+HCE/KnightSnd/h4_death_fall_4 "sounds/hce_knight/h4_death_fall_4.ogg"
+HCE/KnightSnd/h4_death_fall_5 "sounds/hce_knight/h4_death_fall_5.ogg"
+HCE/KnightSnd/h4_death_fall_6 "sounds/hce_knight/h4_death_fall_6.ogg"
+HCE/KnightSnd/h4_death_fall_7 "sounds/hce_knight/h4_death_fall_7.ogg"
+HCE/KnightSnd/h4_death_fall_8 "sounds/hce_knight/h4_death_fall_8.ogg"
+HCE/KnightSnd/h4_death_major_1 "sounds/hce_knight/h4_death_major_1.ogg"
+HCE/KnightSnd/h4_death_major_10 "sounds/hce_knight/h4_death_major_10.ogg"
+HCE/KnightSnd/h4_death_major_2 "sounds/hce_knight/h4_death_major_2.ogg"
+HCE/KnightSnd/h4_death_major_3 "sounds/hce_knight/h4_death_major_3.ogg"
+HCE/KnightSnd/h4_death_major_4 "sounds/hce_knight/h4_death_major_4.ogg"
+HCE/KnightSnd/h4_death_major_5 "sounds/hce_knight/h4_death_major_5.ogg"
+HCE/KnightSnd/h4_death_major_6 "sounds/hce_knight/h4_death_major_6.ogg"
+HCE/KnightSnd/h4_death_major_7 "sounds/hce_knight/h4_death_major_7.ogg"
+HCE/KnightSnd/h4_death_major_8 "sounds/hce_knight/h4_death_major_8.ogg"
+HCE/KnightSnd/h4_death_major_9 "sounds/hce_knight/h4_death_major_9.ogg"
 HCE/KnightSnd/h4_derez_1 "sounds/hce_knight/h4_derez_1.ogg"
 HCE/KnightSnd/h4_derez_2 "sounds/hce_knight/h4_derez_2.ogg"
 HCE/KnightSnd/h4_derez_3 "sounds/hce_knight/h4_derez_3.ogg"
 $random HCE/SentinelKnight/CarrierBlow { HCE/KnightSnd/carrier_form_about_to_blow_call_out_1 HCE/KnightSnd/carrier_form_about_to_blow_call_out_2 HCE/KnightSnd/carrier_form_about_to_blow_call_out_3 }
+$random HCE/SentinelKnight/Death { HCE/KnightSnd/h4_death_1 HCE/KnightSnd/h4_death_2 HCE/KnightSnd/h4_death_3 HCE/KnightSnd/h4_death_4 HCE/KnightSnd/h4_death_5 HCE/KnightSnd/h4_death_6 HCE/KnightSnd/h4_death_7 HCE/KnightSnd/h4_death_8 }
+$random HCE/SentinelKnight/DeathHard { HCE/KnightSnd/h4_death_fall_1 HCE/KnightSnd/h4_death_fall_2 HCE/KnightSnd/h4_death_fall_3 HCE/KnightSnd/h4_death_fall_4 HCE/KnightSnd/h4_death_fall_5 HCE/KnightSnd/h4_death_fall_6 HCE/KnightSnd/h4_death_fall_7 HCE/KnightSnd/h4_death_fall_8 HCE/KnightSnd/h4_death_major_1 HCE/KnightSnd/h4_death_major_10 HCE/KnightSnd/h4_death_major_2 HCE/KnightSnd/h4_death_major_3 HCE/KnightSnd/h4_death_major_4 HCE/KnightSnd/h4_death_major_5 HCE/KnightSnd/h4_death_major_6 HCE/KnightSnd/h4_death_major_7 HCE/KnightSnd/h4_death_major_8 HCE/KnightSnd/h4_death_major_9 }
 $random HCE/SentinelKnight/Derez { HCE/KnightSnd/h4_derez_1 HCE/KnightSnd/h4_derez_2 HCE/KnightSnd/h4_derez_3 }
 $random HCE/SentinelKnight/FirstFlood { HCE/KnightSnd/level_start_first_flood_level_1 HCE/KnightSnd/level_start_first_flood_level_2 HCE/KnightSnd/level_start_first_flood_level_3 }
 $random HCE/SentinelKnight/KillBrute { HCE/KnightSnd/kill_brute_1 HCE/KnightSnd/kill_brute_2 HCE/KnightSnd/kill_brute_3 HCE/KnightSnd/kill_brute_4 HCE/KnightSnd/kill_brute_5 }

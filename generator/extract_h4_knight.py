@@ -4,9 +4,15 @@
 
 * the dissolve: the event play_fx_knight_derez in halo4\\sound\\pc\\sfxbank.pck (HCE_H4_SFXBANK), its sounds' media
   from the banks' own DATA;
-* the death cries: the Knight's dialogue (storm_knight01 ...\\09_involuntary\\dth, dth_mjr, dth_fall), streamed from
-  halo4\\sound\\pc\\english(us)\\soundstream.pck (HCE_H4_VOSTREAM, whole or as 7-Zip's numbered pieces: lib/splitfile)
-  and found through english(us)\\soundbank.pck (HCE_H4_VOBANK).
+* the death cries: the Knight's combat dialogue (combat\\storm_knight01\\default\\09_involuntary\\dth, dth_mjr,
+  dth_fall), one of the external files in halo4\\sound\\pc\\english(us)\\soundstream.pck (HCE_H4_VOSTREAM, whole or
+  as 7-Zip's numbered pieces: lib/splitfile). Their 64-bit ids are the game's own (no name hash found), but the
+  package stores them in the alphabetical order of their paths, and a Halo 4 map (HCE_H4_MAP: any with Knights; its
+  string table lists every combat line's .wav path) gives those paths: the n-th path in sorted order is the n-th file
+  by offset. Checked on ff151_mezzanine: the voice boundaries this predicts (masterchief / _fem / crawler / elites ...
+  jackal | knight) fall where the audio changes, and the Knight's line lengths fit its categories (dodges and dives
+  ~1 s, idles and searches 3-6 s). Some takes share a length (dth 05-08 and dth_fall 05-08, dth_fall 01-04 and
+  dth_mjr 01-04) but are different recordings; an exact repeat would be kept once.
 Wwise keeps no names, only 32-bit FNV-1 hashes of them (lowercased), so events are looked up by hashing their names.
 The media are Wwise Vorbis: vgmstream-cli (HCE_VGMSTREAM) decodes them, ffmpeg writes the Vorbis files, downmixed to
 mono. split_factions.knight_voice ships knight_h4/ in the Sentinels pack (KNIGHT_H4_LINES: the events they play for).
@@ -22,6 +28,10 @@ UP = '/mnt/user-data/uploads/Halo The Master Chief Collection'
 SFXBANK = os.environ.get('HCE_H4_SFXBANK', f'{UP}/halo4/sound/pc/sfxbank.pck')
 VOBANK = os.environ.get('HCE_H4_VOBANK', f'{UP}/halo4/sound/pc/english(us)/soundbank.pck')
 VOSTREAM = os.environ.get('HCE_H4_VOSTREAM', f'{UP}/Split/soundstream.pck')
+H4_MAP = os.environ.get('HCE_H4_MAP', f'{UP}/halo4/maps/ff151_mezzanine.map')
+KNIGHT_VOICE = 'combat\\storm_knight01\\default\\09_involuntary\\'
+# knight_h4 file stem -> the dialogue folder its takes come from
+DEATHS = {'Death': 'dth', 'Death Major': 'dth_mjr', 'Death Fall': 'dth_fall'}
 VGMSTREAM = os.environ.get('HCE_VGMSTREAM', 'vgmstream-cli')
 DEREZ_EVENT = 'play_fx_knight_derez'
 
@@ -120,6 +130,29 @@ def main():
         if f.startswith('Derez '): os.remove(os.path.join(OUT, f))
     for i, s in enumerate(sorted(srcs), 1): wem_to_ogg(media[s], f'{OUT}/Derez {i}.ogg')
     print('Derez', len(srcs), 'takes')
+    if not (splitfile.exists(VOSTREAM) and os.path.exists(H4_MAP)):
+        print('death cries skipped: no', VOSTREAM if not splitfile.exists(VOSTREAM) else H4_MAP); return
+    import hashlib
+    m = open(H4_MAP, 'rb').read()
+    paths = sorted(set(x.group().decode() for x in re.finditer(rb'combat\\[a-z0-9_\\]{3,200}\.wav', m)))
+    with splitfile.open(VOSTREAM) as f:
+        ext = sorted(read_pck(f)['ext'], key=lambda e: e['off'])
+        seen = set()
+        for stem, folder in DEATHS.items():
+            for g in os.listdir(OUT):
+                if re.match(re.escape(stem) + r' \d+\.ogg$', g): os.remove(os.path.join(OUT, g))
+            n = 0
+            for i, p in enumerate(paths):
+                if not p.startswith(KNIGHT_VOICE + folder + '\\'): continue
+                e = ext[i]; f.seek(e['off']); data = f.read(e['size'])
+                with tempfile.TemporaryDirectory() as t:              # the same take filed twice: kept once
+                    open(f'{t}/a.wem', 'wb').write(data)
+                    pcm = subprocess.run([VGMSTREAM, '-p', f'{t}/a.wem'], capture_output=True).stdout
+                key = hashlib.sha1(pcm[44:]).hexdigest()
+                if key in seen: continue
+                seen.add(key); n += 1
+                wem_to_ogg(data, f'{OUT}/{stem} {n}.ogg')
+            print(stem, n, 'takes')
 
 
 if __name__ == '__main__':

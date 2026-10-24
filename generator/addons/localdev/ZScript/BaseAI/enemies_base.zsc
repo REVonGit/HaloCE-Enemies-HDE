@@ -5259,7 +5259,8 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// ------------------------------------------------------------------
 	// The derez: a body killed by a Forerunner weapon burns away in cells of hard light in that weapon's colour (Halo 4's
-	// Promethean dissolve, recreated: the derez shader on every skin, shaders/hce_derez.fp). The Covenant pack's
+	// Promethean dissolve, recreated: the derez shader on every skin, shaders/hce_derez.fp), with Halo 4's dissolve
+	// sound (HCE/Derez, the Covenant pack's sndinfo.derez). The Covenant pack's
 	// HCE_ForerunnerDerez handler starts it (HCE_Derez with the weapon's colour slot); the Sentinel Knights run their own.
 	// The shader reads alpha just under 1 as the colour slot and the progress: alpha = 1 - HCE_DEREZ_BAND x (slot +
 	// progress) / HCE_DEREZ_SLOTS (the shader's DEREZ_BAND and SLOTS). Embers in the colour rise off it; at the end the
@@ -5332,6 +5333,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_derezCol = HCE_DerezColor(slot);
 		hce_reviveTics = 0;                      // a Flood form feigning death doesn't get up from this
 		bSHOOTABLE = false;
+		A_StartSound("HCE/Derez", CHAN_7, CHANF_OVERLAP);   // Halo 4's Promethean dissolve (the Covenant pack's sndinfo.derez)
 		return true;
 	}
 	void HCE_DerezTick()

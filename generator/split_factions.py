@@ -581,6 +581,17 @@ def main():
             with open(f'{d}/zscript.txt', 'a') as zf: zf.write('#include "ZScript/HaloCE/hce_forerunner.zsc"\n')
             with open(f'{d}/cvarinfo.txt', 'a') as cf:
                 cf.write('server bool hce_forerunnerderez = true;  // a kill by a Forerunner weapon derezzes the body in the shot\'s colour\n')
+            # the derez sound (Halo 4's Knight dissolve, knight_h4/Derez N.ogg): HCE/Derez, played by HCE_Derez
+            takes = sorted(f for f in os.listdir(KNIGHT_H4) if re.match(r'Derez \d+\.ogg$', f)) if os.path.isdir(KNIGHT_H4) else []
+            if takes:
+                os.makedirs(f'{d}/sounds/hce_derez', exist_ok=True)
+                out = ["// Halo 4's Promethean dissolve (extract_h4_knight.py): a body derezzing (HaloDoom_EnemyBase.HCE_Derez)"]
+                for i, fn in enumerate(takes, 1):
+                    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{KNIGHT_H4}/{fn}', '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5',
+                                    f'{d}/sounds/hce_derez/derez_{i}.ogg'], check=True)
+                    out.append(f'HCE/DerezSnd/derez_{i} "sounds/hce_derez/derez_{i}.ogg"')
+                out.append('$random HCE/Derez { ' + ' '.join(f'HCE/DerezSnd/derez_{i}' for i in range(1, len(takes) + 1)) + ' }')
+                open(f'{d}/sndinfo.derez', 'w').write('\n'.join(out) + '\n')
             if 'AddEventHandlers' in mi: mi = mi.replace('AddEventHandlers = "HCE_HaloGoreHandler"', 'AddEventHandlers = "HCE_HaloGoreHandler", "HCE_ForerunnerDerez"')
             else: mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_ForerunnerDerez"\n}\n\n' + mi
         open(f'{d}/mapinfo.txt', 'w').write(mi)

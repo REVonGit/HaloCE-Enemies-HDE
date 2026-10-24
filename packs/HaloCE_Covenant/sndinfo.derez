@@ -1,0 +1,5 @@
+// Halo 4's Promethean dissolve (extract_h4_knight.py): a body derezzing (HaloDoom_EnemyBase.HCE_Derez)
+HCE/DerezSnd/derez_1 "sounds/hce_derez/derez_1.ogg"
+HCE/DerezSnd/derez_2 "sounds/hce_derez/derez_2.ogg"
+HCE/DerezSnd/derez_3 "sounds/hce_derez/derez_3.ogg"
+$random HCE/Derez { HCE/DerezSnd/derez_1 HCE/DerezSnd/derez_2 HCE/DerezSnd/derez_3 }

@@ -233,6 +233,11 @@ material texture "models/hce_dig/Brute/skins/brute_tartarus_brute_head.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce_dig/brightmap_none.png"
 }
+material texture "models/hce_dig/Brute/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_none.png"
+}
 material texture "models/hce_dig/BruteKit/kit_Brute_brute.jpg"
 {
 	shader "shaders/hce_derez.fp"
@@ -638,6 +643,11 @@ material texture "models/hce_dig/Drone/skins/droneultraplasmarifle_drone_4.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce_dig/brightmap_none.png"
 }
+material texture "models/hce_dig/Drone/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_none.png"
+}
 material texture "models/hce_dig/EliteRifle/skins/elitecommanderplasmacarbine_eliterifle_0.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -923,6 +933,11 @@ material texture "models/hce_dig/EliteZealot/skins/eliteultrazealotenergysword_e
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce_dig/brightmap_none.png"
 }
+material texture "models/hce_dig/EliteZealot/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_none.png"
+}
 material texture "models/hce_dig/Engineer/skins/engineer_engineer_0.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -932,6 +947,11 @@ material texture "models/hce_dig/Engineer/skins/engineer_engineer_1.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce_dig/Engineer/Engineer_1_bm.png"
+}
+material texture "models/hce_dig/Engineer/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_none.png"
 }
 material texture "models/hce_dig/H2Jackal/skins/h2jackal_helmet_ce.png"
 {

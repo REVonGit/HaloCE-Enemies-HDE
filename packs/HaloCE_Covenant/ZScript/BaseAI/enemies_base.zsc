@@ -151,7 +151,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		super.Tick();
 		if(hce_derezSlot > 0 && !isFrozen()) { HCE_DerezTick(); if(bDestroyed) return; }
-		if(!isFrozen()) HCE_ShieldGlowTick();
+		// the shield flare keeps up with the body: placed and turned where the body is now, every tic (its own tick runs too)
+		if(hce_shellActor) { hce_shellActor.SetOrigin(pos, true); hce_shellActor.angle = angle; hce_shellActor.pitch = pitch; hce_shellActor.roll = roll; }
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
@@ -5294,37 +5295,6 @@ class HaloDoom_EnemyBase : Actor abstract
 		return HCE_DerezColor(slot);
 	}
 
-	// ------------------------------------------------------------------
-	// The energy-shield flare, drawn on the body (the derez shader's shield band; it used to be a second actor, a copy
-	// of the model, following the body). hce_shieldFlare is how bright it flares: raised by HCE_Shield.DisplayShields on a
-	// hit (0.55, 0.8 under a quarter shield), on recharging from empty (0.5) and while recharging (0.18), and down
-	// 0.045 a tic. It reaches the shader as alpha in the shield band: 0.9 - 0.1 x (tint + strength) / 8, the tint
-	// from HCE_ShieldGlow (the generated classes: build_pack.SHIELD_TINTS' order, 1-based; 0 = none). No flare while
-	// cloaked, derezzing or dead, or when HCE_CanShieldGlow says no (a Knight phasing).
-	// ------------------------------------------------------------------
-	double hce_shieldFlare;
-	bool hce_flareOn;
-	virtual int HCE_ShieldGlow() { return 0; }
-	virtual bool HCE_CanShieldGlow() { return true; }
-	void HCE_ShieldGlowTick()
-	{
-		if(hce_derezSlot > 0) return;
-		int k = HCE_ShieldGlow();
-		if(k <= 0) return;
-		if(hce_shieldFlare > 0) hce_shieldFlare = max(0, hce_shieldFlare - 0.045);
-		bool can = health > 0 && !bHCE_ActiveCamo && HCE_CanShieldGlow();
-		if(can && hce_shieldFlare > 0.01)
-		{
-			A_SetRenderStyle(0.9 - HCE_DEREZ_BAND * ((k - 1) + clamp(hce_shieldFlare, 0.001, 0.999)) / HCE_DEREZ_SLOTS, STYLE_Translucent);
-			hce_flareOn = true;
-		}
-		else if(hce_flareOn)
-		{
-			hce_flareOn = false;
-			if(!bHCE_ActiveCamo && HCE_CanShieldGlow()) A_SetRenderStyle(1.0, STYLE_Normal);
-		}
-	}
-
 	// starts the derez on a dead body (once); false if it can't
 	virtual bool HCE_Derez(int slot)
 	{
@@ -7565,15 +7535,7 @@ class HCE_Shield : ShieldProcessor
 		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
 		if(prevShields > 0 && shields <= 0) OnShieldBreak();
 		let e = HaloDoom_EnemyBase(Owner);
-		if(e && e.HCE_ShieldGlow() > 0)
-		{
-			// the shield flare, drawn on the body itself (the derez shader's shield band, HCE_ShieldGlowTick): a flash
-			// on every hit, a softer glow as it recharges
-			if(shields < prevShields - 0.5 && shields > 0) e.hce_shieldFlare = max(e.hce_shieldFlare, shields > maxshields * 0.25 ? 0.55 : 0.8);
-			else if(prevShields <= 0 && shields > 0) e.hce_shieldFlare = max(e.hce_shieldFlare, 0.5);
-			else if(shields > prevShields + 0.01 && shields < maxshields) e.hce_shieldFlare = max(e.hce_shieldFlare, 0.18);
-		}
-		else if(e && e.hce_shellActor)
+		if(e && e.hce_shellActor)
 		{
 			// the shield flare (a bright copy of the model): a flash on every hit, a softer glow as it recharges
 			Actor s = e.hce_shellActor;

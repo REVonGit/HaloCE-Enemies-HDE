@@ -36,6 +36,5 @@ vec4 ProcessTexel()
 		col = mix(col, vec3(1.0, 0.9, 0.7), smoothstep(0.0, 0.5, dp) * 0.6);
 		return vec4(min(col, vec3(1.0)), 1.0 / al);
 	}
-	// the shield flare's band (0.8 to 0.9: derez.fp) draws the body translucent: the core stays opaque
-	return vec4(min(col, vec3(1.0)), al >= 0.8 && al < 0.9 ? 1.0 / al : 1.0);
+	return vec4(min(col, vec3(1.0)), 1.0);
 }

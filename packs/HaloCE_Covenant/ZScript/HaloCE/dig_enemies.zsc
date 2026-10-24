@@ -228,7 +228,7 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override int HCE_ShieldGlow() { return 2; }      // its shield's flare colour (the derez shader's shield band)
+	override Name HCE_ShellClass() { return 'HCE_BruteShieldShell'; }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -236,32 +236,49 @@ class HCE_BruteBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(4);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(5);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(28);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(29);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(30);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 30, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_ShowStumps(hce_severed | (1 << 0));
 			HCE_SpawnLimb(0, (0.1345, -0.0001, 0.7725), 92.00, "models/hce_dig/Brute", 'Brute_gib_head.iqm', 31, 'gore_Brute.png', 0.0940);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			if(bDECOUPLEDANIMATIONS) SetNamedBoneScaling('l_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			if(hce_shellActor) hce_shellActor.SetNamedBoneScaling('l_upperarm', (0, 0, 0), SB_REPLACE, 0);
 			HCE_ShowStumps(hce_severed | (1 << 1));
 			HCE_SpawnLimb(1, (0.0952, 0.2310, 0.5749), 92.00, "models/hce_dig/Brute", 'Brute_gib_larm.iqm', 31, 'gore_Brute.png', 0.0892);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
 			HCE_HideSurface(20);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(21);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(22);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(23);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(24);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(25);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(26);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(27);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			if(bDECOUPLEDANIMATIONS) SetNamedBoneScaling('r_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			if(hce_shellActor) hce_shellActor.SetNamedBoneScaling('r_upperarm', (0, 0, 0), SB_REPLACE, 0);
 			HCE_ShowStumps(hce_severed | (1 << 2));
 			HCE_SpawnLimb(2, (0.1193, -0.2363, 0.5389), 92.00, "models/hce_dig/Brute", 'Brute_gib_rarm.iqm', 31, 'gore_Brute.png', 0.0734);
 			HCE_OnSever(2, true);
@@ -2408,6 +2425,11 @@ class HCE_BruteCaptainBeamRifle : HCE_BruteBase
 		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -3006,6 +3028,11 @@ class HCE_BruteCaptainPlasmaCaster : HCE_BruteBase
 		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -3594,6 +3621,11 @@ class HCE_BruteCaptainPlasmaRifle : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -4179,6 +4211,11 @@ class HCE_BruteCaptainShotgun : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -4778,6 +4815,11 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 2, 4, 5, 8, 10, 12, 15, 16, 17, 28 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -4813,6 +4855,9 @@ class HCE_BruteChieftainGravityHammer : HCE_BruteBase
 		return hce_gunOffset;
 	}
 }
+
+// energy-shield flare for the Brutes: the same model, every surface the glowing shield texture
+class HCE_BruteShieldShell : HCE_ShieldShell {}
 
 // HCE_BruteHonorGuardAssaultRifle: Halo variant "characters\brute\brute honor guard assault rifle", assault rifle, 150 body, 5 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -5363,6 +5408,11 @@ class HCE_BruteHonorGuardAssaultRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 6, 7, 8, 9, 11, 13, 14, 16, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -5965,6 +6015,11 @@ class HCE_BruteHonorGuardFuelRod : HCE_BruteBase
 		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 6, 7, 8, 9, 11, 13, 14, 16, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -6557,6 +6612,11 @@ class HCE_BruteHonorGuardPlasmaRifle : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 6, 7, 8, 9, 11, 13, 14, 16, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -7139,6 +7199,11 @@ class HCE_BruteJumpPackPlasmaRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -7731,6 +7796,11 @@ class HCE_BruteJumpPackSpiker : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -8328,6 +8398,11 @@ class HCE_BruteMajorPlasmaCarbine : HCE_BruteBase
 		}
 		else A_ChangeModel('None', 8, "", 'None', 0, "", 'None', CMDL_HIDEMODEL);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -8912,6 +8987,11 @@ class HCE_BruteMajorShotgun : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -9504,6 +9584,11 @@ class HCE_BruteMajorSpiker : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -10091,6 +10176,11 @@ class HCE_BruteMinorAssaultRifle : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -10677,6 +10767,11 @@ class HCE_BruteMinorPlasmaRifle : HCE_BruteBase
 		}
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
+	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	void HCE_HideWeaponSurfaces()
 	{
@@ -11270,6 +11365,11 @@ class HCE_BruteStalkerSpiker : HCE_BruteBase
 		for(int i = 0; i < pack.Size(); i++)
 			if(!pack[i].hce_berserk && (pack.Size() == 1 || frandom(0, 1) < 0.35)) pack[i].HCE_GoBerserk(true);
 	}
+	override void HCE_DressShellVariant(Actor s)
+	{
+		static const int H[] = { 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 30 };
+		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
 	void HCE_HideWeaponSurfaces()
 	{
 		HCE_HideSurface(20);
@@ -11621,7 +11721,7 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override int HCE_ShieldGlow() { return 4; }      // its shield's flare colour (the derez shader's shield band)
+	override Name HCE_ShellClass() { return 'HCE_DroneShieldShell'; }
 
 	// ---- Halo 2 Drone behaviour ----------------------------------------------------------------------
 	// darting flight above the target, sideways dodges when hit (char tag: 50% chance, 4 s apart), wall
@@ -11820,29 +11920,43 @@ class HCE_DroneBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(1);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(4);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(12);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(0, (0.2755, -0.0001, 0.5189), 80.00, "models/hce_dig/Drone", 'Drone_gib_head.iqm', 17, 'gore_Drone.png', 0.0316);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			HCE_HideSurface(13);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(15);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (0.1047, 0.2033, 0.3465), 80.00, "models/hce_dig/Drone", 'Drone_gib_larm.iqm', 18, 'gore_Drone.png', 0.0358);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
 			HCE_HideSurface(5);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(6);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(10);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(11);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(14);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(16);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/Drone", 'gore_Drone.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (0.1045, -0.2033, 0.3444), 80.00, "models/hce_dig/Drone", 'Drone_gib_rarm.iqm', 19, 'gore_Drone.png', 0.0358);
 			HCE_OnSever(2, true);
@@ -12333,6 +12447,9 @@ class HCE_DroneCaptainMajorNeedler : HCE_DroneBase
 		return (0, 0, 0);
 	}
 }
+
+// energy-shield flare for the Drones: the same model, every surface the glowing shield texture
+class HCE_DroneShieldShell : HCE_ShieldShell {}
 
 // HCE_DroneCaptainMajorPlasmaRifle: Halo variant "characters\drone\drone captain major plasma rifle", plasma rifle, 60 body / 45 shield, 1 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -13885,26 +14002,37 @@ class HCE_EliteRifleBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(2);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(12);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(0, (0.1664, 0.0003, 0.6444), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_head.iqm', 15, 'gore_EliteRifle.png', 0.0713);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			HCE_HideSurface(0);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 0, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(13);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (0.0048, 0.1506, 0.3901), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_larm.iqm', 16, 'gore_EliteRifle.png', 0.0454);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
 			HCE_HideSurface(6);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(10);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(11);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(14);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/EliteRifle", 'gore_EliteRifle.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (0.0058, -0.1484, 0.3862), 80.00, "models/hce_dig/EliteRifle", 'EliteRifle_gib_rarm.iqm', 17, 'gore_EliteRifle.png', 0.0446);
 			HCE_OnSever(2, true);
@@ -14781,6 +14909,7 @@ class HCE_EliteHonorGuardPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_rarm.iqm'; stub = 26; tex = 'gore_Elite.png'; break;
 		}
 	}
+	override Name HCE_ShellClass() { return 'HCE_EliteRifleHonorBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -16128,6 +16257,7 @@ class HCE_EliteRangerPlasmaCarbine : HCE_EliteRifleBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_rarm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
 		}
 	}
+	override Name HCE_ShellClass() { return 'HCE_EliteRifleRangerBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -16718,7 +16848,7 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override int HCE_ShieldGlow() { return 1; }      // its shield's flare colour (the derez shader's shield band)
+	override Name HCE_ShellClass() { return 'HCE_EliteZealotShieldShell'; }
 
 	override void HCE_Die()
 	{
@@ -16733,29 +16863,43 @@ class HCE_EliteZealotBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(12);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(15);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(20);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/EliteZealot", 'gore_EliteZealot.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(0, (0.2061, -0.0001, 0.6582), 80.00, "models/hce_dig/EliteZealot", 'EliteZealot_gib_head.iqm', 21, 'gore_EliteZealot.png', 0.0877);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(13);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(16);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(18);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/EliteZealot", 'gore_EliteZealot.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (0.0127, 0.1593, 0.5567), 80.00, "models/hce_dig/EliteZealot", 'EliteZealot_gib_larm.iqm', 22, 'gore_EliteZealot.png', 0.0486);
 			HCE_OnSever(1, false);
 			return true;
 		case 2:
 			HCE_HideSurface(10);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(11);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(14);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(17);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(19);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/EliteZealot", 'gore_EliteZealot.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (0.0127, -0.1594, 0.5567), 80.00, "models/hce_dig/EliteZealot", 'EliteZealot_gib_rarm.iqm', 23, 'gore_EliteZealot.png', 0.0484);
 			HCE_OnSever(2, true);
@@ -17084,6 +17228,9 @@ class HCE_EliteUltraZealotEnergySword : HCE_EliteZealotBase
 	}
 }
 
+// energy-shield flare for the EliteZealots: the same model, every surface the glowing shield texture
+class HCE_EliteZealotShieldShell : HCE_ShieldShell {}
+
 // ---- Engineer: the body every Engineer variant below is drawn with (characters\engineer\engineer): its size, blood and gore, the skins it
 // rolls and its cosmetics. Changing a number here changes every Engineer; one variant's numbers are in its own class
 class HCE_EngineerBase : HaloDoom_EnemyBase abstract
@@ -17137,6 +17284,7 @@ class HCE_EngineerBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	override Name HCE_ShellClass() { return 'HCE_EngineerShieldShell'; }
 	override void HCE_ResumeAnim()
 	{
 		if(hce_curAnim == 'None') return;
@@ -17404,6 +17552,182 @@ class HCE_Engineer : HCE_EngineerBase
 	}
 }
 
+// energy-shield flare for the Engineers: the same model, every surface the glowing shield texture
+class HCE_EngineerShieldShell : HCE_ShieldShell {}
+
+// ---- FloodBrute: the body every FloodBrute variant below is drawn with (characters\floodcombat_brute\floodcombat_brute): its size, blood and gore, the skins it
+// rolls and its cosmetics. Changing a number here changes every FloodBrute; one variant's numbers are in its own class
+class HCE_FloodBruteBase : HaloDoom_EnemyBase abstract
+{
+	Default
+	{
+		Monster;
+		+DECOUPLEDANIMATIONS
+		+FLOORCLIP
+		+DONTHARMSPECIES
+		+NOINFIGHTSPECIES
+		Species "HCE_FLOOD";
+		HaloDoom_EnemyBase.HCE_Enabled true;
+		HaloDoom_EnemyBase.HCE_Team HCE_TEAM_FLOOD;
+		Height 76;
+		Radius 30;
+		Mass 277;
+		PainChance 0;
+		Tag "FloodBrute";
+		BloodColor "76 70 3A";
+	}
+	States
+	{
+	Spawn:
+		HCEM A 1 HCE_Look();
+		Loop;
+	See:
+		HCEM A 1 HCE_Think();
+		Loop;
+	Death:
+		HCEM A 1 HCE_Die();
+		HCEM A 2 A_NoBlocking;
+	Dead:
+		HCEM A 1 HCE_CorpseTick();
+		Loop;
+	Raise:
+		HCEM A 1;
+		Goto See;
+	Pain:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		Goto See;
+	Pain.PlasmaStuck:
+		HCEM A 0 A_JumpIf(health <= 0, "Dead");
+		HCEM A 1 HCE_OnStuck();
+		Goto See;
+	}
+	override void HCE_ApplyAnim(Name n, int blend, bool loop)
+	{
+		SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);
+		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
+		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
+	}
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(hce_severed & (1 << limb)) return false;
+		switch(limb)
+		{
+		case 0:
+			HCE_HideSurface(6);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(24);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(25);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(26);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(27);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_ShowStumps(hce_severed | (1 << 0));
+			HCE_SpawnLimb(0, (0.0635, -0.0130, 0.8245), 92.00, "models/hce_dig/FloodBrute", 'FloodBrute_gib_head.iqm', 28, 'gore_FloodBrute.png', 0.0939);
+			HCE_OnSever(0, false);
+			return true;
+		case 1:
+			if(bDECOUPLEDANIMATIONS) SetNamedBoneScaling('b_l_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			if(hce_shellActor) hce_shellActor.SetNamedBoneScaling('b_l_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			HCE_ShowStumps(hce_severed | (1 << 1));
+			HCE_SpawnLimb(1, (0.0788, 0.2602, 0.4911), 92.00, "models/hce_dig/FloodBrute", 'FloodBrute_gib_larm.iqm', 28, 'gore_FloodBrute.png', 0.0786);
+			HCE_OnSever(1, false);
+			return true;
+		case 2:
+			HCE_HideSurface(17);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(18);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(19);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(20);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(21);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(22);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			HCE_HideSurface(23);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			if(bDECOUPLEDANIMATIONS) SetNamedBoneScaling('b_r_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			if(hce_shellActor) hce_shellActor.SetNamedBoneScaling('b_r_upperarm', (0, 0, 0), SB_REPLACE, 0);
+			HCE_ShowStumps(hce_severed | (1 << 2));
+			HCE_SpawnLimb(2, (0.1196, -0.2259, 0.5458), 92.00, "models/hce_dig/FloodBrute", 'FloodBrute_gib_rarm.iqm', 28, 'gore_FloodBrute.png', 0.0716);
+			HCE_OnSever(2, true);
+			return true;
+		}
+		return false;
+	}
+	void HCE_ShowStumps(int sev)
+	{
+		if(sev & (1 << 0)) A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 0, "models/hce_dig/FloodBrute", 'gore_FloodBrute.png', CMDL_USESURFACESKIN);
+		else A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 0, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(sev & (1 << 1)) A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 1, "models/hce_dig/FloodBrute", 'gore_FloodBrute.png', CMDL_USESURFACESKIN);
+		else A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(sev & (1 << 2)) A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 2, "models/hce_dig/FloodBrute", 'gore_FloodBrute.png', CMDL_USESURFACESKIN);
+		else A_ChangeModel('None', 9, "models/hce_dig/FloodBrute", 'FloodBrute_stumps.iqm', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+	}
+	override vector3 HCE_LimbOffset(int limb)
+	{
+		switch(limb)
+		{
+		case 0: return (5.8, -1.2, 91.0);
+		case 1: return (7.2, 23.9, 54.2);
+		case 2: return (11.0, -20.8, 60.3);
+		}
+		return (0, 0, -1000);
+	}
+	override int HCE_GunLimb() { return 2; }
+	override void HCE_ResumeAnim()
+	{
+		if(hce_curAnim == 'None') return;
+		int len = max(1, int(HCE_AnimTics(hce_curAnim) * 30.0 / 35.0));
+		int f = int((level.maptime - hce_animStartTic) * 30.0 / 35.0);
+		SetAnimation(hce_curAnim, -1, hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, hce_curLoop ? SAF_LOOP : 0);
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce_dig/FloodBrute", 'FloodBrute_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce_dig/FloodBrute", 'FloodBrute_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce_dig/FloodBrute", 'FloodBrute_blood3.iqm'); break;
+		}
+	}
+	override void HCE_BloodHideLimb(int limb)
+	{
+		switch(limb)
+		{
+		case 0:
+			A_ChangeModel('None', 7, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			A_ChangeModel('None', 7, "", 'None', 27, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+			break;
+		case 1:
+			break;
+		case 2:
+			break;
+		}
+	}
+	override void HCE_ShowGun(bool show)
+	{
+		super.HCE_ShowGun(show);
+		static const int W[] = { 17, 18, 19, 20, 21, 22, 23 };
+		for(int i = 0; i < W.Size(); i++)
+		{
+			if(show) HCE_ShowSurface(W[i]);
+			else HCE_HideSurface(W[i]);    // the guns it never held stay undrawn
+		}
+	}
+}
 
 
 
@@ -17477,36 +17801,57 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(4);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(11);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(22);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 27, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(0, (0.0903, 0.0033, 0.6346), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_head.iqm', 27, 'gore_H2Jackal.png', 0.0515);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			HCE_HideSurface(12);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(13);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(14);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(15);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(16);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(17);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(18);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(19);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(20);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(21);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(23);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 23, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(25);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 25, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 28, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (0.0951, 0.1777, 0.4162), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_larm.iqm', 28, 'gore_H2Jackal.png', 0.0291);
 			HCE_OnSever(1, true);
 			return true;
 		case 2:
 			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(10);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(24);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 24, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(26);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 26, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 29, "models/hce_dig/H2Jackal", 'gore_H2Jackal.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (0.0951, -0.1777, 0.4162), 80.00, "models/hce_dig/H2Jackal", 'H2Jackal_gib_rarm.iqm', 29, 'gore_H2Jackal.png', 0.0291);
 			HCE_OnSever(2, false);
@@ -19290,34 +19635,53 @@ class HCE_SlugManBase : HaloDoom_EnemyBase abstract
 		{
 		case 0:
 			HCE_HideSurface(17);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 17, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 20, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(0, (0.0328, -0.0002, 0.5878), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_head.iqm', 20, 'gore_SlugMan.png', 0.0314);
 			HCE_OnSever(0, false);
 			return true;
 		case 1:
 			HCE_HideSurface(1);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 1, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(2);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 2, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(3);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 3, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(4);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 4, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(5);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 5, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(6);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 6, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(7);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 7, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(8);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 8, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(9);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 9, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(10);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(11);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 11, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(12);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(13);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(14);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(15);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(16);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 16, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			HCE_HideSurface(18);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 18, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 21, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(1, (-0.0203, 0.1189, 0.4211), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_larm.iqm', 21, 'gore_SlugMan.png', 0.0480);
 			HCE_OnSever(1, true);
 			return true;
 		case 2:
 			HCE_HideSurface(19);
+			if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 19, "models/hce_dig/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 			A_ChangeModel('None', 0, "", 'None', 22, "models/hce_dig/SlugMan", 'gore_SlugMan.png', CMDL_USESURFACESKIN);
 			HCE_SpawnLimb(2, (-0.0200, -0.1205, 0.4189), 80.00, "models/hce_dig/SlugMan", 'SlugMan_gib_rarm.iqm', 22, 'gore_SlugMan.png', 0.0478);
 			HCE_OnSever(2, false);

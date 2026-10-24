@@ -220,8 +220,6 @@
 	int hce_kSlot;                          // the derez colour: 0 its own orange, or the Forerunner weapon that killed it
 	// a Knight runs its own dissolve (HCE_DissolveTick): a Forerunner weapon's kill only gives it that weapon's colour
 	override bool HCE_Derez(int slot) { hce_kSlot = clamp(slot, 0, HCE_DEREZ_SLOTS - 1); return true; }
-	// no shield flare while it phases through the ground or burns away (those set its alpha themselves)
-	override bool HCE_CanShieldGlow() { return hce_phase == 0 && hce_dissolve == 0; }
 	int hce_dissolve;
 	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
 	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays

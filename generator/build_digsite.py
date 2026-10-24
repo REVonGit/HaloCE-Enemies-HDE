@@ -1294,6 +1294,7 @@ def configure():
     bp.RANDOM_WEIGHTS.update({c: 2 for c in ('HCE_SlugManParticleBeam', 'HCE_SlugManPlasmaPistol')})
     bp.RANDOM_WEIGHTS.update({c: 3 for c in ('HCE_DronePlasmaPistol', 'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker')})
     bp.SHELL_TINT['Drone'] = DRONE_SHELL
+    bp.SHELL_TINT['Engineer'] = bp.SHELL_TINT['Elite']      # its 200-point shield flares in the Covenant's blue
     bp.BASE_CODE['Drone'] = DRONE_CODE    # every Drone shares it (the swarm finds its mates of any weapon)
     bp.WEAPON_CODE['particle beam'] = BEAM_CODE
     bp.WEAPON_CODE['plasma carbine'] = CARBINE_CODE
@@ -1443,7 +1444,7 @@ def build():
     gl, _used = bp.derez_materials(open(f'{PACK}/gldefs.dig').read(), skins, 'models/hce_dig/brightmap_none.png')
     open(f'{PACK}/gldefs.dig', 'w').write(gl)
     os.makedirs(f'{PACK}/shaders', exist_ok=True)
-    open(f'{PACK}/shaders/hce_derez.fp', 'w').write(bp.derez_shader())
+    open(f'{PACK}/shaders/hce_derez.fp', 'w').write(bp.DEREZ_SHADER)
     os.makedirs(f'{PACK}/models/hce_dig', exist_ok=True)
     Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{PACK}/models/hce_dig/brightmap_none.png')
 

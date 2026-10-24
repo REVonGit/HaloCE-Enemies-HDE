@@ -261,6 +261,8 @@ def elite_kit_code(pieces, mdir='hce', whole=False):
                         for g in [gibs.get(limb)] if g)
         out += ('\toverride void HCE_GibOverride(int limb, out String path, out Name model, out int stub, out Name tex)\n\t{\n'
                 '\t\tswitch(limb)\n\t\t{\n' + cases + '\t\t}\n\t}\n')
+    if whole:                             # its shield flare in the shape of the Halo 2 body (h2_shell_code)
+        out += f"\toverride Name HCE_ShellClass() {{ return 'HCE_{{HCE_CHAR}}{''.join(w.capitalize() for w in pieces[0].split('_'))}ShieldShell'; }}\n"
     if whole:
         out += ('\toverride void HCE_BloodHideClass()\n\t{\n\t\tsuper.HCE_BloodHideClass();\n\t\tstatic const int BS[] = { {HCE_BODY_SURFS} };\n'
                 + hide.replace('{idx}', '{HCE_BLOOD_IDX}') + '\t}\n')
@@ -286,6 +288,29 @@ def kit_shine(d):
         n = raster_normals(meshes, tex, im.size).copy()
         Image.fromarray((bake_reflection(rgb, n, spec, faces, k) * 255).astype(np.uint8)).save(f'{d}/{tex}')
         SKIN_PAIRS.append((f'{ELITE_KIT}/{tex}', f'{d}/{tex}'))
+
+def h2_shell_code(char, pieces, meta, pack, mdir, scs, shells):
+    """the energy-shield flare for a Halo 2 body worn over a CE Elite: the CE model with every surface hidden (it carries
+    the animation), the Halo 2 pieces over it as attachments, every surface of them the glowing shield texture. The
+    flare actor plays the Elite's animations (HCE_ApplyAnim), so the pieces move with it. Returns (ZScript, MODELDEF)"""
+    from iqm import read_iqm
+    name = f"HCE_{char}{''.join(w.capitalize() for w in pieces[0].split('_'))}ShieldShell"
+    if name in shells: return [], []
+    shells.add(name)
+    kit = f'{pack}/models/{mdir}/EliteKit'
+    bake_shell(SHELL_TINT[char], f'{kit}/ek_shieldshell.png')
+    lines = [f'\tPath "models/{mdir}/{char}"', f'\tModel 0 "{char}.iqm"', f'\tPath "models/{mdir}/weapons"']
+    lines += [f'\tSurfaceSkin 0 {i} "hce_hidden.png"' for i in range(len(meta.get('mesh_names') or meta['meshes']))]
+    lines += [f'\tPath "models/{mdir}/EliteKit"']
+    frames = ['\tFrameIndex HCEM A 0 0']
+    for k, p in enumerate(pieces):
+        n = len(read_iqm(f'{kit}/{p}.iqm')[1])
+        lines += [f'\tModel {k + 1} "{p}.iqm"'] + [f'\tSurfaceSkin {k + 1} {i} "ek_shieldshell.png"' for i in range(n)]
+        frames.append(f'\tFrameIndex HCEM A {k + 1} 0')
+    zs = [f'// energy-shield flare for the {pieces[0]} Elites: the Halo 2 body\'s shape\nclass {name} : HCE_ShieldShell {{}}\n']
+    md = [f'Model {name}\n{{\n' + '\n'.join(lines) + f'\n\tScale {scs:.1f} {scs:.1f} {scs * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n'
+          + '\n'.join(frames) + '\n}\n']
+    return zs, md
 
 def add_elite_h2_armour(variants):
     """The Honor Guard and Ranger Elites from ELITE_H2_ARMOUR (variants.py: rank -> ({gun: the CE variant it copies},
@@ -1487,6 +1512,19 @@ def hand_mask(char, mat, size):
 
 # SHELL_TINT: variants.py
 
+def bake_shell(tint, outpath):
+    """a shimmering energy texture: soft cells of light with bright sparks, in the shield's colour"""
+    if os.path.exists(outpath): return
+    rng = np.random.default_rng(7)
+    n = rng.random((32, 32)).astype(np.float32)
+    big = np.asarray(Image.fromarray((n * 255).astype(np.uint8)).resize((128, 128), Image.BICUBIC)).astype(np.float32) / 255.0
+    fine = rng.random((128, 128)).astype(np.float32)
+    v = np.clip(big * 0.85 + (fine > 0.985) * 0.9, 0, 1) ** 1.4
+    col = np.array(tint, dtype=np.float32).reshape(1, 1, 3)
+    o = col * (0.25 + 0.85 * v[..., None]) + (v[..., None] ** 4) * 0.5
+    os.makedirs(os.path.dirname(outpath), exist_ok=True)
+    Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+
 # Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
 SHIELD_SHADER = template('shaders/shield.fp')
 BUBBLE_SHADER = template('shaders/bubble.fp')
@@ -1524,8 +1562,11 @@ def gore_code(char, meta, mdir, sc):
         out.append(f'\t\tcase {GORE_LIMBS[L]}:\n')
         for si in d['surfaces']:
             out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
+            # the shield flare loses the limb too
+            out.append(f'\t\t\tif(hce_shellActor) hce_shellActor.A_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
         if d.get('bone'):                          # a collapsed limb (gore_kit.py: the Brute's arms): its bone scaled to
             out.append(f'\t\t\tif(bDECOUPLEDANIMATIONS) SetNamedBoneScaling(\'{d["bone"]}\', (0, 0, 0), SB_REPLACE, 0);\n')   # nothing, and all it carries
+            out.append(f'\t\t\tif(hce_shellActor) hce_shellActor.SetNamedBoneScaling(\'{d["bone"]}\', (0, 0, 0), SB_REPLACE, 0);\n')
         vs = d.get('variants')
         if vs and perms:
             # one stump and gib per permutation (the Grunts' two backs): the one this enemy wears
@@ -1590,7 +1631,9 @@ def perm_code(meta, mdir):
             f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n'
             '\t\tHCE_ResumeAnim();        // A_ChangeModel resets the animation the spawn started (idle, sleeping)\n\t}\n'
             f'\toverride void HCE_BloodHideClass()\n\t{{\n\t\tsuper.HCE_BloodHideClass();\n'
-            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel(\'None\', {BLOOD_IDX}, "", \'None\', hce_permHide[i], {hid});\n\t}}\n'
+            '\toverride void HCE_DressShell(Actor s)       // the shield flare wears the same permutation\n\t{\n\t\tsuper.HCE_DressShell(s);\n'
+            f'\t\tfor(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel(\'None\', 0, "", \'None\', hce_permHide[i], {hid});\n\t}}\n')
 
 
 def gun_code(meta, mdir, slot=None):
@@ -2192,7 +2235,7 @@ def build(cfg=None):
                   f'\toverride void HCE_ApplyAnim(Name n, int blend, bool loop)\n\t{{\n\t\tSetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);\n'
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n'
                   f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
-                  + (f"\toverride int HCE_ShieldGlow() {{ return {shield_tint_slot(char)}; }}      // its shield's flare colour (the derez shader's shield band)\n" if char in SHELL_TINT else '')
+                  + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:
@@ -2521,6 +2564,13 @@ def build(cfg=None):
                 extra += '\toverride bool HCE_HasLoadouts() { return false; }      // keeps the gun it is built around\n'
             if ov.get('overlay'): extra += overlay_gun_code(char, meta, mdir, ov, pack)
             extra += gunner_code(vname.split(chr(92))[-1], meta, S * msc, ov)
+            # the shield flare is one model per body: it hides what this variant's MODELDEF hides (another rank's
+            # armour, the Knights' other guns), so its shape is this variant's
+            shell_hid = sorted({int(m.group(1)) for l in skin_lines for m in [re.match(r'\tSurfaceSkin 0 (\d+) "[^"]*hce_hidden[^"]*"', l)] if m})
+            if char in SHELL_TINT and shell_hid:
+                extra += ('\toverride void HCE_DressShellVariant(Actor s)\n\t{\n'
+                          f'\t\tstatic const int H[] = {{ {", ".join(map(str, shell_hid))} }};\n'
+                          f'\t\tfor(int i = 0; i < H.Size(); i++) s.A_ChangeModel(\'None\', 0, "", \'None\', H[i], "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n\t}}\n')
             if char == 'Hunter' and HUNTER_ARM_WEAPON.get(weapon):
                 extra += f'\toverride Name HCE_LimbReplacement(int limb) {{ if(limb != HCE_LIMB_RARM) return \'None\'; return "{HUNTER_ARM_WEAPON[weapon]}"; }}\n'
             if '%STICKY_LOADED%' in extra:
@@ -2572,6 +2622,24 @@ def build(cfg=None):
                     if si < len(mesh_weapon) and mesh_weapon[si] == 'energy_sword' and 'glow' in mat: bl[si] = f'\tSurfaceSkin 0 {si} "{mat}"'
                 md.append(f'Model {cls}Blade\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n\tPath "models/{mdir}/weapons"\n' + '\n'.join(bl) +
                           f'\n\tScale {S * msc:.0f} {S * msc:.0f} {S * msc * 1.2:.0f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+            if char in SHELL_TINT and shield > 0 and char not in shells:
+                shells.add(char)
+                zs.append(f'// energy-shield flare for the {char}s: the same model, every surface the glowing shield texture\n'
+                          f'class HCE_{char}ShieldShell : HCE_ShieldShell {{}}\n')
+                tex = f'{pack}/models/{mdir}/{char}/skins/shieldshell.png'
+                bake_shell(SHELL_TINT[char], tex)
+                sl = []
+                for line in skin_lines:
+                    m = re.match(r'\tSurfaceSkin 0 (\d+) "(.*)"', line)
+                    if m: sl.append(f'\tSurfaceSkin 0 {m.group(1)} "skins/shieldshell.png"')
+                if weapon_lines:
+                    sl += [f'\tPath "models/{mdir}/weapons"'] + [re.sub(r'"[^"]*"$', '"hce_hidden.png"', w) for w in weapon_lines]
+                scs = S * msc * 1.035
+                md.append(f'Model HCE_{char}ShieldShell\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
+                          f'\n\tScale {scs:.1f} {scs:.1f} {scs * 1.2:.1f}\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+            if ov.get('h2_pieces') and char in SHELL_TINT and shield > 0:
+                sz_, sm_ = h2_shell_code(char, ov['h2_pieces'], meta, pack, mdir, S * msc * 1.035, shells)
+                zs += sz_; md += sm_
             if 'HCE_ActiveCamo' in flags:
                 for line in skin_lines:
                     m = re.match(r'\tSurfaceSkin 0 \d+ "(skins/.*)"', line)
@@ -3245,29 +3313,7 @@ SKIN_HOOK['MarineODST'] = odst_skin
 # rim, the room in its shell from the visor's cube map), its colour rolled at spawn from the rank's palette (BASE_CODE)
 EXTRA_GL = []          # GLDEFS entries the skin hooks add (written with the rest)
 CORE_SHADER = template('shaders/core.fp')
-# the energy shields' flare colours, the shader's shield palette: one list for every pack (they share hce_derez.fp),
-# so a new tint goes on the end here (the Elites' and Grunts' blue, the Brutes' gold, the Knights' pale blue, the
-# Digsite Drone Captains' amber)
-SHIELD_PALETTE = [(0.45, 0.70, 1.00), (1.00, 0.78, 0.30), (0.55, 0.85, 1.00), (1.00, 0.62, 0.22)]
-
-
-def shield_tints():
-    """the shader's shield palette (SHIELD_PALETTE), at most 8"""
-    return SHIELD_PALETTE[:8]
-
-
-def shield_tint_slot(char):
-    """the character's shield flare colour for HCE_ShieldGlow: 1 + the place of the nearest SHIELD_PALETTE colour to
-    its SHELL_TINT"""
-    t = np.array(SHELL_TINT[char], float)
-    return 1 + int(np.argmin([np.abs(np.array(p) - t).sum() for p in shield_tints()]))
-
-
-def derez_shader():
-    """shaders/hce_derez.fp (templates/shaders/derez.fp: Halo 4's Promethean derez recreated, and the energy-shield
-    flare), with the shield palette (shield_tints) filled in"""
-    pal = ''.join(f'\tif(slot == {i}) return vec3({r:.3f}, {g:.3f}, {b:.3f});\n' for i, (r, g, b) in enumerate(shield_tints()))
-    return template('shaders/derez.fp').replace('{SHIELD_PALETTE}', pal)
+DEREZ_SHADER = template('shaders/derez.fp')      # Halo 4's Promethean derez, recreated: the dying Knight burns away
 
 
 def modeldef_skins(md):
@@ -3339,7 +3385,7 @@ def knight_skin(cls, v, si, mat, meta, skin_dir):
     # the shader reads the brightmap either way)
     pack = skin_dir[:skin_dir.index('/models/')]
     os.makedirs(f'{pack}/shaders', exist_ok=True)
-    open(f'{pack}/shaders/hce_derez.fp', 'w').write(derez_shader())
+    open(f'{pack}/shaders/hce_derez.fp', 'w').write(DEREZ_SHADER)
     if not bm:
         bm = 'brightmap_none.png'
         if not os.path.exists(f'{skin_dir}/{bm}'): Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{skin_dir}/{bm}')
@@ -4236,6 +4282,7 @@ if 'Draeth' in MR_CHARS:
     BASE_CODE['Draeth'] = BASE_CODE.get('Draeth', '') + "\toverride Name HCE_StepSet() { return 'reaver'; }    // the Reavers' own steps\n"
     HEAD_CLEAR['Draeth'] = HEAD_CLEAR['Elite']
     BESTIARY_GROUP['Draeth'] = 'Draeth (Reaver)'
+    SHELL_TINT['Draeth'] = SHELL_TINT['Elite']   # the shielded ranks' (Commanders', Zealots') flare: the Covenant's blue
 BESTIARY_RANK_GROUP += (('MarineFieldMedic', 'Field Medic'),)
 MAIN['late_chars'] = MAIN['late_chars'] + [c for c in MR_CHARS if c not in NO_RANDOM]
 MAIN['late_order'] = MAIN['late_order'] + MR_ORDER

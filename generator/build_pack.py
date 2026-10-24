@@ -3311,6 +3311,32 @@ SKIN_HOOK['MarineODST'] = odst_skin
 EXTRA_GL = []          # GLDEFS entries the skin hooks add (written with the rest)
 CORE_SHADER = template('shaders/core.fp')
 DEREZ_SHADER = template('shaders/derez.fp')      # Halo 4's Promethean derez, recreated: the dying Knight burns away
+
+
+def modeldef_skins(md):
+    """every skin a MODELDEF text puts on a model (Path + SurfaceSkin / Skin), as 'path/file' names"""
+    out, path = set(), None
+    for line in md.split('\n'):
+        m = re.match(r'\s*Path "(.*)"', line)
+        if m: path = m.group(1); continue
+        m = re.match(r'\s*(?:SurfaceSkin \d+ \d+|Skin \d+) "(.*\.(?:png|jpg))"', line, re.I)
+        if m and path: out.add(f'{path}/{m.group(1)}')
+    return out
+
+
+def derez_materials(gl, skins, black):
+    """GLDEFS text gl with the derez shader (shaders/hce_derez.fp: a Forerunner weapon's kill, a Knight's death) on
+    every skin in skins that has no shader of its own: its brightmap entry becomes the material's brightmap, the rest
+    get black (a brightmap path: the shader reads one either way). Gib pieces and the hidden skin are left out (gibs
+    fade on their own; hce_hidden draws nothing)"""
+    shaded = set(t.lower() for t in re.findall(r'(?:material|HardwareShader) [Tt]exture "([^"]+)"', gl))
+    bm = {t.lower(): b for t, b in re.findall(r'brightmap texture "([^"]+)"\n\{\n\tmap "([^"]+)"\n\}', gl)}
+    todo = sorted(t for t in skins if t.lower() not in shaded and t.lower().endswith(('.png', '.jpg'))
+                  and not t.endswith('hce_hidden.png') and '_gib_' not in t)
+    done = set(t.lower() for t in todo)
+    gl = re.sub(r'brightmap texture "([^"]+)"\n\{\n\tmap "[^"]+"\n\}\n?', lambda m: '' if m.group(1).lower() in done else m.group(0), gl)
+    add = [f'material texture "{t}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "{bm.get(t.lower(), black)}"\n}}' for t in todo]
+    return gl.rstrip('\n') + '\n' + '\n'.join(add) + '\n', set(bm.get(t.lower(), black) for t in todo)
 KNIGHT_CORE_PALETTE = {'minor': 0, 'major': 0, 'commander': 1}     # 0 cold, 1 warm (HCE_KnightPalette)
 
 

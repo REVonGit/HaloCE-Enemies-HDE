@@ -1436,6 +1436,16 @@ def build():
             rgb = armour_shine(np.asarray(im).astype(np.float32) / 255.0, n.copy())
             Image.fromarray((rgb * 255).astype(np.uint8)).save(f'{kd}/{f}', quality=95)
         kit_tint_pieces(kd)
+    # the derez on every skin (build_pack.derez_materials): a Forerunner weapon's kill burns the body away in its colour
+    skins = bp.modeldef_skins(open(f'{PACK}/modeldef.dig').read())
+    kd = f'{PACK}/models/hce_dig/BruteKit'
+    if os.path.isdir(kd): skins |= {f'models/hce_dig/BruteKit/{f}' for f in os.listdir(kd) if f.endswith(('.png', '.jpg'))}
+    gl, _used = bp.derez_materials(open(f'{PACK}/gldefs.dig').read(), skins, 'models/hce_dig/brightmap_none.png')
+    open(f'{PACK}/gldefs.dig', 'w').write(gl)
+    os.makedirs(f'{PACK}/shaders', exist_ok=True)
+    open(f'{PACK}/shaders/hce_derez.fp', 'w').write(bp.DEREZ_SHADER)
+    os.makedirs(f'{PACK}/models/hce_dig', exist_ok=True)
+    Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{PACK}/models/hce_dig/brightmap_none.png')
 
 if __name__ == '__main__':
     # the add-on's bodies (the Brute, the Halo 2 Jackal) checked for skipped post-extraction steps like the main pack's

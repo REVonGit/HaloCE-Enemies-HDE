@@ -1,8 +1,4 @@
 // Halo CE enemies, flood: glowing surfaces, active camo shimmer
-brightmap texture "models/hce/weapons/w_needler_glow.png"
-{
-	map "models/hce/brightmap_full.png"
-}
 HardwareShader Texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_0.png"
 {
 	Shader "shaders/hce_camo.fp"
@@ -23,4 +19,1184 @@ material texture "models/hce/weapons/w_energy_sword_glow.png"
 	shader "shaders/hce_sword.fp"
 	speed 1.0
 	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/FloodArmored/blood1_FloodArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/blood1_FloodArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/blood2_FloodArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/blood2_FloodArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/blood3_FloodArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/blood3_FloodArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/gore_FloodArmored.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/skins/floodarmored_floodarmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/skins/floodarmored_floodarmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodArmored/skins/floodarmored_floodarmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodCarrier/blood1_FloodCarrier_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodCarrier/blood2_FloodCarrier_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodCarrier/blood3_FloodCarrier_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodCarrier/skins/floodcarrier_floodcarrier_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood1_FloodElite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood1_FloodElite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood2_FloodElite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood2_FloodElite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood3_FloodElite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/blood3_FloodElite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/gore_FloodElite.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_1_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_2_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodelite_floodelite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodelite_floodelite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodElite/skins/floodelite_floodelite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood1_FloodEliteArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood2_FloodEliteArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/blood3_FloodEliteArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/gore_FloodEliteArmored.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorneedler_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmapistol_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorplasmarifle_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombatelitemajorunarmed_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorneedler_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmapistol_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorplasmarifle_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteArmored/skins/floodcombateliteminorunarmed_floodelitearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood1_FloodEliteCommander_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood1_FloodEliteCommander_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood1_FloodEliteCommander_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood1_FloodEliteCommander_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood1_FloodEliteCommander_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood2_FloodEliteCommander_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood2_FloodEliteCommander_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood2_FloodEliteCommander_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood2_FloodEliteCommander_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood2_FloodEliteCommander_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood3_FloodEliteCommander_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood3_FloodEliteCommander_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood3_FloodEliteCommander_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood3_FloodEliteCommander_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/blood3_FloodEliteCommander_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/gore_FloodEliteCommander.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteCommander/skins/floodcombatelitecommanderenergysword_floodelitecommander_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood1_FloodEliteUltra_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood1_FloodEliteUltra_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood1_FloodEliteUltra_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood1_FloodEliteUltra_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood1_FloodEliteUltra_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood2_FloodEliteUltra_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood2_FloodEliteUltra_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood2_FloodEliteUltra_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood2_FloodEliteUltra_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood2_FloodEliteUltra_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood3_FloodEliteUltra_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood3_FloodEliteUltra_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood3_FloodEliteUltra_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood3_FloodEliteUltra_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/blood3_FloodEliteUltra_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/gore_FloodEliteUltra.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodEliteUltra/skins/floodcombateliteultrafuelrod_floodeliteultra_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood1_FloodGrunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood2_FloodGrunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/blood3_FloodGrunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/gore_FloodGrunt.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodGrunt/skins/floodgrunt_floodgrunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood1_FloodHuman_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood1_FloodHuman_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood2_FloodHuman_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood2_FloodHuman_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood3_FloodHuman_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/blood3_FloodHuman_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/gore_FloodHuman.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood1_FloodInfection_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood1_FloodInfection_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood2_FloodInfection_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood2_FloodInfection_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood3_FloodInfection_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/blood3_FloodInfection_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/skins/floodinfection_floodinfection_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodInfection/skins/floodinfection_floodinfection_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodJuggernaut/skins/floodjuggernaut_floodjuggernaut_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodJuggernaut/skins/floodjuggernaut_floodjuggernaut_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood1_FloodMarine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood1_FloodMarine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood2_FloodMarine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood2_FloodMarine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood3_FloodMarine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/blood3_FloodMarine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/gore_FloodMarine.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/skins/floodmarine_floodmarine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/skins/floodmarine_floodmarine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/skins/floodmarine_floodmarine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodMarine/skins/floodmarine_floodmarine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood1_FloodODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood1_FloodODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood1_FloodODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood2_FloodODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood2_FloodODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood2_FloodODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood3_FloodODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood3_FloodODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/blood3_FloodODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/gore_FloodODST.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/skins/floododst_floododst_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/skins/floododst_floododst_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/skins/floododst_floododst_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodODST/skins/floododst_floododst_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_assault_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_assault_rifle_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_energy_sword_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_flamethrower_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_flamethrower_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_fuel_rod_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_glow.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/weapons/w_pistol_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_pistol_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_rocket_launcher_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_rocket_launcher_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_rocket_launcher_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_shotgun_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_shotgun_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_sniper_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_sniper_rifle_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
 }

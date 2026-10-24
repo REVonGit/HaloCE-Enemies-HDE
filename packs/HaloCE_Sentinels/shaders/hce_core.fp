@@ -25,12 +25,12 @@ vec4 ProcessTexel()
 	vec3 col = tint * (0.55 + 0.75 * bands) * pulse;
 	col += mix(tint, vec3(1.0), 0.45) * fres * 0.9;            // the hot rim
 	col += env * mix(tint, vec3(1.0), 0.35) * (0.25 + 0.6 * fres); // the shell's reflection
-	// the derez (derez.fp: alpha just under 1 is its progress): the core flares, then breaks up and is gone by
+	// the derez (derez.fp: alpha just under 1 is its colour slot and progress): the core flares, then breaks up and is gone by
 	// halfway; otherwise kept opaque against the translucent style the derez runs in
 	float al = vColor.a;
 	if(al < 0.9999 && al >= 0.9)
 	{
-		float dp = clamp((1.0 - al) / 0.1, 0.0, 1.0);
+		float dp = fract(clamp((1.0 - al) / 0.1 * 8.0, 0.0, 7.9999));   // derez.fp's progress (its slot is the colour)
 		float cell = fract(sin(dot(floor(vTexCoord.st * 24.0), vec2(127.1, 311.7))) * 43758.5453);
 		if(cell < dp * 2.2 - 0.1) return vec4(0.0);
 		col = mix(col, vec3(1.0, 0.9, 0.7), smoothstep(0.0, 0.5, dp) * 0.6);

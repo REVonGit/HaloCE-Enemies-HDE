@@ -22,6 +22,7 @@ import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))   # readers and writers live in lib/
 import os, re, shutil, subprocess, sys
 import json, os, re, shutil, sys
+from PIL import Image
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_pack import PACK, TEAM
 
@@ -442,6 +443,19 @@ def main():
                     os.makedirs(os.path.dirname(f'{d}/{b}'), exist_ok=True); shutil.copy(f'{PACK}/{b}', f'{d}/{b}')
                     out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "{b}"\n}}')
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
+        # the derez on every skin (build_pack.derez_materials): a Forerunner weapon's kill burns the body away in its
+        # colour (the Covenant pack's HCE_ForerunnerDerez); each skin's brightmap goes into its material
+        glf = f'{d}/gldefs.hce_{fac}'
+        gtxt = open(glf).read() if os.path.exists(glf) else f'// Halo CE enemies, {fac}: glowing surfaces\n'
+        gtxt, bms_used = _bp.derez_materials(gtxt, need, 'models/hce/brightmap_none.png')
+        open(glf, 'w').write(gtxt)
+        os.makedirs(f'{d}/shaders', exist_ok=True)
+        open(f'{d}/shaders/hce_derez.fp', 'w').write(_bp.DEREZ_SHADER)
+        os.makedirs(f'{d}/models/hce', exist_ok=True)
+        Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{d}/models/hce/brightmap_none.png')
+        for b in bms_used:
+            if not os.path.exists(f'{d}/{b}') and os.path.exists(f'{PACK}/{b}'):
+                os.makedirs(os.path.dirname(f'{d}/{b}'), exist_ok=True); shutil.copy(f'{PACK}/{b}', f'{d}/{b}')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'
         if fac == 'marines' and os.path.isdir(HEALTHBAR):
@@ -560,6 +574,15 @@ def main():
             for sub in ('graphics/hcegore', 'sprites/hcegore'): shutil.copytree(f'{GORE}/{sub}', f'{d}/{sub}')
             open(f'{d}/cvarinfo.txt', 'w').write('server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies\n')
             mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_HaloGoreHandler"\n}\n\n' + mi
+        if fac == 'covenant' and os.path.exists(f'{PACK}/ZScript/HaloCE/hce_forerunner.zsc'):
+            # Forerunner weapons derez what they kill, every pack's enemies (hce_forerunner.zsc; the shader and its
+            # materials are in each pack: derez_materials above)
+            shutil.copy(f'{PACK}/ZScript/HaloCE/hce_forerunner.zsc', f'{d}/ZScript/HaloCE/hce_forerunner.zsc')
+            with open(f'{d}/zscript.txt', 'a') as zf: zf.write('#include "ZScript/HaloCE/hce_forerunner.zsc"\n')
+            with open(f'{d}/cvarinfo.txt', 'a') as cf:
+                cf.write('server bool hce_forerunnerderez = true;  // a kill by a Forerunner weapon derezzes the body in the shot\'s colour\n')
+            if 'AddEventHandlers' in mi: mi = mi.replace('AddEventHandlers = "HCE_HaloGoreHandler"', 'AddEventHandlers = "HCE_HaloGoreHandler", "HCE_ForerunnerDerez"')
+            else: mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_ForerunnerDerez"\n}\n\n' + mi
         open(f'{d}/mapinfo.txt', 'w').write(mi)
         print(fac, 'classes', len(mine), 'models', len(mblocks), 'files', len(need), 'ednums', len(mynums))
 

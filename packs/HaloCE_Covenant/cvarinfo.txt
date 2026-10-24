@@ -43,6 +43,7 @@ server float hce_encounterchance = 0.8;  // the chance of each of them
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3
 server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies
+server bool hce_forerunnerderez = true;  // a kill by a Forerunner weapon derezzes the body in the shot's colour
 
 // ---- from HaloCE_Enemies_Digsite.pk3
 // Digsite add-on: how often Doom monsters become Digsite enemies (0 = never, 1 = default, 2 = twice as often)

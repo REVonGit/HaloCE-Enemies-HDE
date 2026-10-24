@@ -1,8 +1,4 @@
 // Halo CE enemies, marines: glowing surfaces
-brightmap texture "models/hce/weapons/w_needler_glow.png"
-{
-	map "models/hce/brightmap_full.png"
-}
 material texture "models/hce/MarineODST/skins/marineodstassaultrifle_marineodst_2.png"
 {
 	shader "shaders/hce_visor.fp"
@@ -57,4 +53,1809 @@ material texture "models/hce/MarineKit/mk_hellbringer_visor_red.png"
 {
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/MarineKit/mk_visor_cube.png"
+}
+material texture "models/hce/Marine/blood1_Marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood1_Marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood2_Marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/blood3_Marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultrifle_marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineassaultriflemajor_marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineneedler_marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineplasmarifle_marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Marine/skins/marineshotgun_marine_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood1_MarineArmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood2_MarineArmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/blood3_MarineArmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultrifle_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredassaultriflemajor_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredneedler_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmarifle_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredplasmariflemajor_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_10.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_11.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_12.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_7.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_8.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineArmored/skins/marinearmoredshotgunmajor_marinearmored_9.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_charles.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_fred.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_marcus.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_matt.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_paul.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_face_shiek.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_flamethrower_ammo.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_frag_grenade.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_eyes_blue.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_eyes_brown.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_banks.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_dion.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_morgan.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_perez.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_smith.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_head_walter.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_helmet_pilot.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_odst_armor.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_h2_teeth.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_head_add_ons.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_healthpack.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_arms_heavy.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_cigar.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_compack_upscale.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_equipment.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_packs.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_reach_bits0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_reach_bits1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_innie_visor_sniper.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_marine_helmet_hud.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_mr_medic_body_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_mr_medic_body_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_mr_medic_body_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_mr_medic_body_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_pilot_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_rocket_launcher_black.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_shigure_body_gloves.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_sr_ammo.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_visor_cube.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_arms.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_hats.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_helmet.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_legs.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineKit/mk_woodland_marine_torso.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood1_MarineODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood1_MarineODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood1_MarineODST_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood1_MarineODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood1_MarineODST_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood2_MarineODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood2_MarineODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood2_MarineODST_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood2_MarineODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood2_MarineODST_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood3_MarineODST_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood3_MarineODST_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood3_MarineODST_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood3_MarineODST_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/blood3_MarineODST_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_0_raven_blue.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_0_raven_green.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_0_raven_orange.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_0_raven_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_1_raven_blue.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_1_raven_green.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_1_raven_orange.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_1_raven_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_3_raven_blue.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_3_raven_green.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_3_raven_orange.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_3_raven_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_4_raven_blue.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_4_raven_green.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_4_raven_orange.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodst_4_raven_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodstassaultrifle_marineodst_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodstassaultrifle_marineodst_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodstassaultrifle_marineodst_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/MarineODST/skins/marineodstassaultrifle_marineodst_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_assault_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_assault_rifle_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_cmt_carbine_gray.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_cmt_carbine_icon.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_cmt_carbine_lights.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_cmt_carbine_meter.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_cmt_carbine_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_h2_beam_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_battle_rifle_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_bulldog_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_commando_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_dmr_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_double_barrel_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_double_barrel_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_double_barrel_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_flamethrower_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_flamethrower_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_fuel_rod_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_gpmg_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_grenade_launcher_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_hydra_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_hydra_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_hydra_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_hydra_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_ma37_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_needle_ballista_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_needle_ballista_glow.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_pulse_carbine_blue_icon.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_pulse_carbine_blue_lights.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_pulse_carbine_blue_meter.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_pulse_carbine_blue_purple.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_pulse_carbine_gray.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_rocket_launcher_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_rocket_launcher_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_rocket_launcher_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_rocket_launcher_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_rocket_launcher_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_sidekick_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_smg_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_smg_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_stanchion_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_sticky_bomb_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_m_sticky_detonator_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_glow.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/weapons/w_pistol_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_caster_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_pistol_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_shotgun_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_shotgun_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_sniper_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_sniper_rifle_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_spiker_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_spiker_clip.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_spiker_heat.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
 }

@@ -1,0 +1,42 @@
+// Forerunner weapons derez what they kill (HaloDoom Evolved packs; shipped in the Covenant pack, works on every pack's
+// enemies). A Halo enemy killed by HaloDoom Evolved's Light Rifle, Binary Rifle, Scattershot, Boltshot, Sentinel Beam
+// or Unmaker burns away like a Halo 4 Promethean, in the colour of the shot that killed it
+// (HaloDoom_EnemyBase.HCE_Derez; the derez shader on every skin). Sentinel Knights take the colour for their own
+// dissolve. hce_forerunnerderez 0 turns it off.
+class HCE_ForerunnerDerez : EventHandler
+{
+	// the derez colour slot (HaloDoom_EnemyBase.HCE_DerezColor) for a class of the six weapons (the gun, its
+	// projectiles, beams, puffs, explosions, lightning), -1 for anything else. A new weapon: a line here, a colour
+	// there and in shaders/derez.fp's palette
+	static int SlotOf(Name cls)
+	{
+		String n = String.Format("%s", cls);
+		n = n.MakeLower();
+		if(n.IndexOf("lightrifle") >= 0) return 1;
+		if(n.IndexOf("binaryrifle") >= 0) return 2;
+		if(n.IndexOf("scattershot") >= 0) return n.IndexOf("purple") >= 0 ? 4 : 3;
+		if(n.IndexOf("boltshot") >= 0) return 5;
+		if(n.IndexOf("sentinelbeam") >= 0) return 6;
+		if(n.IndexOf("unmaker") >= 0) return 7;
+		return -1;
+	}
+
+	// a kill: by one of the weapons' own actors (its projectile, beam, puff), or, for hitscan and beams that hit as the
+	// shooter himself, by a player holding one of the weapons (not his melee, not a grenade or rocket)
+	override void WorldThingDamaged(WorldEvent e)
+	{
+		let v = HaloDoom_EnemyBase(e.Thing);
+		if(!v || v.health > 0 || v.hce_derezSlot > 0) return;
+		let cv = CVar.FindCVar('hce_forerunnerderez');
+		if(cv && !cv.GetBool()) return;
+		int slot = -1;
+		if(e.Inflictor && e.Inflictor != e.DamageSource) slot = SlotOf(e.Inflictor.GetClassName());
+		if(slot < 0 && e.DamageSource && e.DamageSource.player && e.DamageType != 'Melee' && e.DamageType != 'Kick'
+			&& (!e.Inflictor || e.Inflictor == e.DamageSource))
+		{
+			let w = e.DamageSource.player.ReadyWeapon;
+			if(w) slot = SlotOf(w.GetClassName());
+		}
+		if(slot >= 0) v.HCE_Derez(slot);
+	}
+}

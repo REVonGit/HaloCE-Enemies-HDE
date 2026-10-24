@@ -3235,7 +3235,9 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	// burns away into hard-light embers in its core's colour rising off it; nothing is
 	// left behind but the guns it drops
 	const HCE_DISSOLVE_TICS = 105;          // the death animation's length (90 frames at 30 fps)
-	const HCE_DEREZ_BAND = 0.1;             // shaders/derez.fp's DEREZ_BAND: alpha 1 - this x progress is the derez
+	int hce_kSlot;                          // the derez colour: 0 its own orange, or the Forerunner weapon that killed it
+	// a Knight runs its own dissolve (HCE_DissolveTick): a Forerunner weapon's kill only gives it that weapon's colour
+	override bool HCE_Derez(int slot) { hce_kSlot = clamp(slot, 0, HCE_DEREZ_SLOTS - 1); return true; }
 	int hce_dissolve;
 	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
 	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays
@@ -3258,7 +3260,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	void HCE_DissolveTick()
 	{
 		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
-		color core = hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
+		color core = hce_kSlot > 0 ? HCE_DerezColor(hce_kSlot) : hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
 		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
 		// embers: from the parts still there (the top first, burning down), rising and fading
 		int n = 1 + int(f * 8);
@@ -3270,9 +3272,9 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
 		}
 		// the derez (shaders/hce_derez.fp on its skins and core): after a beat it burns away cell by cell, its edges
-		// glowing, all gone by the end. The progress goes to the shader as alpha just under 1 (1 - HCE_DEREZ_BAND x it)
-		double p = clamp((f - 0.08) / 0.88, 0, 1);
-		A_SetRenderStyle(1.0 - HCE_DEREZ_BAND * max(p, 0.001), STYLE_Translucent);
+		// glowing, all gone by the end. Colour slot and progress go to the shader as alpha just under 1 (HCE_Derez)
+		double p = clamp((f - 0.08) / 0.88, 0.001, 0.999);
+		A_SetRenderStyle(1.0 - HCE_DEREZ_BAND * (hce_kSlot + p) / HCE_DEREZ_SLOTS, STYLE_Translucent);
 		if(++hce_dissolve > HCE_DISSOLVE_TICS)
 		{
 			for(int i = 0; i < 20; i++)                               // the last of it scatters

@@ -1,1500 +1,4 @@
 // Halo CE enemies, covenant: glowing surfaces, active camo shimmer
-brightmap texture "models/hce/weapons/w_needler_glow.png"
-{
-	map "models/hce/brightmap_full.png"
-}
-brightmap texture "models/hce/Artybug/skins/artybug_artybug_0.png"
-{
-	map "models/hce/Artybug/Artybug_0_bm.png"
-}
-brightmap texture "models/hce/Artybug/skins/artybug_artybug_1.png"
-{
-	map "models/hce/Artybug/Artybug_1_bm.png"
-}
-brightmap texture "models/hce/Artybug/skins/artybug_artybug_2.png"
-{
-	map "models/hce/Artybug/Artybug_2_bm.png"
-}
-brightmap texture "models/hce/Artybug/skins/artybug_artybug_3.png"
-{
-	map "models/hce/Artybug/Artybug_3_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethcommanderbeamrifle_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethcommanderfuelrod_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethcommanderplasmacaster_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethmajorfuelrod_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethmajorneedler_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethmajorplasmarifle_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethminorneedler_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethminorplasmarifle_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethzealotbeamrifle_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethzealotfuelrod_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Draeth/skins/draethzealotplasmacaster_draeth_0.png"
-{
-	map "models/hce/Draeth/Draeth_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderenergysword_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorfuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultrafuelrod_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraneedler_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_4.png"
-{
-	map "models/hce/Elite/Elite_4_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_0.png"
-{
-	map "models/hce/Elite/Elite_0_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_5.png"
-{
-	map "models/hce/Elite/Elite_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_4.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_0.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_5.png"
-{
-	map "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-brightmap texture "models/hce/Geist/skins/geist_geist_0.png"
-{
-	map "models/hce/Geist/Geist_0_bm.png"
-}
-brightmap texture "models/hce/Geist/skins/geist_geist_1.png"
-{
-	map "models/hce/Geist/Geist_1_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraneedler_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_2.png"
-{
-	map "models/hce/Grunt/Grunt_2_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_3.png"
-{
-	map "models/hce/Grunt/Grunt_3_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_5.png"
-{
-	map "models/hce/Grunt/Grunt_5_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_6.png"
-{
-	map "models/hce/Grunt/Grunt_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_2.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_3.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_5.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_6.png"
-{
-	map "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunter_hunter_0.png"
-{
-	map "models/hce/Hunter/Hunter_0_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunter_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunter_hunter_4.png"
-{
-	map "models/hce/Hunter/Hunter_4_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunter_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/huntermajor_hunter_0.png"
-{
-	map "models/hce/Hunter/Hunter_0_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/huntermajor_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/huntermajor_hunter_4.png"
-{
-	map "models/hce/Hunter/Hunter_4_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/huntermajor_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunterultra_hunter_0.png"
-{
-	map "models/hce/Hunter/Hunter_0_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunterultra_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunterultra_hunter_4.png"
-{
-	map "models/hce/Hunter/Hunter_4_bm.png"
-}
-brightmap texture "models/hce/Hunter/skins/hunterultra_hunter_2.png"
-{
-	map "models/hce/Hunter/Hunter_2_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorneedler_jackal_1.png"
-{
-	map "models/hce/Jackal/Jackal_1_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorneedler_jackal_2.png"
-{
-	map "models/hce/Jackal/Jackal_2_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorneedler_jackal_1.png"
-{
-	map "models/hce/Jackal/Jackal_1_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorneedler_jackal_2.png"
-{
-	map "models/hce/Jackal/Jackal_2_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_1.png"
-{
-	map "models/hce/Jackal/Jackal_1_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_2.png"
-{
-	map "models/hce/Jackal/Jackal_2_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_1.png"
-{
-	map "models/hce/Jackal/Jackal_1_bm.png"
-}
-brightmap texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_2.png"
-{
-	map "models/hce/Jackal/Jackal_2_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_1.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_1_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_2.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_2_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_1.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_1_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_2.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_2_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_1.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_1_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_2.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_2_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_1.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_1_bm.png"
-}
-brightmap texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_2.png"
-{
-	map "models/hce/JackalMajor/JackalMajor_2_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_torso.png"
-{
-	map "models/hce/EliteKit/ek_torso_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_arms.png"
-{
-	map "models/hce/EliteKit/ek_arms_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_legs.png"
-{
-	map "models/hce/EliteKit/ek_legs_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_torso_inset.png"
-{
-	map "models/hce/EliteKit/ek_torso_inset_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_elite_honor_armor.png"
-{
-	map "models/hce/EliteKit/ek_elite_honor_armor_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_ranger_arms.png"
-{
-	map "models/hce/EliteKit/ek_ranger_arms_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_ranger_torso.png"
-{
-	map "models/hce/EliteKit/ek_ranger_torso_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_ranger_legs.png"
-{
-	map "models/hce/EliteKit/ek_ranger_legs_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_ranger_torso_inset.png"
-{
-	map "models/hce/EliteKit/ek_ranger_torso_inset_bm.png"
-}
-brightmap texture "models/hce/EliteKit/ek_elite_jetpack.png"
-{
-	map "models/hce/EliteKit/ek_elite_jetpack_bm.png"
-}
 HardwareShader Texture "models/hce/Draeth/skins/draethcommanderbeamriflecamo_draeth_0.png"
 {
 	Shader "shaders/hce_camo.fp"
@@ -1629,4 +133,2369 @@ material texture "models/hce/EliteKit/ek_ranger_lens.png"
 {
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/EliteKit/ek_visor_cube.png"
+}
+material texture "models/hce/Artybug/skins/artybug_artybug_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Artybug/Artybug_0_bm.png"
+}
+material texture "models/hce/Artybug/skins/artybug_artybug_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Artybug/Artybug_1_bm.png"
+}
+material texture "models/hce/Artybug/skins/artybug_artybug_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Artybug/Artybug_2_bm.png"
+}
+material texture "models/hce/Artybug/skins/artybug_artybug_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Artybug/Artybug_3_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethcommanderbeamrifle_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethcommanderbeamriflecamo_draeth_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Draeth/skins/draethcommanderfuelrod_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethcommanderplasmacaster_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethcommanderplasmacastercamo_draeth_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Draeth/skins/draethmajorfuelrod_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethmajorneedler_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethmajorplasmarifle_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethminorneedler_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethminorplasmarifle_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethzealotbeamrifle_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethzealotfuelrod_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Draeth/skins/draethzealotplasmacaster_draeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Draeth/Draeth_0_bm.png"
+}
+material texture "models/hce/Elite/blood1_Elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood1_Elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood1_Elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood1_Elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood1_Elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood2_Elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood2_Elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood2_Elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood2_Elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood2_Elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood3_Elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood3_Elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood3_Elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood3_Elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/blood3_Elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/gore_Elite.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderenergysword_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/elitecommanderplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyfuelrod_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyneedler_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteheavyplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorfuelrod_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorneedler_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/elitemajorplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorneedler_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteminorplasmarifleranged_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerneedler_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliterangerplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultrafuelrod_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraneedler_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_0_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_4_bm.png"
+}
+material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Elite/Elite_5_bm.png"
+}
+material texture "models/hce/Elite/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_arms.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_arms_bm.png"
+}
+material texture "models/hce/EliteKit/ek_arms_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_elite_honor_armor.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_elite_honor_armor_bm.png"
+}
+material texture "models/hce/EliteKit/ek_elite_honor_armor_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_elite_jetpack.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_elite_jetpack_bm.png"
+}
+material texture "models/hce/EliteKit/ek_elite_jetpack_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_gore_arm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_head.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_legs.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_legs_bm.png"
+}
+material texture "models/hce/EliteKit/ek_legs_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_arms.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_ranger_arms_bm.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_arms_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_head.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_helmet.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_legs.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_ranger_legs_bm.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_legs_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_torso.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_ranger_torso_bm.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_torso_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_torso_inset.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_ranger_torso_inset_bm.png"
+}
+material texture "models/hce/EliteKit/ek_ranger_torso_inset_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_teeth.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_torso.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_torso_bm.png"
+}
+material texture "models/hce/EliteKit/ek_torso_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_torso_inset.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteKit/ek_torso_inset_bm.png"
+}
+material texture "models/hce/EliteKit/ek_torso_inset_bm.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/ek_visor_cube.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteKit/gore_Elite.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood1_EliteSpecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood1_EliteSpecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood1_EliteSpecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood1_EliteSpecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood1_EliteSpecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood2_EliteSpecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood2_EliteSpecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood2_EliteSpecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood2_EliteSpecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood2_EliteSpecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood3_EliteSpecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood3_EliteSpecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood3_EliteSpecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood3_EliteSpecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/blood3_EliteSpecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/gore_EliteSpecial.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardenergysword_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitehonorguardplasmarifle_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsbeamrifle_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsneedler_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmacaster_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_0_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_4_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespecial_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
+}
+material texture "models/hce/EliteSpecial/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_1_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_2_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_3_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_4_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_5_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_1_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_2_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_3_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_4_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealthelitemajorplasmarifle_elitespecial_5_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_0_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_1_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_2_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_3_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_4_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_elitespecial_5_plain.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Geist/skins/geist_geist_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Geist/Geist_0_bm.png"
+}
+material texture "models/hce/Geist/skins/geist_geist_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Geist/Geist_1_bm.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood1_Grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood2_Grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/blood3_Grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/gore_Grunt.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorneedler_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleemajorplasmapistol_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorneedler_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntfleeminorplasmapistol_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorneedler_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntmajorplasmapistol_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorneedler_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntminorplasmapistol_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraneedler_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_2_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_3_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_5_bm.png"
+}
+material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Grunt/Grunt_6_bm.png"
+}
+material texture "models/hce/Grunt/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood2_GruntSpecOps_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/blood3_GruntSpecOps_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/gore_GruntSpecOps.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntheavyfuelrod_gruntspecops_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrod_gruntspecops_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsfuelrodairdef_gruntspecops_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntspecopsneedler_gruntspecops_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_2_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_3_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_5.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_5_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_6.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
+}
+material texture "models/hce/GruntSpecOps/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood1_Hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood1_Hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood1_Hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood1_Hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood1_Hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood2_Hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood2_Hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood2_Hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood2_Hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood2_Hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood3_Hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood3_Hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood3_Hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood3_Hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/blood3_Hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/gore_Hunter.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/hunter_hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_0_bm.png"
+}
+material texture "models/hce/Hunter/skins/hunter_hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/hunter_hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_2_bm.png"
+}
+material texture "models/hce/Hunter/skins/hunter_hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/hunter_hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_4_bm.png"
+}
+material texture "models/hce/Hunter/skins/huntermajor_hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_0_bm.png"
+}
+material texture "models/hce/Hunter/skins/huntermajor_hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/huntermajor_hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_2_bm.png"
+}
+material texture "models/hce/Hunter/skins/huntermajor_hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/huntermajor_hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_4_bm.png"
+}
+material texture "models/hce/Hunter/skins/hunterultra_hunter_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_0_bm.png"
+}
+material texture "models/hce/Hunter/skins/hunterultra_hunter_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/hunterultra_hunter_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_2_bm.png"
+}
+material texture "models/hce/Hunter/skins/hunterultra_hunter_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Hunter/skins/hunterultra_hunter_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Hunter/Hunter_4_bm.png"
+}
+material texture "models/hce/Jackal/blood1_Jackal_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood1_Jackal_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood1_Jackal_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood1_Jackal_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood1_Jackal_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood2_Jackal_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood2_Jackal_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood2_Jackal_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood2_Jackal_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood2_Jackal_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood3_Jackal_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood3_Jackal_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood3_Jackal_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood3_Jackal_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/blood3_Jackal_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/gore_Jackal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_jackal_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_jackal_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Jackal/Jackal_1_bm.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_jackal_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Jackal/Jackal_2_bm.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_jackal_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_jackal_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Jackal/Jackal_1_bm.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/Jackal/Jackal_2_bm.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_jackal_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood1_JackalMajor_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood1_JackalMajor_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood1_JackalMajor_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood1_JackalMajor_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood1_JackalMajor_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood2_JackalMajor_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood2_JackalMajor_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood2_JackalMajor_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood2_JackalMajor_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood2_JackalMajor_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood3_JackalMajor_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood3_JackalMajor_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood3_JackalMajor_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood3_JackalMajor_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/blood3_JackalMajor_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/gore_JackalMajor.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/JackalMajor/JackalMajor_1_bm.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/JackalMajor/JackalMajor_2_bm.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_jackalmajor_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/JackalMajor/JackalMajor_1_bm.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/JackalMajor/JackalMajor_2_bm.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_3.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_jackalmajor_4.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_energy_sword_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_fuel_rod_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_h2_beam_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_needler_glow.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/weapons/w_plasma_caster_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_pistol_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/weapons/w_plasma_rifle_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
 }

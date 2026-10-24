@@ -1,15 +1,31 @@
-// Promethean derez (Halo 4's dissolve, recreated): a dying Knight comes apart in small square cells of hard light. Each
-// cell burns out at its own moment, with a fine jagged fringe; the edge just ahead of the burn glows white-hot through
-// gold to orange, and what has burnt through is gone. Halo 4's own shader is compiled into its maps, so this is the same look
-// built in GLSL.
+// Promethean derez (Halo 4's dissolve, recreated): a body killed by Forerunner hard light comes apart in small square
+// cells. Each cell burns out at its own moment, with a fine jagged fringe; the edge just ahead of the burn glows
+// white-hot through the colour of whatever killed it, and what has burnt through is gone. Halo 4's own shader is
+// compiled into its maps, so this is the same look built in GLSL. On every enemy skin.
 //
-// It runs only while the actor's alpha is in the derez band (DEREZ_BAND below 1: the Knight's HCE_DissolveTick sets
-// alpha = 1 - DEREZ_BAND * progress with STYLE_Translucent). At full alpha it is the plain skin. Below the band (the
-// phase's half-translucency) it is plain translucency. The surviving texels are kept fully opaque
-// (Base.a / vColor.a: the engine multiplies the output alpha by vColor.a).
+// It runs only while the actor's alpha is in the derez band (just under 1): alpha = 1 - DEREZ_BAND x (slot + progress)
+// / SLOTS, set by HaloDoom_EnemyBase.HCE_DerezTick (or a Knight's HCE_DissolveTick) with STYLE_Translucent. slot picks
+// the colour from PALETTE (the same order as HCE_DerezColor). At full alpha it is the plain skin; below the band (a
+// Knight's phase, active camo) plain translucency. The surviving texels are kept fully opaque (Base.a / vColor.a: the
+// engine multiplies the output alpha by vColor.a).
 const float DEREZ_BAND = 0.1;
+const float SLOTS = 8.0;
 const float CELLS = 40.0;          // cells across the skin (texture space)
 const float EDGE = 0.10;           // the glowing fringe's width, in progress
+
+// 0 the Knights' own (Halo 4's derez orange), 1 Light Rifle, 2 Binary Rifle, 3 Scattershot (orange), 4 Scattershot
+// (purple), 5 Boltshot, 6 Sentinel Beam, 7 Unmaker
+vec3 dzColour(int slot)
+{
+	if(slot == 1) return vec3(0.0, 0.38, 1.0);
+	if(slot == 2) return vec3(0.0, 1.0, 0.58);
+	if(slot == 3) return vec3(0.98, 0.69, 0.0);
+	if(slot == 4) return vec3(0.57, 0.0, 0.98);
+	if(slot == 5) return vec3(0.02, 0.17, 0.94);
+	if(slot == 6) return vec3(1.0, 0.97, 0.19);
+	if(slot == 7) return vec3(1.0, 0.65, 0.0);
+	return vec3(1.0, 0.42, 0.06);
+}
 
 float dzHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float dzNoise(vec2 p)
@@ -26,7 +42,10 @@ void SetupMaterial(inout Material material)
 	material.Bright = texture(brighttexture, vTexCoord.st);
 	float a = vColor.a;
 	if(a >= 0.9999 || a < 1.0 - DEREZ_BAND) return;
-	float p = clamp((1.0 - a) / DEREZ_BAND, 0.0, 1.0);
+	float x = clamp((1.0 - a) / DEREZ_BAND * SLOTS, 0.0, SLOTS - 0.0001);
+	int slot = int(floor(x));
+	float p = fract(x);
+	vec3 c = dzColour(slot);
 	// each cell's moment (mostly its own, a little of a coarser wave so whole patches go together), and a fine
 	// jagged fringe inside it
 	vec2 uv = vTexCoord.st;
@@ -36,10 +55,12 @@ void SetupMaterial(inout Material material)
 	float left = n - p * (1.0 + EDGE);                 // < 0: burnt through
 	if(left <= 0.0) { material.Base = vec4(0.0); return; }
 	float glow = 1.0 - smoothstep(0.0, EDGE, left);    // 1 at the burning edge
-	vec3 hot = mix(vec3(1.0, 0.42, 0.06), mix(vec3(1.0, 0.78, 0.30), vec3(1.0, 0.97, 0.85), smoothstep(0.6, 1.0, glow)), smoothstep(0.2, 0.7, glow));
-	// the whole surface warms as it goes, and the glow flickers
+	// deep colour at the fringe's outside, the colour itself, then white-hot at the edge
+	vec3 hot = mix(c * 0.75, mix(mix(c, vec3(1.0), 0.3), mix(c, vec3(1.0), 0.88), smoothstep(0.6, 1.0, glow)), smoothstep(0.2, 0.7, glow));
+	if(slot == 0) hot = mix(vec3(1.0, 0.42, 0.06), mix(vec3(1.0, 0.78, 0.30), vec3(1.0, 0.97, 0.85), smoothstep(0.6, 1.0, glow)), smoothstep(0.2, 0.7, glow));
+	// the whole surface takes on the colour as it goes, and the glow flickers
 	float flick = 0.85 + 0.15 * sin(timer * 40.0 + cell * 50.0);
-	material.Base.rgb = mix(base.rgb + vec3(0.25, 0.12, 0.02) * p, hot, glow * flick);
+	material.Base.rgb = mix(base.rgb + c * 0.25 * p, hot, glow * flick);
 	material.Bright = max(material.Bright, vec4(vec3(glow), 1.0));
-	material.Base.a = base.a / max(a, 0.001);           // x vColor.a in the engine: fully opaque
+	material.Base.a = base.a / max(a, 0.001);          // x vColor.a in the engine: fully opaque
 }

@@ -1028,6 +1028,7 @@ class HCE_FadeAway : Thinker
 	{
 		if(!who) { Destroy(); return; }
 		double a = who.alpha - step;
+		if(a > 0.899 && a < 1.0) a = 0.899;   // straight under the derez band (alpha just under 1: hce_derez.fp)
 		if(a <= 0) { who.ClearCounters(); who.Destroy(); Destroy(); return; }
 		who.A_SetRenderStyle(a, STYLE_Translucent);
 	}

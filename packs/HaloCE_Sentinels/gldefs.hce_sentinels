@@ -1,16 +1,4 @@
 // Halo CE enemies, sentinels: glowing surfaces
-brightmap texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_hover.png"
-{
-	map "models/hce/brightmap_full.png"
-}
-brightmap texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_eye.png"
-{
-	map "models/hce/brightmap_full.png"
-}
-brightmap texture "models/hce/SentinelEnforcer/skins/enforcer_shield.png"
-{
-	map "models/hce/brightmap_full.png"
-}
 material texture "models/hce/Sentinel/skins/bubble_shell.png"
 {
 	shader "shaders/hce_bubble.fp"
@@ -199,4 +187,154 @@ material texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor_bm.png"
+}
+material texture "models/hce/Sentinel/skins/sentinel_captain_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/Sentinel/skins/sentinel_minor_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelArtillery/skins/sentinelartillery_sentinelartillery_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelArtillery/skins/sentinelartillery_sentinelartillery_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelBrute/skins/sentinelbrute_sentinelbrute_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelBrute/skins/sentinelbrute_sentinelbrute_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelCanoneer/skins/sentinelcanoneer_sentinelcanoneer_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelCanoneer/skins/sentinelcanoneer_sentinelcanoneer_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelCompiler/skins/sentinelcompiler_sentinelcompiler_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelCompiler/skins/sentinelcompiler_sentinelcompiler_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelConstructor/skins/sentinelconstructor_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelCrawler/skins/sentinelcrawler_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelDragoon/skins/sentineldragoon_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelEnforcer/skins/enforcer_shield.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_eye.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_hover.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_full.png"
+}
+material texture "models/hce/SentinelGold/skins/sentinelgold_gold.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelInterceptor/skins/sentinelinterceptor_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelKnight/skins/shieldshell.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelLancer/skins/sentinellancer_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelMarauder/skins/sentinelmarauder_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelOmega/skins/sentinelomega_sentinelomega_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelOmega/skins/sentinelomega_sentinelomega_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelOnyx/skins/sentinelonyx_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelProtector/skins/sentinelprotector_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelScout/skins/sentinelscout_sentinelscout_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelScout/skins/sentinelscout_sentinelscout_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelSoldier/skins/sentinelsoldier_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/SentinelWarden/skins/sentinelwarden_metal.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
 }

@@ -517,6 +517,9 @@ ENFORCER = r'objects\characters\sentinel_enforcer\sentinel_enforcer'
 ENFORCER_JSON = f'{OUT}/models/SentinelEnforcer/SentinelEnforcer.json'
 SENTINEL_ORDER = ['HCE_SentinelEliminator', 'HCE_SentinelEnforcer', 'HCE_SentinelConstructor']   # their DoomEdNum order (late_order)
 NO_RANDOM = {'SentinelEnforcer', 'SentinelConstructor'}     # one class each: no random spawner
+# classes kept out of their character's random spawner (still placeable): the double barrel is Fire Team Raven's and
+# Sergeant Stacker's gun, so the regular Marines don't spawn with it
+RANDOM_EXCLUDE = {'HCE_MarineDoubleBarrel', 'HCE_MarineArmoredDoubleBarrel'}
 CONSTRUCTOR = r'objects\characters\sentinel_constructor\sentinel_constructor'
 CONSTRUCTOR_JSON = f'{OUT}/models/SentinelConstructor/SentinelConstructor.json'
 SENTINEL_BUBBLE = "\toverride bool HCE_HasBubble() { return true; }    // Halo 2's shield bubble\n"
@@ -2688,7 +2691,7 @@ def build(cfg=None):
             # bookkeeping: its DoomEdNum now, or after the first release's classes ('_late'); its place in the random spawner
             if v.get('_late'): late.append(cls)
             else: ednums.append((ed, cls)); ed += 1
-            if not ov.get('unique') and not ov.get('ally') and char not in NO_RANDOM: spawners.setdefault(char, []).append(cls)
+            if not ov.get('unique') and not ov.get('ally') and char not in NO_RANDOM and cls not in RANDOM_EXCLUDE: spawners.setdefault(char, []).append(cls)
         if len(prof) > 1:              # more than its own gun to choose from
             zs[base_idx] = zs[base_idx][:-2] + loadout_code(char, prof, AnimSet(meta)) + '}\n'
     # ---------------- projectiles with Halo damage
@@ -3181,6 +3184,12 @@ ODST = {  # pack variant -> (Armored Marine variant it copies, Fire Team Raven c
     'marine odst raven orange':        ('marine_armored battle rifle', 'orange'),
     'marine odst raven blue':          ('marine_armored assault rifle', 'blue'),
     'marine odst raven purple':        ('marine_armored sniper', 'purple'),
+    # the double barrel is Fire Team Raven's and Stacker's alone (RANDOM_EXCLUDE): each of Raven with it, in their own
+    # skins (add_odsts: skin_as the colour's own class)
+    'marine odst raven blue double barrel':   ('marine_armored double barrel', 'blue'),
+    'marine odst raven green double barrel':  ('marine_armored double barrel', 'green'),
+    'marine odst raven orange double barrel': ('marine_armored double barrel', 'orange'),
+    'marine odst raven purple double barrel': ('marine_armored double barrel', 'purple'),
     # Halo 2's ODSTs: their own body (extract_h2_odst.py: the Halo 2 Marine's ODST body and head on the CE skeleton)
     # worn in place of all of Spiral's
     'marine odst halo2':               ('marine_armored assault rifle', None, 'h2_odst_body'),
@@ -3270,7 +3279,9 @@ def add_odsts(ai):
         v['change_colors'] = None; v['change_colors_list'] = []
         v['_late'] = True
         ov = dict(v.get('_ov') or {})
-        ov['skin_as'] = cname(key) if raven else 'HCE_MarineOdstAssaultRifle'
+        own = 'characters\\marine_odst\\marine odst raven ' + raven if raven else None
+        ov['skin_as'] = (cname(own) if raven and own != key and own[len('characters\\marine_odst\\'):] in ODST else
+                         cname(key) if raven else 'HCE_MarineOdstAssaultRifle')    # (a Raven member's other gun: his own skins)
         if raven:
             ov['raven'] = raven
             ov['code'] = ov.get('code', '') + raven_code(raven)

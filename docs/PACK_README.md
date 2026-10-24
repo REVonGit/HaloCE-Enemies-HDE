@@ -172,7 +172,7 @@ With replacement on, any other allied (friendly) monster becomes a Marine instea
 
 ## The Marine arsenal
 
-Every human weapon in HaloDoom Evolved has a Marine who carries it, built from the Halo model you picked for it. Both Marine bodies (Marine and Armored Marine) get each one: `HCE_Marine<Gun>` and `HCE_MarineArmored<Gun>`. `HCE_RandomMarine` and `HCE_RandomMarineArmored` now pick from all of them.
+Every human weapon in HaloDoom Evolved has a Marine who carries it, built from the Halo model you picked for it. Both Marine bodies (Marine and Armored Marine) get each one: `HCE_Marine<Gun>` and `HCE_MarineArmored<Gun>`. `HCE_RandomMarine` and `HCE_RandomMarineArmored` now pick from all of them but the double barrel, which is Fire Team Raven's and Sergeant Stacker's gun (`HCE_MarineDoubleBarrel` and `HCE_MarineArmoredDoubleBarrel` can still be placed).
 
 | Gun (class suffix) | Model | Fires | Drops |
 |---|---|---|---|
@@ -186,7 +186,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
 | `Shotgun` (unchanged) | Halo CE's shotgun | Halo CE pellets | `Halo_Shotgun` |
 | `Bulldog` | HaloDoom Evolved's own Bulldog, reinterpreted as a Halo CE gun: its drum-fed shape cut to a CE polygon budget (1,230 triangles) with one 512x512 CE-style painted texture baked from it (gunmetal receiver, olive-drab stock, drum and fore-end, black rubber grips, painted edge wear) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
-| `DoubleBarrel` | SOI's 8-gauge shotgun (SOI's Singleplayer Adventure) | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
+| `DoubleBarrel` | SOI's 8-gauge shotgun (SOI's Singleplayer Adventure); only Fire Team Raven and Sergeant Stacker spawn with it | 14 pellets, one blast at a time; it gibs | `Halo_DBLShotgun` |
 | `Sniper` | Halo CE's sniper rifle | Halo CE sniper rounds (101), from far back | `Halo_SniperRifle` |
 | `RocketLauncher` | Halo 2's rocket launcher, with its SPNKr lettering decals | Halo CE rockets | `Halo_RocketLauncher` |
 | `Hydra` | HaloDoom Evolved's own Hydra (Halo Infinite's) at a Halo CE polygon budget, keeping the .blend's own UV layout and texture (Base Color × AO baked and downscaled to Halo CE's 512×512), its UNSC caution and stripe decals on top; held like a rifle | four-missile salvos of HDE Hydra missiles | `Halo_Hydra` |
@@ -703,13 +703,13 @@ The Forerunner **Sentinel Knight** from blackandfan's Halo 2 tag pack (H2EK-Tags
   * **Binary Rifle**: one heavy, very fast green bolt every few seconds, from long range.
   The Light Rifle, Scattershot and Binary Rifle drop HaloDoom Evolved's own when the Knight dies; the Suppressor (which HDE doesn't have) drops nothing.
 * **Phase:** with its shield down and under fire, or to close in on a target far away, a Knight sinks into the ground in a burst of hard light (untouchable from halfway down) and rises out of it somewhere else, 160-400 units from its target and in sight of it, at most every 6-10 seconds.
-* **Combat:** runs, strafes, dives and evades, melee (its blade, five swings), berserks when badly hurt, taunts; flinches front, back and sides. It falls when it dies.
+* **Combat:** runs, strafes, dives and evades, melee (its blade, five swings), berserks when badly hurt, taunts; flinches front, back and sides. When it dies it comes apart the Halo 4 way: its own death animation, twitching and jittering loose, as it burns away into hard-light embers in its core's colour, leaving only the gun it drops. It cries out as it dies and dissolves with Halo 4's Knight sounds (`extract_h4_knight.py`): a death cry (a major or falling one for a hard kill) and the dissolve.
 * **Voice** (REV's lines; the Sentinels pack's `sndinfo.knight`, events `HCE/SentinelKnight/<line>`): a Knight calls out what it spots and what it kills, by kind:
   * **Spotting:** the player by his HaloDoom Evolved Spartan class (Spartan-II, -III or -IV lines, or the plain ones for Doom's marine; a friendly Knight greets him instead), the Covenant, Hunters, the Flood, humans, the Digsite's Drinol, a grenade landing near it.
   * **On the first Flood level** (`hce_floodlevel`), the first Knight to meet the Flood gives its level-start line.
   * **A carrier form** in sight within about 8 m (or spotted close): its warning that the carrier is about to blow.
   * **Kills:** Elites, Grunts, Jackals, Brutes, humans and the player, Flood combat forms, the Flood in general (or its line about sanitizing the dead), Hunters, the Drinol and other heavy units.
-  * Also: stuck by a plasma grenade, searching. It says nothing when hurt or dying.
+  * Also: stuck by a plasma grenade, searching. It says nothing when hurt; its death cries are Halo 4's (above).
 * **Doom monsters:** Hell Knights sometimes become Sentinel Knights (Minors on the easier skills, Majors and Commanders on the harder ones).
 
 Classes `HCE_SentinelKnight{Minor,Major,Commander}{LightRifle,Scattershot,BinaryRifle,Suppressor}` (DoomEdNums 30353-30364) and `HCE_RandomSentinelKnight` (30365). Machines: no blood, no dismemberment.
@@ -935,7 +935,7 @@ Marines following you (every Marine is an ally) take orders and react to how you
 * **Name and health over his head:** while a Marine is in your crosshair, his rank and name show over his head with Halo CE's health bar under it (HaloDoom Evolved's CE HUD art: nine segments, yellow then red as he's hurt). It fades a moment after you look away.
 * **ODSTs (new):** Spiral's Halo CE ODST (`extract_odst.py`, from the a50 map: its own model, legs, torso, arms, helmet and visor, rigged to the Marine's skeleton), with every animation the Marines have and the Marines' guns, voices, blood and squad orders. They fight as Armored Marines (the same combat data, toughness and collision) and wear their textures as they are. The visor reflects Halo CE's cube map per pixel as you move around it (the visor shader's own cube and tints: the cyborg's reflection cube on the base ODSTs, a darker one tinted in each Raven's colour), brighter toward glancing angles.
   * **a50's loadouts:** the assault rifle (`HCE_MarineOdstAssaultRifle`, 30331, and the Major, `HCE_MarineOdstAssaultRifleMajor`, 30332) and the shotgun (`HCE_MarineOdstShotgun`, 30337); and Reach's MA37 (Shigure's model: `HCE_MarineOdstMa37`, 30567).
-  * **Fire Team Raven** (Connor Dawn's models, from the a10 map): four ODSTs in their own colours, with their a10 guns: green with the shotgun (`HCE_MarineOdstRavenGreen`, 30334), orange with the battle rifle (`HCE_MarineOdstRavenOrange`, 30335), blue with the assault rifle (`HCE_MarineOdstRavenBlue`, 30333) and purple with the sniper rifle (`HCE_MarineOdstRavenPurple`, 30336). Each goes by their own name over their head: blue is Raven Actual, Staff Sergeant Ethan A. Graves; orange (red) Sergeant Marcus B. Hudson; green Corporal Victor C. Ramos; purple Corporal Ava D. Lang, who speaks with Halo 2's female Marine voice (`marine_tough`).
+  * **Fire Team Raven** (Connor Dawn's models, from the a10 map): four ODSTs in their own colours, with their a10 guns: green with the shotgun (`HCE_MarineOdstRavenGreen`, 30334), orange with the battle rifle (`HCE_MarineOdstRavenOrange`, 30335), blue with the assault rifle (`HCE_MarineOdstRavenBlue`, 30333) and purple with the sniper rifle (`HCE_MarineOdstRavenPurple`, 30336). Each also comes with the double barrel, the gun only Raven and Sergeant Stacker carry: `HCE_MarineOdstRavenBlueDoubleBarrel` (30569), `HCE_MarineOdstRavenGreenDoubleBarrel` (30570), `HCE_MarineOdstRavenOrangeDoubleBarrel` (30571) and `HCE_MarineOdstRavenPurpleDoubleBarrel` (30572). Each goes by their own name over their head: blue is Raven Actual, Staff Sergeant Ethan A. Graves; orange (red) Sergeant Marcus B. Hudson; green Corporal Victor C. Ramos; purple Corporal Ava D. Lang, who speaks with Halo 2's female Marine voice (`marine_tough`).
   * **Halo 2's ODSTs:** their own body, the Halo 2 Marine's ODST armour and helmet (`extract_h2_odst.py`), carried onto the Halo CE Marine's skeleton so they play every Marine animation, its armour weathered like the Halo CE Marines' (Halo 2's bump and detail maps, grime, worn plate edges baked in), Halo 2's dark bluish-purple visor, and Halo 2's own Marine stance set (low-ready idle, moves and aim) for every gun: with the assault rifle (`HCE_MarineOdstHalo2`, 30340), the battle rifle (`HCE_MarineOdstHalo2BattleRifle`, 30341) the Major's shotgun (`HCE_MarineOdstHalo2Shotgun`, 30342) and the MA37 (`HCE_MarineOdstHalo2Ma37`, 30568).
   * **Hellbringer:** an ODST flame trooper (`HCE_MarineOdstHellbringer`, 30343) in Halo Wars 2's Hellbringer helmet from Elefant's kit, with a red visor (the helmet's own lens, drawn with the visor shader so it catches the light like the ODSTs' visors; Armored Marines who roll the helmet keep its amber lens), a gas mask below and the fuel tank on his back, carrying the flamethrower in the support stance.
   * **Sealed helmets:** two more ODSTs on Spiral's body with one of the kit's fully closed helmets in place of its own: the closed visor helmet, with a silver visor, and the battle rifle (`HCE_MarineOdstClosedHelmet`, 30338), and the enclosed visor helmet with the Major's shotgun (`HCE_MarineOdstEnclosedHelmet`, 30339).
@@ -1415,6 +1415,10 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30566 | `HCE_MarineRiflemanShotgun` |
 | 30567 | `HCE_MarineOdstMa37` |
 | 30568 | `HCE_MarineOdstHalo2Ma37` |
+| 30569 | `HCE_MarineOdstRavenBlueDoubleBarrel` |
+| 30570 | `HCE_MarineOdstRavenGreenDoubleBarrel` |
+| 30571 | `HCE_MarineOdstRavenOrangeDoubleBarrel` |
+| 30572 | `HCE_MarineOdstRavenPurpleDoubleBarrel` |
 
 ## Credits
 
@@ -1422,7 +1426,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Halo 2 Elite shoulder stumps:** Hunterunt's Restored Gore features Halo 2.
 * **Sentinel Knight:** blackandfan's Halo 2 tag pack (H2EK-Tags): the Knight's model, textures, animations and tags.
 * **Flood Brute:** blackandfan's Halo 2 tag pack (H2EK-Tags): Halo 2's cut Flood Brute's model, textures and animations; its fur and armour textures from MCC's Halo 2 Brute, its fronds from SOI's Flood Juggernaut (Singleplayer Adventure V3).
-* **Sentinel Knight voice:** REV.
+* **Sentinel Knight voice:** REV. Its death cries and dissolve sound are Halo 4's Promethean Knight's (343 Industries), from MCC's Halo 4.
 * **Forerunner arm guns:** HDE_promethian_weapons.blend (the Halo Infinite Light Rifle, Scattershot, Binary Rifle and Suppressor; HaloDoom Evolved).
 * **Halo 2 Sentinels:** the Aggressor, Enforcer and Constructor from Halo 2 (MCC's `06b_floodzone.map`).
 * **Sentinel sounds:** Halo CE's (`c20`) and Halo 2's (`06b_floodzone`) Sentinel engine, hit and death sounds, by Bungie. The Suppressor's fire sounds are HaloDoom Evolved's.
@@ -1432,7 +1436,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Geist:** Arteen's (CMT; its model, textures and animations, from Mercury Rising).
 * **Draeth:** the 1999 Elite (`99_mac`) is the Digsite release's (github.com/digsite/h1), from Mercury Rising.
 * **Reaver (Draeth) voice and footsteps:** Black Mesa's Alien Grunt, by Crowbar Collective.
-* **SOI's 8-gauge shotgun** (the double barrel the Marines, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
+* **SOI's 8-gauge shotgun** (the double barrel Fire Team Raven, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt's model, skins and animations, and the armed Flood Grunts, are from Sabopool's Halo CE Overhaul 2.0 (MCC Steam Workshop 3735328357, its c40 map); the bursting Flood Grunt's AI and sounds are Tropical Thunder 98's, from the XAM Campaign Overhaul (SPV3's c40 map).

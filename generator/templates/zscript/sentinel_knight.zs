@@ -71,7 +71,7 @@
 	}
 
 	// ---- its voice (HCE/SentinelKnight/<line>, the Sentinels pack's sndinfo.knight): the generic events HCE_Say gets
-	// become the Knight's lines for what it is looking at; the events it has no line for (pain, death...) stay silent
+	// become the Knight's lines for what it is looking at; the events it has no line for (pain...) stay silent; its death cries and dissolve are Halo 4's
 	bool hce_allyGreeted, hce_saidFirstFlood;
 	int hce_carrierWarnAt;
 
@@ -180,6 +180,7 @@
 		case 'SearchStart': case 'SearchFail': case 'SearchClear': case 'Investigate': case 'HeardGunfire': case 'KeepWatch':
 			line = 'Search'; break;
 		case 'CarrierBlow': case 'SpotPlayerAlly': line = ev; break;
+		case 'Death': case 'DeathHard': line = ev; break;   // Halo 4's Knight death cries (split_factions.KNIGHT_H4)
 		}
 		if(line == 'None') return;
 		if(hce_debugPhase) Console.Printf("HCEVOICE %s %s -> %s (%s)", GetClassName(), ev, line, target ? target.GetClassName() : 'none');
@@ -219,7 +220,7 @@
 	int hce_dissolve;
 	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
 	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays
-	// the zoom sound.
+	// Halo 4's Knight dissolve (HCE/SentinelKnight/Derez) beside its death cry.
 	override void HCE_Die()
 	{
 		super.HCE_Die();
@@ -229,7 +230,7 @@
 		hce_animLock = HCE_DISSOLVE_TICS + 10;
 		hce_dissolve = 1;
 		bSHOOTABLE = false; bSOLID = false;
-		A_StartSound("Halo/Weapons/BinaryRifle/Zoom/IN", CHAN_7, CHANF_OVERLAP, 1.0, ATTN_NORM, 0.6);
+		A_StartSound("HCE/SentinelKnight/Derez", CHAN_7, CHANF_OVERLAP, 1.0, ATTN_NORM);
 	}
 
 	// One tic of the death dissolve: spawns 1-9 embers (core colour, some white-hot) from the part of the body not yet

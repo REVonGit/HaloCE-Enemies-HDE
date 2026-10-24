@@ -1343,6 +1343,31 @@ Model HCE_MarineOdstRavenBlue
 	FrameIndex HCEM A 6 0
 }
 
+Model HCE_MarineOdstRavenBlueDoubleBarrel
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_blue.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_blue.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_blue.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_blue.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_blue.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 1 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 2 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 3 "w_m_double_barrel_1.png"
+	SurfaceSkin 6 4 "w_m_double_barrel_2.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineOdstRavenGreen
 {
 	Path "models/hce/MarineODST"
@@ -1358,6 +1383,31 @@ Model HCE_MarineOdstRavenGreen
 	SurfaceSkin 6 0 "w_shotgun_0.png"
 	SurfaceSkin 6 1 "w_shotgun_1.png"
 	SurfaceSkin 6 2 "w_shotgun_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenGreenDoubleBarrel
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_green.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_green.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_green.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_green.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_green.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 1 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 2 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 3 "w_m_double_barrel_1.png"
+	SurfaceSkin 6 4 "w_m_double_barrel_2.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -1392,6 +1442,31 @@ Model HCE_MarineOdstRavenOrange
 	FrameIndex HCEM A 6 0
 }
 
+Model HCE_MarineOdstRavenOrangeDoubleBarrel
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_orange.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_orange.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_orange.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_orange.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_orange.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 1 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 2 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 3 "w_m_double_barrel_1.png"
+	SurfaceSkin 6 4 "w_m_double_barrel_2.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_MarineOdstRavenPurple
 {
 	Path "models/hce/MarineODST"
@@ -1407,6 +1482,31 @@ Model HCE_MarineOdstRavenPurple
 	SurfaceSkin 6 0 "w_sniper_rifle_0.png"
 	SurfaceSkin 6 1 "w_sniper_rifle_0.png"
 	SurfaceSkin 6 2 "w_sniper_rifle_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
+Model HCE_MarineOdstRavenPurpleDoubleBarrel
+{
+	Path "models/hce/MarineODST"
+	Model 0 "MarineODST.iqm"
+	SurfaceSkin 0 0 "skins/marineodst_0_raven_purple.png"
+	SurfaceSkin 0 1 "skins/marineodst_1_raven_purple.png"
+	SurfaceSkin 0 2 "skins/marineodst_2_raven_purple.png"
+	SurfaceSkin 0 3 "skins/marineodst_3_raven_purple.png"
+	SurfaceSkin 0 4 "skins/marineodst_4_raven_purple.png"
+	Path "models/hce/MarineODST"
+	Model 6 "Marine_w_double_barrel.iqm"
+	Path "models/hce/weapons"
+	SurfaceSkin 6 0 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 1 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 2 "w_m_double_barrel_0.png"
+	SurfaceSkin 6 3 "w_m_double_barrel_1.png"
+	SurfaceSkin 6 4 "w_m_double_barrel_2.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll

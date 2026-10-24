@@ -176,23 +176,29 @@ KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Br
                 'Spot Player (Enemy)': ['SpotPlayer', 'SpotSpartanII', 'SpotSpartanIII', 'SpotSpartanIV'],
                 'Spot Player Spartan II (Enemy)': ['SpotSpartanII'] * 2, 'Spot Player Spartan III (Enemy)': ['SpotSpartanIII'] * 2,
                 'Spot Player Spartan IV (Enemy)': ['SpotSpartanIV'] * 2}
+# Halo 4's Knight sounds (extract_h4_knight.py -> knight_h4/): its death dissolve, played by the Knight's HCE_Die, and
+# its death cries for the base AI's Death / DeathHard (the plain deaths; the major and falling ones for a hard kill)
+KNIGHT_H4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_h4')
+KNIGHT_H4_LINES = {'Derez': ['Derez'], 'Death': ['Death'], 'Death Major': ['DeathHard'], 'Death Fall': ['DeathHard']}
 
 
 def knight_voice(d):
-    """the Knights' lines -> d/sounds/hce_knight (mono) and d/sndinfo.knight"""
+    """the Knights' lines (REV's, and Halo 4's death sounds) -> d/sounds/hce_knight (mono) and d/sndinfo.knight"""
     import subprocess
     os.makedirs(f'{d}/sounds/hce_knight', exist_ok=True)
     out = ["// the Sentinel Knights' voice (REV): HCE/SentinelKnight/<event> as the Knight's HCE_Say plays them"]
     ev = {}
-    for fn in sorted(os.listdir(KNIGHT_VOICES)):
+    srcs = [(KNIGHT_VOICES, fn, KNIGHT_LINES, '') for fn in sorted(os.listdir(KNIGHT_VOICES))]
+    if os.path.isdir(KNIGHT_H4): srcs += [(KNIGHT_H4, fn, KNIGHT_H4_LINES, 'h4_') for fn in sorted(os.listdir(KNIGHT_H4))]
+    for src, fn, lines, pre in srcs:
         m = re.match(r'(.+?)(?: (\d+))?\.ogg$', fn)
-        if not m or m.group(1) not in KNIGHT_LINES: continue
-        leaf = re.sub(r'\W+', '_', m.group(1).lower()).strip('_') + (f'_{m.group(2)}' if m.group(2) else '')
+        if not m or m.group(1) not in lines: continue
+        leaf = pre + re.sub(r'\W+', '_', m.group(1).lower()).strip('_') + (f'_{m.group(2)}' if m.group(2) else '')
         dst = f'sounds/hce_knight/{leaf}.ogg'
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{KNIGHT_VOICES}/{fn}', '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5',
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', f'{src}/{fn}', '-ac', '1', '-c:a', 'libvorbis', '-q:a', '5',
                         f'{d}/{dst}'], check=True)
         out.append(f'HCE/KnightSnd/{leaf} "{dst}"')
-        for e in KNIGHT_LINES[m.group(1)]: ev.setdefault(e, []).append(f'HCE/KnightSnd/{leaf}')
+        for e in lines[m.group(1)]: ev.setdefault(e, []).append(f'HCE/KnightSnd/{leaf}')
     for e, ids in sorted(ev.items()): out.append(f'$random HCE/SentinelKnight/{e} {{ {" ".join(ids)} }}')
     open(f'{d}/sndinfo.knight', 'w').write('\n'.join(out) + '\n')
 

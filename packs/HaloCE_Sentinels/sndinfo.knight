@@ -90,7 +90,11 @@ HCE/KnightSnd/spot_player_spartan_ii_enemy_1 "sounds/hce_knight/spot_player_spar
 HCE/KnightSnd/spot_player_spartan_ii_enemy_2 "sounds/hce_knight/spot_player_spartan_ii_enemy_2.ogg"
 HCE/KnightSnd/spot_player_spartan_iii_enemy "sounds/hce_knight/spot_player_spartan_iii_enemy.ogg"
 HCE/KnightSnd/spot_player_spartan_iv_enemy "sounds/hce_knight/spot_player_spartan_iv_enemy.ogg"
+HCE/KnightSnd/h4_derez_1 "sounds/hce_knight/h4_derez_1.ogg"
+HCE/KnightSnd/h4_derez_2 "sounds/hce_knight/h4_derez_2.ogg"
+HCE/KnightSnd/h4_derez_3 "sounds/hce_knight/h4_derez_3.ogg"
 $random HCE/SentinelKnight/CarrierBlow { HCE/KnightSnd/carrier_form_about_to_blow_call_out_1 HCE/KnightSnd/carrier_form_about_to_blow_call_out_2 HCE/KnightSnd/carrier_form_about_to_blow_call_out_3 }
+$random HCE/SentinelKnight/Derez { HCE/KnightSnd/h4_derez_1 HCE/KnightSnd/h4_derez_2 HCE/KnightSnd/h4_derez_3 }
 $random HCE/SentinelKnight/FirstFlood { HCE/KnightSnd/level_start_first_flood_level_1 HCE/KnightSnd/level_start_first_flood_level_2 HCE/KnightSnd/level_start_first_flood_level_3 }
 $random HCE/SentinelKnight/KillBrute { HCE/KnightSnd/kill_brute_1 HCE/KnightSnd/kill_brute_2 HCE/KnightSnd/kill_brute_3 HCE/KnightSnd/kill_brute_4 HCE/KnightSnd/kill_brute_5 }
 $random HCE/SentinelKnight/KillCombatForm { HCE/KnightSnd/kill_combat_form_1 HCE/KnightSnd/kill_combat_form_2 HCE/KnightSnd/kill_combat_form_3 HCE/KnightSnd/kill_combat_form_4 }

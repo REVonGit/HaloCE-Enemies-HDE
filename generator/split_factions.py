@@ -450,7 +450,7 @@ def main():
         gtxt, bms_used = _bp.derez_materials(gtxt, need, 'models/hce/brightmap_none.png')
         open(glf, 'w').write(gtxt)
         os.makedirs(f'{d}/shaders', exist_ok=True)
-        open(f'{d}/shaders/hce_derez.fp', 'w').write(_bp.DEREZ_SHADER)
+        open(f'{d}/shaders/hce_derez.fp', 'w').write(_bp.derez_shader())
         os.makedirs(f'{d}/models/hce', exist_ok=True)
         Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{d}/models/hce/brightmap_none.png')
         for b in bms_used:

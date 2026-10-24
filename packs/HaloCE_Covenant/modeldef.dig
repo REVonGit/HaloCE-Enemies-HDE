@@ -102,40 +102,6 @@ Model HCE_BruteCaptainShotgun
 	FrameIndex HCEM A 8 0
 }
 
-Model HCE_BruteShieldShell
-{
-	Path "models/hce_dig/Brute"
-	Model 0 "Brute.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 6 "skins/shieldshell.png"
-	SurfaceSkin 0 7 "skins/shieldshell.png"
-	SurfaceSkin 0 8 "skins/shieldshell.png"
-	SurfaceSkin 0 9 "skins/shieldshell.png"
-	SurfaceSkin 0 10 "skins/shieldshell.png"
-	SurfaceSkin 0 11 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	SurfaceSkin 0 17 "skins/shieldshell.png"
-	SurfaceSkin 0 18 "skins/shieldshell.png"
-	SurfaceSkin 0 19 "skins/shieldshell.png"
-	SurfaceSkin 0 28 "skins/shieldshell.png"
-	SurfaceSkin 0 29 "skins/shieldshell.png"
-	SurfaceSkin 0 30 "skins/shieldshell.png"
-	Path "models/hce_dig/weapons"
-	Scale 95.2 95.2 114.3
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_BruteChieftainGravityHammer
 {
 	Path "models/hce_dig/Brute"
@@ -418,27 +384,6 @@ Model HCE_Drinol
 	Scale 50 50 60
 	UseActorPitch
 	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_DroneShieldShell
-{
-	Path "models/hce_dig/Drone"
-	Model 0 "Drone.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	Path "models/hce_dig/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
@@ -907,36 +852,6 @@ Model HCE_EliteSpecopsPulseCarbine
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_EliteZealotShieldShell
-{
-	Path "models/hce_dig/EliteZealot"
-	Model 0 "EliteZealot.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 6 "skins/shieldshell.png"
-	SurfaceSkin 0 7 "skins/shieldshell.png"
-	SurfaceSkin 0 8 "skins/shieldshell.png"
-	SurfaceSkin 0 9 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	SurfaceSkin 0 17 "skins/shieldshell.png"
-	SurfaceSkin 0 18 "skins/shieldshell.png"
-	SurfaceSkin 0 19 "skins/shieldshell.png"
-	SurfaceSkin 0 20 "skins/shieldshell.png"
-	Path "models/hce_dig/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_EliteUltraZealotEnergySword
 {
 	Path "models/hce_dig/EliteZealot"
@@ -981,278 +896,17 @@ Model HCE_Engineer
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_FloodcombatBruteCaptainPlasmaRifle
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_captain.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 4 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteCaptainShotgun
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_captain.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 4 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteCaptainUnarmed
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_captain.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 4 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_captain.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteHonorGuardAssaultRifle
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_honor_guard.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_honor_guard.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 6 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 7 "skins/floodbrute_floodbrute_brute_honor_inset_lights.png"
-	SurfaceSkin 0 8 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 11 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 12 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 14 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 16 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 26 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteHonorGuardSpiker
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_honor_guard.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_honor_guard.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 6 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 7 "skins/floodbrute_floodbrute_brute_honor_inset_lights.png"
-	SurfaceSkin 0 8 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 11 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 12 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 14 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 16 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 26 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteHonorGuardUnarmed
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_honor_guard.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_honor_guard.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 6 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 7 "skins/floodbrute_floodbrute_brute_honor_inset_lights.png"
-	SurfaceSkin 0 8 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 11 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 12 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 14 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 16 "skins/floodbrute_floodbrute_brute_honor_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 26 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMajorShotgun
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_major.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMajorSpiker
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_major.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMajorUnarmed
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 1 "skins/FloodBrute_brute_hair_major.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 9 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 10 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/FloodBrute_brute_major.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 27 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMinorAssaultRifle
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 1 "skins/floodbrute_floodbrute_brute_hair_minor.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 5 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 25 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMinorPlasmaRifle
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 1 "skins/floodbrute_floodbrute_brute_hair_minor.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 5 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 25 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
-Model HCE_FloodcombatBruteMinorUnarmed
-{
-	Path "models/hce_dig/FloodBrute"
-	Model 0 "FloodBrute.iqm"
-	SurfaceSkin 0 0 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 1 "skins/floodbrute_floodbrute_brute_hair_minor.png"
-	SurfaceSkin 0 2 "skins/floodbrute_floodbrute_flood_fronds.png"
-	SurfaceSkin 0 3 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 5 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 13 "skins/floodbrute_floodbrute_brute_minor.png"
-	SurfaceSkin 0 15 "skins/floodbrute_floodbrute_brute_shoulder_armor.png"
-	SurfaceSkin 0 24 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	SurfaceSkin 0 25 "skins/floodbrute_floodbrute_floodcombat_brute.png"
-	Path "models/hce_dig/weapons"
-	Scale 92 92 110
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
 
 Model HCE_JackalMajorHelmetPlasmaRifle
 {

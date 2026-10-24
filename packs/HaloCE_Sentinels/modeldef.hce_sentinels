@@ -311,24 +311,6 @@ Model HCE_SentinelKnightCommanderBinaryRifle
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_SentinelKnightShieldShell
-{
-	Path "models/hce/SentinelKnight"
-	Model 0 "SentinelKnight.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 6 "skins/shieldshell.png"
-	SurfaceSkin 0 7 "skins/shieldshell.png"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_SentinelKnightCommanderLightRifle
 {
 	Path "models/hce/SentinelKnight"

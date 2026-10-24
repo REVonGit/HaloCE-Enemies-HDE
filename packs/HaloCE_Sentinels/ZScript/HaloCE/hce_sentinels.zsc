@@ -3015,7 +3015,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override Name HCE_ShellClass() { return 'HCE_SentinelKnightShieldShell'; }
+	override int HCE_ShieldGlow() { return 3; }      // its shield's flare colour (the derez shader's shield band)
 	// ---- Sentinel Knight: its core's colour, rolled once from its rank's palette (cold for the grey Knights, warm for
 	// the gold commanders), and its phase: it sinks into the ground in a burst of hard light and rises out of it
 	// somewhere else, around its target. It phases when its shield is down and it is under fire, or to close in on a
@@ -3238,6 +3238,8 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	int hce_kSlot;                          // the derez colour: 0 its own orange, or the Forerunner weapon that killed it
 	// a Knight runs its own dissolve (HCE_DissolveTick): a Forerunner weapon's kill only gives it that weapon's colour
 	override bool HCE_Derez(int slot) { hce_kSlot = clamp(slot, 0, HCE_DEREZ_SLOTS - 1); return true; }
+	// no shield flare while it phases through the ground or burns away (those set its alpha themselves)
+	override bool HCE_CanShieldGlow() { return hce_phase == 0 && hce_dissolve == 0; }
 	int hce_dissolve;
 	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
 	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays
@@ -3260,7 +3262,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 	void HCE_DissolveTick()
 	{
 		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
-		color core = hce_kSlot > 0 ? HCE_DerezColor(hce_kSlot) : hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
+		color core = hce_kSlot > 0 ? HCE_DerezEmber(hce_kSlot) : hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
 		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
 		// embers: from the parts still there (the top first, burning down), rising and fading
 		int n = 1 + int(f * 8);
@@ -3483,11 +3485,6 @@ class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -3501,9 +3498,6 @@ class HCE_SentinelKnightCommanderBinaryRifle : HCE_SentinelKnightBase
 		return hce_gunOffset;
 	}
 }
-
-// energy-shield flare for the SentinelKnights: the same model, every surface the glowing shield texture
-class HCE_SentinelKnightShieldShell : HCE_ShieldShell {}
 
 // HCE_SentinelKnightCommanderLightRifle: Halo variant "objects\characters\sentinel_knight\sentinel_knight commander light rifle", light rifle, 400 body / 150 shield, 3 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -3634,11 +3628,6 @@ class HCE_SentinelKnightCommanderLightRifle : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 5, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -3782,11 +3771,6 @@ class HCE_SentinelKnightCommanderScattershot : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -3929,11 +3913,6 @@ class HCE_SentinelKnightCommanderSuppressor : HCE_SentinelKnightBase
 		return (0, 0, 0);
 	}
 	override int HCE_KnightPalette() { return 1; }    // warm core colours
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 6 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -4075,11 +4054,6 @@ class HCE_SentinelKnightMajorBinaryRifle : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
-	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
@@ -4223,11 +4197,6 @@ class HCE_SentinelKnightMajorLightRifle : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 5, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -4370,11 +4339,6 @@ class HCE_SentinelKnightMajorScattershot : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -4515,11 +4479,6 @@ class HCE_SentinelKnightMajorSuppressor : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
-	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 6 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
@@ -4663,11 +4622,6 @@ class HCE_SentinelKnightMinorBinaryRifle : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -4809,11 +4763,6 @@ class HCE_SentinelKnightMinorLightRifle : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
-	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 5, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
@@ -4957,11 +4906,6 @@ class HCE_SentinelKnightMinorScattershot : HCE_SentinelKnightBase
 	{
 		return (0, 0, 0);
 	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 6, 7 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -5102,11 +5046,6 @@ class HCE_SentinelKnightMinorSuppressor : HCE_SentinelKnightBase
 	override vector3 HCE_AnimMove(Name anim)
 	{
 		return (0, 0, 0);
-	}
-	override void HCE_DressShellVariant(Actor s)
-	{
-		static const int H[] = { 4, 5, 6 };
-		for(int i = 0; i < H.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', H[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	override vector3 HCE_MuzzleAt(Name anim)
 	{

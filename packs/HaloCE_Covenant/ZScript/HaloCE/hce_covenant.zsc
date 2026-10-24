@@ -3966,7 +3966,7 @@ class HCE_EliteBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteShieldShell'; }
+	override int HCE_ShieldGlow() { return 1; }      // its shield's flare colour (the derez shader's shield band)
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -4724,9 +4724,6 @@ class HCE_EliteCommanderEnergySword : HCE_EliteBase
 		return hce_gunOffset;
 	}
 }
-
-// energy-shield flare for the Elites: the same model, every surface the glowing shield texture
-class HCE_EliteShieldShell : HCE_ShieldShell {}
 
 // HCE_EliteCommanderPlasmaRifle: Halo variant "characters\elite\elite commander\elite commander plasma rifle", plasma rifle, 100 body / 200 shield, 6 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -7440,7 +7437,6 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_rarm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
 		}
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteRangerBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -7464,9 +7460,6 @@ class HCE_EliteRangerNeedler : HCE_EliteBase
 		return hce_gunOffset;
 	}
 }
-
-// energy-shield flare for the ranger_body Elites: the Halo 2 body's shape
-class HCE_EliteRangerBodyShieldShell : HCE_ShieldShell {}
 
 // HCE_EliteRangerPlasmaRifle: Halo variant "characters\elite\elite ranger\elite ranger plasma rifle", plasma rifle, 100 body / 100 shield, 7 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -7760,7 +7753,6 @@ class HCE_EliteRangerPlasmaRifle : HCE_EliteBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'ranger_body_gib_rarm.iqm'; stub = 25; tex = 'gore_Elite.png'; break;
 		}
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteRangerBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -8562,7 +8554,7 @@ class HCE_EliteSpecialBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteSpecialShieldShell'; }
+	override int HCE_ShieldGlow() { return 1; }      // its shield's flare colour (the derez shader's shield band)
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -9378,7 +9370,6 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_rarm.iqm'; stub = 26; tex = 'gore_Elite.png'; break;
 		}
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteSpecialHonorBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -9404,12 +9395,6 @@ class HCE_EliteHonorGuardEnergySword : HCE_EliteSpecialBase
 		return hce_gunOffset;
 	}
 }
-
-// energy-shield flare for the EliteSpecials: the same model, every surface the glowing shield texture
-class HCE_EliteSpecialShieldShell : HCE_ShieldShell {}
-
-// energy-shield flare for the honor_body Elites: the Halo 2 body's shape
-class HCE_EliteSpecialHonorBodyShieldShell : HCE_ShieldShell {}
 
 // HCE_EliteHonorGuardPlasmaRifle: Halo variant "characters\elite\elite honor guard\elite honor guard plasma rifle", plasma rifle, 100 body / 200 shield, 6 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -9705,7 +9690,6 @@ class HCE_EliteHonorGuardPlasmaRifle : HCE_EliteSpecialBase
 		case HCE_LIMB_RARM: path = "models/hce/EliteKit"; model = 'honor_body_gib_rarm.iqm'; stub = 26; tex = 'gore_Elite.png'; break;
 		}
 	}
-	override Name HCE_ShellClass() { return 'HCE_EliteSpecialHonorBodyShieldShell'; }
 	override void HCE_BloodHideClass()
 	{
 		super.HCE_BloodHideClass();
@@ -11699,7 +11683,7 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override Name HCE_ShellClass() { return 'HCE_GruntShieldShell'; }
+	override int HCE_ShieldGlow() { return 1; }      // its shield's flare colour (the derez shader's shield band)
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -11859,11 +11843,6 @@ class HCE_GruntBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_BloodHideClass();
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
-	override void HCE_DressShell(Actor s)       // the shield flare wears the same permutation
-	{
-		super.HCE_DressShell(s);
-		for(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_Needler, Halo_PlasmaPistol
 	override bool HCE_HasLoadouts() { return true; }
@@ -14226,9 +14205,6 @@ class HCE_GruntUltraNeedler : HCE_GruntBase
 	}
 }
 
-// energy-shield flare for the Grunts: the same model, every surface the glowing shield texture
-class HCE_GruntShieldShell : HCE_ShieldShell {}
-
 // HCE_GruntUltraPlasmaPistol: Halo variant "characters\grunt\grunt ultra plasma pistol", plasma pistol, 80 body / 60 shield, 4 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_GruntUltraPlasmaPistol : HCE_GruntBase
@@ -14516,7 +14492,7 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
-	override Name HCE_ShellClass() { return 'HCE_GruntSpecOpsShieldShell'; }
+	override int HCE_ShieldGlow() { return 1; }      // its shield's flare colour (the derez shader's shield band)
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -14676,11 +14652,6 @@ class HCE_GruntSpecOpsBase : HaloDoom_EnemyBase abstract
 	{
 		super.HCE_BloodHideClass();
 		for(int i = 0; i < hce_permHide.Size(); i++) A_ChangeModel('None', 7, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
-	override void HCE_DressShell(Actor s)       // the shield flare wears the same permutation
-	{
-		super.HCE_DressShell(s);
-		for(int i = 0; i < hce_permHide.Size(); i++) s.A_ChangeModel('None', 0, "", 'None', hce_permHide[i], "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 	// guns it can pick up off the ground (HaloDoom_EnemyBase.HCE_ScavengeScan): Halo_FuelRod, Halo_Needler
 	override bool HCE_HasLoadouts() { return true; }
@@ -15371,9 +15342,6 @@ class HCE_GruntSpecopsFuelRod : HCE_GruntSpecOpsBase
 		return hce_gunOffset;
 	}
 }
-
-// energy-shield flare for the GruntSpecOpss: the same model, every surface the glowing shield texture
-class HCE_GruntSpecOpsShieldShell : HCE_ShieldShell {}
 
 // HCE_GruntSpecopsFuelRodAirdef: Halo variant "characters\grunt\grunt specops fuel rod airdef", fuel rod, 75 body / 60 shield, 4 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)

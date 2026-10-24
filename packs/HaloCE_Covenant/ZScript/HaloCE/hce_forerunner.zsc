@@ -14,7 +14,7 @@ class HCE_ForerunnerDerez : EventHandler
 		n = n.MakeLower();
 		if(n.IndexOf("lightrifle") >= 0) return 1;
 		if(n.IndexOf("binaryrifle") >= 0) return 2;
-		if(n.IndexOf("scattershot") >= 0) return n.IndexOf("purple") >= 0 ? 4 : 3;
+		if(n.IndexOf("scattershot") >= 0) return 3;      // both its colours, whichever bolt killed
 		if(n.IndexOf("boltshot") >= 0) return 5;
 		if(n.IndexOf("sentinelbeam") >= 0) return 6;
 		if(n.IndexOf("unmaker") >= 0) return 7;

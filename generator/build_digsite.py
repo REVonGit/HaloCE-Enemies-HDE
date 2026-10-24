@@ -1443,7 +1443,7 @@ def build():
     gl, _used = bp.derez_materials(open(f'{PACK}/gldefs.dig').read(), skins, 'models/hce_dig/brightmap_none.png')
     open(f'{PACK}/gldefs.dig', 'w').write(gl)
     os.makedirs(f'{PACK}/shaders', exist_ok=True)
-    open(f'{PACK}/shaders/hce_derez.fp', 'w').write(bp.DEREZ_SHADER)
+    open(f'{PACK}/shaders/hce_derez.fp', 'w').write(bp.derez_shader())
     os.makedirs(f'{PACK}/models/hce_dig', exist_ok=True)
     Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{PACK}/models/hce_dig/brightmap_none.png')
 

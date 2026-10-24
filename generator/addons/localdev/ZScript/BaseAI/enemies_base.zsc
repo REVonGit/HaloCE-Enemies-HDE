@@ -151,6 +151,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		super.Tick();
 		if(hce_derezSlot > 0 && !isFrozen()) { HCE_DerezTick(); if(bDestroyed) return; }
+		if(!isFrozen()) HCE_ShieldGlowTick();
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
@@ -5269,8 +5270,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	const HCE_DEREZ_SLOTS = 8;
 	int hce_derezSlot, hce_derezTic;            // hce_derezSlot: the colour slot + 1 while derezzing
 	color hce_derezCol;
-	// slot: 0 the Knights' orange, 1 Light Rifle, 2 Binary Rifle, 3 Scattershot (orange), 4 Scattershot (purple),
-	// 5 Boltshot, 6 Sentinel Beam, 7 Unmaker: the shader's palette, in the same order
+	// slot: 0 the Knights' orange, 1 Light Rifle, 2 Binary Rifle, 3 Scattershot (its orange and purple together, cell by
+	// cell), 4 purple (unused), 5 Boltshot, 6 Sentinel Beam, 7 Unmaker: the shader's palette, in the same order
 	static color HCE_DerezColor(int slot)
 	{
 		switch(slot)
@@ -5285,6 +5286,44 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		return color(255, 255, 154, 48);
 	}
+	// the derez's embers: the slot's colour, the Scattershot's both its colours
+	color HCE_DerezEmber(int slot)
+	{
+		if(slot == 3) return random(0, 1) ? color(255, 249, 177, 0) : color(255, 145, 0, 249);
+		return HCE_DerezColor(slot);
+	}
+
+	// ------------------------------------------------------------------
+	// The energy-shield flare, drawn on the body (the derez shader's shield band; it used to be a second actor, a copy
+	// of the model, following the body). hce_shieldFlare is how bright it flares: raised by HCE_Shield.DisplayShields on a
+	// hit (0.55, 0.8 under a quarter shield), on recharging from empty (0.5) and while recharging (0.18), and down
+	// 0.045 a tic. It reaches the shader as alpha in the shield band: 0.9 - 0.1 x (tint + strength) / 8, the tint
+	// from HCE_ShieldGlow (the generated classes: build_pack.SHIELD_TINTS' order, 1-based; 0 = none). No flare while
+	// cloaked, derezzing or dead, or when HCE_CanShieldGlow says no (a Knight phasing).
+	// ------------------------------------------------------------------
+	double hce_shieldFlare;
+	bool hce_flareOn;
+	virtual int HCE_ShieldGlow() { return 0; }
+	virtual bool HCE_CanShieldGlow() { return true; }
+	void HCE_ShieldGlowTick()
+	{
+		if(hce_derezSlot > 0) return;
+		int k = HCE_ShieldGlow();
+		if(k <= 0) return;
+		if(hce_shieldFlare > 0) hce_shieldFlare = max(0, hce_shieldFlare - 0.045);
+		bool can = health > 0 && !bHCE_ActiveCamo && HCE_CanShieldGlow();
+		if(can && hce_shieldFlare > 0.01)
+		{
+			A_SetRenderStyle(0.9 - HCE_DEREZ_BAND * ((k - 1) + clamp(hce_shieldFlare, 0.001, 0.999)) / HCE_DEREZ_SLOTS, STYLE_Translucent);
+			hce_flareOn = true;
+		}
+		else if(hce_flareOn)
+		{
+			hce_flareOn = false;
+			if(!bHCE_ActiveCamo && HCE_CanShieldGlow()) A_SetRenderStyle(1.0, STYLE_Normal);
+		}
+	}
+
 	// starts the derez on a dead body (once); false if it can't
 	virtual bool HCE_Derez(int slot)
 	{
@@ -5302,13 +5341,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		color hot = color(255, min(255, hce_derezCol.r + 110), min(255, hce_derezCol.g + 110), min(255, hce_derezCol.b + 110));
 		int n = 1 + int(p * 6);
 		for(int i = 0; i < n; i++)
-			A_SpawnParticle(random(0, 3) ? hce_derezCol : hot, SPF_FULLBRIGHT, random(16, 30), frandom(1.5, 3.5), 0,
+			A_SpawnParticle(random(0, 3) ? HCE_DerezEmber(hce_derezSlot - 1) : hot, SPF_FULLBRIGHT, random(16, 30), frandom(1.5, 3.5), 0,
 				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, height * frandom(0, 1 - p * 0.6),
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
 		if(++hce_derezTic > HCE_DEREZ_TICS)
 		{
 			for(int i = 0; i < 14; i++)
-				A_SpawnParticle(hce_derezCol, SPF_FULLBRIGHT, 22, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
+				A_SpawnParticle(HCE_DerezEmber(hce_derezSlot - 1), SPF_FULLBRIGHT, 22, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
 					frandom(0, height * 0.5), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
 			if(hce_shellActor) hce_shellActor.Destroy();
 			Destroy();
@@ -7524,7 +7563,15 @@ class HCE_Shield : ShieldProcessor
 		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
 		if(prevShields > 0 && shields <= 0) OnShieldBreak();
 		let e = HaloDoom_EnemyBase(Owner);
-		if(e && e.hce_shellActor)
+		if(e && e.HCE_ShieldGlow() > 0)
+		{
+			// the shield flare, drawn on the body itself (the derez shader's shield band, HCE_ShieldGlowTick): a flash
+			// on every hit, a softer glow as it recharges
+			if(shields < prevShields - 0.5 && shields > 0) e.hce_shieldFlare = max(e.hce_shieldFlare, shields > maxshields * 0.25 ? 0.55 : 0.8);
+			else if(prevShields <= 0 && shields > 0) e.hce_shieldFlare = max(e.hce_shieldFlare, 0.5);
+			else if(shields > prevShields + 0.01 && shields < maxshields) e.hce_shieldFlare = max(e.hce_shieldFlare, 0.18);
+		}
+		else if(e && e.hce_shellActor)
 		{
 			// the shield flare (a bright copy of the model): a flash on every hit, a softer glow as it recharges
 			Actor s = e.hce_shellActor;
@@ -8110,7 +8157,7 @@ class HCE_LimbGib : Actor
 		HCEM A 1
 		{
 			if(GetAge() <= life + 35 * 30) return;
-			if(alpha > 0.899) A_SetRenderStyle(0.899, STYLE_Translucent);   // straight under the derez band (hce_derez.fp)
+			if(alpha > 0.799) A_SetRenderStyle(0.799, STYLE_Translucent);   // straight under the derez and shield bands (hce_derez.fp)
 			A_FadeOut(0.02);
 		}
 		Wait;

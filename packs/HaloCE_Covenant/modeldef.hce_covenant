@@ -204,27 +204,6 @@ Model HCE_EliteCommanderEnergySword
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_EliteShieldShell
-{
-	Path "models/hce/Elite"
-	Model 0 "Elite.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	Path "models/hce/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_EliteCommanderPlasmaRifle
 {
 	Path "models/hce/Elite"
@@ -457,38 +436,6 @@ Model HCE_EliteRangerNeedler
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_EliteRangerBodyShieldShell
-{
-	Path "models/hce/Elite"
-	Model 0 "Elite.iqm"
-	Path "models/hce/weapons"
-	Path "models/hce/EliteKit"
-	Model 1 "ranger_body.iqm"
-	SurfaceSkin 1 0 "ek_shieldshell.png"
-	SurfaceSkin 1 1 "ek_shieldshell.png"
-	SurfaceSkin 1 2 "ek_shieldshell.png"
-	SurfaceSkin 1 3 "ek_shieldshell.png"
-	SurfaceSkin 1 4 "ek_shieldshell.png"
-	SurfaceSkin 1 5 "ek_shieldshell.png"
-	SurfaceSkin 1 6 "ek_shieldshell.png"
-	SurfaceSkin 1 7 "ek_shieldshell.png"
-	SurfaceSkin 1 8 "ek_shieldshell.png"
-	SurfaceSkin 1 9 "ek_shieldshell.png"
-	SurfaceSkin 1 10 "ek_shieldshell.png"
-	SurfaceSkin 1 11 "ek_shieldshell.png"
-	SurfaceSkin 1 12 "ek_shieldshell.png"
-	SurfaceSkin 1 13 "ek_shieldshell.png"
-	SurfaceSkin 1 14 "ek_shieldshell.png"
-	Model 2 "elite_jetpack.iqm"
-	SurfaceSkin 2 0 "ek_shieldshell.png"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-	FrameIndex HCEM A 1 0
-	FrameIndex HCEM A 2 0
-}
-
 Model HCE_EliteRangerPlasmaRifle
 {
 	Path "models/hce/Elite"
@@ -577,63 +524,6 @@ Model HCE_EliteHonorGuardEnergySword
 	UseActorRoll
 	BaseFrame
 	FrameIndex HCEM A 0 0
-}
-
-Model HCE_EliteSpecialShieldShell
-{
-	Path "models/hce/EliteSpecial"
-	Model 0 "EliteSpecial.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	Path "models/hce/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_EliteSpecialHonorBodyShieldShell
-{
-	Path "models/hce/EliteSpecial"
-	Model 0 "EliteSpecial.iqm"
-	Path "models/hce/weapons"
-	Path "models/hce/EliteKit"
-	Model 1 "honor_body.iqm"
-	SurfaceSkin 1 0 "ek_shieldshell.png"
-	SurfaceSkin 1 1 "ek_shieldshell.png"
-	SurfaceSkin 1 2 "ek_shieldshell.png"
-	SurfaceSkin 1 3 "ek_shieldshell.png"
-	SurfaceSkin 1 4 "ek_shieldshell.png"
-	SurfaceSkin 1 5 "ek_shieldshell.png"
-	SurfaceSkin 1 6 "ek_shieldshell.png"
-	SurfaceSkin 1 7 "ek_shieldshell.png"
-	SurfaceSkin 1 8 "ek_shieldshell.png"
-	SurfaceSkin 1 9 "ek_shieldshell.png"
-	SurfaceSkin 1 10 "ek_shieldshell.png"
-	SurfaceSkin 1 11 "ek_shieldshell.png"
-	SurfaceSkin 1 12 "ek_shieldshell.png"
-	SurfaceSkin 1 13 "ek_shieldshell.png"
-	SurfaceSkin 1 14 "ek_shieldshell.png"
-	SurfaceSkin 1 15 "ek_shieldshell.png"
-	SurfaceSkin 1 16 "ek_shieldshell.png"
-	SurfaceSkin 1 17 "ek_shieldshell.png"
-	SurfaceSkin 1 18 "ek_shieldshell.png"
-	SurfaceSkin 1 19 "ek_shieldshell.png"
-	SurfaceSkin 1 20 "ek_shieldshell.png"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-	FrameIndex HCEM A 1 0
 }
 
 Model HCE_EliteHonorGuardPlasmaRifle
@@ -975,34 +865,6 @@ Model HCE_GruntUltraNeedler
 	FrameIndex HCEM A 0 0
 }
 
-Model HCE_GruntShieldShell
-{
-	Path "models/hce/Grunt"
-	Model 0 "Grunt.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 6 "skins/shieldshell.png"
-	SurfaceSkin 0 10 "skins/shieldshell.png"
-	SurfaceSkin 0 11 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	SurfaceSkin 0 17 "skins/shieldshell.png"
-	SurfaceSkin 0 18 "skins/shieldshell.png"
-	SurfaceSkin 0 19 "skins/shieldshell.png"
-	Path "models/hce/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
 Model HCE_GruntUltraPlasmaPistol
 {
 	Path "models/hce/Grunt"
@@ -1044,34 +906,6 @@ Model HCE_GruntSpecopsFuelRod
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_GruntSpecOpsShieldShell
-{
-	Path "models/hce/GruntSpecOps"
-	Model 0 "GruntSpecOps.iqm"
-	SurfaceSkin 0 0 "skins/shieldshell.png"
-	SurfaceSkin 0 1 "skins/shieldshell.png"
-	SurfaceSkin 0 2 "skins/shieldshell.png"
-	SurfaceSkin 0 3 "skins/shieldshell.png"
-	SurfaceSkin 0 4 "skins/shieldshell.png"
-	SurfaceSkin 0 5 "skins/shieldshell.png"
-	SurfaceSkin 0 6 "skins/shieldshell.png"
-	SurfaceSkin 0 10 "skins/shieldshell.png"
-	SurfaceSkin 0 11 "skins/shieldshell.png"
-	SurfaceSkin 0 12 "skins/shieldshell.png"
-	SurfaceSkin 0 13 "skins/shieldshell.png"
-	SurfaceSkin 0 14 "skins/shieldshell.png"
-	SurfaceSkin 0 15 "skins/shieldshell.png"
-	SurfaceSkin 0 16 "skins/shieldshell.png"
-	SurfaceSkin 0 17 "skins/shieldshell.png"
-	SurfaceSkin 0 18 "skins/shieldshell.png"
-	SurfaceSkin 0 19 "skins/shieldshell.png"
-	Path "models/hce/weapons"
-	Scale 82.8 82.8 99.4
-	UseActorPitch
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }

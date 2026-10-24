@@ -217,6 +217,7 @@
 	// burns away into hard-light embers in its core's colour rising off it; nothing is
 	// left behind but the guns it drops
 	const HCE_DISSOLVE_TICS = 105;          // the death animation's length (90 frames at 30 fps)
+	const HCE_DEREZ_BAND = 0.1;             // shaders/derez.fp's DEREZ_BAND: alpha 1 - this x progress is the derez
 	int hce_dissolve;
 	// Death: after the base death, cancels the fall-and-land, plays the Knight's own death animation locked for
 	// HCE_DISSOLVE_TICS + 10, starts the dissolve (hce_dissolve = 1), makes it unshootable and non-solid, and plays
@@ -234,7 +235,7 @@
 	}
 
 	// One tic of the death dissolve: spawns 1-9 embers (core colour, some white-hot) from the part of the body not yet
-	// gone, fades it out over the second half with random flicker, and when hce_dissolve passes HCE_DISSOLVE_TICS
+	// gone, runs the derez shader's burn (progress as alpha), and when hce_dissolve passes HCE_DISSOLVE_TICS
 	// scatters 20 last particles and destroys the actor and its shell. To change the length, edit HCE_DISSOLVE_TICS.
 	void HCE_DissolveTick()
 	{
@@ -250,11 +251,10 @@
 				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z,
 				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
 		}
-		// the glitch: it flickers and jolts, more as it goes
-		// whole while it falls apart, then fading and flickering out over the second half
-		double a = clamp(1.0 - (f - 0.45) / 0.5, 0, 1);
-		if(f > 0.45 && random(0, 9) < 1 + int(f * 4)) a *= frandom(0.2, 0.7);
-		A_SetRenderStyle(a, a < 1 ? STYLE_Translucent : STYLE_Normal);
+		// the derez (shaders/hce_derez.fp on its skins and core): after a beat it burns away cell by cell, its edges
+		// glowing, all gone by the end. The progress goes to the shader as alpha just under 1 (1 - HCE_DEREZ_BAND x it)
+		double p = clamp((f - 0.08) / 0.88, 0, 1);
+		A_SetRenderStyle(1.0 - HCE_DEREZ_BAND * max(p, 0.001), STYLE_Translucent);
 		if(++hce_dissolve > HCE_DISSOLVE_TICS)
 		{
 			for(int i = 0; i < 20; i++)                               // the last of it scatters

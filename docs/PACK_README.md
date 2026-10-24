@@ -338,7 +338,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
   * **Neck:** the neck takes 2× from the side, above 72% of their height. They fire the fuel-rod cannon at range and melee up close, and come as bonded pairs.
   * **Bond rage:** each Hunter knows its brother (the one it spawned with, or the nearest unpaired Hunter once they meet). When one dies, the other, wherever it is, roars and rages for the rest of its life: it goes berserk (charges, never takes cover or backs off), moves a third faster, pauses half as long between cannon shots (60%), smashes half as hard again with its shield arm, and goes after whoever killed its brother.
   * **Animations:** SOI7's, from *Halo: Brutality Evolved* (see [Animations from Halo: Brutality Evolved](#animations-from-halo-brutality-evolved)).
-  * **Leaping spin:** from 120 to 320 units off, now and then a Hunter springs at its enemy and spins through the air into it, spikes first, hitting with its full melee (Cursed Halo Again's animation).
+  * **Leaping spin:** from 120 to 320 units off, now and then a Hunter springs at its enemy and spins through the air into it, spikes first, hitting with its full melee (Cursed Halo Again's animation). It doesn't stop at what it hits: it ploughs on the way it was going until the spin ends, and everything hostile it meets on the way takes the full melee once and is thrown back along the charge (`HCE_SPIN_PUSH`, less for anything heavy).
 * **Hunter ranks by colour:**
 
   | Hunter | Weapon | Class (DoomEdNum) |

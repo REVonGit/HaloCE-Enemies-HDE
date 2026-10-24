@@ -3310,6 +3310,7 @@ SKIN_HOOK['MarineODST'] = odst_skin
 # rim, the room in its shell from the visor's cube map), its colour rolled at spawn from the rank's palette (BASE_CODE)
 EXTRA_GL = []          # GLDEFS entries the skin hooks add (written with the rest)
 CORE_SHADER = template('shaders/core.fp')
+DEREZ_SHADER = template('shaders/derez.fp')      # Halo 4's Promethean derez, recreated: the dying Knight burns away
 KNIGHT_CORE_PALETTE = {'minor': 0, 'major': 0, 'commander': 1}     # 0 cold, 1 warm (HCE_KnightPalette)
 
 
@@ -3351,9 +3352,16 @@ def knight_skin(cls, v, si, mat, meta, skin_dir):
     else:
         fn = f'{name}_{rank}.png'
     bm = ship(fn)
-    if bm:
-        e = f'brightmap texture "{rel}/{fn}"\n{{\n\tmap "{rel}/{bm}"\n}}'
-        if e not in EXTRA_GL: EXTRA_GL.append(e)
+    # the derez shader (templates/shaders/derez.fp) on every body and gun skin, with its brightmap (or a black one:
+    # the shader reads the brightmap either way)
+    pack = skin_dir[:skin_dir.index('/models/')]
+    os.makedirs(f'{pack}/shaders', exist_ok=True)
+    open(f'{pack}/shaders/hce_derez.fp', 'w').write(DEREZ_SHADER)
+    if not bm:
+        bm = 'brightmap_none.png'
+        if not os.path.exists(f'{skin_dir}/{bm}'): Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{skin_dir}/{bm}')
+    e = f'material texture "{rel}/{fn}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "{rel}/{bm}"\n}}'
+    if e not in EXTRA_GL: EXTRA_GL.append(e)
     return fn
 
 

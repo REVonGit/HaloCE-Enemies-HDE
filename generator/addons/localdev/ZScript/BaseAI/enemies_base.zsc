@@ -5132,6 +5132,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_meleeTics > level.maptime || frandom(0, 1) > hce_leapChance * 0.08) return false;
 		A_SetAngle(AngleTo(target));
 		hce_leapState = 1;
+		hce_spinHit.Clear(); hce_spinTics = 0;
 		HCE_Play(HCE_HasAnim(HCE_A_LEAP_START) ? HCE_A_LEAP_START : HCE_A_AIRBORNE, false, true);
 		hce_actionTics = HCE_HasAnim(HCE_A_LEAP_START) ? min(12, HCE_AnimTics(HCE_AnimName(HCE_A_LEAP_START))) : 4;
 		return true;
@@ -5144,6 +5145,53 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_curAnimKind != HCE_A_LEAP_AIR) return;
 		int left = HCE_AnimTics(hce_curAnim) - (level.maptime - hce_animStartTic);
 		if(left > 0) { hce_animLock = max(hce_animLock, left); hce_lockPing = 0; }
+	}
+
+	// The spin strike (a leap with no leap-melee animation, struck with the airborne one: the Hunter's): from the moment
+	// it connects or lands it keeps going the way it was flying, at least a little faster than a run, until the spin
+	// animation ends (hce_spinTics, run by HCE_LockedTick), hitting each hostile thing it reaches once (hce_spinHit).
+	// A hit is the full melee and a shove along the charge: HCE_SPIN_PUSH map units a tic and a lift, less for anything
+	// heavier than HCE_SPIN_PUSH_MASS. To change the shove, edit those.
+	const HCE_SPIN_PUSH = 14.0;
+	const HCE_SPIN_PUSH_MASS = 400;
+	int hce_spinTics;
+	double hce_spinAngle, hce_spinSpeed;
+	Array<Actor> hce_spinHit;
+	bool HCE_LeapIsSpin() { return !bHCE_Swarm && !HCE_HasAnim(HCE_A_LEAP_MELEE) && hce_curAnimKind == HCE_A_LEAP_AIR; }
+	void HCE_SpinFollow()
+	{
+		hce_spinTics = hce_animLock;
+		hce_spinAngle = vel.xy.Length() > 1 ? VectorAngle(vel.x, vel.y) : angle;
+		hce_spinSpeed = max(vel.xy.Length(), hce_runSpeed * 1.2);
+	}
+	// each tic of the follow-through: on along the charge, through whatever it meets
+	void HCE_SpinTick()
+	{
+		hce_spinTics--;
+		vel.xy = Actor.AngleToVector(hce_spinAngle, hce_spinSpeed);
+		HCE_SpinHits();
+	}
+	// hits the hostile things it is touching ahead of it that it hasn't hit yet this strike
+	void HCE_SpinHits()
+	{
+		let it = BlockThingsIterator.Create(self, radius + 64);
+		while(it.Next())
+		{
+			Actor a = it.thing;
+			if(!a || a == self || a.health <= 0 || !a.bSHOOTABLE || a.bNONSHOOTABLE) continue;
+			if(a != target && !HCE_IsEnemy(a)) continue;
+			if(hce_spinHit.Find(a) != hce_spinHit.Size()) continue;
+			if(Distance2D(a) > radius + a.radius + 16 || abs(a.pos.z - pos.z) > max(height, a.height)) continue;
+			double dir = vel.xy.Length() > 1 ? VectorAngle(vel.x, vel.y) : angle;
+			if(abs(DeltaAngle(dir, AngleTo(a))) > 100) continue;           // behind it: already passed
+			hce_spinHit.Push(a);
+			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
+			a.DamageMobj(self, self, dmg, 'Melee', 0, dir);
+			double push = HCE_SPIN_PUSH * min(1.0, HCE_SPIN_PUSH_MASS / max(1.0, double(a.mass)));
+			a.vel.xy += Actor.AngleToVector(dir, push);
+			a.vel.z += push * 0.3;
+			A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
+		}
 	}
 
 	// infection_swarm_aim_jump: ballistic hop at the target, capped vertical speed
@@ -5165,7 +5213,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			return;
 		}
 		// airborne
-		if(target && Distance3D(target) < radius + target.radius + 16)
+		if(target && Distance3D(target) < radius + target.radius + 16 && !HCE_LeapIsSpin())
 		{
 			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
 			target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
@@ -5181,6 +5229,21 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_meleeTics = level.maptime + 35;
 			if(HCE_HasAnim(HCE_A_LEAP_MELEE)) HCE_PlayLocked(HCE_A_LEAP_MELEE, 0.7);
 			else HCE_LeapStrikeFinish();
+			return;
+		}
+		// a spin strike (no leap-melee animation: the Hunter's) doesn't stop at whatever it hits: it ploughs through,
+		// hitting and throwing back everything hostile in its way, and carries on the way it was going until the spin
+		// ends (HCE_SpinFollow / HCE_SpinTick)
+		if(HCE_LeapIsSpin())
+		{
+			HCE_SpinHits();
+			if(hce_spinHit.Size() > 0 || (pos.z <= floorz + 1 && vel.z <= 0) || --hce_actionTics <= 0)
+			{
+				hce_leapState = 0;
+				hce_meleeTics = level.maptime + 35;
+				HCE_LeapStrikeFinish();
+				HCE_SpinFollow();
+			}
 			return;
 		}
 		if((pos.z <= floorz + 1 && vel.z <= 0) || --hce_actionTics <= 0)
@@ -5239,6 +5302,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(hce_climbTics > 0) { if(health > 0) HCE_ClimbTick(); else HCE_EndClimb(false); return; }
 		if(hce_peekTics > 0) { HCE_PeekSlideTick(); if(target) HCE_FaceTarget(0.5); return; }
+		if(hce_spinTics > 0) { HCE_SpinTick(); return; }               // a spin strike carrying on through (no turning)
 		if(hce_diveTics > 0)
 		{
 			hce_diveTics--;
@@ -5760,7 +5824,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// no death cry from a body torn apart or shattered, a headshot kill, or one whose head came off
 		if(!hce_gibbed && !hce_lastHeadshot && !(hce_severed & (1 << HCE_LIMB_HEAD)))
 			HCE_Say(hard || thrown ? 'DeathHard' : 'Death', 1.0, 0, true);   // voices without a hard set alias it to Death
-		hce_animLock = 0; hce_leapState = 0;
+		hce_animLock = 0; hce_leapState = 0; hce_spinTics = 0;
 		if(bHCE_Flying) { bNOGRAVITY = false; bFLOAT = false; }
 		if(bHCE_ActiveCamo) A_SetRenderStyle(1.0, STYLE_Normal);
 		if(bHCE_Leader || bHCE_PairBond) HCE_LeaderDied(self);
@@ -6117,7 +6181,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_burnTics = random[HCEGore](52, 95);
 		hce_moveAngle = angle + frandom(-90, 90);
 		HCE_StopFireLoop();
-		hce_shotsLeft = 0; hce_chargeTics = 0; hce_animLock = 0; hce_leapState = 0; hce_jumpState = 0; HCE_JetStop();
+		hce_shotsLeft = 0; hce_chargeTics = 0; hce_animLock = 0; hce_leapState = 0; hce_spinTics = 0; hce_jumpState = 0; HCE_JetStop();
 		HCE_Say('OnFire', 1.0, 0, true);
 		return 0;                                             // (HDE's fire adds 10% to hits: none can get through)
 	}

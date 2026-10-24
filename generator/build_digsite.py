@@ -1264,6 +1264,7 @@ def configure():
         bp.SKIN_HOOK['H2Jackal'] = h2jackal_skin
         bp.TYPE_CODE['H2Jackal'] = h2jackal_code()
         bp.SHIELD_MAT['H2Jackal'] = 'H2Jackal_jackal_shield'
+        bp.FIELD_CHARS.add('H2Jackal')        # its arm shield drawn by a shield field (Halo CE's Jackal shield: the same UV layout)
         bp.VOICES['H2Jackal'] = 'Jackal'
     # (the beam rifle itself is set up in build_pack.py: the Spec Ops Elite carries it too)
     if os.path.exists(f'{bp.OUT}/models/EliteZealot/EliteZealot.json'):

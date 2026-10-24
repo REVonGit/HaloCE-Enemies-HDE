@@ -1033,6 +1033,18 @@ Model HCE_JackalMajorHelmetPlasmaRifle
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalMajorHelmetPlasmaRifleShieldField
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 10 "skins/jackalmajorhelmetplasmarifle_field.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_JackalMarksmanPlasmaCarbine
 {
 	Path "models/hce_dig/H2Jackal"
@@ -1142,6 +1154,18 @@ Model HCE_JackalUltraPlasmaRifle
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalUltraPlasmaRifleShieldField
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 10 "skins/jackalultraplasmarifle_field.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_JackalZealotSpiker
 {
 	Path "models/hce_dig/H2Jackal"
@@ -1163,6 +1187,18 @@ Model HCE_JackalZealotSpiker
 	SurfaceSkin 0 25 "skins/h2jackal_jackal_teethandspikes.png"
 	SurfaceSkin 0 26 "skins/h2jackal_jackal_teethandspikes.png"
 	Path "models/hce_dig/weapons"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_JackalZealotSpikerShieldField
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 10 "skins/jackalzealotspiker_field.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll

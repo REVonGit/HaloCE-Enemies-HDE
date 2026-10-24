@@ -99,30 +99,6 @@ HardwareShader Texture "models/hce/EliteSpecial/skins/stealtheliteplasmarifle_el
 	Shader "shaders/hce_camo.fp"
 	Speed 1.0
 }
-material texture "models/hce/Jackal/skins/jackalminorneedler_shield.png"
-{
-	shader "shaders/hce_shield.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/Jackal/skins/jackalminorplasmapistol_shield.png"
-{
-	shader "shaders/hce_shield.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/JackalMajor/skins/jackalmajorneedler_shield.png"
-{
-	shader "shaders/hce_shield.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_shield.png"
-{
-	shader "shaders/hce_shield.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
 material texture "models/hce/weapons/w_energy_sword_glow.png"
 {
 	shader "shaders/hce_sword.fp"
@@ -133,6 +109,84 @@ material texture "models/hce/EliteKit/ek_ranger_lens.png"
 {
 	shader "shaders/hce_visor.fp"
 	texture tex_cube "models/hce/EliteKit/ek_visor_cube.png"
+}
+material texture "models/hce/Draeth/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/Elite/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/EliteKit/ek_shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/EliteSpecial/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/Grunt/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/GruntSpecOps/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorneedler_field.png"
+{
+	shader "shaders/hce_jshield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture js_noise "models/hce/hce_fx/jshield_noise.png"
+	texture js_offset "models/hce/hce_fx/jshield_offset.png"
+	texture js_mask "models/hce/hce_fx/jshield_mask.png"
+}
+material texture "models/hce/Jackal/skins/jackalminorplasmapistol_field.png"
+{
+	shader "shaders/hce_jshield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture js_noise "models/hce/hce_fx/jshield_noise.png"
+	texture js_offset "models/hce/hce_fx/jshield_offset.png"
+	texture js_mask "models/hce/hce_fx/jshield_mask.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorneedler_field.png"
+{
+	shader "shaders/hce_jshield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture js_noise "models/hce/hce_fx/jshield_noise.png"
+	texture js_offset "models/hce/hce_fx/jshield_offset.png"
+	texture js_mask "models/hce/hce_fx/jshield_mask.png"
+}
+material texture "models/hce/JackalMajor/skins/jackalmajorplasmapistol_field.png"
+{
+	shader "shaders/hce_jshield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture js_noise "models/hce/hce_fx/jshield_noise.png"
+	texture js_offset "models/hce/hce_fx/jshield_offset.png"
+	texture js_mask "models/hce/hce_fx/jshield_mask.png"
 }
 material texture "models/hce/Artybug/skins/artybug_artybug_0.png"
 {
@@ -218,11 +272,6 @@ material texture "models/hce/Draeth/skins/draethzealotplasmacaster_draeth_0.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/Draeth/Draeth_0_bm.png"
-}
-material texture "models/hce/Draeth/skins/shieldshell.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/Elite/blood1_Elite_0.png"
 {
@@ -784,11 +833,6 @@ material texture "models/hce/Elite/skins/eliteultraplasmarifle_elite_5.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/Elite/Elite_5_bm.png"
 }
-material texture "models/hce/Elite/skins/shieldshell.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
 material texture "models/hce/EliteKit/ek_arms.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -885,11 +929,6 @@ material texture "models/hce/EliteKit/ek_ranger_torso_inset.png"
 	brightmap "models/hce/EliteKit/ek_ranger_torso_inset_bm.png"
 }
 material texture "models/hce/EliteKit/ek_ranger_torso_inset_bm.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
-material texture "models/hce/EliteKit/ek_shieldshell.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"
@@ -1188,11 +1227,6 @@ material texture "models/hce/EliteSpecial/skins/elitespecopsplasmarifle_elitespe
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/EliteSpecial/EliteSpecial_5_bm.png"
-}
-material texture "models/hce/EliteSpecial/skins/shieldshell.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/EliteSpecial/skins/stealthelitemajorenergysword_elitespecial_0_plain.png"
 {
@@ -1754,11 +1788,6 @@ material texture "models/hce/Grunt/skins/gruntultraplasmapistol_grunt_6.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/Grunt/Grunt_6_bm.png"
 }
-material texture "models/hce/Grunt/skins/shieldshell.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
 material texture "models/hce/GruntSpecOps/blood1_GruntSpecOps_0.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -2043,11 +2072,6 @@ material texture "models/hce/GruntSpecOps/skins/gruntultrafuelrod_gruntspecops_6
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/GruntSpecOps/GruntSpecOps_6_bm.png"
-}
-material texture "models/hce/GruntSpecOps/skins/shieldshell.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/Hunter/blood1_Hunter_0.png"
 {

@@ -17794,6 +17794,8 @@ class HCE_H2JackalBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)
+	override Name HCE_ShellClass() { return String.Format("%sShieldField", GetClassName()); }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -18369,14 +18371,12 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 	{
 		switch(s)
 		{
-		case 10: A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalmajorhelmetplasmarifle_shield.png', CMDL_USESURFACESKIN); return;
 		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
 		}
 		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
 	}
 	override void HCE_DressSurfaces()
 	{
-		A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalmajorhelmetplasmarifle_shield.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
@@ -18557,6 +18557,9 @@ class HCE_JackalMajorHelmetPlasmaRifle : HCE_H2JackalBase
 		return hce_gunOffset;
 	}
 }
+
+// the JackalMajorHelmetPlasmaRifle's arm shield
+class HCE_JackalMajorHelmetPlasmaRifleShieldField : HCE_ShieldField {}
 
 // HCE_JackalMarksmanPlasmaCarbine: Halo variant "objects\characters\jackal\jackal\jackal marksman plasma carbine", plasma carbine, 70 body, 4 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
@@ -19176,14 +19179,12 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 	{
 		switch(s)
 		{
-		case 10: A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalultraplasmarifle_shield.png', CMDL_USESURFACESKIN); return;
 		case 12: A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN); return;
 		}
 		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
 	}
 	override void HCE_DressSurfaces()
 	{
-		A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalultraplasmarifle_shield.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 12, "models/hce_dig/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
@@ -19365,6 +19366,9 @@ class HCE_JackalUltraPlasmaRifle : HCE_H2JackalBase
 	}
 }
 
+// the JackalUltraPlasmaRifle's arm shield
+class HCE_JackalUltraPlasmaRifleShieldField : HCE_ShieldField {}
+
 // HCE_JackalZealotSpiker: Halo variant "objects\characters\jackal\jackal\jackal zealot spiker", spiker, 120 body / 450 shield, 5 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalZealotSpiker : HCE_H2JackalBase
@@ -19381,7 +19385,6 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 	{
 		switch(s)
 		{
-		case 10: A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalzealotspiker_shield.png', CMDL_USESURFACESKIN); return;
 		case 13: A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'w_spiker_body.png', CMDL_USESURFACESKIN); return;
 		case 14: A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'w_spiker_heat.png', CMDL_USESURFACESKIN); return;
 		case 15: A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'w_spiker_clip.png', CMDL_USESURFACESKIN); return;
@@ -19390,7 +19393,6 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 	}
 	override void HCE_DressSurfaces()
 	{
-		A_ChangeModel('None', 0, "", 'None', 10, "models/hce_dig/H2Jackal", 'skins/jackalzealotspiker_shield.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 13, "models/hce_dig/weapons", 'w_spiker_body.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 14, "models/hce_dig/weapons", 'w_spiker_heat.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 15, "models/hce_dig/weapons", 'w_spiker_clip.png', CMDL_USESURFACESKIN);
@@ -19574,6 +19576,9 @@ class HCE_JackalZealotSpiker : HCE_H2JackalBase
 		return hce_gunOffset;
 	}
 }
+
+// the JackalZealotSpiker's arm shield
+class HCE_JackalZealotSpikerShieldField : HCE_ShieldField {}
 
 // ---- SlugMan: the body every SlugMan variant below is drawn with (digsite\characters\slug_man\slug_man): its size, blood and gore, the skins it
 // rolls and its cosmetics. Changing a number here changes every SlugMan; one variant's numbers are in its own class

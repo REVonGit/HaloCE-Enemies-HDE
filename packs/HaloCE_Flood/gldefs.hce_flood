@@ -20,6 +20,58 @@ material texture "models/hce/weapons/w_energy_sword_glow.png"
 	speed 1.0
 	brightmap "models/hce/brightmap_full.png"
 }
+material texture "models/hce/FloodCarrier/skins/floodcarrier_floodcarrier_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	define "HCE_SELFILLUM"
+	define "SI_FN" = "9"
+	define "SI_PERIOD" = "1.000"
+	define "SI_LO" = "vec3(0.0000, 0.0000, 0.0000)"
+	define "SI_HI" = "vec3(0.1333, 0.2392, 0.0392)"
+	define "SI_GAIN" = "1.500"
+	speed 1.0
+	brightmap "models/hce/hce_fx/black.png"
+	texture si_mask "models/hce/FloodCarrier/skins/floodcarrier_floodcarrier_0_si.png"
+}
+material texture "models/hce/FloodElite/skins/floodelite_floodelite_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	define "HCE_SELFILLUM"
+	define "SI_FN" = "9"
+	define "SI_PERIOD" = "4.000"
+	define "SI_LO" = "vec3(0.0000, 0.0000, 0.0000)"
+	define "SI_HI" = "vec3(0.0000, 0.2353, 0.0000)"
+	define "SI_GAIN" = "1.500"
+	speed 1.0
+	brightmap "models/hce/hce_fx/black.png"
+	texture si_mask "models/hce/FloodElite/skins/floodelite_floodelite_0_si.png"
+}
+material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	define "HCE_SELFILLUM"
+	define "SI_FN" = "9"
+	define "SI_PERIOD" = "4.000"
+	define "SI_LO" = "vec3(0.0000, 0.0000, 0.0000)"
+	define "SI_HI" = "vec3(0.0118, 0.2824, 0.0000)"
+	define "SI_GAIN" = "1.500"
+	speed 1.0
+	brightmap "models/hce/hce_fx/black.png"
+	texture si_mask "models/hce/FloodHuman/skins/floodhuman_floodhuman_0_si.png"
+}
+material texture "models/hce/FloodInfection/skins/floodinfection_floodinfection_1.png"
+{
+	shader "shaders/hce_derez.fp"
+	define "HCE_SELFILLUM"
+	define "SI_FN" = "3"
+	define "SI_PERIOD" = "0.500"
+	define "SI_LO" = "vec3(0.3137, 0.2706, 0.1451)"
+	define "SI_HI" = "vec3(0.4471, 0.7412, 0.1765)"
+	define "SI_GAIN" = "1.500"
+	speed 1.0
+	brightmap "models/hce/hce_fx/black.png"
+	texture si_mask "models/hce/FloodInfection/skins/floodinfection_floodinfection_1_si.png"
+}
 material texture "models/hce/FloodArmored/blood1_FloodArmored_0.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -85,11 +137,6 @@ material texture "models/hce/FloodCarrier/blood3_FloodCarrier_0.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"
 }
-material texture "models/hce/FloodCarrier/skins/floodcarrier_floodcarrier_0.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
 material texture "models/hce/FloodElite/blood1_FloodElite_0.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -136,11 +183,6 @@ material texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_flo
 	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/FloodElite/skins/floodcombatelitestealthunarmed_floodelite_2_plain.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
-material texture "models/hce/FloodElite/skins/floodelite_floodelite_0.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"
@@ -920,11 +962,6 @@ material texture "models/hce/FloodHuman/gore_FloodHuman.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"
 }
-material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_0.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
 material texture "models/hce/FloodHuman/skins/floodhuman_floodhuman_1.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -966,11 +1003,6 @@ material texture "models/hce/FloodInfection/blood3_FloodInfection_1.png"
 	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/FloodInfection/skins/floodinfection_floodinfection_0.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
-material texture "models/hce/FloodInfection/skins/floodinfection_floodinfection_1.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"

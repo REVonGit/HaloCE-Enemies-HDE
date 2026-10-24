@@ -112,12 +112,16 @@ class HCE_JackalShield : Actor
 		{
 			// glances off: a small flash at the shield face
 			HCE_ShieldImpact.Burst(self, inflictor, source, ShieldColor(j), 0.4, at, true);
+			HCE_ShieldField.FlashOn(j, 0.25);
+			A_StartSound("HCE/JShield/Hit", CHAN_AUTO, CHANF_OVERLAP, 0.6);    // Halo CE's shield impact
 			regenWait = max(regenWait, 35);
 			return 0;
 		}
 		hp -= damage * m;
 		regenWait = 35 * 4;
 		HCE_ShieldImpact.Burst(self, inflictor, source, hp < maxhp * 0.25 ? Color(255, 255, 80, 64) : ShieldColor(j), clamp(damage * m / 20.0, 0.5, 2.0), at, true);
+		HCE_ShieldField.FlashOn(j, 0.4 + damage * m / max(1.0, maxhp) * 3.0);      // Halo's 'shield hit flash'
+		A_StartSound("HCE/JShield/Hit", CHAN_AUTO, CHANF_OVERLAP);         // Halo CE's shield impact
 		if(mod == 'Melee' && hp > 0 && j.hce_animLock <= 0)
 		{
 			int k = j.HCE_DirKind(HCE_A_PING_F, HCE_A_PING_B, HCE_A_PING_L, HCE_A_PING_R);
@@ -198,7 +202,7 @@ class HCE_JackalShield : Actor
 		hp = 0;
 		bSHOOTABLE = false;
 		A_StartSound("HCE/Jackal/ShieldPop", CHAN_AUTO, CHANF_OVERLAP);     // Halo 2's Jackal shield popping
-		A_StartSound("Shield/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.8);
+		A_StartSound("HCE/JShield/Deplete", CHAN_AUTO, CHANF_OVERLAP);     // Halo CE's Jackal shield depletion
 		// it shatters: a flash, then shards of the field tumbling down in the shield's colour
 		color sc = ShieldColor(j);
 		HCE_ShieldImpact.Burst(self, null, null, sc, 2.0, pos + (0, 0, height * 0.5), true);
@@ -227,6 +231,7 @@ class HCE_JackalShield : Actor
 		skinHidden = !on;
 		let e = HaloDoom_EnemyBase(j);
 		if(!e || !e.bHCE_FrontShield) return;
+		if(e.hce_shellActor is 'HCE_ShieldField') { e.hce_shellActor.bInvisible = !on; return; }   // drawn by its field
 		int SURF = e.HCE_ShieldSurface();                   // the model surface the shield's energy field is drawn on
 		if(on) e.HCE_ShowSurface(SURF);
 		else e.HCE_HideSurface(SURF);     // the Jackal's own: its MODELDEF leaves the shield to it, so a downed one isn't drawn
@@ -311,6 +316,59 @@ class HCE_BladeShell : Actor
 		angle = e.angle; pitch = e.pitch; roll = e.roll;
 		scale = e.scale;
 		bInvisible = e.bInvisible || e.alpha >= 0.95;     // once the camo is down the Elite draws its own sword
+	}
+}
+
+// A Jackal's energy shield (and the Sentinel Enforcer's two): the wearer's model with only the shield drawn, additively,
+// in Halo CE's Jackal shield shader (shaders/hce_jshield.fp), so it is the see-through glowing field it is in the game.
+// It is the wearer's hce_shellActor (the enemy API places it with the body every tic and plays its animations); its
+// alpha carries Halo's 'shield hit flash' to the shader: 1 - 0.1 x flash, set by FlashOn() on a hit, dying away.
+// Hidden (bInvisible) while the shield is down.
+class HCE_ShieldField : Actor
+{
+	double flash;
+
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+DECOUPLEDANIMATIONS
+		+NOTONAUTOMAP
+		RenderStyle "Add";
+		Alpha 1.0;
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
+	}
+
+	// a hit on wearer w's shield: its field flashes (f: 0..1, the bigger hit wins)
+	static void FlashOn(Actor w, double f)
+	{
+		let e = HaloDoom_EnemyBase(w);
+		let fld = e ? HCE_ShieldField(e.hce_shellActor) : null;
+		if(fld) fld.flash = clamp(max(fld.flash, f), 0.0, 1.0);
+	}
+
+	bool hce_joined;
+	override void Tick()
+	{
+		if(!master) { Destroy(); return; }
+		if(isFrozen()) return;
+		let e = HaloDoom_EnemyBase(master);
+		if(!hce_joined && e && e.hce_curAnim != 'None')
+		{
+			// the wearer's animation where it is now (as HCE_ShieldShell does: its own first one may come before it)
+			hce_joined = true;
+			int len = max(1, int(e.HCE_AnimTics(e.hce_curAnim) * 30.0 / 35.0));
+			int f = int((level.maptime - e.hce_animStartTic) * 30.0 / 35.0);
+			SetAnimation(e.hce_curAnim, -1, e.hce_curLoop ? f % len : min(f, len - 1), -1, -1, 0, e.hce_curLoop ? SAF_LOOP : 0);
+		}
+		flash = max(0.0, flash - 1.0 / 18.0);            // gone in half a second
+		alpha = 1.0 - 0.1 * flash;
 	}
 }
 

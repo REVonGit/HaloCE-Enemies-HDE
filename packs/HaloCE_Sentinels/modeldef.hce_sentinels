@@ -201,6 +201,20 @@ Model HCE_SentinelDragoon
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_SentinelEnforcerShieldField
+{
+	Path "models/hce/SentinelEnforcer"
+	Model 0 "SentinelEnforcer.iqm"
+	SurfaceSkin 0 3 "skins/enforcer_field.png"
+	SurfaceSkin 0 4 "skins/enforcer_field.png"
+	Scale 48 48 58
+	ZOffset 58
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_SentinelEnforcer
 {
 	Path "models/hce/SentinelEnforcer"
@@ -208,8 +222,6 @@ Model HCE_SentinelEnforcer
 	SurfaceSkin 0 0 "skins/sentinelenforcer_body.png"
 	SurfaceSkin 0 1 "skins/sentinelenforcer_hover.png"
 	SurfaceSkin 0 2 "skins/sentinelenforcer_eye.png"
-	SurfaceSkin 0 3 "skins/enforcer_shield.png"
-	SurfaceSkin 0 4 "skins/enforcer_shield.png"
 	Scale 48 48 58
 	ZOffset 58
 	UseActorPitch

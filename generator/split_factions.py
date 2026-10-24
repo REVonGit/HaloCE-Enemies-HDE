@@ -179,6 +179,7 @@ KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Br
                 'Spot Player Spartan IV (Enemy)': ['SpotSpartanIV'] * 2}
 # Halo 4's Knight sounds (extract_h4_knight.py -> knight_h4/): its death dissolve, played by the Knight's HCE_Die, and
 # its death cries for the base AI's Death / DeathHard (the plain deaths; the major and falling ones for a hard kill)
+JSHIELD_SFX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shader_maps', 'jshield_sfx')
 KNIGHT_H4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_h4')
 KNIGHT_H4_LINES = {'Derez': ['Derez'], 'Death': ['Death'], 'Death Major': ['DeathHard'], 'Death Fall': ['DeathHard']}
 
@@ -254,6 +255,9 @@ def main():
                 if ch: char_of[cls] = ch
             m = re.fullmatch(r'(HCE_\w+)Blade', cls)              # a cloaked sword Elite's blade copy: its Elite's pack
             if m and m.group(1) in char_of: char_of[cls] = char_of[m.group(1)]
+            m = re.fullmatch(r'(HCE_\w+)ShieldField', cls)        # a shield field: its Jackal's (or Enforcer's) pack
+            if m and m.group(1) in char_of: char_of[cls] = char_of[m.group(1)]
+            elif m and m.group(1)[4:] in TEAM: char_of[cls] = m.group(1)[4:]
     fac_of = {c: FACTION[TEAM[ch]] for c, ch in char_of.items()}
     missing = [c for c, _, _ in parts if c not in fac_of]
     assert not missing, missing
@@ -333,6 +337,11 @@ def main():
     cores = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "([^"]+)"\n\ttexture tex_cube "([^"]+)"', gl)
     # and their bodies' and guns' derez (build_pack.knight_skin): the derez shader and each skin's brightmap
     derezs = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "([^"]+)"', gl)
+    # Halo's shield shaders (build_pack.shader_gl): the flares' plasma, the bubbles', the shield fields'; and the
+    # animated self-illumination (build_pack.selfillum_gl: the derez shader with HCE_SELFILLUM). Each block goes
+    # as it is, with every file it names (its shader, brightmap and noise / mask textures)
+    fxmats = [(m.group(1), m.group(0)) for m in re.finditer(
+        r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_(?:plasma|plasma_h2|jshield\.fp|derez\.fp"\n\tdefine "HCE_SELFILLUM)[^\n]*\n.*?\n\}', gl, re.S)]
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -397,7 +406,8 @@ def main():
         myvisors = [(t, c) for t, c in visors if t in need]
         mycores = [(t, b, c) for t, b, c in cores if t in need]
         myderez = [(t, b) for t, b in derezs if t in need]
-        if mybms or mycamo or myshields or myswords or myvisors or mycores or mybubbles or myderez:
+        myfx = [blk for t, blk in fxmats if t in need]
+        if mybms or mycamo or myshields or myswords or myvisors or mycores or mybubbles or myderez or myfx:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
             if mybms or myshields or myswords or mybubbles:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
@@ -442,6 +452,11 @@ def main():
                 for t, b in myderez:
                     os.makedirs(os.path.dirname(f'{d}/{b}'), exist_ok=True); shutil.copy(f'{PACK}/{b}', f'{d}/{b}')
                     out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "{b}"\n}}')
+            for blk in myfx:                   # the shield shaders, their textures
+                for f in re.findall(r'"((?:shaders|models)/[^"]+)"', blk):
+                    os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True)
+                    if not os.path.exists(f'{d}/{f}'): shutil.copy(f'{PACK}/{f}', f'{d}/{f}')
+                out.append(blk)
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         # the derez on every skin (build_pack.derez_materials): a Forerunner weapon's kill burns the body away in its
         # colour (the Covenant pack's HCE_ForerunnerDerez); each skin's brightmap goes into its material
@@ -574,6 +589,19 @@ def main():
             for sub in ('graphics/hcegore', 'sprites/hcegore'): shutil.copytree(f'{GORE}/{sub}', f'{d}/{sub}')
             open(f'{d}/cvarinfo.txt', 'w').write('server bool hce_halogore = true;        // with NashGore loaded: Halo CE / Halo 2 blood decals and bursts on Covenant enemies\n')
             mi = 'GameInfo\n{\n\tAddEventHandlers = "HCE_HaloGoreHandler"\n}\n\n' + mi
+        if fac == 'covenant' and os.path.isdir(JSHIELD_SFX):
+            # Halo CE's Jackal shield sounds (extract_shader_maps.py): a hit on it (HCE/JShield/Hit) and its depletion
+            # (HCE/JShield/Deplete), played by HCE_JackalShield
+            os.makedirs(f'{d}/sounds/hce_jshield', exist_ok=True)
+            out = ["// Halo CE's Jackal shield (extract_shader_maps.py): sound\\sfx\\weapons\\shield fx\\hits and deplete"]
+            for ev in ('Hit', 'Deplete'):
+                takes = sorted(f for f in os.listdir(JSHIELD_SFX) if re.match(ev + r' \d+\.ogg$', f))
+                for fn in takes:
+                    low = fn.lower().replace(' ', '_')
+                    shutil.copy(f'{JSHIELD_SFX}/{fn}', f'{d}/sounds/hce_jshield/{low}')
+                    out.append(f'HCE/JShieldSnd/{low[:-4]} "sounds/hce_jshield/{low}"')
+                out.append(f'$random HCE/JShield/{ev} {{ ' + ' '.join(f'HCE/JShieldSnd/{f.lower().replace(" ", "_")[:-4]}' for f in takes) + ' }')
+            open(f'{d}/sndinfo.jshield', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{PACK}/ZScript/HaloCE/hce_forerunner.zsc'):
             # Forerunner weapons derez what they kill, every pack's enemies (hce_forerunner.zsc; the shader and its
             # materials are in each pack: derez_materials above)

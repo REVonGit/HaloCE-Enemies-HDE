@@ -977,7 +977,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			&& (bAMBUSH || frandom(0, 1) < HCE_CVarF('hce_sleepinggrunts', 0.3)))
 			hce_sleeping = true;
 		Name shn = HCE_ShellClass();                   // the energy-shield flare shell (pack code)
-		if(hce_shieldMax > 0 && !bHCE_FrontShield && shn != 'None')
+		if((hce_shieldMax > 0 || bHCE_FrontShield) && shn != 'None')     // a Jackal's: its shield field (HCE_ShieldField)
 		{
 			class<Actor> shc = (class<Actor>)(shn);
 			if(shc) { hce_shellActor = Spawn(shc, pos, NO_REPLACE); if(hce_shellActor) hce_shellActor.master = self; }
@@ -7535,7 +7535,7 @@ class HCE_Shield : ShieldProcessor
 		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
 		if(prevShields > 0 && shields <= 0) OnShieldBreak();
 		let e = HaloDoom_EnemyBase(Owner);
-		if(e && e.hce_shellActor)
+		if(e && e.hce_shellActor && !e.bHCE_FrontShield)
 		{
 			// the shield flare (a bright copy of the model): a flash on every hit, a softer glow as it recharges
 			Actor s = e.hce_shellActor;
@@ -7573,7 +7573,7 @@ class HCE_Shield : ShieldProcessor
 		if(!Owner) return;
 		let e = HaloDoom_EnemyBase(Owner);
 		if(e) e.HCE_OnShieldPop();
-		if(e && e.hce_shellActor) { e.hce_shellActor.alpha = 1.0; e.hce_shellActor.bInvisible = false; }
+		if(e && e.hce_shellActor && !e.bHCE_FrontShield) { e.hce_shellActor.alpha = 1.0; e.hce_shellActor.bInvisible = false; }
 		Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP);
 		// the shield shatters like glass: HCE_ShieldShatter (core pack) throws the shards; without it, sparks
 		Name sn = 'HCE_ShieldShatter';

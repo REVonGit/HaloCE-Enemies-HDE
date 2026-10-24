@@ -1,0 +1,7 @@
+// Halo CE's Jackal shield (extract_shader_maps.py): sound\sfx\weapons\shield fx\hits and deplete
+HCE/JShieldSnd/hit_1 "sounds/hce_jshield/hit_1.ogg"
+HCE/JShieldSnd/hit_2 "sounds/hce_jshield/hit_2.ogg"
+HCE/JShieldSnd/hit_3 "sounds/hce_jshield/hit_3.ogg"
+$random HCE/JShield/Hit { HCE/JShieldSnd/hit_1 HCE/JShieldSnd/hit_2 HCE/JShieldSnd/hit_3 }
+HCE/JShieldSnd/deplete_1 "sounds/hce_jshield/deplete_1.ogg"
+$random HCE/JShield/Deplete { HCE/JShieldSnd/deplete_1 }

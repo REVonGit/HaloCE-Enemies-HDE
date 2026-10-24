@@ -3,7 +3,8 @@
     python3 glow_colours.py        # after extract_chars.py (and the add-on extractors)
 
 Halo CE's shader_model lights a texel by its multipurpose map's green channel in a colour of the shader's own, not the
-texture's: 'self-illumination' color source (0x70: none, or one of the object's change colours A-D) and its animation
+texture's: 'self-illumination' color source (0x70: none, or one of the object's change colours A-D), its animation function and period (0x72, 0x74)
+and its animation
 colour range (0x78 lower, 0x84 upper bound). build_pack.glow_maps paints that colour into the glowing texels and
 brightmaps them, so the lights read as light given off rather than paint lit by a flashlight.
 Our materials don't keep their shader's name, so each material is matched to its shader by its multipurpose map:
@@ -22,7 +23,8 @@ except Exception:
 CE_MAPS = os.environ.get('HCE_MAPS', os.path.join(HERE, 'maps'))
 # the characters whose materials are matched (add a character here to give its lights their shader colour; it must
 # have _multi.png maps under out/models/<Char>/ and its shaders must be in one of MAPS)
-COVENANT = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot', 'Grunt', 'GruntSpecOps', 'Jackal', 'JackalMajor', 'Hunter')
+COVENANT = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot', 'Grunt', 'GruntSpecOps', 'Jackal', 'JackalMajor', 'Hunter',
+            'Engineer', 'FloodElite', 'FloodHuman', 'FloodInfection', 'FloodCarrier')   # (the last five: animated lights, build_pack.selfillum_gl)
 
 
 def main():
@@ -50,10 +52,12 @@ def main():
             a = np.asarray(im.convert('RGBA'), np.float32)
             src = m.u('h', t['data'] + 0x70)[0]
             lo = list(m.u('3f', t['data'] + 0x78)); hi = list(m.u('3f', t['data'] + 0x84))
+            fn, per = m.u('h', t['data'] + 0x72)[0], m.u('f', t['data'] + 0x74)[0]     # its animation: Halo's periodic function, period (s)
             for mat, g in want.items():
-                if mat in found or g.shape != a.shape: continue
+                # (a multipurpose map two shaders share, the Engineer's: the one that lights it wins)
+                if g.shape != a.shape or mat in found and (max(found[mat]['upper']) > 0 or max(hi) <= 0): continue
                 if np.abs(g - a).mean() < 4.0:
-                    found[mat] = dict(shader=t['name'], source=src, lower=lo, upper=hi)
+                    found[mat] = dict(shader=t['name'], source=src, lower=lo, upper=hi, function=fn, period=per)
                     print(f'{mat:16s} {t["name"]}: source {src} {np.round(lo, 2)} .. {np.round(hi, 2)}')
     json.dump(found, open(f'{OUT}/glow_colours.json', 'w'), indent=1)
     print(len(found), 'of', len(want), 'glowing materials matched ->', f'{OUT}/glow_colours.json')

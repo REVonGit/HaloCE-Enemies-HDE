@@ -16758,6 +16758,8 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)
+	override Name HCE_ShellClass() { return String.Format("%sShieldField", GetClassName()); }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -17095,18 +17097,6 @@ class HCE_JackalMinorNeedler : HCE_JackalBase
 		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
 		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
-	override void HCE_ShowSurface(int s)
-	{
-		switch(s)
-		{
-		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/Jackal", 'skins/jackalminorneedler_shield.png', CMDL_USESURFACESKIN); return;
-		}
-		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
-	}
-	override void HCE_DressSurfaces()
-	{
-		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/Jackal", 'skins/jackalminorneedler_shield.png', CMDL_USESURFACESKIN);
-	}
 
 	//$Category "Halo CE/Covenant/Jackal"
 	//$Title "Jackal Minor (Needler)"
@@ -17282,6 +17272,9 @@ class HCE_JackalMinorNeedler : HCE_JackalBase
 	}
 }
 
+// the JackalMinorNeedler's arm shield
+class HCE_JackalMinorNeedlerShieldField : HCE_ShieldField {}
+
 // HCE_JackalMinorPlasmaPistol: Halo variant "characters\jackal\jackal minor plasma pistol", plasma pistol, 50 body / 200 shield, 5 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
@@ -17298,14 +17291,12 @@ class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 	{
 		switch(s)
 		{
-		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/Jackal", 'skins/jackalminorplasmapistol_shield.png', CMDL_USESURFACESKIN); return;
 		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
 		}
 		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
 	}
 	override void HCE_DressSurfaces()
 	{
-		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/Jackal", 'skins/jackalminorplasmapistol_shield.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
 	}
 
@@ -17479,6 +17470,9 @@ class HCE_JackalMinorPlasmaPistol : HCE_JackalBase
 	}
 }
 
+// the JackalMinorPlasmaPistol's arm shield
+class HCE_JackalMinorPlasmaPistolShieldField : HCE_ShieldField {}
+
 // ---- JackalMajor: the body every JackalMajor variant below is drawn with (characters\jackal\jackal major): its size, blood and gore, the skins it
 // rolls and its cosmetics. Changing a number here changes every JackalMajor; one variant's numbers are in its own class
 class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
@@ -17532,6 +17526,8 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 		if(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
+	// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)
+	override Name HCE_ShellClass() { return String.Format("%sShieldField", GetClassName()); }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -17881,7 +17877,6 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 	{
 		switch(s)
 		{
-		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/JackalMajor", 'skins/jackalmajorneedler_shield.png', CMDL_USESURFACESKIN); return;
 		case 6: A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN); return;
 		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
 		}
@@ -17889,7 +17884,6 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 	}
 	override void HCE_DressSurfaces()
 	{
-		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/JackalMajor", 'skins/jackalmajorneedler_shield.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
 	}
@@ -18064,6 +18058,9 @@ class HCE_JackalMajorNeedler : HCE_JackalMajorBase
 	}
 }
 
+// the JackalMajorNeedler's arm shield
+class HCE_JackalMajorNeedlerShieldField : HCE_ShieldField {}
+
 // HCE_JackalMajorPlasmaPistol: Halo variant "characters\jackal\jackal major plasma pistol", plasma pistol, 75 body / 250 shield, 5 behaviour flags
 // (the editor keys below are Ultimate Doom Builder's; the numbers are explained at the top of this file)
 class HCE_JackalMajorPlasmaPistol : HCE_JackalMajorBase
@@ -18075,18 +18072,6 @@ class HCE_JackalMajorPlasmaPistol : HCE_JackalMajorBase
 		static const int K[] = { 5, 6, 7, 8, 14, 15, 16 };
 		for(int i = 0; i < K.Size(); i++) if(K[i] == s) { A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN); return; }
 		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
-	}
-	override void HCE_ShowSurface(int s)
-	{
-		switch(s)
-		{
-		case 5: A_ChangeModel('None', 0, "", 'None', 5, "models/hce/JackalMajor", 'skins/jackalmajorplasmapistol_shield.png', CMDL_USESURFACESKIN); return;
-		}
-		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
-	}
-	override void HCE_DressSurfaces()
-	{
-		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/JackalMajor", 'skins/jackalmajorplasmapistol_shield.png', CMDL_USESURFACESKIN);
 	}
 
 	//$Category "Halo CE/Covenant/Jackal Major"
@@ -18262,6 +18247,9 @@ class HCE_JackalMajorPlasmaPistol : HCE_JackalMajorBase
 		return hce_gunOffset;
 	}
 }
+
+// the JackalMajorPlasmaPistol's arm shield
+class HCE_JackalMajorPlasmaPistolShieldField : HCE_ShieldField {}
 
 class HCE_RandomElite : RandomSpawner
 {

@@ -147,3 +147,9 @@ GLOW_STRENGTH = 0.55          # how far toward fullbright a glowing texel goes (
 GLOW_SOFT = 1.0               # its edge feathered over this many texels
 
 KIT_GLOW_STRENGTH = 0.75      # the Halo 2 pieces' lights (the Ranger's, the jump pack's: coloured lamps), a little stronger
+
+# Halo CE's animated self-illumination (build_pack.selfillum_gl, the derez shader's HCE_SELFILLUM): these bodies' lights
+# pulse and flicker as their shaders animate them (the Flood's growths, the infection forms, the Engineer's flank
+# lights); SELFILLUM_GAIN scales how much light they add (1 = Halo's own amount)
+SELFILLUM_CHARS = ('Engineer', 'FloodElite', 'FloodHuman', 'FloodInfection', 'FloodCarrier')
+SELFILLUM_GAIN = 1.5

@@ -1215,6 +1215,18 @@ Model HCE_JackalMinorNeedler
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalMinorNeedlerShieldField
+{
+	Path "models/hce/Jackal"
+	Model 0 "Jackal.iqm"
+	SurfaceSkin 0 5 "skins/jackalminorneedler_field.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_JackalMinorPlasmaPistol
 {
 	Path "models/hce/Jackal"
@@ -1230,6 +1242,18 @@ Model HCE_JackalMinorPlasmaPistol
 	SurfaceSkin 0 10 "skins/jackalminorplasmapistol_jackal_3.png"
 	SurfaceSkin 0 11 "skins/jackalminorplasmapistol_jackal_3.png"
 	Path "models/hce/weapons"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_JackalMinorPlasmaPistolShieldField
+{
+	Path "models/hce/Jackal"
+	Model 0 "Jackal.iqm"
+	SurfaceSkin 0 5 "skins/jackalminorplasmapistol_field.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
@@ -1259,6 +1283,18 @@ Model HCE_JackalMajorNeedler
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalMajorNeedlerShieldField
+{
+	Path "models/hce/JackalMajor"
+	Model 0 "JackalMajor.iqm"
+	SurfaceSkin 0 5 "skins/jackalmajorneedler_field.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
 Model HCE_JackalMajorPlasmaPistol
 {
 	Path "models/hce/JackalMajor"
@@ -1274,6 +1310,18 @@ Model HCE_JackalMajorPlasmaPistol
 	SurfaceSkin 0 12 "skins/jackalmajorplasmapistol_jackalmajor_3.png"
 	SurfaceSkin 0 13 "skins/jackalmajorplasmapistol_jackalmajor_3.png"
 	Path "models/hce/weapons"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_JackalMajorPlasmaPistolShieldField
+{
+	Path "models/hce/JackalMajor"
+	Model 0 "JackalMajor.iqm"
+	SurfaceSkin 0 5 "skins/jackalmajorplasmapistol_field.png"
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll

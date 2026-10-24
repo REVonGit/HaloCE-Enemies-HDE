@@ -8,6 +8,12 @@
 // the colour from PALETTE (the same order as HCE_DerezColor). At full alpha it is the plain skin; below the band (a
 // Knight's phase, active camo) plain translucency. The surviving texels are kept fully opaque (Base.a / vColor.a: the
 // engine multiplies the output alpha by vColor.a).
+//
+// HCE_SELFILLUM (a define on the material): Halo CE's animated self-illumination (shader_model): the multipurpose map's
+// glow channel (si_mask) lights the paint in a colour swinging between SI_LO and SI_HI by Halo's periodic function
+// SI_FN over SI_PERIOD seconds (2 cosine, 3 cosine with a wandering period, 4/5 diagonal wave, 6/7 slide, 8 noise,
+// 9 jitter, 10 wander, 11 spark). Halo adds it to the light on the paint, as the brightmap does here: the Flood's
+// pulsing growths, the infection forms' throbbing glow, the Engineer's flank lights (build_pack.selfillum_materials).
 const float DEREZ_BAND = 0.1;
 const float SLOTS = 8.0;
 const float CELLS = 40.0;          // cells across the skin (texture space)
@@ -36,12 +42,47 @@ float dzNoise(vec2 p)
 	return mix(mix(dzHash(i), dzHash(i + vec2(1.0, 0.0)), f.x), mix(dzHash(i + vec2(0.0, 1.0)), dzHash(i + vec2(1.0, 1.0)), f.x), f.y);
 }
 
+#ifdef HCE_SELFILLUM
+float siHash(float n) { return fract(sin(n * 12.9898) * 43758.5453); }
+float siSmooth(float x) { float i = floor(x); float f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(siHash(i), siHash(i + 1.0), f); }
+float siFunc(float t)
+{
+	float x = t / SI_PERIOD;
+#if SI_FN == 2
+	return 0.5 - 0.5 * cos(6.2831853 * x);
+#elif SI_FN == 3
+	return 0.5 - 0.5 * cos(6.2831853 * (x + 0.25 * siSmooth(x * 0.5)));
+#elif SI_FN == 4
+	return 1.0 - abs(fract(x) * 2.0 - 1.0);
+#elif SI_FN == 5
+	return 1.0 - abs(fract(x + 0.25 * siSmooth(x * 0.5)) * 2.0 - 1.0);
+#elif SI_FN == 6
+	return fract(x);
+#elif SI_FN == 7
+	return fract(x + 0.25 * siSmooth(x * 0.5));
+#elif SI_FN == 8
+	return siHash(floor(t * 30.0));
+#elif SI_FN == 9
+	return clamp(siSmooth(x * 3.0) * 0.8 + siHash(floor(t * 15.0)) * 0.35 - 0.1, 0.0, 1.0);
+#elif SI_FN == 10
+	return siSmooth(x * 2.0);
+#elif SI_FN == 11
+	return pow(siSmooth(x * 4.0), 6.0);
+#else
+	return 1.0;
+#endif
+}
+#endif
+
 void SetupMaterial(inout Material material)
 {
 	vec4 base = getTexel(vTexCoord.st);
 	material.Base = base;
 	material.Normal = ApplyNormalMap(vTexCoord.st);
 	material.Bright = texture(brighttexture, vTexCoord.st);
+#ifdef HCE_SELFILLUM
+	material.Bright = vec4(max(material.Bright.rgb, mix(SI_LO, SI_HI, siFunc(timer)) * texture(si_mask, vTexCoord.st).r * SI_GAIN), 1.0);
+#endif
 	float a = vColor.a;
 	if(a >= 0.9999 || a < 1.0 - DEREZ_BAND) return;
 	float x = clamp((1.0 - a) / DEREZ_BAND * SLOTS, 0.0, SLOTS - 0.0001);

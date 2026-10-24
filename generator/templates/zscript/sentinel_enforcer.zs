@@ -11,13 +11,14 @@
 	int hce_rocketNext;
 	Array<Actor> hce_rockets;
 
-	// Shows or hides one front shield (side 0 left, 1 right) by swapping its model surface skin to hce_hidden.png;
-	// does nothing when it is already in that state.
+	// Shows or hides one front shield (side 0 left, 1 right): its surface on the shield field (hce_shellActor,
+	// HCE_SentinelEnforcerShieldField: the shields drawn additively in Halo 2's energy_shield) swapped to hce_hidden.png
+	// or back; does nothing when it is already in that state.
 	void HCE_EnfShieldShow(int side, bool show)
 	{
 		if(hce_eshOff[side] == !show) return;
 		hce_eshOff[side] = !show;
-		A_ChangeModel('None', 0, "", 'None', side == 0 ? {SL} : {SR}, "models/{MDIR}/weapons", show ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', side == 0 ? {SL} : {SR}, "models/{MDIR}/weapons", show ? 'None' : 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 
 	// Spawns six light-blue sparks on the shield's surface facing the attacker (radius * 1.1 out, at a random height).
@@ -50,6 +51,7 @@
 					{
 						hce_eshHP[side] -= damage; hce_eshRegen[side] = 35 * 4;
 						HCE_EnfShieldSpark(from);
+						HCE_ShieldField.FlashOn(self, 0.4 + damage * 3.0 / HCE_ENF_SHIELD);    // Halo's shield hit flash
 						if(hce_eshHP[side] <= 0)
 						{
 							hce_eshHP[side] = 0; hce_eshRegen[side] = 35 * 10;
@@ -104,6 +106,10 @@
 		if(!hce_eshInit)
 		{
 			hce_eshInit = true; hce_eshHP[0] = hce_eshHP[1] = HCE_ENF_SHIELD;
+			// its shield field: the API keeps it on the body and plays its animations on it
+			Name fn = 'HCE_SentinelEnforcerShieldField';
+			class<Actor> fc = (class<Actor>)(fn);
+			if(fc && !hce_shellActor) { hce_shellActor = Spawn(fc, pos, NO_REPLACE); if(hce_shellActor) hce_shellActor.master = self; }
 			hce_rocketNext = level.maptime + 35 * random(3, 6);
 		}
 		HCE_EnfRockets();

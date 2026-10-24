@@ -1,40 +1,4 @@
 // Halo CE enemies, sentinels: glowing surfaces
-material texture "models/hce/Sentinel/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/SentinelDragoon/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/SentinelGold/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/SentinelOnyx/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/SentinelSoldier/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
-material texture "models/hce/SentinelWarden/skins/bubble_shell.png"
-{
-	shader "shaders/hce_bubble.fp"
-	speed 1.0
-	brightmap "models/hce/brightmap_full.png"
-}
 material texture "models/hce/SentinelKnight/skins/core_orange.png"
 {
 	shader "shaders/hce_core.fp"
@@ -188,6 +152,64 @@ material texture "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/SentinelKnight/skins/w_sk_suppressor_0_minor_bm.png"
 }
+material texture "models/hce/SentinelKnight/skins/shieldshell.png"
+{
+	shader "shaders/hce_plasma.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/Sentinel/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelDragoon/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelGold/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelOnyx/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelSoldier/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelWarden/skins/bubble_shell.png"
+{
+	shader "shaders/hce_plasma_h2.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture pl_noise "models/hce/hce_fx/plasma_noise.png"
+}
+material texture "models/hce/SentinelEnforcer/skins/enforcer_field.png"
+{
+	shader "shaders/hce_jshield.fp"
+	speed 1.0
+	brightmap "models/hce/brightmap_full.png"
+	texture js_noise "models/hce/hce_fx/enf_noise.png"
+	texture js_offset "models/hce/hce_fx/enf_offset.png"
+	texture js_mask "models/hce/hce_fx/enf_mask.png"
+}
 material texture "models/hce/Sentinel/skins/sentinel_captain_body.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -253,11 +275,6 @@ material texture "models/hce/SentinelDragoon/skins/sentineldragoon_metal.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"
 }
-material texture "models/hce/SentinelEnforcer/skins/enforcer_shield.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_full.png"
-}
 material texture "models/hce/SentinelEnforcer/skins/sentinelenforcer_body.png"
 {
 	shader "shaders/hce_derez.fp"
@@ -279,11 +296,6 @@ material texture "models/hce/SentinelGold/skins/sentinelgold_gold.png"
 	brightmap "models/hce/brightmap_none.png"
 }
 material texture "models/hce/SentinelInterceptor/skins/sentinelinterceptor_metal.png"
-{
-	shader "shaders/hce_derez.fp"
-	brightmap "models/hce/brightmap_none.png"
-}
-material texture "models/hce/SentinelKnight/skins/shieldshell.png"
 {
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce/brightmap_none.png"

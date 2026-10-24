@@ -1513,21 +1513,27 @@ def hand_mask(char, mat, size):
 # SHELL_TINT: variants.py
 
 def bake_shell(tint, outpath):
-    """a shimmering energy texture: soft cells of light with bright sparks, in the shield's colour"""
-    if os.path.exists(outpath): return
-    rng = np.random.default_rng(7)
-    n = rng.random((32, 32)).astype(np.float32)
-    big = np.asarray(Image.fromarray((n * 255).astype(np.uint8)).resize((128, 128), Image.BICUBIC)).astype(np.float32) / 255.0
-    fine = rng.random((128, 128)).astype(np.float32)
-    v = np.clip(big * 0.85 + (fine > 0.985) * 0.9, 0, 1) ** 1.4
-    col = np.array(tint, dtype=np.float32).reshape(1, 1, 3)
-    o = col * (0.25 + 0.85 * v[..., None]) + (v[..., None] ** 4) * 0.5
+    """the shield flare's skin: its colour, flat (PLASMA_SHADER draws the plasma in it). Every one goes in SHELL_TEX
+    (pack-relative paths, models/...) for its plasma material (shader_gl)"""
     os.makedirs(os.path.dirname(outpath), exist_ok=True)
-    Image.fromarray(np.clip(o * 255, 0, 255).astype(np.uint8)).save(outpath)
+    Image.new('RGB', (4, 4), tuple(int(round(c * 255)) for c in tint)).save(outpath)
+    SHELL_TEX.add(outpath[outpath.index('models/'):])
+
+SHELL_TEX = set()            # every shield flare skin (bake_shell): the plasma shader's
+# Halo's own shield shaders, ported (templates/shaders; their textures from extract_shader_maps.py in shader_maps/):
+# the shield flares (Halo CE's shield plasma), the Sentinels' bubbles (Halo 2's plasma_shield), the Jackals' and the
+# Sentinel Enforcer's shields (Halo CE's Jackal shield combiner) drawn by their field (HCE_ShieldField)
+SHADER_MAPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shader_maps')
+FIELD_CHARS = {'Jackal', 'JackalMajor'}      # bodies whose arm shield is drawn by a shield field (build_digsite adds the Halo 2 Jackal)
+ENFORCER_FIELD_TINT = (132, 148, 255)    # Halo 2's energy_shield: its constant colour 2
+FIELD_TEX = {}               # field skin (models/...) -> its maps' prefix in shader_maps ('jshield' or 'enf')
 
 # Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
 SHIELD_SHADER = template('shaders/shield.fp')
 BUBBLE_SHADER = template('shaders/bubble.fp')
+JSHIELD_SHADER = template('shaders/jshield.fp')
+PLASMA_SHADER = template('shaders/plasma.fp').replace('{REF}', '0.45, 0.70, 1.00')          # SHELL_TINT['Elite']
+PLASMA_H2_SHADER = '#define HCE_H2\n' + template('shaders/plasma.fp').replace('{REF}', '0.45, 0.75, 1.00')  # SHIELD_TINT['sentinel_minor']
 
 SWORD_SHADER = template('shaders/sword.fp')
 
@@ -2236,18 +2242,17 @@ def build(cfg=None):
                   f'\t\tif(hce_shellActor) hce_shellActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // the shield flare moves with it\n'
                   f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
+                  + ("\t// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)\n"
+                     "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:
             # the Sentinels' shield bubble as a flare (HCE_ShieldShell: unseen until a hit lights it, then fading, like
-            # the Covenant's): the body's model with only its shield surface drawn, in the hard-light lattice
+            # the Covenant's): the body's model with only its shield surface drawn, in Halo 2's plasma_shield
             fn = 'bubble_shell.png'
             bubble = f'{pack}/models/{mdir}/{char}/skins/{fn}'
-            # the shield's colour, flat: BUBBLE_SHADER draws the film, the lattice and the shimmer over it
-            # (its size in texels / 4 is the lattice's cell count across the surface's UVs: cells about 12 map units wide)
-            ext = max(np.array(meta['bounds'][1]) - np.array(meta['bounds'][0])) * S * msc * 3.0
-            ncell = int(np.clip(ext / 12, 6, 60))
-            Image.new('RGB', (ncell * 4, max(4, ncell * 8 // 3)), tuple(int(c * 255) for c in SHIELD_TINT['sentinel_minor'])).save(bubble)
+            # the shield's colour, flat: PLASMA_H2_SHADER draws the plasma in it (shader_gl)
+            Image.new('RGB', (4, 4), tuple(int(c * 255) for c in SHIELD_TINT['sentinel_minor'])).save(bubble)
             bubbles.append(f'models/{mdir}/{char}/skins/{fn}')
             sl = [f'\tSurfaceSkin 0 {i} "skins/{fn if i == meta["shield_surface"] else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
             hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
@@ -2257,6 +2262,22 @@ def build(cfg=None):
                       f'\n\tScale {S * msc:.1f} {S * msc:.1f} {S * msc * 1.2:.1f}'
                       + (f'\n\tZOffset {-meta["bounds"][0][2] * S * msc * 1.2:.0f}' if ov.get('lift') else '')     # as the body's (lift)
                       + '\n\tUseActorPitch\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}\n')
+        if char == 'SentinelEnforcer' and meta.get('shield_surfaces'):
+            # its two shields drawn by a shield field (HCE_ShieldField, spawned by its own code): Halo 2's energy_shield
+            # (the Jackal shield's combiner over the Enforcer's maps), in its colour (the shader's constant colour 2)
+            fn = 'enforcer_field.png'
+            os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
+            Image.new('RGB', (4, 4), ENFORCER_FIELD_TINT).save(f'{pack}/models/{mdir}/{char}/skins/{fn}')
+            FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = 'enf'
+            hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
+            if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+            shs = set(meta['shield_surfaces'].values())
+            sl = [f'\tSurfaceSkin 0 {i} "skins/{fn if i in shs else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
+            zs.append(f'// the {char}\'s two shields\nclass HCE_{char}ShieldField : HCE_ShieldField {{}}\n')
+            md.append(f'Model HCE_{char}ShieldField\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
+                      f'\n\tScale {S * msc:.0f} {S * msc:.0f} {S * msc * 1.2:.0f}'
+                      + (f'\n\tZOffset {-meta["bounds"][0][2] * S * msc * 1.2:.0f}' if ov.get('lift') else '')
+                      + '\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}\n')
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if char_of_unit.get(v['unit_reference']) != char: continue      # every unit drawn as this body
@@ -2441,7 +2462,7 @@ def build(cfg=None):
             # Flood: the change colour covers nearly the whole body on Xbox and turns them green;
             # the base maps already carry the right flesh/fatigue/armour colours
             if char.startswith('Flood') and char not in FLOOD_RANKED: color = None
-            skin_lines = []; weapon_lines = []
+            skin_lines = []; weapon_lines = []; field_skin = None
             wid_equipped = WEAPON_IDS.get(rc['reference'] or '')
             if not ov.get('overlay') and meta.get('hand_frame') and wid_equipped:
                 # a body without baked guns (extract_chars.OVERLAY_GUNS): Halo CE's own gun as its overlay too
@@ -2485,6 +2506,16 @@ def build(cfg=None):
                         hid = f'{pack}/models/{mdir}/weapons/hce_hidden.png'
                         if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
                         weapon_lines.append(f'\tSurfaceSkin 0 {si} "hce_hidden.png"')
+                    continue
+                if SHIELD_MAT.get(char) == matn and v.get('_rank') in SHIELD_TINT and char in FIELD_CHARS:
+                    # drawn by the shield field (HCE_ShieldField), not on the body: the field's skin is the rank's colour
+                    fn = f'{cls[4:].lower()}_field.png'
+                    Image.new('RGB', (4, 4), tuple(int(round(c * 255)) for c in SHIELD_TINT[v['_rank']])).save(f'{pack}/models/{mdir}/{char}/skins/{fn}')
+                    FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = 'jshield'
+                    field_skin = (si, fn)
+                    hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
+                    if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
+                    skin_lines.append(f'\tSurfaceSkin 0 {si} "skins/hce_hidden.png"')
                     continue
                 if SHIELD_MAT.get(char) == matn and v.get('_rank') in SHIELD_TINT:
                     fn = f'{cls[4:].lower()}_shield.png'
@@ -2664,6 +2695,12 @@ def build(cfg=None):
             zoff = f'\n\tZOffset {-meta["bounds"][0][2] * sc * 1.2:.0f}' if ov.get('lift') else ''
             md.append(f'Model {cls}\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(skin_lines) +
                       f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}{zoff}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n{frames}\n}}\n')   # roll: the severed pieces tumble with it
+            if field_skin and not ov.get('loadout_only'):
+                # its shield field: the body's model with only the shield surface drawn (HCE_ShieldField)
+                fl = [f'\tSurfaceSkin 0 {i} "skins/{field_skin[1] if i == field_skin[0] else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
+                md.append(f'Model {cls}ShieldField\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(fl) +
+                          f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}{zoff}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+                zs.append(f'// the {cls[4:]}\'s arm shield\nclass {cls}ShieldField : HCE_ShieldField {{}}\n')
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')
             if team[char] in PICKUP_TEAMS and dw and weapon and weapon not in PICKUP_SKIP and (marine or weapon not in WEAPON_CODE and weapon != 'plasma caster' and (dw in COVENANT_GUNS or char == 'Brute')) and \
@@ -2757,6 +2794,7 @@ def build(cfg=None):
     for t in sorted(set(brightmaps)):
         gl.append(f'brightmap texture "{t}"\n{{\n\tmap "models/{mdir}/brightmap_full.png"\n}}')
     gl += glow_maps(pack, mdir, cfg['team'], set(camo))
+    gl += selfillum_gl(pack, mdir, set(camo))
     # Jackal energy shields: the baked rank-coloured field animated by a shader (a drifting field, a hex lattice whose
     # cells flicker, light sweeping over it, a pulse), drawn fullbright
     if shield_tex:
@@ -2764,12 +2802,8 @@ def build(cfg=None):
         open(f'{pack}/shaders/hce_shield.fp', 'w').write(SHIELD_SHADER)
         for t in sorted(set(shield_tex)):
             gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_shield.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
-    # the Sentinels' shield bubbles (their flares): a shimmering see-through film
-    if bubbles:
-        os.makedirs(f'{pack}/shaders', exist_ok=True)
-        open(f'{pack}/shaders/hce_bubble.fp', 'w').write(BUBBLE_SHADER)
-        for t in sorted(set(bubbles)):
-            gl.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_bubble.fp"\n\tspeed 1.0\n\tbrightmap "models/{mdir}/brightmap_full.png"\n}}')
+    # Halo's shield shaders: the flares' plasma, the Sentinels' bubbles (Halo 2's), the Jackals' and Enforcer's shield fields
+    gl += shader_gl(pack, mdir, bubbles)
     # the energy sword's blade: plasma streaming up it, a white-hot core, shimmering edges (fullbright)
     if swords:
         os.makedirs(f'{pack}/shaders', exist_ok=True)
@@ -3327,6 +3361,38 @@ def modeldef_skins(md):
     return out
 
 
+def shader_gl(pack, mdir, bubbles):
+    """GLDEFS for the ported Halo shield shaders on this pack's skins, with their shaders and textures written into it:
+    the shield flares (SHELL_TEX: shaders/hce_plasma.fp, Halo CE's shield plasma), the Sentinels' bubbles (bubbles:
+    hce_plasma_h2.fp, Halo 2's plasma_shield) and the shield fields (FIELD_TEX: hce_jshield.fp, Halo CE's Jackal shield
+    over the Jackal's or the Enforcer's maps). The maps go to models/<mdir>/hce_fx/"""
+    pre = f'models/{mdir}/'
+    shells = sorted(t for t in SHELL_TEX if t.startswith(pre) and os.path.exists(f'{pack}/{t}'))
+    fields = sorted((t, k) for t, k in FIELD_TEX.items() if t.startswith(pre) and os.path.exists(f'{pack}/{t}'))
+    bubbles = sorted(set(bubbles))
+    if not (shells or fields or bubbles): return []
+    fx = f'{pack}/{pre}hce_fx'; os.makedirs(fx, exist_ok=True); os.makedirs(f'{pack}/shaders', exist_ok=True)
+    for f in os.listdir(SHADER_MAPS):
+        if f.endswith('.png'): shutil.copy(f'{SHADER_MAPS}/{f}', f'{fx}/{f}')
+    full = f'{pre}brightmap_full.png'
+    out = []
+    if shells or bubbles:
+        open(f'{pack}/shaders/hce_plasma.fp', 'w').write(PLASMA_SHADER)
+        open(f'{pack}/shaders/hce_plasma_h2.fp', 'w').write(PLASMA_H2_SHADER)
+    for t in shells:
+        out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_plasma.fp"\n\tspeed 1.0\n\tbrightmap "{full}"\n'
+                   f'\ttexture pl_noise "{pre}hce_fx/plasma_noise.png"\n}}')
+    for t in bubbles:
+        out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_plasma_h2.fp"\n\tspeed 1.0\n\tbrightmap "{full}"\n'
+                   f'\ttexture pl_noise "{pre}hce_fx/plasma_noise.png"\n}}')
+    if fields:
+        open(f'{pack}/shaders/hce_jshield.fp', 'w').write(JSHIELD_SHADER)
+    for t, k in fields:
+        out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_jshield.fp"\n\tspeed 1.0\n\tbrightmap "{full}"\n'
+                   f'\ttexture js_noise "{pre}hce_fx/{k}_noise.png"\n\ttexture js_offset "{pre}hce_fx/{k}_offset.png"\n'
+                   f'\ttexture js_mask "{pre}hce_fx/{k}_mask.png"\n}}')
+    return out
+
 def derez_materials(gl, skins, black):
     """GLDEFS text gl with the derez shader (shaders/hce_derez.fp: a Forerunner weapon's kill, a Knight's death) on
     every skin in skins that has no shader of its own: its brightmap entry becomes the material's brightmap, the rest
@@ -3610,15 +3676,13 @@ def h2sentinel_skin(cls, v, si, mat, meta, skin_dir):
 
 
 def enforcer_skin(cls, v, si, mat, meta, skin_dir):
-    """SKIN_HOOK for the Enforcer: its shield surfaces the hex lattice in SHIELD_TINT['enforcer'], the rest its own
-    textures as they are; the shields, eye and hover jets fully lit"""
+    """SKIN_HOOK for the Enforcer: its shield surfaces hidden (its shield field draws them), the rest its own textures
+    as they are; the eye and hover jets fully lit"""
     name = meta['mesh_names'][si]
     os.makedirs(skin_dir, exist_ok=True)
-    if name.startswith('shield_'):
-        fn = 'enforcer_shield.png'
-        if not os.path.exists(f'{skin_dir}/{fn}'): hex_lattice(SHIELD_TINT['enforcer'], f'{skin_dir}/{fn}', cells=6, width=0.07)
-        full_bright(skin_dir, fn)
-        return fn
+    if name.startswith('shield_'):              # drawn by its shield field (HCE_SentinelEnforcerShieldField)
+        if not os.path.exists(f'{skin_dir}/hce_hidden.png'): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(f'{skin_dir}/hce_hidden.png')
+        return 'hce_hidden.png'
     fn = mat.lower()
     if not os.path.exists(f'{skin_dir}/{fn}'): shutil.copy(f'{OUT}/models/SentinelEnforcer/{mat}', f'{skin_dir}/{fn}')
     if name.startswith(('eye.', 'hover.')): full_bright(skin_dir, fn)
@@ -3744,6 +3808,47 @@ def glow_tint(mat):
     if min(c) > 0.9 or max(c) < 0.05: return None
     return [x / max(c) for x in c]           # its hue at full strength (the brightmap sets how bright)
 
+def selfillum_anim(char, mat):
+    """Halo CE's self-illumination animation for a material of an animated body (SELFILLUM_CHARS): its glow_colours
+    entry when its shader animates its light (a periodic function between two different colours), else None"""
+    if char not in SELFILLUM_CHARS: return None
+    glow_tint('')                                   # (loads glow_colours.json)
+    d = _glow_colours.get(mat)
+    if not d or d.get('function', 0) in (0, 1) or d['lower'] == d['upper']: return None
+    return d
+
+def selfillum_gl(pack, mdir, camo=()):
+    """GLDEFS for the animated self-illumination (SELFILLUM_CHARS): each baked skin (SKIN_PAIRS) whose material's
+    shader animates its light gets the derez shader with HCE_SELFILLUM, Halo's function, period and colours as defines,
+    and its glow mask (the multipurpose map's green, feathered as glow_maps does: <skin>_si.png) as si_mask; the
+    cloaked skins (camo) are left to their camo shader"""
+    out = []; done = set()
+    black = f'models/{mdir}/hce_fx/black.png'
+    for src, dst in SKIN_PAIRS:
+        if not dst.startswith(pack + '/') or dst in done or os.path.relpath(dst, pack) in camo: continue   # (cloaked: their shader)
+        char = os.path.basename(os.path.dirname(src)); mat = os.path.basename(src)[:-4]
+        d = selfillum_anim(char, mat)
+        mp = src[:-4] + '_multi.png'
+        if not d or not os.path.exists(mp) or not os.path.exists(dst): continue
+        done.add(dst)
+        from scipy import ndimage
+        g = np.asarray(Image.open(mp).convert('RGBA')).astype(np.float32)[..., 1] / 255.0
+        k = ndimage.gaussian_filter(np.clip((g - 0.12) / 0.6, 0, 1), GLOW_SOFT)
+        si = dst[:-4] + '_si.png'
+        Image.fromarray((k * 255).astype(np.uint8)).resize(Image.open(dst).size, Image.BILINEAR).save(si)
+        os.makedirs(f'{pack}/models/{mdir}/hce_fx', exist_ok=True)
+        if not os.path.exists(f'{pack}/{black}'): Image.new('RGB', (8, 8), (0, 0, 0)).save(f'{pack}/{black}')
+        v3 = lambda c: '"vec3(%.4f, %.4f, %.4f)"' % tuple(c)
+        rel = os.path.relpath(dst, pack)
+        out.append(f'material texture "{rel}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tdefine "HCE_SELFILLUM"\n'
+                   f'\tdefine "SI_FN" = "{d["function"]}"\n\tdefine "SI_PERIOD" = "{max(0.05, d["period"]):.3f}"\n'
+                   f'\tdefine "SI_LO" = {v3(d["lower"])}\n\tdefine "SI_HI" = {v3(d["upper"])}\n\tdefine "SI_GAIN" = "{SELFILLUM_GAIN:.3f}"\n'
+                   f'\tspeed 1.0\n\tbrightmap "{black}"\n\ttexture si_mask "{os.path.relpath(si, pack)}"\n}}')
+    if out:
+        os.makedirs(f'{pack}/shaders', exist_ok=True)
+        open(f'{pack}/shaders/hce_derez.fp', 'w').write(DEREZ_SHADER)
+    return out
+
 def glow_maps(pack, mdir, team, camo):
     """GLDEFS brightmap entries for the Covenant's self-lit parts: for every baked skin (SKIN_PAIRS) whose multipurpose
     map has a glow channel (its green, at least GLOW_MIN), a feathered <material>_bm.png (GLOW_SOFT, GLOW_STRENGTH in
@@ -3756,6 +3861,7 @@ def glow_maps(pack, mdir, team, camo):
         rel = os.path.relpath(dst, pack)
         char = os.path.basename(os.path.dirname(src))
         if team.get(char) != 'COVENANT' or rel in camo: continue
+        if selfillum_anim(char, os.path.basename(src)[:-4]): continue      # its lights animated instead (selfillum_gl)
         mp = src[:-4] + '_multi.png'
         if mp not in made:
             made[mp] = None

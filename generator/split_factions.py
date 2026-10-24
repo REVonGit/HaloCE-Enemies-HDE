@@ -330,6 +330,8 @@ def main():
     visors = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_visor.fp"\n\ttexture tex_cube "([^"]+)"', gl)
     # the Sentinel Knights' energy cores (build_pack.knight_skin): the core shader, its brightmap and cube map
     cores = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "([^"]+)"\n\ttexture tex_cube "([^"]+)"', gl)
+    # and their bodies' and guns' derez (build_pack.knight_skin): the derez shader and each skin's brightmap
+    derezs = re.findall(r'material texture "([^"]+)"\n\{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "([^"]+)"', gl)
     for fac in facs:
         d = f'{OUTDIR}/{fac}'
         os.makedirs(f'{d}/ZScript/HaloCE')
@@ -393,7 +395,8 @@ def main():
         mybubbles = [t for t in bubbles if t in need]
         myvisors = [(t, c) for t, c in visors if t in need]
         mycores = [(t, b, c) for t, b, c in cores if t in need]
-        if mybms or mycamo or myshields or myswords or myvisors or mycores or mybubbles:
+        myderez = [(t, b) for t, b in derezs if t in need]
+        if mybms or mycamo or myshields or myswords or myvisors or mycores or mybubbles or myderez:
             out = [f'// Halo CE enemies, {fac}: glowing surfaces' + (', active camo shimmer' if mycamo else '')]
             if mybms or myshields or myswords or mybubbles:
                 shutil.copy(f'{PACK}/models/hce/brightmap_full.png', f'{d}/models/hce/brightmap_full.png')
@@ -432,6 +435,12 @@ def main():
                     for f in (b, c):
                         os.makedirs(os.path.dirname(f'{d}/{f}'), exist_ok=True); shutil.copy(f'{PACK}/{f}', f'{d}/{f}')
                     out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_core.fp"\n\tbrightmap "{b}"\n\ttexture tex_cube "{c}"\n}}')
+            if myderez:                        # the Sentinel Knights' derez as they die
+                os.makedirs(f'{d}/shaders', exist_ok=True)
+                shutil.copy(f'{PACK}/shaders/hce_derez.fp', f'{d}/shaders/hce_derez.fp')
+                for t, b in myderez:
+                    os.makedirs(os.path.dirname(f'{d}/{b}'), exist_ok=True); shutil.copy(f'{PACK}/{b}', f'{d}/{b}')
+                    out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_derez.fp"\n\tbrightmap "{b}"\n}}')
             open(f'{d}/gldefs.hce_{fac}', 'w').write('\n'.join(out) + '\n')
         mynums = [(n, c) for n, c in ed if fac_of.get(c) == fac]
         mi = 'DoomEdNums\n{\n' + ''.join(f'\t{n} = {c}\n' for n, c in mynums) + '}\n'

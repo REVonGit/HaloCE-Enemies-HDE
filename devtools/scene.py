@@ -155,6 +155,7 @@ def run(a, attempt):
     lines = [l for l in txt.splitlines() if l.startswith(('HCEPREV', 'HCEVOICE' if a.voices else 'HCEPREV'))]
     if not lines and not errors: errors = ['(no output; the log ends:)'] + txt.splitlines()[-12:]
     black = [p for p in shots if os.path.exists(p) and np.asarray(Image.open(p)).mean() < 3]
+    if os.environ.get('HCE_SCENE_LOG'): shutil.copy(log, os.environ['HCE_SCENE_LOG'])   # keep the engine's whole log
     shutil.rmtree(work, ignore_errors=True)
     return lines, errors, shots, black, nshots
 

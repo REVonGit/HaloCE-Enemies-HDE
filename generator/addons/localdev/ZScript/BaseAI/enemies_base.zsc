@@ -5306,6 +5306,29 @@ class HaloDoom_EnemyBase : Actor abstract
 		A_StartSound("HCE/Derez", CHAN_7, CHANF_OVERLAP);   // Halo 4's Promethean dissolve (the Covenant pack's sndinfo.derez)
 		return true;
 	}
+	// one of Halo 4's derez embers at (x, y, z) from the body, in colour c: the Knight's derez emitter's four kinds
+	// (extract_h4_derez.py: the core's HCEDZ28 / 29 / 30, grey sprites a particle's colour tints, drawn additively, as
+	// Halo 4 draws them): squares (35%) that drift up, and small ash (25%), digital ash (20%) and curved ash flakes
+	// (20%) that tumble down. burst: thrown outward harder (the body's last moment). Plain particles without the core
+	void HCE_DerezSpark(color c, double x, double y, double z, bool burst)
+	{
+		int r = random(0, 99);
+		String tn = r < 35 ? "HCEDZ29" : r < 60 ? "HCEDZ28" : r < 80 ? "HCEDZ29" : "HCEDZ30";
+		bool rise = r < 35;
+		double sz = rise ? frandom(3.0, 5.0) : r < 60 ? frandom(4.0, 8.0) : r < 80 ? frandom(4.0, 7.0) : frandom(5.0, 8.0);
+		double h = burst ? 1.5 : 0.4;
+		double vz = burst ? frandom(0.5, 2.5) : rise ? frandom(0.6, 1.8) : frandom(-0.2, 0.8);
+		double az = rise ? 0.03 : -0.025;
+		TextureID g = TexMan.CheckForTexture(tn, TexMan.Type_Any);
+		if(!g.IsValid())
+		{
+			A_SpawnParticle(c, SPF_FULLBRIGHT, random(16, 30), sz * 0.6, 0, x, y, z, frandom(-h, h), frandom(-h, h), vz, 0, 0, az, 1.0, -0.04);
+			return;
+		}
+		A_SpawnParticleEx(c, g, STYLE_Add, SPF_FULLBRIGHT | SPF_ROLL, random(18, 60), sz, 0, x, y, z,
+			frandom(-h, h), frandom(-h, h), vz, 0, 0, az, 1.0, -0.025, 0, frandom(0, 360), frandom(-12, 12));
+	}
+
 	void HCE_DerezTick()
 	{
 		double p = clamp(double(hce_derezTic) / HCE_DEREZ_TICS, 0.001, 0.999);
@@ -5313,14 +5336,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		color hot = color(255, min(255, hce_derezCol.r + 110), min(255, hce_derezCol.g + 110), min(255, hce_derezCol.b + 110));
 		int n = 1 + int(p * 6);
 		for(int i = 0; i < n; i++)
-			A_SpawnParticle(random(0, 3) ? HCE_DerezEmber(hce_derezSlot - 1) : hot, SPF_FULLBRIGHT, random(16, 30), frandom(1.5, 3.5), 0,
-				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, height * frandom(0, 1 - p * 0.6),
-				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
+			HCE_DerezSpark(random(0, 3) ? HCE_DerezEmber(hce_derezSlot - 1) : hot,
+				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, height * frandom(0, 1 - p * 0.6), false);
 		if(++hce_derezTic > HCE_DEREZ_TICS)
 		{
 			for(int i = 0; i < 14; i++)
-				A_SpawnParticle(HCE_DerezEmber(hce_derezSlot - 1), SPF_FULLBRIGHT, 22, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
-					frandom(0, height * 0.5), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
+				HCE_DerezSpark(HCE_DerezEmber(hce_derezSlot - 1), frandom(-radius, radius), frandom(-radius, radius), frandom(0, height * 0.5), true);
 			if(hce_shellActor) hce_shellActor.Destroy();
 			Destroy();
 		}

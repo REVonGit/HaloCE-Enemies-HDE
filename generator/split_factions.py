@@ -179,6 +179,7 @@ KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Br
                 'Spot Player Spartan IV (Enemy)': ['SpotSpartanIV'] * 2}
 # Halo 4's Knight sounds (extract_h4_knight.py -> knight_h4/): its death dissolve, played by the Knight's HCE_Die, and
 # its death cries for the base AI's Death / DeathHard (the plain deaths; the major and falling ones for a hard kill)
+H4_DEREZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'h4_derez')
 JSHIELD_SFX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shader_maps', 'jshield_sfx')
 KNIGHT_H4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_h4')
 KNIGHT_H4_LINES = {'Derez': ['Derez'], 'Death': ['Death'], 'Death Major': ['DeathHard'], 'Death Fall': ['DeathHard']}
@@ -292,6 +293,9 @@ def main():
     shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
     shard_texture(f'{core}/graphics/HCESHARD.png')                  # the shield's glass shards (HCE_ShieldShatter)
     glow_texture(f'{core}/graphics/HCEGLOW.png')                    # the Covenant muzzle flashes' and bolts' glow
+    # Halo 4's derez embers (extract_h4_derez.py): HaloDoom_EnemyBase.HCE_DerezTick throws them
+    for f in sorted(os.listdir(H4_DEREZ)) if os.path.isdir(H4_DEREZ) else []:
+        if f.endswith('.png'): shutil.copy(f'{H4_DEREZ}/{f}', f'{core}/graphics/{f}')
     # console command: punkassbitches -> one of every loaded enemy in a line (HCE_SpawnAllHandler)
     open(f'{core}/keyconf.txt', 'w').write('// Halo CE enemies: "punkassbitches" spawns one of every loaded enemy in a line in front of you,\n'
                                           '// "leatherneck" one of every loaded Marine (pinned to their spots), "leatherneck2" the same\n'

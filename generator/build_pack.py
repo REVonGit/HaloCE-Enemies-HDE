@@ -2277,7 +2277,7 @@ def build(cfg=None):
             md.append(f'Model HCE_{char}ShieldField\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(sl) +
                       f'\n\tScale {S * msc:.0f} {S * msc:.0f} {S * msc * 1.2:.0f}'
                       + (f'\n\tZOffset {-meta["bounds"][0][2] * S * msc * 1.2:.0f}' if ov.get('lift') else '')
-                      + '\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}\n')
+                      + '\n\tUseActorPitch\n\tUseActorRoll\n\tDontCullBackfaces\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}\n')   # (seen from behind too)
         # ---------------- variants
         for vname, v in sorted(ai['variants'].items()):
             if char_of_unit.get(v['unit_reference']) != char: continue      # every unit drawn as this body
@@ -2699,7 +2699,7 @@ def build(cfg=None):
                 # its shield field: the body's model with only the shield surface drawn (HCE_ShieldField)
                 fl = [f'\tSurfaceSkin 0 {i} "skins/{field_skin[1] if i == field_skin[0] else "hce_hidden.png"}"' for i in range(len(meta['meshes']))]
                 md.append(f'Model {cls}ShieldField\n{{\n\tPath "models/{mdir}/{char}"\n\tModel 0 "{char}.iqm"\n' + '\n'.join(fl) +
-                          f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}{zoff}\n\tUseActorPitch\n\tUseActorRoll\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')
+                          f'\n\tScale {sc:.0f} {sc:.0f} {sc * 1.2:.0f}{zoff}\n\tUseActorPitch\n\tUseActorRoll\n\tDontCullBackfaces\n\tBaseFrame\n\tFrameIndex HCEM A 0 0\n}}\n')   # (one-sided plate, drawn from behind too: the engine culls translucent models' back faces)
                 zs.append(f'// the {cls[4:]}\'s arm shield\nclass {cls}ShieldField : HCE_ShieldField {{}}\n')
             # a loadout other bodies of this kind can switch to (loadout_code)
             marine = char.startswith('Marine')

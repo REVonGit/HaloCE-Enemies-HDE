@@ -244,14 +244,12 @@
 		double f = double(hce_dissolve) / HCE_DISSOLVE_TICS;          // 0 .. 1: how far gone
 		color core = hce_kSlot > 0 ? HCE_DerezEmber(hce_kSlot) : hce_coreCol ? hce_coreCol : color(255, 255, 154, 48);
 		color hot = color(255, min(255, core.r + 110), min(255, core.g + 110), min(255, core.b + 110));   // its white-hot specks
-		// embers: from the parts still there (the top first, burning down), rising and fading
+		// embers (Halo 4's, HCE_DerezSpark): from the parts still there (the top first, burning down)
 		int n = 1 + int(f * 8);
 		for(int i = 0; i < n; i++)
 		{
 			double z = height * frandom(0, 1 - f * 0.6);
-			A_SpawnParticle(random(0, 3) ? core : hot, SPF_FULLBRIGHT, random(18, 32), frandom(1.5, 4), 0,
-				frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z,
-				frandom(-0.4, 0.4), frandom(-0.4, 0.4), frandom(0.6, 1.8), 0, 0, 0.02, 1.0, -0.04);
+			HCE_DerezSpark(random(0, 3) ? core : hot, frandom(-radius, radius) * 0.8, frandom(-radius, radius) * 0.8, z, false);   // Halo 4's derez embers
 		}
 		// the derez (shaders/hce_derez.fp on its skins and core): after a beat it burns away cell by cell, its edges
 		// glowing, all gone by the end. Colour slot and progress go to the shader as alpha just under 1 (HCE_Derez)
@@ -260,8 +258,7 @@
 		if(++hce_dissolve > HCE_DISSOLVE_TICS)
 		{
 			for(int i = 0; i < 20; i++)                               // the last of it scatters
-				A_SpawnParticle(core, SPF_FULLBRIGHT, 24, frandom(2, 4), 0, frandom(-radius, radius), frandom(-radius, radius),
-					frandom(0, height * 0.6), frandom(-1.5, 1.5), frandom(-1.5, 1.5), frandom(0.5, 2.5), 0, 0, 0, 1.0, -0.04);
+				HCE_DerezSpark(core, frandom(-radius, radius), frandom(-radius, radius), frandom(0, height * 0.6), true);
 			if(hce_shellActor) hce_shellActor.Destroy();
 			Destroy();
 		}

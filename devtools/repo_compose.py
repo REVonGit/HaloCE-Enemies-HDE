@@ -62,7 +62,7 @@ ver = re.match(r'(version "[\d.]+"\n)', z).group(1); incs = re.findall(r'#includ
 head = ('// Halo CE enemies, Covenant pack: the Core code (shared projectiles, the Doom-monster replacement handler,'
         + (' the enemy API in ZScript/BaseAI/enemies_base.zsc,' if API else ' the enemy API and projectile library,')
         + '\n// console commands), the Covenant (Grunts, Jackals, Elites, Hunters, and the Digsite add-on: Drinol + Cyberdemon boss,\n'
-        '// Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes) and their dialogue.\n'
+        '// Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Engineer, Drones, Brutes) and their dialogue.\n'
         + ('// Load after HaloDoom Evolved (Local_DEV); the Flood, Sentinels and Marines packs go after it.\n' if API else
            '// Needs no other pk3; the Flood, Sentinels and Marines packs go after it.\n'))
 open(zf, 'w').write(ver + '\n' + head + '\n' + '\n'.join(incs) + '\n')

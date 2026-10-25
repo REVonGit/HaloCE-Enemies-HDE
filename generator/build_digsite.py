@@ -7,7 +7,7 @@ ships any more).  Digsite content is licensed for MCC projects only: never part 
 
     python3 build_digsite.py        # after build_pack.py, gore_kit.py, blood_kit.py and marine_arsenal.py overlays
 
-Since the first release the add-on has grown past Digsite's three: SPV3's Blind Wolf, Thorn Beast and Engineer
+Since the first release the add-on has grown past Digsite's three: SPV3's Blind Wolf and Engineer
 (extract_spv3.py), Halo 2's Drones, Brutes and Jackals (extract_h2*.py) and the Ultra Zealot (extract_ultra_zealot.py)
 are built here too, each when its out/models/<Char>/<Char>.json exists. Everything is written to addons/digsite/
 (hce_paths.DIG_PACK), wiped first: the ZScript (bp.build with cfg tag 'dig'), modeldef.dig, gldefs.dig, sndinfo.dig,
@@ -454,7 +454,6 @@ DRONE_CODE = template('zscript/drone.zs')
 
 ENGINEER_CODE = template('zscript/engineer.zs')
 
-THORN_CODE = template('zscript/thorn.zs')
 
 BRUTE_SCALE = 1.15     # Halo 2 Brutes are drawn at 115% (model, armour kit and helmet debris)
 # The Flood Brute (extract_flood_brute.py: Halo 2's cut Brute combat form, from blackandfan's H2EK-Tags), with the Brutes
@@ -501,21 +500,6 @@ def voices():
         lines.append(f'$random HCE/Slug/{ev} {{ {" ".join(ids)} }}')
     for ev, fb in bp_fallback().items():
         if ev not in events and fb in events: lines.append(f'$alias HCE/Slug/{ev} HCE/Slug/{fb}')
-    return lines
-
-def thorn_sounds():
-    """the Thorn Beast's own sounds, straight out of SPV3's a30 (ogg permutations) -> HCE/ThornBeast/<event>"""
-    import extract_spv3
-    got = extract_spv3.export_sounds('ThornBeast', f'{PACK}/sounds/hce_dig/thornbeast')
-    ev = {'idle': ['Alert', 'Taunt', 'Idle'], 'melee': ['Melee', 'Berserk'], 'pain_minor': ['Pain'],
-          'pain_major': ['PainMed', 'PainHeavy'], 'death': ['Death', 'DeathHard'], 'footsteps': ['Step']}
-    lines = ['', '// Thorn Beast (SPV3 a30 sound tags)']
-    for base, files in sorted(got.items()):
-        ids = []
-        for i, f in enumerate(files):
-            sid = f'HCE/ThornBeast/{base}/{i}'; lines.append(f'{sid} "sounds/hce_dig/thornbeast/{f}"'); ids.append(sid)
-        for e in ev.get(base, []):
-            lines.append(f'$random HCE/ThornBeast/{e} {{ {" ".join(ids)} }}')
     return lines
 
 def engineer_sounds():
@@ -1256,7 +1240,7 @@ def configure():
     bp.DROP_WEAPON.update({'plasma carbine': 'Halo_Carbine', 'particle beam': 'Halo_BeamRifle'})
     bp.WEAPON_IDS.update({CARBINE: 'cmt_carbine', BEAM: 'particle_beam_dig'})
     bp.VOICES.update({'SlugMan': 'Slug', 'EliteRifle': 'Elite_Dogmatic,Elite_Loose', 'Drinol': 'Drinol', 'BlindWolf': 'Blind_Wolf',
-                      'ThornBeast': 'ThornBeast', 'Engineer': 'Engineer', 'Drone': 'Drone',
+                      'Engineer': 'Engineer', 'Drone': 'Drone',
                       'Brute': 'Brute_Bloodthirsty,Brute_Cruel', 'FloodBrute': 'Flood'})
     # Halo 2 Jackals and Halo 2's beam rifle (it behaves like HaloDoom's: a held beam whose damage climbs while it
     # stays on a target, fired in ~1 s bursts with a cool-down between them; HDE's laser sounds)
@@ -1271,6 +1255,7 @@ def configure():
         zm = json.load(open(f'{bp.OUT}/models/EliteZealot/EliteZealot.json'))
         bp.SKIN_HOOK['EliteZealot'] = zealot_skin
         bp.SHIELD_MAT['EliteZealot'] = zm['shield']
+        bp.FIELD_CHARS.add('EliteZealot'); bp.FIELD_UV_MASK.add('EliteZealot')   # its arm shield as the Jackals': a shield field, a mask from its own UVs
         bp.SHIELD_TINT['field marshal'] = ZEALOT_BLUE
         bp.SHINE['EliteZealot'] = 1.0; bp.SHINE_CUBE['EliteZealot'] = 'elite'
         bp.SHELL_TINT['EliteZealot'] = bp.SHELL_TINT['Elite']
@@ -1282,10 +1267,10 @@ def configure():
 	{{
 		super.HCE_Die();
 		A_ChangeModel('None', 0, "", 'None', {zsurf}, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		if(hce_holoActor) hce_holoActor.bInvisible = true;     // (its shield field)
 		HCE_ResumeAnim();      // (A_ChangeModel restarts the model's animation: the death animation goes on)
 	}}
 """
-    bp.TYPE_CODE['ThornBeast'] = THORN_CODE
     bp.TYPE_CODE['Engineer'] = ENGINEER_CODE
     bp.SKIN_HOOK['Drone'] = drone_skin
     # a swarm is mostly Minors: they come up three times as often as each ranked loadout
@@ -1310,9 +1295,6 @@ def configure():
                         anims_by_weapon={'plasma pistol': {'FIRE': ['stand pistol pp fire-1 baked']}}),
         'EliteRifle': dict(stance='rifle'),
         # SPV3 a30's Blind Wolf: a Pinky-style melee charger that also pounces (its leap-start/airborne/melee set)
-        # SPV3 a30's Thorn Beast: slow, tough melee brute (Hell Knight mix), shrunk to fit Doom doorways
-        'ThornBeast': dict(stance='unarmed', health=350, scale=0.7, radius=36, melee=(44, 45), speed=6.0,   # stride is 4.3: a little faster for Doom
-                           flags=['HCE_Berserks', 'HCE_AlwaysBerserk']),
         # SPV3 b30's Engineer: unarmed, harmless floater with Halo's 150 body / 200 shield; bursts into charged
         # Plasma Caster grenades when killed (an environmental hazard). Takes the Pain Elemental's slot.
         'Engineer': dict(stance='unarmed', flying=True, scale=1.25, radius_fixed=26, height_fixed=56, drops=False,
@@ -1348,12 +1330,12 @@ def build():
     os.makedirs(PACK)
     cou = {r'digsite\characters\drinol\00_mac\drinol': 'Drinol', r'digsite\characters\slug_man\slug_man': 'SlugMan',
            ELITE_RIFLE: 'EliteRifle', r'characters\blind_wolf\blind_wolf': 'BlindWolf',
-           r'characters\thorn_beast\thorn_beast': 'ThornBeast', r'characters\engineer\engineer': 'Engineer',
+           r'characters\engineer\engineer': 'Engineer',     # (SPV3's Thorn Beast was taken out: too limited an enemy)
            DRONE: 'Drone', BRUTE: 'Brute', H2JACKAL: 'H2Jackal', ULTRA_ZEALOT: 'EliteZealot', FLOOD_BRUTE: 'FloodBrute'}
-    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'ThornBeast': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT', 'FloodBrute': 'FLOOD'}
+    team = {'EliteZealot': 'COVENANT', 'Drinol': 'COVENANT', 'SlugMan': 'COVENANT', 'EliteRifle': 'COVENANT', 'BlindWolf': 'COVENANT', 'Engineer': 'COVENANT', 'Drone': 'COVENANT', 'Brute': 'COVENANT', 'H2Jackal': 'COVENANT', 'FloodBrute': 'FLOOD'}
     cfg = dict(char_of_unit=cou, team=team, ai=ai, pack=PACK, mdir='hce_dig', tag='dig', ed0=30400, main=False,
-               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'ThornBeast', 'Engineer', 'Drone', 'Brute', 'H2Jackal', 'FloodBrute'],
-               late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf', 'HCE_ThornBeast', 'HCE_RandomThornBeast',
+               handler='HCE_DigsiteHandler', nerf_mixin='HCE_DigNerfMixin', lite_mixin='HCE_DigLitePlasma', late_chars=['BlindWolf', 'Engineer', 'Drone', 'Brute', 'H2Jackal', 'FloodBrute'],
+               late_order=['HCE_BlindWolf', 'HCE_RandomBlindWolf',
                            'HCE_EliteMinorPulseCarbine', 'HCE_EliteMajorPulseCarbine', 'HCE_EliteSpecopsPulseCarbine',
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
@@ -1384,7 +1366,7 @@ def build():
         shutil.copy(f'{src}/{f}', f'{PACK}/ZScript/HaloCE/{f}')
     for f in ('zscript.txt', 'cvarinfo.txt', 'CREDITS.txt'):
         shutil.copy(f'{src}/{f}', f'{PACK}/{f}')
-    open(f'{PACK}/sndinfo.dig', 'w').write('\n'.join(voices() + thorn_sounds() + engineer_sounds() + drone_sounds() + brute_sounds() + h2jackal_sounds()) + '\n')
+    open(f'{PACK}/sndinfo.dig', 'w').write('\n'.join(voices() + engineer_sounds() + drone_sounds() + brute_sounds() + h2jackal_sounds()) + '\n')
     # Cyberdemon stand-in: the Drinol at 78% instead of 62% (dig_boss.zsc)
     import re
     md = open(f'{PACK}/modeldef.dig').read()

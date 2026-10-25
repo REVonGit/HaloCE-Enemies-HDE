@@ -950,7 +950,6 @@ Model HCE_EliteUltraZealotEnergySword
 	SurfaceSkin 0 6 "skins/eliteultrazealotenergysword_elitezealot_6.png"
 	SurfaceSkin 0 7 "skins/eliteultrazealotenergysword_elitezealot_7.png"
 	SurfaceSkin 0 8 "skins/eliteultrazealotenergysword_elitezealot_8.png"
-	SurfaceSkin 0 9 "skins/eliteultrazealotenergysword_shield.png"
 	SurfaceSkin 0 12 "skins/eliteultrazealotenergysword_elitezealot_2.png"
 	SurfaceSkin 0 13 "skins/eliteultrazealotenergysword_elitezealot_2.png"
 	SurfaceSkin 0 14 "skins/eliteultrazealotenergysword_elitezealot_2.png"
@@ -964,6 +963,19 @@ Model HCE_EliteUltraZealotEnergySword
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_EliteUltraZealotEnergySwordShieldField
+{
+	Path "models/hce_dig/EliteZealot"
+	Model 0 "EliteZealot.iqm"
+	SurfaceSkin 0 9 "skins/eliteultrazealotenergysword_field.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	DontCullBackfaces
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
@@ -1475,18 +1487,6 @@ Model HCE_SlugManZealotPulseCarbine
 	SurfaceSkin 0 19 "skins/slugman_zealot_slugman_0.png"
 	Path "models/hce_dig/weapons"
 	Scale 80 80 96
-	UseActorPitch
-	UseActorRoll
-	BaseFrame
-	FrameIndex HCEM A 0 0
-}
-
-Model HCE_ThornBeast
-{
-	Path "models/hce_dig/ThornBeast"
-	Model 0 "ThornBeast.iqm"
-	SurfaceSkin 0 0 "skins/thornbeast_thornbeast_0.png"
-	Scale 56 56 67
 	UseActorPitch
 	UseActorRoll
 	BaseFrame

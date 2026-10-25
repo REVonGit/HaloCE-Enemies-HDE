@@ -8,7 +8,7 @@
 // (its recent shield damage) stirs the noise into the ribs and pulls the colour toward red; it arrives here in the
 // actor's alpha, just under 1: alpha = 1 - FLASH_BAND x flash (the output is divided by the alpha again, so the
 // field keeps its brightness). HCE_ENF: the Sentinel Enforcer's shields (Halo 2's plasma_mask_offset, the same
-// combiner over the Enforcer's hexagon noise, cracks and mask).
+// combiner over the Enforcer's hexagon noise, cracks and mask). JS_LAYERS (a define): the mesh's copies of each triangle.
 const float FLASH_BAND = 0.1;
 
 float slide(float period) { return fract(timer / period); }   // Halo's 'slide' function: 0 to 1 over the period
@@ -48,5 +48,8 @@ vec4 ProcessTexel()
 	s = clamp(ca + ca * (1.0 - ca), 0.0, 1.0);
 	// stage 6 (the output, added to the frame): the lines in the rim colour, the body in the shield's colour
 	vec3 col = clamp(s * m.rgb + v1 * r1, 0.0, 1.0);
+#ifdef JS_LAYERS
+	col /= float(JS_LAYERS);           // a mesh that draws each triangle JS_LAYERS times (Halo 2's Jackal shield: 4): one layer's light
+#endif
 	return vec4(col / a, 1.0);               // (fullbright: the material's brightmap is all white)
 }

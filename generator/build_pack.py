@@ -840,7 +840,7 @@ BLOOD = {
     'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A', 'FloodBrute': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
-    'Drinol': '8A1A10', 'BlindWolf': 'A01010', 'ThornBeast': '7A1A30',  # Digsite / SPV3 creatures
+    'Drinol': '8A1A10', 'BlindWolf': 'A01010',  # Digsite / SPV3 creatures
 }
 NO_BLOOD = {'Sentinel'}     # characters that get +NOBLOOD (machines); the optional Sentinel bodies add themselves below
 SENTINEL_LIKE = {'Sentinel'} | (GALAP_CHARS - {'SentinelCrawler'})     # flying Sentinel bodies: the fixed stance, hovering, the beam
@@ -1526,7 +1526,36 @@ SHELL_TEX = set()            # every shield flare skin (bake_shell): the plasma 
 SHADER_MAPS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shader_maps')
 FIELD_CHARS = {'Jackal', 'JackalMajor'}      # bodies whose arm shield is drawn by a shield field (build_digsite adds the Halo 2 Jackal)
 ENFORCER_FIELD_TINT = (132, 148, 255)    # Halo 2's energy_shield: its constant colour 2
-FIELD_TEX = {}               # field skin (models/...) -> its maps' prefix in shader_maps ('jshield' or 'enf')
+def mesh_layers(iqm_path, si):
+    """how many times surface si of an IQM draws each of its triangles (Halo 2's Jackal shield: four copies, both
+    faces of two layers): an additive field over it is divided by that, so it shows as one layer"""
+    from iqm import read_iqm
+    from collections import Counter
+    x = read_iqm(iqm_path)[1][si]
+    pos = np.round(np.array(x['pos'], dtype=np.float64), 3)
+    return max(Counter(tuple(sorted(map(tuple, pos[t]))) for t in x['tris']).values())
+
+FIELD_TEX = {}               # field skin (models/...) -> (its maps' prefix in shader_maps ('jshield' or 'enf'), the mesh's layers, its own mask or None)
+FIELD_UV_MASK = set()        # field bodies whose shield isn't laid out like the Jackal's: a mask baked from its own UVs (field_mask)
+
+def field_mask(iqm_path, si, dst):
+    """a Jackal-shield mask for surface si laid out its own way (the Ultra Zealot's arm shield, three diamonds): the
+    alpha the CE mask's body grey (0.72) inside the surface's UV shapes, rising to white at their edges (Halo's rim),
+    the rgb a faint pale-blue rim; outside, white (nothing drawn there)"""
+    from iqm import read_iqm
+    from scipy import ndimage
+    from PIL import ImageDraw
+    x = read_iqm(iqm_path)[1][si]
+    N = 256
+    im = Image.new('L', (N, N), 0); d = ImageDraw.Draw(im)
+    for t in x['tris']:
+        d.polygon([(x['uv'][v][0] % 1 * N, x['uv'][v][1] % 1 * N) for v in t], fill=255)
+    inside = np.asarray(im) > 0
+    rim = 1.0 - np.clip(ndimage.distance_transform_edt(inside) / (N * 0.035), 0, 1)
+    a = np.where(inside, 0.72 + 0.28 * rim, 1.0)
+    rgb = np.stack([rim * 0.35, rim * 0.55, rim * 0.6], 2) * inside[..., None]
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    Image.fromarray((np.concatenate([rgb, a[..., None]], 2) * 255).astype(np.uint8), 'RGBA').save(dst)
 
 # Active camo shimmer (GLSL material shader on the camo variants' skins; the actor itself is translucent)
 SHIELD_SHADER = template('shaders/shield.fp')
@@ -1545,6 +1574,21 @@ GORE_LIMBS = {'head': 0, 'larm': 1, 'rarm': 2, 'back': 3}
 
 # HDE plasma bolt classes the enemies fire -> also thin out the smoke trail (their own Tick does only that)
 LITE_PLASMA = {'HaloPlasma_Proj': True, 'HaloPlasmaRifle_Proj': True, 'HaloPulseCarbine_Proj': False, 'HaloChargedPlasma_Proj': False}
+
+# a body whose shell slot holds its energy-shield flare and whose arm shield has a shield field (the Ultra Zealot): the
+# field rides as its hologram companion (hce_holoActor: placed by the field, animated with the body), spawned once
+FIELD_HOLO_CODE = '''	// its arm shield: drawn by its own shield field (HCE_ShieldField, one class per variant), its hologram companion
+	bool hce_fieldTried;
+	override void Tick()
+	{
+		super.Tick();
+		if(hce_fieldTried || bDestroyed || health <= 0) return;
+		hce_fieldTried = true;
+		Name fn = String.Format("%sShieldField", GetClassName());
+		class<Actor> fc = (class<Actor>)(fn);
+		if(fc && !hce_holoActor) { hce_holoActor = Spawn(fc, pos, NO_REPLACE); if(hce_holoActor) { hce_holoActor.master = self; hce_holoActor.angle = angle; } }
+	}
+'''
 
 def gore_code(char, meta, mdir, sc):
     """HCE_SeverLimb for a character with gore_kit.py's dismemberment data: hide the limb's surfaces (and what it
@@ -1570,6 +1614,8 @@ def gore_code(char, meta, mdir, sc):
             out.append(f'\t\t\tA_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
             # the shield flare loses the limb too
             out.append(f'\t\t\tif(hce_shellActor) hce_shellActor.A_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
+            if char in FIELD_CHARS and char in SHELL_TINT:      # and its arm shield's field (FIELD_HOLO_CODE)
+                out.append(f'\t\t\tif(hce_holoActor) hce_holoActor.A_ChangeModel(\'None\', 0, "", \'None\', {si}, "models/{mdir}/weapons", \'hce_hidden.png\', CMDL_USESURFACESKIN);\n')
         if d.get('bone'):                          # a collapsed limb (gore_kit.py: the Brute's arms): its bone scaled to
             out.append(f'\t\t\tif(bDECOUPLEDANIMATIONS) SetNamedBoneScaling(\'{d["bone"]}\', (0, 0, 0), SB_REPLACE, 0);\n')   # nothing, and all it carries
             out.append(f'\t\t\tif(hce_shellActor) hce_shellActor.SetNamedBoneScaling(\'{d["bone"]}\', (0, 0, 0), SB_REPLACE, 0);\n')
@@ -2243,7 +2289,8 @@ def build(cfg=None):
                   f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + ("\t// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)\n"
-                     "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS else '')
+                     "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS and char not in SHELL_TINT else '')
+                  + (FIELD_HOLO_CODE if char in FIELD_CHARS and char in SHELL_TINT else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:
@@ -2268,7 +2315,7 @@ def build(cfg=None):
             fn = 'enforcer_field.png'
             os.makedirs(f'{pack}/models/{mdir}/{char}/skins', exist_ok=True)
             Image.new('RGB', (4, 4), ENFORCER_FIELD_TINT).save(f'{pack}/models/{mdir}/{char}/skins/{fn}')
-            FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = 'enf'
+            FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = ('enf', max(mesh_layers(f'{OUT}/models/{char}/{char}.iqm', i) for i in meta['shield_surfaces'].values()), None)
             hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
             if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
             shs = set(meta['shield_surfaces'].values())
@@ -2511,7 +2558,11 @@ def build(cfg=None):
                     # drawn by the shield field (HCE_ShieldField), not on the body: the field's skin is the rank's colour
                     fn = f'{cls[4:].lower()}_field.png'
                     Image.new('RGB', (4, 4), tuple(int(round(c * 255)) for c in SHIELD_TINT[v['_rank']])).save(f'{pack}/models/{mdir}/{char}/skins/{fn}')
-                    FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = 'jshield'
+                    own = None
+                    if char in FIELD_UV_MASK:
+                        own = f'models/{mdir}/{char}/skins/field_mask.png'
+                        field_mask(f'{OUT}/models/{char}/{char}.iqm', si, f'{pack}/{own}')
+                    FIELD_TEX[f'models/{mdir}/{char}/skins/{fn}'] = ('jshield', mesh_layers(f'{OUT}/models/{char}/{char}.iqm', si), own)
                     field_skin = (si, fn)
                     hid = f'{pack}/models/{mdir}/{char}/skins/hce_hidden.png'
                     if not os.path.exists(hid): Image.new('RGBA', (8, 8), (0, 0, 0, 0)).save(hid)
@@ -3368,7 +3419,7 @@ def shader_gl(pack, mdir, bubbles):
     over the Jackal's or the Enforcer's maps). The maps go to models/<mdir>/hce_fx/"""
     pre = f'models/{mdir}/'
     shells = sorted(t for t in SHELL_TEX if t.startswith(pre) and os.path.exists(f'{pack}/{t}'))
-    fields = sorted((t, k) for t, k in FIELD_TEX.items() if t.startswith(pre) and os.path.exists(f'{pack}/{t}'))
+    fields = sorted((t, k) for t, k in FIELD_TEX.items() if t.startswith(pre) and os.path.exists(f'{pack}/{t}'))   # (maps prefix, layers)
     bubbles = sorted(set(bubbles))
     if not (shells or fields or bubbles): return []
     fx = f'{pack}/{pre}hce_fx'; os.makedirs(fx, exist_ok=True); os.makedirs(f'{pack}/shaders', exist_ok=True)
@@ -3387,10 +3438,11 @@ def shader_gl(pack, mdir, bubbles):
                    f'\ttexture pl_noise "{pre}hce_fx/plasma_noise.png"\n}}')
     if fields:
         open(f'{pack}/shaders/hce_jshield.fp', 'w').write(JSHIELD_SHADER)
-    for t, k in fields:
+    for t, (k, layers, own) in fields:
         out.append(f'material texture "{t}"\n{{\n\tshader "shaders/hce_jshield.fp"\n\tspeed 1.0\n\tbrightmap "{full}"\n'
+                   + (f'\tdefine "JS_LAYERS" = "{layers}"\n' if layers > 1 else '') +
                    f'\ttexture js_noise "{pre}hce_fx/{k}_noise.png"\n\ttexture js_offset "{pre}hce_fx/{k}_offset.png"\n'
-                   f'\ttexture js_mask "{pre}hce_fx/{k}_mask.png"\n}}')
+                   f'\ttexture js_mask "{own or f"{pre}hce_fx/{k}_mask.png"}"\n}}')
     return out
 
 def derez_materials(gl, skins, black):

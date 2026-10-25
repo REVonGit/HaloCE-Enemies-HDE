@@ -2,7 +2,7 @@ version "4.15.1"
 
 // Halo CE enemies, Covenant pack: the Core code (shared projectiles, the Doom-monster replacement handler, the enemy API in ZScript/BaseAI/enemies_base.zsc,
 // console commands), the Covenant (Grunts, Jackals, Elites, Hunters, and the Digsite add-on: Drinol + Cyberdemon boss,
-// Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Thorn Beast, Engineer, Drones, Brutes) and their dialogue.
+// Slug Men, carbine / pulse-carbine Elites, Blind Wolf, Engineer, Drones, Brutes) and their dialogue.
 // Load after HaloDoom Evolved (Local_DEV); the Flood, Sentinels and Marines packs go after it.
 
 #include "ZScript/HaloCE/hce_explosives.zsc"

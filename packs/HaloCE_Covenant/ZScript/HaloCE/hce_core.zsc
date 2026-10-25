@@ -321,7 +321,8 @@ class HCE_BladeShell : Actor
 
 // A Jackal's energy shield (and the Sentinel Enforcer's two): the wearer's model with only the shield drawn, additively,
 // in Halo CE's Jackal shield shader (shaders/hce_jshield.fp), so it is the see-through glowing field it is in the game.
-// It is the wearer's hce_shellActor (the enemy API places it with the body every tic and plays its animations); its
+// It is the wearer's hce_shellActor (the enemy API places it with the body every tic and plays its animations), or for
+// a body whose shell is its flare (the Ultra Zealot's arm shield) its hce_holoActor, placing itself; its
 // alpha carries Halo's 'shield hit flash' to the shader: 1 - 0.1 x flash, set by FlashOn() on a hit, dying away.
 // Hidden (bInvisible) while the shield is down.
 class HCE_ShieldField : Actor
@@ -359,6 +360,12 @@ class HCE_ShieldField : Actor
 		if(!master) { Destroy(); return; }
 		if(isFrozen()) return;
 		let e = HaloDoom_EnemyBase(master);
+		if(e && e.hce_holoActor == self)
+		{
+			// a hologram companion (a body whose shell slot is its flare: the Ultra Zealot) places itself with it
+			SetOrigin(e.pos, true);
+			angle = e.angle; pitch = e.pitch; roll = e.roll;
+		}
 		if(!hce_joined && e && e.hce_curAnim != 'None')
 		{
 			// the wearer's animation where it is now (as HCE_ShieldShell does: its own first one may come before it)

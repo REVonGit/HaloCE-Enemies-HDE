@@ -1,6 +1,6 @@
 # Halo CE Enemies for HaloDoom Evolved (HDE version)
 
-Halo: Combat Evolved's enemies (Covenant, Flood, Sentinels and Marines), plus the Digsite / SPV3 / Halo 2 enemies (Drones, Brutes and their Chieftain, Blind Wolf, Thorn Beast, Engineer, Slug Men, Drinol) and Mercury Rising's (its six Sentinels, the Artybug, the Geist, the Draeth, female Marines and field medics), as UZDoom / GZDoom monsters for **HaloDoom Evolved (Local_DEV)**.
+Halo: Combat Evolved's enemies (Covenant, Flood, Sentinels and Marines), plus the Digsite / SPV3 / Halo 2 enemies (Drones, Brutes and their Chieftain, Blind Wolf, Engineer, Slug Men, Drinol) and Mercury Rising's (its six Sentinels, the Artybug, the Geist, the Draeth, female Marines and field medics), as UZDoom / GZDoom monsters for **HaloDoom Evolved (Local_DEV)**.
 
 The standalone version, which doesn't need HDE, is in **HaloCE-Enemies-Standalone**.
 
@@ -11,7 +11,7 @@ packs/<Pack>/        each folder is exactly the root of one pk3: edit files here
   HaloCE_Covenant/         the main pack: the Core code (replacement handler, enemy projectiles / explosives, CVars,
                            console commands), the enemy API (ZScript/BaseAI/enemies_base.zsc + hce_squad.zsc, overrides HDE's),
                            the Covenant (Grunts, Jackals, Elites, Hunters, and the Digsite / SPV3 / Halo 2 enemies:
-                           Drones, Brutes, Engineer, Blind Wolf, Thorn Beast, Slug Men, Drinol, carbine Elites)
+                           Drones, Brutes, Engineer, Blind Wolf, Slug Men, Drinol, carbine Elites)
                            and the enemy dialogue
   HaloCE_Marines/          the Marines, their arsenal and Sergeant Johnson, with the Marine dialogue
   HaloCE_Flood/  HaloCE_Sentinels/
@@ -71,7 +71,6 @@ HDE (Local_DEV) -> HaloCE_Covenant.pk3 -> HaloCE_Flood / HaloCE_Sentinels / Halo
 * **Gore:** the gore stumps and gore textures are by Tropical Thunder 98, from the XAM Campaign Overhaul.
 * **Engineer:** from Halo CE Ruby's Rebalance.
 * **Blind Wolf:** created by SOI_7.
-* **Thorn Beast:** created by omargabagu; its sounds by Ruby of Blue.
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's.
 * **Additional Brute and Elite content:** by Shigure (the Ultra Zealot's armour and arm shield among it).
 * **Elite Vanguard animations:** by Masterz1337 and Ruby of Blue (the shield Elite's animations, which the Ultra Zealot's sword stance uses).

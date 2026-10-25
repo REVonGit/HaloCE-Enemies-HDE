@@ -17,9 +17,7 @@ class HCE_DigsiteHandler : EventHandler
 		// the Drinol is the Cyberdemon boss only
 		"Demon",          "1 1 1",          "HCE_BlindWolf*1",
 		"Spectre",        "0.25 0.30 0.35", "HCE_BlindWolf*1",
-		// Hell Knight: the Thorn Beast rolls first (a slow, tough brute), then the carbine Elites
-		"HellKnight",     "0.10 0.15 0.20", "HCE_ThornBeast*1",
-		// then Halo 2 Brute Minors and Majors
+		// Hell Knight: Halo 2 Brute Minors and Majors first, then the carbine Elites
 		"HellKnight",     "0.25 0.30 0.35", "HCE_BruteMinorPlasmaRifle*3 HCE_BruteMinorAssaultRifle*2 HCE_BruteMajorSpiker*2 HCE_BruteMajorShotgun*1 HCE_BruteMajorPlasmaCarbine*1",
 		"HellKnight",     "0.15 0.20 0.25", "HCE_EliteMajorPlasmaCarbine*3 HCE_EliteMajorPulseCarbine*2 HCE_EliteMinorPlasmaCarbine*2 HCE_EliteSpecopsPlasmaCarbine*1",
 		// Revenant (homing missiles): homing Pulse Carbines fit best

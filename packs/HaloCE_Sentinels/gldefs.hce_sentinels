@@ -206,6 +206,7 @@ material texture "models/hce/SentinelEnforcer/skins/enforcer_field.png"
 	shader "shaders/hce_jshield.fp"
 	speed 1.0
 	brightmap "models/hce/brightmap_full.png"
+	define "JS_LAYERS" = "4"
 	texture js_noise "models/hce/hce_fx/enf_noise.png"
 	texture js_offset "models/hce/hce_fx/enf_offset.png"
 	texture js_mask "models/hce/hce_fx/enf_mask.png"

@@ -95,43 +95,6 @@ $alias HCE/Slug/DownThere HCE/Slug/Alert
 $alias HCE/Slug/FallBack HCE/Slug/Flee
 $alias HCE/Slug/Advance HCE/Slug/Regroup
 
-// Thorn Beast (SPV3 a30 sound tags)
-HCE/ThornBeast/death/0 "sounds/hce_dig/thornbeast/death_0.ogg"
-HCE/ThornBeast/death/1 "sounds/hce_dig/thornbeast/death_1.ogg"
-HCE/ThornBeast/death/2 "sounds/hce_dig/thornbeast/death_2.ogg"
-$random HCE/ThornBeast/Death { HCE/ThornBeast/death/0 HCE/ThornBeast/death/1 HCE/ThornBeast/death/2 }
-$random HCE/ThornBeast/DeathHard { HCE/ThornBeast/death/0 HCE/ThornBeast/death/1 HCE/ThornBeast/death/2 }
-HCE/ThornBeast/footsteps/0 "sounds/hce_dig/thornbeast/footsteps_0.ogg"
-HCE/ThornBeast/footsteps/1 "sounds/hce_dig/thornbeast/footsteps_1.ogg"
-HCE/ThornBeast/footsteps/2 "sounds/hce_dig/thornbeast/footsteps_2.ogg"
-$random HCE/ThornBeast/Step { HCE/ThornBeast/footsteps/0 HCE/ThornBeast/footsteps/1 HCE/ThornBeast/footsteps/2 }
-HCE/ThornBeast/idle/0 "sounds/hce_dig/thornbeast/idle_0.ogg"
-HCE/ThornBeast/idle/1 "sounds/hce_dig/thornbeast/idle_1.ogg"
-HCE/ThornBeast/idle/2 "sounds/hce_dig/thornbeast/idle_2.ogg"
-HCE/ThornBeast/idle/3 "sounds/hce_dig/thornbeast/idle_3.ogg"
-$random HCE/ThornBeast/Alert { HCE/ThornBeast/idle/0 HCE/ThornBeast/idle/1 HCE/ThornBeast/idle/2 HCE/ThornBeast/idle/3 }
-$random HCE/ThornBeast/Taunt { HCE/ThornBeast/idle/0 HCE/ThornBeast/idle/1 HCE/ThornBeast/idle/2 HCE/ThornBeast/idle/3 }
-$random HCE/ThornBeast/Idle { HCE/ThornBeast/idle/0 HCE/ThornBeast/idle/1 HCE/ThornBeast/idle/2 HCE/ThornBeast/idle/3 }
-HCE/ThornBeast/melee/0 "sounds/hce_dig/thornbeast/melee_0.ogg"
-HCE/ThornBeast/melee/1 "sounds/hce_dig/thornbeast/melee_1.ogg"
-HCE/ThornBeast/melee/2 "sounds/hce_dig/thornbeast/melee_2.ogg"
-HCE/ThornBeast/melee/3 "sounds/hce_dig/thornbeast/melee_3.ogg"
-$random HCE/ThornBeast/Melee { HCE/ThornBeast/melee/0 HCE/ThornBeast/melee/1 HCE/ThornBeast/melee/2 HCE/ThornBeast/melee/3 }
-$random HCE/ThornBeast/Berserk { HCE/ThornBeast/melee/0 HCE/ThornBeast/melee/1 HCE/ThornBeast/melee/2 HCE/ThornBeast/melee/3 }
-HCE/ThornBeast/melee_impact/0 "sounds/hce_dig/thornbeast/melee_impact_0.ogg"
-HCE/ThornBeast/melee_impact/1 "sounds/hce_dig/thornbeast/melee_impact_1.ogg"
-HCE/ThornBeast/melee_impact/2 "sounds/hce_dig/thornbeast/melee_impact_2.ogg"
-HCE/ThornBeast/pain_major/0 "sounds/hce_dig/thornbeast/pain_major_0.ogg"
-HCE/ThornBeast/pain_major/1 "sounds/hce_dig/thornbeast/pain_major_1.ogg"
-HCE/ThornBeast/pain_major/2 "sounds/hce_dig/thornbeast/pain_major_2.ogg"
-HCE/ThornBeast/pain_major/3 "sounds/hce_dig/thornbeast/pain_major_3.ogg"
-$random HCE/ThornBeast/PainMed { HCE/ThornBeast/pain_major/0 HCE/ThornBeast/pain_major/1 HCE/ThornBeast/pain_major/2 HCE/ThornBeast/pain_major/3 }
-$random HCE/ThornBeast/PainHeavy { HCE/ThornBeast/pain_major/0 HCE/ThornBeast/pain_major/1 HCE/ThornBeast/pain_major/2 HCE/ThornBeast/pain_major/3 }
-HCE/ThornBeast/pain_minor/0 "sounds/hce_dig/thornbeast/pain_minor_0.ogg"
-HCE/ThornBeast/pain_minor/1 "sounds/hce_dig/thornbeast/pain_minor_1.ogg"
-HCE/ThornBeast/pain_minor/2 "sounds/hce_dig/thornbeast/pain_minor_2.ogg"
-$random HCE/ThornBeast/Pain { HCE/ThornBeast/pain_minor/0 HCE/ThornBeast/pain_minor/1 HCE/ThornBeast/pain_minor/2 }
-
 // Engineer (SPV3 b30 sound tags)
 HCE/Engineer/engineer_explosion/0 "sounds/hce_dig/engineer/engineer_explosion_0.ogg"
 $random HCE/Engineer/Explode { HCE/Engineer/engineer_explosion/0 }

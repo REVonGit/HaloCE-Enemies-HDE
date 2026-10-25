@@ -851,6 +851,10 @@ SENTINEL_UNIT_SOUNDS = {c: ('HCE/Sentinel/Engine', 'HCE/Sentinel/Hit', 'HCE/Sent
 SENTINEL_UNIT_SOUNDS['SentinelCrawler'] = ('', 'HCE/Sentinel/Hit', 'HCE/Sentinel/Death')
 SENTINEL_UNIT_SOUNDS['SentinelEnforcer'] = ('HCE/Sentinel/EnforcerEngine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/H2Death')
 SENTINEL_UNIT_SOUNDS['SentinelConstructor'] = ('HCE/Sentinel/ConstructorEngine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/H2Death')
+if H2_SENTINEL:          # the Sentinel wears Halo 2's Aggressor: Halo 2's Aggressor engine hum
+    SENTINEL_UNIT_SOUNDS['Sentinel'] = ('HCE/Sentinel/H2Engine', 'HCE/Sentinel/Hit', 'HCE/Sentinel/Death')
+# every Sentinel with unit sounds swings with Halo 2's Sentinel melee sound (HCE_MeleeSound)
+SENTINEL_MELEE = 'HCE/Sentinel/H2Melee'
 
 def blood_props(char):
     """the Default lines giving a character's base class its blood: +NOBLOOD (NO_BLOOD), else BloodColor from BLOOD and
@@ -2291,6 +2295,7 @@ def build(cfg=None):
                   + ("\t// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)\n"
                      "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS and char not in SHELL_TINT else '')
                   + (FIELD_HOLO_CODE if char in FIELD_CHARS and char in SHELL_TINT else '')
+                  + (f'\toverride Sound HCE_MeleeSound() {{ return "{SENTINEL_MELEE}"; }}     // Halo 2\'s Sentinel melee\n' if char in SENTINEL_UNIT_SOUNDS else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:

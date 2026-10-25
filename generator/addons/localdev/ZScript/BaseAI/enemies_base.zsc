@@ -5113,6 +5113,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	int hce_pendingMelee;
 
+	// packs: the sound of a melee blow landing (the Sentinels: Halo 2's Sentinel melee)
+	virtual Sound HCE_MeleeSound() { return "HCE/Melee"; }
+
 	// The swing lands: hce_meleeDamage +-10% (x the difficulty damage for enemies) and a shove, provided the target is
 	// still within reach, at a similar height and within 70 degrees of facing.
 	void HCE_MeleeHitNow()
@@ -5123,7 +5126,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
 		target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
 		target.Thrust(dmg * 0.08, AngleTo(target));
-		A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
+		A_StartSound(HCE_MeleeSound(), CHAN_WEAPON, CHANF_OVERLAP);
 	}
 
 	// Starts a leap at a target hce_leapMin-Max away (hce_leapChance x 0.08 a call, not on melee cooldown): faces it and
@@ -5193,7 +5196,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			double push = HCE_SPIN_PUSH * min(1.0, HCE_SPIN_PUSH_MASS / max(1.0, double(a.mass)));
 			a.vel.xy += Actor.AngleToVector(dir, push);
 			a.vel.z += push * 0.3;
-			A_StartSound("HCE/Melee", CHAN_WEAPON, CHANF_OVERLAP);
+			A_StartSound(HCE_MeleeSound(), CHAN_WEAPON, CHANF_OVERLAP);
 		}
 	}
 

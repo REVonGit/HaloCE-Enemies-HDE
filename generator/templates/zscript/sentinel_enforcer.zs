@@ -76,7 +76,13 @@
 			let r = hce_rockets[i];
 			if(!r) { hce_rockets.Delete(i); continue; }
 			// it hit: the burst, unless a friend (an allied Enforcer's Marines, the player) stands in it
-			if(!r.bMISSILE) { if(!HCE_FriendNear(r.pos, 110)) r.A_Explode(int(28 * HCE_DamageScale()), 96, 0); hce_rockets.Delete(i); continue; }
+			if(!r.bMISSILE)
+			{
+				r.A_StopSound(CHAN_BODY);
+				r.A_StartSound("HCE/Sentinel/EnforcerRocketBoom", CHAN_AUTO, CHANF_OVERLAP, 0.8);     // Halo 2's rocket burst
+				if(!HCE_FriendNear(r.pos, 110)) r.A_Explode(int(28 * HCE_DamageScale()), 96, 0);
+				hce_rockets.Delete(i); continue;
+			}
 			if(r.tracer && r.tracer.health > 0) r.A_SeekerMissile(2, 3, SMF_PRECISE);
 		}
 		if(health <= 0 || !target || hce_dummy || level.maptime < hce_rocketNext) return;
@@ -92,6 +98,7 @@
 			r.A_SetScale(0.02);
 			r.vel = r.vel.Unit() * 10;
 			r.SetDamage(max(1, int(20 * HCE_DamageScale())));
+			r.A_StartSound("HCE/Sentinel/EnforcerRocket", CHAN_BODY, CHANF_LOOPING, 0.45);       // Halo 2's rocket in flight
 			hce_rockets.Push(r);
 		}
 	}

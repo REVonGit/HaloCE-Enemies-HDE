@@ -5878,6 +5878,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{ let tr = HCE_MissileTracker.Get(); if(tr && hce_enabled) tr.AddDeath(pos.xy, hce_team); }   // the danger zones
 		HCE_UnitEngineSound(false);
 		if(hce_unitDeath.Length()) A_StartSound(hce_unitDeath, CHAN_AUTO, CHANF_OVERLAP, 1.0);
+		if(HCE_MachineSize() > 0) { HCE_MachineBurst(false); hce_machineWreck = 1; }    // a Sentinel: knocked out of the air
 		hce_burnDying = false; hce_bleedOut = 0;
 		if(hce_climbTics > 0) HCE_EndClimb(false);
 		hce_cvState = 0;
@@ -7321,6 +7322,59 @@ class HaloDoom_EnemyBase : Actor abstract
 		return dmg;
 	}
 
+	// ------------------------------------------------------------------
+	// Machines (the Sentinels): no death of their own in the games but an explosion and debris. HCE_MachineSize > 0
+	// (packs: the body's size, 1 small .. 3 the Enforcer) makes the death a machine's: on the killing hit a pop of
+	// sparks and smoke as it is knocked out of the air (its fall plays on), then where it lands (or 2 s on) it blows
+	// apart: the frag blast's flash (no damage), Halo's metal-chips debris sound, sparks, smoke and pieces of its hull
+	// (its own model, small, tumbling: HCE_LimbGib), and the wreck is gone. To change it, edit HCE_MachineBurst.
+	int hce_machineWreck;                  // a downed machine's tics since the kill, until it blows apart (0: none)
+	virtual int HCE_MachineSize() { return 0; }
+	virtual Sound HCE_MachineDebrisSound() { return "HCE/Sentinel/Chips"; }
+	void HCE_MachineBurst(bool wreck)
+	{
+		int sz = HCE_MachineSize();
+		vector3 c = (0, 0, height * 0.5);
+		for(int i = 0; i < (wreck ? 30 : 12) * sz; i++)               // sparks
+			A_SpawnParticle(random(0, 2) ? "FFC060" : "FFFFFF", SPF_FULLBRIGHT, random(10, 24), frandom(1.5, 3.0), 0,
+				frandom(-radius, radius) * 0.5, frandom(-radius, radius) * 0.5, c.z + frandom(-height, height) * 0.3,
+				frandom(-6, 6), frandom(-6, 6), frandom(-1, 7), 0, 0, -0.5, 1.0, -0.04);
+		for(int i = 0; i < (wreck ? 8 : 3) * sz; i++)                 // smoke
+			A_SpawnParticle("303030", 0, random(35, 70), frandom(8, 16) * sz, 0, frandom(-radius, radius) * 0.4, frandom(-radius, radius) * 0.4,
+				c.z, frandom(-0.6, 0.6), frandom(-0.6, 0.6), frandom(0.3, 1.2), 0, 0, 0.01, 0.6, -0.01, 0.4);
+		if(!wreck)
+		{
+			A_StartSound("Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.35, ATTN_NORM, 1.4);
+			return;
+		}
+		hce_gibbed = true;
+		Name fxn = 'FragGrenadeExplosion';             // HDE's flash and shockwave, by name (the Standalone compiles without it)
+		class<Actor> fx = fxn;
+		if(fx) { let e = Spawn(fx, pos + c); if(e) { e.SetDamage(0); e.A_SetScale(e.scale.x * (0.6 + 0.3 * sz)); } }
+		A_StartSound("Halo/Grenade/Frag/Explode", CHAN_AUTO, CHANF_OVERLAP, 0.5 + 0.2 * sz);
+		A_StartSound(HCE_MachineDebrisSound(), CHAN_AUTO, CHANF_OVERLAP, 1.0);
+		if(HCE_ModelFile() != 'None')
+		{
+			int n = 6 + 4 * sz;
+			for(int k = 0; k < n; k++)
+			{
+				vector3 at = pos + (frandom(-radius, radius) * 0.4, frandom(-radius, radius) * 0.4, height * frandom(0.2, 0.7));
+				let g = HCE_LimbGib(Spawn("HCE_LimbGib", at, ALLOW_REPLACE));
+				if(!g) continue;
+				g.hce_def = GetClassName(); g.hce_path = HCE_ModelPath(); g.hce_model = HCE_ModelFile(); g.hce_tex = 'None';
+				g.hce_hideAllBut = 1;                       // its hull (surface 0): a shard of it
+				g.hce_rest = 3; g.master = self;
+				g.A_SetScale(frandom(0.06, 0.14));
+				double a = frandom(0, 360), p = frandom(-75, -15);
+				g.vel = (cos(a) * cos(p), sin(a) * cos(p), -sin(p)) * frandom(6, 13);
+				g.HCE_Launch(a, p);
+			}
+		}
+		bInvisible = true;
+		A_SetRenderStyle(0, STYLE_None);
+		if(hce_shellActor) hce_shellActor.Destroy();
+	}
+
 	// A body with no death animation blows apart: the frag blast's flash, shockwave and sound (HaloDoom Evolved's,
 	// where loaded; no damage), a burst of its blood, and 'pieces' of its shell: its own model at a quarter to
 	// two-fifths size, each showing one of its surfaces, flung out and up tumbling (HCE_LimbGib), to land and lie
@@ -7361,6 +7415,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(!hce_corpseInit) HCE_SetUpCorpse();
 		if(hce_gibHideTics > 0 && --hce_gibHideTics == 0) { bInvisible = true; A_SetRenderStyle(0, STYLE_None); }
+		// a downed Sentinel blows apart as it hits the ground (or in the air, 2 s on); not while it derezzes
+		if(hce_machineWreck > 0 && hce_derezSlot == 0 && (++hce_machineWreck > 70 || (hce_machineWreck > 3 && pos.z <= floorz + 4)))
+		{
+			hce_machineWreck = 0;
+			HCE_MachineBurst(true);
+		}
 		HCE_AirTick();
 		HCE_StumpTick();
 		if(hce_reviveTics > 0 && --hce_reviveTics == 0) HCE_Revive();
@@ -8105,8 +8165,18 @@ class HCE_LimbGib : Actor
 			Quat add = Quat.FromAngles(angVel.x, angVel.y, angVel.z);
 			rotDir = rotDir.Length() <= 0.01 ? add : rotDir * add;
 			angVel *= 0.995;
-			// the cut trails blood (through the victim, so it's its blood colour)
-			if(GetAge() < 50 && !(GetAge() % 2) && master)
+			// the cut trails blood (through the victim, so it's its blood colour); a machine's piece (HCE_MachineBurst)
+			// trails smoke and the odd spark instead
+			let hm = HaloDoom_EnemyBase(master);
+			if(hm && hm.HCE_MachineSize() > 0)
+			{
+				if(GetAge() < 50 && !(GetAge() % 3))
+				{
+					A_SpawnParticle("404040", 0, random(20, 35), frandom(4, 7), 0, 0, 0, 0, frandom(-0.3, 0.3), frandom(-0.3, 0.3), frandom(0.2, 0.6), 0, 0, 0, 0.5, -0.015, 0.2);
+					if(!random(0, 3)) A_SpawnParticle("FFC060", SPF_FULLBRIGHT, 10, 2, 0, 0, 0, 0, frandom(-2, 2), frandom(-2, 2), frandom(0, 3), 0, 0, -0.4);
+				}
+			}
+			else if(GetAge() < 50 && !(GetAge() % 2) && master)
 			{
 				vector3 d = master.Vec3To(self);
 				HaloDoom_EnemyBase.HCE_BloodFx(master, d.x, d.y, d.z + 2, frandom[HCEGore](-1, 1), frandom[HCEGore](-1, 1), frandom[HCEGore](0, 1),

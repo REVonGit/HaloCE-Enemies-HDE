@@ -1594,6 +1594,17 @@ FIELD_HOLO_CODE = '''	// its arm shield: drawn by its own shield field (HCE_Shie
 	}
 '''
 
+def machine_code(char, mdir, ov):
+    """a Sentinel's machine death (HaloDoom_EnemyBase.HCE_MachineBurst): knocked out of the air with a pop of sparks,
+    then blown apart where it lands, its hull in pieces cut from its own model. Its size (1-3, the blast's and the
+    debris's) from its radius: the Enforcer's 3"""
+    r = ov.get('radius_fixed') or ov.get('radius') or 20
+    size = 3 if r >= 44 else 2 if r >= 28 else 1
+    return (f"\t// no death in the games but an explosion and debris (HCE_MachineBurst), its hull's pieces from its own model\n"
+            f"\toverride int HCE_MachineSize() {{ return {size}; }}\n"
+            f"\toverride String HCE_ModelPath() {{ return \"models/{mdir}/{char}\"; }}\n"
+            f"\toverride Name HCE_ModelFile() {{ return '{char}.iqm'; }}\n")
+
 def gore_code(char, meta, mdir, sc):
     """HCE_SeverLimb for a character with gore_kit.py's dismemberment data: hide the limb's surfaces (and what it
     holds), show its gore stump, throw the gib"""
@@ -2296,6 +2307,7 @@ def build(cfg=None):
                      "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS and char not in SHELL_TINT else '')
                   + (FIELD_HOLO_CODE if char in FIELD_CHARS and char in SHELL_TINT else '')
                   + (f'\toverride Sound HCE_MeleeSound() {{ return "{SENTINEL_MELEE}"; }}     // Halo 2\'s Sentinel melee\n' if char in SENTINEL_UNIT_SOUNDS else '')
+                  + (machine_code(char, mdir, ov) if char in SENTINEL_UNIT_SOUNDS else '')
                   + BASE_CODE.get(char, '') + gore_code(char, meta, mdir, S * msc) + blood_code(char, meta, mdir) + gun_code(meta, mdir, OVERLAY_SLOT.get(char)) + perm_code(meta, mdir)
                   + (marine_code(meta, mdir, char) if char.startswith('Marine') else '') + '}\n')
         if char in BUBBLE_CHARS and meta.get('shield_surface') is not None:

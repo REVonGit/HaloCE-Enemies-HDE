@@ -855,11 +855,18 @@ mixin class HCE_SquadCode
 	// off the ground (a health bonus) puts one back (HCE_HealthScan). Out of it, he patches no one.
 	const HCE_MEDIC_CHARGES = 6;
 	int hce_medicUsed;
-	int HCE_MedicCharges() { return hce_isMedic ? max(0, HCE_MEDIC_CHARGES - hce_medicUsed) : 0; }
+	int HCE_MedicCharges() { return hce_isMedic ? (hce_medicEndless ? HCE_MEDIC_CHARGES : max(0, HCE_MEDIC_CHARGES - hce_medicUsed)) : 0; }
+	// a machine medic (the Sentinel Constructor): its charges never run out (hce_medicEndless), it never treats a
+	// player (hce_medicNoPlayer), it looks after its own team unasked, squad or not (HCE_MedicScanTeam), and its work
+	// is its own (HCE_MedicWork, HCE_MedicDoneSound: a welding arc rather than biofoam)
+	bool hce_medicEndless, hce_medicNoPlayer;
+	virtual void HCE_MedicWork(Actor patient) {}
+	virtual Sound HCE_MedicDoneSound() { return "misc/health_pkup"; }
 	// 'Medic' order: sets this corpsman to patch up pl within 8 s (phase 0: run to him), drops any scavenging and queues
 	// the acknowledgement.
 	void HCE_MedicOrder(Actor pl, bool ordered = true)
 	{
+		if(hce_medicNoPlayer && pl && pl.player) return;      // a machine medic doesn't treat players
 		hce_medicFor = pl; hce_medicPhase = 0; hce_medicTics = 35 * 8;
 		hce_scavItem = null;
 		if(ordered) HCE_AckLater();
@@ -890,6 +897,27 @@ mixin class HCE_SquadCode
 		if(best != self) best.HCE_Say('Wounded', 0.9, 35 * 2);
 	}
 
+	// A medic outside the player's squad (a machine medic, HCE_MedicScanTeam: the Constructors) looks once a second,
+	// when not fighting at close range, for a hurt teammate within 512 (under 70% health, never a player, a corpse or
+	// itself) it can see, and goes to mend it. One patient every 4 s.
+	void HCE_MedicScanTeam()
+	{
+		if(!hce_isMedic || hce_medicFor || health <= 0 || level.maptime < hce_medicNextTic || (level.maptime % 35) != 0) return;
+		if(target && level.maptime - hce_lastSeen < 35 && Distance3D(target) < 160) return;
+		HaloDoom_EnemyBase best = null; double bd = 512;
+		let it = BlockThingsIterator.Create(self, 512);
+		while(it.Next())
+		{
+			let m = HaloDoom_EnemyBase(it.thing);
+			if(!m || m == self || m.health <= 0 || m.player || m.hce_team != hce_team || m.health >= m.SpawnHealth() * 0.7) continue;
+			double d = Distance3D(m);
+			if(d < bd && CheckSight(m)) { bd = d; best = m; }
+		}
+		if(!best) return;
+		hce_medicNextTic = level.maptime + 35 * 4;
+		HCE_MedicOrder(best, false);
+	}
+
 	// Runs the medic errand each tic: runs to the patient, crouches beside him for a second, then heals 60% of his spawn
 	// health (20 at least), using a charge, and clears his wounded flag. False once done, timed out, out of charges, or
 	// either is dead.
@@ -916,10 +944,11 @@ mixin class HCE_SquadCode
 			return true;
 		}
 		HCE_Brake();
+		HCE_MedicWork(pl);
 		if(hce_medicTics > 2) return true;
 		pl.GiveBody(int(max(20, pl.SpawnHealth() * 0.6)));   // a field dressing: 60% of his health, never past his maximum
-		hce_medicUsed++;                                      // one charge of biofoam
-		pl.A_StartSound("misc/health_pkup", CHAN_ITEM);
+		if(!hce_medicEndless) hce_medicUsed++;                // one charge of biofoam
+		pl.A_StartSound(HCE_MedicDoneSound(), CHAN_ITEM);
 		let pm = HaloDoom_EnemyBase(pl);
 		if(pm) { pm.hce_wounded = pm.health < pm.SpawnHealth() * 0.35; if(pm != self) pm.HCE_Say('Thanks', 0.8, 35); }
 		hce_medicFor = null;

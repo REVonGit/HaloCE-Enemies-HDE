@@ -721,7 +721,7 @@ class HCE_SpawnAllHandler : EventHandler
 			if(hm && hm.hce_isMedic && !hm.hce_medicFor && hm.HCE_MedicCharges() > 0) { hm.HCE_MedicOrder(hm); return; }
 			HaloDoom_EnemyBase best = null;
 			for(int i = 0; i < squad.Size(); i++)
-				if(squad[i].hce_isMedic && squad[i].HCE_MedicCharges() > 0 && squad[i] != hurt && !squad[i].hce_medicFor && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];
+				if(squad[i].hce_isMedic && squad[i].HCE_MedicCharges() > 0 && squad[i] != hurt && !squad[i].hce_medicFor && !(squad[i].hce_medicNoPlayer && hurt.player) && (!best || squad[i].Distance3D(hurt) < best.Distance3D(hurt))) best = squad[i];
 			if(best) best.HCE_MedicOrder(hurt);
 			return;
 		}

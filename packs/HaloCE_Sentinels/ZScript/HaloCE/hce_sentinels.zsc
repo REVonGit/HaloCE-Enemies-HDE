@@ -1554,7 +1554,30 @@ class HCE_SentinelConstructorBase : HaloDoom_EnemyBase abstract
 	// ---- Halo 2's Constructor (extract_h2_sentinels.py), in the Lost Souls' place. It has no gun: every 2-4 s, with its
 	// target in sight 96-640 units away, it darts at it for up to a second, homing, and rams it (3-24 damage, as a Lost
 	// Soul's bite); in reach it welds it with a short arc of its cutting beam (6-16 damage)
+	// It is its side's medic too (HCE_MedicScanTeam): it flies to a hurt Sentinel (or any teammate) under 70% health
+	// and welds it back together, 60% of its health, as often as it likes (no charges to run out), but never a player
 	int hce_dartTics, hce_dartNext;
+
+	override void PostBeginPlay()
+	{
+		hce_isMedic = true; hce_medicEndless = true; hce_medicNoPlayer = true;
+		super.PostBeginPlay();
+	}
+
+	// the repair: its cutting beam's arc to the patient, harmless, sparking, a quiet weld every 8 tics
+	override void HCE_MedicWork(Actor patient)
+	{
+		if(!patient || patient == self) return;
+		vector3 d = level.Vec3Diff(pos + (0, 0, height * 0.5), patient.pos + (0, 0, patient.height * 0.5));
+		int n = clamp(int(d.Length() / 6), 1, 24);
+		for(int i = 0; i <= n; i += 2)
+		{
+			vector3 p = d * (double(i) / n);
+			A_SpawnParticle("80E0FF", SPF_FULLBRIGHT, 4, frandom(1.5, 3), 0, p.x, p.y, height * 0.5 + p.z, frandom(-0.3, 0.3), frandom(-0.3, 0.3), frandom(-0.3, 0.3));
+		}
+		if(level.maptime % 8 == 0) A_StartSound("Halo/Weapons/LightRifle/Fire", CHAN_WEAPON, CHANF_OVERLAP, 0.25, ATTN_NORM, 1.3);
+	}
+	override Sound HCE_MedicDoneSound() { return "Halo/Weapons/BinaryRifle/Zoom/IN"; }
 
 	// In melee reach it welds the target (HCE_ConWeld) instead of the base melee swing, then waits 30 tics before the
 	// next weld. Returns false while on cooldown or without a target.
@@ -1592,6 +1615,8 @@ class HCE_SentinelConstructorBase : HaloDoom_EnemyBase abstract
 	{
 		super.Tick();
 		if(isFrozen() || health <= 0 || hce_dummy) { hce_dartTics = 0; return; }
+		HCE_MedicScanTeam();
+		if(hce_medicFor) { hce_dartTics = 0; return; }       // mending a teammate: no ramming meanwhile
 		if(hce_dartTics > 0)
 		{
 			hce_dartTics--;

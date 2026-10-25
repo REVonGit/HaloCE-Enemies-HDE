@@ -5852,11 +5852,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	const HCE_CHAN_ENGINE = 13;
 	int hce_unitHitTic;
 	// Starts or stops the unit's looped engine hum on its own channel (HCE_CHAN_ENGINE); nothing without hce_unitEngine.
-	// To change the hum's volume or attenuation, edit the A_StartSound call (0.5 volume, 1.6 attenuation).
+	// To change the hum's volume, edit the A_StartSound call (0.35); its range is the packs' SNDINFO $rolloff
+	// (split_factions.SENTINEL_HUM_RANGE: full within 64 units, silent past 384).
 	void HCE_UnitEngineSound(bool on)
 	{
 		if(hce_unitEngine.Length() == 0) return;
-		if(on) A_StartSound(hce_unitEngine, HCE_CHAN_ENGINE, CHANF_LOOPING, 0.5, 1.6);
+		if(on) A_StartSound(hce_unitEngine, HCE_CHAN_ENGINE, CHANF_LOOPING, 0.35, ATTN_NORM);
 		else A_StopSound(HCE_CHAN_ENGINE);
 	}
 	// Plays the unit's hit clank (hce_unitHit), rate limited to one every 12 tics so a burst doesn't stack them.

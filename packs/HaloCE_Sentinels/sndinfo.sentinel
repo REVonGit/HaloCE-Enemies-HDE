@@ -31,10 +31,16 @@ HCE/SentinelSnd/ConstructorEngine_0 "sounds/hce_sentinel/constructorengine_0.ogg
 HCE/SentinelSnd/ConstructorEngine_1 "sounds/hce_sentinel/constructorengine_1.ogg"
 HCE/SentinelSnd/ConstructorEngine_2 "sounds/hce_sentinel/constructorengine_2.ogg"
 $random HCE/Sentinel/ConstructorEngine { HCE/SentinelSnd/ConstructorEngine_0 HCE/SentinelSnd/ConstructorEngine_1 HCE/SentinelSnd/ConstructorEngine_2 }
+$rolloff HCE/SentinelSnd/ConstructorEngine_0 64 384
+$rolloff HCE/SentinelSnd/ConstructorEngine_1 64 384
+$rolloff HCE/SentinelSnd/ConstructorEngine_2 64 384
+$limit HCE/Sentinel/ConstructorEngine 3
 HCE/SentinelSnd/Death_0 "sounds/hce_sentinel/death_0.ogg"
 $alias HCE/Sentinel/Death HCE/SentinelSnd/Death_0
 HCE/SentinelSnd/EnforcerEngine_0 "sounds/hce_sentinel/enforcerengine_0.ogg"
 $alias HCE/Sentinel/EnforcerEngine HCE/SentinelSnd/EnforcerEngine_0
+$rolloff HCE/SentinelSnd/EnforcerEngine_0 64 384
+$limit HCE/Sentinel/EnforcerEngine 3
 HCE/SentinelSnd/EnforcerNeedler_0 "sounds/hce_sentinel/enforcerneedler_0.ogg"
 HCE/SentinelSnd/EnforcerNeedler_1 "sounds/hce_sentinel/enforcerneedler_1.ogg"
 HCE/SentinelSnd/EnforcerNeedler_2 "sounds/hce_sentinel/enforcerneedler_2.ogg"
@@ -52,6 +58,10 @@ HCE/SentinelSnd/Engine_0 "sounds/hce_sentinel/engine_0.ogg"
 HCE/SentinelSnd/Engine_1 "sounds/hce_sentinel/engine_1.ogg"
 HCE/SentinelSnd/Engine_2 "sounds/hce_sentinel/engine_2.ogg"
 $random HCE/Sentinel/Engine { HCE/SentinelSnd/Engine_0 HCE/SentinelSnd/Engine_1 HCE/SentinelSnd/Engine_2 }
+$rolloff HCE/SentinelSnd/Engine_0 64 384
+$rolloff HCE/SentinelSnd/Engine_1 64 384
+$rolloff HCE/SentinelSnd/Engine_2 64 384
+$limit HCE/Sentinel/Engine 3
 HCE/SentinelSnd/GunIn_0 "sounds/hce_sentinel/gunin_0.ogg"
 $alias HCE/Sentinel/GunIn HCE/SentinelSnd/GunIn_0
 HCE/SentinelSnd/GunLoop_0 "sounds/hce_sentinel/gunloop_0.ogg"
@@ -95,6 +105,10 @@ HCE/SentinelSnd/H2Engine_0 "sounds/hce_sentinel/h2engine_0.ogg"
 HCE/SentinelSnd/H2Engine_1 "sounds/hce_sentinel/h2engine_1.ogg"
 HCE/SentinelSnd/H2Engine_2 "sounds/hce_sentinel/h2engine_2.ogg"
 $random HCE/Sentinel/H2Engine { HCE/SentinelSnd/H2Engine_0 HCE/SentinelSnd/H2Engine_1 HCE/SentinelSnd/H2Engine_2 }
+$rolloff HCE/SentinelSnd/H2Engine_0 64 384
+$rolloff HCE/SentinelSnd/H2Engine_1 64 384
+$rolloff HCE/SentinelSnd/H2Engine_2 64 384
+$limit HCE/Sentinel/H2Engine 3
 HCE/SentinelSnd/H2Melee_0 "sounds/hce_sentinel/h2melee_0.ogg"
 $alias HCE/Sentinel/H2Melee HCE/SentinelSnd/H2Melee_0
 HCE/SentinelSnd/Hit_0 "sounds/hce_sentinel/hit_0.ogg"

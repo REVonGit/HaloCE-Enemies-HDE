@@ -180,6 +180,10 @@ KNIGHT_LINES = {'Carrier form about to blow Call out': ['CarrierBlow'], 'Kill Br
 # Halo 4's Knight sounds (extract_h4_knight.py -> knight_h4/): its death dissolve, played by the Knight's HCE_Die, and
 # its death cries for the base AI's Death / DeathHard (the plain deaths; the major and falling ones for a hard kill)
 H4_DEREZ = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'h4_derez')
+# the Sentinels' engine hums (HaloDoom_EnemyBase.HCE_UnitEngineSound): heard only close by, map units (full volume
+# within the first, silent past the second). Raise the second to hear them from further off
+SENTINEL_HUMS = ('Engine', 'H2Engine', 'EnforcerEngine', 'ConstructorEngine')
+SENTINEL_HUM_RANGE = (64, 384)
 JSHIELD_SFX = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'shader_maps', 'jshield_sfx')
 KNIGHT_H4 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'knight_h4')
 KNIGHT_H4_LINES = {'Derez': ['Derez'], 'Death': ['Death'], 'Death Major': ['DeathHard'], 'Death Fall': ['DeathHard']}
@@ -541,6 +545,10 @@ def main():
                     ids.append(f'HCE/SentinelSnd/{fn[:-4]}')
                     out.append(f'{ids[-1]} "sounds/hce_sentinel/{fn.lower()}"')
                 out.append(f'$random HCE/Sentinel/{ev} {{ {" ".join(ids)} }}' if len(ids) > 1 else f'$alias HCE/Sentinel/{ev} {ids[0]}')
+                if ev in SENTINEL_HUMS:
+                    # an engine hum is heard close by only: full within SENTINEL_HUM_RANGE[0], silent past [1]
+                    out += [f'$rolloff {i} {SENTINEL_HUM_RANGE[0]} {SENTINEL_HUM_RANGE[1]}' for i in ids]
+                    out.append(f'$limit HCE/Sentinel/{ev} 3')
             out.append('$limit HCE/Sentinel/Engine 4')
             out.append('$limit HCE/Sentinel/Hit 3')
             open(f'{d}/sndinfo.sentinel', 'w').write('\n'.join(out) + '\n')

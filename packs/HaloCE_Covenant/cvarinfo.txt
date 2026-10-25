@@ -39,6 +39,8 @@ server int hce_floodlevel = 1;           // the level the Flood first appears on
 user bool hce_debugvoice = false;      // debugging: print every line an enemy speaks
 server int hce_encounters = 3;           // at most this many Marine encounters per map (a fire team fighting a group of the Covenant or the Flood, held till a player arrives); 0 off
 server float hce_encounterchance = 0.8;  // the chance of each of them
+server bool hce_warmshaders = true;        // at level start, every pack shader is drawn once as a sub-pixel speck, so its first real use doesn't stall (hce_warm.zsc)
+server bool hce_warmsounds = true;         // at level start, the packs' hit and death effect sounds and the enemies' pain, death, alert and melee lines are decoded in the background, one every few tics (hce_warm.zsc)
 
 // ---- from HaloCE_Covenant.pk3
 // ---- from HaloCE_Covenant.pk3

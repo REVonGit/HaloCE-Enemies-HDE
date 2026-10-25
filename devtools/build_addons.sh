@@ -1,12 +1,14 @@
 #!/bin/bash
 # Package the enemy API addon, the core and the faction packs, and the private Digsite/SPV3 add-on.
 set -e
-E=/home/claude/enemy; A=$E/addons; G=/home/claude/game
+E=/home/claude/enemy; A=$E/addons; G=/home/claude/game; D=/home/claude/devtools
 # the enemy API's one source: the repo's addons/localdev copy (the Master add-on carries the same file)
 cp $A/localdev/ZScript/BaseAI/*.zsc $A/master/ZScript/BaseAI/
 cd $A/localdev && rm -f $G/HCE_EnemyAPI_LocalDEV.pk3 && zip -qr9 $G/HCE_EnemyAPI_LocalDEV.pk3 .
 cd $A/master && rm -f $G/HCE_EnemyAPI_Master.pk3 && zip -qr9 $G/HCE_EnemyAPI_Master.pk3 .
 python3 $E/split_factions.py
+python3 $D/warm_lumps.py $E/factions dir
+python3 $D/warm_lumps.py $A dir               # (the Digsite add-on's own shaders)
 rm -f $G/HaloCE_Enemies.pk3
 cd $E/factions/core && rm -f $G/HaloCE_Core.pk3 && zip -qr9 $G/HaloCE_Core.pk3 .
 for f in covenant flood sentinels marines; do

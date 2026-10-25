@@ -16,6 +16,7 @@ m.merge(['$G/$COV.pk3','$G/$DIG.pk3'],'/tmp/cov_$1.pk3',quiet=True)"
 rm -rf packs/$COV; mkdir packs/$COV; (cd packs/$COV && unzip -q /tmp/cov_$1.pk3)
 python3 $D/repo_compose.py $R $MODE
 python3 $D/move_flood_brutes.py $R $MODE      # the Digsite add-on's Flood Brutes belong in the Flood pack
+python3 $D/warm_lumps.py $R $MODE             # each pack's shader warm-up list (hce_warm.zsc)
 python3 $D/keep_voices.py $R
 find packs -type f -exec touch {} +
 # (sounds: keep_voices.py keeps the committed bytes of every sound whose audio is unchanged)

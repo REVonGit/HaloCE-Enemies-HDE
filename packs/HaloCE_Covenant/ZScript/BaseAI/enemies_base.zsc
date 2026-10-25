@@ -5313,6 +5313,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// (extract_h4_derez.py: the core's HCEDZ28 / 29 / 30, grey sprites a particle's colour tints, drawn additively, as
 	// Halo 4 draws them): squares (35%) that drift up, and small ash (25%), digital ash (20%) and curved ash flakes
 	// (20%) that tumble down. burst: thrown outward harder (the body's last moment). Plain particles without the core
+	bool hce_dzLooked; TextureID hce_dzTex[3];
 	void HCE_DerezSpark(color c, double x, double y, double z, bool burst)
 	{
 		int r = random(0, 99);
@@ -5322,7 +5323,14 @@ class HaloDoom_EnemyBase : Actor abstract
 		double h = burst ? 1.5 : 0.4;
 		double vz = burst ? frandom(0.5, 2.5) : rise ? frandom(0.6, 1.8) : frandom(-0.2, 0.8);
 		double az = rise ? 0.03 : -0.025;
-		TextureID g = TexMan.CheckForTexture(tn, TexMan.Type_Any);
+		if(!hce_dzLooked)                              // the three sprites looked up once per body
+		{
+			hce_dzLooked = true;
+			hce_dzTex[0] = TexMan.CheckForTexture("HCEDZ28", TexMan.Type_Any);
+			hce_dzTex[1] = TexMan.CheckForTexture("HCEDZ29", TexMan.Type_Any);
+			hce_dzTex[2] = TexMan.CheckForTexture("HCEDZ30", TexMan.Type_Any);
+		}
+		TextureID g = hce_dzTex[tn == "HCEDZ28" ? 0 : tn == "HCEDZ29" ? 1 : 2];
 		if(!g.IsValid())
 		{
 			A_SpawnParticle(c, SPF_FULLBRIGHT, random(16, 30), sz * 0.6, 0, x, y, z, frandom(-h, h), frandom(-h, h), vz, 0, 0, az, 1.0, -0.04);

@@ -1775,11 +1775,11 @@ def marine_kit_code(char, names, mdir, sis):
         tot = sum(w for _, w in picks)
         b = [f'\tString {fn}()\n\t{{\n']
         if chance is not None: b.append(f'\t\tif(frandom[HCEKit](0, 1) >= {chance:.2f}) return "";\n')
-        b.append(f'\t\tint x = random[HCEKit](0, {tot - 1});\n')
+        b.append(f'\t\tdouble x = frandom[HCEKit](0, {tot:g});\n')     # (the weights may be fractional)
         acc = 0
         for pid, w in picks:
             acc += w
-            b.append(f'\t\tif(x < {acc}) return "{pid}";\n')
+            b.append(f'\t\tif(x < {acc:g}) return "{pid}";\n')
         b.append('\t\treturn "";\n\t}\n')
         return b
     for slot in KIT_SLOT_ORDER:

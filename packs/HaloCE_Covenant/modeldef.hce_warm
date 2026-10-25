@@ -1,0 +1,9 @@
+// the shader warm-up speck (hce_warm.zsc): a tetrahedron, its skin replaced at spawn (devtools/warm_lumps.py)
+Model HCE_WarmUp
+{
+	Path "models/hce/warm"
+	Model 0 "warm.obj"
+	Scale 0.02 0.02 0.02
+	DontCullBackfaces
+	FrameIndex HCEM A 0 0
+}

@@ -357,7 +357,7 @@ class HCE_ShieldField : Actor
 	bool hce_joined;
 	override void Tick()
 	{
-		if(!master) { Destroy(); return; }
+		if(!master || master.health <= 0) { Destroy(); return; }     // the field dies with its wearer (no thinker left on the corpse)
 		if(isFrozen()) return;
 		let e = HaloDoom_EnemyBase(master);
 		if(e && e.hce_holoActor == self)

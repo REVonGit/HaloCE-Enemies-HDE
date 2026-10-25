@@ -38,8 +38,9 @@ vec4 ProcessTexel()
 {
 	vec3 k = texelFetch(tex, ivec2(0, 0), 0).rgb / REF;       // the wearer's colour against Halo's own
 	float glow = clamp(vColor.a, 0.0, 1.0);
-	// the body's own space (Halo world units), so the plasma rides on it as it moves
-	vec3 p = (inverse(ModelMatrix) * vec4(pixelpos.xyz, 1.0)).xyz;
+	// about the body's own origin (map units / 80: Halo world units), so the plasma rides on it as it moves (its
+	// turning is left out: a matrix inverse per pixel is dear, and the drifting noise never shows it)
+	vec3 p = (pixelpos.xyz - ModelMatrix[3].xyz) / 80.0;
 	vec3 n = normalize(vWorldNormal.xyz);
 	vec3 v = normalize(uCameraPos.xyz - pixelpos.xyz);
 	float facing = abs(dot(n, v));                              // 1 square on, 0 at the rim

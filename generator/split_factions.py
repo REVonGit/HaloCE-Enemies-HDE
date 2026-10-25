@@ -270,16 +270,16 @@ def main():
     # ---------------- core
     core = f'{OUTDIR}/core'
     os.makedirs(f'{core}/ZScript/HaloCE')
-    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_handler.zsc', 'hce_hde.zsc', 'hce_variants.zsc', 'hce_bestiary.zsc'):
+    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_handler.zsc', 'hce_hde.zsc', 'hce_variants.zsc', 'hce_bestiary.zsc', 'hce_warm.zsc'):
         shutil.copy(f'{PACK}/ZScript/HaloCE/{f}', f'{core}/ZScript/HaloCE/{f}')
     for f in ('cvarinfo.txt', 'sndinfo.hce'):
         shutil.copy(f'{PACK}/{f}', f'{core}/{f}')
     shutil.copytree(f'{PACK}/sprites', f'{core}/sprites', ignore=shutil.ignore_patterns('udb'))   # (the UDB icons: per faction, below)
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
-        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
+        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_warm.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
     # the HCEVARS variant things (hce_variants.zsc): DoomEdNums 30900-30931
-    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel", "HCE_Encounters"\n}\n\n'
+    open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel", "HCE_Encounters", "HCE_WarmHandler"\n}\n\n'
         'DoomEdNums\n{\n' + ''.join(f'\t{30900 + n} = HCE_Variant{n}\n' for n in range(32)) + '}\n')
     # enemy laser tracers (HCE_EnemyLaser, in the API): HaloDoom Evolved's own beam model and texture
     open(f'{core}/modeldef.hce_lasers', 'w').write('// enemy laser tracers: HaloDoom Evolved\'s laser beam model (Models/Lasers, in HDE)\n'
@@ -293,6 +293,14 @@ def main():
         "// the Covenant's needles: HaloDoom Evolved's needle crystal model and texture (Models/Weapons, in HDE)\n"
         + ''.join(f'Model {c}\n{{\n{needle}\tPITCHFROMMOMENTUM\n\tFrameIndex TRAC A 0 0\n}}\n\n' for c in ('HCE_NeedleScaled', 'HCE_Needle'))
         + f'Model HCE_BallistaNeedle\n{{\n{needle}\tUSEACTORPITCH\n\tFrameIndex TRAC A 0 0\n}}\n')
+    # the shader warm-up speck (hce_warm.zsc, devtools/warm_lumps.py): a tetrahedron a twentieth of a unit across (some face
+    # of it toward the eye whichever way it turns), in its own OBJ so no pack model is loaded for it; its skin is set at spawn
+    os.makedirs(f'{core}/models/hce/warm')
+    open(f'{core}/models/hce/warm/warm.obj', 'w').write('# the warm-up speck: a tetrahedron, one surface (split_factions.py)\n'
+        'v 1 1 1\nv 1 -1 -1\nv -1 1 -1\nv -1 -1 1\nvt 0 0\nvt 1 0\nvt 0 1\n'
+        'f 1/1 2/2 3/3\nf 1/1 3/3 4/2\nf 1/1 4/2 2/3\nf 2/2 4/3 3/1\n')
+    open(f'{core}/modeldef.hce_warm', 'w').write('// the shader warm-up speck (hce_warm.zsc): a tetrahedron, its skin replaced at spawn (devtools/warm_lumps.py)\n'
+        'Model HCE_WarmUp\n{\n\tPath "models/hce/warm"\n\tModel 0 "warm.obj"\n\tScale 0.02 0.02 0.02\n\tDontCullBackfaces\n\tFrameIndex HCEM A 0 0\n}\n')
     # Options > Halo CE Gore: blood on the body (hce_bodyblood, blood_kit.py's overlays), off by default
     shutil.copy(f'{PACK}/menudef.hce', f'{core}/menudef.hce')      # pack/menudef.hce: Options > Halo CE AI / Gore / Performance
     shard_texture(f'{core}/graphics/HCESHARD.png')                  # the shield's glass shards (HCE_ShieldShatter)

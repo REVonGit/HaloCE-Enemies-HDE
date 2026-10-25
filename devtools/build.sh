@@ -16,12 +16,14 @@ quick)
   cp addons/localdev/ZScript/BaseAI/*.zsc addons/master/ZScript/BaseAI/
   (cd addons/localdev && rm -f $G/HCE_EnemyAPI_LocalDEV.pk3 && zip -qr9 $G/HCE_EnemyAPI_LocalDEV.pk3 .)
   python3 split_factions.py > $L/split.log 2>&1 || { tail -5 $L/split.log; exit 1; }
+  python3 $D/warm_lumps.py factions dir >> $L/split.log 2>&1
   (cd factions/core && rm -f $G/HaloCE_Core.pk3 && zip -qr9 $G/HaloCE_Core.pk3 .)
   for f in covenant:Covenant flood:Flood sentinels:Sentinels marines:Marines; do
     (cd factions/${f%%:*} && rm -f $G/HaloCE_${f##*:}.pk3 && zip -qr9 $G/HaloCE_${f##*:}.pk3 .)
   done ;;
 digsite)
   python3 build_digsite.py > $L/build_digsite.log 2>&1 || { tail -5 $L/build_digsite.log; exit 1; }
+  python3 $D/warm_lumps.py addons dir >> $L/build_digsite.log 2>&1
   python3 louden_voices.py voices addons/digsite > $L/louden.log 2>&1
   (cd addons/digsite && rm -f $G/HaloCE_Enemies_Digsite.pk3 && zip -qr9 $G/HaloCE_Enemies_Digsite.pk3 . -x '.loudened.json')
   python3 build_standalone.py > $L/standalone.log 2>&1 || { tail -5 $L/standalone.log; exit 1; } ;;

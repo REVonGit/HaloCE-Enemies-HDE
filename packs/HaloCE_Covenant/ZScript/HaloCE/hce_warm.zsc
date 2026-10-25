@@ -1,0 +1,238 @@
+// ============================================================================
+// hce_warm.zsc -- warm-ups at level start, against hitches later (core pack).
+//
+// Two kinds of first-time cost used to land in the middle of a fight:
+//  * Shaders. The renderer builds the pipeline for a material shader the first time something is drawn with it, in
+//    each render style it is drawn with (Vulkan: one pipeline per shader and blend state; OpenGL drivers link
+//    lazily too). The shield flares' plasma, the Jackals' shield fields, the camo shimmer, the derez: each showed
+//    for the first time with a stall, so the first shot on a shielded enemy hitched. Now every pack lists its
+//    materials in an HCEWARM lump (devtools/warm_lumps.py: one skin per distinct shader and define set, in the
+//    styles it is drawn with), and for the first second of a level a speck of each is drawn in front of the
+//    player's eye (HCE_WarmUp: a tetrahedron a twentieth of a unit across, a dot under the crosshair, wearing the
+//    skin), so the pipelines exist before anything needs them. hce_warmshaders 0 turns it off.
+//  * Sounds. A sound is decoded the first time it plays, and the engine drops every sound a level didn't
+//    precache when the next one loads, so each sound's first play in a map costs its decode (a few ms for a
+//    Vorbis line: a dropped frame), and the pain lines and shield sounds play on shield hits. The handler plays
+//    inaudibly, one every WARM_EVERY tics from HCE_SoundWarm at the player, first the packs' hit and death effect
+//    sounds (the HCEWARM lumps' "sound <id>" lines: Jackal shield hits, derez, a Sentinel's chips ...), then, for
+//    each voice an enemy in the level uses (every SNDINFO lump's $random lists), its reaction lines (WARM_EVENTS:
+//    pain, death, alert, melee): decoded then, while nothing much is happening, and cached for the level.
+//    hce_warmsounds 0 turns it off.
+// ============================================================================
+
+// a speck of a material drawn in front of the player's eye for a moment (HCE_WarmHandler): the core's tetrahedron
+// (modeldef.hce_warm, models/hce/warm/warm.obj), the skin and style set at spawn
+class HCE_WarmUp : Actor
+{
+	int hce_life, hce_player;
+
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOGRAVITY
+		+DONTSPLASH
+		+NOTONAUTOMAP
+		RenderStyle "Normal";
+		Alpha 1.0;
+	}
+
+	States
+	{
+	Spawn:
+		HCEM A -1 Bright;
+		Stop;
+	}
+
+	// keeps to a spot just ahead of the player's eye (in view, in front of whatever he faces), then goes away
+	override void Tick()
+	{
+		let pl = playeringame[hce_player] ? players[hce_player].mo : null;
+		if(!pl || --hce_life <= 0) { Destroy(); return; }
+		vector3 eye = pl.pos + (0, 0, pl.player ? pl.player.viewheight : pl.height * 0.75);
+		vector3 fwd = (Actor.AngleToVector(pl.angle, cos(pl.pitch)), -sin(pl.pitch));
+		SetOrigin(eye + fwd * 24, true);
+		angle = pl.angle + 180;
+	}
+}
+
+// the inaudible player of the voice lines being warmed (at the player; ATTN_NONE at a thousandth of the volume,
+// stopped as soon as it starts: the decode is all that is wanted)
+class HCE_SoundWarm : Actor
+{
+	Default
+	{
+		+NOINTERACTION
+		+NOBLOCKMAP
+		+NOGRAVITY
+		+NOTONAUTOMAP
+		RenderStyle "None";
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A -1;
+		Stop;
+	}
+
+	void Warm(String snd)
+	{
+		A_StartSound(snd, CHAN_7, CHANF_OVERLAP, 0.001, ATTN_NONE);
+		A_StopSound(CHAN_7);
+	}
+}
+
+class HCE_WarmHandler : EventHandler
+{
+	const WARM_EVERY = 3;                 // tics between voice lines warmed
+	const WARM_LIFE = 24;                 // tics the shader specks stay (the level's first frames, past the wipe)
+	// the voice events warmed, in the order they are likeliest to be needed (the rest of a voice decodes as it plays)
+	static const String WARM_EVENTS[] = { "Pain", "PainMed", "PainHeavy", "Death", "DeathHard", "Alert", "Melee" };
+	// the shield sounds every shielded enemy plays (the enemy API's A_SetupShield defaults): pop, low, recharged
+	static const String WARM_SHIELD[] = { "Shield/Explode", "Shield/Low", "Shield/Regenerate" };
+
+	Array<String> sndVoices;              // every voice in the SNDINFO lumps (lower case) ...
+	Array<String> sndTakes;               // ... and, per voice, its warm takes, space-separated
+	Array<String> queue;                  // takes still to warm, in order
+	Array<String> queued;                 // voices already queued (lower case)
+	HCE_SoundWarm warmer;
+	bool sndParsed;
+
+	static bool On(String cv)
+	{
+		CVar c = CVar.FindCVar(cv);
+		return !c || c.GetBool();
+	}
+
+	override void WorldTick()
+	{
+		if(level.maptime == 2) ReadWarmLumps();
+		bool sounds = On('hce_warmsounds');
+		if(level.maptime % 35 == 5 && sounds) NoteVoices();
+		if(sounds && queue.Size() > 0 && level.maptime % WARM_EVERY == 0) WarmOne();
+	}
+
+	// ---- the HCEWARM lumps: a speck per shader line ('<class> <style> <skin folder> <skin file>') at every player's
+	// eye, and the effect sounds ('sound <id>') on the queue, ahead of the voices
+	void ReadWarmLumps()
+	{
+		bool shaders = On('hce_warmshaders');
+		for(int i = 0; i < WARM_SHIELD.Size(); i++) queue.Push(WARM_SHIELD[i]);
+		for(int lump = -1; (lump = Wads.FindLump("HCEWARM", lump + 1)) != -1;)
+		{
+			Array<String> lines;
+			Wads.ReadLump(lump).Split(lines, "\n");
+			for(int i = 0; i < lines.Size(); i++)
+			{
+				String ln = lines[i];
+				ln.StripLeftRight();
+				if(ln.Length() == 0 || ln.Left(2) == "//") continue;
+				Array<String> f;
+				ln.Split(f, " ");
+				if(f.Size() == 2 && f[0] == "sound") { queue.Push(f[1]); continue; }
+				if(f.Size() < 4 || !shaders) continue;
+				for(int p = 0; p < MAXPLAYERS; p++) if(playeringame[p] && players[p].mo) WarmShader(p, f);
+			}
+		}
+	}
+
+	void WarmShader(int p, Array<String> f)
+	{
+		Name wn = f[0];
+		class<Actor> wc = wn;
+		if(!wc) return;
+		let w = HCE_WarmUp(Actor.Spawn(wc, players[p].mo.pos, NO_REPLACE));
+		if(!w) return;
+		w.hce_life = WARM_LIFE; w.hce_player = p;
+		Name sk = f[3];
+		if(f[1] == "add") w.A_SetRenderStyle(0.02, STYLE_Add);
+		else if(f[1] == "translucent") w.A_SetRenderStyle(0.9, STYLE_Translucent);
+		else w.A_SetRenderStyle(1.0, STYLE_Normal);
+		w.A_ChangeModel('None', 0, "", 'None', 0, f[2], sk, CMDL_USESURFACESKIN);
+		w.Tick();
+	}
+
+	// ---- voices
+	// the SNDINFO lumps' $random lists: HCE/<Voice>/<Event> { takes } -> sndVoices / sndTakes (the WARM_EVENTS only,
+	// in their order)
+	void ParseSndinfo()
+	{
+		sndParsed = true;
+		Array<String> perVoice;           // per voice: per event index, the takes (events joined later)
+		Array<String> voices;
+		for(int lump = -1; (lump = Wads.FindLump("SNDINFO", lump + 1)) != -1;)
+		{
+			Array<String> lines;
+			Wads.ReadLump(lump).Split(lines, "\n");
+			for(int i = 0; i < lines.Size(); i++)
+			{
+				String ln = lines[i];
+				if(ln.Left(12) != "$random HCE/") continue;
+				int br = ln.IndexOf("{");
+				if(br < 0) continue;
+				String id = ln.Mid(8, br - 8);
+				id.StripLeftRight();
+				Array<String> part;
+				id.Split(part, "/");
+				if(part.Size() != 3) continue;
+				int ev = -1;
+				for(int k = 0; k < WARM_EVENTS.Size(); k++) if(part[2] ~== WARM_EVENTS[k]) { ev = k; break; }
+				if(ev < 0) continue;
+				String voice = part[1].MakeLower();
+				int vi = voices.Find(voice);
+				if(vi == voices.Size())
+				{
+					voices.Push(voice);
+					for(int k = 0; k < WARM_EVENTS.Size(); k++) perVoice.Push("");
+				}
+				int close = ln.IndexOf("}");
+				String takes = ln.Mid(br + 1, (close > br ? close : ln.Length()) - br - 1);
+				takes.StripLeftRight();
+				perVoice[vi * WARM_EVENTS.Size() + ev] = takes;
+			}
+		}
+		for(int v = 0; v < voices.Size(); v++)
+		{
+			String all = "";
+			for(int k = 0; k < WARM_EVENTS.Size(); k++)
+			{
+				String t = perVoice[v * WARM_EVENTS.Size() + k];
+				if(t.Length() > 0) all = all.Length() > 0 ? all .. " " .. t : t;
+			}
+			sndVoices.Push(voices[v]); sndTakes.Push(all);
+		}
+	}
+
+	// the voices of the enemies in the level: each new one's warm takes go on the queue
+	void NoteVoices()
+	{
+		if(!sndParsed) ParseSndinfo();
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase e;
+		while(e = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(e.health <= 0 || e.hce_voice == 'None' || e.hce_voice == '') continue;
+			String v = String.Format("%s", e.hce_voice);
+			v = v.MakeLower();
+			if(queued.Find(v) != queued.Size()) continue;
+			queued.Push(v);
+			int vi = sndVoices.Find(v);
+			if(vi == sndVoices.Size()) continue;
+			Array<String> takes;
+			sndTakes[vi].Split(takes, " ");
+			for(int i = 0; i < takes.Size(); i++) if(takes[i].Length() > 0) queue.Push(takes[i]);
+		}
+	}
+
+	void WarmOne()
+	{
+		let pl = players[0].mo;
+		if(!pl) return;
+		if(!warmer) { warmer = HCE_SoundWarm(Actor.Spawn("HCE_SoundWarm", pl.pos, NO_REPLACE)); if(!warmer) return; }
+		warmer.SetOrigin(pl.pos, true);
+		String snd = queue[0];
+		queue.Delete(0);
+		warmer.Warm(snd);
+	}
+}

@@ -2201,8 +2201,8 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    import draeth_stances, flood_leap_anims, be_anims, cursed_anims, jackal_rifle_anims
-    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('jackal_rifle_anims', jackal_rifle_anims.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('cursed_anims', cursed_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances, flood_leap_anims, be_anims, cursed_anims
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('cursed_anims', cursed_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
         for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]
@@ -4485,26 +4485,19 @@ for _g in SHIGURE_GUNS:
 BESTIARY_RANK_GROUP += (('MarineRifleman', 'Rifleman'),)
 MAIN['late_order'] = MAIN['late_order'] + SHIGURE_ORDER
 
-# The Needle Javelin in Covenant hands (new): HaloDoom Evolved's Halo_NeedlerJavelin as a loadout of the Elites' and
-# Jackals' bodies, no class of its own (picked up off the ground, given by an HCEVARS variant or the weapon preset, or
+# The Needle Javelin in Covenant hands (new): HaloDoom Evolved's Halo_NeedlerJavelin as a loadout of the Elites' bodies
+# (the Jackals: the Digsite's shieldless Marksman carries it, build_digsite.py), no class of its own (picked up off the ground, given by an HCEVARS variant or the weapon preset, or
 # HCE_EquipGun), drawn with the needle rifle the pack's author supplied (needle_rifle_ce.py: a Halo CE-style model, an
 # overlay on the body's own skeleton in its overlay slot, OVERLAY_SLOT; every class of the body gets the slot, empty,
 # OVERLAY_PLACEHOLDER) and firing as the Marines' does ('needle ballista': HDE's javelin needles, its ranges).
-# body -> its stance with it: two-handed, the Elites like their beam rifle, the Jackals in Halo 2's Jackal rifle
-# stance (jackal_rifle_anims.py; Halo CE's own rifle set is its pistol pose, the gun pointing at the floor). The loadout's aim and damage come from the body's plasma rifle / needler
-# / plasma pistol variant (NEEDLE_RIFLE_FROM: the first the body has)
-NEEDLE_RIFLE_BODIES = {'Elite': 'rifle', 'EliteSpecial': 'rifle', 'Draeth': 'rifle', 'Jackal': 'rifle', 'JackalMajor': 'rifle'}
+# body -> its stance with it: two-handed, the Elites like their beam rifle. The loadout's aim and damage come from the body's plasma rifle / needler / plasma pistol variant (NEEDLE_RIFLE_FROM: the first the body has)
+NEEDLE_RIFLE_BODIES = {'Elite': 'rifle', 'EliteSpecial': 'rifle', 'Draeth': 'rifle'}
 NEEDLE_RIFLE_FROM = ('plasma rifle', 'needler', 'plasma pistol')
-# the Jackals' low ready (Halo 2's patrol carry, low_ready_anims.py) hangs a rifle from one hand muzzle-down: with the
-# Needle Javelin they stay at combat ready out of combat too
-NEEDLE_RIFLE_ANIMS = {b: {'LOW_IDLE': ['stand rifle idle'], 'LOW_MOVE': ['stand rifle move-front']}
-                      for b in ('Jackal', 'JackalMajor', 'H2Jackal')}
 NEEDLE_RIFLE_OVERLAY = 'needle_rifle'
 
 def add_needle_rifle(variants, bodies=None, char_of_unit=None, slot=ARSENAL_IDX):
     """a loadout-only 'needle ballista' variant per body in bodies (default NEEDLE_RIFLE_BODIES: {body: stance}) whose
-    model has the needle rifle overlay (needle_rifle_ce.py overlay); registers the body's overlay slot. build_digsite.py
-    calls it for the Halo 2 Jackal"""
+    model has the needle rifle overlay (needle_rifle_ce.py overlay); registers the body's overlay slot"""
     import copy
     bodies = NEEDLE_RIFLE_BODIES if bodies is None else bodies
     char_of_unit = CHAR_OF_UNIT if char_of_unit is None else char_of_unit
@@ -4526,7 +4519,6 @@ def add_needle_rifle(variants, bodies=None, char_of_unit=None, slot=ARSENAL_IDX)
         v['_late'] = True
         v['_ov'] = dict(overlay=NEEDLE_RIFLE_OVERLAY, overlay_idx=OVERLAY_SLOT.get(body, slot), stance=stance,
                         pellets=pellets, spread=spread, loadout_only=True, skin_as=cname(src))
-        if body in NEEDLE_RIFLE_ANIMS: v['_ov']['anims'] = copy.deepcopy(NEEDLE_RIFLE_ANIMS[body])
         variants[vn] = v
         OVERLAY_SLOT.setdefault(body, slot); OVERLAY_PLACEHOLDER.add(body)
 

@@ -1058,6 +1058,39 @@ Model HCE_JackalMajorHelmetPlasmaRifleShieldField
 	FrameIndex HCEM A 0 0
 }
 
+Model HCE_JackalMarksmanNeedleRifle
+{
+	Path "models/hce_dig/H2Jackal"
+	Model 0 "H2Jackal.iqm"
+	SurfaceSkin 0 0 "skins/h2jackal_marksman_jackal_torso.png"
+	SurfaceSkin 0 1 "skins/h2jackal_marksman_jackal_legs.png"
+	SurfaceSkin 0 2 "skins/h2jackal_jackal_head.png"
+	SurfaceSkin 0 3 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 4 "skins/h2jackal_jackal_teethandspikes.png"
+	SurfaceSkin 0 5 "skins/h2jackal_marksman_jackal_armor_torso.png"
+	SurfaceSkin 0 6 "skins/h2jackal_marksman_jackal_armor_legs.png"
+	SurfaceSkin 0 7 "skins/h2jackal_jackal_eyes.png"
+	SurfaceSkin 0 8 "skins/h2jackal_jackal_pupils.png"
+	SurfaceSkin 0 11 "skins/h2jackal_helmet_sniper.png"
+	SurfaceSkin 0 22 "skins/h2jackal_jackal_head.png"
+	SurfaceSkin 0 23 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 24 "skins/h2jackal_jackal_arms.png"
+	SurfaceSkin 0 25 "skins/h2jackal_jackal_teethandspikes.png"
+	SurfaceSkin 0 26 "skins/h2jackal_jackal_teethandspikes.png"
+	Path "models/hce_dig/weapons"
+	Path "models/hce_dig/H2Jackal"
+	Model 6 "H2Jackal_w_needle_rifle.iqm"
+	Path "models/hce_dig/weapons"
+	SurfaceSkin 6 0 "w_needle_rifle_body.png"
+	SurfaceSkin 6 1 "w_needle_rifle_glow.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+	FrameIndex HCEM A 6 0
+}
+
 Model HCE_JackalMarksmanPlasmaCarbine
 {
 	Path "models/hce_dig/H2Jackal"

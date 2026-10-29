@@ -414,9 +414,20 @@ def load_ai():
                 variants[H2JACKAL + f'\\jackal {key}']['_helmet'] = 'sniper'
             mj = h2j(A['variants'][r'characters\jackal\jackal major needler'], 'major', 75, 250, CE_PR, _helmet='ce')
             variants[H2JACKAL + '\\jackal major helmet plasma rifle'] = mj
-        # the Needle Javelin as a loadout (needle_rifle_ce.py's model in its overlay slot, model 6), in the rifle stance
-        # its long guns use, as the main pack's Elites and Jackals have it (build_pack.add_needle_rifle)
-        bp.add_needle_rifle(variants, {'H2Jackal': 'rifle'}, char_of_unit={H2JACKAL: 'H2Jackal'})
+        # a Marksman with the Needle Javelin (HDE's Halo_NeedlerJavelin, drawn with needle_rifle_ce.py's model as an
+        # overlay in the hand): the riflemen are the Jackals without shields, so the needle rifle is theirs, not a
+        # pickup for the shielded ones. The Marksmen's build and distance, Halo 3's sniper helmet, the rifle stance (at
+        # combat ready out of combat too: the patrol carry hangs a rifle muzzle-down); it fires as the Marines' does
+        if os.path.exists(f'{bp.OUT}/models/H2Jackal/H2Jackal_w_needle_rifle.iqm'):
+            pellets, spread = bp.MARINE_ARSENAL['needle ballista'][5:7]
+            nr = h2j(A['variants'][r'characters\jackal\jackal minor plasma pistol'], 'marksman', 70, 0, 'hde\\needle ballista',
+                     _ov=dict(stance='rifle', shield=0, flags=['HCE_Surprise', 'HCE_Panics', 'HCE_SeeksCover', 'HCE_Evades'],
+                              overlay='needle_rifle', pellets=pellets, spread=spread,
+                              anims={'LOW_IDLE': ['stand rifle idle'], 'LOW_MOVE': ['stand rifle move-front']}))
+            nr['ranged_combat'].update(combat_range_lower_bound=6.0, combat_range_upper_bound=22.0, maximum_firing_range=40.0)
+            nr['items']['grenades_lower_bound'] = 0; nr['items']['grenades_upper_bound'] = 0
+            if json.load(open(H2J_JSON)).get('helmet_cells'): nr['_helmet'] = 'sniper'
+            variants[H2JACKAL + '\\jackal marksman needle rifle'] = nr
     # The Ultra Zealot (Shigure's Zealot Elite, extract_ultra_zealot.py): the gold Elite's sword build made tougher,
     # a diamond energy shield on its left arm; armour in a Field Marshal crimson-maroon with blue lights
     zs = A['variants'].get(r'characters\elite\elite commander\elite commander energy sword')
@@ -1343,7 +1354,7 @@ def build():
                            'HCE_EliteCommanderPulseCarbine', 'HCE_Engineer', 'HCE_RandomEngineer', 'HCE_DronePlasmaPistol', 'HCE_RandomDrone',
                            'HCE_BruteMinorPlasmaRifle', 'HCE_BruteMinorAssaultRifle', 'HCE_BruteMajorSpiker', 'HCE_BruteMajorShotgun', 'HCE_BruteCaptainPlasmaRifle', 'HCE_BruteCaptainShotgun', 'HCE_BruteHonorGuardPlasmaRifle', 'HCE_BruteHonorGuardAssaultRifle', 'HCE_BruteChieftainGravityHammer', 'HCE_RandomBrute',
                            'HCE_JackalUltraPlasmaRifle', 'HCE_JackalZealotSpiker', 'HCE_JackalSniperBeamRifle', 'HCE_RandomH2Jackal',
-                           'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine',
+                           'HCE_JackalMarksmanPlasmaCarbine', 'HCE_JackalMarksmanPulseCarbine', 'HCE_JackalMarksmanNeedleRifle',
                            'HCE_DroneNeedler', 'HCE_DronePlasmaRifle', 'HCE_DroneSpiker', 'HCE_BruteCaptainPlasmaCaster',
                            'HCE_BruteMajorPlasmaCarbine', 'HCE_BruteCaptainBeamRifle', 'HCE_BruteHonorGuardFuelRod',
                            'HCE_EliteUltraZealotEnergySword',

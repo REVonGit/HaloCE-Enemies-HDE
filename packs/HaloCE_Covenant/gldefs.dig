@@ -1184,6 +1184,16 @@ material texture "models/hce_dig/weapons/w_h2_beam_rifle_0.png"
 	shader "shaders/hce_derez.fp"
 	brightmap "models/hce_dig/brightmap_none.png"
 }
+material texture "models/hce_dig/weapons/w_needle_rifle_body.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_none.png"
+}
+material texture "models/hce_dig/weapons/w_needle_rifle_glow.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce_dig/brightmap_full.png"
+}
 material texture "models/hce_dig/weapons/w_plasma_caster_0.png"
 {
 	shader "shaders/hce_derez.fp"

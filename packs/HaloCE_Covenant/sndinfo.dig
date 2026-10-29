@@ -96,8 +96,6 @@ $alias HCE/Slug/FallBack HCE/Slug/Flee
 $alias HCE/Slug/Advance HCE/Slug/Regroup
 
 // Engineer (SPV3 b30 sound tags)
-HCE/Engineer/engineer_explosion/0 "sounds/hce_dig/engineer/engineer_explosion_0.ogg"
-$random HCE/Engineer/Explode { HCE/Engineer/engineer_explosion/0 }
 HCE/Engineer/engineer_combat/0 "sounds/hce_dig/engineer/engineer_combat_0.ogg"
 HCE/Engineer/engineer_combat/1 "sounds/hce_dig/engineer/engineer_combat_1.ogg"
 HCE/Engineer/engineer_combat/2 "sounds/hce_dig/engineer/engineer_combat_2.ogg"
@@ -113,6 +111,8 @@ HCE/Engineer/engineer_combat/11 "sounds/hce_dig/engineer/engineer_combat_11.ogg"
 HCE/Engineer/engineer_combat/12 "sounds/hce_dig/engineer/engineer_combat_12.ogg"
 $random HCE/Engineer/Taunt { HCE/Engineer/engineer_combat/0 HCE/Engineer/engineer_combat/1 HCE/Engineer/engineer_combat/2 HCE/Engineer/engineer_combat/3 HCE/Engineer/engineer_combat/4 HCE/Engineer/engineer_combat/5 HCE/Engineer/engineer_combat/6 HCE/Engineer/engineer_combat/7 HCE/Engineer/engineer_combat/8 HCE/Engineer/engineer_combat/9 HCE/Engineer/engineer_combat/10 HCE/Engineer/engineer_combat/11 HCE/Engineer/engineer_combat/12 }
 $random HCE/Engineer/Regroup { HCE/Engineer/engineer_combat/0 HCE/Engineer/engineer_combat/1 HCE/Engineer/engineer_combat/2 HCE/Engineer/engineer_combat/3 HCE/Engineer/engineer_combat/4 HCE/Engineer/engineer_combat/5 HCE/Engineer/engineer_combat/6 HCE/Engineer/engineer_combat/7 HCE/Engineer/engineer_combat/8 HCE/Engineer/engineer_combat/9 HCE/Engineer/engineer_combat/10 HCE/Engineer/engineer_combat/11 HCE/Engineer/engineer_combat/12 }
+HCE/Engineer/engineer_explosion/0 "sounds/hce_dig/engineer/engineer_explosion_0.ogg"
+$random HCE/Engineer/Explode { HCE/Engineer/engineer_explosion/0 }
 HCE/Engineer/engineer_noncombat/0 "sounds/hce_dig/engineer/engineer_noncombat_0.ogg"
 HCE/Engineer/engineer_noncombat/1 "sounds/hce_dig/engineer/engineer_noncombat_1.ogg"
 HCE/Engineer/engineer_noncombat/2 "sounds/hce_dig/engineer/engineer_noncombat_2.ogg"

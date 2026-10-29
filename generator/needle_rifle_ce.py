@@ -45,8 +45,7 @@ GLOW = {'needler luminous': (240, 60, 210), 'needler ammo crystal': (255, 40, 20
 GLOW_SWATCH = {'needler luminous': (0, 0), 'needler ammo crystal': (1, 0), 'needler core': (0, 1)}   # 8x8 cells of a 16x16
 CREDIT = 'needle rifle model supplied by the pack author (REVonGit)'
 # the bodies that hold it (their skeleton's gun hand, recovered from a gun baked on it: marine_arsenal.hand_frame)
-OVERLAY_CHARS = {'Elite': 'plasma_rifle', 'EliteSpecial': 'plasma_rifle', 'Draeth': 'plasma_rifle',
-                 'Jackal': 'plasma_pistol', 'JackalMajor': 'plasma_rifle', 'H2Jackal': 'plasma_rifle'}
+OVERLAY_CHARS = {'Elite': 'plasma_rifle', 'EliteSpecial': 'plasma_rifle', 'Draeth': 'plasma_rifle', 'H2Jackal': 'plasma_rifle'}
 
 # shading baked into the colour maps (their own PBR set is flat; Halo CE's guns carry their lighting in the texture):
 # a key light from above and a little in front (no sideways part: the mirrored halves share texels), ambient and a sky

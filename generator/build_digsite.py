@@ -414,6 +414,9 @@ def load_ai():
                 variants[H2JACKAL + f'\\jackal {key}']['_helmet'] = 'sniper'
             mj = h2j(A['variants'][r'characters\jackal\jackal major needler'], 'major', 75, 250, CE_PR, _helmet='ce')
             variants[H2JACKAL + '\\jackal major helmet plasma rifle'] = mj
+        # the Needle Javelin as a loadout (needle_rifle_ce.py's model in its overlay slot, model 6), in the rifle stance
+        # its long guns use, as the main pack's Elites and Jackals have it (build_pack.add_needle_rifle)
+        bp.add_needle_rifle(variants, {'H2Jackal': 'rifle'}, char_of_unit={H2JACKAL: 'H2Jackal'})
     # The Ultra Zealot (Shigure's Zealot Elite, extract_ultra_zealot.py): the gold Elite's sword build made tougher,
     # a diamond energy shield on its left arm; armour in a Field Marshal crimson-maroon with blue lights
     zs = A['variants'].get(r'characters\elite\elite commander\elite commander energy sword')

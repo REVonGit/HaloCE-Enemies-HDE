@@ -1354,11 +1354,11 @@ def add_shine(char, mat, rgb, color=None, scale=1.0):
 # Halo CE's Covenant weapons reflect a cube map on their painted metal (shader_model: the multipurpose map's red is the
 # reflection mask; extract_weapon_shine.py). It's baked into the colourful parts of their textures: CE's own cube map
 # and mask where the weapon has one (plasma pistol, plasma rifle, needler), the plasma rifle's cube map and the paint's
-# saturation for the rest (fuel rod, sword hilt, the Halo 2 and Digsite weapons, the Plasma Caster). Lights, glows and
-# grey metal stay as they are.
+# saturation for the rest (fuel rod, sword hilt, the Halo 2 and Digsite weapons, the Plasma Caster, the needle rifle).
+# Lights, glows and grey metal stay as they are.
 COVENANT_WEAPONS = ('plasma_pistol', 'plasma_rifle', 'needler', 'fuel_rod', 'energy_sword', 'h2_beam_rifle', 'beam_rifle',
                     'cmt_carbine', 'plasma_caster', 'brute_plasma_rifle', 'brute_shot', 'spiker', 'plasma_carbine',
-                    'particle_beam_dig', 'gravity_hammer')
+                    'particle_beam_dig', 'gravity_hammer', 'needle_rifle')
 NO_SHINE = ('glow', 'lights', 'icon', 'meter', 'heat')
 _shine_mats = None
 
@@ -1713,7 +1713,8 @@ def gun_code(meta, mdir, slot=None):
             '\t\tfor(int i = 0; i < W.Size(); i++)\n'
             '\t\t{\n\t\t\tif(show) A_ChangeModel(\'None\', 0, "", \'None\', W[i], "", \'None\', CMDL_USESURFACESKIN);\n'
             '\t\t\telse HCE_HideSurface(W[i]);    // the guns it never held stay undrawn\n\t\t}\n'
-            + (f'\t\tif(!show && hce_hasLoadout) A_ChangeModel(\'None\', {slot}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);   // a picked-up overlay gun\n'
+            # a picked-up overlay gun: gone with the gun, and gone when it has its own (baked) gun back
+            + (f'\t\tif(!show || !hce_hasLoadout) A_ChangeModel(\'None\', {slot}, "", \'None\', 0, "", \'None\', CMDL_HIDEMODEL);\n'
                if slot is not None else '') + '\t}\n')
 
 
@@ -2200,8 +2201,8 @@ def check_steps(metas):
     covers comes from the step's own CHARS table, so a body added there is checked from then on"""
     import steps, low_ready_anims, reload_anims, cover_anims, marine_h2_grips
     required = {}
-    import draeth_stances, flood_leap_anims, be_anims, cursed_anims
-    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('cursed_anims', cursed_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
+    import draeth_stances, flood_leap_anims, be_anims, cursed_anims, jackal_rifle_anims
+    for step, chars in [('draeth_stances', draeth_stances.CHARS), ('jackal_rifle_anims', jackal_rifle_anims.CHARS), ('flood_leap_anims', flood_leap_anims.CHARS), ('be_anims', be_anims.CHARS), ('cursed_anims', cursed_anims.CHARS), ('low_ready_anims', low_ready_anims.CHARS), ('reload_anims', reload_anims.CHARS),
                         ('cover_anims', cover_anims.CHARS), ('marine_h2_grips', marine_h2_grips.CHARS)]:
         for c in chars: required.setdefault(c, {})[step] = f'python3 {step}.py' + ('' if step == 'marine_h2_grips' else f' {c}') + (' (then low_ready_anims.py Draeth)' if step == 'draeth_stances' else '')
     problems = [x for c, meta in sorted(metas.items()) for x in steps.check(meta, c, required.get(c, {}))]
@@ -2573,7 +2574,8 @@ def build(cfg=None):
                     continue
                 if SHIELD_MAT.get(char) == matn and v.get('_rank') in SHIELD_TINT and char in FIELD_CHARS:
                     # drawn by the shield field (HCE_ShieldField), not on the body: the field's skin is the rank's colour
-                    fn = f'{cls[4:].lower()}_field.png'
+                    # (a loadout-only variant has no field of its own: its skin_as class's name, the same colour)
+                    fn = f'{(ov.get("skin_as", cls) if ov.get("loadout_only") else cls)[4:].lower()}_field.png'
                     Image.new('RGB', (4, 4), tuple(int(round(c * 255)) for c in SHIELD_TINT[v['_rank']])).save(f'{pack}/models/{mdir}/{char}/skins/{fn}')
                     own = None
                     if char in FIELD_UV_MASK:
@@ -2850,8 +2852,9 @@ def build(cfg=None):
     for cls in late_items:                 # classes added after the first release keep old numbers stable
         if cls.startswith('HCE_Random') and cls[10:] in late_chars: spawner(cls[10:], spawners[cls[10:]])
         else: ednums.append((ed, cls)); ed += 1
-    # glow: shields, needles, sword blade (the blade has its own shader below)
-    for w in ('w_needler_glow.png',):
+    # glow: shields, needles (the needler's; the needle rifle's, needle_rifle_ce.py), sword blade (the blade has its
+    # own shader below)
+    for w in ('w_needler_glow.png', 'w_needle_rifle_glow.png'):
         if os.path.exists(f'{pack}/models/{mdir}/weapons/{w}'): brightmaps.append(f'models/{mdir}/weapons/{w}')
     swords = [f'models/{mdir}/weapons/w_energy_sword_glow.png'] if os.path.exists(f'{pack}/models/{mdir}/weapons/w_energy_sword_glow.png') else []
     for w in cfg.get('glow', []):
@@ -2961,8 +2964,9 @@ MAIN = dict(char_of_unit=CHAR_OF_UNIT, team=TEAM, ai=AI, pack=PACK, mdir='hce', 
 # melee (reach, damage); leap (min, max, chance, velocity); flags (the whole behaviour set) / add_flags; melee_only;
 # gun (HCE_GunOffset by hand); flying; lift (a model built round its middle raised onto its feet); overlay /
 # overlay_idx (an arsenal gun model on the body); pellets / spread (the shot); skin_as (share another class's skins);
-# loadout_only (a Marine loadout with no class); unique (no loadouts, not in the random spawner); ally (+FRIENDLY on
-# the Covenant / Sentinel side); drops False; voices; code (ZScript appended to the class); berserk_anims; weapon_toss;
+# loadout_only (a loadout with no class: the Marines' Covenant guns, the Needle Javelin); unique (no loadouts, not in
+# the random spawner); ally (+FRIENDLY on the Covenant / Sentinel side); drops False; voices; code (ZScript appended to
+# the class); berserk_anims; weapon_toss;
 # johnson / stacker (the sergeants' two-gun code); h2_pieces (a Halo 2 body's own shield flare); raven (an ODST skin)
 # Cursed Halo's Hunter leap (cursed_anims.py): the spin animation, and the leap's (min, max distance, chance, speed in
 # map units a tic): from 120 to 320 units away, half as eager as the Flood, a heavy spring
@@ -4480,6 +4484,53 @@ for _g in SHIGURE_GUNS:
     AI['variants'][f'characters\\marine\\marine rifleman {_g}'] = _v
 BESTIARY_RANK_GROUP += (('MarineRifleman', 'Rifleman'),)
 MAIN['late_order'] = MAIN['late_order'] + SHIGURE_ORDER
+
+# The Needle Javelin in Covenant hands (new): HaloDoom Evolved's Halo_NeedlerJavelin as a loadout of the Elites' and
+# Jackals' bodies, no class of its own (picked up off the ground, given by an HCEVARS variant or the weapon preset, or
+# HCE_EquipGun), drawn with the needle rifle the pack's author supplied (needle_rifle_ce.py: a Halo CE-style model, an
+# overlay on the body's own skeleton in its overlay slot, OVERLAY_SLOT; every class of the body gets the slot, empty,
+# OVERLAY_PLACEHOLDER) and firing as the Marines' does ('needle ballista': HDE's javelin needles, its ranges).
+# body -> its stance with it: two-handed, the Elites like their beam rifle, the Jackals in Halo 2's Jackal rifle
+# stance (jackal_rifle_anims.py; Halo CE's own rifle set is its pistol pose, the gun pointing at the floor). The loadout's aim and damage come from the body's plasma rifle / needler
+# / plasma pistol variant (NEEDLE_RIFLE_FROM: the first the body has)
+NEEDLE_RIFLE_BODIES = {'Elite': 'rifle', 'EliteSpecial': 'rifle', 'Draeth': 'rifle', 'Jackal': 'rifle', 'JackalMajor': 'rifle'}
+NEEDLE_RIFLE_FROM = ('plasma rifle', 'needler', 'plasma pistol')
+# the Jackals' low ready (Halo 2's patrol carry, low_ready_anims.py) hangs a rifle from one hand muzzle-down: with the
+# Needle Javelin they stay at combat ready out of combat too
+NEEDLE_RIFLE_ANIMS = {b: {'LOW_IDLE': ['stand rifle idle'], 'LOW_MOVE': ['stand rifle move-front']}
+                      for b in ('Jackal', 'JackalMajor', 'H2Jackal')}
+NEEDLE_RIFLE_OVERLAY = 'needle_rifle'
+
+def add_needle_rifle(variants, bodies=None, char_of_unit=None, slot=ARSENAL_IDX):
+    """a loadout-only 'needle ballista' variant per body in bodies (default NEEDLE_RIFLE_BODIES: {body: stance}) whose
+    model has the needle rifle overlay (needle_rifle_ce.py overlay); registers the body's overlay slot. build_digsite.py
+    calls it for the Halo 2 Jackal"""
+    import copy
+    bodies = NEEDLE_RIFLE_BODIES if bodies is None else bodies
+    char_of_unit = CHAR_OF_UNIT if char_of_unit is None else char_of_unit
+    lo, hi, mx, pellets, spread = MARINE_ARSENAL['needle ballista'][2:7]
+    for body, stance in bodies.items():
+        mj = f'{OUT}/models/{body}/{body}.json'
+        if not os.path.exists(mj) or NEEDLE_RIFLE_OVERLAY not in (json.load(open(mj)).get('arsenal') or {}): continue
+        # the body's plain variants first (no kit or other overrides of their own, no camo), a Major's before the other
+        # ranks' (every rank that picks the gun up fires it with these numbers)
+        mine = sorted((bool(v.get('_ov')), 'stealth' in k, 'major' not in k, k) for k, v in variants.items() if char_of_unit.get(v['unit_reference']) == body)
+        src = next((k for w in NEEDLE_RIFLE_FROM for *_, k in mine if wname(variants[k]['ranged_combat']['reference']) == w), None)
+        if not src: continue
+        w = wname(variants[src]['ranged_combat']['reference'])
+        vn = (src[:-len(w)] if src.endswith(w) else src + ' ') + 'needle rifle'       # 'elite major needle rifle'
+        if vn in variants: continue
+        v = copy.deepcopy(variants[src])
+        v['ranged_combat']['reference'] = 'hde\\needle ballista'
+        v['ranged_combat'].update(combat_range_lower_bound=lo, combat_range_upper_bound=hi, maximum_firing_range=mx)
+        v['_late'] = True
+        v['_ov'] = dict(overlay=NEEDLE_RIFLE_OVERLAY, overlay_idx=OVERLAY_SLOT.get(body, slot), stance=stance,
+                        pellets=pellets, spread=spread, loadout_only=True, skin_as=cname(src))
+        if body in NEEDLE_RIFLE_ANIMS: v['_ov']['anims'] = copy.deepcopy(NEEDLE_RIFLE_ANIMS[body])
+        variants[vn] = v
+        OVERLAY_SLOT.setdefault(body, slot); OVERLAY_PLACEHOLDER.add(body)
+
+add_needle_rifle(AI['variants'])
 
 MAIN_WEAPONS |= set(WEAPONS)
 

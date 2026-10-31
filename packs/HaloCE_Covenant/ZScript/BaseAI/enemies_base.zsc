@@ -848,6 +848,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// crouched (any 'crouch ...' animation), the body is a smaller target: its hitbox drops to the crouch's height
 	// (about 60% of standing), and comes back up when it stands, if there is headroom
 	bool hce_crouchBox;
+	double hce_standH;                  // its standing height (a scaled variant's own; 0: the default)
+	double HCE_StandHeight() { return hce_standH > 0 ? hce_standH : default.height; }
 	// Shrinks the hitbox to 62% of default height while a 'crouch ...' animation plays and restores it when standing,
 	// but only if there is ceiling room. To change the crouched height, edit the 0.62.
 	void HCE_CrouchHitbox(Name anim)
@@ -856,7 +858,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		String a = anim;
 		bool c = a.Left(7) == "crouch ";
 		if(c == hce_crouchBox) return;
-		double h = c ? default.height * 0.62 : default.height;
+		double h = c ? HCE_StandHeight() * 0.62 : HCE_StandHeight();
 		if(!c && ceilingz - pos.z < h) return;                    // no room to stand yet: stays low
 		A_SetSize(-1, h);
 		hce_crouchBox = c;
@@ -6750,6 +6752,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			A_SetScale(scale.x * sc, scale.y * sc);
 			A_SetSize(radius * sc, height * sc);
+			hce_standH = height;
 		}
 	}
 
@@ -7438,7 +7441,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// on, goes straight to fighting and plays the directional resurrect animation.
 	void HCE_Revive()
 	{
-		if(!bHCE_Resurrects || !bCORPSE) return;
+		if(!bHCE_Resurrects || !bCORPSE || hce_derezSlot > 0) return;
 		// not RaiseActor: it refuses a corpse whose state isn't a -1 tic frame, and the corpse ticks every tic (Dead:
 		// HCE_CorpseTick); flagging that state CanRaise would let Doom's Arch-viles raise every body too
 		let rs = FindState("Raise");
@@ -7447,6 +7450,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		SetState(rs);
 		hce_resurrected = true;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED; bISMONSTER = default.bISMONSTER;
+		// its box back to standing height (Revive restores the flags, not the size: the body's was cut to 30%, and
+		// shots went over the risen form)
+		A_SetSize(-1, HCE_StandHeight()); hce_crouchBox = false;
 		int gl = HCE_GunLimb();
 		if(gl < 0 || !(hce_severed & (1 << gl))) { HCE_ShowGun(true); if(hce_hasLoadout) HCE_LoadoutVisual(hce_loadout); HCE_ResumeAnim(); }     // back up with its gun (if its arm is on)
 		hce_action = HCE_ACT_FIGHT;

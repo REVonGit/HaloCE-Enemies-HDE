@@ -8446,7 +8446,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 		while(it.Next())
 		{
 			let c = HaloDoom_EnemyBase(it.thing);
-			if(!c || !c.bCORPSE || !c.hce_enabled || c.hce_gibbed) continue;
+			if(!c || !c.bCORPSE || !c.hce_enabled || c.hce_gibbed || c.hce_derezSlot > 0) continue;
 			if(c.hce_feedBy && c.hce_feedBy != self && c.hce_feedBy.health > 0) continue;
 			if(!HCE_CanInfect(c)) continue;
 			double d = Distance2D(c);

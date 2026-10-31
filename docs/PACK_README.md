@@ -34,7 +34,7 @@ uzdoom -file HDE_LocalDEV.pk3 HaloCE_Covenant.pk3 HaloCE_Flood.pk3 HaloCE_Sentin
 
 The replacement table lives in the Covenant pack's core. Any pick whose faction pack isn't loaded is skipped, and the remaining picks share its weight; a Doom monster whose whole list is missing stays a Doom monster.
 
-* **Everything in one file:** `build.py` also writes `dist/HaloCE_Merged.pk3`; load it right after HDE, instead of the separate packs, never with them.
+* **Everything in one file:** `build.py` also writes `dist/Halo NPCs.pk3` (`Build_Halo_NPCs.bat` or `build.py --combined` builds just that); load it right after HDE, instead of the separate packs, never with them.
 * **Merging your own set:** `tools/merge_hce_packs.py <packs...> -o <out.pk3>` merges any set of these packs (one `zscript.txt`, one `mapinfo.txt`, joined `cvarinfo.txt` and `CREDITS.txt`; it stops and names any file or DoomEdNum two packs disagree on).
 * **Older downloads:** don't load `HaloCE_Core`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices` or `HaloCE_Enemies_Digsite` pk3s from earlier releases with these: the Covenant pack carries all of them now, and their classes would be defined twice.
 

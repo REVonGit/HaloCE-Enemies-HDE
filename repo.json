@@ -1,7 +1,7 @@
 {
   "title": "Halo CE enemies (HDE version)",
   "merged": {
-    "output": "HaloCE_Merged.pk3",
+    "output": "Halo NPCs.pk3",
     "packs": [
       "HaloCE_Covenant",
       "HaloCE_Flood",
@@ -9,7 +9,7 @@
       "HaloCE_Marines"
     ]
   },
-  "load": "HDE (Local_DEV) -> HaloCE_Covenant.pk3 (Core, the enemy API, the Covenant and their dialogue) -> HaloCE_Flood / HaloCE_Sentinels / HaloCE_Marines.pk3 (any of them), or HDE -> HaloCE_Merged.pk3 for everything.",
+  "load": "HDE (Local_DEV) -> HaloCE_Covenant.pk3 (Core, the enemy API, the Covenant and their dialogue) -> HaloCE_Flood / HaloCE_Sentinels / HaloCE_Marines.pk3 (any of them), or HDE -> Halo NPCs.pk3 for everything.",
   "sync": [
     [
       "packs/HaloCE_Covenant/ZScript/BaseAI/enemies_base.zsc",

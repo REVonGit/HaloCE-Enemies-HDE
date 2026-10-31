@@ -51,7 +51,7 @@ HDE (Local_DEV) -> HaloCE_Covenant.pk3 -> HaloCE_Flood / HaloCE_Sentinels / Halo
 ```
 
 * **Covenant first:** `HaloCE_Covenant.pk3` carries Core and the enemy API, so it's the one pk3 that's always needed; Flood, Sentinels and Marines load after it.
-* **Everything in one file:** `HDE -> HaloCE_Merged.pk3`.
+* **Everything in one file:** `HDE -> Halo NPCs.pk3` (double-click `Build_Halo_NPCs.bat`, or `python build.py --combined`).
 * **Don't mix:** don't load the merged pack together with the separate packs, and don't load old `HaloCE_Core`, `HCE_EnemyAPI_LocalDEV`, `HaloCE_Enemies_Voices`, `HaloCE_Enemies_Digsite` or `HDE_CE_Covenant` pk3s from an earlier download: the Covenant pack contains all of them now, so their classes would be defined twice. Delete them from your `dist/` folder.
 
 ## Editing notes

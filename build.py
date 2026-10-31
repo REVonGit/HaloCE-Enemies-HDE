@@ -4,6 +4,7 @@
     python build.py                    # every pack -> dist/<folder>.pk3, plus the merged pack
     python build.py Covenant Flood     # only the packs whose folder name contains one of these words
     python build.py --no-merged        # skip the merged pack
+    python build.py --combined         # only the merged pack, Halo NPCs.pk3 (every pack in one file)
     python build.py --force            # rebuild even what hasn't changed
 
 Edit the files under packs/<Pack>/ directly: each folder is exactly the root of its pk3.
@@ -96,18 +97,21 @@ def main():
     ap.add_argument('--no-merged', action='store_true', help=f'skip {CFG["merged"]["output"]}')
     ap.add_argument('--merged', action='store_true', help='(kept for old scripts: the merged pack is built by default)')
     ap.add_argument('--all', action='store_true', help='(kept for old scripts: same as no options)')
+    ap.add_argument('--combined', action='store_true', help=f'build only {CFG["merged"]["output"]}, every pack in one file')
     ap.add_argument('--force', action='store_true', help='rebuild everything, changed or not')
     a = ap.parse_args()
     os.makedirs(DIST, exist_ok=True)
     cache = load_cache(a.force)
     sync_shared()
     names = sorted(d for d in os.listdir(PACKS) if os.path.isdir(os.path.join(PACKS, d)))
-    want = names
+    want = [] if a.combined else names
     if a.only:
         want = [n for n in names if any(w.lower() in n.lower() for w in a.only)]
         if not want: sys.exit('no pack folder matches ' + ' '.join(a.only))
     merged_cfg = CFG['merged']
-    build_merged = not a.no_merged and not a.only
+    build_merged = a.combined or (not a.no_merged and not a.only)
+    old = os.path.join(DIST, 'HaloCE_Merged.pk3')   # (the merged pack's old name: gone, so it isn't loaded with the new one)
+    if build_merged and os.path.exists(old): os.remove(old); print('  removed the old HaloCE_Merged.pk3')
     print(f'{CFG["title"]}: dist/')
     digests = {}
     for n in names:

@@ -206,13 +206,13 @@ def _merge(inputs, output, quiet, zips):
 def main():
     ap = argparse.ArgumentParser(description='Merge Halo CE enemy pk3s into one.')
     ap.add_argument('inputs', nargs='*', help='pk3s to merge (default: Core, Covenant and Digsite next to this script)')
-    ap.add_argument('-o', '--output', default=None, help='output pk3 (default: HaloCE_Merged.pk3 next to the first input)')
+    ap.add_argument('-o', '--output', default=None, help='output pk3 (default: Halo NPCs.pk3 next to the first input)')
     a = ap.parse_args()
     inputs = a.inputs or [os.path.join(HERE, f) for f in DEFAULT_INPUTS]
     if not a.inputs and not all(os.path.isfile(p) for p in inputs):
         sa = [os.path.join(HERE, f) for f in STANDALONE_INPUTS]      # the standalone set, if that's what's here
         if all(os.path.isfile(p) for p in sa): inputs = sa
-    output = a.output or os.path.join(os.path.dirname(os.path.abspath(inputs[0])), 'HaloCE_Merged.pk3')
+    output = a.output or os.path.join(os.path.dirname(os.path.abspath(inputs[0])), 'Halo NPCs.pk3')
     if os.path.abspath(output) in map(os.path.abspath, inputs): sys.exit('output would overwrite an input')
     try:
         merge(inputs, output)

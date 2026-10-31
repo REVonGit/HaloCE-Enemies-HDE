@@ -647,7 +647,7 @@ mixin class HCE_SquadCode
 
 	// ------------------------------------------------------------------
 	// Teleporters: when the player takes a teleporter (or a map's scripted teleport), the Marines following him who
-	// were with him come through after him a moment later, one by one, with the teleport fog, and take up places
+	// were with him come through after him a moment later, one by one, with the teleport fog (silent), and take up places
 	// round where he came out. A Marine left far behind (out of sight, 1800 units or more, for 20 seconds) catches
 	// up the same way. Holding Marines stay put.
 	// ------------------------------------------------------------------
@@ -689,7 +689,8 @@ mixin class HCE_SquadCode
 				if(HCE_SightBlocked(p.pos + (0, 0, p.height * 0.5), (sp, fz + height * 0.5))) continue;
 				if(!CheckPosition(sp)) continue;
 				vector3 old = pos;
-				if(!Teleport((sp, fz), p.angle, TELF_SOURCEFOG | TELF_DESTFOG)) continue;
+				if(!Teleport((sp, fz), p.angle, 0)) continue;
+				Spawn("HCE_SilentTeleportFog", old); Spawn("HCE_SilentTeleportFog", pos);   // (the teleport's flash, without its sound)
 				hce_cvState = 0; hce_peekTics = 0; hce_doorWait = 0;
 				hce_stuckTics = 0; hce_unstickTics = 0; hce_stuckPos = pos.xy; hce_nearTic = level.maptime;
 				return true;
@@ -1323,6 +1324,8 @@ class HCE_Formation : Thinker
 		}
 		if(all.Size() == 0 || !HaloDoom_EnemyBase.HCE_PostingOn()) return;
 		if(level.maptime >= knownTic) { knownTic = level.maptime + 35; Known(); }
+		// (an enemy gone since the last gathering, killed and removed or taken out of the map, off the list)
+		for(int i = foes.Size() - 1; i >= 0; i--) if(!foes[i] || foes[i].health <= 0) foes.Delete(i);
 		if(level.maptime % 3) return;
 		planIdx = (planIdx + 1) % all.Size();
 		Plan(all[planIdx]);
@@ -1837,4 +1840,10 @@ class HCE_Breach : Thinker
 			return;
 		}
 	}
+}
+
+// the teleport fog without its sound (a Marine catching up to his player: HCE_TeleportTick)
+class HCE_SilentTeleportFog : TeleportFog
+{
+	override void PostBeginPlay() {}   // (TeleportFog's own sounds misc/teleport)
 }

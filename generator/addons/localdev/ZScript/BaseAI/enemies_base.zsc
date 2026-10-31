@@ -1523,6 +1523,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_combatUntil = level.maptime + 35 * 10;
 		hce_canSee = HCE_SightOf(target, 360);
 		if(hce_canSee) { hce_lastSeen = level.maptime; hce_lastKnown = target.pos; }
+		// a target it was handed without seeing it (Firefight's hunt, a script, Doom's sound alert): it knows where that
+		// one was when it was told, not the map's origin (an unset last-known spot sent searches there)
+		else if(target != hce_knownOf) hce_lastKnown = target.pos;
+		hce_knownOf = target;
 
 		// a target taken up outside the usual wake-up (a Marine following the player, a unit that heard the fight) left
 		// it in the idle or follow action: it fought through the default case, but its cover was reset every tic
@@ -6032,6 +6036,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(feign) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
 	}
 	int hce_reviveTics;
+	Actor hce_knownOf;                 // the target hce_lastKnown is for
 	virtual bool HCE_BurstsOnDeath() { return false; }   // (the Flood pack: the carrier and the infection form)
 	bool hce_shotgunHit;                 // the latest hit was a shotgun's (HCE_IsShotgun)
 	bool hce_deadForGood;                // a Flood form killed outright: it doesn't feign, and no infection form raises it

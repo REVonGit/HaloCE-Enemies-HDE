@@ -92,6 +92,9 @@ OptionMenu "HCE_PerfOptions"
 	StaticText "Cloaked enemies drawn as a faint body without", 1
 	StaticText "the camo shimmer shader. Applies to newly spawned enemies.", 1
 	StaticText ""
+	Slider "Bodies fade after (seconds)", "hce_corpsetime", 0, 300, 10, 0
+	StaticText "Enemy bodies fade out this long after death. 0 keeps them.", 1
+	StaticText ""
 	Option "Garbage collector", "hce_cleanup", "OnOff"
 	StaticText "Removes the oldest bodies, limbs and gore splats past", 1
 	StaticText "the limits below. Never anything a player can see.", 1

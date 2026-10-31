@@ -32,6 +32,7 @@ server bool hce_presets = true;        // HaloDoom Evolved's weapon presets (its
 server float hce_gorescale = 1.0;      // performance: share of blood spurts, gibs and gore puffs spawned (1 all, 0.5 half, 0 none)
 server bool hce_simpleshaders = false; // performance: the active camo drawn as a plain faint body instead of its shimmer shader
 server bool hce_cleanup = false;       // performance: garbage collector, removes the oldest bodies, severed limbs and gore splats past the limits below, never in sight
+server int hce_corpsetime = 60;        // enemy bodies fade out this many seconds after death (0 = kept; the garbage collector's limits still apply)
 server int hce_maxcorpses = 48;        // garbage collector: enemy bodies kept (-1 no limit)
 server int hce_maxgibs = 32;           // garbage collector: severed heads and limbs kept (-1 no limit)
 server int hce_maxgore = 64;           // garbage collector: Halo gore floor splats kept (-1 no limit)

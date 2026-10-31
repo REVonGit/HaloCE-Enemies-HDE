@@ -1228,6 +1228,7 @@ class HCE_FloodcombatHumanArmoredUnarmed : HCE_FloodArmoredBase
 // rolls and its cosmetics. Changing a number here changes every FloodCarrier; one variant's numbers are in its own class
 class HCE_FloodCarrierBase : HaloDoom_EnemyBase abstract
 {
+	override bool HCE_BurstsOnDeath() { return true; }   // it bursts when it dies: no body left
 	Default
 	{
 		Monster;
@@ -8270,6 +8271,7 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 // rolls and its cosmetics. Changing a number here changes every FloodInfection; one variant's numbers are in its own class
 class HCE_FloodInfectionBase : HaloDoom_EnemyBase abstract
 {
+	override bool HCE_BurstsOnDeath() { return true; }   // it bursts when it dies: no body left
 	Default
 	{
 		Monster;
@@ -8463,7 +8465,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 	// Brute with a Flood form of its own (not the Draeth; the Brutes only with the Digsite add-on's Flood Brute loaded)
 	bool HCE_CanInfect(HaloDoom_EnemyBase c)
 	{
-		if(c.hce_team == HCE_TEAM_FLOOD) return c.bHCE_Resurrects && c.hce_reviveTics <= 0;
+		if(c.hce_team == HCE_TEAM_FLOOD) return c.bHCE_Resurrects && c.hce_reviveTics <= 0 && !c.hce_deadForGood;
 		if(c.bHCE_Resurrects) return false;
 		String cn = c.GetClassName();
 		if(cn.IndexOf("Draeth") >= 0) return false;

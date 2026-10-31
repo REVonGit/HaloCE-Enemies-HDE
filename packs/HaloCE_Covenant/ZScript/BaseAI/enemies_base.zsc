@@ -315,6 +315,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
 		if(hce_enabled) dmg = HCE_FireDeathCheck(inflictor, dmg, mod, flags);
 		if(hce_enabled) hce_lastMod = mod;      // read by HCE_Die, which runs inside the call below
+		if(hce_enabled) hce_shotgunHit = mod != 'Melee' && HCE_IsShotgun(inflictor, source);   // (so is this)
 		if(hce_enabled && source && source != self) hce_lastHurter = source;     // HCE_SquadDeath: who killed a Marine
 		if(hce_enabled && inflictor && inflictor != source && !HCE_IsBurn(mod) && mod != 'Melee' && mod != 'Explosive')
 		{
@@ -1732,7 +1733,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Jetpack && HCE_TryJet(d)) return;
 
 		double toT = AngleTo(target);
-		if(d > hce_rangeMax) { moveA = toT; spd = hce_runSpeed; }
+		if(d > hce_rangeMax) { moveA = HCE_NavSteer(target.pos) ? hce_navAng : toT; spd = hce_runSpeed; }   // (round what's between, the map's graph)
 		else if(d < hce_rangeMin * 0.5 && hce_rangeMin > 0)
 		{
 			// too close: give ground diagonally, only where there is room behind
@@ -1797,6 +1798,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
 		vector2 ahead = pos.xy + AngleToVector(toward, radius + 40);
 		if(HCE_HazardAt(ahead) || HCE_DangerStep(ahead)) { HCE_Hold(); return; }
+		if(HCE_NavSteer(target ? target.pos : hce_lastKnown))
+		{
+			// the map's graph: the bots' way to it (Doom's chase it stands in for went for the target itself)
+			HCE_Move(HCE_PickHeading(hce_navAng, hce_navAng), hce_runSpeed);
+			A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
+			HCE_PickMoveAnim();
+			if(level.maptime - hce_lastSeen > 35 * 20) target = null;
+			return;
+		}
 		double sp = speed;
 		speed = max(1, hce_runSpeed);
 		vector2 was = pos.xy;
@@ -1807,6 +1817,71 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_inPlaceTics = (pos.xy - was).Length() < 0.5 ? hce_inPlaceTics + 1 : 0;
 		HCE_Play(hce_inPlaceTics > 17 ? HCE_A_ALERT : HCE_A_MOVE_F);      // no marching on the spot when the way is shut
 		if(level.maptime - hce_lastSeen > 35 * 20) target = null;   // give up the search
+	}
+
+	// ------------------------------------------------------------------
+	// Map pathing (HCE_NavGraph, below): on a map with the bots' waypoint graph (HaloDoom Evolved's multiplayer maps,
+	// REVonGit/HDE-Maps), a walker heading somewhere it can't walk straight to takes the bots' way there: to the
+	// nearest waypoint it can see, then waypoint to waypoint along the cheapest route, cutting a corner whenever it
+	// can walk straight to the waypoint after the next, till it can walk straight to the goal.
+	// ------------------------------------------------------------------
+	int hce_navNode;                    // the waypoint it is making for (-1 none)
+	bool hce_navInit;
+	int hce_navGoal;               // the waypoint nearest its goal
+	int hce_navCheck;                   // when it next looks again (every half second or so)
+	bool hce_navDirect;                 // the goal is walkable straight: no route
+	double hce_navAng;                  // HCE_NavSteer's answer: the heading to take
+	double hce_navBest; int hce_navBestTic;   // its progress to the waypoint (no nearer in 3 s: a new one)
+	// Sets hce_navAng to the heading toward goal along the map's graph; false when there is no graph, the goal can be
+	// walked to straight (the caller moves as before), or the route is done.
+	bool HCE_NavSteer(vector3 goal)
+	{
+		if(bHCE_Flying || bNOGRAVITY) return false;
+		let g = HCE_NavGraph.Get(); if(!g) return false;
+		if(!hce_navInit) { hce_navInit = true; hce_navNode = -1; hce_navGoal = -1; }
+		if(level.maptime >= hce_navCheck)
+		{
+			hce_navCheck = level.maptime + random[HCENav](14, 22);
+			double far = (goal.xy - pos.xy).Length();
+			hce_navDirect = far < 96 || (far < 1600 && HCE_Walkable(goal));
+			// the goal's waypoint: kept while the goal stays near it (a new one only when it has moved 320 off)
+			vector3 gp = hce_navGoal >= 0 ? g.Pos(hce_navGoal) : goal;
+			if(hce_navGoal < 0 || (gp.xy - goal.xy).Length() > 320 || abs(gp.z - goal.z) > 96)
+			{
+				int t = g.Nearest(goal, null);
+				if(t != hce_navGoal) hce_navGoal = t;
+			}
+			// the waypoint after the next in reach: cut the corner
+			if(!hce_navDirect && hce_navNode >= 0)
+			{
+				int nx = g.NextNode(hce_navNode, hce_navGoal);
+				if(nx == -2) hce_navCheck = level.maptime + 1;
+				else if(nx >= 0 && nx != hce_navNode && HCE_Walkable(g.Pos(nx))) { hce_navNode = nx; hce_navBest = 1e9; }
+			}
+		}
+		if(hce_navDirect || hce_navGoal < 0) { hce_navNode = -1; return false; }
+		if(hce_navNode < 0)
+		{
+			hce_navNode = g.Nearest(pos, self);
+			if(hce_navNode < 0) return false;
+			hce_navBest = 1e9; hce_navBestTic = level.maptime;
+		}
+		vector3 w = g.Pos(hce_navNode);
+		double dw = (w.xy - pos.xy).Length();
+		if(dw < radius + 40)
+		{
+			// there: the next one on the route (at the goal's own waypoint: walk on to the goal)
+			if(hce_navNode == hce_navGoal) { hce_navDirect = true; hce_navNode = -1; return false; }
+			int nx = g.NextNode(hce_navNode, hce_navGoal);
+			if(nx == -2) { hce_navAng = atan2(w.y - pos.y, w.x - pos.x); return true; }        // (searched next tic: hold course)
+			if(nx < 0) { hce_navNode = -1; hce_navCheck = level.maptime + 35; return false; }   // no way there
+			hce_navNode = nx; w = g.Pos(nx); dw = (w.xy - pos.xy).Length();
+			hce_navBest = 1e9;
+		}
+		if(dw < hce_navBest - 8) { hce_navBest = dw; hce_navBestTic = level.maptime; }
+		else if(level.maptime - hce_navBestTic > 35 * 3) { hce_navNode = -1; hce_navBestTic = level.maptime; return false; }   // getting no nearer
+		hce_navAng = atan2(w.y - pos.y, w.x - pos.x);
+		return true;
 	}
 
 	// ------------------------------------------------------------------
@@ -2369,7 +2444,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(l > 40 && hce_srLook == 0)
 		{
 			double sp = l > 200 ? hce_runSpeed * 0.8 : hce_walkSpeed;
-			if(!HCE_Move(HCE_PickHeading(atan2(dv.y, dv.x), atan2(dv.y, dv.x)), sp) && hce_stuckTics > 35 * 2) hce_srLook = level.maptime + 20;
+			double ga = HCE_NavSteer(hce_srGoal) ? hce_navAng : atan2(dv.y, dv.x);
+			if(!HCE_Move(HCE_PickHeading(ga, ga), sp) && hce_stuckTics > 35 * 2) hce_srLook = level.maptime + 20;
 			A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
 			HCE_PickMoveAnim();
 			return;
@@ -2393,7 +2469,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!hce_returnHome) return false;
 		vector2 dv = hce_home.xy - pos.xy;
 		if(dv.Length() < 48 || level.maptime > hce_returnUntil) { hce_returnHome = false; HCE_Say('KeepWatch', 0.3, 35 * 8); return false; }
-		HCE_Move(HCE_PickHeading(atan2(dv.y, dv.x), atan2(dv.y, dv.x)), hce_walkSpeed);
+		double ga = HCE_NavSteer(hce_home) ? hce_navAng : atan2(dv.y, dv.x);
+		HCE_Move(HCE_PickHeading(ga, ga), hce_walkSpeed);
 		A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
 		HCE_PickMoveAnim();
 		return true;
@@ -5938,7 +6015,10 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_kamiNades.Size() > 0) HCE_KamikazeFling();
 		// a Flood form only feigning death (it will get up again) keeps its gun in its hand; it drops it if it never does
 		// (HCE_FeignOver: torn apart while down). One whose gun arm is already off dropped the gun with the arm
-		bool feign = bHCE_Resurrects && !hard && !hce_gibbed && frandom(0, 1) < max(0.25, hce_feignChance);
+		// killed outright, no fake-out: both arms off, on fire (or killed by fire), or a shotgun's kill
+		bool armless = (hce_severed & (1 << HCE_LIMB_LARM)) && (hce_severed & (1 << HCE_LIMB_RARM));
+		hce_deadForGood = armless || hce_burnHit || HCE_IsBurn(hce_lastMod) || HCE_Burning() || hce_shotgunHit;
+		bool feign = bHCE_Resurrects && !hard && !hce_gibbed && !hce_deadForGood && frandom(0, 1) < max(0.25, hce_feignChance);
 		if(!feign)
 		{
 			HCE_DropLoot();
@@ -5947,9 +6027,24 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_ResumeAnim();        // (an actor's first A_ChangeModel resets its animation: the death animation goes on)
 		A_BossDeath();   // map specials (E1M8 Barons, MAP07...) work through the replacee (see HCE_ReplaceHandler)
 		if(bHCE_Explodes && !hce_detonated) HCE_Detonate();
+		// a carrier or an infection form: gone in its own burst, no body left (the body timer removes it 3 s on)
+		if(HCE_BurstsOnDeath() && !hce_gibbed) { hce_gibbed = true; HCE_GibBurst(16, 6); }
 		if(feign) hce_reviveTics = int(35 * frandom(3, 3 + max(2, hce_feignTime)));
 	}
 	int hce_reviveTics;
+	virtual bool HCE_BurstsOnDeath() { return false; }   // (the Flood pack: the carrier and the infection form)
+	bool hce_shotgunHit;                 // the latest hit was a shotgun's (HCE_IsShotgun)
+	bool hce_deadForGood;                // a Flood form killed outright: it doesn't feign, and no infection form raises it
+	// a shotgun's hit: its pellet (HDE's HaloShotgun_Bullet, the enemies' pellets, the double barrel's), or a player's
+	// shotgun in hand, or an enemy's hitscan shotgun
+	static bool HCE_IsShotgun(Actor inflictor, Actor source)
+	{
+		String inf = inflictor ? String.Format("%s", inflictor.GetClassName()) : "";
+		if(inf.MakeLower().IndexOf("shotgun") >= 0) return true;
+		if(source && source.player && source.player.ReadyWeapon && String.Format("%s", source.player.ReadyWeapon.GetClassName()).MakeLower().IndexOf("shotgun") >= 0) return true;
+		let he = HaloDoom_EnemyBase(source);
+		return he && (!inflictor || inflictor == source) && String.Format("%s", he.hce_projectile).MakeLower().IndexOf("shotgun") >= 0;
+	}
 	// a body that was feigning death and won't get up after all (torn apart, frozen and shattered): its gun, kept in the
 	// hand while it lay feigning, drops now
 	void HCE_FeignOver()
@@ -7074,7 +7169,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(dw != 'None' && dw != '')
 		{
 			class<Actor> wc = (class<Actor>)(dw);
-			if(wc) HCE_Toss(wc, hce_team == HCE_TEAM_COVENANT);      // the Covenant always leave their gun
+			if(wc) HCE_Toss(wc, hce_team == HCE_TEAM_COVENANT || hce_team == HCE_TEAM_FLOOD);      // the Covenant and the Flood always leave their gun
 		}
 		if(hce_dropGrenade != 'None' && hce_dropGrenade != '' && hce_grenades > 0 && random(0, 1))
 		{
@@ -8428,6 +8523,170 @@ class HCE_Callouts : Thinker
 				who.Delete(i); team.Delete(i); at.Delete(i); count.Delete(i); cool.Delete(i); ev.Delete(i);
 				px.Delete(i); py.Delete(i); pz.Delete(i); force.Delete(i); done.Delete(i);
 			}
+		}
+	}
+}
+
+// ----------------------------------------------------------------------
+// The map's waypoint graph, for HaloDoom_EnemyBase.HCE_NavSteer: HaloDoom Evolved's multiplayer maps
+// (REVonGit/HDE-Maps) link the old mod's bot waypoints at level start for their bots and publish the result on the
+// waypoint actors (class HDEMP_BotNode: score its index, tag its links "to:cost,..."). Read once, by name, so this
+// pack loads without that one. For each goal waypoint asked for, a Dijkstra over the links turned round gives every
+// waypoint its next step toward it; kept for the level (the graph doesn't change), so a whole wave heading for one
+// player costs one search.
+// ----------------------------------------------------------------------
+class HCE_NavGraph : Thinker
+{
+	Array<Actor> nodes;
+	Array<double> nx, ny, nz;
+	Array<int> rStart, rCount, rAdj; Array<double> rCost;   // the links turned round: who leads to each node
+	Array<int> goals; Array<int> nextOf;                     // per goal searched: every node's next step (n a goal)
+	bool none;                                               // no graph on this map
+
+	// the level's graph, read the first time it is wanted (null: none, or not published yet)
+	static HCE_NavGraph Get()
+	{
+		let it = ThinkerIterator.Create("HCE_NavGraph", STAT_INFO);
+		let g = HCE_NavGraph(it.Next());
+		if(!g)
+		{
+			if(level.maptime < 2) return null;                   // (the maps build theirs on the first tic)
+			g = new("HCE_NavGraph"); g.ChangeStatNum(STAT_INFO);
+			g.Load();
+		}
+		return g.none ? null : g;
+	}
+
+	void Load()
+	{
+		none = true;
+		String cn = "HDEMP_BotNode";
+		class<Actor> nc = cn;
+		if(!nc) return;
+		let it = ThinkerIterator.Create(nc); Actor a;
+		Array<Actor> found; while(a = Actor(it.Next())) found.Push(a);
+		int n = found.Size(); if(n < 2) return;
+		for(int i = 0; i < n; i++) { nodes.Push(null); nx.Push(0); ny.Push(0); nz.Push(0); }
+		for(int i = 0; i < n; i++)
+		{
+			int k = found[i].score;
+			if(k < 0 || k >= n || nodes[k]) return;              // not published (an older maps pack)
+			nodes[k] = found[i]; nx[k] = found[i].pos.x; ny[k] = found[i].pos.y; nz[k] = found[i].pos.z;
+		}
+		// the links, turned round
+		Array<int> from, to; Array<double> cost;
+		for(int i = 0; i < n; i++)
+		{
+			String t = nodes[i].GetTag("");
+			if(t.Length() == 0) continue;
+			Array<String> ls; t.Split(ls, ",");
+			for(int l = 0; l < ls.Size(); l++)
+			{
+				Array<String> p; ls[l].Split(p, ":");
+				if(p.Size() != 2) continue;
+				int j = p[0].ToInt(); if(j < 0 || j >= n) continue;
+				from.Push(i); to.Push(j); cost.Push(max(1, p[1].ToDouble()));
+			}
+		}
+		if(!from.Size()) return;
+		for(int i = 0; i < n; i++) { rStart.Push(0); rCount.Push(0); }
+		for(int l = 0; l < to.Size(); l++) rCount[to[l]]++;
+		int acc = 0; for(int i = 0; i < n; i++) { rStart[i] = acc; acc += rCount[i]; rCount[i] = 0; }
+		for(int l = 0; l < to.Size(); l++) { rAdj.Push(0); rCost.Push(0); }
+		for(int l = 0; l < to.Size(); l++) { int j = to[l], at = rStart[j] + rCount[j]++; rAdj[at] = from[l]; rCost[at] = cost[l]; }
+		none = false;
+		if(developer) Console.Printf("Halo CE enemies: the map's waypoint graph, %d waypoints, %d links", n, from.Size());
+	}
+
+	vector3 Pos(int i) { return (nx[i], ny[i], nz[i]); }
+
+	// the waypoint nearest p (within 160 up or down); with 'seer', only one it can see, and within 1200
+	int Nearest(vector3 p, Actor seer)
+	{
+		int best = -1; double bd = 1e18;
+		Array<int> ci; Array<double> cd;
+		for(int i = 0; i < nodes.Size(); i++)
+		{
+			double dz = abs(nz[i] - p.z); if(dz > 160) continue;
+			double d = (nx[i] - p.x) * (nx[i] - p.x) + (ny[i] - p.y) * (ny[i] - p.y) + dz * dz * 4;
+			if(!seer) { if(d < bd) { bd = d; best = i; } continue; }
+			if(d < 1200 * 1200) { ci.Push(i); cd.Push(d); }
+		}
+		if(!seer) return best;
+		// seen: the nearest few it can see (checked nearest first, at most 12 sight checks)
+		for(int tries = 0; tries < 12 && ci.Size(); tries++)
+		{
+			int k = 0; for(int j = 1; j < cd.Size(); j++) if(cd[j] < cd[k]) k = j;
+			int i = ci[k]; ci.Delete(k); cd.Delete(k);
+			if(nodes[i] && seer.CheckSight(nodes[i], SF_IGNOREVISIBILITY)) return i;
+		}
+		return -1;
+	}
+
+	// the next waypoint from 'at' toward 'goal' (-1: no way there)
+	int NextNode(int at, int goal)
+	{
+		int n = nodes.Size();
+		if(at < 0 || goal < 0 || at >= n || goal >= n) return -1;
+		if(at == goal) return goal;
+		int gi = goals.Find(goal);
+		if(gi == goals.Size())
+		{
+			if(searchedAt == level.maptime) return -2;         // one search a tic: the rest wait a tic (-2)
+			searchedAt = level.maptime;
+			int t0 = MSTime();
+			Search(goal); gi = goals.Size() - 1;
+			if(developer >= 2) Console.Printf("Halo CE enemies: route search to waypoint %d, %d ms", goal, MSTime() - t0);
+		}
+		return nextOf[gi * n + at];
+	}
+	int searchedAt;
+
+	// Dijkstra out from the goal over the links turned round: each node's next step is the one it was reached from
+	void Search(int goal)
+	{
+		int n = nodes.Size(), base = nextOf.Size();
+		goals.Push(goal);
+		Array<double> dist; Array<bool> done;
+		for(int i = 0; i < n; i++) { nextOf.Push(-1); dist.Push(1e18); done.Push(false); }
+		dist[goal] = 0; nextOf[base + goal] = goal;
+		// a binary heap of (distance, node), stale entries skipped
+		hk.Clear(); hv.Clear(); Push(0, goal);
+		while(hk.Size())
+		{
+			double ud = hk[0]; int u = hv[0]; Pop();
+			if(done[u]) continue;
+			done[u] = true;
+			for(int k = rStart[u]; k < rStart[u] + rCount[u]; k++)
+			{
+				int v = rAdj[k]; double nd = ud + rCost[k];
+				if(nd < dist[v]) { dist[v] = nd; nextOf[base + v] = u; Push(nd, v); }
+			}
+		}
+	}
+	Array<double> hk; Array<int> hv;
+	void Push(double k, int v)
+	{
+		hk.Push(k); hv.Push(v);
+		int i = hk.Size() - 1;
+		while(i > 0)
+		{
+			int p = (i - 1) / 2; if(hk[p] <= hk[i]) break;
+			double tk = hk[p]; hk[p] = hk[i]; hk[i] = tk; int tv = hv[p]; hv[p] = hv[i]; hv[i] = tv; i = p;
+		}
+	}
+	void Pop()
+	{
+		int last = hk.Size() - 1;
+		hk[0] = hk[last]; hv[0] = hv[last]; hk.Pop(); hv.Pop();
+		int n = hk.Size(), i = 0;
+		while(true)
+		{
+			int l = i * 2 + 1, r = l + 1, m = i;
+			if(l < n && hk[l] < hk[m]) m = l;
+			if(r < n && hk[r] < hk[m]) m = r;
+			if(m == i) break;
+			double tk = hk[m]; hk[m] = hk[i]; hk[i] = tk; int tv = hv[m]; hv[m] = hv[i]; hv[i] = tv; i = m;
 		}
 	}
 }

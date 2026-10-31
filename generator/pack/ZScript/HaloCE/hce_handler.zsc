@@ -515,6 +515,25 @@ class HCE_ReplaceHandler : EventHandler
 		}
 	}
 
+	// Every second: a body that burst (a carrier or infection form popping, a body torn apart: hidden by HCE_GibBurst)
+	// is removed 3 s on (its sounds done); any other enemy body fades out hce_corpsetime seconds after it died (0: kept),
+	// whether a player sees it or not. Not a body that is feigning death, or being raised by an infection form.
+	void BodyTimer()
+	{
+		CVar cv = CVar.FindCVar("hce_corpsetime");
+		int keep = cv ? cv.GetInt() * TICRATE : 0;
+		let it = ThinkerIterator.Create("HaloDoom_EnemyBase");
+		HaloDoom_EnemyBase e;
+		while(e = HaloDoom_EnemyBase(it.Next()))
+		{
+			if(e.health > 0 || e.bNOINTERACTION || !e.hce_enabled) continue;
+			int age = level.maptime - e.hce_diedAt;
+			if(e.hce_gibbed && e.bInvisible) { if(age > 3 * TICRATE) { e.ClearCounters(); e.Destroy(); } continue; }
+			if(keep <= 0 || age < keep || e.hce_reviveTics > 0 || e.hce_feedBy) continue;
+			FadeAway(e);
+		}
+	}
+
 	// per tic: the cleanup sweep every 105 tics, late Hunter pairing, the start-of-map console report (tic 2), and the
 	// Marine swap for queued friendly monsters: a Marine sized to the monster's health (<= 50 rifleman, <= 100
 	// armoured, else armoured Major) takes its place, TID, special, args and ambush flag, and the monster is removed
@@ -522,6 +541,7 @@ class HCE_ReplaceHandler : EventHandler
 	override void WorldTick()
 	{
 		if(level.maptime % 105 == 52) Cleanup();
+		if(level.maptime % 35 == 17) BodyTimer();
 		if(lateHunters.Size()) PairLateHunters();
 		if(level.maptime == 2)
 		{

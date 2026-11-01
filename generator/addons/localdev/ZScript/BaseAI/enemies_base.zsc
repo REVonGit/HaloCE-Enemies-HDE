@@ -924,9 +924,19 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_team = HCE_TEAM_HUMAN; hce_sentinelAlly = true; bFRIENDLY = true; bHCE_FollowPlayer = true;
 			if(bCOUNTKILL) { bCOUNTKILL = false; level.total_monsters--; }      // an ally is not a kill to make
 		}
+		// an ally by whoever put it there (a map, a mode: spawned friendly, a random spawner passing it on): any of the
+		// Covenant or the Sentinels on the player's side, the humans' team, kept with the player as a Marine squad is.
+		// (The HDE multiplayer pack's Firefight Ally Support sends them so.)
+		if(bFRIENDLY && hce_team != HCE_TEAM_HUMAN)
+		{
+			if(hce_team == HCE_TEAM_SENTINEL) hce_sentinelAlly = true;
+			hce_recruit = true;
+			hce_team = HCE_TEAM_HUMAN; bHCE_FollowPlayer = true;
+			if(bCOUNTKILL) { bCOUNTKILL = false; level.total_monsters--; }
+		}
 		static const int prefs[] = { HCE_WK_CLOSE, HCE_WK_MID, HCE_WK_LONG };
 		hce_weaponPref = prefs[random(0, 2)];             // a regular Marine's liking: close, mid or long range
-		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0) HCE_RollName();
+		if(hce_team == HCE_TEAM_HUMAN && hce_rankName.Length() == 0 && !(hce_recruit && !hce_sentinelAlly)) HCE_RollName();   // (not a Marine's name for a Covenant ally)
 		curChaseAngle = angle;
 		hce_strafeDir = random(0, 1) ? 1 : -1;
 		hce_grenadeTics = int(hce_grenadeDelay * 35 * frandom(0.5, 1.0));
@@ -3569,7 +3579,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// overlay, with Halo CE's health bar). Rolled at spawn from the lists below; Johnson and Stacker have their own.
 	// ------------------------------------------------------------------
 	String hce_rankName;
-	bool hce_sentinelAlly;                 // a Sentinel on the player's side (hce_sentinelallies)
+	bool hce_sentinelAlly;                 // a Sentinel on the player's side (hce_sentinelallies, or spawned friendly)
+	bool hce_recruit;                      // one of the Covenant or the Sentinels spawned friendly: on the player's side
 	bool HCE_IsSentinel() { return hce_team == HCE_TEAM_SENTINEL || hce_sentinelAlly; }   // on either side
 
 	// Rolls hce_rankName at spawn: Sentinel allies get a designation; Marines a rank by class (Armored -> NCO ranks,

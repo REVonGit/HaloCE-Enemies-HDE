@@ -26,7 +26,7 @@ HUMAN = r'objects\characters\floodcombat_human\floodcombat_human'
 ELITE = r'objects\characters\floodcombat_elite\floodcombat_elite'
 # body -> the Halo 2 Flood whose leap it takes. To give another Flood body the leap, add it here
 CHARS = {'FloodHuman': HUMAN, 'FloodArmored': HUMAN, 'FloodMarine': HUMAN, 'FloodODST': HUMAN,
-         'FloodElite': ELITE}
+         'FloodElite': ELITE, 'FloodEliteArmored': ELITE, 'FloodEliteCommander': ELITE, 'FloodEliteUltra': ELITE}
 CLIP = 'leap_pit'
 NAMES = ('stand pistol hoist', 'stand unarmed hoist')     # the Flood's stances (build_pack: pistol armed, else unarmed)
 _cache = {}

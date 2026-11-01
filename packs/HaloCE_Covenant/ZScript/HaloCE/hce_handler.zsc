@@ -48,12 +48,12 @@ class HCE_ReplaceHandler : EventHandler
 			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMinorNeedler*3 HCE_GruntMajorNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_EliteMinorPlasmaRifle*1",
 			"HCE_GruntMajorPlasmaPistol*4 HCE_GruntMajorNeedler*3 HCE_GruntMinorNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorNeedler*1 HCE_EliteMinorPlasmaRifle*1",
 			"HCE_GruntMajorPlasmaPistol*3 HCE_GruntMajorNeedler*3 HCE_GruntSpecopsNeedler*2 HCE_JackalMinorPlasmaPistol*2 HCE_JackalMajorNeedler*2 HCE_EliteMinorPlasmaRifle*2",
-		// Pinky (melee charger): unarmed Flood combat forms (Ruby's Rebalance's Marine and Armored Marine hosts among
-		// them), a few with shotguns
+		// Pinky (melee charger): unarmed Flood combat forms (Ruby's Rebalance's Marine, Armored Marine and shielded Elite
+		// hosts among them), a few with shotguns, and the sword Flood Elite Commander on hard
 		"Demon",
 			"HCE_FloodcombatHumanUnarmed*4 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmoredUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*1 HCE_FloodcombatHumanShotgun*1",
-			"HCE_FloodcombatHumanUnarmed*3 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmoredUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteShotgun*1",
-			"HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteShotgun*2 HCE_FloodcombatHumanShotgun*1",
+			"HCE_FloodcombatHumanUnarmed*3 HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmoredUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteMinorUnarmed*1 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteShotgun*1",
+			"HCE_FloodcombatEliteUnarmed*3 HCE_FloodcombatHumanUnarmed*2 HCE_FloodcombatHumanArmoredUnarmed*2 HCE_FloodcombatEliteMinorUnarmed*2 HCE_FloodcombatEliteMajorUnarmed*1 HCE_FloodcombatEliteShotgun*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatEliteCommanderEnergySword*1",
 		// Spectre (invisible): Stealth Elites, stealth Flood Elites, sword-wielding Stealth Majors, cloaked Draeth Commanders
 		"Spectre",
 			"HCE_StealthElitePlasmaRifle*5 HCE_FloodcombatEliteStealthUnarmed*2 HCE_StealthEliteMajorPlasmaRifle*1 HCE_DraethCommanderBeamRifleCamo*1",
@@ -110,11 +110,11 @@ class HCE_ReplaceHandler : EventHandler
 		// Spider Mastermind: Elite Commander (4x health)
 		"SpiderMastermind", "HCE_BossSpiderEliteCommanderPlasmaRifle*1", "HCE_BossSpiderEliteCommanderPlasmaRifle*1", "HCE_BossSpiderEliteCommanderPlasmaRifle*1",
 		// Wolfenstein SS (secret levels): armed human Flood forms, with Ruby's Rebalance's Marine, Armored Marine and ODST
-		// hosts
+		// hosts, and its shielded Flood Elites and fuel-rod Ultra on hard
 		"WolfensteinSS",
 			"HCE_FloodcombatHumanAssaultRifle*3 HCE_FloodcombatHumanPistol*2 HCE_FloodcombatHumanUnarmoredAssaultRifle*2 HCE_FloodcombatHumanUnarmoredPistol*2 HCE_FloodcombatHumanPlasmaPistol*1 HCE_FloodcombatHumanArmoredAssaultRifle*1",
-			"HCE_FloodcombatHumanAssaultRifle*3 HCE_FloodcombatHumanUnarmoredAssaultRifle*2 HCE_FloodcombatHumanArmoredAssaultRifle*2 HCE_FloodcombatHumanPistol*1 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatHumanNeedler*1 HCE_FloodcombatHumanArmoredShotgun*1 HCE_FloodcombatOdstAssaultRifle*1",
-			"HCE_FloodcombatHumanAssaultRifle*2 HCE_FloodcombatHumanArmoredAssaultRifle*2 HCE_FloodcombatOdstAssaultRifle*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatOdstShotgun*1 HCE_FloodcombatHumanArmoredRocketLauncher*1 HCE_FloodcombatOdstSniperRifle*1 HCE_FloodcombatHumanArmoredSniperRifle*1"
+			"HCE_FloodcombatHumanAssaultRifle*3 HCE_FloodcombatHumanUnarmoredAssaultRifle*2 HCE_FloodcombatHumanArmoredAssaultRifle*2 HCE_FloodcombatHumanPistol*1 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatHumanNeedler*1 HCE_FloodcombatHumanArmoredShotgun*1 HCE_FloodcombatOdstAssaultRifle*1 HCE_FloodcombatEliteMinorPlasmaRifle*1",
+			"HCE_FloodcombatHumanAssaultRifle*2 HCE_FloodcombatHumanArmoredAssaultRifle*2 HCE_FloodcombatOdstAssaultRifle*2 HCE_FloodcombatHumanShotgun*1 HCE_FloodcombatOdstShotgun*1 HCE_FloodcombatHumanArmoredRocketLauncher*1 HCE_FloodcombatOdstSniperRifle*1 HCE_FloodcombatHumanArmoredSniperRifle*1 HCE_FloodcombatEliteMinorPlasmaRifle*1 HCE_FloodcombatEliteMajorNeedler*1 HCE_FloodcombatEliteUltraFuelRod*1"
 	};
 
 	// boss stand-in -> Doom boss it replaces (CheckReplacee; A_BossDeath uses it for map specials)

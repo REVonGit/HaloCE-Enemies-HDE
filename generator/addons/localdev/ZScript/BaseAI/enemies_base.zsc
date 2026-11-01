@@ -169,6 +169,11 @@ class HaloDoom_EnemyBase : Actor abstract
 			vel.xy = (0, 0); hce_shove = (0, 0);
 		}
 		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
+		// infection forms pop the moment they touch what they're after: crawling, leaping or bumped into
+		if(hce_enabled && bHCE_Swarm && bHCE_Explodes && health > 0 && !hce_detonated && target && target.health > 0
+			&& HCE_TeamOf(target) != hce_team && Distance2D(target) <= radius + target.radius + 4
+			&& pos.z <= target.pos.z + target.height + 4 && pos.z + height >= target.pos.z - 4)
+		{ HCE_Detonate(); if(bDestroyed) return; }
 		if(hce_enabled && hce_ackAt > 0 && level.maptime >= hce_ackAt) { hce_ackAt = 0; if(health > 0) HCE_Say('Acknowledge', 1.0, 35, true); }
 		// HaloDoom Evolved's motion tracker shows a monster only while it has a target: a friendly Marine with none
 		// (following, holding) gets a stand-in dot that rides on him (hce_core.zsc HCE_RadarBlip)
@@ -5309,6 +5314,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			int dmg = int(hce_meleeDamage * frandom(0.9, 1.1) * (bFRIENDLY ? 1.0 : HCE_Diff(HCE_D_DAMAGE)));
 			target.DamageMobj(self, self, dmg, 'Melee', 0, AngleTo(target));
+			if(bHCE_Swarm && bHCE_Explodes) { HCE_Detonate(); return; }   // infection forms pop on contact
 			if(bHCE_Swarm)
 			{
 				// infection forms latch, nibble and hop off again

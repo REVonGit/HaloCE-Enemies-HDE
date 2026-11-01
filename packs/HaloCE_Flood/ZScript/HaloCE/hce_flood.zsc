@@ -5957,6 +5957,28 @@ class HCE_FloodcombatEliteUltraFuelRod : HCE_FloodEliteUltraBase
 // rolls and its cosmetics. Changing a number here changes every FloodGrunt; one variant's numbers are in its own class
 class HCE_FloodGruntBase : HaloDoom_EnemyBase abstract
 {
+	// the armour in one of Halo's Grunt rank colours, picked as it spawns: Ultra white (the skins as made), Minor orange,
+	// Major red, Spec Ops black (skins/floodgrunt_<rank>_<n>.png: the armour plates tinted, the Flood flesh kept)
+	int hce_rankSkin;
+	static const String RANK_SKINS[] = { "", "minor", "major", "specops" };
+	override void HCE_DressSurfaces()
+	{
+		super.HCE_DressSurfaces();
+		int r = random[HCEFloodRank](0, 99);
+		hce_rankSkin = r < 30 ? 1 : r < 55 ? 2 : r < 75 ? 0 : 3;
+		for(int s = 0; s < 4; s++) HCE_PaintRank(s);
+	}
+	void HCE_PaintRank(int s)
+	{
+		if(hce_rankSkin == 0 || (s != 0 && s != 1 && s != 3)) return;
+		A_ChangeModel('None', 0, "", 'None', s, "models/hce/FloodGrunt", String.Format("skins/floodgrunt_%s_%d.png", RANK_SKINS[hce_rankSkin], s == 1 ? 1 : 0), CMDL_USESURFACESKIN);
+	}
+	// a surface shown again keeps the rank's colour (the MODELDEF's skin is the white one)
+	override void HCE_ShowSurface(int s)
+	{
+		super.HCE_ShowSurface(s);
+		HCE_PaintRank(s);
+	}
 	Default
 	{
 		Monster;
@@ -6263,9 +6285,11 @@ class HCE_FloodGruntNeedler : HCE_FloodGruntBase
 		case 7: A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN); return;
 		}
 		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+		HCE_PaintRank(s);
 	}
 	override void HCE_DressSurfaces()
 	{
+		super.HCE_DressSurfaces();   // (the rank's armour colour)
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
 		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
 	}
@@ -6437,9 +6461,11 @@ class HCE_FloodGruntPlasmaPistol : HCE_FloodGruntBase
 		case 8: A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN); return;
 		}
 		A_ChangeModel('None', 0, "", 'None', s, "", 'None', CMDL_USESURFACESKIN);
+		HCE_PaintRank(s);
 	}
 	override void HCE_DressSurfaces()
 	{
+		super.HCE_DressSurfaces();   // (the rank's armour colour)
 		A_ChangeModel('None', 0, "", 'None', 8, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
 	}
 

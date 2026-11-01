@@ -998,7 +998,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			&& (bAMBUSH || frandom(0, 1) < HCE_CVarF('hce_sleepinggrunts', 0.3)))
 			hce_sleeping = true;
 		Name shn = HCE_ShellClass();                   // the energy-shield flare shell (pack code)
-		if((hce_shieldMax > 0 || bHCE_FrontShield) && shn != 'None')     // a Jackal's: its shield field (HCE_ShieldField)
+		if((hce_shieldMax > 0 || bHCE_FrontShield) && shn != 'None' && !HCE_QuietShield())     // a Jackal's: its shield field (HCE_ShieldField)
 		{
 			class<Actor> shc = (class<Actor>)(shn);
 			if(shc) { hce_shellActor = Spawn(shc, pos, NO_REPLACE); if(hce_shellActor) hce_shellActor.master = self; }
@@ -3581,6 +3581,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	String hce_rankName;
 	bool hce_sentinelAlly;                 // a Sentinel on the player's side (hce_sentinelallies, or spawned friendly)
 	bool hce_recruit;                      // one of the Covenant or the Sentinels spawned friendly: on the player's side
+	// the Marines' shields: unseen and unheard (no flare, sparks, impact flash or shatter; none of the shield's sounds).
+	// They still take the hits and recharge (HCE_Shield)
+	bool HCE_QuietShield() { return hce_team == HCE_TEAM_HUMAN && !hce_recruit && !hce_sentinelAlly; }
 	bool HCE_IsSentinel() { return hce_team == HCE_TEAM_SENTINEL || hce_sentinelAlly; }   // on either side
 
 	// Rolls hce_rankName at spawn: Sentinel allies get a designation; Marines a rank by class (Armored -> NCO ranks,
@@ -7819,7 +7822,7 @@ class HCE_Shield : ShieldProcessor
 		+NOINTERACTION
 		RenderStyle "None";
 	}
-	bool hce_started;
+	bool hce_started, hce_quiet;   // hce_quiet: a Marine's (HaloDoom_EnemyBase.HCE_QuietShield): nothing seen or heard
 	// HDE's ShieldProcessor counts the recharge wait twice a tic while the shield is empty: once here, so it waits its
 	// full delay (Halo's shield stun), as the player's does
 	override void updateShields()
@@ -7831,8 +7834,16 @@ class HCE_Shield : ShieldProcessor
 	// model on hits, on recharge from empty, and glows faintly while recharging; sparks (blue, red under 25%) on each hit.
 	override void DisplayShields()
 	{
-		if(!hce_started) { hce_started = true; prevShields = shields; bInvisible = true; return; }   // no flare for the shield it spawns with
+		if(!hce_started)
+		{
+			hce_started = true; prevShields = shields; bInvisible = true;   // no flare for the shield it spawns with
+			let q = HaloDoom_EnemyBase(Owner);
+			hce_quiet = q && q.HCE_QuietShield();
+			if(hce_quiet) { snd_ShieldBreak = ""; snd_ShieldRecharging = ""; snd_ShieldLow = ""; snd_ShieldRecover = ""; }   // (HDE's own shield sounds)
+			return;
+		}
 		if(prevShields > 0 && shields <= 0) OnShieldBreak();
+		if(hce_quiet) { prevShields = shields; bInvisible = true; return; }   // (a Marine's: no flare, no sparks)
 		let e = HaloDoom_EnemyBase(Owner);
 		if(e && e.hce_shellActor && !e.bHCE_FrontShield)
 		{
@@ -7856,7 +7867,7 @@ class HCE_Shield : ShieldProcessor
 	// a projectile (or a hitscan round) striking the shield: a flash and sparks where it hit, in the shield's colour
 	override double OnShieldDamage(double dmg, Name mod, Actor inflictor, Actor source)
 	{
-		if(Owner && dmg > 0)
+		if(Owner && dmg > 0 && !hce_quiet)
 		{
 			let e = HaloDoom_EnemyBase(Owner);
 			color c = e ? e.HCE_ShieldColor() : Color(255, 127, 178, 255);
@@ -7872,6 +7883,7 @@ class HCE_Shield : ShieldProcessor
 		if(!Owner) return;
 		let e = HaloDoom_EnemyBase(Owner);
 		if(e) e.HCE_OnShieldPop();
+		if(hce_quiet) return;   // (a Marine's: no flash, sound or shards)
 		if(e && e.hce_shellActor && !e.bHCE_FrontShield) { e.hce_shellActor.alpha = 1.0; e.hce_shellActor.bInvisible = false; }
 		Owner.A_StartSound(snd_ShieldBreak, CHAN_AUTO, CHANF_OVERLAP);
 		// the shield shatters like glass: HCE_ShieldShatter (core pack) throws the shards; without it, sparks

@@ -80,6 +80,10 @@ OptionMenu "HCE_GoreOptions"
 	StaticText ""
 	Option "Halo blood with NashGore", "hce_halogore", "OnOff"
 	StaticText "With NashGore loaded: Halo CE / Halo 2 decals and bursts.", 1
+	StaticText ""
+	Option "Forerunner kills derez", "hce_forerunnerderez", "OnOff"
+	StaticText "A kill by a Forerunner weapon burns the body away", 1
+	StaticText "in the shot's colour, as Halo 4's Prometheans do.", 1
 }
 
 OptionMenu "HCE_PerfOptions"

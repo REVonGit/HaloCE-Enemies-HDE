@@ -2,7 +2,7 @@
 // on top of NashGore's own sprays, splats and pools, Covenant enemies and Marines bleed the way they do in Halo CE and
 // Halo 2:
 // * every hit sprays the species' Halo blood decal onto the wall behind it (Halo CE and Halo 2 splats, chosen at
-//   random: the Elite's lavender, the Grunt's blue, the Hunter's orange with its glowing splats, the Brute's
+//   random: the Flood's khaki (Halo 2's flood splats, from the Flood pack), the Elite's lavender, the Grunt's blue, the Hunter's orange with its glowing splats, the Brute's
 //   navy, the Drone's khaki, the Engineer's pink; Slug Men, a Mgalekgolo sub-species, bleed the Hunter's orange; the beasts
 //   red; the Marines Halo CE's human red, dying in its blood pool)
 // * a Halo blood burst puffs out of the wound, in the victim's blood colour, with a few streaks: Halo CE's Covenant
@@ -16,7 +16,7 @@
 // The splats are big (Halo spreads its small blood bitmaps over a body's width and more) and plentiful.
 // NashGore's own blood is kept off these enemies: their blood type is the core's HCE_HaloBlood (NashGore only
 // replaces Doom's own), and NashGore's per-monster gore (corpse pools, spurts, its gibs) is turned off for them as they
-// spawn (it reads their no-blood flag once, then: set for that moment). The Flood and the Sentinels keep NashGore's.
+// spawn (it reads their no-blood flag once, then: set for that moment). The Sentinels keep NashGore's.
 // Textures and decals: extract_halo_gore.py (graphics/hcegore, sprites/hcegore, decaldef.hcegore).
 class HCE_HaloGoreHandler : EventHandler
 {
@@ -130,8 +130,8 @@ class HCE_HaloGoreHandler : EventHandler
 	// in Species(), and its sprites and decals from extract_halo_gore.py.
 	static String FloorCode(String group)
 	{
-		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human", "Reaver" };
-		static const String c[] = { "EL", "GR", "HU", "BR", "DR", "EN", "BE", "HM", "RV" };
+		static const String g[] = { "Elite", "Grunt", "Hunter", "Brute", "Drone", "Engineer", "Beast", "Human", "Reaver", "Flood" };
+		static const String c[] = { "EL", "GR", "HU", "BR", "DR", "EN", "BE", "HM", "RV", "FL" };
 		for(int i = 0; i < g.Size(); i++) if(g[i] == group) return c[i];
 		return "BE";
 	}
@@ -168,7 +168,8 @@ class HCE_HaloGoreHandler : EventHandler
 	static String Species(Actor a)
 	{
 		String n = a.GetClassName();
-		if(n.IndexOf("Flood") >= 0 || n.IndexOf("Sentinel") >= 0) return "";
+		if(n.IndexOf("Sentinel") >= 0) return "";
+		if(n.IndexOf("Flood") >= 0) return "Flood";     // (Halo 2's Flood splats: the Flood pack's decaldef.hcefloodgore)
 		if(n.IndexOf("Marine") >= 0 || n.IndexOf("Johnson") >= 0) return "Human";
 		static const String keys[] = { "Hunter", "Brute", "Drone", "Engineer", "SlugMan", "Artybug", "Grunt", "Draeth", "Elite", "Jackal", "Drinol", "BlindWolf", "ThornBeast" };
 		static const String groups[] = { "Hunter", "Brute", "Drone", "Engineer", "Hunter", "Hunter", "Grunt", "Reaver", "Elite", "Elite", "Beast", "Beast", "Beast" };
@@ -207,6 +208,7 @@ class HCE_HaloGoreHandler : EventHandler
 		double away = from ? from.AngleTo(v) : v.angle + 180;
 		// the puff sheet: Halo CE's human impact for the Marines, its Covenant one for the Covenant, the generic for beasts
 		class<HCE_GorePuff> pc = group == "Human" ? (class<HCE_GorePuff>)("HCE_GorePuffHuman") : group == "Beast" ? (class<HCE_GorePuff>)("HCE_GorePuff") : (class<HCE_GorePuff>)("HCE_GorePuffCov");
+		if(group == "Flood") { String fpn = "HCE_GorePuffFlood"; class<HCE_GorePuff> fp = fpn; if(fp) pc = fp; }   // (the Flood pack's: Halo 2's impact spray)
 		puffs = HaloDoom_EnemyBase.HCE_GoreCount(puffs); streaks = HaloDoom_EnemyBase.HCE_GoreCount(streaks);   // the gore budget (hce_gorescale)
 		for(int i = 0; i < puffs; i++)
 		{

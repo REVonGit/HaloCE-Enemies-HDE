@@ -1,0 +1,121 @@
+// The Flood's own blood and bursts, from Halo 2 (extract_flood_gore.py: graphics/hcegore, sprites/hcegore,
+// decaldef.hcefloodgore).
+// * HCE_FloodBurst: a carrier, an infection form or a Flood Grunt popping (HaloDoom_EnemyBase.HCE_Detonate spawns it,
+//   scaled to the body), after Halo 2's floodcarrier body_destroyed effect: skin chunks flung out tumbling
+//   (skin_burst), dark smoke (smoke_volumetric_dark) round a fiery flash (smoke_fiery_small), the wet spray
+//   (impact_spray) and the large Flood splats on the walls round it and the floor under it.
+// * HCE_GorePuffFlood: the Flood's impact puff for the Halo gore (hce_gore.zsc picks it for the Flood).
+
+class HCE_FloodBurst : Actor
+{
+	Default { +NOINTERACTION +NOBLOCKMAP +NOTONAUTOMAP RenderStyle "None"; }
+	States
+	{
+	Spawn:
+		TNT1 A 1 NoDelay Pop();
+		Stop;
+	}
+	void Pop()
+	{
+		double k = scale.x;
+		color blood = target ? target.BloodColor : Color(255, 118, 112, 58);
+		if(blood == 0) blood = Color(255, 118, 112, 58);
+		// the flash, and the smoke round it
+		let f = Spawn("HCE_FloodBurstFire", pos); if(f) f.scale *= k;
+		for(int i = 0; i < int(2 * k + 2); i++)
+		{
+			let sm = Spawn("HCE_FloodBurstSmoke", pos + (frandom[HCEFB](-8, 8) * k, frandom[HCEFB](-8, 8) * k, frandom[HCEFB](-6, 10) * k));
+			if(!sm) continue;
+			sm.scale *= k * frandom[HCEFB](0.7, 1.2); sm.frame = random[HCEFB](0, 1); sm.roll = frandom[HCEFB](0, 360);
+			sm.vel = (frandom[HCEFB](-0.8, 0.8), frandom[HCEFB](-0.8, 0.8), frandom[HCEFB](0.2, 0.9)) * k;
+		}
+		// the wet spray, in the body's blood colour
+		for(int i = 0; i < int(8 * k + 3); i++)
+		{
+			let p = Spawn("HCE_GorePuffFlood", pos);
+			if(!p) continue;
+			p.SetShade(blood); p.frame = random[HCEFB](0, 3); p.scale *= k * frandom[HCEFB](0.8, 1.4);
+			p.vel = (frandom[HCEFB](-3, 3), frandom[HCEFB](-3, 3), frandom[HCEFB](0, 3)) * k;
+		}
+		// skin chunks
+		for(int i = 0; i < int(7 * k + 3); i++)
+		{
+			let c = Spawn("HCE_FloodChunk", pos);
+			if(!c) continue;
+			c.frame = random[HCEFB](0, 3); c.scale *= frandom[HCEFB](0.5, 1.0) * max(0.6, k);
+			double a = frandom[HCEFB](0, 360);
+			c.vel = (AngleToVector(a, frandom[HCEFB](2.5, 7) * max(0.7, k)), frandom[HCEFB](3, 8) * max(0.7, k));
+		}
+		// the splats: on the walls round it and the floor under it
+		for(int i = 0; i < 8; i++) A_SprayDecal("HCEGore_FloodBig", 96 * max(1., k), (0, 0, 0), (AngleToVector(i * 45 + frandom[HCEFB](-15, 15), 1), frandom[HCEFB](-0.3, 0.1)));
+		let fs = Spawn("HCE_FloodBurstPool", (pos.xy, floorz)); if(fs) fs.scale *= max(0.8, k);
+	}
+}
+
+class HCE_FloodBurstFire : Actor
+{
+	Default { +NOINTERACTION +NOBLOCKMAP +FORCEXYBILLBOARD RenderStyle "Add"; Alpha 1.0; Scale 0.9; }
+	States { Spawn: HFFI A 1 Bright { scale *= 1.12; A_FadeOut(0.12); } Loop; }
+}
+
+class HCE_FloodBurstSmoke : Actor
+{
+	Default { +NOINTERACTION +NOBLOCKMAP +FORCEXYBILLBOARD +ROLLSPRITE RenderStyle "Translucent"; Alpha 0.55; Scale 0.5; }
+	States
+	{
+	Spawn:
+		HFSM # 1 { scale *= 1.02; vel *= 0.93; roll += 0.6; A_FadeOut(0.02); }
+		Loop;
+	}
+}
+
+// a piece of the body's skin, tumbling till it lands, then lying there a while
+class HCE_FloodChunk : Actor
+{
+	Default { Radius 3; Height 3; Gravity 0.7; +NOBLOCKMAP +MISSILE +DROPOFF +NOTELEPORT +ROLLSPRITE +FORCEXYBILLBOARD +THRUACTORS +BOUNCEONFLOORS +BOUNCEONWALLS BounceFactor 0.25; WallBounceFactor 0.3; BounceCount 3; Scale 0.35; }
+	States
+	{
+	Spawn:
+		HFSK # 1 { roll += 18; if(pos.z <= floorz + 1 && vel.Length() < 1) SetStateLabel("Rest"); }
+		Loop;
+	Death:
+	Rest:
+		HFSK # 175;
+		HFSK # 1 A_FadeOut(0.05);
+		Wait;
+	}
+}
+
+// the pool of Flood blood under a burst
+class HCE_FloodBurstPool : Actor
+{
+	Default { +FLATSPRITE +NOINTERACTION +NOBLOCKMAP +DONTSPLASH +NOTONAUTOMAP RenderStyle "Translucent"; Alpha 0.9; Scale 1.6; }
+	States
+	{
+	Spawn:
+		HPFL E 0 NoDelay { frame = random[HCEFB](4, 5); angle = frandom[HCEFB](0, 360); SetZ(floorz + 0.3); }
+		HPFL # 1050;
+		HPFL # 1 A_FadeOut(0.02);
+		Wait;
+	}
+}
+
+// the Flood's impact puff (Halo 2's impact spray), shaded with the victim's blood
+class HCE_GorePuffFlood : HCE_GorePuff
+{
+	override int Frames() { return 4; }
+	States
+	{
+	Precache:
+		HGBF ABCD 0; HSFL A 0; HPFL A 0; HKFL A 0; HFSK A 0; HFSM A 0; HFFI A 0;
+		Stop;
+	Spawn:
+		HGBF # 1
+		{
+			scale *= 1.07;
+			vel *= 0.86; vel.z -= 0.04;
+			A_FadeOut(0.06);
+		}
+		Loop;
+	}
+}

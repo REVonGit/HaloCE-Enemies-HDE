@@ -1,4 +1,4 @@
-"""Alpha-tested teeth: the Elites' teeth cut out as Halo CE draws them -> out/models/<char>/
+"""Alpha-tested cards: the Elites' teeth and the infection form's tentacle legs cut out as Halo CE draws them -> out/models/<char>/
 
     python3 alpha_fix.py [char ...]
 
@@ -24,24 +24,27 @@ except Exception:
 from hce_paths import MAPS_DIR as CE_MAPS     # Halo CE's maps (HCE_MAPS)
 # the characters fixed by default (the Elite bodies that share the teeth card); the first line is overridden by the second
 CHARS = ('Elite', 'EliteSpecial', 'EliteRifle')
-CHARS = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot')
+CHARS = ('Elite', 'EliteSpecial', 'EliteRifle', 'EliteZealot', 'FloodInfection')
 # substrings of the Halo CE shader names whose base bitmap carries the cut-out alpha; add another alpha-tested
 # shader here (and its character to CHARS) to cut out more of a model
-TEETH = ('elite teeth',)
+TEETH = ('elite teeth', 'infection_tentacles')   # (the infection form's tentacle legs: cards cut out by the alpha)
 
 
 def teeth_bitmaps():
-    """[(shader name, RGBA image)] for every TEETH shader in b30.map: the bitmaps whose alpha cuts the card out"""
+    """[(shader name, RGBA image)] for every TEETH shader in b30.map and c10.map (the infection form's): the bitmaps
+    whose alpha cuts the card out"""
     from tags import HMap
     from bitmaps import bitmap_image
     from extract_chars import shader_maps
     out = []
-    m = HMap(f'{CE_MAPS}/b30.map')
-    for t in m.tags:
-        if t['cls'] != 'soso' or not any(k in t['name'] for k in TEETH): continue
-        base, _, _ = shader_maps(m, {'id': t['id']})
-        im = bitmap_image(m, base) if base else None
-        if im is not None: out.append((t['name'], im.convert('RGBA')))
+    for mp in ('b30', 'c10'):
+        if not os.path.exists(f'{CE_MAPS}/{mp}.map'): continue
+        m = HMap(f'{CE_MAPS}/{mp}.map')
+        for t in m.tags:
+            if t['cls'] != 'soso' or not any(k in t['name'] for k in TEETH) or any(n == t['name'] for n, _ in out): continue
+            base, _, _ = shader_maps(m, {'id': t['id']})
+            im = bitmap_image(m, base) if base else None
+            if im is not None: out.append((t['name'], im.convert('RGBA')))
     return out
 
 

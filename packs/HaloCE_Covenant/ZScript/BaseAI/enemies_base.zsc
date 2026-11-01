@@ -3330,6 +3330,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(target && hce_canSee) goalZ = target.pos.z;
 		else if(target) goalZ = hce_lastKnown.z;
 		else if(HCE_InSquad() && HCE_SquadPlayer()) goalZ = HCE_SquadPlayer().pos.z;
+		// on a route over the map's graph: its next waypoint (the way may go down before it comes back up to the target)
+		let ng = (hce_navInit && hce_navNode >= 0 && !hce_navDirect) ? HCE_NavGraph.Get() : null;
+		if(ng) { vector3 wp = ng.Pos(hce_navNode); goalZ = min(goalZ, wp.z); }
 		bool wanted = goalZ <= pos.z - MaxStepHeight;                       // something to go down for
 		vector2 dir = AngleToVector(ang, 1);
 		vector2 p = pos.xy + dir * (radius + max(spd, 4) + 4);
@@ -5674,7 +5677,13 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_detonated = true;
 		A_StartSound(HCE_PopSound(), CHAN_BODY, CHANF_OVERLAP);
 		A_Explode(int(max(10, hce_meleeDamage)), int(radius * 3 + 32), XF_NOTMISSILE, true, int(radius * 2));
-		for(int i = 0; i < 24; i++)
+		// the Flood's own pop (the Flood pack's HCE_FloodBurst: Halo 2's skin chunks, smoke and Flood splats), sized
+		// to the body; anything else, a plain spray
+		String fbn = "HCE_FloodBurst";
+		class<Actor> fb = fbn;
+		let burst = (fb && hce_team == HCE_TEAM_FLOOD) ? Spawn(fb, pos + (0, 0, height * 0.5), ALLOW_REPLACE) : null;
+		if(burst) { burst.scale *= clamp(radius / 24.0, 0.45, 1.6); burst.target = self; }
+		else for(int i = 0; i < 24; i++)
 			A_SpawnParticle("B8A060", 0, random(20, 40), random(3, 6), frandom(0, 360), 0, 0, height * 0.5, frandom(-3, 3), frandom(-3, 3), frandom(0, 4), 0, 0, -0.2);
 		HCE_OnDetonate();
 		if(health > 0) DamageMobj(self, self, health + 50, 'Explosive', DMG_FORCED);

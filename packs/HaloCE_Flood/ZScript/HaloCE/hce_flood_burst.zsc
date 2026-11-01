@@ -29,8 +29,18 @@ class HCE_FloodBurst : Actor
 			sm.scale *= k * frandom[HCEFB](0.7, 1.2); sm.frame = random[HCEFB](0, 1); sm.roll = frandom[HCEFB](0, 360);
 			sm.vel = (frandom[HCEFB](-0.8, 0.8), frandom[HCEFB](-0.8, 0.8), frandom[HCEFB](0.2, 0.9)) * k;
 		}
+		// a carrier or an infection form has no blood (+NOBLOOD): its pop is smoke and skin, nothing wet
+		bool dry = target && target.bNOBLOOD;
+		if(dry)
+			for(int i = 0; i < int(4 * k + 3); i++)
+			{
+				let sm = Spawn("HCE_FloodBurstSmoke", pos + (frandom[HCEFB](-10, 10) * k, frandom[HCEFB](-10, 10) * k, frandom[HCEFB](-8, 12) * k));
+				if(!sm) continue;
+				sm.scale *= k * frandom[HCEFB](0.8, 1.4); sm.frame = random[HCEFB](0, 1); sm.roll = frandom[HCEFB](0, 360);
+				sm.vel = (frandom[HCEFB](-1.4, 1.4), frandom[HCEFB](-1.4, 1.4), frandom[HCEFB](0.2, 1.2)) * k;
+			}
 		// the wet spray, in the body's blood colour
-		for(int i = 0; i < int(8 * k + 3); i++)
+		if(!dry) for(int i = 0; i < int(8 * k + 3); i++)
 		{
 			let p = Spawn("HCE_GorePuffFlood", pos);
 			if(!p) continue;
@@ -46,9 +56,32 @@ class HCE_FloodBurst : Actor
 			double a = frandom[HCEFB](0, 360);
 			c.vel = (AngleToVector(a, frandom[HCEFB](2.5, 7) * max(0.7, k)), frandom[HCEFB](3, 8) * max(0.7, k));
 		}
+		if(dry) return;
 		// the splats: on the walls round it and the floor under it
 		for(int i = 0; i < 8; i++) A_SprayDecal("HCEGore_FloodBig", 96 * max(1., k), (0, 0, 0), (AngleToVector(i * 45 + frandom[HCEFB](-15, 15), 1), frandom[HCEFB](-0.3, 0.1)));
 		let fs = Spawn("HCE_FloodBurstPool", (pos.xy, floorz)); if(fs) fs.scale *= max(0.8, k);
+	}
+}
+
+// a hit on a carrier or an infection form: a puff or two of the burst's dark smoke at the wound, drifting away from
+// the shot (no blood: they're +NOBLOOD); bigger hits, more and bigger puffs
+class HCE_FloodSmokePuff play
+{
+	static void Hit(Actor v, Actor inflictor, Actor source, int dmg)
+	{
+		if(!v) return;
+		vector3 at = HCE_HaloGoreHandler.WoundPos(v, inflictor, source);
+		Actor from = source ? source : inflictor;
+		double away = from ? from.AngleTo(v) : v.angle + 180;
+		double size = clamp(dmg / 25.0, 0.5, 1.4) * clamp(v.radius / 16.0, 0.6, 1.2);
+		int n = HaloDoom_EnemyBase.HCE_GoreCount(dmg >= 15 ? 3 : 2);
+		for(int i = 0; i < n; i++)
+		{
+			let sm = Actor.Spawn("HCE_FloodBurstSmoke", at, ALLOW_REPLACE);
+			if(!sm) continue;
+			sm.scale *= size * frandom[HCEFB](0.6, 1.0); sm.frame = random[HCEFB](0, 1); sm.roll = frandom[HCEFB](0, 360);
+			sm.vel = (Actor.AngleToVector(away + frandom[HCEFB](-45, 45), frandom[HCEFB](0.4, 1.4)), frandom[HCEFB](0.1, 0.7));
+		}
 	}
 }
 

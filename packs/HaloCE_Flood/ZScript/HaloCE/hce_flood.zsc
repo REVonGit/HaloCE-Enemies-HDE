@@ -1229,9 +1229,17 @@ class HCE_FloodcombatHumanArmoredUnarmed : HCE_FloodArmoredBase
 class HCE_FloodCarrierBase : HaloDoom_EnemyBase abstract
 {
 	override bool HCE_BurstsOnDeath() { return true; }   // it bursts when it dies: no body left
+	// no blood: a hit lets out a puff of Flood smoke (hce_flood_burst.zsc HCE_FloodSmokePuff)
+	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle)
+	{
+		int dealt = super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+		if(dealt > 0) HCE_FloodSmokePuff.Hit(self, inflictor, source, dealt);
+		return dealt;
+	}
 	Default
 	{
 		Monster;
+		+NOBLOOD
 		+DECOUPLEDANIMATIONS
 		+FLOORCLIP
 		+DONTHARMSPECIES
@@ -8272,9 +8280,17 @@ class HCE_FloodcombatHumanUnarmed : HCE_FloodHumanBase
 class HCE_FloodInfectionBase : HaloDoom_EnemyBase abstract
 {
 	override bool HCE_BurstsOnDeath() { return true; }   // it bursts when it dies: no body left
+	// no blood: a hit lets out a puff of Flood smoke (hce_flood_burst.zsc HCE_FloodSmokePuff)
+	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle)
+	{
+		int dealt = super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+		if(dealt > 0) HCE_FloodSmokePuff.Hit(self, inflictor, source, dealt);
+		return dealt;
+	}
 	Default
 	{
 		Monster;
+		+NOBLOOD
 		+DECOUPLEDANIMATIONS
 		+FLOORCLIP
 		+DONTHARMSPECIES

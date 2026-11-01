@@ -10524,7 +10524,7 @@ class HCE_MarineRadioOperator : HCE_MarineBase
 			double a = away + frandom[HCERadio](-70, 70);
 			double r = tries < 28 ? frandom[HCERadio](192, 448) : frandom[HCERadio](64, 160);
 			vector3 p = (pos.xy + AngleToVector(a, r), 0);
-			p.z = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+			p.z = HCE_FloorAt(p.x, p.y, pos.z + 96);
 			if(abs(p.z - pos.z) > 96 || !level.IsPointInLevel(p)) continue;
 			class<Actor> c = (class<Actor>)(T[random[HCERadio](0, T.Size() - 1)]);
 			if(!c) continue;

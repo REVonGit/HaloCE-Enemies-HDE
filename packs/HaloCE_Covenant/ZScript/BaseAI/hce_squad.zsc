@@ -525,7 +525,7 @@ mixin class HCE_SquadCode
 			}
 			if(gd > 40 && d > 160 && level.maptime % 8 == (hce_scavOff & 7))
 			{
-				double fz = GetZAt(hce_formSpot.x, hce_formSpot.y, 0, GZF_ABSOLUTEPOS);
+				double fz = HCE_FloorAt(hce_formSpot.x, hce_formSpot.y, pos.z + 64);
 				hce_navVia = (0, 0);
 				if(HCE_Walkable((hce_formSpot, fz)) || (d < 320 && CheckSight(p))) { hce_crumbTic = 0; hce_navLost = 0; }   // a straight way: off the trail
 				else if(HCE_TrailFollow(PlayerNum(p))) { hce_navVia = hce_trailHit.xy; hce_navLost = 0; }
@@ -683,9 +683,9 @@ mixin class HCE_SquadCode
 			{
 				double a = a0 + ((i % 2) ? 1 : -1) * ((i + 1) / 2) * 40;
 				vector2 sp = p.pos.xy + AngleToVector(a, 72 + 48 * r);
-				double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+				double fz = HCE_FloorAt(sp.x, sp.y, p.floorz + MaxStepHeight);
 				if(!level.IsPointInLevel((sp, fz + 1)) || abs(fz - p.floorz) > MaxStepHeight) continue;
-				if(GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - fz < height + 2) continue;
+				if(HCE_CeilAt(sp.x, sp.y, fz, height) - fz < height + 2) continue;
 				if(HCE_SightBlocked(p.pos + (0, 0, p.height * 0.5), (sp, fz + height * 0.5))) continue;
 				if(!CheckPosition(sp)) continue;
 				vector3 old = pos;
@@ -1430,7 +1430,7 @@ class HCE_Formation : Thinker
 			double bd = 1e9;
 			for(int i = 0; i < foes.Size(); i++) { double dd = m.Distance2D(foes[i]); if(dd < bd) { bd = dd; foe = foes[i]; } }
 		}
-		double az = m.GetZAt(a.x, a.y, 0, GZF_ABSOLUTEPOS);
+		double az = HaloDoom_EnemyBase.HCE_FloorAt(a.x, a.y, m.pos.z + 64);
 		bool corner = m.HCE_HasAnim(HCE_A_COVER_L_IDLE) && m.HCE_HasAnim(HCE_A_COVER_R_IDLE);
 		bool low = m.HCE_HasAnim(HCE_A_CROUCH_IDLE);
 		vector2 best = a; double bestS = -1e9, bestZ = az; int bestK = 1, bestSd = 0;
@@ -1443,9 +1443,9 @@ class HCE_Formation : Thinker
 			else if(c == 1) { if(!m.hce_postOn) continue; p = m.hce_post; }
 			else { int j = c - 2; p = a + Actor.AngleToVector(a0 + (j % 8) * 45 + (j / 8) * 22, step * (j / 8 + 1)); }
 			if((p - a).Length() > r + 1) continue;
-			double pz = m.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+			double pz = HaloDoom_EnemyBase.HCE_FloorAt(p.x, p.y, az + 24);
 			if(!level.IsPointInLevel((p, pz + 1)) || abs(pz - az) > 24) continue;
-			if(m.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - pz < m.height + 4) continue;
+			if(HaloDoom_EnemyBase.HCE_CeilAt(p.x, p.y, pz, m.height) - pz < m.height + 4) continue;
 			if(m.HCE_HazardAt(p) || !HaloDoom_EnemyBase.HCE_SpotFits(p, m.radius, pz)) continue;
 			if(c > 0 && m.HCE_WalkBlocked(m.pos + (0, 0, m.MaxStepHeight + 4), (p, pz + m.MaxStepHeight + 4))) continue;
 			int kind = 1, sd = 0; double sc = 0;
@@ -1510,7 +1510,7 @@ class HCE_Formation : Thinker
 		if(l < 1) return true;
 		FLineTraceData tr;
 		if(leader.LineTrace(atan2(d.y, d.x), l + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, leader.height * 0.5, data: tr)) return false;
-		double fz = leader.GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		double fz = HaloDoom_EnemyBase.HCE_FloorAt(p.x, p.y, leader.floorz + 32);
 		return abs(fz - leader.floorz) <= 32;
 	}
 

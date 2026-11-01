@@ -14,7 +14,7 @@ numbered pieces, only textures.dat.001 is read):
 Halo draws its decals multiplied or added; extract_halo_gore.to_decal turns them into straight RGBA."""
 import os as _os, sys as _sys
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), 'lib'))
-import os, sys
+import os, sys, math, random
 import numpy as np
 from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -79,6 +79,22 @@ def main():
     for n in range(2):
         r = sm.rotate(180 * n)
         png_grab(os.path.join(sdir, f'HFSM{chr(65 + n)}0.png'), r, r.width // 2, r.height // 2)
+    # the same smoke in the Flood's pale yellow-green: the gas a carrier bursts into (HFGS)
+    gs = Image.merge('RGBA', (Image.new('L', sm.size, 196), Image.new('L', sm.size, 204), Image.new('L', sm.size, 118), sm.split()[3]))
+    for n in range(2):
+        r = gs.rotate(180 * n)
+        png_grab(os.path.join(sdir, f'HFGS{chr(65 + n)}0.png'), r, r.width // 2, r.height // 2)
+    # the fireball's flash (HFFL, drawn here): a soft bright ball with a lumpy edge, under the fiery smoke
+    rnd = random.Random(3); n = 96; cc = (n - 1) / 2
+    lob = [(rnd.uniform(0, 6.283), rnd.uniform(0.75, 1.0)) for _ in range(9)]
+    fl = Image.new('RGB', (n, n)); fp = fl.load()
+    for y in range(n):
+        for x in range(n):
+            dx, dy = (x - cc) / cc, (y - cc) / cc; r = math.hypot(dx, dy); th = math.atan2(dy, dx)
+            edge = 0.62 + 0.12 * sum(math.cos(3 * (th - a)) * w for a, w in lob) / 9
+            v = min(1, max(0, 1 - r / max(edge, 0.3)) ** 1.4 + math.exp(-(r / 0.22) ** 2) * 0.6)
+            fp[x, y] = (int(255 * v),) * 3
+    png_grab(os.path.join(sdir, 'HFFLA0.png'), fl, n // 2, n // 2)
     fi = get('effects\\bitmaps\\smoke\\smoke_fiery_small'); fi.putalpha(255)
     png_grab(os.path.join(sdir, 'HFFIA0.png'), fi.convert('RGB'), fi.width // 2, fi.height // 2)
     print('flood gore:', len(small), 'splats + large; puff, skin chunks, smoke and fire sprites')

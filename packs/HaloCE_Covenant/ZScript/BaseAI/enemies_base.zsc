@@ -2406,7 +2406,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			double a = a0 + k * 47;
 			double r = frandom(96, 320);
 			vector2 sp = c.xy + AngleToVector(a, r);
-			double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+			double fz = HCE_FloorAt(sp.x, sp.y, c.z + 64);
 			if(!level.IsPointInLevel((sp, fz + 1)) || abs(fz - c.z) > 64) continue;
 			if(HCE_SightBlocked(c + (0, 0, height * 0.5), (sp, fz + height * 0.5))) continue;    // open from where it was seen
 			return (sp, fz);
@@ -2560,7 +2560,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			for(int i = 0; i < 10; i++)
 			{
 				vector2 sp = pos.xy + AngleToVector(i * 36 + frandom(-10, 10), rads[r]);
-				double fz = GetZAt(sp.x, sp.y, 0, GZF_ABSOLUTEPOS);
+				double fz = HCE_FloorAt(sp.x, sp.y, pos.z + 64);
 				if(!level.IsPointInLevel((sp, fz + 1))) continue;
 				double dt = (target.pos.xy - sp).Length();
 				if(dt < 384 || dt > max(hce_rangeMax * 1.1, 900)) continue;
@@ -2786,9 +2786,9 @@ class HaloDoom_EnemyBase : Actor abstract
 				vector2 p = pos.xy + AngleToVector(a0 + i * 360.0 / n, rads[r]);
 				double dp = (target.pos.xy - p).Length();
 				if(dp < max(hce_rangeMin * 0.7, 128) || dp > max(max(hce_rangeMax, 256), dT) * 1.1) continue;
-				double pz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+				double pz = HCE_FloorAt(p.x, p.y, pos.z + MaxStepHeight * 2);
 				if(!level.IsPointInLevel((p, pz + 1)) || abs(pz - pos.z) > MaxStepHeight * 2) continue;
-				if(GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - pz < height + 4) continue;
+				if(HCE_CeilAt(p.x, p.y, pz, height) - pz < height + 4) continue;
 				if(HCE_HazardAt(p)) continue;                                             // no cover in the slime
 				if(HCE_SightBlocked(pos + (0, 0, MaxStepHeight + 4), (p, pz + MaxStepHeight + 4))) continue;   // no straight way there
 				int side;
@@ -3130,7 +3130,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			// already standing over a drop (a lift has carried him up with a foot over its edge): a step that keeps
 			// him on the floor he's on may go on over it, or he'd never get off
-			if(floorz - dropoffz <= MaxDropoffHeight || abs(GetZAt(np.x, np.y, 0, GZF_ABSOLUTEPOS) - floorz) > 2 || !TryMove(np, 1)) return false;
+			if(floorz - dropoffz <= MaxDropoffHeight || abs(HCE_FloorAt(np.x, np.y, floorz + 2) - floorz) > 2 || !TryMove(np, 1)) return false;
 		}
 		vel.xy = (0, 0);
 		return true;
@@ -3196,12 +3196,12 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 dir = AngleToVector(ang, 1);
 		double fwdMin = radius * 2 + 12 + (overThing && bm ? bm.radius * 2 : 0);
 		vector2 far = pos.xy + dir * fwdMin;
-		double fzFar = GetZAt(far.x, far.y, 0, GZF_ABSOLUTEPOS);
+		double fzFar = HCE_FloorAt(far.x, far.y, top + MaxStepHeight);
 		if(abs(fzFar - pos.z) > MaxStepHeight && rise <= height * 0.6)
 		{
 			// a low wall crossed at a slant: floor again a little further on is a vault, not a climb onto the wall
 			vector2 far2 = far + dir * 48;
-			double fz2 = GetZAt(far2.x, far2.y, 0, GZF_ABSOLUTEPOS);
+			double fz2 = HCE_FloorAt(far2.x, far2.y, pos.z + MaxStepHeight);
 			if(abs(fz2 - pos.z) <= MaxStepHeight) { far = far2; fzFar = fz2; fwdMin += 48; }
 		}
 		bool vault;
@@ -3216,9 +3216,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!vault && (mv.z < 8 || (rise < mv.z * 0.75 && !leap) || rise > mv.z * 1.25)) return false;
 		double fwd = max(mv.x, fwdMin);
 		vector2 land = pos.xy + dir * fwd;
-		double lz = GetZAt(land.x, land.y, 0, GZF_ABSOLUTEPOS);
+		double lz = HCE_FloorAt(land.x, land.y, (vault ? pos.z : top) + MaxStepHeight);
 		if(abs(lz - (vault ? pos.z : top)) > MaxStepHeight) return false;
-		if(GetZAt(land.x, land.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING) - lz < height + 2) return false;
+		if(HCE_CeilAt(land.x, land.y, lz, height) - lz < height + 2) return false;
 		FLineTraceData tr;
 		if(LineTrace(ang, fwd + radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;            // a wall above it
 		if(LineTrace(ang, fwd + radius, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + height * 0.8, data: tr)) return false; // no room for the body
@@ -3280,8 +3280,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		vector2 dir = AngleToVector(ang, 1);
 		double reach = radius + 10;
 		vector2 p = pos.xy + dir * reach;
-		double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
-		double cz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS | GZF_CEILING);
+		double fz = HCE_FloorAt(p.x, p.y, pos.z + max(hce_jumpHeight, height * 2));   // (a ledge within reach: a 3D floor's too)
+		double cz = HCE_CeilAt(p.x, p.y, fz, height);
 		double top = fz;
 		bool overThing = false;
 		let bm = useBlocker ? BlockingMobj : null;
@@ -3297,7 +3297,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// somewhere to land: past a ledge the ground must stay up (not a thin wall or a railing);
 		// over a thing it may be back at our own height
 		vector2 p2 = pos.xy + dir * (radius * 2 + 20);
-		double fz2 = GetZAt(p2.x, p2.y, 0, GZF_ABSOLUTEPOS);
+		double fz2 = HCE_FloorAt(p2.x, p2.y, top + MaxStepHeight);
 		if(!overThing && fz2 < top - MaxStepHeight) return false;
 		FLineTraceData tr;
 		if(LineTrace(ang, radius * 2 + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;   // wall above it
@@ -3318,10 +3318,25 @@ class HaloDoom_EnemyBase : Actor abstract
 	// going (their target, the spot they last saw it, or the player they follow) is down there, as long as the drop
 	// is safe for them (up to two and a half times their height) and doesn't land in a damaging floor. Halo's AI does
 	// the same with its 'safe to jump down' hint. They fall in the airborne animation and land in the landing one.
-	double HCE_SafeDrop() { return height * 2.5; }
+	double HCE_SafeDrop() { return max(192, height * 3); }
+
+	// The floor one can stand on at x, y: the highest at or below 'from', counting 3D floors (a bridge, a walkway, a
+	// catwalk over a pit). GetZAt sees only the sector's own floor, so over a 3D-floor bridge it gave the pit under it.
+	static double HCE_FloorAt(double x, double y, double from)
+	{
+		let s = level.PointInSector((x, y));
+		return s ? s.NextLowestFloorAt(x, y, from) : from;
+	}
+	// The ceiling over a floor at fz there (a 3D floor overhead counts): the lowest above fz .. fz + h.
+	static double HCE_CeilAt(double x, double y, double fz, double h)
+	{
+		let s = level.PointInSector((x, y));
+		return s ? s.NextHighestCeilingAt(x, y, fz, fz + h) : fz + h;
+	}
 
 	// Steps off the ledge ahead at 'spd' when the target, its last-known spot or the followed player is lower.
-	// Refuses a drop deeper than HCE_SafeDrop() or into a damaging floor. True: airborne (HCE_JumpTick lands it).
+	// Refuses a drop deeper than HCE_SafeDrop() (or, on a route over the map's graph, than the way down to its next
+	// waypoint) or into a damaging floor. True: airborne (HCE_JumpTick lands it).
 	// To change the safe depth, edit HCE_SafeDrop (2.5 x height).
 	// A small ledge (HCE_SmallDrop: up to 80% of its height, 48 at least) is walked off whatever it is doing and
 	// wherever it is going: fleeing, strafing, searching, taking cover or following, by every walking unit (the
@@ -3337,13 +3352,16 @@ class HaloDoom_EnemyBase : Actor abstract
 		else if(HCE_InSquad() && HCE_SquadPlayer()) goalZ = HCE_SquadPlayer().pos.z;
 		// on a route over the map's graph: its next waypoint (the way may go down before it comes back up to the target)
 		let ng = (hce_navInit && hce_navNode >= 0 && !hce_navDirect) ? HCE_NavGraph.Get() : null;
-		if(ng) { vector3 wp = ng.Pos(hce_navNode); goalZ = min(goalZ, wp.z); }
+		double routeDrop = 0;
+		if(ng) { vector3 wp = ng.Pos(hce_navNode); goalZ = min(goalZ, wp.z); routeDrop = pos.z - wp.z; }
 		bool wanted = goalZ <= pos.z - MaxStepHeight;                       // something to go down for
+		// (a drop the route itself takes, as the bots do: as deep as the way down to its next waypoint, and a little)
+		double deepest = max(HCE_SafeDrop(), min(routeDrop + 64, 768));
 		vector2 dir = AngleToVector(ang, 1);
 		vector2 p = pos.xy + dir * (radius + max(spd, 4) + 4);
-		double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+		double fz = HCE_FloorAt(p.x, p.y, pos.z + MaxStepHeight);
 		double drop = pos.z - fz;
-		if(drop <= MaxStepHeight || drop > (wanted ? HCE_SafeDrop() : HCE_SmallDrop())) return false;
+		if(drop <= MaxStepHeight || drop > (wanted ? deepest : HCE_SmallDrop())) return false;
 		if(!wanted && hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT && hce_team != HCE_TEAM_FLOOD) return false;
 		let sec = level.PointInSector(p);
 		if(sec && sec.damageamount > 0) return false;                        // lava, slime
@@ -3379,7 +3397,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			vector2 p = pos.xy + AngleToVector(a, r);
 			let sec = level.PointInSector(p);
 			if(!sec || sec.damageamount > 0) continue;
-			double fz = sec.floorplane.ZAtPoint(p), cz = sec.ceilingplane.ZAtPoint(p);
+			double fz = HCE_FloorAt(p.x, p.y, pos.z + 192), cz = HCE_CeilAt(p.x, p.y, fz, height + 8);
 			double rise = fz - pos.z;
 			if(rise > 192 || rise < -48 || cz - fz < height + 8) continue;
 			double apex = max(rise, 0) + 40;

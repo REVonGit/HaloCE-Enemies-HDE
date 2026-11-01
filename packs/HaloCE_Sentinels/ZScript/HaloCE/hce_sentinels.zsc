@@ -3179,7 +3179,7 @@ class HCE_SentinelKnightBase : HaloDoom_EnemyBase abstract
 		{
 			double a = frandom(0, 360), d = frandom(160, 400);
 			vector2 p = target.pos.xy + AngleToVector(a, d);
-			double fz = GetZAt(p.x, p.y, 0, GZF_ABSOLUTEPOS);
+			double fz = HCE_FloorAt(p.x, p.y, target.pos.z + 64);
 			SetOrigin((p.x, p.y, fz), false);
 			if(TestMobjLocation() && CheckSight(target) && pos.z - fz < 1)
 			{

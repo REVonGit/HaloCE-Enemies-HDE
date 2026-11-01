@@ -5,8 +5,11 @@
 import sys, numpy as np
 sys.path.insert(0, '/home/claude/repos/HaloCE-Enemies-HDE/generator/lib')
 from iqm import read_iqm
+from texmath import raster_normals, bake_reflection
 from PIL import Image, ImageDraw, ImageFilter
 PUR = np.array([0.50, 0.30, 0.80]); GRY = np.array([0.56, 0.57, 0.62])
+OUTM = '/home/claude/repos/HaloCE-Enemies-HDE/generator/out/models/Geist'
+CUBES = '/home/claude/repos/HaloCE-Enemies-HDE/generator/out/cubemaps/elite'
 J, M, A = read_iqm('/tmp/claude-0/sk/Geist_bind.iqm')
 for k in (0, 1):
     a = np.asarray(Image.open(f'/tmp/claude-0/sk/geist_geist_{k}_orig.png').convert('RGB')).astype(float) / 255
@@ -26,6 +29,16 @@ for k in (0, 1):
     col = PUR * top + GRY * (1 - top)
     col = np.clip(col * lum * 2.6, 0, 1)
     out = a * (1 - grey) + col * grey
+    # the Elites' look: Halo's liquid-metal cube-map sheen baked in (texmath.bake_reflection, as build_pack.add_shine does
+    # the Elites'), the blue rank cube on the purple, the silver one on the grey; under the Geist's own specular mask
+    # (its multipurpose map's red), raised on the hull plates so they gleam as the Elites' armour does
+    n = raster_normals(M, f'Geist_{k}.png', (W, H))
+    mp = np.asarray(Image.open(f'{OUTM}/Geist_{k}_multi.png').convert('RGBA').resize((W, H))).astype(np.float32)[..., 0] / 255
+    spec = np.clip(0.45 * mp + 0.25, 0, 0.6) * grey[..., 0]      # (only the recoloured hull: not the lights or the gun)
+    cube = lambda i: [np.asarray(Image.open(f'{CUBES}/{i}_{f}.png').convert('RGB').resize((256, 256), Image.BICUBIC)).astype(np.float32) / 255 for f in range(6)]
+    t = top[..., 0]
+    out = bake_reflection(out, n, spec * t, [(b + m) / 2 for b, m in zip(cube(0), cube(1))], 0.55)   # (the blue and magenta cubes mixed: purple)
+    out = bake_reflection(out, n, spec * (1 - t), cube(3), 0.4)
     Image.fromarray((out * 255).astype(np.uint8)).save(f'geist_geist_{k}.png')
 o = Image.new('RGB', (1024, 512))
 for k in (0, 1): o.paste(Image.open(f'geist_geist_{k}.png').resize((512, 512)), (k * 512, 0))

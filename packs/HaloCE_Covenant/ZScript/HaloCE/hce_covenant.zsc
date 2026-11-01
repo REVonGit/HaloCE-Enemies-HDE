@@ -17072,7 +17072,7 @@ class HCE_JackalBase : HaloDoom_EnemyBase abstract
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)
-	override Name HCE_ShellClass() { return String.Format("%sShieldField", GetClassName()); }
+	override Name HCE_ShellClass() { return HCE_ClassFor("ShieldField"); }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;
@@ -17840,7 +17840,7 @@ class HCE_JackalMajorBase : HaloDoom_EnemyBase abstract
 		if(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion
 	}
 	// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)
-	override Name HCE_ShellClass() { return String.Format("%sShieldField", GetClassName()); }
+	override Name HCE_ShellClass() { return HCE_ClassFor("ShieldField"); }
 	override bool HCE_SeverLimb(int limb)
 	{
 		if(hce_severed & (1 << limb)) return false;

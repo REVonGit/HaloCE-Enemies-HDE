@@ -151,8 +151,11 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		super.Tick();
 		if(hce_derezSlot > 0 && !isFrozen()) { HCE_DerezTick(); if(bDestroyed) return; }
-		// the shield flare keeps up with the body: placed and turned where the body is now, every tic (its own tick runs too)
-		if(hce_shellActor) { hce_shellActor.SetOrigin(pos, true); hce_shellActor.angle = angle; hce_shellActor.pitch = pitch; hce_shellActor.roll = roll; }
+		// the shield flare (a Jackal's: its shield field) keeps up with the body: placed, turned and sized as the body is now,
+		// every tic (its own tick runs too). Sized too: a body made bigger after the shell came (a map's scale, a variant's)
+		// left a Jackal's shield at the old size, inside the arm
+		if(hce_shellActor) { hce_shellActor.SetOrigin(pos, true); hce_shellActor.angle = angle; hce_shellActor.pitch = pitch; hce_shellActor.roll = roll; hce_shellActor.scale = scale; }
+		if(hce_holoActor) hce_holoActor.scale = scale;
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
@@ -1254,6 +1257,18 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual Name HCE_GunHandBone() { return 'bip01 r hand'; }
 	virtual int HCE_ShieldSurface() { return 5; }
 	virtual Name HCE_ShellClass() { return 'None'; }
+	// a companion class named after this one ("<class><suffix>": a Jackal's ShieldField), or after the class it comes from
+	// when this one has none (a subclass: a mod's, an HCEVARS spawner's, is drawn with its parent's MODELDEF too, and had
+	// no shield at all); 'None' if no class up the line has one
+	Name HCE_ClassFor(String suffix)
+	{
+		for(class<Actor> c = GetClass(); c && c != 'HaloDoom_EnemyBase'; c = (class<Actor>)(c.GetParentClass()))
+		{
+			Name fn = String.Format("%s%s", c.GetClassName(), suffix);
+			if((class<Actor>)(fn)) return fn;
+		}
+		return 'None';
+	}
 	virtual void HCE_DressShell(Actor s) {}        // packs: give the shield flare this variant's look (hidden surfaces, armour pieces)
 	virtual void HCE_DressShellVariant(Actor s) {} // packs: the surfaces this one variant's MODELDEF hides
 

@@ -1588,7 +1588,7 @@ FIELD_HOLO_CODE = '''	// its arm shield: drawn by its own shield field (HCE_Shie
 		super.Tick();
 		if(hce_fieldTried || bDestroyed || health <= 0) return;
 		hce_fieldTried = true;
-		Name fn = String.Format("%sShieldField", GetClassName());
+		Name fn = HCE_ClassFor("ShieldField");
 		class<Actor> fc = (class<Actor>)(fn);
 		if(fc && !hce_holoActor) { hce_holoActor = Spawn(fc, pos, NO_REPLACE); if(hce_holoActor) { hce_holoActor.master = self; hce_holoActor.angle = angle; } }
 	}
@@ -2305,7 +2305,7 @@ def build(cfg=None):
                   f'\t\tif(hce_holoActor) hce_holoActor.SetAnimation(n, -1, hce_applyFrame, -1, -1, blend, loop ? SAF_LOOP : 0);   // and a hologram companion\n\t}}\n'
                   + (f"\toverride Name HCE_ShellClass() {{ return 'HCE_{char}ShieldShell'; }}\n" if char in SHELL_TINT else '')
                   + ("\t// its arm shield is drawn by its own shield field (HCE_ShieldField), one class per variant (its rank's colour)\n"
-                     "\toverride Name HCE_ShellClass() { return String.Format(\"%sShieldField\", GetClassName()); }\n" if char in FIELD_CHARS and char not in SHELL_TINT else '')
+                     "\toverride Name HCE_ShellClass() { return HCE_ClassFor(\"ShieldField\"); }\n" if char in FIELD_CHARS and char not in SHELL_TINT else '')
                   + (FIELD_HOLO_CODE if char in FIELD_CHARS and char in SHELL_TINT else '')
                   + (f'\toverride Sound HCE_MeleeSound() {{ return "{SENTINEL_MELEE}"; }}     // Halo 2\'s Sentinel melee\n' if char in SENTINEL_UNIT_SOUNDS else '')
                   + (machine_code(char, mdir, ov) if char in SENTINEL_UNIT_SOUNDS else '')

@@ -21,6 +21,7 @@ class HCE_JackalShield : Actor
 {
 	double hp, maxhp;
 	int regenWait, bone, handBone;
+	double sizedFor;         // the Jackal's scale its box was sized for
 	bool down, skinHidden, broken;
 
 	Default
@@ -249,11 +250,12 @@ class HCE_JackalShield : Actor
 		if(bone == -2)
 		{
 			maxhp = hp = max(1, j.hce_frontShieldMax);
-			A_SetSize(max(8, j.radius * 0.9), j.height * 0.7);
 			j.SetModelFlag(0, IQM_GET_BONE_INFO);
 			bone = j.GetBoneIndex(j.HCE_ShieldBone());          // CE 'frame shield'; Halo 2 'shield'
 			handBone = j.GetBoneIndex(j.HCE_GunHandBone());    // CE 'bip01 r hand'; Halo 2 'l_hand'
 		}
+		// its box to the Jackal's size, again whenever that changes (made bigger on its first tic for a map's scale)
+		if(sizedFor != j.scale.x) { sizedFor = j.scale.x; A_SetSize(max(8, j.radius * 0.9), j.height * 0.7); }
 		vector3 p = j.pos + (AngleToVector(j.angle, j.radius + 4), j.height * 0.5);
 		if(bone >= 0)
 		{
@@ -366,6 +368,7 @@ class HCE_ShieldField : Actor
 			SetOrigin(e.pos, true);
 			angle = e.angle; pitch = e.pitch; roll = e.roll;
 		}
+		if(e) scale = e.scale;                           // (the wearer's size: a map's scale, a variant's)
 		if(!hce_joined && e && e.hce_curAnim != 'None')
 		{
 			// the wearer's animation where it is now (as HCE_ShieldShell does: its own first one may come before it)

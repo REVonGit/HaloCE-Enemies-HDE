@@ -121,6 +121,7 @@ class HCE_HaloGoreHandler : EventHandler
 		s.angle = ang + 90;                                     // a flat sprite's width lies across its angle
 		s.bXFLIP = false;
 		s.scale.x *= len * 1.6;
+		if(!s.Settle()) { s.Destroy(); return; }               // (stretched: laid again, to its new length)
 		splats.Push(s);
 		while(splats.Size() > MAX_SPLATS) { if(splats[0]) splats[0].Destroy(); splats.Delete(0); }
 	}
@@ -416,15 +417,47 @@ class HCE_GoreFloorSplat : Actor
 		scale *= size * frandom[HCEGore](0.8, 1.15);
 		angle = frandom[HCEGore](0, 360);
 		bXFLIP = random[HCEGore](0, 1) == 1;
-		SetZ(floorz + frandom[HCEGore](0.1, 0.4));    // a hair apart, so overlapping splats don't flicker
+		lift = frandom[HCEGore](0.1, 0.4);              // a hair apart, so overlapping splats don't flicker
+		Vector2 sz = TexMan.GetScaledSize(TexMan.CheckForTexture(String.Format("%s%c0", spr, 65 + frame), TexMan.Type_Sprite));
+		half = max(sz.x, sz.y) * 0.5;
+		if(!Settle()) return false;
 		life = 35 * 120;
 		return true;
+	}
+
+	double lift, half;
+	// lies on the floor as it is, as NashGore's blood does: tilted to a slope (pitch along its facing, roll across it)
+	// rather than flat and floating over the low side, and never hanging out over an edge (a ledge, a step, the rim of
+	// a 3D floor): one that would is made smaller until it fits, or isn't laid at all. False: nowhere to lie.
+	bool Settle()
+	{
+		SetZ(floorz);
+		for(int tries = 0; tries < 3; tries++)
+		{
+			double d = max(2.0, half * scale.x * 0.9);
+			vector2 f = AngleToVector(angle, d), sd = AngleToVector(angle + 90, d);
+			int fl = GZF_ABSOLUTEPOS | GZF_3DRESTRICT;
+			double zc = floorz;
+			double zf = GetZAt(pos.x + f.x, pos.y + f.y, 0, fl), zb = GetZAt(pos.x - f.x, pos.y - f.y, 0, fl);
+			double zl = GetZAt(pos.x + sd.x, pos.y + sd.y, 0, fl), zr = GetZAt(pos.x - sd.x, pos.y - sd.y, 0, fl);
+			// a plane through them, or an edge (a corner off it by more than a step's lip)
+			bool edge = abs((zf + zb) * 0.5 - zc) > 2 || abs((zl + zr) * 0.5 - zc) > 2 || abs(zf - zb) > d * 1.6 || abs(zl - zr) > d * 1.6;
+			if(!edge)
+			{
+				pitch = -atan2(zf - zb, 2 * d);
+				roll = atan2(zl - zr, 2 * d);
+				SetZ(zc + lift);
+				return true;
+			}
+			scale *= 0.6;
+		}
+		return false;
 	}
 	// counts life down, fading over the last ten seconds, and keeps the splat on the floor if the floor moves
 	override void Tick()
 	{
 		if(isFrozen()) return;
 		if(--life < 35 * 10) { alpha -= 0.9 / (35 * 10); if(alpha <= 0 || life <= 0) { Destroy(); return; } }
-		if(pos.z > floorz + 1 || pos.z < floorz) SetZ(floorz + 0.2);   // a lift or a crusher moved the floor
+		if(pos.z > floorz + lift + 1 || pos.z < floorz) SetZ(floorz + lift);   // a lift or a crusher moved the floor
 	}
 }

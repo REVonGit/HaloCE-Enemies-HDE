@@ -50,14 +50,12 @@
 		String ODST = "HCE_FloodcombatOdstAssaultRifle HCE_FloodcombatOdstShotgun HCE_FloodcombatOdstSniperRifle HCE_FloodcombatHumanArmoredPistol HCE_FloodcombatHumanArmoredRocketLauncher HCE_FloodcombatHumanArmoredUnarmed";
 		String ARMORED = "HCE_FloodcombatHumanArmoredAssaultRifle HCE_FloodcombatHumanArmoredPistol HCE_FloodcombatHumanArmoredRocketLauncher HCE_FloodcombatHumanArmoredShotgun HCE_FloodcombatHumanArmoredSniperRifle HCE_FloodcombatHumanArmoredUnarmed";
 		String MARINE = "HCE_FloodcombatHumanUnarmoredAssaultRifle HCE_FloodcombatHumanUnarmoredPistol HCE_FloodcombatHumanFlameThrower HCE_FloodcombatHumanNeedler HCE_FloodcombatHumanPlasmaPistol HCE_FloodcombatHumanPlasmaRifle HCE_FloodcombatHumanRocketLauncher HCE_FloodcombatHumanShotgun HCE_FloodcombatHumanUnarmoredUnarmed";
-		String MINOR = "HCE_FloodcombatEliteMinorNeedler HCE_FloodcombatEliteMinorPlasmaPistol HCE_FloodcombatEliteMinorPlasmaRifle HCE_FloodcombatEliteMinorUnarmed";
-		String MAJOR = "HCE_FloodcombatEliteMajorNeedler HCE_FloodcombatEliteMajorPlasmaPistol HCE_FloodcombatEliteMajorPlasmaRifle HCE_FloodcombatEliteMajorUnarmed";
 		// the Flood Brutes by the Brute's rank (the Majors take the Stalkers and the jump-pack Brutes, the Captains the Chieftain)
 		String BMINOR = "HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMinorPlasmaRifle HCE_FloodcombatBruteHonorGuardSpiker HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteMinorUnarmed";
 		String BMAJOR = "HCE_FloodcombatBruteMajorSpiker HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMinorPlasmaRifle HCE_FloodcombatBruteMajorUnarmed";
 		String BCAPTAIN = "HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteCaptainShotgun HCE_FloodcombatBruteMinorAssaultRifle HCE_FloodcombatBruteMajorSpiker HCE_FloodcombatBruteCaptainUnarmed";
 		String BHONOR = "HCE_FloodcombatBruteHonorGuardAssaultRifle HCE_FloodcombatBruteHonorGuardSpiker HCE_FloodcombatBruteCaptainPlasmaRifle HCE_FloodcombatBruteMajorShotgun HCE_FloodcombatBruteHonorGuardUnarmed";
-		String ELITE = "HCE_FloodcombatEliteCommanderEnergySword HCE_FloodcombatEliteUltraFuelRod HCE_FloodcombatEliteAssaultRifle HCE_FloodcombatEliteFlameThrower HCE_FloodcombatEliteNeedler HCE_FloodcombatElitePistol HCE_FloodcombatElitePlasmaPistol HCE_FloodcombatElitePlasmaRifle HCE_FloodcombatEliteRocketLauncher HCE_FloodcombatEliteShotgun HCE_FloodcombatEliteSniperRifle HCE_FloodcombatEliteUnarmed";
+		String ELITE = "HCE_FloodcombatEliteAssaultRifle HCE_FloodcombatEliteFlameThrower HCE_FloodcombatEliteNeedler HCE_FloodcombatElitePistol HCE_FloodcombatElitePlasmaPistol HCE_FloodcombatElitePlasmaRifle HCE_FloodcombatEliteRocketLauncher HCE_FloodcombatEliteShotgun HCE_FloodcombatEliteSniperRifle HCE_FloodcombatEliteUnarmed";
 		// a Grunt: the armed Flood Grunt carrying its gun, else the bursting one
 		String GRUNT = "HCE_FloodGruntPlasmaPistol HCE_FloodGruntNeedler HCE_FloodGrunt";
 		gun = null;
@@ -77,7 +75,7 @@
 			return HCE_PickForm(cn.IndexOf("HonorGuard") >= 0 ? BHONOR : cn.IndexOf("Captain") >= 0 || cn.IndexOf("Chieftain") >= 0 ? BCAPTAIN
 				: cn.IndexOf("Minor") >= 0 ? BMINOR : BMAJOR, wn);
 		if(c.hce_type == 7) return cn.IndexOf("Odst") >= 0 ? HCE_PickForm(ODST, wn) : cn.IndexOf("Armored") >= 0 ? HCE_PickForm(ARMORED, wn) : HCE_PickForm(MARINE, wn);
-		return cn.IndexOf("Minor") >= 0 ? HCE_PickForm(MINOR, wn) : cn.IndexOf("Major") >= 0 ? HCE_PickForm(MAJOR, wn) : HCE_PickForm(ELITE, wn);
+		return HCE_PickForm(ELITE, wn);
 	}
 	// the first of the forms (space-separated class names) carrying gun w (its default hce_dropWeapon), else the last (the unarmed one)
 	static Name HCE_PickForm(String list, Name w)

@@ -94,9 +94,6 @@ GORE = {
     **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left_arm', 'rarm': 'right_arm'}, gun='rarm',
                roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
        for c in ('FloodODST', 'FloodMarine', 'FloodArmored')},
-    **{c: dict(swap={'head': ['head', 'corpse head'], 'larm': 'left arm', 'rarm': 'right arm'}, gun='rarm',
-               roots={'head': 'bip01 head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'})
-       for c in ('FloodEliteArmored', 'FloodEliteCommander', 'FloodEliteUltra')},
     # the Flood Grunt (extract_spv3.py: Sabopool's body): its arms (the gun goes with the right one)
     'FloodGrunt':   dict(style='bone', blood='76703A', limbs={'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),
     'Hunter':       dict(style='worm', blood='FF8C1A', limbs={'head': 'frame head', 'larm': 'bip01 l upperarm', 'rarm': 'bip01 r upperarm'}),  # the cannon arm, the shield arm

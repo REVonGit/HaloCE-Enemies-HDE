@@ -104,7 +104,7 @@ def main():
     zf = os.path.join(OUT, 'sweep.zs'); open(zf, 'w').write(zs_for(batches, base))
     a = argparse.Namespace(packs=a0.packs, spawn='', spacing=SPACING, z=0, dummy=True, free=False, fight=0, mortal=False, close=0,
                            camera='1036,590,0', pitch=0, shots='', duration=10 ** 6, log_damage=False, log_every=0, zs=zf, zs_top='',
-                           name='sweep/s', retries=0, res='1280x800', voices=False, timeout=60 + len(batches) * 4)
+                           name='sweep/s', retries=0, res='1280x800', voices=False, nopin=False, wad='covertest.wad', map='COVERTST', timeout=60 + len(batches) * 4)
     a.res_w, a.res_h = 1280, 800
     for attempt in range(3):                              # the first frames under Xvfb come out black now and then
         lines, errors, shots, black, _ = scene.run(a, 0)

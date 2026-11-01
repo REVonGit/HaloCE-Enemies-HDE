@@ -51,14 +51,16 @@ def main():
     small = [trim(to_decal(q, blend_kind(q))) for q in quarters(get(DEC + 'flood_splat'))]
     small = [s for s in small if s]
     big = get(DEC + 'flood_splat_large'); big = trim(to_decal(big, blend_kind(big)))
-    dd = ['// the Flood\'s blood: Halo 2\'s flood_splat and flood_splat_large (extract_flood_gore.py)', '']
+    dd = ['// the Flood\'s blood: Halo 2\'s flood_splat and flood_splat_large (extract_flood_gore.py)', '',
+          '// (a fader of its own: the merged pk3 reads this file before the Covenant pack\'s decaldef.hcegore and its HCEGoreFade)',
+          'Fader HCEFloodGoreFade', '{', '\tDecayStart 90.0', '\tDecayTime 25.0', '}', '']
     names = []
     for i, s in enumerate(small + [big]):
         nm = f'h2_flood_splat_{i}' if i < len(small) else 'h2_flood_splat_large'
         s.save(os.path.join(gdir, nm + '.png')); names.append(nm)
         sc = (1.1 if i < len(small) else 1.6) * DECAL_GROW / 2
         dd += [f'Decal HCEG_{nm}', '{', f'\tPic "graphics/hcegore/{nm}.png"', '\tTranslucent 0.95', f'\tX-Scale {sc:.2f}',
-               f'\tY-Scale {sc:.2f}', '\tRandomFlipX', '\tRandomFlipY', '\tAnimator HCEGoreFade', '}', '']
+               f'\tY-Scale {sc:.2f}', '\tRandomFlipX', '\tRandomFlipY', '\tAnimator HCEFloodGoreFade', '}', '']
     dd += ['DecalGroup HCEGore_Flood', '{'] + [f'\tHCEG_{n} 1' for n in names[:-1]] + ['}', '']
     dd += ['DecalGroup HCEGore_FloodBig', '{'] + [f'\tHCEG_{n} 1' for n in names] + [f'\tHCEG_{names[-1]} 2', '}', '']
     open(os.path.join(PACK, 'decaldef.hcefloodgore'), 'w').write('\n'.join(dd) + '\n')

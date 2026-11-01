@@ -1,5 +1,12 @@
 // the Flood's blood: Halo 2's flood_splat and flood_splat_large (extract_flood_gore.py)
 
+// (a fader of its own: the merged pk3 reads this file before the Covenant pack's decaldef.hcegore and its HCEGoreFade)
+Fader HCEFloodGoreFade
+{
+	DecayStart 90.0
+	DecayTime 25.0
+}
+
 Decal HCEG_h2_flood_splat_0
 {
 	Pic "graphics/hcegore/h2_flood_splat_0.png"
@@ -8,7 +15,7 @@ Decal HCEG_h2_flood_splat_0
 	Y-Scale 1.10
 	RandomFlipX
 	RandomFlipY
-	Animator HCEGoreFade
+	Animator HCEFloodGoreFade
 }
 
 Decal HCEG_h2_flood_splat_1
@@ -19,7 +26,7 @@ Decal HCEG_h2_flood_splat_1
 	Y-Scale 1.10
 	RandomFlipX
 	RandomFlipY
-	Animator HCEGoreFade
+	Animator HCEFloodGoreFade
 }
 
 Decal HCEG_h2_flood_splat_2
@@ -30,7 +37,7 @@ Decal HCEG_h2_flood_splat_2
 	Y-Scale 1.10
 	RandomFlipX
 	RandomFlipY
-	Animator HCEGoreFade
+	Animator HCEFloodGoreFade
 }
 
 Decal HCEG_h2_flood_splat_3
@@ -41,7 +48,7 @@ Decal HCEG_h2_flood_splat_3
 	Y-Scale 1.10
 	RandomFlipX
 	RandomFlipY
-	Animator HCEGoreFade
+	Animator HCEFloodGoreFade
 }
 
 Decal HCEG_h2_flood_splat_large
@@ -52,7 +59,7 @@ Decal HCEG_h2_flood_splat_large
 	Y-Scale 1.60
 	RandomFlipX
 	RandomFlipY
-	Animator HCEGoreFade
+	Animator HCEFloodGoreFade
 }
 
 DecalGroup HCEGore_Flood

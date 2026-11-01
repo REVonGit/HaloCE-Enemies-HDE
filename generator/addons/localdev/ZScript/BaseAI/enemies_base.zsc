@@ -320,6 +320,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_enabled) dmg = HCE_ModifyIncoming(inflictor, source, dmg, mod, flags, angle);
 		if(hce_enabled) dmg = HCE_FireDeathCheck(inflictor, dmg, mod, flags);
 		if(hce_enabled) hce_lastMod = mod;      // read by HCE_Die, which runs inside the call below
+		if(hce_enabled) { hce_lastInf = inflictor ? inflictor.GetClassName() : ''; hce_lastWpn = (source && source.player && source.player.ReadyWeapon) ? source.player.ReadyWeapon.GetClassName() : ''; }
 		if(hce_enabled) hce_shotgunHit = mod != 'Melee' && HCE_IsShotgun(inflictor, source);   // (so is this)
 		if(hce_enabled && source && source != self) hce_lastHurter = source;     // HCE_SquadDeath: who killed a Marine
 		if(hce_enabled && inflictor && inflictor != source && !HCE_IsBurn(mod) && mod != 'Melee' && mod != 'Explosive')
@@ -679,6 +680,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector2 hce_dieDir;
 	bool   hce_hardKill;
 	Name   hce_lastMod;                // damage type of the latest hit (set before the engine can kill us)
+	Name   hce_lastInf, hce_lastWpn;   // what dealt it (the projectile or explosion) and the weapon in the hand that fired
 	Actor  hce_shieldActor;            // Jackals: the separate shield entity on the wrist (pack code spawns it)
 	double hce_jumpHeight;             // tallest ledge / obstacle this actor jumps onto (0 = derive from height)
 	int    hce_jumpState, hce_jumpTics, hce_jumpCooldown;
@@ -3083,7 +3085,10 @@ class HaloDoom_EnemyBase : Actor abstract
 				if(HCE_TryDoor(a)) { hce_moveSpeed = 0; HCE_Brake(); return false; }   // a door or lift it's waiting on
 				if(HCE_TryLift(a)) { hce_moveSpeed = 0; HCE_Brake(); return false; }   // a lift worked from elsewhere: off to work it
 				if(HCE_TryJump(a, true)) { hce_moveAngle = a; return true; }
-				if(HCE_TryDrop(a, spd)) { hce_moveAngle = a; return true; }
+				// a ledge on the way: off it straight ahead, or a little either side (an edge met at a slant), before
+				// any sidestep along it
+				static const double dfan[] = { 0, 25, -25, 50, -50 };
+				for(int d = 0; d < dfan.Size(); d++) if(HCE_TryDrop(a + dfan[d], spd)) { hce_moveAngle = a + dfan[d]; return true; }
 			}
 		}
 		// a friend in the way who's walking on himself: keep walking behind him (he'll clear the way next tic),
@@ -3355,13 +3360,23 @@ class HaloDoom_EnemyBase : Actor abstract
 		double routeDrop = 0;
 		if(ng) { vector3 wp = ng.Pos(hce_navNode); goalZ = min(goalZ, wp.z); routeDrop = pos.z - wp.z; }
 		bool wanted = goalZ <= pos.z - MaxStepHeight;                       // something to go down for
-		// (a drop the route itself takes, as the bots do: as deep as the way down to its next waypoint, and a little)
-		double deepest = max(HCE_SafeDrop(), min(routeDrop + 64, 768));
+		// (a drop the route itself takes, as the bots do: as deep as the way down to its next waypoint; or, with what
+		// it's after lower down, as deep as the way down to it: never past it into a pit below)
+		double deepest = max(HCE_SafeDrop(), min(max(routeDrop, pos.z - goalZ) + 64, 768));
 		vector2 dir = AngleToVector(ang, 1);
-		vector2 p = pos.xy + dir * (radius + max(spd, 4) + 4);
-		double fz = HCE_FloorAt(p.x, p.y, pos.z + MaxStepHeight);
-		double drop = pos.z - fz;
+		// the edge: the first floor lower than a step a little way ahead (an edge met at a slant is further off)
+		double fz = pos.z, drop = 0;
+		vector2 p = pos.xy;
+		for(int k = 0; k < 4; k++)
+		{
+			p = pos.xy + dir * (radius + max(spd, 4) + 4 + k * 14);
+			fz = HCE_FloorAt(p.x, p.y, pos.z + MaxStepHeight);
+			drop = pos.z - fz;
+			if(drop > MaxStepHeight) break;
+			if(fz > pos.z + MaxStepHeight) return false;        // a wall or a step up first
+		}
 		if(drop <= MaxStepHeight || drop > (wanted ? deepest : HCE_SmallDrop())) return false;
+		if(wanted && drop > HCE_SafeDrop() && fz < goalZ - 96) return false;   // a deep one only down to where it's going
 		if(!wanted && hce_team != HCE_TEAM_HUMAN && hce_team != HCE_TEAM_COVENANT && hce_team != HCE_TEAM_FLOOD) return false;
 		let sec = level.PointInSector(p);
 		if(sec && sec.damageamount > 0) return false;                        // lava, slime
@@ -5700,7 +5715,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health <= 0 && hce_detonated) return;
 		hce_detonated = true;
 		A_StartSound(HCE_PopSound(), CHAN_BODY, CHANF_OVERLAP);
-		A_Explode(int(max(10, hce_meleeDamage)), int(radius * 3 + 32), XF_NOTMISSILE, true, int(radius * 2));
+		int bd; double br; [bd, br] = HCE_BlastPower();
+		A_Explode(bd, int(br), XF_NOTMISSILE, true, int(radius * 2), damagetype: 'Explosive');
 		// the Flood's own pop (the Flood pack's HCE_FloodBurst: Halo 2's skin chunks, smoke and Flood splats), sized
 		// to the body; anything else, a plain spray
 		String fbn = "HCE_FloodBurst";
@@ -5714,6 +5730,20 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	bool hce_detonated;
 	virtual void HCE_OnDetonate() {}
+	// the pop's damage and radius (a carrier's is a frag grenade's: HCE_FloodCarrierBase)
+	virtual int, double HCE_BlastPower() { return int(max(10, hce_meleeDamage)), radius * 3 + 32; }
+	// killed by a blast or by fire: a plasma grenade, the Plasma Caster, a rocket, the Hydra, the flamethrower, any
+	// burning (a carrier killed so releases no infection forms: they burn up with it)
+	bool HCE_Incinerated()
+	{
+		if(HCE_IsBurn(hce_lastMod) || hce_burnHit || HCE_Burning()) return true;
+		String i = hce_lastInf; i = i.MakeLower();
+		static const String BLAST[] = { "plasmagrenade", "plasmacaster", "rocket", "hydra", "flame", "flamer", "fuelrod" };
+		for(int k = 0; k < BLAST.Size(); k++) if(i.IndexOf(BLAST[k]) >= 0) return true;
+		if(hce_lastMod == 'Melee') return false;
+		String w = hce_lastWpn; w = w.MakeLower();
+		return w == "halo_rocketlauncher" || w == "halo_hydra" || w == "halo_plasmacaster" || w == "halo_flamethrower";
+	}
 
 	// ------------------------------------------------------------------
 	// Damage: Hunter front armour, Jackal shield, flinches, stealth flicker

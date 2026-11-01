@@ -156,6 +156,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(damageInfo.processing && InStateSequence(CurState, ResolveState("See")))
 			damageInfo.processing = false;
 
+		if(!hce_worldScaled && hce_enabled && health > 0 && GetAge() >= 1) HCE_WorldScale();     // a map at another scale (HCE_MapScale)
 		if(hce_vPending && hce_enabled && health > 0 && GetAge() >= 1) HCE_ApplyVariant();       // an HCEVARS variant
 		if(!hce_presetChecked && hce_enabled && health > 0 && GetAge() >= 1) HCE_PresetArm();   // HDE's weapon preset
 		if(hce_enabled && health > 0 && !default.bNOBLOOD) bNOBLOOD = HCE_ShieldUp();   // shields up: no blood
@@ -426,7 +427,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// the barrel's tip in the animation playing (the generated classes list their firing stances; a picked-up gun
 	// and anything unlisted: HCE_GunOffset)
 	virtual vector3 HCE_MuzzleAt(Name anim) { return hce_gunOffset; }
-	vector3 HCE_Muzzle() { return hce_hasLoadout ? hce_gunOffset : HCE_MuzzleAt(hce_curAnim); }
+	vector3 HCE_Muzzle() { return (hce_hasLoadout ? hce_gunOffset : HCE_MuzzleAt(hce_curAnim)) * (hce_bodyScale > 0 ? hce_bodyScale : 1.0); }
 
 	// Fires proj from the barrel's tip (HCE_Muzzle) in the aim direction. The muzzle offset is in body space (unpitched
 	// unless flying), so it is turned into aim space first and Fire3DProjectile's own turn puts it back.
@@ -6916,7 +6917,32 @@ class HaloDoom_EnemyBase : Actor abstract
 			A_SetScale(scale.x * sc, scale.y * sc);
 			A_SetSize(radius * sc, height * sc);
 			hce_standH = height;
+			hce_bodyScale = (hce_bodyScale > 0 ? hce_bodyScale : 1.0) * sc;
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// The map's scale: a map built bigger than Doom's (the HDE multiplayer pack's own maps, 96/56: its Spartans drawn that
+	// much bigger) has the Halo NPCs made bigger too, in proportion: the body and its box, the gun's muzzle, the pace,
+	// the steps and drops it takes, its leaps, its melee reach and its fighting ranges. A map pack says so by placing an
+	// HCE_MapScale (its scale.x the map's scale); none, the map is Doom's scale. Done once, on the first tic.
+	// ------------------------------------------------------------------
+	double hce_bodyScale;                  // the body's size over its class's (a scaled variant, the map's scale; 0: 1)
+	bool hce_worldScaled;
+	void HCE_WorldScale()
+	{
+		hce_worldScaled = true;
+		double s = HCE_MapScale.Get();
+		if(abs(s - 1) < 0.01) return;
+		A_SetScale(scale.x * s, scale.y * s);
+		A_SetSize(radius * s, height * s);
+		hce_standH = height;
+		hce_bodyScale = (hce_bodyScale > 0 ? hce_bodyScale : 1.0) * s;
+		hce_runSpeed *= s; hce_walkSpeed *= s; hce_lowWalkSpeed *= s; Speed *= s;
+		MaxStepHeight *= s; MaxDropOffHeight *= s;
+		if(hce_jumpHeight > 0) hce_jumpHeight *= s;          // (0: worked out from the height, already scaled)
+		hce_leapMin *= s; hce_leapMax *= s; hce_leapVel *= sqrt(s);   // (a leap's reach goes as the speed squared)
+		hce_meleeRange *= s; hce_rangeMin *= s; hce_rangeMax *= s; hce_maxRange *= s;
 	}
 
 	// Applies the stored variant on the first tic: re-arms if the weapon is one it can carry, then multiplies StartHealth,
@@ -8756,5 +8782,19 @@ class HCE_NavGraph : Thinker
 			if(m == i) break;
 			double tk = hk[m]; hk[m] = hk[i]; hk[i] = tk; int tv = hv[m]; hv[m] = hv[i]; hv[i] = tv; i = m;
 		}
+	}
+}
+
+// A map's scale over Doom's for the Halo NPCs (HaloDoom_EnemyBase.HCE_WorldScale): a map pack whose maps are built bigger
+// places one of these (by name: "HCE_MapScale"), its scale.x the map's scale. The HDE multiplayer maps pack does.
+class HCE_MapScale : Actor
+{
+	Default { +NOINTERACTION +NOBLOCKMAP +NOGRAVITY RenderStyle "None"; }
+	States { Spawn: TNT1 A -1; Stop; }
+	static double Get()
+	{
+		let it = ThinkerIterator.Create("HCE_MapScale");
+		let m = Actor(it.Next());
+		return m ? max(0.1, m.scale.x) : 1.0;
 	}
 }

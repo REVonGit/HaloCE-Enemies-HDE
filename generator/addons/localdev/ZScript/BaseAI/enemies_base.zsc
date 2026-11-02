@@ -1559,6 +1559,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// a target it was handed without seeing it (Firefight's hunt, a script, Doom's sound alert): it knows where that
 		// one was when it was told, not the map's origin (an unset last-known spot sent searches there)
 		else if(target != hce_knownOf) hce_lastKnown = target.pos;
+		else if(level.maptime % 35 == 0 && HCE_Hunting()) { hce_lastKnown = target.pos; hce_returnHome = false; hce_srPhase = 0; }
 		hce_knownOf = target;
 
 		// a target taken up outside the usual wake-up (a Marine following the player, a unit that heard the fight) left
@@ -1744,7 +1745,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(hce_canSee && hce_srPhase > 0) { hce_srPhase = 0; HCE_Say('FoundFoe', 0.8, 35 * 4); HCE_AlertSquad(target); }
 		// the player's squad fights from posts (hce_squad.zsc): to the post, and from it
 		if(HCE_PostFight(d, AngleTo(target))) { if(bHCE_ThrowsGrenades) HCE_TryGrenade(d); return; }
-		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25 && HCE_Searches() && level.maptime - hce_lastSeen > 35 * 3)
+		if(!hce_canSee && hce_cvState == 0 && level.maptime - hce_lastSeen > 25 && HCE_Searches() && !HCE_Hunting() && level.maptime - hce_lastSeen > 35 * 3)
 		{
 			if(HCE_TryFlush()) return;
 			if(HCE_MayPursue()) HCE_SearchTick();
@@ -1756,7 +1757,12 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(HCE_TryFlush()) return;
 			// a squad member stays with its leader instead of hunting on its own
 			let L = HCE_SquadLeader();
-			if(L && L.health > 0) { if(!HCE_KeepStation(L, true)) HCE_Hold(); return; }
+			if(L && L.health > 0)
+			{
+				// (hunting: one that can't keep with its leader goes after the player itself rather than standing)
+				if(!HCE_KeepStation(L, true)) { if(HCE_Hunting() && HCE_MayPursue()) HCE_Pursue(); else HCE_Hold(); }
+				return;
+			}
 			// pursue / search: walk to last known position with Doom pathing -- only a few at a time
 			if(HCE_MayPursue()) HCE_Pursue(); else HCE_Hold();
 			return;
@@ -1830,6 +1836,13 @@ class HaloDoom_EnemyBase : Actor abstract
 			double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
 			if(HCE_TryJump(toward, false)) return;
 		}
+		// the route's waypoint up a ledge close by: jumped to
+		let ng = hce_navNode >= 0 ? HCE_NavGraph.Get() : null;
+		if(ng && level.maptime % 6 == 3)
+		{
+			vector3 w = ng.Pos(hce_navNode);
+			if(w.z > pos.z + MaxStepHeight && (w.xy - pos.xy).Length() < 192 && HCE_TryJump(atan2(w.y - pos.y, w.x - pos.x), false)) return;
+		}
 		// Doom's pathing knows nothing of slime or of where its friends died: a step toward the last-known spot that
 		// would go into either is a reason to hold at the edge instead
 		double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
@@ -1841,7 +1854,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			HCE_Move(HCE_PickHeading(hce_navAng, hce_navAng), hce_runSpeed);
 			A_SetAngle(angle + clamp(DeltaAngle(angle, hce_moveAngle), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
 			HCE_PickMoveAnim();
-			if(level.maptime - hce_lastSeen > 35 * 20) target = null;
+			if(level.maptime - hce_lastSeen > 35 * 20 && !HCE_Hunting()) target = null;
 			return;
 		}
 		double sp = speed;
@@ -1853,7 +1866,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		hce_moveAngle = movedir * 45.;
 		hce_inPlaceTics = (pos.xy - was).Length() < 0.5 ? hce_inPlaceTics + 1 : 0;
 		HCE_Play(hce_inPlaceTics > 17 ? HCE_A_ALERT : HCE_A_MOVE_F);      // no marching on the spot when the way is shut
-		if(level.maptime - hce_lastSeen > 35 * 20) target = null;   // give up the search
+		if(level.maptime - hce_lastSeen > 35 * 20 && !HCE_Hunting()) target = null;   // give up the search
 	}
 
 	// ------------------------------------------------------------------
@@ -1869,6 +1882,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool hce_navDirect;                 // the goal is walkable straight: no route
 	double hce_navAng;                  // HCE_NavSteer's answer: the heading to take
 	double hce_navBest; int hce_navBestTic;   // its progress to the waypoint (no nearer in 3 s: a new one)
+	int hce_navOffUntil;                // stuck on the route: Doom's own chase till then (it tries other ways round)
+	vector2 hce_navProgPos; int hce_navProgTic;
 	// Sets hce_navAng to the heading toward goal along the map's graph; false when there is no graph, the goal can be
 	// walked to straight (the caller moves as before), or the route is done.
 	bool HCE_NavSteer(vector3 goal)
@@ -1876,6 +1891,23 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Flying || bNOGRAVITY) return false;
 		let g = HCE_NavGraph.Get(); if(!g) return false;
 		if(!hce_navInit) { hce_navInit = true; hce_navNode = -1; hce_navGoal = -1; }
+		if(level.maptime < hce_navOffUntil) return false;
+		// the goal close by (a level up or down, say): chased straight, not routed round the map
+		if((goal.xy - pos.xy).Length() < 400) { hce_navNode = -1; return false; }
+		// no headway on the route in 2 s (a waypoint up a ledge it can't climb, a wall in the way): off the route for
+		// 3 s, Doom's chase trying other ways round, then a fresh waypoint
+		if(level.maptime - hce_navProgTic >= 70)
+		{
+			bool stuck = hce_navNode >= 0 && hce_navProgTic > 0 && (pos.xy - hce_navProgPos).Length() < 24;
+			hce_navProgPos = pos.xy; hce_navProgTic = level.maptime;
+			if(stuck)
+			{
+				// stuck below a waypoint well above it: the link up there can't be walked; nobody routes over it again
+				vector3 sw = g.Pos(hce_navNode);
+				if(sw.z - pos.z > 40) { int from = g.Nearest(pos, null); if(from >= 0 && from != hce_navNode) g.Block(from, hce_navNode); }
+				hce_navNode = -1; hce_navOffUntil = level.maptime + 35 * 3; return false;
+			}
+		}
 		if(level.maptime >= hce_navCheck)
 		{
 			hce_navCheck = level.maptime + random[HCENav](14, 22);
@@ -1931,6 +1963,10 @@ class HaloDoom_EnemyBase : Actor abstract
 
 	// Pursuit cap: true if this unit may chase an unseen target. Once a second it counts same-team pursuers of the
 	// same target within 2048 units and allows pursuit while under hce_maxpursuers (default 4; 0 = no cap).
+	// Hunt mode (hce_hunt 1: HDE-Maps' Firefight sets it for its matches): a hostile whose target is a player always
+	// knows where that player is. It is told the player's spot once a second while it can't see them, never ends a
+	// search or walks back to its post, and never gives the player up.
+	bool HCE_Hunting() { return target && target.player && !bFRIENDLY && HCE_CVarF('hce_hunt', 0) > 0; }
 	bool HCE_MayPursue()
 	{
 		if(hce_pursuing) return true;
@@ -1957,7 +1993,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		double want = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
 		A_SetAngle(angle + clamp(DeltaAngle(angle, want), -hce_turnRate, hce_turnRate), SPF_INTERPOLATE);
 		HCE_PickMoveAnim();
-		if(level.maptime - hce_lastSeen > 35 * 25) { target = null; hce_pursuing = false; }   // forget it
+		if(level.maptime - hce_lastSeen > 35 * 25 && !HCE_Hunting()) { target = null; hce_pursuing = false; }   // forget it
 	}
 
 	// The berserk / melee action: faces the target at double turn rate, tries lunge, melee, leap and jetpack, pursues
@@ -3190,6 +3226,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool HCE_DangerStep(vector2 np)
 	{
 		if(bFRIENDLY || !target || hce_action == HCE_ACT_FLEE || hce_action == HCE_ACT_KAMIKAZE || hce_berserk || hce_nadeRunTics > 0 || hce_diveTics > 0) return false;
+		if(HCE_Hunting()) return false;          // hunting (Firefight): where its friends died is where the player is
 		let tr = HCE_MissileTracker.Get();
 		if(!tr || tr.dX.Size() == 0) return false;
 		if(tr.DangerAt(pos.xy, hce_team)) return false;                     // already in it: get out any way it can
@@ -8807,6 +8844,17 @@ class HCE_NavGraph : Thinker
 	}
 
 	vector3 Pos(int i) { return (nx[i], ny[i], nz[i]); }
+	// links the walkers found they can't take (a bot's lift, jump pad or long jump up): left out of every route from
+	// then on, for the rest of the map (the routes searched so far are thrown away and searched again)
+	Array<int> blkU, blkV;
+	bool Blocked(int u, int v) { for(int i = 0; i < blkU.Size(); i++) if(blkU[i] == u && blkV[i] == v) return true; return false; }
+	void Block(int u, int v)
+	{
+		if(u < 0 || v < 0 || u == v || Blocked(u, v)) return;
+		blkU.Push(u); blkV.Push(v);
+		goals.Clear(); nextOf.Clear();
+		if(developer) Console.Printf("Halo CE enemies: waypoint link %d -> %d can't be walked, routes found again", u, v);
+	}
 
 	// the waypoint nearest p (within 160 up or down); with 'seer', only one it can see, and within 1200
 	int Nearest(vector3 p, Actor seer)
@@ -8868,6 +8916,7 @@ class HCE_NavGraph : Thinker
 			for(int k = rStart[u]; k < rStart[u] + rCount[u]; k++)
 			{
 				int v = rAdj[k]; double nd = ud + rCost[k];
+				if(blkU.Size() && Blocked(v, u)) continue;           // (v leads to u: a link the walkers can't take)
 				if(nd < dist[v]) { dist[v] = nd; nextOf[base + v] = u; Push(nd, v); }
 			}
 		}

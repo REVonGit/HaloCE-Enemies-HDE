@@ -293,6 +293,8 @@ class HCE_FloodSpit : Actor
 class HCE_FloodAcid : Actor
 {
 	int life;
+	int span;                  // how long it lasts (4 s a glob's; 8 s the pool a burst Flood Jackal leaves)
+	double patchScale;
 	Actor patch;
 	Default
 	{
@@ -303,6 +305,17 @@ class HCE_FloodAcid : Actor
 		Radius 28;
 		Height 8;
 		RenderStyle "None";
+	}
+	// what a Flood Jackal leaves where it bursts: a wider pool of bile, lasting twice as long
+	static void Burst(Actor body)
+	{
+		if(!body || body.pos.z - body.floorz > 64) return;
+		Sector sec = level.PointInSector(body.pos.xy);
+		if(sec && sec.GetTexture(Sector.floor) == skyflatnum) return;
+		let n = HCE_FloodAcid(Actor.Spawn("HCE_FloodAcid", (body.pos.xy, body.floorz)));
+		if(!n) return;
+		n.target = body; n.span = 35 * 8; n.patchScale = 0.4;
+		n.A_SetSize(46, 8);
 	}
 	static void Pool(Actor glob, Actor owner)
 	{
@@ -321,14 +334,17 @@ class HCE_FloodAcid : Actor
 	{
 		super.PostBeginPlay();
 		A_StartSound("HCE/FloodAcid/Loop", CHAN_BODY, CHANF_LOOPING, 0.55, 1.5);
+		if(span <= 0) span = 35 * 4;
+		if(patchScale <= 0) patchScale = 0.24;
 		patch = Spawn("HCE_FloodAcidPatch", pos);      // the bile on the floor, fading with the puddle
+		if(patch) patch.A_SetScale(patchScale);
 
 	}
 	override void Tick()
 	{
 		if(IsFrozen()) return;
 		life++;
-		if(life >= 35 * 4)
+		if(life >= span)
 		{
 			A_StopSound(CHAN_BODY);
 			A_StartSound("HCE/FloodAcid/Fade", CHAN_AUTO, 0, 0.55, 1.5);
@@ -337,7 +353,7 @@ class HCE_FloodAcid : Actor
 			return;
 		}
 		// bubbling: soft bile-yellow blobs swelling up off the floor and popping
-		if(!(life % 2))
+		if(!(life % (radius > 30 ? 1 : 2)))
 		{
 			double r = frandom(0, radius * 0.7), a = frandom(0, 360);
 			FSpawnParticleParams p;
@@ -348,14 +364,14 @@ class HCE_FloodAcid : Actor
 			p.lifetime = random(12, 24);
 			p.size = frandom(4, 9);
 			p.sizestep = 0.25;
-			p.startalpha = life > 35 * 3 ? 0.5 * (35 * 4 - life) / 35.0 : 0.5;
+			p.startalpha = life > span - 35 ? 0.5 * (span - life) / 35.0 : 0.5;
 			p.fadestep = -1;
 			p.pos = pos + (cos(a) * r, sin(a) * r, 1);
 			p.vel = (0, 0, frandom(0.15, 0.45));
 			Level.SpawnParticle(p);
 		}
 		// its fumes: a thin bile-green haze curling up off it
-		if(!(life % 5))
+		if(!(life % (radius > 30 ? 3 : 5)))
 		{
 			FSpawnParticleParams f;
 			f.color1 = Color(255, 170, 185, 70);
@@ -365,7 +381,7 @@ class HCE_FloodAcid : Actor
 			f.lifetime = random(40, 70);
 			f.size = frandom(14, 24);
 			f.sizestep = 0.35;
-			f.startalpha = life > 35 * 3 ? 0.22 * (35 * 4 - life) / 35.0 : 0.22;
+			f.startalpha = life > span - 35 ? 0.22 * (span - life) / 35.0 : 0.22;
 			f.fadestep = -1;
 			f.startroll = frandom(0, 360);
 			f.rollvel = frandom(-2, 2);
@@ -427,8 +443,7 @@ class HCE_FloodJackalGib : Actor
 		}
 		for(int i = 0; i < 6; i++)
 			body.A_SprayDecal("HCEGore_FloodBig", 64, (0, 0, body.height * 0.5), (AngleToVector(i * 60 + frandom(-15, 15), 1), frandom(-0.3, 0.1)));
-		let pool = Actor.Spawn("HCE_FloodBurstPool", (body.pos.xy, body.floorz));
-		if(pool) pool.scale *= 0.6;
+		HCE_FloodAcid.Burst(body);                     // and a pool of its bile, sizzling, left behind
 	}
 	static void Fling(Actor body, int which)
 	{

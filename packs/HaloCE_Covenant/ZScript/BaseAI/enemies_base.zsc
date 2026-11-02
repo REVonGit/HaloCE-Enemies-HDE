@@ -9008,3 +9008,103 @@ class HCE_MapScale : Actor
 		return m ? max(0.1, m.scale.x) : 1.0;
 	}
 }
+
+// ---- fighting styles (HDE Maps' named Covenant warriors, zscript/covbots.zsc there): a token given to an enemy that
+// changes how it fights, once, a couple of tics after it spawns (its own setup done). Given by class name, so a mod
+// needs nothing of this pack to hand one out: GiveInventory("HCE_StyleRusher", 1). Each makes the enemy a named
+// hero's worth tougher (HEALTH) and sets its habits:
+//   Rusher     closes the distance: half its combat range, runs a little faster, berserks readily
+//   Berserker  goes berserk at the first hurt and charges from the flank
+//   Marksman   keeps far back: half again its combat range, steadier aim, seldom berserks
+//   Flanker    charges from wide on a side, fast
+//   Stalker    as the Flanker, from wider, and keeps its distance till it closes
+//   Grenadier  throws far more grenades, and carries more
+//   Anchor     holds its ground: never panics or berserks, a little more range
+//   Coward     panics at the first scare and cowers long
+//   Kamikaze   arms its grenades and charges now and then
+class HCE_Style : Inventory
+{
+	const HEALTH = 1.25;
+	bool applied;
+	Default { +INVENTORY.UNDROPPABLE +INVENTORY.UNTOSSABLE +INVENTORY.UNCLEARABLE Inventory.MaxAmount 1; }
+	override void DoEffect()
+	{
+		Super.DoEffect();
+		if(applied || !owner || owner.GetAge() < 2) return;
+		applied = true;
+		let e = HaloDoom_EnemyBase(owner); if(!e) return;
+		e.A_SetHealth(int(e.health * HEALTH));
+		Apply(e);
+	}
+	virtual void Apply(HaloDoom_EnemyBase e) {}
+}
+class HCE_StyleRusher : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_rangeMin *= 0.5; e.hce_rangeMax *= 0.55; e.hce_runSpeed *= 1.15;
+		e.bHCE_Berserks = true; e.hce_berserkAmount = min(e.hce_berserkAmount, 10); e.hce_berserkThreshold = max(e.hce_berserkThreshold, 0.7);
+	}
+}
+class HCE_StyleBerserker : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_rangeMin *= 0.4; e.hce_rangeMax *= 0.5; e.hce_runSpeed *= 1.2;
+		e.bHCE_Berserks = true; e.hce_berserkAmount = 0; e.hce_berserkThreshold = 0.98; e.hce_proximityBerserk = max(e.hce_proximityBerserk, 300);
+		e.hce_flankOff = frandom(40, 70) * (random(0, 1) ? 1 : -1);
+	}
+}
+class HCE_StyleMarksman : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_rangeMin *= 1.5; e.hce_rangeMax *= 1.6; e.hce_errorAngle *= 0.6;
+		e.hce_berserkThreshold = min(e.hce_berserkThreshold, 0.15);
+	}
+}
+class HCE_StyleFlanker : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_runSpeed *= 1.2; e.hce_rangeMin *= 0.7; e.hce_rangeMax *= 0.8;
+		e.hce_flankOff = frandom(70, 110) * (random(0, 1) ? 1 : -1);
+	}
+}
+class HCE_StyleStalker : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_runSpeed *= 1.1; e.hce_rangeMax *= 1.2;
+		e.hce_flankOff = frandom(100, 140) * (random(0, 1) ? 1 : -1);
+		e.bHCE_Berserks = true; e.hce_berserkAmount = min(e.hce_berserkAmount, 20); e.hce_berserkThreshold = max(e.hce_berserkThreshold, 0.5);
+	}
+}
+class HCE_StyleGrenadier : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_grenades += 4; e.hce_grenadeChance = min(1.0, max(e.hce_grenadeChance, 0.2) * 2.5);
+	}
+}
+class HCE_StyleAnchor : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_rangeMax *= 1.2; e.hce_panicDamage = 1e9; e.bHCE_Berserks = false;
+	}
+}
+class HCE_StyleCoward : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_panicDamage *= 0.4; e.hce_cowerMin *= 1.5; e.hce_cowerMax *= 2; e.hce_rangeMin *= 1.3; e.hce_rangeMax *= 1.3;
+	}
+}
+class HCE_StyleKamikaze : HCE_Style
+{
+	override void Apply(HaloDoom_EnemyBase e)
+	{
+		e.hce_kamiChance = max(e.hce_kamiChance, 0.03); e.hce_grenades += 2; e.hce_rangeMin *= 0.7; e.hce_rangeMax *= 0.7;
+	}
+}

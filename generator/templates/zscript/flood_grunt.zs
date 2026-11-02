@@ -12,3 +12,4 @@
 		}
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override bool HCE_BurstsOnDeath() { return true; }   // gone in its burst, as a carrier is: no body left

@@ -6749,6 +6749,7 @@ class HCE_FloodGrunt : HCE_FloodGruntBase
 		}
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override bool HCE_BurstsOnDeath() { return true; }   // gone in its burst, as a carrier is: no body left
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -6928,6 +6929,7 @@ class HCE_FloodGruntNeedler : HCE_FloodGruntBase
 		}
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override bool HCE_BurstsOnDeath() { return true; }   // gone in its burst, as a carrier is: no body left
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -7103,6 +7105,7 @@ class HCE_FloodGruntPlasmaPistol : HCE_FloodGruntBase
 		}
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+	override bool HCE_BurstsOnDeath() { return true; }   // gone in its burst, as a carrier is: no body left
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)

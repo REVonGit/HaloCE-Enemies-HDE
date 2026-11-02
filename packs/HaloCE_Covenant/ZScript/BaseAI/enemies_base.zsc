@@ -3611,7 +3611,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	//   Kig-Yar    two clipped parts, joined (Chur'R-Yar, Reth-Mal)
 	//   Mgalekgolo three soft words, one for each part of the colony (Igido Nosa Fasu)
 	//   Huragok    a phrase, as its own kind names it (Lighter Than Some)
-	// "" for the races with no names here (the Drones, the Draeth, the beasts)
+	//   Draeth     two names, each broken by an apostrophe (D'rick Sa'eth)
+	// "" for the races with no names here (the Drones, the beasts)
 	static String HCE_CovenantName(String cn)
 	{
 		static const String GO[] = { "Th", "R", "Z", "K", "V", "S", "N", "Ts", "Jh", "Ul", "Ar", "Fal", "Or", "Xh", "Kr", "Ush", "Mor", "Ib", "Tar", "Rh" };
@@ -3620,6 +3621,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		static const String FO[] = { "V", "S", "K", "M", "T", "R", "N", "Z", "L", "J", "Kh", "Gh", "Ts", "Fh", "Dh" };
 		static const String FV[] = { "a", "o", "u", "e", "i", "ai", "au" };
 		static const String FM[] = { "d", "r", "m", "l", "n", "t", "k", "v", "s", "th", "rn", "lk", "nd", "mr" };
+		if(cn.IndexOf("Draeth") >= 0)
+		{
+			// the Draeth: two names, each broken by an apostrophe (D'rick Sa'eth, Gul'mahn Te'eure, Ku'room Kee'nth)
+			static const String DA[] = { "D", "K", "Gul", "Ku", "Sa", "Te", "Kee", "Vo", "Th", "Ra", "Mo", "Zu", "Ha", "N", "Shu", "Del", "Ar", "Qe", "Tor", "Ve" };
+			static const String DB[] = { "rick", "eth", "mahn", "eure", "room", "nth", "ath", "orr", "esh", "uun", "ahl", "ikk", "oon", "esk", "ar", "eem", "uth", "ehn", "ix", "aun" };
+			String a = DA[random(0, DA.Size() - 1)] .. "'" .. DB[random(0, DB.Size() - 1)];
+			String b = DA[random(0, DA.Size() - 1)] .. "'" .. DB[random(0, DB.Size() - 1)];
+			return a .. " " .. b;
+		}
 		if(cn.IndexOf("Elite") >= 0 && cn.IndexOf("Flood") < 0)
 		{
 			String given = GO[random(0, GO.Size() - 1)] .. GV[random(0, GV.Size() - 1)] .. GC[random(0, GC.Size() - 1)];

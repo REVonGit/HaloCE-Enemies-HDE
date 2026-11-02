@@ -460,3 +460,5 @@ HCE/FloodSnd/acid_fade/0 "sounds/hce_flood/acid_fade_0.ogg"
 HCE/FloodSnd/acid_fade/1 "sounds/hce_flood/acid_fade_1.ogg"
 $random HCE/FloodAcid/Loop { HCE/FloodSnd/acid_loop/0 HCE/FloodSnd/acid_loop/1 }
 $random HCE/FloodAcid/Fade { HCE/FloodSnd/acid_fade/0 HCE/FloodSnd/acid_fade/1 }
+$random HCE/FloodJackal/Burst { HCE/FloodSnd/fjackal_burst/0 HCE/FloodSnd/fjackal_burst/1 HCE/FloodSnd/fjackal_burst/2 }
+$rolloff HCE/FloodJackal/Burst 200 1600

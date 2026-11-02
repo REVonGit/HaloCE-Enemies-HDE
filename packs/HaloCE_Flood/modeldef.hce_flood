@@ -921,3 +921,16 @@ Model HCE_FloodBlindWolf
 	FrameIndex HCEM A 0 0
 }
 
+
+// the Flood Jackal's burst: SPV3's flood_spider garbage, its legs (frame A) and arms (frame B) (hce_flood_crawl.zsc)
+Model HCE_FloodJackalGib
+{
+	Path "models/hce/FloodJackalGibs"
+	Model 0 "FloodJackalGib_legs.iqm"
+	Model 1 "FloodJackalGib_arms.iqm"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	FrameIndex HCGB A 0 0
+	FrameIndex HCGB B 1 0
+}

@@ -233,7 +233,7 @@ class HCE_FloodSpit : Actor
 	}
 	void Glob(double size, double a, int life)
 	{
-		TextureID g = TexMan.CheckForTexture("HCEGLOW", TexMan.Type_Any);
+		TextureID g = TexMan.CheckForTexture("HCEACORE", TexMan.Type_Any);
 		FSpawnParticleParams p;
 		p.color1 = Color(255, 200, 190, 60);
 		p.texture = g;
@@ -263,9 +263,25 @@ class HCE_FloodSpit : Actor
 		TNT1 A 1
 		{
 			A_StartSound("HCE/FloodAcid/Splat", CHAN_BODY, 0, 0.9);
+			Spawn("HCE_FloodAcidSplat", pos);
+			// droplets flung off it
+			FSpawnParticleParams d;
+			d.color1 = Color(255, 200, 190, 60);
+			d.texture = TexMan.CheckForTexture("HCEACGLW", TexMan.Type_Any);
+			d.style = STYLE_Translucent;
+			d.flags = SPF_FULLBRIGHT | SPF_REPLACE;
+			d.startalpha = 0.85;
+			d.fadestep = -1;
+			d.accel = (0, 0, -0.25);
 			for(int i = 0; i < 8; i++)
-				A_SpawnParticle(Color(200, 190, 60), SPF_FULLBRIGHT | SPF_RELATIVE, 18, 4, random(0, 359),
-					0, 0, 2, frandom(0.5, 2.5), 0, frandom(0.5, 2.5), 0, 0, -0.2);
+			{
+				d.lifetime = random(12, 22);
+				d.size = frandom(3, 6);
+				d.sizestep = -0.15;
+				d.pos = pos + (0, 0, 2);
+				d.vel = (AngleToVector(frandom(0, 360), frandom(0.5, 2.5)), frandom(0.8, 2.8));
+				Level.SpawnParticle(d);
+			}
 			HCE_FloodAcid.Pool(self, target);
 		}
 		Stop;
@@ -277,6 +293,7 @@ class HCE_FloodSpit : Actor
 class HCE_FloodAcid : Actor
 {
 	int life;
+	Actor patch;
 	Default
 	{
 		+NOBLOCKMAP
@@ -304,8 +321,8 @@ class HCE_FloodAcid : Actor
 	{
 		super.PostBeginPlay();
 		A_StartSound("HCE/FloodAcid/Loop", CHAN_BODY, CHANF_LOOPING, 0.55, 1.5);
-		let st = Spawn("HCE_FloodBurstPool", pos);     // the bile left on the floor (it lingers, then fades)
-		if(st) st.A_SetScale(0.7);
+		patch = Spawn("HCE_FloodAcidPatch", pos);      // the bile on the floor, fading with the puddle
+
 	}
 	override void Tick()
 	{
@@ -315,6 +332,7 @@ class HCE_FloodAcid : Actor
 		{
 			A_StopSound(CHAN_BODY);
 			A_StartSound("HCE/FloodAcid/Fade", CHAN_AUTO, 0, 0.55, 1.5);
+			if(patch) HCE_FloodAcidPatch(patch).fading = true;
 			Destroy();
 			return;
 		}
@@ -324,7 +342,7 @@ class HCE_FloodAcid : Actor
 			double r = frandom(0, radius * 0.7), a = frandom(0, 360);
 			FSpawnParticleParams p;
 			p.color1 = Color(255, 190, 200, 55);
-			p.texture = TexMan.CheckForTexture("HCEGLOW", TexMan.Type_Any);
+			p.texture = TexMan.CheckForTexture("HCEACGLW", TexMan.Type_Any);
 			p.style = STYLE_Translucent;
 			p.flags = SPF_FULLBRIGHT | SPF_REPLACE;
 			p.lifetime = random(12, 24);
@@ -336,6 +354,26 @@ class HCE_FloodAcid : Actor
 			p.vel = (0, 0, frandom(0.15, 0.45));
 			Level.SpawnParticle(p);
 		}
+		// its fumes: a thin bile-green haze curling up off it
+		if(!(life % 5))
+		{
+			FSpawnParticleParams f;
+			f.color1 = Color(255, 170, 185, 70);
+			f.texture = TexMan.CheckForTexture(random(0, 1) ? "HCEACSM1" : "HCEACSM2", TexMan.Type_Any);
+			f.style = STYLE_Translucent;
+			f.flags = SPF_ROLL | SPF_REPLACE;
+			f.lifetime = random(40, 70);
+			f.size = frandom(14, 24);
+			f.sizestep = 0.35;
+			f.startalpha = life > 35 * 3 ? 0.22 * (35 * 4 - life) / 35.0 : 0.22;
+			f.fadestep = -1;
+			f.startroll = frandom(0, 360);
+			f.rollvel = frandom(-2, 2);
+			double a = frandom(0, 360), r = frandom(0, radius * 0.6);
+			f.pos = pos + (cos(a) * r, sin(a) * r, 2);
+			f.vel = (frandom(-0.15, 0.15), frandom(-0.15, 0.15), frandom(0.3, 0.6));
+			Level.SpawnParticle(f);
+		}
 		if(life % 10) return;
 		let bi = BlockThingsIterator.Create(self, radius + 32);
 		while(bi.Next())
@@ -345,5 +383,123 @@ class HCE_FloodAcid : Actor
 			if(Distance2D(t) > radius + t.radius || t.pos.z > pos.z + 8 || t.pos.z + t.height < pos.z) continue;
 			t.DamageMobj(self, target, 2, 'Poison', DMG_THRUSTLESS);
 		}
+	}
+}
+
+// ---- the Flood Jackal's burst (SPV3's flood_spider_destroyed): its legs and its arms flung off tumbling, bouncing,
+// lying where they land for half a minute, then fading
+class HCE_FloodJackalGib : Actor
+{
+	double spinP, spinR;
+	int rest;
+	Default
+	{
+		Radius 4; Height 4; Gravity 0.8;
+		+NOBLOCKMAP +MISSILE +DROPOFF +NOTELEPORT +THRUACTORS +BOUNCEONFLOORS +BOUNCEONWALLS +DONTSPLASH +NOTONAUTOMAP
+		BounceFactor 0.3; WallBounceFactor 0.35; BounceCount 4;
+	}
+	// the wet burst round it: Flood spray, skin chunks, a little of the Flood's gas, its splats on the walls near
+	// it and a pool under it (HCE_FloodBurst's pieces, without the carrier's fireball and smoke)
+	static void Burst(Actor body)
+	{
+		vector3 c = body.pos + (0, 0, body.height * 0.5);
+		Color blood = body.BloodColor ? body.BloodColor : Color(255, 118, 112, 58);
+		for(int i = 0; i < 10; i++)
+		{
+			let p = Actor.Spawn("HCE_GorePuffFlood", c);
+			if(!p) continue;
+			p.SetShade(blood); p.frame = random(0, 3); p.scale *= frandom(0.25, 0.45);
+			p.vel = (frandom(-3, 3), frandom(-3, 3), frandom(0, 3));
+		}
+		for(int i = 0; i < 6; i++)
+		{
+			let k = Actor.Spawn("HCE_FloodChunk", c);
+			if(!k) continue;
+			k.frame = random(0, 3); k.scale *= frandom(0.4, 0.8);
+			k.vel = (AngleToVector(frandom(0, 360), frandom(2, 6)), frandom(3, 7));
+		}
+		for(int i = 0; i < 4; i++)
+		{
+			let g = Actor.Spawn("HCE_FloodBurstGas", c + (frandom(-4, 4), frandom(-4, 4), frandom(-3, 5)));
+			if(!g) continue;
+			g.scale *= frandom(0.2, 0.35); g.frame = random(0, 1); g.roll = frandom(0, 360);
+			g.vel = (AngleToVector(frandom(0, 360), frandom(0.8, 2)), frandom(0.2, 1.0));
+		}
+		for(int i = 0; i < 6; i++)
+			body.A_SprayDecal("HCEGore_FloodBig", 64, (0, 0, body.height * 0.5), (AngleToVector(i * 60 + frandom(-15, 15), 1), frandom(-0.3, 0.1)));
+		let pool = Actor.Spawn("HCE_FloodBurstPool", (body.pos.xy, body.floorz));
+		if(pool) pool.scale *= 0.6;
+	}
+	static void Fling(Actor body, int which)
+	{
+		let g = HCE_FloodJackalGib(Actor.Spawn("HCE_FloodJackalGib", body.pos + (0, 0, body.height * 0.5)));
+		if(!g) return;
+		g.frame = which;
+		g.angle = frandom(0, 360);
+		double a = frandom(0, 360);
+		g.vel = (AngleToVector(a, frandom(2.5, 6)), frandom(4, 8)) + body.vel * 0.5;
+		g.spinP = frandom(-25, 25); g.spinR = frandom(-25, 25);
+	}
+	override void Tick()
+	{
+		super.Tick();
+		if(bDESTROYED || IsFrozen()) return;
+		if(rest == 0)
+		{
+			if(pos.z <= floorz + 1 && vel.Length() < 1.2)
+			{
+				// at rest: lying on its side or its back, as it fell
+				rest = 1;
+				A_SetPitch(0); A_SetRoll(random(0, 1) ? 0 : 180, SPF_INTERPOLATE);
+				vel = (0, 0, 0);
+				return;
+			}
+			A_SetPitch(pitch + spinP, SPF_INTERPOLATE); A_SetRoll(roll + spinR, SPF_INTERPOLATE);
+			return;
+		}
+		if(++rest > 35 * 30) { A_FadeOut(0.03); }
+	}
+	States
+	{
+	Spawn:
+		HCGB # -1;
+		Stop;
+	Death:
+		HCGB # -1;
+		Stop;
+	}
+}
+
+// the puddle's bile on the floor (a splotch from Brackeys' VFX bundle, CC0: Kenney's dirt particles, recoloured):
+// it fades out as the puddle fizzles
+class HCE_FloodAcidPatch : Actor
+{
+	bool fading;
+	Default { +FLATSPRITE +NOINTERACTION +NOBLOCKMAP +DONTSPLASH +NOTONAUTOMAP RenderStyle "Translucent"; Alpha 0.0; Scale 0.24; }
+	override void Tick()
+	{
+		super.Tick();
+		if(bDESTROYED || IsFrozen()) return;
+		if(fading) { alpha -= 0.03; if(alpha <= 0) Destroy(); }
+		else if(alpha < 0.85) alpha = min(0.85, alpha + 0.12);
+	}
+	States
+	{
+	Spawn:
+		HCAP A 0 NoDelay { frame = random(0, 1); angle = frandom(0, 360); SetZ(floorz + 0.4); bXFLIP = random(0, 1); }
+		HCAP # -1;
+		Stop;
+	}
+}
+
+// the glob's splash where it hits (Brackeys' VFX bundle, CC0: CodeManu's impact sheet, recoloured)
+class HCE_FloodAcidSplat : Actor
+{
+	Default { +NOINTERACTION +NOBLOCKMAP +DONTSPLASH +NOTONAUTOMAP +FORCEXYBILLBOARD RenderStyle "Translucent"; Alpha 0.9; Scale 0.13; }
+	States
+	{
+	Spawn:
+		HCAS ABCDEFGHIJKLMNOPQRSTUVWX 1 Bright;
+		Stop;
 	}
 }

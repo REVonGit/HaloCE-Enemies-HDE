@@ -10467,6 +10467,22 @@ class HCE_FloodJackal : HCE_FloodJackalBase
 		A_ChangeModel('None', 0, "", 'None', s, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
 	}
 
+	// it bursts when it dies (SPV3's flood_spider_destroyed): no body left, its Flood blood sprayed round, its legs
+	// and arms flung off (hce_flood_crawl.zsc HCE_FloodJackalGib), SPV3's burst sound
+	bool hce_burst;
+	override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath)
+	{
+		super.Die(source, inflictor, dmgflags, MeansOfDeath);
+		if(hce_burst) return;
+		hce_burst = true;
+		hce_gibbed = true; hce_deadForGood = true;     // no body left (not the generic gib burst: its blood cloud blinds at close range)
+		bInvisible = true; A_SetRenderStyle(0, STYLE_None);
+		A_StartSound("HCE/FloodJackal/Burst", CHAN_AUTO, CHANF_OVERLAP, 1.0);
+		HCE_FloodJackalGib.Burst(self);
+		HCE_FloodJackalGib.Fling(self, 0);
+		HCE_FloodJackalGib.Fling(self, 1);
+	}
+
 	//$Category "Halo CE/Flood/Flood Jackal"
 	//$Title "Flood Jackal"
 	Default
@@ -10517,6 +10533,7 @@ class HCE_FloodJackal : HCE_FloodJackalBase
 		case HCE_A_LEAP_MELEE: return 'stand unarmed leap-melee';
 		case HCE_A_TURN_L: return 'stand unarmed turn-left';
 		case HCE_A_TURN_R: return 'stand unarmed turn-right';
+		case HCE_A_DIE_F: return 'stand unarmed land-hard';   // (never seen: it bursts, HCE_FloodJackalGib; without a death clip the base AI shattered it with a frag blast)
 		}
 		return 'None';
 	}

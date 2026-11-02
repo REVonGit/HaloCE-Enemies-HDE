@@ -1561,7 +1561,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		// a target it was handed without seeing it (Firefight's hunt, a script, Doom's sound alert): it knows where that
 		// one was when it was told, not the map's origin (an unset last-known spot sent searches there)
 		else if(target != hce_knownOf) hce_lastKnown = target.pos;
-		else if(level.maptime % 35 == 0 && HCE_Hunting()) { hce_lastKnown = target.pos; hce_returnHome = false; hce_srPhase = 0; }
+		// (hunting with an objective: a goal that isn't a patrol point, a mode's zone (HDE Maps' Invasion), the way it
+		// heads for while its target is out of sight)
+		else if(level.maptime % 35 == 0 && HCE_Hunting()) { hce_lastKnown = (goal && !(goal is "PatrolPoint")) ? goal.pos : target.pos; hce_returnHome = false; hce_srPhase = 0; }
 		hce_knownOf = target;
 
 		// a target taken up outside the usual wake-up (a Marine following the player, a unit that heard the fight) left
@@ -1758,7 +1760,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		{
 			if(HCE_TryFlush()) return;
 			// a squad member stays with its leader instead of hunting on its own
-			let L = HCE_SquadLeader();
+			let L = HCE_ObjectiveFar() ? null : HCE_SquadLeader();   // (an objective to take: for it, not the leader)
 			if(L && L.health > 0)
 			{
 				// (hunting: one that can't keep with its leader goes after the player itself rather than standing)
@@ -1809,10 +1811,14 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(dl > 420) { moveA = AngleTo(L); spd = hce_runSpeed; }
 			else if(dl > 280 && spd > 0 && abs(DeltaAngle(moveA, AngleTo(L))) > 90) moveA = AngleTo(L) + 60 * (hce_strafeDir != 0 ? hce_strafeDir : 1);
 		}
+		// an objective to take (HCE_ObjectiveFar: a mode's zone, HDE Maps' Invasion): it fights on the way there, no cover,
+		// no holding back, till it stands in it
+		bool objective = HCE_ObjectiveFar();
+		if(objective) { moveA = HCE_NavSteer(goal.pos) ? hce_navAng : AngleTo(goal); spd = hce_runSpeed * 0.85; }
 		bool fire = true;
-		bool docMove = HCE_Doctrine(d, toT, moveA, spd, fire) && spd > 0;       // squad tactics (UNSC fire teams, Covenant lance)
-		if(HCE_PerchTick(d, moveA, spd, fire)) docMove = true;                    // a sniper changing perches
-		if(HCE_CoverTick(d, toT, docMove, moveA, spd, fire) == 2) return;      // cover: a corner or low wall to fight from
+		bool docMove = !objective && HCE_Doctrine(d, toT, moveA, spd, fire) && spd > 0;       // squad tactics (UNSC fire teams, Covenant lance)
+		if(!objective && HCE_PerchTick(d, moveA, spd, fire)) docMove = true;                    // a sniper changing perches
+		if(!objective && HCE_CoverTick(d, toT, docMove, moveA, spd, fire) == 2) return;      // cover: a corner or low wall to fight from
 		if(hce_ffStepTics > 0) { hce_ffStepTics--; moveA = hce_ffStepAng; spd = hce_runSpeed * 0.7; }   // clearing a friend out of the line of fire
 		if(spd > 0) moveA = HCE_PickHeading(moveA, toT);
 		HCE_Move(moveA, spd);
@@ -1850,7 +1856,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		double toward = atan2(hce_lastKnown.y - pos.y, hce_lastKnown.x - pos.x);
 		vector2 ahead = pos.xy + AngleToVector(toward, radius + 40);
 		if(HCE_HazardAt(ahead) || HCE_DangerStep(ahead)) { HCE_Hold(); return; }
-		if(HCE_NavSteer(target ? target.pos : hce_lastKnown))
+		if(HCE_NavSteer(HCE_ObjectiveFar() ? goal.pos : (target ? target.pos : hce_lastKnown)))
 		{
 			// the map's graph: the bots' way to it (Doom's chase it stands in for went for the target itself)
 			HCE_Move(HCE_PickHeading(hce_navAng, hce_navAng), hce_runSpeed);
@@ -1969,6 +1975,9 @@ class HaloDoom_EnemyBase : Actor abstract
 	// knows where that player is. It is told the player's spot once a second while it can't see them, never ends a
 	// search or walks back to its post, and never gives the player up.
 	bool HCE_Hunting() { return target && target.player && !bFRIENDLY && HCE_CVarF('hce_hunt', 0) > 0; }
+	// hunting with an objective (a goal that isn't a patrol point: a mode's zone to take, HDE Maps' Invasion) and not yet
+	// in it: it heads there, fighting on the way, rather than after the player
+	bool HCE_ObjectiveFar() { return HCE_Hunting() && goal && !(goal is "PatrolPoint") && Distance2D(goal) > 160; }
 	bool HCE_MayPursue()
 	{
 		if(hce_pursuing) return true;

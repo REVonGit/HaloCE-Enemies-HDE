@@ -820,7 +820,7 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
           'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
-          'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood', 'FloodJackal': 'FloodInfection', 'FloodBlindWolf': 'Flood'}
+          'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood', 'FloodJackal': 'FloodJackal', 'FloodBlindWolf': 'FloodWolf'}
 from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
 # melee damage of a weapon swung as one (HCE_Melee); an unlisted gun hits for 55, an unarmed body by character (build)
 MELEE = {'energy sword': 151, 'flamethrower': 75}

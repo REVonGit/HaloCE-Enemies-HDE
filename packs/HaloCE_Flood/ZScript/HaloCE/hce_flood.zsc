@@ -10493,7 +10493,7 @@ class HCE_FloodJackal : HCE_FloodJackalBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "FloodInfection";
+		HaloDoom_EnemyBase.HCE_Voices "FloodJackal";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -10662,7 +10662,8 @@ class HCE_FloodBlindWolf : HCE_FloodBlindWolfBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "Flood";
+		HaloDoom_EnemyBase.HCE_Voices "FloodWolf";
+		HaloDoom_EnemyBase.HCE_FireSounds "HCE/FloodWolf/Fire", "", "", "";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -10671,7 +10672,15 @@ class HCE_FloodBlindWolf : HCE_FloodBlindWolfBase
 	// the Flood Wolf softens its prey up from range, then goes in for the kill: a volley or two of spikes while it
 	// circles (hce_wolfUntil), then a run in to leap and maul; out of reach again, back to the spikes
 	bool hce_wolfRush;
-	int hce_wolfUntil;
+	int hce_wolfUntil, hce_reloadSndAt;
+	// its breathing, looped close by while it lives
+	override void Tick()
+	{
+		super.Tick();
+		if(bDESTROYED || IsFrozen()) return;
+		if(health > 0) { if(!(level.maptime & 15) && !IsActorPlayingSound(CHAN_5)) A_StartSound("HCE/FloodWolf/IdleLoop", CHAN_5, CHANF_LOOPING, 0.35, 2.5); }
+		else if(IsActorPlayingSound(CHAN_5)) A_StopSound(CHAN_5);
+	}
 	override void HCE_Fight() { HCE_Charge(); }   // always this way: spikes, then teeth
 	override void HCE_Charge()
 	{
@@ -10694,7 +10703,14 @@ class HCE_FloodBlindWolf : HCE_FloodBlindWolfBase
 			double toT = AngleTo(target);
 			double want = d > 700 ? 30 : (d < 280 ? 140 : 90);
 			HCE_Move(toT + want * (hce_strafeDir != 0 ? hce_strafeDir : 1), hce_walkSpeed);
+			int was = hce_burstTics;
 			HCE_UpdateFiring(d);
+			// a volley done: now and then the spike sacs fill again, audibly
+			if(was > 0 && hce_burstTics == 0 && level.maptime >= hce_reloadSndAt && random(0, 2) == 0)
+			{
+				A_StartSound("HCE/FloodWolf/Reload", CHAN_6, 0, 0.8);
+				hce_reloadSndAt = level.maptime + 35 * 5;
+			}
 			HCE_PickMoveAnim();
 			return;
 		}

@@ -357,3 +357,92 @@ $random HCE/FloodJuggernaut/DeathHard { HCE/FloodSnd/juggernaut_death/0 HCE/Floo
 $volume HCE/FloodCarrier/Pop 0.9
 $rolloff HCE/FloodCarrier/Pop 200 1600
 $rolloff HCE/FloodGrunt/Pop 200 1400
+
+// the Flood Jackal and the Flood Wolf (REV's sounds, Raw Assets/Flood Jackal and Raw Assets/Flood blind wolf)
+HCE/FloodSnd/fjackal_hurt/0 "sounds/hce_flood/fjackal_hurt_0.ogg"
+HCE/FloodSnd/fjackal_hurt/1 "sounds/hce_flood/fjackal_hurt_1.ogg"
+HCE/FloodSnd/fjackal_hurt/2 "sounds/hce_flood/fjackal_hurt_2.ogg"
+HCE/FloodSnd/fjackal_hurt/3 "sounds/hce_flood/fjackal_hurt_3.ogg"
+HCE/FloodSnd/fjackal_hurt/4 "sounds/hce_flood/fjackal_hurt_4.ogg"
+HCE/FloodSnd/fjackal_idle/0 "sounds/hce_flood/fjackal_idle_0.ogg"
+HCE/FloodSnd/fjackal_idle/1 "sounds/hce_flood/fjackal_idle_1.ogg"
+HCE/FloodSnd/fjackal_idle/2 "sounds/hce_flood/fjackal_idle_2.ogg"
+HCE/FloodSnd/fjackal_idle/3 "sounds/hce_flood/fjackal_idle_3.ogg"
+HCE/FloodSnd/fjackal_idle/4 "sounds/hce_flood/fjackal_idle_4.ogg"
+HCE/FloodSnd/fjackal_idle/5 "sounds/hce_flood/fjackal_idle_5.ogg"
+HCE/FloodSnd/fjackal_idle/6 "sounds/hce_flood/fjackal_idle_6.ogg"
+HCE/FloodSnd/fjackal_leap/0 "sounds/hce_flood/fjackal_leap_0.ogg"
+HCE/FloodSnd/fjackal_leap/1 "sounds/hce_flood/fjackal_leap_1.ogg"
+HCE/FloodSnd/fjackal_leap/2 "sounds/hce_flood/fjackal_leap_2.ogg"
+HCE/FloodSnd/fjackal_spot/0 "sounds/hce_flood/fjackal_spot_0.ogg"
+HCE/FloodSnd/fjackal_spot/1 "sounds/hce_flood/fjackal_spot_1.ogg"
+HCE/FloodSnd/fjackal_spot/2 "sounds/hce_flood/fjackal_spot_2.ogg"
+HCE/FloodSnd/fjackal_spot/3 "sounds/hce_flood/fjackal_spot_3.ogg"
+HCE/FloodSnd/fwolf_call/0 "sounds/hce_flood/fwolf_call_0.ogg"
+HCE/FloodSnd/fwolf_call/1 "sounds/hce_flood/fwolf_call_1.ogg"
+HCE/FloodSnd/fwolf_call/2 "sounds/hce_flood/fwolf_call_2.ogg"
+HCE/FloodSnd/fwolf_death/0 "sounds/hce_flood/fwolf_death_0.ogg"
+HCE/FloodSnd/fwolf_death/1 "sounds/hce_flood/fwolf_death_1.ogg"
+HCE/FloodSnd/fwolf_death/2 "sounds/hce_flood/fwolf_death_2.ogg"
+HCE/FloodSnd/fwolf_death/3 "sounds/hce_flood/fwolf_death_3.ogg"
+HCE/FloodSnd/fwolf_fire/0 "sounds/hce_flood/fwolf_fire_0.ogg"
+HCE/FloodSnd/fwolf_fire/1 "sounds/hce_flood/fwolf_fire_1.ogg"
+HCE/FloodSnd/fwolf_fire/2 "sounds/hce_flood/fwolf_fire_2.ogg"
+HCE/FloodSnd/fwolf_fire/3 "sounds/hce_flood/fwolf_fire_3.ogg"
+HCE/FloodSnd/fwolf_idleloop/0 "sounds/hce_flood/fwolf_idleloop_0.ogg"
+HCE/FloodSnd/fwolf_kill/0 "sounds/hce_flood/fwolf_kill_0.ogg"
+HCE/FloodSnd/fwolf_melee/0 "sounds/hce_flood/fwolf_melee_0.ogg"
+HCE/FloodSnd/fwolf_melee/1 "sounds/hce_flood/fwolf_melee_1.ogg"
+HCE/FloodSnd/fwolf_melee/2 "sounds/hce_flood/fwolf_melee_2.ogg"
+HCE/FloodSnd/fwolf_melee/3 "sounds/hce_flood/fwolf_melee_3.ogg"
+HCE/FloodSnd/fwolf_melee/4 "sounds/hce_flood/fwolf_melee_4.ogg"
+HCE/FloodSnd/fwolf_reload/0 "sounds/hce_flood/fwolf_reload_0.ogg"
+HCE/FloodSnd/fwolf_reload/1 "sounds/hce_flood/fwolf_reload_1.ogg"
+HCE/FloodSnd/fwolf_reload/2 "sounds/hce_flood/fwolf_reload_2.ogg"
+HCE/FloodSnd/fwolf_spot/0 "sounds/hce_flood/fwolf_spot_0.ogg"
+HCE/FloodSnd/fwolf_spot/1 "sounds/hce_flood/fwolf_spot_1.ogg"
+HCE/FloodSnd/fwolf_spot/2 "sounds/hce_flood/fwolf_spot_2.ogg"
+HCE/FloodSnd/fwolf_spot/3 "sounds/hce_flood/fwolf_spot_3.ogg"
+HCE/FloodSnd/fwolf_spot/4 "sounds/hce_flood/fwolf_spot_4.ogg"
+HCE/FloodSnd/fwolf_spot/5 "sounds/hce_flood/fwolf_spot_5.ogg"
+// HCE_Voices "FloodJackal"
+$random HCE/FloodJackal/Alert { HCE/FloodSnd/fjackal_spot/0 HCE/FloodSnd/fjackal_spot/1 HCE/FloodSnd/fjackal_spot/2 HCE/FloodSnd/fjackal_spot/3 }
+$random HCE/FloodJackal/FoundFoe { HCE/FloodSnd/fjackal_spot/0 HCE/FloodSnd/fjackal_spot/1 HCE/FloodSnd/fjackal_spot/2 HCE/FloodSnd/fjackal_spot/3 }
+$random HCE/FloodJackal/HeardGunfire { HCE/FloodSnd/fjackal_spot/0 HCE/FloodSnd/fjackal_spot/1 HCE/FloodSnd/fjackal_spot/2 HCE/FloodSnd/fjackal_spot/3 }
+$random HCE/FloodJackal/Taunt { HCE/FloodSnd/fjackal_spot/0 HCE/FloodSnd/fjackal_spot/1 HCE/FloodSnd/fjackal_spot/2 HCE/FloodSnd/fjackal_spot/3 }
+$random HCE/FloodJackal/KillPlayer { HCE/FloodSnd/fjackal_spot/0 HCE/FloodSnd/fjackal_spot/1 HCE/FloodSnd/fjackal_spot/2 HCE/FloodSnd/fjackal_spot/3 }
+$random HCE/FloodJackal/Idle { HCE/FloodSnd/fjackal_idle/0 HCE/FloodSnd/fjackal_idle/1 HCE/FloodSnd/fjackal_idle/2 HCE/FloodSnd/fjackal_idle/3 HCE/FloodSnd/fjackal_idle/4 HCE/FloodSnd/fjackal_idle/5 HCE/FloodSnd/fjackal_idle/6 }
+$random HCE/FloodJackal/Charge { HCE/FloodSnd/fjackal_leap/0 HCE/FloodSnd/fjackal_leap/1 HCE/FloodSnd/fjackal_leap/2 }
+$random HCE/FloodJackal/Berserk { HCE/FloodSnd/fjackal_leap/0 HCE/FloodSnd/fjackal_leap/1 HCE/FloodSnd/fjackal_leap/2 }
+$random HCE/FloodJackal/Advance { HCE/FloodSnd/fjackal_leap/0 HCE/FloodSnd/fjackal_leap/1 HCE/FloodSnd/fjackal_leap/2 }
+$random HCE/FloodJackal/Melee { HCE/FloodSnd/fjackal_leap/0 HCE/FloodSnd/fjackal_leap/1 HCE/FloodSnd/fjackal_leap/2 }
+$random HCE/FloodJackal/Pain { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/PainMed { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/PainHeavy { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/Wounded { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/OnFire { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/Stuck { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/Death { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+$random HCE/FloodJackal/DeathHard { HCE/FloodSnd/fjackal_hurt/0 HCE/FloodSnd/fjackal_hurt/1 HCE/FloodSnd/fjackal_hurt/2 HCE/FloodSnd/fjackal_hurt/3 HCE/FloodSnd/fjackal_hurt/4 }
+// HCE_Voices "FloodWolf" (no pain lines of its own: the Flood's); Fire and Reload: its spikes; IdleLoop: its breathing
+$random HCE/FloodWolf/Alert { HCE/FloodSnd/fwolf_spot/0 HCE/FloodSnd/fwolf_spot/1 HCE/FloodSnd/fwolf_spot/2 HCE/FloodSnd/fwolf_spot/3 HCE/FloodSnd/fwolf_spot/4 HCE/FloodSnd/fwolf_spot/5 }
+$random HCE/FloodWolf/FoundFoe { HCE/FloodSnd/fwolf_spot/0 HCE/FloodSnd/fwolf_spot/1 HCE/FloodSnd/fwolf_spot/2 HCE/FloodSnd/fwolf_spot/3 HCE/FloodSnd/fwolf_spot/4 HCE/FloodSnd/fwolf_spot/5 }
+$random HCE/FloodWolf/HeardGunfire { HCE/FloodSnd/fwolf_spot/0 HCE/FloodSnd/fwolf_spot/1 HCE/FloodSnd/fwolf_spot/2 HCE/FloodSnd/fwolf_spot/3 HCE/FloodSnd/fwolf_spot/4 HCE/FloodSnd/fwolf_spot/5 }
+$random HCE/FloodWolf/Taunt { HCE/FloodSnd/fwolf_spot/0 HCE/FloodSnd/fwolf_spot/1 HCE/FloodSnd/fwolf_spot/2 HCE/FloodSnd/fwolf_spot/3 HCE/FloodSnd/fwolf_spot/4 HCE/FloodSnd/fwolf_spot/5 }
+$random HCE/FloodWolf/KillPlayer { HCE/FloodSnd/fwolf_kill/0 }
+$random HCE/FloodWolf/Idle { HCE/FloodSnd/fwolf_spot/0 HCE/FloodSnd/fwolf_spot/1 HCE/FloodSnd/fwolf_spot/2 HCE/FloodSnd/fwolf_spot/3 HCE/FloodSnd/fwolf_spot/4 HCE/FloodSnd/fwolf_spot/5 }
+$random HCE/FloodWolf/Charge { HCE/FloodSnd/fwolf_call/0 HCE/FloodSnd/fwolf_call/1 HCE/FloodSnd/fwolf_call/2 }
+$random HCE/FloodWolf/Berserk { HCE/FloodSnd/fwolf_call/0 HCE/FloodSnd/fwolf_call/1 HCE/FloodSnd/fwolf_call/2 }
+$random HCE/FloodWolf/Advance { HCE/FloodSnd/fwolf_call/0 HCE/FloodSnd/fwolf_call/1 HCE/FloodSnd/fwolf_call/2 }
+$random HCE/FloodWolf/Melee { HCE/FloodSnd/fwolf_melee/0 HCE/FloodSnd/fwolf_melee/1 HCE/FloodSnd/fwolf_melee/2 HCE/FloodSnd/fwolf_melee/3 HCE/FloodSnd/fwolf_melee/4 }
+$random HCE/FloodWolf/Death { HCE/FloodSnd/fwolf_death/0 HCE/FloodSnd/fwolf_death/1 HCE/FloodSnd/fwolf_death/2 HCE/FloodSnd/fwolf_death/3 }
+$random HCE/FloodWolf/DeathHard { HCE/FloodSnd/fwolf_death/0 HCE/FloodSnd/fwolf_death/1 HCE/FloodSnd/fwolf_death/2 HCE/FloodSnd/fwolf_death/3 }
+$random HCE/FloodWolf/Fire { HCE/FloodSnd/fwolf_fire/0 HCE/FloodSnd/fwolf_fire/1 HCE/FloodSnd/fwolf_fire/2 HCE/FloodSnd/fwolf_fire/3 }
+$random HCE/FloodWolf/Reload { HCE/FloodSnd/fwolf_reload/0 HCE/FloodSnd/fwolf_reload/1 HCE/FloodSnd/fwolf_reload/2 }
+$alias HCE/FloodWolf/Pain HCE/Flood/Pain
+$alias HCE/FloodWolf/PainMed HCE/Flood/PainMed
+$alias HCE/FloodWolf/PainHeavy HCE/Flood/PainHeavy
+$alias HCE/FloodWolf/Wounded HCE/Flood/Wounded
+$alias HCE/FloodWolf/OnFire HCE/Flood/OnFire
+$alias HCE/FloodWolf/Stuck HCE/Flood/Stuck
+HCE/FloodWolf/IdleLoop "sounds/hce_flood/fwolf_idleloop_0.ogg"

@@ -145,9 +145,6 @@ FLOOD_EVENTS = {
                        'Death': ['infection_die', 'infection_form_death'], 'DeathHard': ['infection_die', 'infection_form_death'],
                        'Pop': ['infection_die', 'infection_form_death']},
     'FloodCarrier': _CARRIER,
-    # the XAM Flood Grunt: its own attack shriek, and the carrier's gurgles and burst
-    'FloodGrunt': dict(_CARRIER, Alert=['grunt_attack'], Charge=['grunt_attack'], Melee=['grunt_attack'], Berserk=['grunt_attack'],
-                       Taunt=['grunt_attack', 'carrier_idle']),
     # SOI's Flood Juggernaut: its own roars
     'FloodJuggernaut': {'Alert': ['juggernaut_spot'], 'FoundFoe': ['juggernaut_spot'], 'HeardGunfire': ['juggernaut_spot'],
                         'Taunt': ['juggernaut_taunt'], 'KillPlayer': ['juggernaut_taunt'], 'Charge': ['juggernaut_berserk'],
@@ -590,7 +587,7 @@ def main():
                 for ev, keys in events.items():
                     pick = [i for key in keys for i in ids.get(key, [])]
                     if pick: out.append(f'$random HCE/{voice}/{ev} {{ {" ".join(pick)} }}')
-            out += ['$volume HCE/FloodCarrier/Pop 0.9', '$rolloff HCE/FloodCarrier/Pop 200 1600', '$rolloff HCE/FloodGrunt/Pop 200 1400']
+            out += ['$volume HCE/FloodCarrier/Pop 0.9', '$rolloff HCE/FloodCarrier/Pop 200 1600']
             open(f'{d}/sndinfo.flood', 'w').write('\n'.join(out) + '\n')
         if fac == 'covenant' and os.path.exists(f'{JETPACK}/loop.ogg'):
             os.makedirs(f'{d}/sounds/hce_jetpack', exist_ok=True)

@@ -815,11 +815,11 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'MarineArmored': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious',
           'MarineODST': 'Marine_Aussie,Marine_Bisenti,Marine_Fitzgerald,Marine_Mendoza,Marine_Cross,Marine_Perez,Marine_Timid,Marine_SgtCautious',
           # the Flood (extract_spv3.flood_sounds, shipped in the Flood pack by split_factions.py): the combat forms' growls,
-          # the infection forms' squeals and the carriers' gurgles, and the XAM Campaign Overhaul's own (human and Elite idles,
-          # the Flood Grunt's attack)
+          # the infection forms' squeals and the carriers' gurgles, and the XAM Campaign Overhaul's own (human and Elite idles);
+          # the Flood Grunt speaks as the generic combat forms
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
-          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
+          'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'Flood',
           'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood', 'FloodJackal': 'FloodJackal', 'FloodBlindWolf': 'FloodWolf'}
 from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
 # melee damage of a weapon swung as one (HCE_Melee); an unlisted gun hits for 55, an unarmed body by character (build)

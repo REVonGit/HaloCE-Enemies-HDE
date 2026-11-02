@@ -187,16 +187,6 @@ HCE/FloodSnd/flood_pain/2 "sounds/hce_flood/flood_pain_2.ogg"
 HCE/FloodSnd/flood_pain/3 "sounds/hce_flood/flood_pain_3.ogg"
 HCE/FloodSnd/flood_pain/4 "sounds/hce_flood/flood_pain_4.ogg"
 HCE/FloodSnd/flood_pain/5 "sounds/hce_flood/flood_pain_5.ogg"
-HCE/FloodSnd/grunt_attack/0 "sounds/hce_flood/grunt_attack_0.ogg"
-HCE/FloodSnd/grunt_attack/1 "sounds/hce_flood/grunt_attack_1.ogg"
-HCE/FloodSnd/grunt_attack/2 "sounds/hce_flood/grunt_attack_2.ogg"
-HCE/FloodSnd/grunt_attack/3 "sounds/hce_flood/grunt_attack_3.ogg"
-HCE/FloodSnd/grunt_attack/4 "sounds/hce_flood/grunt_attack_4.ogg"
-HCE/FloodSnd/grunt_attack/5 "sounds/hce_flood/grunt_attack_5.ogg"
-HCE/FloodSnd/grunt_attack/6 "sounds/hce_flood/grunt_attack_6.ogg"
-HCE/FloodSnd/grunt_attack/7 "sounds/hce_flood/grunt_attack_7.ogg"
-HCE/FloodSnd/grunt_attack/8 "sounds/hce_flood/grunt_attack_8.ogg"
-HCE/FloodSnd/grunt_attack/9 "sounds/hce_flood/grunt_attack_9.ogg"
 HCE/FloodSnd/impacts_flood_flesh_impact/0 "sounds/hce_flood/impacts_flood_flesh_impact_0.ogg"
 HCE/FloodSnd/impacts_flood_flesh_impact/1 "sounds/hce_flood/impacts_flood_flesh_impact_1.ogg"
 HCE/FloodSnd/impacts_flood_flesh_impact/2 "sounds/hce_flood/impacts_flood_flesh_impact_2.ogg"
@@ -328,15 +318,6 @@ $random HCE/FloodCarrier/Idle { HCE/FloodSnd/carrier_idle/0 HCE/FloodSnd/carrier
 $random HCE/FloodCarrier/Death { HCE/FloodSnd/carrier_carrier_die/0 HCE/FloodSnd/carrier_carrier_die/1 }
 $random HCE/FloodCarrier/DeathHard { HCE/FloodSnd/carrier_carrier_die/0 HCE/FloodSnd/carrier_carrier_die/1 }
 $random HCE/FloodCarrier/Pop { HCE/FloodSnd/carrier_carrier_boom/0 HCE/FloodSnd/carrier_carrier_boom/1 }
-$random HCE/FloodGrunt/Alert { HCE/FloodSnd/grunt_attack/0 HCE/FloodSnd/grunt_attack/1 HCE/FloodSnd/grunt_attack/2 HCE/FloodSnd/grunt_attack/3 HCE/FloodSnd/grunt_attack/4 HCE/FloodSnd/grunt_attack/5 HCE/FloodSnd/grunt_attack/6 HCE/FloodSnd/grunt_attack/7 HCE/FloodSnd/grunt_attack/8 HCE/FloodSnd/grunt_attack/9 }
-$random HCE/FloodGrunt/Taunt { HCE/FloodSnd/grunt_attack/0 HCE/FloodSnd/grunt_attack/1 HCE/FloodSnd/grunt_attack/2 HCE/FloodSnd/grunt_attack/3 HCE/FloodSnd/grunt_attack/4 HCE/FloodSnd/grunt_attack/5 HCE/FloodSnd/grunt_attack/6 HCE/FloodSnd/grunt_attack/7 HCE/FloodSnd/grunt_attack/8 HCE/FloodSnd/grunt_attack/9 HCE/FloodSnd/carrier_idle/0 HCE/FloodSnd/carrier_idle/1 HCE/FloodSnd/carrier_idle/2 HCE/FloodSnd/carrier_idle/3 HCE/FloodSnd/carrier_idle/4 }
-$random HCE/FloodGrunt/Idle { HCE/FloodSnd/carrier_idle/0 HCE/FloodSnd/carrier_idle/1 HCE/FloodSnd/carrier_idle/2 HCE/FloodSnd/carrier_idle/3 HCE/FloodSnd/carrier_idle/4 }
-$random HCE/FloodGrunt/Death { HCE/FloodSnd/carrier_carrier_die/0 HCE/FloodSnd/carrier_carrier_die/1 }
-$random HCE/FloodGrunt/DeathHard { HCE/FloodSnd/carrier_carrier_die/0 HCE/FloodSnd/carrier_carrier_die/1 }
-$random HCE/FloodGrunt/Pop { HCE/FloodSnd/carrier_carrier_boom/0 HCE/FloodSnd/carrier_carrier_boom/1 }
-$random HCE/FloodGrunt/Charge { HCE/FloodSnd/grunt_attack/0 HCE/FloodSnd/grunt_attack/1 HCE/FloodSnd/grunt_attack/2 HCE/FloodSnd/grunt_attack/3 HCE/FloodSnd/grunt_attack/4 HCE/FloodSnd/grunt_attack/5 HCE/FloodSnd/grunt_attack/6 HCE/FloodSnd/grunt_attack/7 HCE/FloodSnd/grunt_attack/8 HCE/FloodSnd/grunt_attack/9 }
-$random HCE/FloodGrunt/Melee { HCE/FloodSnd/grunt_attack/0 HCE/FloodSnd/grunt_attack/1 HCE/FloodSnd/grunt_attack/2 HCE/FloodSnd/grunt_attack/3 HCE/FloodSnd/grunt_attack/4 HCE/FloodSnd/grunt_attack/5 HCE/FloodSnd/grunt_attack/6 HCE/FloodSnd/grunt_attack/7 HCE/FloodSnd/grunt_attack/8 HCE/FloodSnd/grunt_attack/9 }
-$random HCE/FloodGrunt/Berserk { HCE/FloodSnd/grunt_attack/0 HCE/FloodSnd/grunt_attack/1 HCE/FloodSnd/grunt_attack/2 HCE/FloodSnd/grunt_attack/3 HCE/FloodSnd/grunt_attack/4 HCE/FloodSnd/grunt_attack/5 HCE/FloodSnd/grunt_attack/6 HCE/FloodSnd/grunt_attack/7 HCE/FloodSnd/grunt_attack/8 HCE/FloodSnd/grunt_attack/9 }
 $random HCE/FloodJuggernaut/Alert { HCE/FloodSnd/juggernaut_spot/0 HCE/FloodSnd/juggernaut_spot/1 HCE/FloodSnd/juggernaut_spot/2 HCE/FloodSnd/juggernaut_spot/3 }
 $random HCE/FloodJuggernaut/FoundFoe { HCE/FloodSnd/juggernaut_spot/0 HCE/FloodSnd/juggernaut_spot/1 HCE/FloodSnd/juggernaut_spot/2 HCE/FloodSnd/juggernaut_spot/3 }
 $random HCE/FloodJuggernaut/HeardGunfire { HCE/FloodSnd/juggernaut_spot/0 HCE/FloodSnd/juggernaut_spot/1 HCE/FloodSnd/juggernaut_spot/2 HCE/FloodSnd/juggernaut_spot/3 }
@@ -356,7 +337,6 @@ $random HCE/FloodJuggernaut/Death { HCE/FloodSnd/juggernaut_death/0 HCE/FloodSnd
 $random HCE/FloodJuggernaut/DeathHard { HCE/FloodSnd/juggernaut_death/0 HCE/FloodSnd/juggernaut_death/1 HCE/FloodSnd/juggernaut_death/2 }
 $volume HCE/FloodCarrier/Pop 0.9
 $rolloff HCE/FloodCarrier/Pop 200 1600
-$rolloff HCE/FloodGrunt/Pop 200 1400
 
 // the Flood Jackal and the Flood Wolf (REV's sounds, Raw Assets/Flood Jackal and Raw Assets/Flood blind wolf)
 HCE/FloodSnd/fjackal_hurt/0 "sounds/hce_flood/fjackal_hurt_0.ogg"

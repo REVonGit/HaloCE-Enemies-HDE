@@ -6646,7 +6646,7 @@ class HCE_FloodGrunt : HCE_FloodGruntBase
 		HaloDoom_EnemyBase.HCE_Feign 0.00, 0.0;
 		HaloDoom_EnemyBase.HCE_Shield 0, 3.0, 4.0;
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
-		HaloDoom_EnemyBase.HCE_Voices "FloodGrunt";
+		HaloDoom_EnemyBase.HCE_Voices "Flood";
 		+HaloDoom_EnemyBase.HCE_AlwaysBerserk
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Explodes
@@ -6748,7 +6748,7 @@ class HCE_FloodGrunt : HCE_FloodGruntBase
 			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
 		}
 	}
-	override Sound HCE_PopSound() { return "HCE/FloodGrunt/Pop"; }
+	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -6824,7 +6824,7 @@ class HCE_FloodGruntNeedler : HCE_FloodGruntBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 3, 3, 12, 1.60, 2.60, 0;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/Needler/Fire", "Halo/Weapons/Needler/Fire/Bass", "", "";
-		HaloDoom_EnemyBase.HCE_Voices "FloodGrunt";
+		HaloDoom_EnemyBase.HCE_Voices "Flood";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_Needler", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -6927,7 +6927,7 @@ class HCE_FloodGruntNeedler : HCE_FloodGruntBase
 			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
 		}
 	}
-	override Sound HCE_PopSound() { return "HCE/FloodGrunt/Pop"; }
+	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)
@@ -6999,7 +6999,7 @@ class HCE_FloodGruntPlasmaPistol : HCE_FloodGruntBase
 		HaloDoom_EnemyBase.HCE_FlyHeight 0;
 		HaloDoom_EnemyBase.HCE_FirePattern 2, 4, 7, 0.83, 1.42, 28;
 		HaloDoom_EnemyBase.HCE_FireSounds "Halo/Weapons/PlasmaPistol/Fire", "Halo/Weapons/PlasmaPistol/Fire/Bass", "Halo/Weapons/PlasmaPistol/Fire/Charged", "Halo/Weapons/PlasmaPistol/Charge/Start";
-		HaloDoom_EnemyBase.HCE_Voices "FloodGrunt";
+		HaloDoom_EnemyBase.HCE_Voices "Flood";
 		HaloDoom_EnemyBase.HCE_Drops "Halo_PlasmaPistol", "None";
 		+HaloDoom_EnemyBase.HCE_Berserks
 		+HaloDoom_EnemyBase.HCE_Leaps
@@ -7102,7 +7102,7 @@ class HCE_FloodGruntPlasmaPistol : HCE_FloodGruntBase
 			if(f) { f.vel = (frandom(-4, 4), frandom(-4, 4), frandom(3, 6)); f.target = target; f.SetStateLabel("See"); }
 		}
 	}
-	override Sound HCE_PopSound() { return "HCE/FloodGrunt/Pop"; }
+	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
 	override vector3 HCE_MuzzleAt(Name anim)
 	{
 		switch(anim)

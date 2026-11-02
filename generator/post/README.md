@@ -12,3 +12,8 @@
 * The Flood Jackal and Flood Blind Wolf (SPV3's flood_spider and flood_wolf, from `spv3_rockslide_flood.yelo`): their
   tentacle surfaces (Jackal surface 1, Wolf surface 0, SPV3's `infection_tentacles` shader) use the Infection Form's
   cut-out tentacle skin (`FloodInfection/skins/floodinfection_floodinfection_0.png`); their UVs land on its tentacle strip.
+* Hand edits in the Flood pack beyond the generated classes (keep them through a regeneration):
+  `ZScript/HaloCE/hce_flood_crawl.zsc` (the crawler mixin, the Flood Wolf's spikes, the Flood Jackal's spit), the
+  `mixin HCE_FloodCrawler` + `HCE_CrawlThink` See state in `HCE_FloodInfectionBase` and `HCE_FloodJackalBase`,
+  `UseRotationCenter` / `Rotation-Center` in their MODELDEF blocks, the Flood Jackal's spit weapon line, and the Flood
+  Wolf's spike weapon, range, burst, gun offset, damage modifier 1.0 and its `HCE_Fight` / `HCE_Charge` overrides.

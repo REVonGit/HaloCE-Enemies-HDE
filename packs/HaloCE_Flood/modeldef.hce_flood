@@ -749,6 +749,8 @@ Model HCE_FloodInfection
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
+	UseRotationCenter
+	Rotation-Center 0 0 12   // turned about its middle: up a wall, upside down on a ceiling (hce_flood_crawl.zsc)
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
@@ -899,6 +901,8 @@ Model HCE_FloodJackal
 	Scale 80 80 96
 	UseActorPitch
 	UseActorRoll
+	UseRotationCenter
+	Rotation-Center 0 0 13   // turned about its middle: up a wall, upside down on a ceiling (hce_flood_crawl.zsc)
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }

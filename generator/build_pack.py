@@ -2076,7 +2076,7 @@ def udb_sprites():
 
 def words(name):
     """'EliteMinorPlasmaRifle' -> 'Elite Minor Plasma Rifle'"""
-    return re.sub(r'(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])', ' ', name)
+    return re.sub(r'(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])', ' ', name).replace('Flood Blind Wolf', 'Flood Wolf')
 
 def thing_title(cls, weapon=None):
     """'HCE_EliteMinorPlasmaRifle' -> 'Elite Minor (Plasma Rifle)'"""
@@ -2108,7 +2108,7 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 # character -> its group heading in the bestiary where the character name split into words won't do (words(char))
 BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
-                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)', 'FloodJackal': 'Flood (Jackal host)', 'FloodBlindWolf': 'Flood (Blind Wolf host)',
+                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)', 'FloodJackal': 'Flood (Jackal host)', 'FloodBlindWolf': 'Flood (Wolf host)',
                   'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
                   'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
                   'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'FloodBrute': 'Flood (Brute host)', 'MarineArmored': 'Armored Marine',
@@ -2984,8 +2984,8 @@ CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see bu
     # SPV3's Flood Jackal: a Kig-Yar taken and folded low, all limbs: it scuttles in fast, springs from afar and claws
     'FloodJackal': dict(stance='unarmed', health=45, shield=0, melee=(40, 16), speed=8.0, leap=(64, 360, 0.8, 13.0),
                         flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
-    # SPV3's Flood Blind Wolf: the Blind Wolf (Digsite's beast) taken: tougher than the living one, leaping and mauling
-    'FloodBlindWolf': dict(stance='unarmed', health=130, shield=0, melee=(34, 26), speed=7.5, leap=(48, 320, 0.7, 14.0),
+    # SPV3's Flood Blind Wolf (the Flood Wolf): the Blind Wolf (Digsite's beast) taken: spikes from range, then a heavy maul
+    'FloodBlindWolf': dict(stance='unarmed', health=130, shield=0, melee=(34, 55), speed=7.5, leap=(48, 320, 0.7, 14.0),
                            flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
     # SOI's Flood Juggernaut: Halo 2's, a hulking tank form nearly twice a Hunter's height, shrunk to fit Doom's doors.
     # It charges, leaps in from 3-9 m and swats with its long arms; SOI's 500 body and 200 shield as one tough body

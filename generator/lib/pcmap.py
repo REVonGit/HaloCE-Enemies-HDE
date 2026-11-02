@@ -14,6 +14,7 @@ class PCMap:
         s.off, _ = struct.unpack_from('<II', d, 0x10)
         s.name = d[0x20:0x40].split(b'\0')[0].decode()
         ptr, s.scen_id, _, s.count, _, s.model_off, _, s.index_rel, s.model_size = struct.unpack_from('<9I', d, s.off)
+        s.BASE = ptr - 0x28    # (the tag array follows the 40-byte index header: 0x40440000 on PC, 0x50000000 on MCC)
         s.tags = []; s.byid = {}
         p = s.v2o(ptr)
         for i in range(s.count):

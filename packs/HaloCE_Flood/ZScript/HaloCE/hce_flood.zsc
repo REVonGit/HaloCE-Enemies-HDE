@@ -8655,16 +8655,49 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 	override Sound HCE_PopSound() { return "HCE/FloodInfection/Pop"; }
 
 	// Live hosts: an infection form that reaches a badly wounded Marine, Elite, Grunt or Brute (a third of its health
-	// left or less; HCE_CanInfect's kinds) takes it there and then. A cloud of the Flood's smoke bursts over the host,
+	// left or less; HCE_CanInfect's kinds) latches on (HCE_Latch) and then takes it. A cloud of the Flood's smoke bursts over the host,
 	// and under it the host becomes its combat form (HCE_HostForm, keeping the gun in its hands), rising. The
 	// infection form is spent. As the old Halo Custom Edition mods hid the swap. To change who can be taken, edit
 	// HCE_LIVE_HEALTH (the share of health left) or HCE_CanInfect.
 	const HCE_LIVE_HEALTH = 0.35;
-	override bool HCE_OnContactPop() { return HCE_TryHost(radius + 40); }   // about to pop on someone: a host instead?
+	override bool HCE_OnContactPop() { return hce_latchHost || HCE_TryHost(radius + 40); }   // about to pop on someone: a host instead? (riding one: no pop)
 	override bool HCE_CrawlPre()
 	{
+		if(hce_latchHost) return HCE_LatchTick();
 		if((level.maptime + hce_scavOff) % 4) return false;
 		return HCE_TryHost(20);
+	}
+	// Latched on: it rides the host's back, eating in, while the host flails about screaming in its on-fire
+	// animations (HCE_FlailTick), for HCE_LATCH_TICS; then the smoke and the host is taken. Shot off (it has 1
+	// health), or the host killed first, and it's over: a dead host is only a body (for it, or another, to feed on).
+	const HCE_LATCH_TICS = 52;
+	HaloDoom_EnemyBase hce_latchHost;
+	int hce_latchTics;
+	void HCE_Latch(HaloDoom_EnemyBase c)
+	{
+		hce_latchHost = c; hce_latchTics = HCE_LATCH_TICS;
+		c.hce_feedBy = self;
+		c.hce_flailTics = 3; c.hce_moveAngle = c.angle + frandom(-120, 120);
+		bNOGRAVITY = true; bSOLID = false;
+		hce_leapState = 0; vel = (0, 0, 0);
+		A_StartSound(HCE_PopSound(), CHAN_AUTO, CHANF_OVERLAP, 0.5);
+	}
+	bool HCE_LatchTick()
+	{
+		let c = hce_latchHost;
+		if(!c || c.health <= 0 || c.bCORPSE)
+		{
+			hce_latchHost = null; bNOGRAVITY = false; bSOLID = default.bSOLID;
+			if(c && c.hce_feedBy == self) c.hce_feedBy = null;
+			return false;
+		}
+		c.hce_flailTics = max(c.hce_flailTics, 3);
+		SetOrigin(c.Vec3Angle(c.radius * 0.5, c.angle + 180, c.height * 0.55), true);
+		A_SetAngle(c.angle, SPF_INTERPOLATE);
+		vel = (0, 0, 0);
+		HCE_Play(HCE_HasAnim(HCE_A_FEED) ? HCE_A_FEED : HCE_A_MELEE);
+		if(--hce_latchTics <= 0) { c.hce_flailTics = 0; HCE_TakeHost(c); }
+		return true;
 	}
 	bool HCE_TryHost(double reach)
 	{
@@ -8676,7 +8709,8 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 			if(c.health > c.GetSpawnHealth() * HCE_LIVE_HEALTH) continue;
 			if(Distance2D(c) > radius + c.radius + reach || abs(pos.z - c.pos.z) > c.height) continue;
 			if(!HCE_CanInfect(c)) continue;
-			HCE_TakeHost(c);
+			if(c.hce_feedBy && c.hce_feedBy != self && c.hce_feedBy.health > 0) continue;   // one to a host
+			HCE_Latch(c);
 			return true;
 		}
 		return false;

@@ -1435,6 +1435,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// back to lying dead, never a walking corpse
 		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
+		if(hce_flailTics > 0 && health > 0) { HCE_FlailTick(); return; }
 		if(HCE_DummyTick()) return;
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_animLock > 0) { hce_animLock--; HCE_LockedTick(); return; }
@@ -1484,6 +1485,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		// back to lying dead, never a walking corpse
 		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
+		if(hce_flailTics > 0 && health > 0) { HCE_FlailTick(); return; }
 		if(HCE_DummyTick()) return;
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(health > 0) HCE_StepTick();
@@ -6644,7 +6646,30 @@ class HaloDoom_EnemyBase : Actor abstract
 				0, 0, frandom(0.6, 1.6), 0, 0, 0, 0.9, -0.06);
 	}
 
-	// ---- the gun arm shot off ----
+	// ---- something on it (the Flood pack's infection forms latched on, eating in): it flails about screaming in
+	// its on-fire animations (the flaming run / flaming idle where its model has them, else the panic run) for as
+	// long as hce_flailTics lasts (whatever is on it keeps setting it); no flames, and it doesn't die of it
+	int hce_flailTics;
+	void HCE_FlailTick()
+	{
+		if(--hce_flailTics % 16 == 0) hce_moveAngle = angle + frandom(-120, 120);
+		if(level.maptime % 30 == 0) HCE_Say('OnFire', 1.0, 0, true);
+		HCE_StopFireLoop(); hce_shotsLeft = 0;
+		bool run = HCE_HasAnim(HCE_A_FLAME_MOVE) || !HCE_HasAnim(HCE_A_FLAME_IDLE) || (level.maptime / 20) % 2 == 0;
+		if(run && !bHCE_Flying)
+		{
+			HCE_Move(hce_moveAngle, hce_runSpeed * 0.7);
+			A_SetAngle(hce_moveAngle, SPF_INTERPOLATE);
+			HCE_Play(HCE_HasAnim(HCE_A_FLAME_MOVE) ? HCE_A_FLAME_MOVE : HCE_HasAnim(HCE_A_FLEE) ? HCE_A_FLEE : HCE_A_MOVE_F);
+		}
+		else
+		{
+			vel.xy *= 0.8;
+			HCE_Play(HCE_HasAnim(HCE_A_FLAME_IDLE) ? HCE_A_FLAME_IDLE : HCE_A_IDLE);
+		}
+	}
+
+		// ---- the gun arm shot off ----
 	// A dismembering weapon's hit landing on the arm that holds the gun (a fifth of its health or more) takes it off
 	// half the time. Grunts and Jackals survive it: a hard ping, the gun dropped, and they run in terror, bleeding
 	// from the stump, until they bleed out (5-9 s). Anything else dies on the spot.

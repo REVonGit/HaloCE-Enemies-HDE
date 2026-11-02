@@ -1434,6 +1434,36 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 		}
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodCarrier/Pop"; }
+
+	// it goes for the thickest knot of its foes: once a second, of the foes it can see within 1200, the one with the
+	// most of the Flood's foes within 192 of them (itself counted), if more than its own target's
+	override void Tick()
+	{
+		super.Tick();
+		if(bDESTROYED || health <= 0 || !target || IsFrozen() || (level.maptime + hce_scavOff) % 35) return;
+		Actor best = target; int bs = HCE_Crowd(target);
+		let it = BlockThingsIterator.Create(self, 1200);
+		while(it.Next())
+		{
+			let a = it.thing;
+			if(a == target || a == self || !a.bSHOOTABLE || a.health <= 0 || !HCE_IsEnemy(a)) continue;
+			if(Distance2D(a) > 1200 || !CheckSight(a)) continue;
+			int n = HCE_Crowd(a);
+			if(n > bs) { bs = n; best = a; }
+		}
+		target = best;
+	}
+	int HCE_Crowd(Actor a)
+	{
+		int n = 0;
+		let it = BlockThingsIterator.Create(a, 192);
+		while(it.Next())
+		{
+			let o = it.thing;
+			if(o.bSHOOTABLE && o.health > 0 && o.Distance2D(a) <= 192 && HCE_IsEnemy(o)) n++;
+		}
+		return n;
+	}
 }
 
 // ---- FloodElite: the body every FloodElite variant below is drawn with (characters\floodcombat elite\floodcombat elite): its size, blood and gore, the skins it
@@ -8529,7 +8559,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 	// The combat form a host becomes: its kind's Flood form carrying the host's gun if one does (and gun is set to the
 	// dropped pickup by the body, taken with it), else its kind's unarmed form. To change who becomes what, edit the
 	// lists: first match on the gun wins, the last entry is the unarmed fallback
-	Name HCE_HostForm(HaloDoom_EnemyBase c, out Actor gun)
+	Name HCE_HostForm(HaloDoom_EnemyBase c, out Actor gun, bool live = false)
 	{
 		String ODST = "HCE_FloodcombatOdstAssaultRifle HCE_FloodcombatOdstShotgun HCE_FloodcombatOdstSniperRifle HCE_FloodcombatHumanArmoredPistol HCE_FloodcombatHumanArmoredRocketLauncher HCE_FloodcombatHumanArmoredUnarmed";
 		String ARMORED = "HCE_FloodcombatHumanArmoredAssaultRifle HCE_FloodcombatHumanArmoredPistol HCE_FloodcombatHumanArmoredRocketLauncher HCE_FloodcombatHumanArmoredShotgun HCE_FloodcombatHumanArmoredSniperRifle HCE_FloodcombatHumanArmoredUnarmed";
@@ -8555,7 +8585,7 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 			while(it.Next())
 				if(it.thing != c && c.Distance2D(it.thing) < 64 && HCE_GroundWeaponClass(it.thing) == w) { gun = it.thing; break; }
 		}
-		Name wn = gun ? w : 'None';
+		Name wn = gun || live ? w : 'None';           // (a living host still has its gun in hand)
 		if(c.hce_type == 2) return HCE_PickForm(GRUNT, wn);
 		if(cn.IndexOf("Brute") >= 0)
 			return HCE_PickForm(cn.IndexOf("HonorGuard") >= 0 ? BHONOR : cn.IndexOf("Captain") >= 0 || cn.IndexOf("Chieftain") >= 0 ? BCAPTAIN
@@ -8623,6 +8653,74 @@ class HCE_FloodInfection : HCE_FloodInfectionBase
 		Destroy();
 	}
 	override Sound HCE_PopSound() { return "HCE/FloodInfection/Pop"; }
+
+	// Live hosts: an infection form that reaches a badly wounded Marine, Elite, Grunt or Brute (a third of its health
+	// left or less; HCE_CanInfect's kinds) takes it there and then. A cloud of the Flood's smoke bursts over the host,
+	// and under it the host becomes its combat form (HCE_HostForm, keeping the gun in its hands), rising. The
+	// infection form is spent. As the old Halo Custom Edition mods hid the swap. To change who can be taken, edit
+	// HCE_LIVE_HEALTH (the share of health left) or HCE_CanInfect.
+	const HCE_LIVE_HEALTH = 0.35;
+	override bool HCE_OnContactPop() { return HCE_TryHost(radius + 40); }   // about to pop on someone: a host instead?
+	override bool HCE_CrawlPre()
+	{
+		if((level.maptime + hce_scavOff) % 4) return false;
+		return HCE_TryHost(20);
+	}
+	bool HCE_TryHost(double reach)
+	{
+		let it = BlockThingsIterator.Create(self, radius + 64);
+		while(it.Next())
+		{
+			let c = HaloDoom_EnemyBase(it.thing);
+			if(!c || c == self || c.health <= 0 || c.bCORPSE || !c.hce_enabled || c.hce_team == HCE_TEAM_FLOOD || c.hce_derezSlot > 0) continue;
+			if(c.health > c.GetSpawnHealth() * HCE_LIVE_HEALTH) continue;
+			if(Distance2D(c) > radius + c.radius + reach || abs(pos.z - c.pos.z) > c.height) continue;
+			if(!HCE_CanInfect(c)) continue;
+			HCE_TakeHost(c);
+			return true;
+		}
+		return false;
+	}
+	void HCE_TakeHost(HaloDoom_EnemyBase c)
+	{
+		// the smoke: thick round the host from its feet to its head, swelling and thinning over a second or two
+		vector3 mid = c.pos + (0, 0, c.height * 0.5);
+		double k = clamp(c.height / 64.0, 0.7, 1.6);
+		for(int i = 0; i < 14; i++)
+		{
+			let g = Spawn("HCE_FloodBurstGas", c.pos + (frandom(-c.radius, c.radius) * 0.8, frandom(-c.radius, c.radius) * 0.8, c.height * frandom(0.1, 0.95)));
+			if(!g) continue;
+			g.scale *= k * frandom(0.7, 1.1); g.frame = random(0, 1); g.roll = frandom(0, 360); g.alpha = 0.9;
+			g.vel = (AngleToVector(frandom(0, 360), frandom(0.2, 0.9)), frandom(0.05, 0.5));
+		}
+		for(int i = 0; i < 4; i++)
+		{
+			let sm = Spawn("HCE_FloodBurstSmoke", mid + (frandom(-6, 6), frandom(-6, 6), frandom(-8, 8)));
+			if(!sm) continue;
+			sm.scale *= k * frandom(0.6, 0.9); sm.frame = random(0, 1); sm.roll = frandom(0, 360);
+			sm.vel = (AngleToVector(frandom(0, 360), frandom(0.1, 0.5)), frandom(0.05, 0.3));
+		}
+		c.A_StartSound(HCE_PopSound(), CHAN_AUTO, CHANF_OVERLAP, 0.9);
+		Actor none;
+		Name nc = HCE_HostForm(c, none, true);
+		class<Actor> cc = nc;
+		let f = cc ? Spawn(cc, c.pos, ALLOW_REPLACE) : null;
+		if(f)
+		{
+			f.angle = c.angle;
+			// it fights who the host was fighting, if they are the Flood's foes too
+			let fe = HaloDoom_EnemyBase(f);
+			if(fe)
+			{
+				if(c.target && c.target.health > 0 && fe.HCE_IsEnemy(c.target)) f.target = c.target;
+				if(fe.HCE_HasAnim(HCE_A_RESURRECT_F)) fe.HCE_PlayLocked(HCE_A_RESURRECT_F);
+			}
+			f.SetStateLabel("See");
+			c.A_StopSound(CHAN_VOICE);
+			c.Destroy();
+		}
+		Destroy();
+	}
 }
 
 // ---- FloodJuggernaut: the body every FloodJuggernaut variant below is drawn with (soi\characters\flood_juggernaut\juggernaut): its size, blood and gore, the skins it

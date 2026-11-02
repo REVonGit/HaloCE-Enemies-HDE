@@ -1999,6 +1999,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	// The berserk / melee action: faces the target at double turn rate, tries lunge, melee, leap and jetpack, pursues
 	// when it can't see it, otherwise runs straight in at 1.15x run speed, firing inside half max range.
 	// Exploding types (HCE_Explodes) detonate within 24 units of contact.
+	double hce_flankOff;
 	virtual void HCE_Charge()
 	{
 		double d = Distance2D(target);
@@ -2008,7 +2009,15 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(bHCE_Leaps && HCE_TryLeap(d)) return;
 		if(bHCE_Jetpack && HCE_TryJet(d)) return;
 		if(!hce_canSee) { if(HCE_MayPursue()) HCE_Pursue(); else HCE_Hold(); return; }
-		HCE_Move(AngleTo(target), hce_runSpeed * 1.15);
+		// the Flood swarm: each comes in on its own curve, fanned out to one side, straightening as it closes, so a
+		// pack arrives from several sides at once rather than in a line (hce_flankOff: its side and how wide)
+		double mv = AngleTo(target);
+		if(hce_team == HCE_TEAM_FLOOD && !bHCE_Flying)
+		{
+			if(hce_flankOff == 0) hce_flankOff = frandom(20, 60) * (random(0, 1) ? 1 : -1);
+			mv += hce_flankOff * clamp((d - 160) / 700.0, 0, 1);
+		}
+		HCE_Move(mv, hce_runSpeed * 1.15);
 		if(hce_projectile != 'None' && d < hce_maxRange * 0.5) HCE_UpdateFiring(d);
 		HCE_PickMoveAnim();
 		if(bHCE_Explodes && d < radius + target.radius + 24) HCE_Detonate();
@@ -5853,8 +5862,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	virtual Sound HCE_PopSound() { return "HCE/FloodPop"; }   // the Flood's own: the carrier's boom, the infection form's squelch
 	// Blows this actor up (carriers, kamikaze Grunts), once: the pop sound, A_Explode for max(10, hce_meleeDamage) over
 	// radius x 3 + 32, a spray of particles, HCE_OnDetonate, then a forced self-kill if still alive.
+	// a living one about to pop on contact may do something else instead (the Flood pack's infection forms: take a
+	// badly wounded host); true: it did, and it may be gone
+	virtual bool HCE_OnContactPop() { return false; }
 	void HCE_Detonate()
 	{
+		if(health > 0 && !hce_detonated && HCE_OnContactPop()) return;
 		if(health <= 0 && hce_detonated) return;
 		hce_detonated = true;
 		A_StartSound(HCE_PopSound(), CHAN_BODY, CHANF_OVERLAP);

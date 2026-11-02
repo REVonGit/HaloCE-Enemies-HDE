@@ -17,3 +17,10 @@
   `mixin HCE_FloodCrawler` + `HCE_CrawlThink` See state in `HCE_FloodInfectionBase` and `HCE_FloodJackalBase`,
   `UseRotationCenter` / `Rotation-Center` in their MODELDEF blocks, the Flood Jackal's spit weapon line, and the Flood
   Wolf's spike weapon, range, burst, gun offset, damage modifier 1.0 and its `HCE_Fight` / `HCE_Charge` overrides.
+* `flood_arsenal.py` (run from `generator/`): every armed Flood body (human, Marine, armoured, ODST, Elite, armoured
+  Elite, Ultra, Grunt, Brute) can carry any gun but the Forerunners': one overlay model per gun per body in
+  `packs/HaloCE_Flood/models/hce/FloodArsenal/` (the Marine arsenal's guns on the body's own gun hand), the guns'
+  textures the packs lacked, the shared firing data (`HaloCE_Covenant/ZScript/HaloCE/hce_flood_arsenal.zsc`, from the
+  Marine body's loadouts) and each base class's loadouts between its FLOOD ARSENAL markers. Re-run after a
+  regeneration of the Flood or Marine classes. (The Standalone packs take the code but not the models: their
+  enemies drop no guns, so no Flood ever picks one up there.)

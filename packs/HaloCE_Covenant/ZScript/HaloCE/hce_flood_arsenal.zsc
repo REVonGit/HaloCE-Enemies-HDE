@@ -1,0 +1,469 @@
+// The Flood's guns: any gun but the Forerunners' in any armed Flood body's hand (generator/post/flood_arsenal.py:
+// written by it, edit there). The firing data is the Marine body's loadouts' (HCE_MarineBase); the gun model is
+// the body's own overlay, models/hce/FloodArsenal/<Body>_w_<gun>.iqm in the Flood pack, shown as model 6.
+class HCE_FloodArsenal play
+{
+	static int Index(Name w)
+	{
+		switch(w)
+		{
+		case 'Halo_AssaultRifle': return 0;
+		case 'Halo_BattleRifle': return 1;
+		case 'Halo_BeamRifle': return 2;
+		case 'Halo_Bulldog': return 3;
+		case 'Halo_Carbine': return 4;
+		case 'Halo_Commando': return 5;
+		case 'Halo_DBLShotgun': return 6;
+		case 'Halo_DMR': return 7;
+		case 'Halo_Flamethrower': return 8;
+		case 'Halo_FuelRod': return 9;
+		case 'Halo_GPMG': return 10;
+		case 'Halo_GrenadeLauncher': return 11;
+		case 'Halo_Hydra': return 12;
+		case 'Halo_MA5B': return 13;
+		case 'Halo_Magnum': return 14;
+		case 'Halo_Needler': return 15;
+		case 'Halo_NeedlerJavelin': return 16;
+		case 'Halo_PlasmaCaster': return 17;
+		case 'Halo_PlasmaPistol': return 18;
+		case 'Halo_PlasmaRifle': return 19;
+		case 'Halo_PulseCarbine': return 20;
+		case 'Halo_RocketLauncher': return 21;
+		case 'Halo_SMG': return 22;
+		case 'Halo_Shotgun': return 23;
+		case 'Halo_Sidekick': return 24;
+		case 'Halo_SniperRifle': return 25;
+		case 'Halo_Spiker': return 26;
+		case 'Halo_StickyDetonator': return 27;
+		}
+		return -1;
+	}
+	static void Apply(HaloDoom_EnemyBase e, int lo)
+	{
+		switch(lo)
+		{
+		case 0: Apply0(e); return;
+		case 1: Apply1(e); return;
+		case 2: Apply2(e); return;
+		case 3: Apply3(e); return;
+		case 4: Apply4(e); return;
+		case 5: Apply5(e); return;
+		case 6: Apply6(e); return;
+		case 7: Apply7(e); return;
+		case 8: Apply8(e); return;
+		case 9: Apply9(e); return;
+		case 10: Apply10(e); return;
+		case 11: Apply11(e); return;
+		case 12: Apply12(e); return;
+		case 13: Apply13(e); return;
+		case 14: Apply14(e); return;
+		case 15: Apply15(e); return;
+		case 16: Apply16(e); return;
+		case 17: Apply17(e); return;
+		case 18: Apply18(e); return;
+		case 19: Apply19(e); return;
+		case 20: Apply20(e); return;
+		case 21: Apply21(e); return;
+		case 22: Apply22(e); return;
+		case 23: Apply23(e); return;
+		case 24: Apply24(e); return;
+		case 25: Apply25(e); return;
+		case 26: Apply26(e); return;
+		case 27: Apply27(e); return;
+		}
+	}
+	static void Apply0(HaloDoom_EnemyBase e)   // Halo_AssaultRifle
+	{
+		e.hce_projectile = 'HCE_MA37Round'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2400; e.hce_projSpeed = 1008.0;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 1200; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 4; e.hce_patShotsMax = 8; e.hce_patInterval = 3; e.hce_patPauseMin = 1.00; e.hce_patPauseMax = 1.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Rifle/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Rifle/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply1(HaloDoom_EnemyBase e)   // Halo_BattleRifle
+	{
+		e.hce_projectile = 'HCE_BattleRifleARBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 3600; e.hce_projSpeed = 1213.3;
+		e.hce_rangeMin = 400; e.hce_rangeMax = 1760; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 3; e.hce_patShotsMax = 6; e.hce_patInterval = 3; e.hce_patPauseMin = 0.75; e.hce_patPauseMax = 1.38; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/BattleRifle/Fire"; e.hce_fireSoundBass = "Halo/Weapons/BattleRifle/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply2(HaloDoom_EnemyBase e)   // Halo_BeamRifle
+	{
+		e.hce_projectile = 'HCE_H2BeamShot'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 0.30; e.hce_maxRange = 4800; e.hce_projSpeed = 2800.0;
+		e.hce_rangeMin = 640; e.hce_rangeMax = 2400; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 60; e.hce_patShotsMax = 75; e.hce_patInterval = 1; e.hce_patPauseMin = 3.00; e.hce_patPauseMax = 4.25; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/BeamRifle/Laser/Loop"; e.hce_fireSoundBass = ""; e.hce_specialSound = "Halo/Weapons/BeamRifle/Laser/LoopEnd"; e.hce_chargeSound = "Halo/Weapons/BeamRifle/Laser/Fire"; e.hce_fireLoop = true;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply3(HaloDoom_EnemyBase e)   // Halo_Bulldog
+	{
+		e.hce_projectile = 'HCE_BulldogBuckshot'; e.hce_projectilesPerShot = 8; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 5.00; e.hce_maxRange = 1120; e.hce_projSpeed = 435.9;
+		e.hce_rangeMin = 80; e.hce_rangeMax = 480; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 2; e.hce_patShotsMax = 4; e.hce_patInterval = 9; e.hce_patPauseMin = 1.50; e.hce_patPauseMax = 2.25; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Bulldog/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Bulldog/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply4(HaloDoom_EnemyBase e)   // Halo_Carbine
+	{
+		e.hce_projectile = 'HCE_CarbineRound'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 0.60; e.hce_maxRange = 4000; e.hce_projSpeed = 560.0;
+		e.hce_rangeMin = 480; e.hce_rangeMax = 2080; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 2; e.hce_patShotsMax = 3; e.hce_patInterval = 9; e.hce_patPauseMin = 1.25; e.hce_patPauseMax = 2.12; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Carbine/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Carbine/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply5(HaloDoom_EnemyBase e)   // Halo_Commando
+	{
+		e.hce_projectile = 'HCE_CommandoARBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2560; e.hce_projSpeed = 1026.7;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 1280; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 3; e.hce_patShotsMax = 6; e.hce_patInterval = 4; e.hce_patPauseMin = 0.88; e.hce_patPauseMax = 1.62; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Commando/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Commando/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply6(HaloDoom_EnemyBase e)   // Halo_DBLShotgun
+	{
+		e.hce_projectile = 'HCE_DBLShotgunPellet'; e.hce_projectilesPerShot = 14; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 7.00; e.hce_maxRange = 800; e.hce_projSpeed = 435.9;
+		e.hce_rangeMin = 80; e.hce_rangeMax = 320; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 2.00; e.hce_patPauseMax = 2.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/SuperShotgun/Fire"; e.hce_fireSoundBass = "Halo/Weapons/SuperShotgun/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply7(HaloDoom_EnemyBase e)   // Halo_DMR
+	{
+		e.hce_projectile = 'HCE_DMRSniperBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 0.60; e.hce_maxRange = 4000; e.hce_projSpeed = 1493.3;
+		e.hce_rangeMin = 480; e.hce_rangeMax = 2080; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 3; e.hce_patInterval = 11; e.hce_patPauseMin = 1.25; e.hce_patPauseMax = 2.00; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/DMR/Fire"; e.hce_fireSoundBass = "Halo/Weapons/DMR/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply8(HaloDoom_EnemyBase e)   // Halo_Flamethrower
+	{
+		e.hce_projectile = 'HCE_Flame'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 2.00; e.hce_maxRange = 640; e.hce_projSpeed = 30.8;
+		e.hce_rangeMin = 80; e.hce_rangeMax = 400; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 14; e.hce_patShotsMax = 22; e.hce_patInterval = 2; e.hce_patPauseMin = 0.90; e.hce_patPauseMax = 1.50; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Flamer/Fire/Loop"; e.hce_fireSoundBass = ""; e.hce_specialSound = "Halo/Weapons/Flamer/Fire/End"; e.hce_chargeSound = "Halo/Weapons/Flamer/Fire/Start"; e.hce_fireLoop = true;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply9(HaloDoom_EnemyBase e)   // Halo_FuelRod
+	{
+		e.hce_projectile = 'HCE_FuelRodBolt'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 0.80; e.hce_errorAngle = 1.00; e.hce_maxRange = 3200; e.hce_projSpeed = 43.9;
+		e.hce_rangeMin = 480; e.hce_rangeMax = 1760; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 1.95; e.hce_patPauseMax = 2.55; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/FuelRod/Fire"; e.hce_fireSoundBass = "Halo/Weapons/FuelRod/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply10(HaloDoom_EnemyBase e)   // Halo_GPMG
+	{
+		e.hce_projectile = 'HCE_GPMGBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2800; e.hce_projSpeed = 1120.0;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 1440; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 8; e.hce_patShotsMax = 15; e.hce_patInterval = 3; e.hce_patPauseMin = 1.25; e.hce_patPauseMax = 2.00; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/GPMG/Fire"; e.hce_fireSoundBass = "Halo/Weapons/GPMG/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply11(HaloDoom_EnemyBase e)   // Halo_GrenadeLauncher
+	{
+		e.hce_projectile = 'HCE_40mmGrenade'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2400; e.hce_projSpeed = 46.7;
+		e.hce_rangeMin = 400; e.hce_rangeMax = 1440; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = true;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 2; e.hce_patInterval = 20; e.hce_patPauseMin = 2.75; e.hce_patPauseMax = 3.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/GrenadeLauncher/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply12(HaloDoom_EnemyBase e)   // Halo_Hydra
+	{
+		e.hce_projectile = 'HCE_HydraMissile'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.50; e.hce_maxRange = 3600; e.hce_projSpeed = 56.0;
+		e.hce_rangeMin = 480; e.hce_rangeMax = 1920; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 4; e.hce_patShotsMax = 4; e.hce_patInterval = 5; e.hce_patPauseMin = 3.50; e.hce_patPauseMax = 4.50; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Hydra/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply13(HaloDoom_EnemyBase e)   // Halo_MA5B
+	{
+		e.hce_projectile = 'HCE_ARBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 2.00; e.hce_maxRange = 1040; e.hce_projSpeed = 1008.0;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 480; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 4; e.hce_patShotsMax = 7; e.hce_patInterval = 3; e.hce_patPauseMin = 1.00; e.hce_patPauseMax = 1.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/MA5B/Fire"; e.hce_fireSoundBass = "Halo/Weapons/MA5B/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply14(HaloDoom_EnemyBase e)   // Halo_Magnum
+	{
+		e.hce_projectile = 'HCE_PistolBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2400; e.hce_projSpeed = 933.3;
+		e.hce_rangeMin = 160; e.hce_rangeMax = 960; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 2; e.hce_patShotsMax = 3; e.hce_patInterval = 9; e.hce_patPauseMin = 1.12; e.hce_patPauseMax = 1.88; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Mag_MD6/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Mag_MD6/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply15(HaloDoom_EnemyBase e)   // Halo_Needler
+	{
+		e.hce_projectile = 'HCE_Needle'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 4.00; e.hce_maxRange = 1040; e.hce_projSpeed = 12.1;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 480; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 3; e.hce_patShotsMax = 3; e.hce_patInterval = 12; e.hce_patPauseMin = 2.00; e.hce_patPauseMax = 3.25; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Needler/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Needler/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply16(HaloDoom_EnemyBase e)   // Halo_NeedlerJavelin
+	{
+		e.hce_projectile = 'HCE_BallistaNeedle'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 3600; e.hce_projSpeed = 24.3;
+		e.hce_rangeMin = 480; e.hce_rangeMax = 1920; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 3.00; e.hce_patPauseMax = 4.00; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/NeedlerJavelin/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply17(HaloDoom_EnemyBase e)   // Halo_PlasmaCaster
+	{
+		e.hce_projectile = 'HCE_PlasmaCasterGrenade'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 1600; e.hce_projSpeed = 26.1;
+		e.hce_rangeMin = 320; e.hce_rangeMax = 1120; e.hce_damageMod = 0.40; e.hce_specialFire = 1; e.hce_specialChance = 0; e.bHCE_Lobbed = true;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 2; e.hce_patInterval = 18; e.hce_patPauseMin = 1.80; e.hce_patPauseMax = 2.55; e.hce_patChargeTics = 30;
+		e.hce_fireSound = "Halo/Weapons/PlasmaCaster/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = "Halo/Weapons/PlasmaCaster/ChargedFire"; e.hce_chargeSound = "Halo/Weapons/PlasmaCaster/ChargeBegin"; e.hce_fireLoop = false;
+		e.hce_specialProj = 'HCE_PlasmaCasterClusterScaled'; e.hce_specialCount = 3;
+	}
+	static void Apply18(HaloDoom_EnemyBase e)   // Halo_PlasmaPistol
+	{
+		e.hce_projectile = 'HCE_PlasmaPistolBolt'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2000; e.hce_projSpeed = 77.5;
+		e.hce_rangeMin = 160; e.hce_rangeMax = 960; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 2; e.hce_patShotsMax = 4; e.hce_patInterval = 7; e.hce_patPauseMin = 1.15; e.hce_patPauseMax = 1.98; e.hce_patChargeTics = 28;
+		e.hce_fireSound = "Halo/Weapons/PlasmaPistol/Fire"; e.hce_fireSoundBass = "Halo/Weapons/PlasmaPistol/Fire/Bass"; e.hce_specialSound = "Halo/Weapons/PlasmaPistol/Fire/Charged"; e.hce_chargeSound = "Halo/Weapons/PlasmaPistol/Charge/Start"; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply19(HaloDoom_EnemyBase e)   // Halo_PlasmaRifle
+	{
+		e.hce_projectile = 'HCE_PlasmaRifleBolt'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 7.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 1040; e.hce_projSpeed = 155.9;
+		e.hce_rangeMin = 240; e.hce_rangeMax = 480; e.hce_damageMod = 0.50; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 3; e.hce_patShotsMax = 5; e.hce_patInterval = 4; e.hce_patPauseMin = 1.17; e.hce_patPauseMax = 2.08; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/PlasmaRifle/Fire"; e.hce_fireSoundBass = "Halo/Weapons/PlasmaRifle/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply20(HaloDoom_EnemyBase e)   // Halo_PulseCarbine
+	{
+		e.hce_projectile = 'HCE_MarinePulseBolt'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2800; e.hce_projSpeed = 112.0;
+		e.hce_rangeMin = 320; e.hce_rangeMax = 1440; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 5; e.hce_patShotsMax = 10; e.hce_patInterval = 3; e.hce_patPauseMin = 1.75; e.hce_patPauseMax = 2.88; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/PulseCarbine/Fire"; e.hce_fireSoundBass = "Halo/Weapons/PulseCarbine/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply21(HaloDoom_EnemyBase e)   // Halo_RocketLauncher
+	{
+		e.hce_projectile = 'HCE_Rocket'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 0.80; e.hce_errorAngle = 0.50; e.hce_maxRange = 3600; e.hce_projSpeed = 37.3;
+		e.hce_rangeMin = 560; e.hce_rangeMax = 2000; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 2.40; e.hce_patPauseMax = 3.15; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/RocketLauncher/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply22(HaloDoom_EnemyBase e)   // Halo_SMG
+	{
+		e.hce_projectile = 'HCE_SMGRound'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 1760; e.hce_projSpeed = 933.3;
+		e.hce_rangeMin = 160; e.hce_rangeMax = 800; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 6; e.hce_patShotsMax = 10; e.hce_patInterval = 2; e.hce_patPauseMin = 1.00; e.hce_patPauseMax = 1.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/SMG/Fire"; e.hce_fireSoundBass = "Halo/Weapons/SMG/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply23(HaloDoom_EnemyBase e)   // Halo_Shotgun
+	{
+		e.hce_projectile = 'HCE_ShotgunPellet'; e.hce_projectilesPerShot = 15; e.hce_rateOfFire = 0.40; e.hce_errorAngle = 10.00; e.hce_maxRange = 400; e.hce_projSpeed = 435.9;
+		e.hce_rangeMin = 204; e.hce_rangeMax = 340; e.hce_damageMod = 0.60; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 1.05; e.hce_patPauseMax = 1.50; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Shotgun/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Shotgun/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply24(HaloDoom_EnemyBase e)   // Halo_Sidekick
+	{
+		e.hce_projectile = 'HCE_SidekickRound'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2000; e.hce_projSpeed = 933.3;
+		e.hce_rangeMin = 160; e.hce_rangeMax = 800; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 2; e.hce_patShotsMax = 4; e.hce_patInterval = 7; e.hce_patPauseMin = 1.12; e.hce_patPauseMax = 1.88; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Sidekick/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Sidekick/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply25(HaloDoom_EnemyBase e)   // Halo_SniperRifle
+	{
+		e.hce_projectile = 'HCE_SniperBullet'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 0.80; e.hce_errorAngle = 0.25; e.hce_maxRange = 5600; e.hce_projSpeed = 3108.0;
+		e.hce_rangeMin = 640; e.hce_rangeMax = 2800; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 3.25; e.hce_patPauseMax = 4.50; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Sniper/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Sniper/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply26(HaloDoom_EnemyBase e)   // Halo_Spiker
+	{
+		e.hce_projectile = 'HCE_SpikerSpike'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 2.00; e.hce_maxRange = 2000; e.hce_projSpeed = 186.7;
+		e.hce_rangeMin = 160; e.hce_rangeMax = 960; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 4; e.hce_patShotsMax = 7; e.hce_patInterval = 3; e.hce_patPauseMin = 1.00; e.hce_patPauseMax = 1.75; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/Spiker/Fire"; e.hce_fireSoundBass = "Halo/Weapons/Spiker/Fire/Bass"; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	static void Apply27(HaloDoom_EnemyBase e)   // Halo_StickyDetonator
+	{
+		e.hce_projectile = 'HCE_StickyDetCharge'; e.hce_projectilesPerShot = 1; e.hce_rateOfFire = 10.00; e.hce_errorAngle = 1.00; e.hce_maxRange = 2000; e.hce_projSpeed = 46.7;
+		e.hce_rangeMin = 320; e.hce_rangeMax = 1120; e.hce_damageMod = 0.40; e.hce_specialFire = 0; e.hce_specialChance = 0; e.bHCE_Lobbed = false;
+		e.hce_patShotsMin = 1; e.hce_patShotsMax = 1; e.hce_patInterval = 1; e.hce_patPauseMin = 3.25; e.hce_patPauseMax = 4.25; e.hce_patChargeTics = 0;
+		e.hce_fireSound = "Halo/Weapons/StickyDet/Fire"; e.hce_fireSoundBass = ""; e.hce_specialSound = ""; e.hce_chargeSound = ""; e.hce_fireLoop = false;
+		e.hce_specialProj = 'None'; e.hce_specialCount = 0;
+	}
+	// the gun's model in body's hand (model 6) and its skins
+	static void Visual(Actor e, String body, int lo)
+	{
+		switch(lo)
+		{
+		case 0:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_ma37.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_ma37_body.png', CMDL_USESURFACESKIN);
+			return;
+		case 1:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_battle_rifle.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_battle_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_battle_rifle_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_battle_rifle_2.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_battle_rifle_3.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_battle_rifle_4.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 5, "models/hce/weapons", 'w_m_battle_rifle_5.png', CMDL_USESURFACESKIN);
+			return;
+		case 2:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_beam_rifle.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 3:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_bulldog.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_bulldog_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 4:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_carbine.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_cmt_carbine_gray.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_cmt_carbine_lights.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_cmt_carbine_icon.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_cmt_carbine_meter.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_cmt_carbine_purple.png', CMDL_USESURFACESKIN);
+			return;
+		case 5:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_commando.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_commando_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 6:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_double_barrel.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_double_barrel_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_double_barrel_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_double_barrel_2.png', CMDL_USESURFACESKIN);
+			return;
+		case 7:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_dmr.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_dmr_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 8:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_flamethrower.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_flamethrower_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_flamethrower_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 9:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_fuel_rod.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_fuel_rod_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_fuel_rod_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_fuel_rod_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_fuel_rod_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 10:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_gpmg.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_gpmg_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 11:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_grenade_launcher.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_grenade_launcher_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 12:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_hydra.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_hydra_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_hydra_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_hydra_2.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_hydra_3.png', CMDL_USESURFACESKIN);
+			return;
+		case 13:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_ma5b.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_assault_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_assault_rifle_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 14:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_magnum.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_pistol_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 15:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_needler.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_needler_glow.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 16:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_needle_ballista.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_needle_ballista_glow.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_needle_ballista_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_needle_ballista_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 17:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_plasma_caster.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 18:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_plasma_pistol.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_pistol_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 19:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_plasma_rifle.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 20:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_pulse_carbine.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_pulse_carbine_gray.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_pulse_carbine_blue_lights.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_pulse_carbine_blue_icon.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_pulse_carbine_blue_meter.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_pulse_carbine_blue_purple.png', CMDL_USESURFACESKIN);
+			return;
+		case 21:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_rocket_launcher.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_rocket_launcher_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_rocket_launcher_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_m_rocket_launcher_2.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 3, "models/hce/weapons", 'w_m_rocket_launcher_3.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 4, "models/hce/weapons", 'w_m_rocket_launcher_4.png', CMDL_USESURFACESKIN);
+			return;
+		case 22:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_smg.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_smg_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_smg_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 23:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_pump_shotgun.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_shotgun_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_shotgun_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 24:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_sidekick.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sidekick_0.png', CMDL_USESURFACESKIN);
+			return;
+		case 25:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_sniper.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_sniper_rifle_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_sniper_rifle_1.png', CMDL_USESURFACESKIN);
+			return;
+		case 26:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_spiker.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_spiker_body.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_spiker_heat.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 2, "models/hce/weapons", 'w_spiker_clip.png', CMDL_USESURFACESKIN);
+			return;
+		case 27:
+			e.A_ChangeModel('None', 6, "models/hce/FloodArsenal", body .. "_w_sticky_detonator.iqm");
+			e.A_ChangeModel('None', 6, "", 'None', 0, "models/hce/weapons", 'w_m_sticky_detonator_0.png', CMDL_USESURFACESKIN);
+			e.A_ChangeModel('None', 6, "", 'None', 1, "models/hce/weapons", 'w_m_sticky_bomb_0.png', CMDL_USESURFACESKIN);
+			return;
+		}
+	}
+}

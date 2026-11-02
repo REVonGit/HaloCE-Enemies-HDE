@@ -24,3 +24,8 @@
   Marine body's loadouts) and each base class's loadouts between its FLOOD ARSENAL markers. Re-run after a
   regeneration of the Flood or Marine classes. (The Standalone packs take the code but not the models: their
   enemies drop no guns, so no Flood ever picks one up there.)
+* `flood_variants.py` (run from `generator/`, after `flood_arsenal.py`): a placeable class for every armed Flood form
+  and every gun it can carry (320 of them, e.g. `HCE_FloodcombatBruteMajorHydra`, `HCE_FloodGruntSmg`): each extends the
+  form's armed class and takes its gun as it spawns. Classes in `HaloCE_Flood/ZScript/HaloCE/hce_flood_variants.zsc`,
+  their MODELDEF in `HaloCE_Flood/modeldef.hce_flood_variants`, editor numbers 31000 up in the Flood pack's
+  `mapinfo.txt` (between its FLOOD VARIANTS markers), and the bestiary's weapons column for the armed forms. HDE only.

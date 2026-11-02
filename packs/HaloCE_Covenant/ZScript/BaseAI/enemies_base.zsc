@@ -1977,7 +1977,7 @@ class HaloDoom_EnemyBase : Actor abstract
 	bool HCE_Hunting() { return target && target.player && !bFRIENDLY && HCE_CVarF('hce_hunt', 0) > 0; }
 	// hunting with an objective (a goal that isn't a patrol point: a mode's zone to take, HDE Maps' Invasion) and not yet
 	// in it: it heads there, fighting on the way, rather than after the player
-	bool HCE_ObjectiveFar() { return HCE_Hunting() && goal && !(goal is "PatrolPoint") && Distance2D(goal) > 160; }
+	bool HCE_ObjectiveFar() { return HCE_Hunting() && goal && !(goal is "PatrolPoint") && (Distance2D(goal) > 160 || abs(goal.pos.z - pos.z) > 64); }   // (above or below it, a floor away: not there yet)
 	bool HCE_MayPursue()
 	{
 		if(hce_pursuing) return true;

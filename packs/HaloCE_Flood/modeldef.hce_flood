@@ -889,3 +889,31 @@ Model HCE_BossBaronFloodJuggernaut
 	BaseFrame
 	FrameIndex HCEM A 0 0
 }
+
+Model HCE_FloodJackal
+{
+	Path "models/hce/FloodJackal"
+	Model 0 "FloodJackal.iqm"
+	SurfaceSkin 0 0 "skins/floodjackal_floodjackal_0.png"
+	SurfaceSkin 0 1 "skins/floodjackal_floodjackal_1.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+
+Model HCE_FloodBlindWolf
+{
+	Path "models/hce/FloodBlindWolf"
+	Model 0 "FloodBlindWolf.iqm"
+	SurfaceSkin 0 0 "skins/floodblindwolf_floodblindwolf_0.png"
+	SurfaceSkin 0 1 "skins/floodblindwolf_floodblindwolf_1.png"
+	SurfaceSkin 0 2 "skins/floodblindwolf_floodblindwolf_2.png"
+	Scale 80 80 96
+	UseActorPitch
+	UseActorRoll
+	BaseFrame
+	FrameIndex HCEM A 0 0
+}
+

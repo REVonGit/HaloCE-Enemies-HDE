@@ -47,6 +47,11 @@ MAPS = {
     # SOI's Singleplayer Adventure V3 (Steam Workshop 2906165512): its Flood Juggernaut, from its c20 (The Library)
     'soi': (os.environ.get('HCE_SOI_C20', 'c20.map'),
             {r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}),
+    # SPV3's Rockslide (Flood) firefight map (CMT): its Flood Jackal (the Kig-Yar combat form: 'flood_spider', leaping and
+    # spitting) and its Flood Blind Wolf. Its textures sit in SPV3's own bitmaps.map, indexed (HCE_SPV3_MAPS_BITMAPS)
+    'rsf': (os.environ.get('HCE_SPV3_ROCKSLIDE_FLOOD', 'spv3_rockslide_flood.yelo'),
+            {r'cmt\characters\spv3\flood\flood_spider\bipeds\flood_spider': 'FloodJackal',
+             r'cmt\characters\spv3\flood\flood_wolf\flood_wolf': 'FloodBlindWolf'}),
     # aLTis's Mercury Rising (Steam Workshop 3021510694): its Sentinel variants, the Artybug and the 1999 Elite (the
     # Draeth) from mercury_falling; CMT's Geist and the Marine medic from mercury2. Its textures are in
     # the mod's own bitmaps.map (HCE_MR_BITMAPS: the file or the stem of its .001 ... pieces)
@@ -65,7 +70,8 @@ MAPS = {
 }
 # maps whose textures sit in a bitmaps.map of their own, and the prefix their variant keys get (clear of Halo CE's own)
 MAP_BITMAPS = {'mr1': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'), 'mr2': os.environ.get('HCE_MR_BITMAPS', 'mr_bitmaps.map'),
-               'sabo': os.environ.get('HCE_SABO_BITMAPS', 'sabo_bitmaps.map')}
+               'sabo': os.environ.get('HCE_SABO_BITMAPS', 'sabo_bitmaps.map'),
+               'rsf': os.environ.get('HCE_SPV3_MAPS_BITMAPS', 'spv3_bitmaps.map')}
 # characters a map gives only its AI (and sounds): their body comes from another map's run (the XAM Flood Grunt wears
 # Sabopool's)
 MODEL_ELSEWHERE = {'c40': {'FloodGrunt'}}
@@ -84,6 +90,8 @@ MAP_EXTRA_WEAPONS = {'mr1': {r'digsite\characters\elite\99_mac\elite_99': ['fuel
 # variant keys renamed (the pack's class names come from them: kept clear of the Halo CE Flood's own) and weapons re-pointed:
 # {tag name prefix: replacement prefix}, the first match wins (variant_key)
 VARIANT_KEYS = {
+    r'cmt\characters\spv3\flood\flood_spider\actor\flood_spider': r'characters\flood jackal\flood jackal',             # HCE_FloodJackal(Shielded)
+    r'cmt\characters\spv3\flood\flood_wolf\actors\flood_wolf': r'characters\flood blind wolf\flood blind wolf',      # HCE_FloodBlindWolf
     r'soi\characters\flood_juggernaut\juggernaut': r'soi\characters\flood_juggernaut\flood juggernaut',    # HCE_FloodJuggernaut
     r'characters\floodcombat_grunt\flood grunt bois\f g pp': r'characters\flood grunt\flood grunt plasma pistol',   # HCE_FloodGruntPlasmaPistol
     r'characters\floodcombat_grunt\flood grunt bois\f g n': r'characters\flood grunt\flood grunt needler',          # HCE_FloodGruntNeedler
@@ -141,10 +149,32 @@ def flood_sounds():
     if got: json.dump(got, open(f'{od}/index.json', 'w'), indent=1)
     print('Flood sounds:', sum(len(v) for v in got.values()), 'files')
 
+def indexed_bitmap_meta(idx):
+    """an indexed bitmap (a PC map's bitm tag whose data is a number: its index in the shared bitmaps.map, where the tag
+    itself lives too): (the tag's bytes, its offset in bitmaps.map); the tag's own pointers are offsets from its start"""
+    import struct
+    from gore_kit import _bitmaps_read
+    typ, paths, table, count = struct.unpack('<4I', _bitmaps_read(0, 16))
+    po, sz, do = struct.unpack('<3I', _bitmaps_read(table + idx * 12, 12))
+    return _bitmaps_read(do, sz), do
+
 def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
     """a PC map's bitmap: pixels kept in the shared bitmaps.map (flag 0x100: external; HCE_SPV3_BITMAPS, see
-    gore_kit.py) read from there, the rest from the map itself"""
+    gore_kit.py) read from there, the rest from the map itself; an indexed one (OpenSauce .yelo maps: the whole tag in
+    bitmaps.map) read from there whole"""
     t = m.byid.get(tag_id) if isinstance(m, PCMap) else None
+    if t and t['cls'] == 'bitm' and t['data'] < 0x10000:
+        import struct
+        from bitmaps import decode
+        from gore_kit import _bitmaps_read
+        try:
+            meta, _ = indexed_bitmap_meta(t['data'])
+            c, p = struct.unpack_from('<2I', meta, 0x60)
+            if index >= c: return None
+            _, w, h, _, typ, fmt, fl, _, _, _, _, poff, psz = struct.unpack_from('<4s6h2h2hiii', meta, p + index * 0x30)[:13]
+            return decode(_bitmaps_read(poff, psz), 0, w, h, fmt, fl)
+        except Exception as e:
+            print('indexed bitmap', t['name'], e); return None
     if t and t['cls'] == 'bitm':
         c, p = m.reflexive(t['data'] + 0x60)
         if index < c:
@@ -156,6 +186,15 @@ def pc_bitmap_image(m, tag_id, index=0, _orig=ec.bitmap_image):
                 except Exception: return None
     return _orig(m, tag_id, index)
 ec.bitmap_image = pc_bitmap_image
+def pc_bitmap_count(m, tid, _orig=ec.bitmap_count):
+    """how many images a bitmap holds, an indexed one's (bitmaps.map) too"""
+    t = m.byid.get(tid) if isinstance(m, PCMap) else None
+    if t and t['cls'] == 'bitm' and t['data'] < 0x10000:
+        import struct
+        try: return struct.unpack_from('<I', indexed_bitmap_meta(t['data'])[0], 0x60)[0]
+        except Exception: return 0
+    return _orig(m, tid)
+ec.bitmap_count = pc_bitmap_count
 
 
 def run_map(MAP, CHARS, only=None, prefix='', weapons=None, extra=None, no_model=(), aliases=None):

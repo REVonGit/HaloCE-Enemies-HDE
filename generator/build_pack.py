@@ -434,7 +434,11 @@ SPV3_FLOOD = {r'characters\flood grunt\flood grunt': 'FloodGrunt',
               r'characters\floodcombat elite new\floodcombat_elite_special\floodcombat elite commander': 'FloodEliteCommander',
               r'characters\floodcombat elite shield\floodcombat elite ultra': 'FloodEliteUltra',
               # SOI's Singleplayer Adventure V3's Flood Juggernaut (its c20: Halo 2's Juggernaut)
-              r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut'}
+              r'soi\characters\flood_juggernaut\juggernaut': 'FloodJuggernaut',
+              # SPV3's Rockslide (CMT): the Flood Jackal (a Kig-Yar taken: SPV3's 'flood_spider', a low, fast leaper) and the
+              # Flood Blind Wolf
+              r'cmt\characters\spv3\flood\flood_spider\bipeds\flood_spider': 'FloodJackal',
+              r'cmt\characters\spv3\flood\flood_wolf\flood_wolf': 'FloodBlindWolf'}
 # their DoomEdNums, in this order after everything released before them (the Flood Grunt keeps the number it shipped with)
 SPV3_FLOOD_ORDER = (
     ['HCE_FloodGrunt', 'HCE_RandomFloodGrunt',
@@ -445,7 +449,8 @@ SPV3_FLOOD_ORDER = (
     + [f'HCE_FloodcombatElite{r}{w}' for r in ('Minor', 'Major') for w in ('Needler', 'PlasmaPistol', 'PlasmaRifle', 'Unarmed')]
     + ['HCE_RandomFloodEliteArmored', 'HCE_FloodcombatEliteCommanderEnergySword', 'HCE_FloodcombatEliteUltraFuelRod',
        'HCE_RandomFloodEliteCommander', 'HCE_RandomFloodEliteUltra', 'HCE_FloodJuggernaut', 'HCE_RandomFloodJuggernaut',
-       'HCE_FloodGruntPlasmaPistol', 'HCE_FloodGruntNeedler'])
+       'HCE_FloodGruntPlasmaPistol', 'HCE_FloodGruntNeedler',
+       'HCE_FloodJackal', 'HCE_RandomFloodJackal', 'HCE_FloodBlindWolf', 'HCE_RandomFloodBlindWolf'])
 # the armed Flood Grunts fight as the combat forms do (their own actor's kind: Flood), not as the XAM one bursting like a carrier
 FLOOD_GRUNT_ARMED = dict(stance='pistol', flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_Leaps', 'HCE_Resurrects'])
 _sp = f'{OUT}/spv3_ai.json'
@@ -815,7 +820,7 @@ VOICES = {'Grunt': 'Grunt_Crazy,Grunt_Whiley,Grunt_Whimpy', 'GruntSpecOps': 'Gru
           'FloodHuman': 'Flood', 'FloodODST': 'Flood', 'FloodMarine': 'Flood', 'FloodArmored': 'Flood',
           'FloodElite': 'FloodElite', 'FloodEliteArmored': 'FloodElite', 'FloodEliteCommander': 'FloodElite', 'FloodEliteUltra': 'FloodElite',
           'FloodInfection': 'FloodInfection', 'FloodCarrier': 'FloodCarrier', 'FloodGrunt': 'FloodGrunt',
-          'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood'}
+          'FloodJuggernaut': 'FloodJuggernaut', 'FloodBrute': 'Flood', 'FloodJackal': 'FloodInfection', 'FloodBlindWolf': 'Flood'}
 from extract_weapons import WEAPONS as WEAPON_IDS     # Halo weapon tag path -> the extracted weapon's id (out/weapons/<id>)
 # melee damage of a weapon swung as one (HCE_Melee); an unlisted gun hits for 55, an unarmed body by character (build)
 MELEE = {'energy sword': 151, 'flamethrower': 75}
@@ -836,7 +841,7 @@ BLOOD = {
     'Brute': '161C40',                                                    # Jiralhanae (Halo 2): dark navy blue / black
     'Drone': 'DDF0D2',                                                    # Yanme'e: white, slight green tint
     'Engineer': 'E0607A',                                                 # Huragok: reddish pink
-    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
+    'FloodInfection': '76703A', 'FloodCarrier': '76703A', 'FloodGrunt': '76703A', 'FloodJackal': '76703A', 'FloodBlindWolf': '76703A', 'FloodODST': '76703A', 'FloodMarine': '76703A', 'FloodArmored': '76703A',
     'FloodEliteArmored': '76703A', 'FloodEliteCommander': '76703A', 'FloodEliteUltra': '76703A', 'FloodJuggernaut': '76703A', 'FloodElite': '76703A', 'FloodHuman': '76703A', 'FloodBrute': '76703A',  # Flood: brownish green
     'Marine': 'A01010', 'MarineArmored': 'A01010', 'MarineODST': 'A01010',   # human: red
     'SlugMan': 'FF8C1A',                                                  # Slug Men: a Mgalekgolo sub-species, Hunter orange
@@ -2103,7 +2108,7 @@ def editor_keys(cls, char, team, title=None, sprite_of=None, weapon=None):
 # character -> its group heading in the bestiary where the character name split into words won't do (words(char))
 BESTIARY_GROUP = {'EliteSpecial': 'Spec Ops Elite', 'GruntSpecOps': 'Spec Ops Grunt', 'JackalMajor': 'Jackal Major',
                   'H2Jackal': 'Jackal (Halo 2)', 'FloodHuman': 'Flood (human host)', 'FloodElite': 'Flood (Elite host)',
-                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)',
+                  'FloodInfection': 'Flood infection form', 'FloodCarrier': 'Flood carrier form', 'FloodGrunt': 'Flood (Grunt host)', 'FloodJackal': 'Flood (Jackal host)', 'FloodBlindWolf': 'Flood (Blind Wolf host)',
                   'FloodODST': 'Flood (ODST host)', 'FloodMarine': 'Flood (Marine host)', 'FloodArmored': 'Flood (Armored Marine host)',
                   'FloodEliteArmored': 'Flood (shielded Elite host)', 'FloodEliteCommander': 'Flood (Elite Commander host)',
                   'FloodEliteUltra': 'Flood (Elite Ultra host)', 'FloodJuggernaut': 'Flood Juggernaut', 'FloodBrute': 'Flood (Brute host)', 'MarineArmored': 'Armored Marine',
@@ -2976,6 +2981,12 @@ CHAR_OVERRIDES = {    # per-character tweaks (add-on packs add their own: see bu
     # the XAM Flood Grunt: Halo CE's carrier AI in an Unggoy body. It runs at you, claws, and bursts when it dies,
     # letting out a few infection forms (TYPE_CODE)
     'FloodGrunt': dict(stance='unarmed', melee=(36, 18), flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Explodes']),
+    # SPV3's Flood Jackal: a Kig-Yar taken and folded low, all limbs: it scuttles in fast, springs from afar and claws
+    'FloodJackal': dict(stance='unarmed', health=45, shield=0, melee=(40, 16), speed=8.0, leap=(64, 360, 0.8, 13.0),
+                        flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
+    # SPV3's Flood Blind Wolf: the Blind Wolf (Digsite's beast) taken: tougher than the living one, leaping and mauling
+    'FloodBlindWolf': dict(stance='unarmed', health=130, shield=0, melee=(34, 26), speed=7.5, leap=(48, 320, 0.7, 14.0),
+                           flags=['HCE_Surprise', 'HCE_Berserks', 'HCE_AlwaysBerserk', 'HCE_Leaps']),
     # SOI's Flood Juggernaut: Halo 2's, a hulking tank form nearly twice a Hunter's height, shrunk to fit Doom's doors.
     # It charges, leaps in from 3-9 m and swats with its long arms; SOI's 500 body and 200 shield as one tough body
     'FloodJuggernaut': dict(stance='unarmed', scale=0.6, height_fixed=96, radius_fixed=36, health=700, shield=0,

@@ -9,3 +9,6 @@
   (the body flew apart): its animations are now its bind pose held, the gun swung down 75 degrees.
 * Ruby's armoured Flood Elites (FloodEliteArmored / Commander / Ultra): their flesh skins (`*_0`, `*_1`) are the Halo CE
   Flood Elite's (`FloodElite/skins/floodelite_floodelite_<n>.png`), their armour skins their own.
+* The Flood Jackal and Flood Blind Wolf (SPV3's flood_spider and flood_wolf, from `spv3_rockslide_flood.yelo`): their
+  tentacle surfaces (Jackal surface 1, Wolf surface 0, SPV3's `infection_tentacles` shader) use the Infection Form's
+  cut-out tentacle skin (`FloodInfection/skins/floodinfection_floodinfection_0.png`); their UVs land on its tentacle strip.

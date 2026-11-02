@@ -262,10 +262,88 @@ class HCE_FloodSpit : Actor
 	Death:
 		TNT1 A 1
 		{
+			A_StartSound("HCE/FloodAcid/Splat", CHAN_BODY, 0, 0.9);
 			for(int i = 0; i < 8; i++)
 				A_SpawnParticle(Color(200, 190, 60), SPF_FULLBRIGHT | SPF_RELATIVE, 18, 4, random(0, 359),
 					0, 0, 2, frandom(0.5, 2.5), 0, frandom(0.5, 2.5), 0, 0, -0.2);
+			HCE_FloodAcid.Pool(self, target);
 		}
 		Stop;
+	}
+}
+
+// ---- where the spit lands: a puddle of bile on the floor below (within 64 units), sizzling for four seconds and
+// eating at anything not Flood that stands in it (2 a third of a second); a glob landing in a puddle feeds it instead
+class HCE_FloodAcid : Actor
+{
+	int life;
+	Default
+	{
+		+NOBLOCKMAP
+		+NOGRAVITY
+		+DONTSPLASH
+		+NOINTERACTION
+		Radius 28;
+		Height 8;
+		RenderStyle "None";
+	}
+	static void Pool(Actor glob, Actor owner)
+	{
+		if(!glob || glob.pos.z - glob.floorz > 64) return;
+		Sector sec = level.PointInSector(glob.pos.xy);
+		if(sec && sec.GetTexture(Sector.floor) == skyflatnum) return;
+		vector3 at = (glob.pos.xy, glob.floorz);
+		let it = ThinkerIterator.Create("HCE_FloodAcid");
+		HCE_FloodAcid a;
+		while(a = HCE_FloodAcid(it.Next()))
+			if(a.Distance2D(glob) < 32 && abs(a.pos.z - at.z) < 8) { a.life = 0; return; }   // fed: four seconds more
+		let n = HCE_FloodAcid(Actor.Spawn("HCE_FloodAcid", at));
+		if(n) n.target = owner;
+	}
+	override void PostBeginPlay()
+	{
+		super.PostBeginPlay();
+		A_StartSound("HCE/FloodAcid/Loop", CHAN_BODY, CHANF_LOOPING, 0.55, 1.5);
+		let st = Spawn("HCE_FloodBurstPool", pos);     // the bile left on the floor (it lingers, then fades)
+		if(st) st.A_SetScale(0.7);
+	}
+	override void Tick()
+	{
+		if(IsFrozen()) return;
+		life++;
+		if(life >= 35 * 4)
+		{
+			A_StopSound(CHAN_BODY);
+			A_StartSound("HCE/FloodAcid/Fade", CHAN_AUTO, 0, 0.55, 1.5);
+			Destroy();
+			return;
+		}
+		// bubbling: soft bile-yellow blobs swelling up off the floor and popping
+		if(!(life % 2))
+		{
+			double r = frandom(0, radius * 0.7), a = frandom(0, 360);
+			FSpawnParticleParams p;
+			p.color1 = Color(255, 190, 200, 55);
+			p.texture = TexMan.CheckForTexture("HCEGLOW", TexMan.Type_Any);
+			p.style = STYLE_Translucent;
+			p.flags = SPF_FULLBRIGHT | SPF_REPLACE;
+			p.lifetime = random(12, 24);
+			p.size = frandom(4, 9);
+			p.sizestep = 0.25;
+			p.startalpha = life > 35 * 3 ? 0.5 * (35 * 4 - life) / 35.0 : 0.5;
+			p.fadestep = -1;
+			p.pos = pos + (cos(a) * r, sin(a) * r, 1);
+			p.vel = (0, 0, frandom(0.15, 0.45));
+			Level.SpawnParticle(p);
+		}
+		if(life % 10) return;
+		let bi = BlockThingsIterator.Create(self, radius + 32);
+		while(bi.Next())
+		{
+			Actor t = bi.thing;
+			if(!t || t == self || !t.bSHOOTABLE || t.health <= 0 || t.species == 'HCE_FLOOD') continue;
+			if(Distance2D(t) > radius + t.radius || t.pos.z > pos.z + 8 || t.pos.z + t.height < pos.z) continue;
+			t.DamageMobj(self, target, 2, 'Poison', DMG_THRUSTLESS);
+		}
 	}
 }

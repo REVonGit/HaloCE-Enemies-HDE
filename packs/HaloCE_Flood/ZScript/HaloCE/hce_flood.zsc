@@ -1416,6 +1416,7 @@ class HCE_Floodcarrier : HCE_FloodCarrierBase
 	override int, double HCE_BlastPower() { return 120, 256; }
 	override void HCE_OnDetonate()
 	{
+		A_StartSound("HCE/FloodCarrier/PopGore", CHAN_AUTO, CHANF_OVERLAP, 0.9);   // SPV3's flood_spider burst, layered on the boom
 		if(health <= 0 && HCE_Incinerated()) return;   // (killed, not popped on its own:) a plasma grenade, the Plasma Caster, a rocket, the Hydra or fire: they burn up with it
 		Name n = 'HCE_FloodInfection';
 		class<Actor> ic = (class<Actor>)(n);

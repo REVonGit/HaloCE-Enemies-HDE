@@ -216,7 +216,7 @@ class HCE_DraethBase : HaloDoom_EnemyBase abstract
 		Radius 16;
 		Mass 185;
 		PainChance 0;
-		Tag "Draeth";
+		Tag "Dr'aeth";
 		BloodColor "1F A0 55";
 		BloodType "HCE_HaloBlood";
 	}
@@ -926,8 +926,8 @@ class HCE_DraethCommanderBeamRifle : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Commander (Beam Rifle)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Commander (Beam Rifle)"
 	//$Sprite "HU0IA0"
 	Default
 	{
@@ -1169,8 +1169,8 @@ class HCE_DraethCommanderBeamRifleCamo : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Commander Beam Rifle Camo"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Commander Beam Rifle Camo"
 	//$Sprite "HU0JA0"
 	Default
 	{
@@ -1414,8 +1414,8 @@ class HCE_DraethCommanderFuelRod : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Commander (Fuel Rod)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Commander (Fuel Rod)"
 	//$Sprite "HU0KA0"
 	Default
 	{
@@ -1649,8 +1649,8 @@ class HCE_DraethCommanderPlasmaCaster : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Commander (Plasma Caster)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Commander (Plasma Caster)"
 	//$Sprite "HU0LA0"
 	Default
 	{
@@ -1891,8 +1891,8 @@ class HCE_DraethCommanderPlasmaCasterCamo : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Commander Plasma Caster Camo"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Commander Plasma Caster Camo"
 	//$Sprite "HU0MA0"
 	Default
 	{
@@ -2138,8 +2138,8 @@ class HCE_DraethMajorFuelRod : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Major (Fuel Rod)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Major (Fuel Rod)"
 	//$Sprite "HU0NA0"
 	Default
 	{
@@ -2375,8 +2375,8 @@ class HCE_DraethMajorNeedler : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Major (Needler)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Major (Needler)"
 	//$Sprite "HU0OA0"
 	Default
 	{
@@ -2613,8 +2613,8 @@ class HCE_DraethMajorPlasmaRifle : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Major (Plasma Rifle)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Major (Plasma Rifle)"
 	//$Sprite "HU0PA0"
 	Default
 	{
@@ -2851,8 +2851,8 @@ class HCE_DraethMinorNeedler : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 5, "models/hce/weapons", 'w_needler_1.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Minor (Needler)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Minor (Needler)"
 	//$Sprite "HU0QA0"
 	Default
 	{
@@ -3088,8 +3088,8 @@ class HCE_DraethMinorPlasmaRifle : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 7, "models/hce/weapons", 'w_plasma_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Minor (Plasma Rifle)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Minor (Plasma Rifle)"
 	//$Sprite "HU0RA0"
 	Default
 	{
@@ -3324,8 +3324,8 @@ class HCE_DraethZealotBeamRifle : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 3, "models/hce/weapons", 'w_h2_beam_rifle_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Zealot (Beam Rifle)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Zealot (Beam Rifle)"
 	//$Sprite "HU0SA0"
 	Default
 	{
@@ -3564,8 +3564,8 @@ class HCE_DraethZealotFuelRod : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 2, "models/hce/weapons", 'w_fuel_rod_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Zealot (Fuel Rod)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Zealot (Fuel Rod)"
 	//$Sprite "HU0TA0"
 	Default
 	{
@@ -3799,8 +3799,8 @@ class HCE_DraethZealotPlasmaCaster : HCE_DraethBase
 		A_ChangeModel('None', 0, "", 'None', 6, "models/hce/weapons", 'w_plasma_caster_0.png', CMDL_USESURFACESKIN);
 	}
 
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Draeth Zealot (Plasma Caster)"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Dr'aeth Zealot (Plasma Caster)"
 	//$Sprite "HU0UA0"
 	Default
 	{
@@ -18961,8 +18961,8 @@ class HCE_BossSpiderEliteCommanderPlasmaRifle : HCE_EliteCommanderPlasmaRifle
 
 class HCE_RandomDraeth : RandomSpawner
 {
-	//$Category "Halo CE/Covenant/Draeth"
-	//$Title "Random Draeth"
+	//$Category "Halo CE/Covenant/Dr'aeth"
+	//$Title "Random Dr'aeth"
 	//$Sprite "HU0IA0"
 	Default
 	{

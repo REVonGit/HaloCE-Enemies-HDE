@@ -48,7 +48,7 @@ class JMS:
         nk = int(nx()); s.markers = []
         for _ in range(nk):
             name = nx(); region = int(nx()); node = int(nx())
-            q = qconj(qnorm(_f(nx()))); t = np.array(_f(nx())) * U; r = float(nx())
+            q = qconj(qnorm(_f(nx()))); t = np.array(_f(nx())) * U; r = float(nx()) if s.version >= 8200 else 0.0   # (8199: no radius)
             s.markers.append(dict(name=name, region=region, node=node, q=q, t=t, radius=r))
         nr = int(nx()); s.regions = [nx() for _ in range(nr)]
         nv = int(nx())
@@ -57,7 +57,9 @@ class JMS:
         for k in range(nv):
             s.node0[k] = int(nx()); s.pos[k] = np.array(_f(nx())) * U; s.nrm[k] = _f(nx())
             s.node1[k] = int(nx()); s.w1[k] = float(nx())
-            s.uv[k] = (float(nx()), float(nx())); nx()
+            u = nx().split()
+            s.uv[k] = (float(u[0]), float(u[1])) if len(u) > 1 else (float(u[0]), float(nx()))   # (8199: u and v on one line)
+            nx()
         nt = int(nx())
         s.tri_region = np.zeros(nt, int); s.tri_mat = np.zeros(nt, int); s.tris = np.zeros((nt, 3), int)
         for k in range(nt):

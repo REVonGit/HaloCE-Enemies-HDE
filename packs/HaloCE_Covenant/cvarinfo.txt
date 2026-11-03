@@ -8,6 +8,7 @@ server float hce_nerf_health = 0.6;        // enemy health multiplier (allies un
 server float hce_nerf_shields = 0.5;       // enemy energy shields / Jackal shield gauntlets multiplier
 server float hce_burstpause = 1.0;        // >1 = longer pauses between enemy bursts
 server bool hce_dropweapons = true;        // enemies drop their weapon (and sometimes grenades) like in Halo
+server int hce_dropdespawn = 60;          // seconds a dropped weapon or grenade lies before it goes (0: never)
 server float hce_grenadefreq = 1.0;        // enemy grenade frequency (2 = twice as often, 0.5 = half)
 server bool hce_grenadedodge = true;   // enemies that notice a live grenade near them dive / run clear
 server bool hce_jumping = true;        // enemies jump onto ledges and over low obstacles in their way

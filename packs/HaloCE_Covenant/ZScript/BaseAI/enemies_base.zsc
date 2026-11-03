@@ -987,7 +987,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		}
 		// jump height: about three quarters of the body, Hunters only a low hop, flyers never
 		if(hce_jumpHeight == 0)
-			hce_jumpHeight = bHCE_Flying ? -1 : bHCE_FrontArmor ? 32 : clamp(height * 0.75, 24, 56);
+			hce_jumpHeight = bHCE_Flying ? -1 : bHCE_FrontArmor ? 32 : clamp(height * 0.85, 24, 64);   // (the rock steps of outcrops, cliff-side shelves: up to 64)
 		if(hce_voiceSet.Length() > 0)
 		{
 			Array<String> vs; hce_voiceSet.Split(vs, ",", TOK_SKIPEMPTY);
@@ -3388,7 +3388,9 @@ class HaloDoom_EnemyBase : Actor abstract
 		double fz2 = HCE_FloorAt(p2.x, p2.y, top + MaxStepHeight);
 		if(!overThing && fz2 < top - MaxStepHeight) return false;
 		FLineTraceData tr;
-		if(LineTrace(ang, radius * 2 + 24, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;   // wall above it
+		// a wall right above the edge (no room to land on it); a further step up behind the landing is fine: rock
+		// outcrops and stepped cliffs go up a shelf at a time, and each is climbed in turn
+		if(LineTrace(ang, reach + radius * 0.75, 0, TRF_THRUACTORS | TRF_THRUHITSCAN, rise + 8, data: tr)) return false;
 		double g = max(0.1, GetGravity());
 		double vz = sqrt(2 * g * (rise + 12));
 		double t = vz / g * 1.6;                               // until it is over the edge and coming down
@@ -4145,7 +4147,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			hce_burstTics--;
 			if(--hce_shotTics <= 0)
 			{
-				hce_shotTics = max(1, int(35.0 / (max(0.25, hce_rateOfFire) * HCE_D(HCE_D_ROF))));
+				HCE_GunLimits();
+				hce_shotTics = max(max(1, hce_gunTics), int(35.0 / (max(0.25, hce_rateOfFire) * HCE_D(HCE_D_ROF))));   // (never faster than the gun)
 				HCE_FireShot();
 				if(HCE_SpendRound()) hce_burstTics = 1;
 			}
@@ -4157,6 +4160,8 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(HCE_AmmoCheck()) return;
 			if(HCE_FriendInFire()) { hce_sepTics = 8; return; }
 			hce_burstTics = max(1, int(35 * frandom(hce_burstMin, hce_burstMax)));
+			HCE_GunLimits();
+			if(hce_gunBurst > 0) hce_burstTics = min(hce_burstTics, max(1, (hce_gunBurst - 1) * max(1, hce_gunTics) + 1));   // (no more rounds than the gun's burst)
 			hce_shotTics = 0;
 			hce_burstShot = 0;
 		}
@@ -4265,6 +4270,38 @@ class HaloDoom_EnemyBase : Actor abstract
 	// Guns that fire bursts of their own (one pull of the trigger, several rounds: HaloDoom Evolved's battle rifle
 	// three, its Light Rifle three, the Pulse Carbine five): rounds per pull and the tics from one pull to the next.
 	// A volley is whole pulls; a pull, once started, fires all its rounds
+	// ------------------------------------------------------------------
+	// The gun in hand's real limits: HaloDoom Evolved's weapons, read from each one's Fire states (the tics from one
+	// round to the next when the trigger is held, or the quickest a semi-automatic re-fires; a burst gun's rounds per
+	// pull and the tics from pull to pull) and the most rounds an AI burst may run to before it pauses. The AI never
+	// fires faster or longer than the gun it holds can, on any difficulty: the difficulty's rate of fire only ever
+	// slows it (HCE_UpdateFiring, HCE_UpdatePattern). Keyed on the gun it would drop (hce_dropWeapon: a loadout or a
+	// picked-up gun changes it); none known (a Covenant cannon, a beam, claws): no limit.
+	int hce_gunTics, hce_gunPull, hce_gunPullGap, hce_gunBurst;
+	Name hce_limFor, hce_limProj;
+	void HCE_GunLimits()
+	{
+		if(hce_limFor == hce_dropWeapon && hce_limProj == hce_projectile) return;
+		hce_limFor = hce_dropWeapon; hce_limProj = hce_projectile;
+		hce_gunTics = 0; hce_gunPull = 1; hce_gunPullGap = 0; hce_gunBurst = 0;
+		String w = String.Format("%s", hce_dropWeapon); w = w.MakeLower();
+		// gun, tics between rounds, rounds per pull, tics from pull to pull, most rounds a burst
+		static const String GUN[] = { "halo_assaultrifle", "halo_ma5b", "halo_smg", "halo_commando", "halo_gpmg", "halo_plasmarifle",
+			"halo_needler", "halo_spiker", "halo_pulsecarbine", "halo_battlerifle", "halo_lightrifle", "halo_carbine", "halo_dmr",
+			"halo_magnum", "halo_sidekick", "halo_plasmapistol", "halo_boltshot", "halo_shotgun", "halo_dblshotgun", "halo_bulldog",
+			"halo_scattershot", "halo_sniperrifle", "halo_beamrifle", "halo_binaryrifle", "halo_rocketlauncher", "halo_hydra",
+			"halo_grenadelauncher", "halo_plasmacaster", "halo_needlerjavelin", "halo_stickydetonator", "halo_fuelrod" };
+		static const int TICS[] = { 4, 2, 2, 4, 3, 3, 4, 4, 4, 3, 3, 7, 9, 9, 9, 5, 10, 30, 26, 15, 15, 28, 30, 40, 30, 10, 40, 20, 52, 30, 44 };
+		static const int PULL[] = { 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+		static const int GAP[] = { 0, 0, 0, 0, 0, 0, 0, 0, 13, 20, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		static const int BURST[] = { 12, 15, 15, 10, 20, 12, 10, 12, 6, 6, 6, 5, 4, 4, 4, 5, 3, 2, 2, 3, 3, 2, 2, 2, 2, 4, 2, 2, 1, 3, 2 };
+		for(int i = 0; i < GUN.Size(); i++)
+		{
+			if(w != GUN[i]) continue;
+			hce_gunTics = TICS[i]; hce_gunPull = PULL[i]; hce_gunPullGap = GAP[i]; hce_gunBurst = BURST[i];
+			return;
+		}
+	}
 	static int HCE_TriggerBurst(Name proj, out int gap)
 	{
 		String n = proj;
@@ -4283,7 +4320,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	// pistol overcharge replaces a whole burst and is telegraphed by a charge-up.
 	void HCE_UpdatePattern(double dist)
 	{
-		if(hce_trigFor != hce_projectile) { hce_trigFor = hce_projectile; hce_trigBurst = HCE_TriggerBurst(hce_projectile, hce_trigGap); }
+		if(hce_trigFor != hce_projectile || hce_limFor != hce_dropWeapon)
+		{
+			hce_trigFor = hce_projectile; hce_trigBurst = HCE_TriggerBurst(hce_projectile, hce_trigGap);
+			HCE_GunLimits();
+			if(hce_gunTics > 0) { hce_trigBurst = hce_gunPull; hce_trigGap = hce_gunPullGap; }   // (the gun's own: a burst gun's pull, or one round a pull)
+		}
 		if((!hce_canSee || dist > hce_maxRange || !target) && !(HCE_MidPull() && target))
 		{
 			if(hce_shotsLeft > 0) HCE_EndBurst(0.5);
@@ -4310,7 +4352,7 @@ class HaloDoom_EnemyBase : Actor abstract
 				if(!(hce_pullShot % max(3, hce_trigBurst)) && HCE_FriendInFire()) { HCE_EndBurst(0.25); return; }
 				HCE_FireShot();
 				hce_pullShot++;
-				hce_shotTics = max(1, int(round(hce_patInterval / HCE_D(HCE_D_ROF))));
+				hce_shotTics = max(max(1, hce_gunTics), int(round(hce_patInterval / HCE_D(HCE_D_ROF))));   // (never faster than the gun)
 				// the gun's next pull: its own refire, not the spacing of rounds within a pull
 				if(hce_trigBurst > 1 && !(hce_pullShot % hce_trigBurst)) hce_shotTics = max(hce_shotTics, int(round(hce_trigGap / HCE_D(HCE_D_ROF))));
 				if(HCE_SpendRound() && !HCE_MidPull()) { HCE_EndBurst(0.2); hce_sepTics = 1; }    // empty / overheated: reload next tic
@@ -4332,6 +4374,8 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(HCE_FriendInFire()) { hce_sepTics = 8; return; }             // a friend in the way: step aside first
 		hce_shotsLeft = random(hce_patShotsMin, max(hce_patShotsMin, hce_patShotsMax));
 		if(level.maptime < hce_suppressUntil) hce_shotsLeft *= 2;          // suppressing: long bursts
+		if(hce_gunBurst > 0) hce_shotsLeft = min(hce_shotsLeft, hce_gunBurst);   // (but no longer than the gun's burst)
+		if(hce_magSize > 0 && hce_mag > 0) hce_shotsLeft = min(hce_shotsLeft, hce_mag);   // (nor more than the magazine holds)
 		if(hce_trigBurst > 1) hce_shotsLeft = max(1, (hce_shotsLeft + hce_trigBurst - 1) / hce_trigBurst) * hce_trigBurst;   // whole pulls
 		hce_shotTics = 0;
 		hce_burstShot = 0; hce_pullShot = 0;
@@ -7484,6 +7528,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(!it) return;
 		it.bDROPPED = true;
 		it.vel = (frandom(-2, 2), frandom(-2, 2), frandom(2, 4));
+		HCE_DropTimer.Start(it);       // (gone after hce_dropdespawn seconds, untaken)
 	}
 
 	// ------------------------------------------------------------------
@@ -9107,4 +9152,43 @@ class HCE_StyleKamikaze : HCE_Style
 	{
 		e.hce_kamiChance = max(e.hce_kamiChance, 0.03); e.hce_grenades += 2; e.hce_rangeMin *= 0.7; e.hce_rangeMax *= 0.7;
 	}
+}
+
+// ---- a dropped weapon or grenade left lying goes after hce_dropdespawn seconds (Options > Halo CE AI; 0 never),
+// blinking its last three. HDE swaps a weapon dropped in the world for its pickup (WeaponPickupProxy) a tic or two after
+// it appears, so the timer follows the drop to whatever stands in its place then; taken, it has nothing left to do.
+class HCE_DropTimer : Actor
+{
+	Actor item;
+	int left;
+	Default { +NOINTERACTION +NOBLOCKMAP +NOGRAVITY +NOTONAUTOMAP RenderStyle "None"; }
+	static void Start(Actor it)
+	{
+		CVar cv = CVar.FindCVar("hce_dropdespawn");
+		int secs = cv ? cv.GetInt() : 60;
+		if(!it || secs <= 0) return;
+		let t = HCE_DropTimer(Spawn("HCE_DropTimer", it.pos));
+		if(t) { t.item = it; t.left = secs * TICRATE; }
+	}
+	override void Tick()
+	{
+		if(isFrozen()) return;
+		// (its first tics: the drop replaced by HDE's pickup, adopted where it lies)
+		if((!item || item.bDestroyed) && GetAge() < 8)
+		{
+			let bi = BlockThingsIterator.Create(self, 64);
+			while(bi.Next())
+			{
+				let a = bi.thing;
+				if(a && a != self && a.GetAge() <= GetAge() + 1 && !(a is "HCE_DropTimer") && !a.bISMONSTER && !a.player && a.GetClassName() == "WeaponPickupProxy") { item = a; break; }
+			}
+			return;
+		}
+		let inv = Inventory(item);
+		if(!item || item.bDestroyed || (inv && inv.Owner)) { Destroy(); return; }
+		SetOrigin(item.pos, false);
+		if(--left <= 0) { item.Destroy(); Destroy(); return; }
+		if(left < 3 * TICRATE) item.bInvisible = (left / 4) & 1;
+	}
+	States { Spawn: TNT1 A -1; Stop; }
 }

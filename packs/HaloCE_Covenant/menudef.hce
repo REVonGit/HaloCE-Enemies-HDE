@@ -34,6 +34,7 @@ OptionMenu "HCE_AIOptions"
 	Option "Hunters in bonded pairs", "hce_hunterpairs", "OnOff"
 	Option "Marines turn on a traitor", "hce_betrayal", "OnOff"
 	Option "Drop weapons", "hce_dropweapons", "OnOff"
+	Slider "Dropped weapons last (seconds, 0 never)", "hce_dropdespawn", 0, 300, 10, 0
 	Slider "Shooting the dead", "hce_corpseshoot", 0, 1, 0.05, 2
 	Slider "Sleeping Grunts", "hce_sleepinggrunts", 0, 1, 0.05, 2
 	Slider "Most pursuers per target (0 = any)", "hce_maxpursuers", 0, 12, 1, 0

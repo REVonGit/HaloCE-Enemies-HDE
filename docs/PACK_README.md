@@ -379,7 +379,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
 * **Beam-rifle Spec Ops Elite (new, `HCE_EliteSpecopsBeamRifle`, 30283):** the Spec Ops plasma-rifle Elite with Halo 2's beam rifle, in Halo 2's own Elite rifle stance (the same rig match), fighting from further back (combat range 480–1760).
 * **Plasma-Caster Spec Ops Elite (new, `HCE_EliteSpecopsPlasmaCaster`, 30317):** a Spec Ops Elite (in the purple Spec Ops armour) carrying HaloDoom Evolved's Plasma Caster as a Halo CE-style gun (the same model as the Brute Captain's), in the Elite rifle stance. It lobs Plasma Caster shots from mid range (4–14 m), sometimes a charged three-shot cluster, and drops HDE's Plasma Caster.
 * **Flood:**
-  * Infection forms swarm, leap and nibble, and take the dead. A dead Marine, ODST, Armored Marine, Elite or Grunt is raised as the Flood form of its own kind (an ODST or Armored Marine as an armored human form, a Minor or Major Elite in its own colours, a Grunt as the Flood Grunt, an armed one if it carried a plasma pistol or needler), holding the gun it dropped if that still lies by the body; otherwise it rises unarmed. A fallen combat form is reanimated as it was. Out of a fight they go for any body within 512 units; in one, only a body nearer than their target. One infection form to a body. The Dr'aeth isn't taken. With the Digsite add-on, a dead Brute is: it rises as a **Flood Brute** of its own rank (a Chieftain as a Captain, a Stalker or jump-pack Brute as a Major), with its gun if a Flood Brute of its rank carries that gun.
+  * Infection forms swarm, leap and nibble, and take the dead. A dead Marine, ODST, Armored Marine, Elite or Grunt is raised as the Flood form of its own kind (an ODST or Armored Marine as an armored human form, a Minor or Major Elite in its own colours, a Grunt as the Flood Grunt, an armed one if it carried a plasma pistol or needler), holding the gun it dropped if that still lies by the body; otherwise it rises unarmed. A fallen combat form is reanimated as it was. Out of a fight they go for any body within 512 units; in one, only a body nearer than their target. One infection form to a body. A dead (or dying) Dr'aeth is taken too: it rises as the **Flood Dr'aeth** (below), with its plasma rifle or needler, or with its fuel rod, beam rifle or Plasma Caster in hand all the same (the Flood arsenal). With the Digsite add-on, a dead Brute is: it rises as a **Flood Brute** of its own rank (a Chieftain as a Captain, a Stalker or jump-pack Brute as a Major), with its gun if a Flood Brute of its rank carries that gun.
   * Fallen combat forms get back up on their own again, as intended (corpses had been refusing to rise).
   * A combat form feigning death keeps its gun in its hand and gets up with it; it only drops it if its gun arm was shot off, or if it never gets up (torn apart while down). A dead one raised by an infection form takes its dropped gun back up.
   * Carriers waddle up and burst into 5–9 infection forms. Chain reactions happen.
@@ -390,6 +390,7 @@ DoomEdNums 30284–30316 (alphabetical: `HCE_MarineArmoredBattleRifle` … `HCE_
     * **Armed** (new, Sabopool's): a combat form with a **plasma pistol** (`HCE_FloodGruntPlasmaPistol` 30562) or a **needler** (`HCE_FloodGruntNeedler` 30563), 75 health. It fights like the other combat forms: shoots, leaps in, claws, goes berserk, feigns death and gets back up. A dead Grunt raised by an infection form becomes one if its gun still lies by the body.
     
     Either arm can be shot off (the gun goes with the right). One Lost Soul in five to eight becomes one of the three (by skill): `HCE_RandomFloodGrunt` 30460.
+  * **Flood Dr'aeth (new):** a Dr'aeth (Reaver) taken by the Flood, in the pack author's model (`Raw Assets/Flood Draeth`: Halo CE's Flood combat Elite with the Dr'aeth's 1999 armour and helmet grown into it, its armour in a Flood-stained copy of the Dr'aeth's skin, rigged to the Flood Elite's skeleton). It is the Flood Elite in all but its looks: the same animations, stats, leaps, guns (any but the Forerunners'), torn stumps and reanimation; its own head flies off when it is shot away. `HCE_FloodcombatDraeth<gun>` over each Flood Elite class: assault rifle 30940, flamethrower 30941, needler 30942, pistol 30943, plasma pistol 30944, plasma rifle 30945, rocket launcher 30946, shotgun 30947, sniper rifle 30948, unarmed 30949; `HCE_RandomFloodDraeth` 30950. Only placed or raised by the infection forms: it takes no Doom monster's place (`generator/post/flood_draeth.py`).
   * **Flood Juggernaut (new, SOI's Singleplayer Adventure):** Halo 2's hulking tank form, from *Halo: SOI's Singleplayer Adventure V3* (its c20 map: SOI's model, skins, 23 animations and stats). Shrunk to 60% to fit Doom's doors (96 tall, radius 36), still taller than a Hunter. 700 health (SOI's 500 body and 200 shield as one), no gun: it charges, leaps in from 140–420 units and swats with its long arms for about 85. It roars with its own sounds from the map (spotting, taunts, berserk, melee, pain, death). It takes the Baron of Hell's place now and then. `HCE_FloodJuggernaut` 30501, `HCE_RandomFloodJuggernaut` 30502.
   * **Ruby's Rebalance's Flood hosts (new):** from Ruby's Rebalance by mynameislol (its c40 map): each its own model, skins, damaged stumps, animations and stats. Each also has its own head, the host's ('corpse head'), which comes off with the Flood's.
     - **Flood ODST** (150 health): assault rifle, shotgun or sniper rifle (`HCE_FloodcombatOdst*`).
@@ -1427,6 +1428,17 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 | 30570 | `HCE_MarineOdstRavenGreenDoubleBarrel` |
 | 30571 | `HCE_MarineOdstRavenOrangeDoubleBarrel` |
 | 30572 | `HCE_MarineOdstRavenPurpleDoubleBarrel` |
+| 30940 | `HCE_FloodcombatDraethAssaultRifle` |
+| 30941 | `HCE_FloodcombatDraethFlameThrower` |
+| 30942 | `HCE_FloodcombatDraethNeedler` |
+| 30943 | `HCE_FloodcombatDraethPistol` |
+| 30944 | `HCE_FloodcombatDraethPlasmaPistol` |
+| 30945 | `HCE_FloodcombatDraethPlasmaRifle` |
+| 30946 | `HCE_FloodcombatDraethRocketLauncher` |
+| 30947 | `HCE_FloodcombatDraethShotgun` |
+| 30948 | `HCE_FloodcombatDraethSniperRifle` |
+| 30949 | `HCE_FloodcombatDraethUnarmed` |
+| 30950 | `HCE_RandomFloodDraeth` |
 
 ## Credits
 
@@ -1443,6 +1455,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Mercury Rising:** from *Mercury Rising* by aLTis (MCC Steam Workshop 3021510694), with its own credits: the Artillery, Brute, Canoneer, Compiler, Omega and Scout Sentinels, the Artybug and the Marine variants (the medic among them) are unevenelefant5's. The Dr'aeth's and the Geist's stats and loadouts are the mod's.
 * **Geist:** Arteen's (CMT; its model, textures and animations, from Mercury Rising).
 * **Dr'aeth:** the 1999 Elite (`99_mac`) is the Digsite release's (github.com/digsite/h1), from Mercury Rising.
+* **Flood Dr'aeth:** the pack author's model: Halo CE's Flood combat Elite (Bungie's) with the Digsite 1999 Elite's armour and helmet (the Dr'aeth's) grown into it.
 * **Reaver (Dr'aeth) voice and footsteps:** Black Mesa's Alien Grunt, by Crowbar Collective.
 * **SOI's 8-gauge shotgun** (the double barrel Fire Team Raven, Sergeant Stacker and Brutes carry): from *Halo: SOI's Singleplayer Adventure V3* by SOI (MCC Steam Workshop 2906165512).
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).

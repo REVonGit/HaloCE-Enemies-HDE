@@ -1,0 +1,49 @@
+// the Flood Dr'aeth (generator/post/flood_draeth.py): the Flood Elite's materials on its skins
+material texture "models/hce/FloodDraeth/skins/flooddraeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	define "HCE_SELFILLUM"
+	define "SI_FN" = "9"
+	define "SI_PERIOD" = "4.000"
+	define "SI_LO" = "vec3(0.0000, 0.0000, 0.0000)"
+	define "SI_HI" = "vec3(0.0000, 0.2353, 0.0000)"
+	define "SI_GAIN" = "1.500"
+	speed 1.0
+	brightmap "models/hce/hce_fx/black.png"
+	texture si_mask "models/hce/FloodDraeth/skins/flooddraeth_0_si.png"
+}
+material texture "models/hce/FloodDraeth/blood1_FloodDraeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/blood1_FloodDraeth_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/blood2_FloodDraeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/blood2_FloodDraeth_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/blood3_FloodDraeth_0.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/blood3_FloodDraeth_2.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}
+material texture "models/hce/FloodDraeth/gore_FloodDraeth.png"
+{
+	shader "shaders/hce_derez.fp"
+	brightmap "models/hce/brightmap_none.png"
+}

@@ -1,0 +1,179 @@
+// The Flood Dr'aeth (generator/post/flood_draeth.py; written by it, edit there): a Dr'aeth (Reaver) taken by the Flood.
+// One class over each Flood Elite class: the Flood Elite in everything but its body (models/hce/FloodDraeth, the
+// pack author's: the Flood Elite with the Dr'aeth's 1999 armour and helmet grown into it). The infection forms raise a
+// dead Dr'aeth as one (HCE_HostForm).
+
+mixin class HCE_FloodDraethBody
+{
+	// its own head flies off (the arms are the Flood Elite's), its own body under the blood, an Elite's footsteps
+	override bool HCE_SeverLimb(int limb)
+	{
+		if(limb != 0 || (hce_severed & 1)) return super.HCE_SeverLimb(limb);
+		HCE_HideSurface(0);
+		if(hce_shellActor) hce_shellActor.A_ChangeModel('None', 0, "", 'None', 0, "models/hce/weapons", 'hce_hidden.png', CMDL_USESURFACESKIN);
+		HCE_ShowSurface(1);
+		HCE_SpawnLimb(0, (0.0278, -0.1105, 0.6441), 80.00, "models/hce/FloodDraeth", 'FloodDraeth_gib_head.iqm', 24, 'gore_FloodDraeth.png', 0.0804);
+		HCE_OnSever(0, false);
+		return true;
+	}
+	override void HCE_BloodModel(int stage)
+	{
+		switch(stage)
+		{
+		case 1: A_ChangeModel('None', 7, "models/hce/FloodDraeth", 'FloodDraeth_blood1.iqm'); break;
+		case 2: A_ChangeModel('None', 7, "models/hce/FloodDraeth", 'FloodDraeth_blood2.iqm'); break;
+		case 3: A_ChangeModel('None', 7, "models/hce/FloodDraeth", 'FloodDraeth_blood3.iqm'); break;
+		}
+	}
+	override Name HCE_StepSet() { return 'elite'; }
+}
+
+class HCE_FloodcombatDraethAssaultRifle : HCE_FloodcombatEliteAssaultRifle
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Assault Rifle)"
+	//$Sprite "HU2OA0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth assault rifle";
+	}
+}
+
+class HCE_FloodcombatDraethFlameThrower : HCE_FloodcombatEliteFlameThrower
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Flamethrower)"
+	//$Sprite "HU2QA0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth flame thrower";
+	}
+}
+
+class HCE_FloodcombatDraethNeedler : HCE_FloodcombatEliteNeedler
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Needler)"
+	//$Sprite "HU2ZA0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth needler";
+	}
+}
+
+class HCE_FloodcombatDraethPistol : HCE_FloodcombatElitePistol
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Pistol)"
+	//$Sprite "HU30A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth pistol";
+	}
+}
+
+class HCE_FloodcombatDraethPlasmaPistol : HCE_FloodcombatElitePlasmaPistol
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Plasma Pistol)"
+	//$Sprite "HU31A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth plasma pistol";
+	}
+}
+
+class HCE_FloodcombatDraethPlasmaRifle : HCE_FloodcombatElitePlasmaRifle
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Plasma Rifle)"
+	//$Sprite "HU32A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth plasma rifle";
+	}
+}
+
+class HCE_FloodcombatDraethRocketLauncher : HCE_FloodcombatEliteRocketLauncher
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Rocket Launcher)"
+	//$Sprite "HU33A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth rocket launcher";
+	}
+}
+
+class HCE_FloodcombatDraethShotgun : HCE_FloodcombatEliteShotgun
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Shotgun)"
+	//$Sprite "HU34A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth shotgun";
+	}
+}
+
+class HCE_FloodcombatDraethSniperRifle : HCE_FloodcombatEliteSniperRifle
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth (Sniper Rifle)"
+	//$Sprite "HU35A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth sniper rifle";
+	}
+}
+
+class HCE_FloodcombatDraethUnarmed : HCE_FloodcombatEliteUnarmed
+{
+	mixin HCE_FloodDraethBody;
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Floodcombat Dr'aeth Unarmed"
+	//$Sprite "HU38A0"
+	Default
+	{
+		Tag "FloodDraeth";
+		HaloDoom_EnemyBase.HCE_Variant "floodcombat draeth unarmed";
+	}
+}
+
+class HCE_RandomFloodDraeth : RandomSpawner
+{
+	//$Category "Halo CE/Flood/Flood Dr'aeth"
+	//$Title "Random Flood Dr'aeth"
+	//$Sprite "HU38A0"
+	Default
+	{
+		DropItem "HCE_FloodcombatDraethAssaultRifle", 255, 1;
+		DropItem "HCE_FloodcombatDraethFlameThrower", 255, 1;
+		DropItem "HCE_FloodcombatDraethNeedler", 255, 1;
+		DropItem "HCE_FloodcombatDraethPistol", 255, 1;
+		DropItem "HCE_FloodcombatDraethPlasmaPistol", 255, 1;
+		DropItem "HCE_FloodcombatDraethPlasmaRifle", 255, 1;
+		DropItem "HCE_FloodcombatDraethRocketLauncher", 255, 1;
+		DropItem "HCE_FloodcombatDraethShotgun", 255, 1;
+		DropItem "HCE_FloodcombatDraethSniperRifle", 255, 1;
+		DropItem "HCE_FloodcombatDraethUnarmed", 255, 1;
+	}
+}

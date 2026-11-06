@@ -29,3 +29,11 @@
   form's armed class and takes its gun as it spawns. Classes in `HaloCE_Flood/ZScript/HaloCE/hce_flood_variants.zsc`,
   their MODELDEF in `HaloCE_Flood/modeldef.hce_flood_variants`, editor numbers 31000 up in the Flood pack's
   `mapinfo.txt` (between its FLOOD VARIANTS markers), and the bestiary's weapons column for the armed forms. HDE only.
+* `flood_draeth.py` (run from `generator/`, after `flood_variants.py`): the Flood Dr'aeth, from the pack author's model
+  (`Raw Assets/Flood Draeth/fish_combat_form.blend`: the Flood combat Elite with the Dr'aeth's armour and helmet, on the
+  Flood Elite's skeleton). Writes `HaloCE_Flood/models/hce/FloodDraeth/` (the Flood Elite's model with its body surfaces
+  swapped, in the same order; a two-cell flesh | armour skin; its head gib and blood overlays), a class over each Flood
+  Elite class in `ZScript/HaloCE/hce_flood_draeth.zsc` (and `HCE_RandomFloodDraeth`), `modeldef.hce_flood_draeth`,
+  `gldefs.hce_flood_draeth`, editor numbers 30940-30950 between the FLOOD DRAETH markers of `mapinfo.txt`, its
+  bestiary rows, and lets the infection forms take a Dr'aeth (`HCE_CanInfect` / `HCE_HostForm` in `hce_flood.zsc` and
+  `templates/zscript/flood_infection.zs`). Runs again cleanly.

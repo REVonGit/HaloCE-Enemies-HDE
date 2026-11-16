@@ -1,4 +1,4 @@
-"""The Marines' Commando: HaloDoom Evolved's own Commando (Commando_HDE.blend1, Halo Infinite's) reinterpreted as a
+"""(No longer used: the Marines' Commando is commando_dmr.py's now.) The Marines' Commando as it was: HaloDoom Evolved's own Commando (Commando_HDE.blend1, Halo Infinite's) reinterpreted as a
 Halo CE gun (hde_ce.py), keeping its own colour scheme: the Infinite shader's zone colours HDE set up, evaluated."""
 import os, sys
 import numpy as np

@@ -182,7 +182,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Sidekick` | the Macworld 2000 pistol (Digsite) | HDE Sidekick rounds (18) | `Halo_Sidekick` |
 | `Ma37` | Halo: Reach's MA37, Shigure's model and textures (`Raw Assets/ma37.zip`, `ma37_shigure.py`) | HDE assault-rifle rounds (9), long bursts | `Halo_AssaultRifle` |
 | `AssaultRifle` (unchanged) | Halo CE's assault rifle | MA5B rounds | `Halo_MA5B` |
-| `Commando` | HaloDoom Evolved's own Commando (Halo Infinite's), reinterpreted as a Halo CE gun in its own colours: black lower receiver, grey upper and handguard | HDE Commando rounds (14), short bursts | `Halo_Commando` |
+| `Commando` | The DMR-style Commando model the pack's author supplied (`Raw Assets/dmr_commando.zip`, `commando_dmr.py`): long barrel, scope with an amber lens, blue ammo counter, its PBR textures baked into one Halo CE-style texture | HDE Commando rounds (14), short bursts | `Halo_Commando` |
 | `BattleRifle` | Halo 2's battle rifle | three-round bursts (12 a round) | `Halo_BattleRifle` |
 | `Dmr` | the E3 1999 assault rifle (Digsite) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |

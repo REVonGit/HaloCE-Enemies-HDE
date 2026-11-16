@@ -7,7 +7,8 @@ Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation
 prototypes (github.com/digsite/h1, JMS + TIFF) and MCC Workshop campaigns ('pc': a weapon tag in a PC/MCC cache file; the
 double barrel is SOI's 8-gauge shotgun from SOI's Singleplayer Adventure V3, HCE_SOI_C20). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
 Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py,
-and the Commando and the Hydra HDE's own (Commando_HDE.blend1, Hydra_HDE.blend) by commando_ce.py / hydra_ce.py.
+the Hydra HDE's own (Hydra_HDE.blend) by hydra_ce.py, and the Commando the DMR-style model the pack's author supplied
+(Raw Assets/dmr_commando.zip) by commando_dmr.py.
 
     python3 marine_arsenal.py [name ...]   # build the weapon pkls (ARSENAL; names limit it)
     python3 marine_arsenal.py overlays     # then: the per-Marine (and per-Brute) overlay IQMs, out/models/<Char>/
@@ -34,7 +35,7 @@ PC_MAPS = {'soi': os.environ.get('HCE_SOI_C20', 'soi_c20.map')}
 SH = 'weapons/_shared/'
 # HDE weapon -> source. ce: an extract_weapons.py id; dig: (JMS, texture); h2: (map, tag)
 # Other kinds: pc (a PC_MAPS key, weapon tag), hde_ce (a module whose build() writes the pkl), ce_bulldog / ce_gl /
-# sticky (fixed modules). To add a gun: a row here, a FIX entry if it needs turning or centring, and a row in
+# sticky (fixed modules), supplied (a module whose build() writes the pkl from a model the pack's author supplied). To add a gun: a row here, a FIX entry if it needs turning or centring, and a row in
 # build_pack.MARINE_ARSENAL (its stance, ranges and the HDE pickup it drops); then rebuild with 'overlays'.
 ARSENAL = {
     'magnum':           ('ce', 'pistol'),
@@ -47,7 +48,7 @@ ARSENAL = {
     'gpmg':             ('h2', ('01b', r'objects\weapons\fixed\h_turret_mp\weapon\weapon')),   # the gun off its tripod
     'rocket_launcher':  ('h2', ('08a', r'objects\weapons\support_high\rocket_launcher\rocket_launcher')),
     'double_barrel':    ('pc', ('soi', r'soi\weapons\shotgun\shotgun')),    # SOI's 8-gauge shotgun (SOI's Singleplayer Adventure)
-    'commando':         ('hde_ce', 'commando_ce'),   # HDE's own Commando, reinterpreted as a Halo CE gun in its own colours
+    'commando':         ('supplied', 'commando_dmr'),   # the DMR-style Commando the pack's author supplied (commando_dmr.py)
     'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
     'ma37':             ('shigure_ma37', None),   # Shigure's MA37 (Raw Assets/ma37.zip, ma37_shigure.py)
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
@@ -461,7 +462,9 @@ def main(only=None):
             import sticky_ce; sticky_ce.build()
         elif kind == 'shigure_ma37':            # Shigure's MA37 (ma37_shigure.py)
             import ma37_shigure; ma37_shigure.build()
-        elif kind == 'hde_ce':                  # hde_ce.py: commando_ce, hydra_ce
+        elif kind == 'hde_ce':                  # hde_ce.py: hydra_ce
+            __import__(src).build()
+        elif kind == 'supplied':                # commando_dmr
             __import__(src).build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy
             import shutil

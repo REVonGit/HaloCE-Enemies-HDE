@@ -1,4 +1,4 @@
-"""The Marines' Commando: the DMR-style Commando model the pack's author supplied (Raw Assets/dmr_commando.zip:
+"""The Marines' Commando: Shigure's DMR-style Commando model (Raw Assets/dmr_commando.zip:
 'dmr commando.blend' + PBR textures) -> out/weapons/m_commando, in place of HDE's own Commando reinterpreted as a Halo
 CE gun (commando_ce.py) it was before.
 
@@ -30,7 +30,7 @@ WID = 'm_commando'
 FINAL = ('barrel.001', 'body', 'body.003', 'bolt', 'dmr', 'dmr_scope', 'dmr_scope_case', 'magazine')
 TEX = 512                  # the texture (the bake at the colour map's own size, then shrunk)
 SWATCH = {'commando_scope': (150, 82, 22), 'commando_display': (70, 110, 170)}     # sRGB of the materials' colours
-CREDIT = 'DMR Commando model supplied by the pack author (REVonGit)'
+CREDIT = 'DMR Commando by Shigure'
 
 # shading baked into the colour map (its own PBR set is flat; Halo CE's guns carry their lighting in the texture): a key
 # light from above and a little in front (no sideways part: mirrored halves share texels), ambient and a sky fill,

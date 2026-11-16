@@ -182,7 +182,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `Sidekick` | the Macworld 2000 pistol (Digsite) | HDE Sidekick rounds (18) | `Halo_Sidekick` |
 | `Ma37` | Halo: Reach's MA37, Shigure's model and textures (`Raw Assets/ma37.zip`, `ma37_shigure.py`) | HDE assault-rifle rounds (9), long bursts | `Halo_AssaultRifle` |
 | `AssaultRifle` (unchanged) | Halo CE's assault rifle | MA5B rounds | `Halo_MA5B` |
-| `Commando` | The DMR-style Commando model the pack's author supplied (`Raw Assets/dmr_commando.zip`, `commando_dmr.py`): long barrel, scope with an amber lens, blue ammo counter, its PBR textures baked into one Halo CE-style texture | HDE Commando rounds (14), short bursts | `Halo_Commando` |
+| `Commando` | Shigure's DMR-style Commando model and textures (`Raw Assets/dmr_commando.zip`, `commando_dmr.py`): long barrel, scope with an amber lens, blue ammo counter, its PBR textures baked into one Halo CE-style texture | HDE Commando rounds (14), short bursts | `Halo_Commando` |
 | `BattleRifle` | Halo 2's battle rifle | three-round bursts (12 a round) | `Halo_BattleRifle` |
 | `Dmr` | the E3 1999 assault rifle (Digsite) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
@@ -1461,7 +1461,7 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Drone ranks:** Ruby of Blue's H2 Drone Rank Tags (the plate change-colour map, the rank colours, health and shields).
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt's model, skins and animations, and the armed Flood Grunts, are from Sabopool's Halo CE Overhaul 2.0 (MCC Steam Workshop 3735328357, its c40 map); the bursting Flood Grunt's AI and sounds are Tropical Thunder 98's, from the XAM Campaign Overhaul (SPV3's c40 map).
-* **Marine riflemen, and the MA37:** Shigure.
+* **Marine riflemen, the MA37 and the Commando:** Shigure.
 * **Needle rifle** (the Needle Javelin the Elites and Halo 2 Jackals carry): needle rifle model supplied by the pack's author (REVonGit).
 * **Engineer:** from Halo CE Ruby's Rebalance.
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).

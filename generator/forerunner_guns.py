@@ -11,8 +11,8 @@ every pkl does (+x the muzzle, +z up, +y the gun's left, the origin on the grip 
 One texture per gun, TEX square (`texture`), Halo CE's way: its light painted in. The upper part holds the side panels
 (each material's side faces projected straight onto it, by their x and z: one picture of the gun's side, seams and
 wear placed along it); below them the rim strips (the faces round each part's edge), lit by which way they face: a
-bright strip for those facing up, a mid one for front, back and sides, a dark one for those facing down. Last a swatch
-of hard light (orange, white-hot at its middle) for the glowing parts.
+bright strip for those facing up, a mid one for front, back and sides, a dark one for those facing down. The glowing
+parts are a second mesh on a texture of one colour, each gun's own (its first-person HDE gun's hard light).
 """
 import os, sys, pickle
 import numpy as np
@@ -24,18 +24,22 @@ from hce_paths import OUT
 TEX = 512
 U = 0.01                          # profile units -> world units
 # the materials: their side colour (top and bottom of the panel's gradient) and their rim strips' rows
-ALLOY = dict(top=(70, 72, 78), bottom=(34, 35, 40))         # the core and frame: dark gunmetal
-SHELL = dict(top=(206, 208, 210), bottom=(140, 142, 146))   # the shells: pale silver-white plate
-# hard light, per gun: its colour and its hotter middle
-ORANGE = ((255, 150, 40), (255, 185, 80))
-BLUE = ((40, 110, 255), (90, 150, 255))      # (strong enough to stay blue in Doom's palette, where the Spartans' guns go)
+ALLOY = dict(top=(82, 83, 86), bottom=(40, 41, 44))         # the core and frame: dark gunmetal
+SHELL = dict(top=(172, 174, 176), bottom=(112, 114, 118))   # the shells: grey plate (HDE's first-person guns' greys)
+# hard light, per gun, as HDE's first-person gun glows (sampled from its sprites): blue for the Light Rifle, violet for
+# the Scattershot and the Boltshot, teal for the Binary Rifle. The glowing faces are a mesh of their own on a texture of
+# their own (w_m_<gun>_1.png), so the multiplayer pack can light them in this colour by a shader whatever Doom's palette
+# and the player's colour do to the texture (HDE-Maps' tools/ce_guns.py)
+LIGHT_RIFLE_LIGHT = (70, 160, 225)
+SCATTERSHOT_LIGHT = (200, 80, 230)
+BINARY_LIGHT = (85, 240, 215)
+BOLTSHOT_LIGHT = (205, 90, 225)
 # texture layout (pixels): the side panels, the rim strips, the glow swatch
 ALLOY_PANEL = (0, 0, 512, 200)
 SHELL_PANEL = (0, 200, 512, 400)
 STRIPS = {('alloy', 'up'): 404, ('alloy', 'mid'): 420, ('alloy', 'down'): 436,
           ('shell', 'up'): 452, ('shell', 'mid'): 468, ('shell', 'down'): 484}
 STRIP_H = 12
-GLOW_SWATCH = (448, 500, 504, 510)
 
 
 def ear_clip(P):
@@ -66,10 +70,10 @@ def ear_clip(P):
 class Gun:
     """the faces of a gun as they are added: corner positions, normals, uvs, one triangle per three corners"""
     def __init__(s, box):
-        s.pos, s.nrm, s.uv = [], [], []
+        s.pos, s.nrm, s.uv, s.mat = [], [], [], []
         s.box = box          # (x0, z0, x1, z1) profile units: the gun's side, mapped onto each side panel whole
-    def tri(s, p, n, uv):
-        s.pos.extend(p); s.nrm.extend([n] * 3); s.uv.extend(uv)
+    def tri(s, p, n, uv, mat=''):
+        s.pos.extend(p); s.nrm.extend([n] * 3); s.uv.extend(uv); s.mat.append(mat)
     def side_uv(s, mat, x, z):
         x0, z0, x1, z1 = s.box
         if mat == 'glow': return glow_uv(x, z)
@@ -91,7 +95,7 @@ class Gun:
                 t = t[::-1]
                 if flip: t = t[::-1][::-1]
                 pts = [(P[i, 0] * U, y * U, P[i, 1] * U) for i in t]
-                s.tri(pts, n, [s.side_uv(mat, P[i, 0], P[i, 1]) for i in t])
+                s.tri(pts, n, [s.side_uv(mat, P[i, 0], P[i, 1]) for i in t], mat)
         n = len(P)
         area = 0.5 * sum(P[i, 0] * P[(i + 1) % n, 1] - P[(i + 1) % n, 0] * P[i, 1] for i in range(n))
         for i in range(n):
@@ -105,15 +109,14 @@ class Gun:
             uv = [s.rim_uv(mat, facing, a[0], 0), s.rim_uv(mat, facing, b[0], 0), s.rim_uv(mat, facing, b[0], 1), s.rim_uv(mat, facing, a[0], 1)]
             for tri in ((0, 1, 2), (0, 2, 3)):
                 if np.dot(np.cross(np.subtract(q[tri[1]], q[tri[0]]), np.subtract(q[tri[2]], q[tri[0]])), nn) < 0: tri = tri[::-1]
-                s.tri([q[k] for k in tri], nn, [uv[k] for k in tri])
+                s.tri([q[k] for k in tri], nn, [uv[k] for k in tri], mat)
     def mirror(s, prof, y0, y1, mat):
         """a pair: the profile at y0..y1 and at -y1..-y0 (a part on both sides of the core)"""
         s.extrude(prof, y0, y1, mat); s.extrude(prof, -y1, -y0, mat)
 
 
 def glow_uv(a, b):
-    L, T, R, B = GLOW_SWATCH
-    return (((L + R) / 2) / TEX, ((T + B) / 2) / TEX)
+    return (0.5, 0.5)       # (the glow texture is one colour)
 
 
 def side_tris_fix(g):
@@ -156,7 +159,7 @@ def light_rifle():
     return g
 
 
-def texture(g, glow=ORANGE):
+def texture(g):
     """the gun's texture (see the module's note): its side panels painted as the gun's side, seams where its parts
     meet, wear on the edges"""
     rng = np.random.default_rng(7)
@@ -182,9 +185,6 @@ def texture(g, glow=ORANGE):
         col = tuple(min(255, int(c * k)) for c in base)
         d.rectangle((0, y, TEX - 1, y + STRIP_H - 1), fill=col)
         d.line([(0, y + 1), (TEX - 1, y + 1)], fill=tuple(min(255, int(c * 1.25)) for c in col))       # (a lit bevel)
-    L, T, R, B = GLOW_SWATCH
-    d.rectangle((L, T, R, B), fill=glow[0])
-    d.rectangle((L + 8, T + 2, R - 8, B - 2), fill=glow[1])               # (hotter at its middle, still its colour)
     a = np.asarray(im, np.float32)
     grain = rng.normal(0, 4, a.shape[:2])[..., None]
     a[:400] = np.clip(a[:400] + grain[:400], 0, 255)
@@ -265,8 +265,8 @@ def boltshot():
     return g
 
 
-GUNS = {'light_rifle': (light_rifle, BLUE), 'scattershot': (scattershot, ORANGE), 'binary_rifle': (binary_rifle, ORANGE),
-        'boltshot': (boltshot, ORANGE)}
+GUNS = {'light_rifle': (light_rifle, LIGHT_RIFLE_LIGHT), 'scattershot': (scattershot, SCATTERSHOT_LIGHT),
+        'binary_rifle': (binary_rifle, BINARY_LIGHT), 'boltshot': (boltshot, BOLTSHOT_LIGHT)}
 CREDIT = 'an original Forerunner-style gun made for the pack (forerunner_guns.py)'
 
 
@@ -276,10 +276,16 @@ def build(names=None):
         g = fn(); wid = 'm_' + name
         d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)
         for f in os.listdir(d): os.remove(os.path.join(d, f))
-        mat = f'w_{wid}_0.png'; texture(g, glow).save(f'{d}/{mat}')
-        pos = np.asarray(g.pos, float); n = len(pos)
-        mesh = dict(material=mat, pos=pos, nrm=np.asarray(g.nrm, float), uv=np.asarray(g.uv, float), tris=np.arange(n).reshape(-1, 3))
-        pickle.dump(dict(id=wid, tag=CREDIT, meshes=[mesh]), open(f'{d}/{wid}.pkl', 'wb'))
+        mat = f'w_{wid}_0.png'; texture(g).save(f'{d}/{mat}')
+        lit = f'w_{wid}_1.png'; Image.new('RGB', (16, 16), glow).save(f'{d}/{lit}')
+        side_tris = np.asarray(g.mat) == 'glow'
+        pos = np.asarray(g.pos, float).reshape(-1, 3, 3); nrm = np.asarray(g.nrm, float).reshape(-1, 3, 3); uv = np.asarray(g.uv, float).reshape(-1, 3, 2)
+        meshes = []
+        for m, sel in ((mat, ~side_tris), (lit, side_tris)):
+            P, N, UV = pos[sel].reshape(-1, 3), nrm[sel].reshape(-1, 3), uv[sel].reshape(-1, 2)
+            meshes.append(dict(material=m, pos=P, nrm=N, uv=UV, tris=np.arange(len(P)).reshape(-1, 3)))
+        pickle.dump(dict(id=wid, tag=CREDIT, meshes=meshes), open(f'{d}/{wid}.pkl', 'wb'))
+        pos = np.vstack([m['pos'] for m in meshes]); n = len(pos)
         print(wid, 'tris', n // 3, 'bounds', pos.min(0).round(3), pos.max(0).round(3), '->', d)
 
 

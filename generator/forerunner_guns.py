@@ -24,8 +24,8 @@ from hce_paths import OUT
 TEX = 512
 U = 0.01                          # profile units -> world units
 # the materials: their side colour (top and bottom of the panel's gradient) and their rim strips' rows
-ALLOY = dict(top=(78, 84, 96), bottom=(40, 43, 52))         # the core: dark blue-grey alloy
-SHELL = dict(top=(176, 180, 186), bottom=(118, 122, 130))   # the shells: pale silver plate
+ALLOY = dict(top=(70, 72, 78), bottom=(34, 35, 40))         # the core and frame: dark gunmetal
+SHELL = dict(top=(206, 208, 210), bottom=(140, 142, 146))   # the shells: pale silver-white plate
 GLOW = (255, 150, 40)
 # texture layout (pixels): the side panels, the rim strips, the glow swatch
 ALLOY_PANEL = (0, 0, 512, 200)
@@ -123,30 +123,33 @@ def side_tris_fix(g):
 
 
 # ---------------------------------------------------------------- the Light Rifle
-# a long precision rifle: a dark alloy core from the stock's fin to a square hard-light frame at the muzzle, two pale
-# shell shards floating off each side over its middle (a lower pair under them), a low sight on top with a lit lens,
-# the grip slanting back under it with a hard-light guard, hard-light seams along the shells and the core
+# a long precision rifle in the Forerunner way: stacked plates with open gaps between them (a pale upper shell, a dark
+# core, a lower plate), the hard light glowing in the gaps rather than painted on; the shell and the lower plate run past
+# the core into a split muzzle of two tines; an open frame for the stock and grip (a loop of bars round empty space); a
+# sight shard floating over the shell; a lit node on the core
 def light_rifle():
-    g = Gun((-14, -4, 27, 10))
-    core = [(-14, 3.4), (-12, 6.8), (-4, 7.4), (4, 7.6), (13, 7.0), (21, 5.8), (24.5, 5.4), (24.5, 2.6), (19, 2.2), (9, 2.0),
-            (5, 1.2), (0, 1.2), (-6, 2.0), (-10, 1.2), (-14, 1.8)]
-    g.extrude(core, -0.95, 0.95, 'alloy')
-    g.extrude([(-9, 7.0), (6, 8.2), (15, 7.6), (19, 6.0), (6, 7.2)], -0.55, 0.55, 'alloy')            # the spine's ridge
-    g.extrude([(-13.4, 2.6), (-11.8, 6.0), (-7.5, 6.5), (-8.6, 2.8)], -1.2, 1.2, 'shell')            # the stock's pale inset
-    g.mirror([(-1, 8.4), (9, 8.8), (18, 7.2), (22.5, 5.6), (14, 4.9), (3, 5.3)], 1.2, 1.7, 'shell')     # the upper shards
-    g.mirror([(8, 4.0), (15, 4.2), (20.5, 2.8), (17, 1.6), (10, 1.8)], 1.2, 1.6, 'shell')              # the lower shards
-    g.mirror([(1.5, 7.2), (14, 6.8), (14.4, 6.4), (2, 6.8)], 1.7, 1.78, 'glow')                       # the shards' seams
-    g.mirror([(10, 2.6), (16, 2.8), (16.3, 2.5), (10.2, 2.3)], 1.6, 1.68, 'glow')
-    g.mirror([(-11, 4.4), (-4, 4.8), (-4, 4.4), (-11, 4.0)], 0.95, 1.03, 'glow')                       # the stock's line
-    g.extrude([(2, 7.5), (8, 7.5), (9.4, 9.0), (3.6, 9.4)], -0.55, 0.55, 'alloy')                     # the sight
-    g.extrude([(8.8, 8.2), (9.4, 8.1), (9.6, 8.9), (9.0, 9.0)], -0.4, 0.4, 'glow')                    # its lens
-    g.extrude([(-1.2, 1.4), (2.4, 1.4), (0.2, -3.4), (-3.0, -3.2)], -0.75, 0.75, 'alloy')             # the grip
-    g.extrude([(2.2, -2.4), (6.6, 1.2), (6.6, 1.6), (1.6, -1.8)], -0.22, 0.22, 'glow')                # its guard
-    # the muzzle's square frame: bars round a lit pane
-    for bar in ([(24.5, 5.6), (26.6, 5.6), (26.6, 6.2), (24.5, 6.2)], [(24.5, 2.0), (26.6, 2.0), (26.6, 2.6), (24.5, 2.6)]):
-        g.extrude(bar, -1.25, 1.25, 'shell')
-    g.mirror([(24.5, 2.0), (26.6, 2.0), (26.6, 6.2), (24.5, 6.2)], 0.95, 1.25, 'shell')
-    g.extrude([(25.3, 2.6), (25.7, 2.6), (25.7, 5.6), (25.3, 5.6)], -0.95, 0.95, 'glow')
+    g = Gun((-14, -4.2, 26.5, 10.2))
+    g.extrude([(-9, 6.0), (-7.6, 8.2), (12, 8.2), (17, 7.5), (26.5, 6.9), (24.5, 6.0)], -1.05, 1.05, 'shell')    # upper shell
+    g.mirror([(-6, 6.5), (16, 6.5), (16.6, 6.9), (-5.6, 6.9)], 1.05, 1.15, 'alloy')                              # its dark inset line
+    g.extrude([(-6, 3.0), (-5, 5.4), (18, 5.4), (21, 4.4), (20, 2.6), (-4, 2.6)], -0.8, 0.8, 'alloy')            # the core
+    g.extrude([(-3, 5.55), (16, 5.55), (16, 5.85), (-3, 5.85)], -0.55, 0.55, 'glow')                             # light in the upper gap
+    g.extrude([(4, 1.0), (6, 2.0), (21, 2.0), (26, 1.7), (24, 1.0)], -0.95, 0.95, 'shell')                     # lower plate
+    g.extrude([(7, 2.15), (18, 2.15), (18, 2.45), (7, 2.45)], -0.5, 0.5, 'glow')                                 # light in the lower gap
+    g.mirror([(10, 1.35), (20, 1.35), (20, 1.6), (10, 1.6)], 0.95, 1.02, 'glow')                                  # the lower plate's side line
+    g.mirror([(0.2, 3.4), (1.2, 3.4), (1.6, 4.0), (1.2, 4.6), (0.2, 4.6), (-0.2, 4.0)], 0.8, 0.9, 'glow')         # the core's node
+    g.mirror([(-0.6, 3.1), (2.0, 3.1), (2.6, 4.0), (2.0, 4.9), (-0.6, 4.9), (-1.2, 4.0)], 0.8, 0.85, 'shell')      # its ring
+    g.extrude([(-5.2, 5.3), (-3.2, 5.3), (-3.6, 6.1), (-5.6, 6.1)], -0.6, 0.6, 'alloy')                          # struts: the shell's
+    g.extrude([(18.6, 1.9), (20.2, 1.9), (20.4, 2.7), (18.8, 2.7)], -0.6, 0.6, 'alloy')                          # and the lower plate's
+    # the open frame: the stock's top bar off the shell, the butt, the bar down to the grip, the grip, its guard
+    g.extrude([(-14, 6.2), (-13, 7.2), (-7.6, 7.2), (-8.4, 6.2)], -0.75, 0.75, 'alloy')
+    g.extrude([(-14, 6.2), (-12.9, 6.2), (-12.4, 1.2), (-13.6, 0.4)], -0.75, 0.75, 'alloy')
+    g.extrude([(-13.6, 0.4), (-12.4, 1.2), (-2.2, -2.4), (-2.8, -3.6)], -0.7, 0.7, 'alloy')
+    g.extrude([(-1.4, 2.7), (1.6, 2.7), (0.6, -3.6), (-2.8, -3.6)], -0.75, 0.75, 'alloy')
+    g.extrude([(1.0, -1.8), (5.0, 1.0), (5.0, 1.5), (0.6, -1.0)], -0.3, 0.3, 'alloy')
+    g.mirror([(-12.9, 4.6), (-12.6, 2.0), (-12.3, 2.0), (-12.6, 4.6)], 0.75, 0.82, 'glow')                      # a line down the butt
+    # the sight: a shard floating over the shell, its lens lit
+    g.extrude([(2, 8.8), (9, 8.8), (10.2, 9.6), (3.4, 10.2)], -0.5, 0.5, 'shell')
+    g.extrude([(9.2, 8.95), (9.8, 8.95), (10.0, 9.5), (9.5, 9.6)], -0.35, 0.35, 'glow')
     side_tris_fix(g)
     return g
 
@@ -160,12 +163,16 @@ def texture(g):
         for y in range(T, B):
             k = (y - T) / (B - T - 1)
             d.line([(L, y), (R - 1, y)], fill=tuple(int(m['top'][c] * (1 - k) + m['bottom'][c] * k) for c in range(3)))
-        # panel seams: straight, far apart, dark with a lit edge beside (Forerunner plating), one groove along
-        for x in range(L + 70, R, 96):
-            d.line([(x, T + 4), (x, B - 4)], fill=tuple(int(c * 0.55) for c in m['bottom']), width=2)
-            d.line([(x + 2, T + 4), (x + 2, B - 4)], fill=tuple(min(255, int(c * 1.15)) for c in m['top']), width=1)
-        y = T + (B - T) * 2 // 5
-        d.line([(L, y), (R, y)], fill=tuple(int(c * 0.7) for c in m['bottom']), width=1)
+        # grooves as the Forerunners cut them: long runs along the gun, stepping up or down at 45 degrees, dark with a
+        # lit edge above
+        rng2 = np.random.default_rng(11 if m is ALLOY else 13)
+        for k in range(5):
+            y = T + 18 + k * (B - T - 36) // 4; x = L + int(rng2.integers(0, 60)); pts = [(x, y)]
+            while x < R:
+                run = int(rng2.integers(50, 140)); x += run; pts.append((x, y))
+                step = int(rng2.choice([-1, 1])) * int(rng2.integers(6, 14)); y = int(np.clip(y + step, T + 8, B - 8)); x += abs(step); pts.append((x, y))
+            d.line(pts, fill=tuple(int(c * 0.55) for c in m['bottom']), width=2)
+            d.line([(px, py - 2) for px, py in pts], fill=tuple(min(255, int(c * 1.12)) for c in m['top']), width=1)
     for (mat, facing), y in STRIPS.items():
         m = ALLOY if mat == 'alloy' else SHELL
         k = {'up': 1.25, 'mid': 0.85, 'down': 0.5}[facing]

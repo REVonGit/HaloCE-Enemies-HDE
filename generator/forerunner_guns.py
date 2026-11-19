@@ -26,7 +26,9 @@ U = 0.01                          # profile units -> world units
 # the materials: their side colour (top and bottom of the panel's gradient) and their rim strips' rows
 ALLOY = dict(top=(70, 72, 78), bottom=(34, 35, 40))         # the core and frame: dark gunmetal
 SHELL = dict(top=(206, 208, 210), bottom=(140, 142, 146))   # the shells: pale silver-white plate
-GLOW = (255, 150, 40)
+# hard light, per gun: its colour and its hotter middle
+ORANGE = ((255, 150, 40), (255, 185, 80))
+BLUE = ((40, 110, 255), (90, 150, 255))      # (strong enough to stay blue in Doom's palette, where the Spartans' guns go)
 # texture layout (pixels): the side panels, the rim strips, the glow swatch
 ALLOY_PANEL = (0, 0, 512, 200)
 SHELL_PANEL = (0, 200, 512, 400)
@@ -154,7 +156,7 @@ def light_rifle():
     return g
 
 
-def texture(g):
+def texture(g, glow=ORANGE):
     """the gun's texture (see the module's note): its side panels painted as the gun's side, seams where its parts
     meet, wear on the edges"""
     rng = np.random.default_rng(7)
@@ -181,25 +183,100 @@ def texture(g):
         d.rectangle((0, y, TEX - 1, y + STRIP_H - 1), fill=col)
         d.line([(0, y + 1), (TEX - 1, y + 1)], fill=tuple(min(255, int(c * 1.25)) for c in col))       # (a lit bevel)
     L, T, R, B = GLOW_SWATCH
-    d.rectangle((L, T, R, B), fill=GLOW)
-    d.rectangle((L + 8, T + 2, R - 8, B - 2), fill=(255, 185, 80))       # (hotter at its middle, still orange)
+    d.rectangle((L, T, R, B), fill=glow[0])
+    d.rectangle((L + 8, T + 2, R - 8, B - 2), fill=glow[1])               # (hotter at its middle, still its colour)
     a = np.asarray(im, np.float32)
     grain = rng.normal(0, 4, a.shape[:2])[..., None]
     a[:400] = np.clip(a[:400] + grain[:400], 0, 255)
     return Image.fromarray(a.astype(np.uint8)).filter(ImageFilter.SMOOTH_MORE) if False else Image.fromarray(a.astype(np.uint8))
 
 
-GUNS = {'light_rifle': light_rifle}
+# ---------------------------------------------------------------- the Scattershot
+# a short heavy gun for close quarters: a thick pale shell over a dark core with hard light in the gap between, a tall
+# pale emitter block at the front (two slanted slits of light down each side, a lit face), a handguard under it, three
+# lit cells in the core's side, and the open frame shorter than the rifle's
+def scattershot():
+    g = Gun((-11, -4.4, 20, 9.6))
+    g.extrude([(-7, 6.0), (-5, 8.6), (8, 9.2), (15, 8.4), (17.5, 6.8), (16, 5.8), (4, 5.8)], -1.35, 1.35, 'shell')   # the shell
+    g.extrude([(-6, 2.4), (-6, 5.4), (14, 5.4), (17, 4.6), (17, 2.0), (2, 2.0)], -1.05, 1.05, 'alloy')              # the core
+    g.extrude([(-2, 5.45), (13, 5.45), (13, 5.75), (-2, 5.75)], -0.8, 0.8, 'glow')                                   # light in the gap
+    g.extrude([(-4.6, 5.3), (-3.0, 5.3), (-3.3, 6.1), (-4.9, 6.1)], -0.7, 0.7, 'alloy')                              # a strut
+    g.extrude([(15.4, 1.2), (19.0, 1.6), (19.6, 8.0), (16.4, 8.8), (15.8, 7.0)], -1.6, 1.6, 'shell')               # the emitter
+    for x in (16.4, 17.6):
+        g.mirror([(x, 2.4), (x + 0.6, 2.4), (x + 1.1, 7.4), (x + 0.5, 7.4)], 1.6, 1.68, 'glow')                   # its slits
+    g.extrude([(19.1, 2.2), (19.4, 2.2), (19.9, 7.4), (19.6, 7.4)], -1.2, 1.2, 'glow')                               # its face
+    g.extrude([(5, 0.6), (7, 1.9), (15, 1.9), (15.5, 0.4), (8, -0.6)], -1.2, 1.2, 'shell')                          # the handguard
+    for x in (3.0, 5.0, 7.0):
+        g.mirror([(x, 3.2), (x + 1.2, 3.2), (x + 1.2, 4.3), (x, 4.3)], 1.05, 1.13, 'glow')                          # the cells
+    g.extrude([(-11, 6.0), (-10, 7.0), (-5, 7.0), (-5.4, 6.0)], -0.75, 0.75, 'alloy')                              # the frame
+    g.extrude([(-11, 6.0), (-10, 6.0), (-9.6, 1.6), (-10.8, 1.0)], -0.75, 0.75, 'alloy')
+    g.extrude([(-10.8, 1.0), (-9.6, 1.6), (-2.2, -2.6), (-2.8, -3.8)], -0.7, 0.7, 'alloy')
+    g.extrude([(-1.4, 2.2), (1.6, 2.2), (0.6, -3.8), (-2.8, -3.8)], -0.75, 0.75, 'alloy')                          # the grip
+    g.extrude([(1.0, -2.0), (5.0, 0.6), (5.0, 1.1), (0.6, -1.2)], -0.3, 0.3, 'alloy')                              # its guard
+    side_tris_fix(g)
+    return g
+
+
+# ---------------------------------------------------------------- the Binary Rifle
+# a long sniper: a dark body, two long pale rails running out past it with an open gap between them and a line of hard
+# light along the gap, small brackets near the rails' tips holding a lit node between them, slashes of light down the
+# body's side, a long sight shard on one thin mount, and a long skeletal stock (a triangle of bars) with a line of light
+def binary_rifle():
+    g = Gun((-16, -4.4, 34, 10.2))
+    g.extrude([(-8, 2.6), (-7, 6.0), (10, 6.4), (13, 5.2), (13, 2.4), (2, 2.0)], -0.9, 0.9, 'alloy')               # the body
+    g.extrude([(6, 6.0), (8, 7.4), (26, 7.0), (34, 6.5), (31, 5.9), (14, 5.9)], -0.85, 0.85, 'shell')              # upper rail
+    g.extrude([(8, 2.2), (10, 3.4), (26, 3.2), (33, 2.7), (30, 2.1)], -0.85, 0.85, 'shell')                         # lower rail
+    g.extrude([(13, 4.5), (29, 4.5), (29, 4.8), (13, 4.8)], -0.35, 0.35, 'glow')                                   # the line in the gap
+    g.extrude([(26.5, 5.4), (28.0, 5.4), (28.0, 6.0), (26.5, 6.0)], -1.05, 1.05, 'alloy')                          # the tip brackets
+    g.extrude([(26.5, 3.3), (28.0, 3.3), (28.0, 3.9), (26.5, 3.9)], -1.05, 1.05, 'alloy')
+    g.extrude([(26.9, 4.0), (27.6, 4.0), (27.6, 5.3), (26.9, 5.3)], -0.6, 0.6, 'glow')                             # their node
+    for x in (-4.0, -2.2):
+        g.mirror([(x, 3.4), (x + 0.6, 3.4), (x + 1.6, 5.2), (x + 1.0, 5.2)], 0.9, 0.98, 'glow')                   # the slashes
+    g.extrude([(2.0, 6.2), (3.2, 6.2), (3.4, 8.1), (2.2, 8.1)], -0.4, 0.4, 'alloy')                                # the sight's mount
+    g.extrude([(-2, 8.0), (10, 8.0), (12, 9.0), (0, 9.6)], -0.6, 0.6, 'shell')                                     # the sight
+    g.extrude([(11.2, 8.3), (11.8, 8.3), (12.0, 8.9), (11.5, 9.0)], -0.45, 0.45, 'glow')                           # its lens
+    g.extrude([(-16, 5.6), (-15, 6.6), (-7, 6.2), (-7.4, 5.2)], -0.75, 0.75, 'alloy')                              # the stock
+    g.extrude([(-16, 5.6), (-15, 5.6), (-14.4, 0.6), (-15.6, 0.0)], -0.75, 0.75, 'alloy')
+    g.extrude([(-15.6, 0.0), (-14.4, 0.6), (-2.4, -2.6), (-3.0, -3.8)], -0.7, 0.7, 'alloy')
+    g.mirror([(-14, 5.6), (-8, 5.45), (-8, 5.75), (-14, 5.9)], 0.75, 0.82, 'glow')                                  # its line
+    g.extrude([(-1.4, 2.4), (1.6, 2.4), (0.6, -3.8), (-2.8, -3.8)], -0.75, 0.75, 'alloy')                          # the grip
+    g.extrude([(1.0, -2.0), (5.0, 0.8), (5.0, 1.3), (0.6, -1.2)], -0.3, 0.3, 'alloy')                              # its guard
+    side_tris_fix(g)
+    return g
+
+
+# ---------------------------------------------------------------- the Boltshot
+# a pistol: a pale top slab over a dark lower body with hard light in the gap, a lit chamber (an octagon of light) in
+# the body's side, a lit emitter at the front, and the grip an open loop of two bars
+def boltshot():
+    g = Gun((-5.2, -5.4, 11.8, 5.2))
+    g.extrude([(-4, 3.3), (-3, 4.8), (9, 4.8), (11.5, 3.9), (10, 3.3)], -0.9, 0.9, 'shell')                       # the top slab
+    g.extrude([(-3, 0.6), (-3, 3.0), (10, 3.0), (10.5, 1.6), (8, 0.6)], -0.8, 0.8, 'alloy')                       # the body
+    g.extrude([(0, 3.05), (8, 3.05), (8, 3.25), (0, 3.25)], -0.6, 0.6, 'glow')                                    # light in the gap
+    g.extrude([(-2.6, 2.9), (-1.4, 2.9), (-1.6, 3.4), (-2.8, 3.4)], -0.6, 0.6, 'alloy')                           # a strut
+    oct8 = [(4.3 + 0.85 * np.cos(np.radians(22.5 + 45 * k)), 1.8 + 0.85 * np.sin(np.radians(22.5 + 45 * k))) for k in range(8)]
+    g.mirror(oct8, 0.8, 0.88, 'glow')                                                                             # the chamber
+    g.extrude([(10.3, 1.0), (10.6, 1.0), (11.3, 3.6), (11.0, 3.6)], -0.6, 0.6, 'glow')                            # the emitter
+    g.extrude([(-0.4, 0.8), (1.2, 0.8), (-0.6, -4.6), (-2.0, -4.6)], -0.7, 0.7, 'alloy')                          # the grip's bars
+    g.extrude([(-3.0, 0.8), (-1.8, 0.8), (-3.4, -4.0), (-4.6, -4.0)], -0.7, 0.7, 'alloy')
+    g.extrude([(-4.6, -4.0), (-0.6, -4.6), (-0.8, -5.2), (-4.8, -4.6)], -0.7, 0.7, 'alloy')
+    g.extrude([(1.0, -1.8), (4.0, 0.6), (4.0, 1.0), (0.6, -1.0)], -0.3, 0.3, 'alloy')                             # the guard
+    side_tris_fix(g)
+    return g
+
+
+GUNS = {'light_rifle': (light_rifle, BLUE), 'scattershot': (scattershot, ORANGE), 'binary_rifle': (binary_rifle, ORANGE),
+        'boltshot': (boltshot, ORANGE)}
 CREDIT = 'an original Forerunner-style gun made for the pack (forerunner_guns.py)'
 
 
 def build(names=None):
-    for name, fn in GUNS.items():
+    for name, (fn, glow) in GUNS.items():
         if names and name not in names: continue
         g = fn(); wid = 'm_' + name
         d = f'{OUT}/weapons/{wid}'; os.makedirs(d, exist_ok=True)
         for f in os.listdir(d): os.remove(os.path.join(d, f))
-        mat = f'w_{wid}_0.png'; texture(g).save(f'{d}/{mat}')
+        mat = f'w_{wid}_0.png'; texture(g, glow).save(f'{d}/{mat}')
         pos = np.asarray(g.pos, float); n = len(pos)
         mesh = dict(material=mat, pos=pos, nrm=np.asarray(g.nrm, float), uv=np.asarray(g.uv, float), tris=np.arange(n).reshape(-1, 3))
         pickle.dump(dict(id=wid, tag=CREDIT, meshes=[mesh]), open(f'{d}/{wid}.pkl', 'wb'))

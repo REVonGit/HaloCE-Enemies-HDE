@@ -26,14 +26,14 @@ U = 0.01                          # profile units -> world units
 # the materials: their side colour (top and bottom of the panel's gradient) and their rim strips' rows
 ALLOY = dict(top=(82, 83, 86), bottom=(40, 41, 44))         # the core and frame: dark gunmetal
 SHELL = dict(top=(172, 174, 176), bottom=(112, 114, 118))   # the shells: grey plate (HDE's first-person guns' greys)
-# hard light, per gun, as HDE's first-person gun glows (sampled from its sprites): blue for the Light Rifle, violet for
-# the Scattershot and the Boltshot, teal for the Binary Rifle. The glowing faces are a mesh of their own on a texture of
+# hard light, per gun, as HDE's first-person gun glows (sampled from its sprites): blue for the Light Rifle and the Boltshot, violet for
+# the Scattershot, teal for the Binary Rifle. The glowing faces are a mesh of their own on a texture of
 # their own (w_m_<gun>_1.png), so the multiplayer pack can light them in this colour by a shader whatever Doom's palette
 # and the player's colour do to the texture (HDE-Maps' tools/ce_guns.py)
 LIGHT_RIFLE_LIGHT = (70, 160, 225)
 SCATTERSHOT_LIGHT = (200, 80, 230)
 BINARY_LIGHT = (85, 240, 215)
-BOLTSHOT_LIGHT = (205, 90, 225)
+BOLTSHOT_LIGHT = (90, 130, 220)
 # texture layout (pixels): the side panels, the rim strips, the glow swatch
 ALLOY_PANEL = (0, 0, 512, 200)
 SHELL_PANEL = (0, 200, 512, 400)

@@ -61,6 +61,9 @@ STATION = {'smg': 0.172, 'commando': 0.278, 'pump_shotgun': 0.263, 'bulldog': 0.
 LIFT = {'smg': 0.014, 'bulldog': 0.02}
 # guns carried by their handles, not cupped under a fore-end, whatever stance they are held in: left as they are
 SKIP = ('gpmg', 'flamethrower', 'fuel_rod', 'rocket_launcher')
+# guns a pack's bodies hold in one hand, whatever the stance's other hand does (the user's "covenant should still one
+# hand the smg": a Brute's SMG is left as its carbine stance has it, the left hand off the gun)
+ONE = {'HaloCE_Covenant': ('smg',)}
 HOLD = dict(x=(0.85, 0.25, -0.45), palm=(0.0, 0.0, -1.0))
 CURL = (0.58, 0.17)                     # where the grip sits in the hand's curl: along its fingers and off to its palm, of the hand's length
 PALM = 0.58                             # the palm's middle along the hand, of its length (Halo's left_hand marker)
@@ -200,7 +203,7 @@ def work(rig, classes, loads, log):
         if d == rig.cfg['dir']: pairs.add((stance_of(clip), clip, g))
     for g, clip in loads.get(rig.cfg['base'], {}).values(): pairs.add((stance_of(clip), clip, g))
     for st, clip, g in sorted(pairs):
-        if st not in refs or g in SKIP or clip not in rig.A or not rig.has(g) or not rig.has(refs[st]): continue
+        if st not in refs or g in SKIP or g in ONE.get(rig.cfg['pack'], ()) or clip not in rig.A or not rig.has(g) or not rig.has(refs[st]): continue
         h = rig.hand(clip); palm = h['wrist'] + h['f'] * rig.length * PALM
         ref = held(rig.L(rig.points(refs[st])), palm[0])
         if ref is None: log('%-14s %-10s the stance\'s hand is not on its own gun (%s): left' % (name, st, refs[st])); continue

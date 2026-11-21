@@ -1,0 +1,100 @@
+// ---- where the left hand holds each gun, and how it is turned to a fore-grip that hangs under its gun: the
+// enemy API's HCE_GripTick (enemies_base.zsc) looks these up. Written by generator/grip_ik.py (why, and how each
+// is measured); not for editing by hand: change its STATION, LIFT, HOLD or CURL and run it again.
+
+class HCE_GripTable_Covenant : HCE_GripReach
+{
+	// (the body an actor is: its place in this table)
+	override int Rig(Actor a)
+	{
+		if(a is "HCE_EliteSpecialBase") return 0;
+		if(a is "HCE_BruteBase") return 1;
+		return -1;
+	}
+	// (the gun it holds: a loadout's, or its class's own)
+	override Name Gun(Actor a, int rig, int lo)
+	{
+		if(lo >= 0)
+		{
+			switch(rig * 100 + lo)
+			{
+			case 2: return 'needle_rifle';
+			case 100: return 'ma37';
+			case 101: return 'beam_rifle';
+			case 102: return 'bulldog';
+			case 103: return 'double_barrel';
+			case 104: return 'flamethrower';
+			case 105: return 'fuel_rod';
+			case 106: return 'gpmg';
+			case 107: return 'grenade_launcher';
+			case 108: return 'hydra';
+			case 111: return 'rocket_launcher';
+			case 112: return 'smg';
+			}
+			return 'None';
+		}
+		if(rig == 0)
+		{
+			if(a is "HCE_EliteHonorGuardEnergySword") return 'needle_rifle';
+			if(a is "HCE_EliteHonorGuardPlasmaRifle") return 'needle_rifle';
+			if(a is "HCE_EliteSpecopsBeamRifle") return 'needle_rifle';
+			if(a is "HCE_EliteSpecopsNeedler") return 'needle_rifle';
+			if(a is "HCE_EliteSpecopsPlasmaCaster") return 'plasma_caster';
+			if(a is "HCE_EliteSpecopsPlasmaRifle") return 'needle_rifle';
+			if(a is "HCE_StealthEliteMajorEnergySword") return 'needle_rifle';
+			if(a is "HCE_StealthEliteMajorPlasmaRifle") return 'needle_rifle';
+			if(a is "HCE_StealthElitePlasmaRifle") return 'needle_rifle';
+		}
+		if(rig == 1)
+		{
+			if(a is "HCE_BruteCaptainBeamRifle") return 'beam_rifle';
+			if(a is "HCE_BruteCaptainPlasmaCaster") return 'plasma_caster';
+			if(a is "HCE_BruteCaptainPlasmaRifle") return 'beam_rifle';
+			if(a is "HCE_BruteCaptainShotgun") return 'beam_rifle';
+			if(a is "HCE_BruteChieftainGravityHammer") return 'beam_rifle';
+			if(a is "HCE_BruteHonorGuardAssaultRifle") return 'beam_rifle';
+			if(a is "HCE_BruteHonorGuardFuelRod") return 'fuel_rod';
+			if(a is "HCE_BruteHonorGuardPlasmaRifle") return 'beam_rifle';
+			if(a is "HCE_BruteJumpPackPlasmaRifle") return 'beam_rifle';
+			if(a is "HCE_BruteJumpPackSpiker") return 'beam_rifle';
+			if(a is "HCE_BruteMajorPlasmaCarbine") return 'plasma_carbine';
+			if(a is "HCE_BruteMajorShotgun") return 'beam_rifle';
+			if(a is "HCE_BruteMajorSpiker") return 'beam_rifle';
+			if(a is "HCE_BruteMinorAssaultRifle") return 'beam_rifle';
+			if(a is "HCE_BruteMinorPlasmaRifle") return 'beam_rifle';
+			if(a is "HCE_BruteStalkerSpiker") return 'beam_rifle';
+		}
+		return 'None';
+	}
+	// (for a body, a gun and a stance: its arm's bones, where the stance has the left wrist, how far the hand is
+	// moved, and where its bone's x and z face when it is turned upright)
+	override bool Find(int rig, Name gun, Name stance)
+	{
+		gripTurn = false;
+		switch(rig)
+		{
+		case 0: armU = 'bip01 l upperarm'; armF = 'bip01 l forearm'; armH = 'bip01 l hand'; handR = 'bip01 r hand'; break;
+		case 1: armU = 'l_upperarm'; armF = 'l_forearm'; armH = 'l_hand'; handR = 'r_hand'; break;
+		default: return false;
+		}
+		if(rig == 0 && stance == 'rifle')
+		{
+			gripRef = (-0.0388, -0.1257, 0.2617);
+			if(gun == 'plasma_caster') { gripMove = (0.0262, 0.0001, 0.0012); return true; }
+			return false;
+		}
+		if(rig == 1 && stance == 'carbine')
+		{
+			gripRef = (0.3746, -0.2876, 0.3364);
+			if(gun == 'beam_rifle') { gripMove = (0.0088, -0.0352, -0.0346); return true; }
+			if(gun == 'bulldog') { gripMove = (-0.0428, -0.0021, 0.0122); gripTurn = true; gripX = (0.8673, -0.4591, 0.1924); gripZ = (0.0178, -0.3576, -0.9337); return true; }
+			if(gun == 'double_barrel') { gripMove = (0.0160, 0.0200, 0.0250); return true; }
+			if(gun == 'grenade_launcher') { gripMove = (0.0085, 0.0117, 0.0111); return true; }
+			if(gun == 'hydra') { gripMove = (0.0168, 0.0213, 0.0258); return true; }
+			if(gun == 'ma37') { gripMove = (0.0114, 0.0139, 0.0185); return true; }
+			if(gun == 'smg') { gripMove = (-0.1294, 0.0509, 0.0441); gripTurn = true; gripX = (0.8673, -0.4591, 0.1924); gripZ = (0.0178, -0.3576, -0.9337); return true; }
+			return false;
+		}
+		return false;
+	}
+}

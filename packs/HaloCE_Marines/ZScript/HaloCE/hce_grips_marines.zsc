@@ -1,0 +1,252 @@
+// ---- where the left hand holds each gun, and how it is turned to a fore-grip that hangs under its gun: the
+// enemy API's HCE_GripTick (enemies_base.zsc) looks these up. Written by generator/grip_ik.py (why, and how each
+// is measured); not for editing by hand: change its STATION, LIFT, HOLD or CURL and run it again.
+
+class HCE_GripTable_Marines : HCE_GripReach
+{
+	// (the body an actor is: its place in this table)
+	override int Rig(Actor a)
+	{
+		if(a is "HCE_MarineBase") return 0;
+		if(a is "HCE_MarineArmoredBase") return 1;
+		if(a is "HCE_MarineODSTBase") return 2;
+		return -1;
+	}
+	// (the gun it holds: a loadout's, or its class's own)
+	override Name Gun(Actor a, int rig, int lo)
+	{
+		if(lo >= 0)
+		{
+			switch(rig * 100 + lo)
+			{
+			case 0: return 'ma37';
+			case 1: return 'battle_rifle';
+			case 2: return 'beam_rifle';
+			case 3: return 'bulldog';
+			case 4: return 'carbine';
+			case 5: return 'commando';
+			case 6: return 'double_barrel';
+			case 7: return 'dmr';
+			case 8: return 'flamethrower';
+			case 9: return 'fuel_rod';
+			case 10: return 'gpmg';
+			case 11: return 'grenade_launcher';
+			case 12: return 'hydra';
+			case 13: return 'ma5b';
+			case 14: return 'magnum';
+			case 15: return 'needler';
+			case 16: return 'needle_ballista';
+			case 17: return 'plasma_caster';
+			case 18: return 'plasma_pistol';
+			case 19: return 'plasma_rifle';
+			case 20: return 'pulse_carbine';
+			case 21: return 'rocket_launcher';
+			case 22: return 'smg';
+			case 23: return 'pump_shotgun';
+			case 24: return 'sidekick';
+			case 25: return 'sniper';
+			case 26: return 'spiker';
+			case 27: return 'sticky_detonator';
+			case 100: return 'ma37';
+			case 101: return 'battle_rifle';
+			case 102: return 'beam_rifle';
+			case 103: return 'bulldog';
+			case 104: return 'carbine';
+			case 105: return 'commando';
+			case 106: return 'double_barrel';
+			case 107: return 'dmr';
+			case 108: return 'flamethrower';
+			case 109: return 'fuel_rod';
+			case 110: return 'gpmg';
+			case 111: return 'grenade_launcher';
+			case 112: return 'hydra';
+			case 113: return 'ma5b';
+			case 114: return 'magnum';
+			case 115: return 'needler';
+			case 116: return 'needle_ballista';
+			case 117: return 'plasma_caster';
+			case 118: return 'plasma_pistol';
+			case 119: return 'plasma_rifle';
+			case 120: return 'pulse_carbine';
+			case 121: return 'rocket_launcher';
+			case 122: return 'smg';
+			case 123: return 'pump_shotgun';
+			case 124: return 'sidekick';
+			case 125: return 'sniper';
+			case 126: return 'spiker';
+			case 127: return 'sticky_detonator';
+			case 200: return 'ma37';
+			case 201: return 'battle_rifle';
+			case 202: return 'double_barrel';
+			case 203: return 'flamethrower';
+			case 204: return 'ma5b';
+			case 205: return 'rocket_launcher';
+			case 206: return 'pump_shotgun';
+			case 207: return 'sniper';
+			}
+			return 'None';
+		}
+		if(rig == 0)
+		{
+			if(a is "HCE_MarineAssaultRifle") return 'ma5b';
+			if(a is "HCE_MarineAssaultRifleMajor") return 'ma5b';
+			if(a is "HCE_MarineBattleRifle") return 'battle_rifle';
+			if(a is "HCE_MarineBulldog") return 'bulldog';
+			if(a is "HCE_MarineCommando") return 'commando';
+			if(a is "HCE_MarineDmr") return 'dmr';
+			if(a is "HCE_MarineDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineFieldMedicMagnum") return 'magnum';
+			if(a is "HCE_MarineFieldMedicSmg") return 'smg';
+			if(a is "HCE_MarineFlamethrower") return 'flamethrower';
+			if(a is "HCE_MarineGpmg") return 'gpmg';
+			if(a is "HCE_MarineGrenadeLauncher") return 'grenade_launcher';
+			if(a is "HCE_MarineHydra") return 'hydra';
+			if(a is "HCE_MarineMa37") return 'ma37';
+			if(a is "HCE_MarineMagnum") return 'magnum';
+			if(a is "HCE_MarineMedic") return 'sidekick';
+			if(a is "HCE_MarineMedicAssaultRifle") return 'ma5b';
+			if(a is "HCE_MarineMedicMa37") return 'ma37';
+			if(a is "HCE_MarineMedicMagnum") return 'magnum';
+			if(a is "HCE_MarineMedicShotgun") return 'pump_shotgun';
+			if(a is "HCE_MarineMedicSmg") return 'smg';
+			if(a is "HCE_MarineNeedler") return 'needler';
+			if(a is "HCE_MarinePilotMagnum") return 'magnum';
+			if(a is "HCE_MarinePilotSmg") return 'smg';
+			if(a is "HCE_MarinePlasmaRifle") return 'plasma_rifle';
+			if(a is "HCE_MarineRadioOperator") return 'ma5b';
+			if(a is "HCE_MarineRiflemanAssaultRifle") return 'ma5b';
+			if(a is "HCE_MarineRiflemanBattleRifle") return 'battle_rifle';
+			if(a is "HCE_MarineRiflemanShotgun") return 'pump_shotgun';
+			if(a is "HCE_MarineRocketLauncher") return 'rocket_launcher';
+			if(a is "HCE_MarineShotgun") return 'pump_shotgun';
+			if(a is "HCE_MarineSidekick") return 'sidekick';
+			if(a is "HCE_MarineSmg") return 'smg';
+			if(a is "HCE_MarineSniper") return 'sniper';
+			if(a is "HCE_MarineStickyDetonator") return 'sticky_detonator';
+		}
+		if(rig == 1)
+		{
+			if(a is "HCE_MarineArmoredAssaultRifle") return 'ma5b';
+			if(a is "HCE_MarineArmoredAssaultRifleMajor") return 'ma5b';
+			if(a is "HCE_MarineArmoredBattleRifle") return 'battle_rifle';
+			if(a is "HCE_MarineArmoredBulldog") return 'bulldog';
+			if(a is "HCE_MarineArmoredCommando") return 'commando';
+			if(a is "HCE_MarineArmoredDmr") return 'dmr';
+			if(a is "HCE_MarineArmoredDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineArmoredFlamethrower") return 'flamethrower';
+			if(a is "HCE_MarineArmoredGpmg") return 'gpmg';
+			if(a is "HCE_MarineArmoredGrenadeLauncher") return 'grenade_launcher';
+			if(a is "HCE_MarineArmoredHydra") return 'hydra';
+			if(a is "HCE_MarineArmoredMa37") return 'ma37';
+			if(a is "HCE_MarineArmoredMagnum") return 'magnum';
+			if(a is "HCE_MarineArmoredNeedler") return 'needler';
+			if(a is "HCE_MarineArmoredPlasmaRifle") return 'plasma_rifle';
+			if(a is "HCE_MarineArmoredPlasmaRifleMajor") return 'plasma_rifle';
+			if(a is "HCE_MarineArmoredRocketLauncher") return 'rocket_launcher';
+			if(a is "HCE_MarineArmoredShotgunMajor") return 'pump_shotgun';
+			if(a is "HCE_MarineArmoredSidekick") return 'sidekick';
+			if(a is "HCE_MarineArmoredSmg") return 'smg';
+			if(a is "HCE_MarineArmoredSniper") return 'sniper';
+			if(a is "HCE_MarineArmoredStickyDetonator") return 'sticky_detonator';
+		}
+		if(rig == 2)
+		{
+			if(a is "HCE_MarineOdstAssaultRifle") return 'ma5b';
+			if(a is "HCE_MarineOdstAssaultRifleMajor") return 'ma5b';
+			if(a is "HCE_MarineOdstClosedHelmet") return 'battle_rifle';
+			if(a is "HCE_MarineOdstEnclosedHelmet") return 'pump_shotgun';
+			if(a is "HCE_MarineOdstHalo2") return 'ma5b';
+			if(a is "HCE_MarineOdstHalo2BattleRifle") return 'battle_rifle';
+			if(a is "HCE_MarineOdstHalo2Ma37") return 'ma37';
+			if(a is "HCE_MarineOdstHalo2Shotgun") return 'pump_shotgun';
+			if(a is "HCE_MarineOdstHellbringer") return 'flamethrower';
+			if(a is "HCE_MarineOdstMa37") return 'ma37';
+			if(a is "HCE_MarineOdstRavenBlue") return 'ma5b';
+			if(a is "HCE_MarineOdstRavenBlueDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineOdstRavenGreen") return 'pump_shotgun';
+			if(a is "HCE_MarineOdstRavenGreenDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineOdstRavenOrange") return 'battle_rifle';
+			if(a is "HCE_MarineOdstRavenOrangeDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineOdstRavenPurple") return 'sniper';
+			if(a is "HCE_MarineOdstRavenPurpleDoubleBarrel") return 'double_barrel';
+			if(a is "HCE_MarineOdstRocketeer") return 'rocket_launcher';
+			if(a is "HCE_MarineOdstShotgun") return 'pump_shotgun';
+			if(a is "HCE_MarineOdstSniper") return 'sniper';
+		}
+		return 'None';
+	}
+	// (for a body, a gun and a stance: its arm's bones, where the stance has the left wrist, how far the hand is
+	// moved, and where its bone's x and z face when it is turned upright)
+	override bool Find(int rig, Name gun, Name stance)
+	{
+		gripTurn = false;
+		switch(rig)
+		{
+		case 0: armU = 'bip01 l upperarm'; armF = 'bip01 l forearm'; armH = 'bip01 l hand'; handR = 'bip01 r hand'; break;
+		case 1: armU = 'bip01 l upperarm'; armF = 'bip01 l forearm'; armH = 'bip01 l hand'; handR = 'bip01 r hand'; break;
+		case 2: armU = 'bip01 l upperarm'; armF = 'bip01 l forearm'; armH = 'bip01 l hand'; handR = 'bip01 r hand'; break;
+		default: return false;
+		}
+		if(rig == 0 && stance == 'h2bulldog')
+		{
+			gripRef = (-0.0378, -0.4504, 0.5183);
+			if(gun == 'bulldog') { gripMove = (0.0035, 0.0062, -0.0003); gripTurn = true; gripX = (0.0771, -0.9016, 0.4256); gripZ = (-0.8241, -0.2979, -0.4818); return true; }
+			return false;
+		}
+		if(rig == 0 && stance == 'h2smg')
+		{
+			gripRef = (-0.0056, -0.3571, 0.4956);
+			if(gun == 'smg') { gripMove = (-0.0091, 0.0151, -0.0003); gripTurn = true; gripX = (0.0771, -0.9016, 0.4256); gripZ = (-0.8241, -0.2979, -0.4818); return true; }
+			return false;
+		}
+		if(rig == 0 && stance == 'rifle')
+		{
+			gripRef = (-0.0280, -0.3826, 0.4984);
+			if(gun == 'beam_rifle') { gripMove = (-0.0704, -0.0591, 0.0086); return true; }
+			if(gun == 'carbine') { gripMove = (-0.0339, 0.0013, -0.0029); return true; }
+			if(gun == 'commando') { gripMove = (0.0125, -0.0655, 0.0165); return true; }
+			if(gun == 'double_barrel') { gripMove = (0.0112, -0.0006, 0.0004); return true; }
+			if(gun == 'hydra') { gripMove = (0.0198, -0.0010, 0.0005); return true; }
+			if(gun == 'needle_ballista') { gripMove = (-0.0416, 0.0016, -0.0037); return true; }
+			if(gun == 'pulse_carbine') { gripMove = (-0.0339, 0.0013, -0.0029); return true; }
+			if(gun == 'pump_shotgun') { gripMove = (0.0015, -0.0455, 0.0111); return true; }
+			if(gun == 'sniper') { gripMove = (-0.0014, -0.0392, 0.0099); return true; }
+			return false;
+		}
+		if(rig == 1 && stance == 'h2bulldog')
+		{
+			gripRef = (-0.0378, -0.4504, 0.5183);
+			if(gun == 'bulldog') { gripMove = (0.0034, 0.0066, -0.0009); gripTurn = true; gripX = (0.0837, -0.9063, 0.4142); gripZ = (-0.8251, -0.2961, -0.4813); return true; }
+			return false;
+		}
+		if(rig == 1 && stance == 'h2smg')
+		{
+			gripRef = (-0.0056, -0.3571, 0.4956);
+			if(gun == 'smg') { gripMove = (-0.0092, 0.0155, -0.0009); gripTurn = true; gripX = (0.0837, -0.9063, 0.4142); gripZ = (-0.8250, -0.2961, -0.4813); return true; }
+			return false;
+		}
+		if(rig == 1 && stance == 'rifle')
+		{
+			gripRef = (-0.0280, -0.3826, 0.4984);
+			if(gun == 'beam_rifle') { gripMove = (-0.0703, -0.0587, 0.0085); return true; }
+			if(gun == 'carbine') { gripMove = (-0.0338, 0.0013, -0.0029); return true; }
+			if(gun == 'commando') { gripMove = (0.0126, -0.0651, 0.0163); return true; }
+			if(gun == 'double_barrel') { gripMove = (0.0112, -0.0006, 0.0004); return true; }
+			if(gun == 'hydra') { gripMove = (0.0198, -0.0010, 0.0006); return true; }
+			if(gun == 'needle_ballista') { gripMove = (-0.0415, 0.0016, -0.0036); return true; }
+			if(gun == 'pulse_carbine') { gripMove = (-0.0338, 0.0013, -0.0029); return true; }
+			if(gun == 'pump_shotgun') { gripMove = (0.0015, -0.0450, 0.0109); return true; }
+			if(gun == 'sniper') { gripMove = (-0.0014, -0.0387, 0.0098); return true; }
+			return false;
+		}
+		if(rig == 2 && stance == 'rifle')
+		{
+			gripRef = (-0.0280, -0.3826, 0.4984);
+			if(gun == 'double_barrel') { gripMove = (0.0112, -0.0006, 0.0004); return true; }
+			if(gun == 'pump_shotgun') { gripMove = (0.0015, -0.0453, 0.0110); return true; }
+			if(gun == 'sniper') { gripMove = (-0.0014, -0.0390, 0.0099); return true; }
+			return false;
+		}
+		return false;
+	}
+}

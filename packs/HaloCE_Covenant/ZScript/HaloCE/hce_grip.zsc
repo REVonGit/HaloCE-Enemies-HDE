@@ -1,0 +1,124 @@
+// ---- the left arm's IK: the left hand put on its gun's fore-end (the enemy API's HCE_GripTick, enemies_base.zsc, says
+// when and for which gun; the packs' tables, hce_grips_<pack>.zsc, how far and how turned). Here, and not in the API's
+// file, as that is compiled in HDE's ZScript version, which has no way to a model's bones.
+//
+// Each tic the left wrist is put the table's move, as the right hand carries it, from where the clip has it, so the
+// hand stays on the gun through the stance's walk, crouch and shot: the arm is two bones to that point (the elbow where
+// the two lengths meet, on the side it was bent to), and the hand is kept turned as the clip has it, cupped up under
+// the gun, or turned upright to a fore-grip that hangs under it. Only while the hand is on the gun: the table has where
+// the stance holds the left wrist (off the right hand), and the move is weighed by how near the clip has it to there,
+// so a reload, a throw, a blow or a death that takes the hand away leaves it be, with no list of clips kept.
+
+class HCE_GripReach : HCE_GripTable
+{
+	override void Reach(HaloDoom_EnemyBase who, bool on)
+	{
+		Quat none = Quat.AxisAngle((0, 0, 1), 0);
+		if(!on)
+		{
+			who.hce_gripOn = false; who.hce_gripK = 0;
+			Set(who, armU, none, SB_CLEAR, 4.0); Set(who, armF, none, SB_CLEAR, 4.0); Set(who, armH, none, SB_CLEAR, 4.0);
+			return;
+		}
+		if(!who.hce_gripOn) { who.hce_gripOn = true; who.hce_gripK = 0; who.SetModelFlag(0, IQM_GET_BONE_INFO); }
+		// (the arm as the clip has it now, before it is reached anywhere)
+		Set(who, armU, none, SB_CLEAR, 0.0); Set(who, armF, none, SB_CLEAR, 0.0); Set(who, armH, none, SB_CLEAR, 0.0);
+		who.ForceRecalculateBones();
+		// (the right hand's bone as it is now carries the gun: what a unit of the model is in the map along and up,
+		// from three steps along its bind space's axes. Heights are put to the model's own before any angle is taken)
+		int rb = who.GetBoneIndex(handR); if(rb < 0) return;
+		Vector3 rj = who.GetBoneBasePosition(rb), p0, p1, p2, p3, x1, x2;
+		[p0, x1, x2] = who.TransformByBone(rb, rj, (1, 0, 0), (0, 0, 1), true);
+		[p1, x1, x2] = who.TransformByBone(rb, rj + (0.1, 0, 0), (1, 0, 0), (0, 0, 1), true);
+		[p2, x1, x2] = who.TransformByBone(rb, rj + (0, 0.1, 0), (1, 0, 0), (0, 0, 1), true);
+		[p3, x1, x2] = who.TransformByBone(rb, rj + (0, 0, 0.1), (1, 0, 0), (0, 0, 1), true);
+		p1 -= p0; p2 -= p0; p3 -= p0;
+		double uz = sqrt(p1.z * p1.z + p2.z * p2.z + p3.z * p3.z) * 10, unit = sqrt((p1.xy dot p1.xy + p2.xy dot p2.xy + p3.xy dot p3.xy) / 2) * 10;
+		if(uz < 0.01 || unit < 0.01) return;      // (no bone info yet: its first tic)
+		double k = unit / uz;
+		Vector3 S, sf, su, E, ef, eu, W, wf, wu;
+		[S, sf, su] = Bone(who, armU, k);
+		[E, ef, eu] = Bone(who, armF, k);
+		[W, wf, wu] = Bone(who, armH, k);
+		Vector3 u1 = E - S, u2 = W - E; double l1 = u1.Length(), l2 = u2.Length();
+		if(l1 < 0.01 || l2 < 0.01) return;
+		// (is the hand on the gun: how near the clip has its wrist to where the stance holds it. All of the move
+		// within 0.03 world units of there, none past 0.07; eased a quarter a tic)
+		[p1, x1, x2] = who.TransformByBone(rb, gripRef, (1, 0, 0), (0, 0, 1), true);
+		Vector3 off = (p1.xy - W.xy, p1.z * k - W.z);
+		double want = clamp(1 - (off.Length() / unit - 0.03) / 0.04, 0, 1);
+		who.hce_gripK = want > who.hce_gripK ? min(want, who.hce_gripK + 0.25) : max(want, who.hce_gripK - 0.25);
+		double wt = who.hce_gripK; if(wt <= 0) return;
+		// (the move, as the right hand has it now)
+		[p1, x1, x2] = who.TransformByBone(rb, rj + gripMove * wt, (1, 0, 0), (0, 0, 1), true);
+		Vector3 T = W + ((p1.xy - p0.xy), (p1.z - p0.z) * k);
+		Vector3 d = T - S; double dl = clamp(d.Length(), abs(l1 - l2) + 0.01 * unit, l1 + l2 - 0.005 * unit); Vector3 dir = d.Unit();
+		double along = (l1 * l1 - l2 * l2 + dl * dl) / (2 * dl), bend = sqrt(max(0, l1 * l1 - along * along));
+		Vector3 pole = u1 - dir * (u1 dot dir);
+		if(pole.Length() < 0.01) pole = (0, 0, -1) - dir * -dir.z;
+		pole = pole.Unit();
+		Vector3 E2 = S + dir * along + pole * bend, T2 = S + dir * dl;
+		Vector3 n1, n2; double a1, a2;
+		[n1, a1] = Arc(u1.Unit(), (E2 - S).Unit());
+		[n2, a2] = Arc(Turn(u2, n1, a1).Unit(), (T2 - E2).Unit());
+		Quat q1 = Quat.AxisAngle(Local(n1, sf, su), a1);
+		Quat q2 = Quat.AxisAngle(Local(Turn(n2, n1, -a1), ef, eu), a2);
+		// (the hand kept turned as the clip has it: the forearm's whole turn, taken back off the hand. Left to turn
+		// with the forearm, a hand moved far hung off its wrist below the gun)
+		Quat qw = Quat.AxisAngle(n2, a2) * Quat.AxisAngle(n1, a1);
+		double sg = qw.w < 0 ? -1 : 1;      // (the short way round)
+		Vector3 ax = (qw.x, qw.y, qw.z) * sg; double th = 2 * acos(clamp(qw.w * sg, -1, 1));
+		Quat q3 = (ax.Length() > 0.0001 && th > 0.01) ? Quat.AxisAngle(Local(ax.Unit(), wf, wu), -th) : none;
+		// (and turned upright to a fore-grip that hangs under the gun: its bone's x to where the table has it, as the
+		// right hand carries it now, then about that till its z is where the table has that)
+		if(gripTurn)
+		{
+			[p2, x1, x2] = who.TransformByBone(rb, rj + gripX * 0.1, (1, 0, 0), (0, 0, 1), true);
+			[p3, x1, x2] = who.TransformByBone(rb, rj + gripZ * 0.1, (1, 0, 0), (0, 0, 1), true);
+			Vector3 gx = ((p2.xy - p0.xy), (p2.z - p0.z) * k).Unit(), gz = ((p3.xy - p0.xy), (p3.z - p0.z) * k).Unit();
+			Vector3 na, nb; double aa, ab;
+			[na, aa] = Arc(wf, gx);
+			[nb, ab] = Arc(Turn(wu, na, aa).Unit(), gz);
+			q3 = q3 * Quat.AxisAngle(Local(na, wf, wu), aa * wt) * Quat.AxisAngle(Local(Turn(nb, na, -aa), wf, wu), ab * wt);
+		}
+		Set(who, armU, q1, SB_ADD, 0.0); Set(who, armF, q2, SB_ADD, 0.0); Set(who, armH, q3, SB_ADD, 0.0);
+	}
+	// (a bone's turn, the body's and its shell's: the shield flare and the camouflage are copies of the body in the
+	// same clip)
+	static void Set(HaloDoom_EnemyBase who, Name bone, Quat q, int mode, double tics)
+	{
+		who.SetNamedBoneRotation(bone, q, mode, tics);
+		if(who.hce_shellActor && who.hce_shellActor.bDECOUPLEDANIMATIONS) who.hce_shellActor.SetNamedBoneRotation(bone, q, mode, tics);
+	}
+	// a bone as the engine has it now: its place, its forward and its up, in the map (heights put to the model's own).
+	// (Its axes are taken from where points on them come to: the engine's own directions are not the bone's.)
+	static Vector3, Vector3, Vector3 Bone(Actor who, Name n, double k)
+	{
+		int b = who.GetBoneIndex(n); Quat qb = who.GetBoneBaseRotation(b); Vector3 j = who.GetBoneBasePosition(b);
+		Vector3 p, pf, pu, x1, x2;
+		[p, x1, x2] = who.TransformByBone(b, j, (1, 0, 0), (0, 0, 1), true);
+		[pf, x1, x2] = who.TransformByBone(b, j + qb * (1, 0, 0), (1, 0, 0), (0, 0, 1), true);
+		[pu, x1, x2] = who.TransformByBone(b, j + qb * (0, 0, 1), (1, 0, 0), (0, 0, 1), true);
+		p.z *= k; pf.z *= k; pu.z *= k;
+		return p, (pf - p).Unit(), (pu - p).Unit();
+	}
+	// the turn (its axis, its angle) that takes one direction to another the short way
+	static Vector3, double Arc(Vector3 a, Vector3 b)
+	{
+		Vector3 n = a cross b; double l = n.Length();
+		if(l < 0.00001) return (0, 0, 1), 0;
+		return n / l, atan2(l, a dot b);
+	}
+	// a vector turned about an axis
+	static Vector3 Turn(Vector3 v, Vector3 n, double ang)
+	{
+		double c = cos(ang), s = sin(ang);
+		return v * c + (n cross v) * s + n * ((n dot v) * (1 - c));
+	}
+	// a direction in a bone's own axes (its forward and its up, as the engine gives them)
+	static Vector3 Local(Vector3 n, Vector3 f, Vector3 u)
+	{
+		Vector3 l = (u cross f).Unit(); u = (f cross l).Unit();
+		return (n dot f, n dot l, n dot u);
+	}
+}

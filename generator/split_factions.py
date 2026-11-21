@@ -267,14 +267,14 @@ def main():
     # ---------------- core
     core = f'{OUTDIR}/core'
     os.makedirs(f'{core}/ZScript/HaloCE')
-    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_handler.zsc', 'hce_hde.zsc', 'hce_variants.zsc', 'hce_bestiary.zsc', 'hce_warm.zsc'):
+    for f in ('hce_projectiles.zsc', 'hce_explosives.zsc', 'hce_core.zsc', 'hce_grip.zsc', 'hce_handler.zsc', 'hce_hde.zsc', 'hce_variants.zsc', 'hce_bestiary.zsc', 'hce_warm.zsc'):
         shutil.copy(f'{PACK}/ZScript/HaloCE/{f}', f'{core}/ZScript/HaloCE/{f}')
     for f in ('cvarinfo.txt', 'sndinfo.hce'):
         shutil.copy(f'{PACK}/{f}', f'{core}/{f}')
     shutil.copytree(f'{PACK}/sprites', f'{core}/sprites', ignore=shutil.ignore_patterns('udb'))   # (the UDB icons: per faction, below)
     open(f'{core}/zscript.txt', 'w').write(VERSION + '\n// Halo CE enemies, core: shared projectiles and the Doom-monster replacement handler.\n'
         '// Needs HaloDoom_EnemyBase from HCE_EnemyAPI_LocalDEV.pk3 (loaded before this file); add any faction packs after it.\n'
-        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_warm.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
+        '#include "ZScript/HaloCE/hce_explosives.zsc"\n#include "ZScript/HaloCE/hce_core.zsc"\n#include "ZScript/HaloCE/hce_grip.zsc"\n#include "ZScript/HaloCE/hce_projectiles.zsc"\n#include "ZScript/HaloCE/hce_handler.zsc"\n#include "ZScript/HaloCE/hce_variants.zsc"\n#include "ZScript/HaloCE/hce_bestiary.zsc"\n#include "ZScript/HaloCE/hce_warm.zsc"\n#include "ZScript/HaloCE/hce_hde.zsc"\n')
     # the HCEVARS variant things (hce_variants.zsc): DoomEdNums 30900-30931
     open(f'{core}/mapinfo.txt', 'w').write('GameInfo\n{\n\tAddEventHandlers = "HCE_ReplaceHandler", "HCE_MissileTracker", "HCE_SpawnAllHandler", "HCE_SquadWheel", "HCE_Encounters", "HCE_WarmHandler"\n}\n\n'
         'DoomEdNums\n{\n' + ''.join(f'\t{30900 + n} = HCE_Variant{n}\n' for n in range(32)) + '}\n')

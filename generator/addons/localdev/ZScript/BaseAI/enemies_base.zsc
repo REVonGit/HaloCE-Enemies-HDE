@@ -173,6 +173,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			vel.xy = (0, 0); hce_shove = (0, 0);
 		}
 		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
+		if(hce_enabled && !hce_gripNone && !isFrozen()) HCE_GripTick();      // the left hand on its gun's fore-end
 		// infection forms pop the moment they touch what they're after: crawling, leaping or bumped into
 		if(hce_enabled && bHCE_Swarm && bHCE_Explodes && health > 0 && !hce_detonated && target && target.health > 0
 			&& HCE_TeamOf(target) != hce_team && Distance2D(target) <= radius + target.radius + 4
@@ -194,6 +195,52 @@ class HaloDoom_EnemyBase : Actor abstract
 		// Only use this when Chase3D is being used.
 		if(!keepChaseAngle)
 			curDesiredAngle = angle;
+	}
+
+	// ---- the left hand on its gun's fore-end. A body holds every long gun it is given in the few stances it has, its
+	// left hand where that stance's own gun has its fore-end (Halo CE's rifle stance: the CE assault rifle's); on
+	// another gun (a Marine's Commando, shotgun or sniper rifle, a gun picked up, a Brute's human guns) it held the
+	// air, or the gun's inside. A pack's table (HCE_GripTable, below; generator/grip_ik.py measures every gun and
+	// writes it) says, for this body, its gun and the stance its clip is of, how far the hand is to be moved from
+	// where the stance has it, in the right hand's frame; and for a fore-grip that hangs under its gun (the SMG's, the
+	// Bulldog's) how the hand is turned upright to it. Here: which table, which gun, which stance, and whether the
+	// hand is moved at all; the table's Reach then puts the arm there (the left arm's IK: hce_grip.zsc, in the
+	// packs' own ZScript version, as this file is compiled in HDE's, which has no way to a model's bones).
+	// Not past 2500 units from every player (it is not seen from there), nor with that arm shot off. A body with no
+	// table (the Flood, the Sentinels, the Covenant's own guns in their own stances) is found out once and left alone.
+	HCE_GripTable hce_gripTab; bool hce_gripNone, hce_gripHas, hce_gripOn;
+	int hce_gripRig, hce_gripLo; Name hce_gripGun, hce_gripClip; double hce_gripK;
+	void HCE_GripTick()
+	{
+		if(!bDECOUPLEDANIMATIONS) { hce_gripNone = true; return; }
+		if(!hce_gripTab)
+		{
+			for(int i = 0; i < AllClasses.Size() && !hce_gripTab; i++)
+			{
+				let c = (class<HCE_GripTable>)(AllClasses[i]); if(!c) continue;      // (the two it derives from know no body)
+				let t = HCE_GripTable(new(c)); int r = t.Rig(self);
+				if(r >= 0) { hce_gripTab = t; hce_gripRig = r; }
+			}
+			if(!hce_gripTab) { hce_gripNone = true; return; }
+			hce_gripLo = -2;
+		}
+		let tab = hce_gripTab;
+		int lo = hce_hasLoadout ? hce_loadout : -1;
+		if(lo != hce_gripLo) { hce_gripLo = lo; hce_gripGun = tab.Gun(self, hce_gripRig, lo); hce_gripClip = 'None'; hce_gripHas = false; }
+		if(hce_curAnim != hce_gripClip)
+		{
+			// (the stance a clip is of: its second word, 'stand rifle idle', 'crouch h2smg move-front')
+			hce_gripClip = hce_curAnim; hce_gripHas = false;
+			String s = hce_curAnim; int a = s.IndexOf(" "), b = a < 0 ? -1 : s.IndexOf(" ", a + 1);
+			if(a > 0 && b > a && hce_gripGun != 'None') { Name st = s.Mid(a + 1, b - a - 1); hce_gripHas = tab.Find(hce_gripRig, hce_gripGun, st); }
+		}
+		bool on = hce_gripHas && health > 0 && !hce_offArmLost && !bDORMANT;
+		if(on)
+		{
+			on = false;
+			for(int i = 0; i < MAXPLAYERS && !on; i++) if(playeringame[i] && players[i].mo && Distance2DSquared(players[i].mo) < 2500 * 2500) on = true;
+		}
+		if(on || hce_gripOn) tab.Reach(self, on);
 	}
 
 	// a shotgun shove: the body pushed back over a few tics (its own movement zeroes its velocity every step, so the
@@ -9191,4 +9238,21 @@ class HCE_DropTimer : Actor
 		if(left < 3 * TICRATE) item.bInvisible = (left / 4) & 1;
 	}
 	States { Spawn: TNT1 A -1; Stop; }
+}
+
+// ---- where the left hand holds each gun (HaloDoom_EnemyBase.HCE_GripTick). A pack that has bodies to hold guns by
+// has a class of this, written by generator/grip_ik.py from its models (hce_grips_<pack>.zsc): each enemy finds the one
+// that knows its body, and keeps one of its own to ask. The arm itself is put there by HCE_GripReach (hce_grip.zsc),
+// which the packs' tables derive from.
+class HCE_GripTable : Object play
+{
+	// (what Find leaves: the arm's bones and the right hand's; where the stance has the left wrist; how far the hand
+	// is moved; whether it is turned upright, and where its bone's x and z then face. The body's bind space, as the
+	// right hand carries it)
+	Name armU, armF, armH, handR;
+	Vector3 gripRef, gripMove, gripX, gripZ; bool gripTurn;
+	virtual int Rig(Actor a) { return -1; }                                  // the body an actor is: its place in the table, -1 none of this pack's
+	virtual Name Gun(Actor a, int rig, int lo) { return 'None'; }            // the gun it holds: loadout lo's (-1: its class's own)
+	virtual bool Find(int rig, Name gun, Name stance) { return false; }      // is the hand moved for this body, gun and stance: the above set
+	virtual void Reach(HaloDoom_EnemyBase e, bool on) {}                     // the arm put there (on), or let go (hce_grip.zsc)
 }

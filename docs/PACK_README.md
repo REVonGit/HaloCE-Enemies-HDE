@@ -538,6 +538,17 @@ Marines and the Covenant swap their gun for a better one they see lying nearby (
 * **What changes:** the gun on the model, its stance and animations, and its firing, sounds, range, magazine or heat are those of the pack's own class that carries that gun (for the Covenant guns, a Marine profile made for each).
 * Not picked up by the Covenant: the energy sword and the Plasma Caster (their classes are built around them), and any human gun except by the Brutes.
 
+## Left hand on the gun
+
+The Marines, the special Elites and the Brutes hold every long gun they carry or pick up in the few two-handed stances they have: Halo CE's rifle stance (made for the CE assault rifle), the special Elites' rifle stance (the needle rifle) and the Brutes' carbine stance (the plasma carbine). On any other gun the left hand used to sit where that stance's own gun has its fore-end: in the air under a short gun, inside a deep one. The left arm is now solved onto the gun each tic (two-bone inverse kinematics on the upper arm and forearm, `HCE_GripTick` in the enemy API, `hce_grip.zsc`):
+
+* **Fore-ends.** The hand is moved under the fore-end of the gun in hand, as far under it and off its middle as the stance has it on its own gun: the Commando's hand guard, the shotgun's pump, the sniper and beam rifles further out, the carbines, the Hydra, the double barrel, the Needle Ballista, the Plasma Caster, and the human guns a Brute picks up.
+* **Vertical grips.** A fore-grip that hangs under the gun (the SMG's, the Bulldog's) is held about its middle with the hand turned upright beside it, palm to the grip and thumb up, not cupped under it. This applies in Halo 2's SMG and Bulldog stances on the Marines and to a Brute carrying either.
+* **When it lets go.** The hand is moved only while the animation has it at the gun: a reload, a grenade throw, a hand signal, a melee or a death takes the hand off and the arm plays as animated, easing in and out over a few tics. A lost left arm, a dormant enemy and one with no player within 2500 units are left alone.
+* The guns that have a stance of their own (pistols, the fuel rod and rocket launcher on the shoulder, the GPMG and flamethrower) and the stances baked per gun (the battle rifle's, the plasma rifle's) keep their animated hand. The Flood and the Sentinels are not touched.
+
+The per-gun measurements are in `ZScript/HaloCE/hce_grips_covenant.zsc` and `hce_grips_marines.zsc`, written by `generator/grip_ik.py` from the gun models.
+
 ## Reloading and overheating
 
 Halo CE's AI never runs dry, but Halo 2's reloads and lets its plasma overheat, and so does everyone here with a gun (the Flood, Hunters and Sentinels excepted). It's worked out from the weapon, so a weapon swap (Johnson's Magnum) gets its own.

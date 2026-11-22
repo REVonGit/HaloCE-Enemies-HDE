@@ -204,7 +204,7 @@ class HCE_GripTable_Marines : HCE_GripReach
 			gripRef = (-0.0280, -0.3826, 0.4984);
 			if(gun == 'beam_rifle') { gripMove = (-0.0704, -0.0591, 0.0086); return true; }
 			if(gun == 'carbine') { gripMove = (-0.0339, 0.0013, -0.0029); return true; }
-			if(gun == 'commando') { gripMove = (0.0125, -0.0655, 0.0165); return true; }
+			if(gun == 'commando') { gripMove = (0.0103, -0.0235, 0.0064); return true; }
 			if(gun == 'double_barrel') { gripMove = (0.0112, -0.0006, 0.0004); return true; }
 			if(gun == 'hydra') { gripMove = (0.0198, -0.0010, 0.0005); return true; }
 			if(gun == 'needle_ballista') { gripMove = (-0.0416, 0.0016, -0.0037); return true; }
@@ -230,7 +230,7 @@ class HCE_GripTable_Marines : HCE_GripReach
 			gripRef = (-0.0280, -0.3826, 0.4984);
 			if(gun == 'beam_rifle') { gripMove = (-0.0703, -0.0587, 0.0085); return true; }
 			if(gun == 'carbine') { gripMove = (-0.0338, 0.0013, -0.0029); return true; }
-			if(gun == 'commando') { gripMove = (0.0126, -0.0651, 0.0163); return true; }
+			if(gun == 'commando') { gripMove = (0.0104, -0.0231, 0.0062); return true; }
 			if(gun == 'double_barrel') { gripMove = (0.0112, -0.0006, 0.0004); return true; }
 			if(gun == 'hydra') { gripMove = (0.0198, -0.0010, 0.0006); return true; }
 			if(gun == 'needle_ballista') { gripMove = (-0.0415, 0.0016, -0.0036); return true; }

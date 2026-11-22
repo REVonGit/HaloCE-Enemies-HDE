@@ -54,7 +54,9 @@ REFS['MarineArmored'] = REFS['MarineODST'] = REFS['Marine']
 # how far ahead of its own back end a gun is held, world units, where that is not where the stance has the hand: the
 # SMG's and the Bulldog's fore-grips, the Commando's hand guard, the shotgun's pump, the plasma rifle's lower jaw, and
 # the long ones a little further out
-STATION = {'smg': 0.172, 'commando': 0.278, 'pump_shotgun': 0.263, 'bulldog': 0.269, 'sniper': 0.310, 'beam_rifle': 0.264,
+# (the Commando, HDE's Tactical Rifle: on the rear of its hand guard, just ahead of its magazine; 0.278, mid-guard, was
+# too far forward, the user's "the grip on the tactical rifle is too far forward, especially for marines")
+STATION = {'smg': 0.172, 'commando': 0.235, 'pump_shotgun': 0.263, 'bulldog': 0.269, 'sniper': 0.310, 'beam_rifle': 0.264,
            'binary_rifle': 0.301, 'plasma_rifle': 0.155, 'light_rifle': 0.281}
 # a fore-grip that hangs under the gun is held about its middle (how far up from its foot that is), the hand turned
 # upright to it: its fingers' line and its palm's face then, in the gun's frame (ahead, up, left)

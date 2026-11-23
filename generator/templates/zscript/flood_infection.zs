@@ -28,7 +28,7 @@
 	// Brute or Dr'aeth with a Flood form of its own (the Brutes only with the Digsite add-on's Flood Brute loaded)
 	bool HCE_CanInfect(HaloDoom_EnemyBase c)
 	{
-		if(c.hce_team == HCE_TEAM_FLOOD) return c.bHCE_Resurrects && c.hce_reviveTics <= 0;
+		if(c.hce_team == HCE_TEAM_FLOOD) return c.bHCE_Resurrects && c.hce_reviveTics <= 0 && !c.hce_deadForGood;
 		if(c.bHCE_Resurrects) return false;
 		String cn = c.GetClassName();
 		if(cn.IndexOf("Draeth") >= 0) return c.hce_team == HCE_TEAM_COVENANT;

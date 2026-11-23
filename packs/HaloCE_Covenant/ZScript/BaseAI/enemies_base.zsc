@@ -173,6 +173,7 @@ class HaloDoom_EnemyBase : Actor abstract
 			vel.xy = (0, 0); hce_shove = (0, 0);
 		}
 		if(hce_enabled && hce_stickies.Size() > 0) HCE_StickyTick();
+		if(hce_apartTics > 0) { if(health > 0) HCE_ApartTick(); else hce_apartTics = 0; }
 		if(hce_enabled && !hce_gripNone && !isFrozen()) HCE_GripTick();      // the left hand on its gun's fore-end
 		// infection forms pop the moment they touch what they're after: crawling, leaping or bumped into
 		if(hce_enabled && bHCE_Swarm && bHCE_Explodes && health > 0 && !hce_detonated && target && target.health > 0
@@ -302,6 +303,13 @@ class HaloDoom_EnemyBase : Actor abstract
 	{
 		if(inflictor && mod == 'Explosive' && dmg >= 40 && health > 0) HCE_SuperCombineSound(inflictor);
 		hce_shieldTook = 0;
+		// a Flood form's body shot again and again (by a player, or a Marine or Elite making sure of it), falling or
+		// down: it stays down, it doesn't get up from its feint and no infection form raises it
+		if(hce_enabled && health <= 0 && dmg > 0 && bHCE_Resurrects && !hce_gibbed && !bInvisible && ++hce_corpseHits >= HCE_CORPSE_HITS && !hce_deadForGood)
+		{
+			hce_deadForGood = true;
+			HCE_FeignOver();
+		}
 		if(hce_enabled && health <= 0 && hce_corpseInit)
 		{
 			if(HCE_IsBurn(mod) && !default.bNOBLOOD) { hce_burnHit = true; bNOBLOOD = true; }   // till its next tic
@@ -5988,6 +5996,58 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	bool hce_detonated;
 	virtual void HCE_OnDetonate() {}
+	// Sends n infection forms (class ic) out of a bursting body (a carrier, a Flood Grunt): spread round it in a ring
+	// past its own edge, each where it fits (nearer in when a wall's in the way), thrown outward at up to speed. Bunched
+	// on one spot, solid bodies lock together and none of them can move: one that finds no room of its own is left
+	// passing through the others until it has come clear of them (HCE_ApartTick)
+	void HCE_ReleaseForms(class<Actor> ic, int n, double speed)
+	{
+		double a0 = frandom(0, 360);
+		for(int i = 0; i < n; i++)
+		{
+			double a = a0 + i * 360.0 / n + frandom(-12, 12);
+			vector2 dir = Actor.AngleToVector(a);
+			let f = Spawn(ic, pos + (0, 0, height * 0.4), ALLOW_REPLACE);
+			if(!f) continue;
+			double lift = min(height * 0.4, max(0, ceilingz - pos.z - f.height - 1));
+			bool fits = false;
+			for(double r = radius + f.radius + 6; r >= 0 && !fits; r -= 6)
+			{
+				f.SetOrigin(level.Vec3Offset(pos, (dir * r, lift)), false);
+				fits = f.TestMobjLocation();
+			}
+			if(!fits)
+			{
+				f.SetOrigin(level.Vec3Offset(pos, (dir * radius * 0.5, lift)), false);
+				let e = HaloDoom_EnemyBase(f);
+				if(e) { e.bSOLID = false; e.hce_apartTics = 70; }
+			}
+			f.vel = (dir * frandom(speed * 0.5, speed), frandom(3, 6));
+			f.angle = a;
+			f.target = target;
+			f.SetStateLabel("See");
+		}
+	}
+	int hce_apartTics;
+	// solid again once nothing solid overlaps it any more (or the time's up)
+	void HCE_ApartTick()
+	{
+		bool clear = --hce_apartTics <= 0;
+		if(!clear)
+		{
+			clear = true;
+			let it = BlockThingsIterator.Create(self, radius + 64);
+			while(clear && it.Next())
+			{
+				let o = it.thing;
+				if(o == self || !o.bSOLID) continue;
+				double r = radius + o.radius;
+				vector2 d = level.Vec2Diff(pos.xy, o.pos.xy);
+				if(abs(d.x) < r && abs(d.y) < r && pos.z < o.pos.z + o.height && o.pos.z < pos.z + height) clear = false;
+			}
+		}
+		if(clear) { hce_apartTics = 0; bSOLID = default.bSOLID; }
+	}
 	// the pop's damage and radius (a carrier's is a frag grenade's: HCE_FloodCarrierBase)
 	virtual int, double HCE_BlastPower() { return int(max(10, hce_meleeDamage)), radius * 3 + 32; }
 	// killed by a blast or by fire: a plasma grenade, the Plasma Caster, a rocket, the Hydra, the flamethrower, any
@@ -7750,6 +7810,8 @@ class HaloDoom_EnemyBase : Actor abstract
 	// blasts tear it apart, and grenades can take a limb (HCE_WeaponKind, as for the living).
 	bool hce_corpseInit;
 	double hce_corpseDmg;
+	int hce_corpseHits;
+	const HCE_CORPSE_HITS = 4;          // shots into a Flood form's body that keep it down for good (DamageMobj)
 	// Makes a fresh corpse shootable but not solid, not auto-aimed and not a monster (HDE's reticle), and shrinks its box
 	// to 30% height (min 12).
 	void HCE_SetUpCorpse()
@@ -7911,14 +7973,14 @@ class HaloDoom_EnemyBase : Actor abstract
 	// on, goes straight to fighting and plays the directional resurrect animation.
 	void HCE_Revive()
 	{
-		if(!bHCE_Resurrects || !bCORPSE || hce_derezSlot > 0) return;
+		if(!bHCE_Resurrects || !bCORPSE || hce_derezSlot > 0 || hce_deadForGood) return;
 		// not RaiseActor: it refuses a corpse whose state isn't a -1 tic frame, and the corpse ticks every tic (Dead:
 		// HCE_CorpseTick); flagging that state CanRaise would let Doom's Arch-viles raise every body too
 		let rs = FindState("Raise");
 		if(!rs) return;
 		Revive();
 		SetState(rs);
-		hce_resurrected = true;
+		hce_resurrected = true; hce_corpseHits = 0;
 		hce_corpseInit = false; bNOTAUTOAIMED = default.bNOTAUTOAIMED; bISMONSTER = default.bISMONSTER;
 		// its box back to standing height (Revive restores the flags, not the size: the body's was cut to 30%, and
 		// shots went over the risen form)

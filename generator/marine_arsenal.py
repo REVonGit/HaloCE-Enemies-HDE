@@ -7,8 +7,9 @@ Sources: Halo CE (out/weapons from extract_weapons.py), Halo 2 (01b_spacestation
 prototypes (github.com/digsite/h1, JMS + TIFF) and MCC Workshop campaigns ('pc': a weapon tag in a PC/MCC cache file; the
 double barrel is SOI's 8-gauge shotgun from SOI's Singleplayer Adventure V3, HCE_SOI_C20). The Bulldog is HaloDoom Evolved's own model (Bulldog_HDE.blend: Halo
 Infinite's) reinterpreted as a Halo CE gun by bulldog_ce.py, the grenade launcher HDE's own (GL_HDE.blend1) by gl_ce.py,
-the Hydra HDE's own (Hydra_HDE.blend) by hydra_ce.py, and the Commando Shigure's DMR-style model
-(Raw Assets/dmr_commando.zip) by commando_dmr.py.
+the Hydra HDE's own (Hydra_HDE.blend) by hydra_ce.py, the Commando Shigure's DMR-style model
+(Raw Assets/dmr_commando.zip) by commando_dmr.py, and the DMR a re-model of the E3 2000 assault rifle on the MA5B's
+texture (Raw Assets/halo-pre-xbox-assault-rifle-re-model.zip) by dmr_e3_remodel.py.
 
     python3 marine_arsenal.py [name ...]   # build the weapon pkls (ARSENAL; names limit it)
     python3 marine_arsenal.py overlays     # then: the per-Marine (and per-Brute) overlay IQMs, out/models/<Char>/
@@ -49,7 +50,7 @@ ARSENAL = {
     'rocket_launcher':  ('h2', ('08a', r'objects\weapons\support_high\rocket_launcher\rocket_launcher')),
     'double_barrel':    ('pc', ('soi', r'soi\weapons\shotgun\shotgun')),    # SOI's 8-gauge shotgun (SOI's Singleplayer Adventure)
     'commando':         ('supplied', 'commando_dmr'),   # Shigure's DMR-style Commando (commando_dmr.py)
-    'dmr':              ('dig', ('weapons/assault_rifle/99_e3/models/h assault rifle.JMS', SH + '99_e3/bitmaps/h small arms AR HG')),
+    'dmr':              ('supplied', 'dmr_e3_remodel'),   # the E3 2000 rifle re-made, on the MA5B's texture (dmr_e3_remodel.py)
     'ma37':             ('shigure_ma37', None),   # Shigure's MA37 (Raw Assets/ma37.zip, ma37_shigure.py)
     'sidekick':         ('dig', ('weapons/pistol/00_mac/models/h_pistol.JMS', SH + '00_mac/bitmaps/h small arms ARGL HG')),
     'bulldog':          ('ce_bulldog', None),     # HDE's own Bulldog, reinterpreted as a Halo CE gun (bulldog_ce.py)
@@ -464,7 +465,7 @@ def main(only=None):
             import ma37_shigure; ma37_shigure.build()
         elif kind == 'hde_ce':                  # hde_ce.py: hydra_ce
             __import__(src).build()
-        elif kind == 'supplied':                # commando_dmr
+        elif kind == 'supplied':                # commando_dmr, dmr_e3_remodel
             __import__(src).build()
         elif name in FIX:                       # a CE weapon needing a fix-up gets its own copy
             import shutil

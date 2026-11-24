@@ -184,7 +184,7 @@ Every human weapon in HaloDoom Evolved has a Marine who carries it, built from t
 | `AssaultRifle` (unchanged) | Halo CE's assault rifle | MA5B rounds | `Halo_MA5B` |
 | `Commando` | Shigure's DMR-style Commando model and textures (`Raw Assets/dmr_commando.zip`, `commando_dmr.py`): long barrel, scope with an amber lens, blue ammo counter, its PBR textures baked into one Halo CE-style texture | HDE Commando rounds (14), short bursts | `Halo_Commando` |
 | `BattleRifle` | Halo 2's battle rifle | three-round bursts (12 a round) | `Halo_BattleRifle` |
-| `Dmr` | the E3 1999 assault rifle (Digsite) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
+| `Dmr` | a re-model of the pre-Xbox (E3 1999) assault rifle, on the MA5B's texture (`Raw Assets/halo-pre-xbox-assault-rifle-re-model.zip`, `dmr_e3_remodel.py`; it was the Digsite rifle itself) | HDE DMR rounds (24), paced single shots | `Halo_DMR` |
 | `Smg` | Halo 2's SMG | HDE SMG rounds (6), long bursts | `Halo_SMG` |
 | `Shotgun` (unchanged) | Halo CE's shotgun | Halo CE pellets | `Halo_Shotgun` |
 | `Bulldog` | HaloDoom Evolved's own Bulldog, reinterpreted as a Halo CE gun: its drum-fed shape cut to a CE polygon budget (1,230 triangles) with one 512x512 CE-style painted texture baked from it (gunmetal receiver, olive-drab stock, drum and fore-end, black rubber grips, painted edge wear) | 8 pellets a shot, two to four shots | `Halo_Bulldog` |
@@ -1474,10 +1474,11 @@ The models, textures and animations are extracted from Halo CE (and Halo 2 / SPV
 * **Halo 2 Jackal armour and helmets:** IanLacksMods' Halo 2 Characters+ Tag Pack (the Jackal's arm armour and quills, Halo CE's helmet on it, Halo 3's sniper helmet with its glowing lenses).
 * **Flood:** the Flood Grunt's model, skins and animations, and the armed Flood Grunts, are from Sabopool's Halo CE Overhaul 2.0 (MCC Steam Workshop 3735328357, its c40 map); the bursting Flood Grunt's AI and sounds are Tropical Thunder 98's, from the XAM Campaign Overhaul (SPV3's c40 map).
 * **Marine riflemen, the MA37 and the Commando:** Shigure.
+* **The DMR:** the "Halo pre-Xbox assault rifle re-model" (supplied as an OBJ), textured with Halo CE's assault rifle texture.
 * **Needle rifle** (the Needle Javelin the Elites and Halo 2 Jackals carry): needle rifle model supplied by the pack's author (REVonGit).
 * **Engineer:** from Halo CE Ruby's Rebalance.
 * **Ruby's Rebalance Flood:** the Flood ODSTs, Marines, Armored Marines, shielded Flood Elites, Flood Elite Ultra and Flood Elite Commander are by mynameislol, from Ruby's Rebalance (its c40 map).
-* **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick and DMR, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
+* **Digsite:** the Drinol, the Slug Men (models, animations, textures, AI stats, the Slug Man's dialogue) and their Particle Beam Rifle, and the prototype guns (the Sidekick, and Sergeant Johnson's Stanchion, from the Macworld and E3 1999-2000 builds) come from the Halo CE Digsite release ([github.com/digsite/h1](https://github.com/digsite/h1)), licensed only for use in MCC mod projects.
 * **Covenant carbine:** CMT's (the Elites' carbine, and its blue re-tint on the Pulse Carbine Elites).
 * **Blind Wolf:** created by SOI_7 (from SPV3's a30 map).
 * **Marine kit:** the extra Marine accessories and permutations are Elefant's (unevenelefant5).

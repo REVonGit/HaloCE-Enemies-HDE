@@ -11336,6 +11336,7 @@ class HCE_FloodJackal : HCE_FloodJackalBase
 
 	//$Category "Halo CE/Flood/Flood Jackal"
 	//$Title "Flood Jackal"
+	//$Sprite "HU8KA0"
 	Default
 	{
 		Health 45;
@@ -11427,6 +11428,7 @@ class HCE_RandomFloodJackal : RandomSpawner
 {
 	//$Category "Halo CE/Flood/Flood Jackal"
 	//$Title "Random Flood Jackal"
+	//$Sprite "HU8KA0"
 	Default
 	{
 		DropItem "HCE_FloodJackal", 255, 1;
@@ -11506,6 +11508,7 @@ class HCE_FloodBlindWolf : HCE_FloodBlindWolfBase
 
 	//$Category "Halo CE/Flood/Flood Wolf"
 	//$Title "Flood Wolf"
+	//$Sprite "HU8LA0"
 	Default
 	{
 		Health 130;
@@ -11658,6 +11661,7 @@ class HCE_RandomFloodBlindWolf : RandomSpawner
 {
 	//$Category "Halo CE/Flood/Flood Wolf"
 	//$Title "Random Flood Wolf"
+	//$Sprite "HU8LA0"
 	Default
 	{
 		DropItem "HCE_FloodBlindWolf", 255, 1;

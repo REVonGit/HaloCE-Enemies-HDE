@@ -581,3 +581,33 @@ class HCE_RadarBlip : Actor
 		target = master.target ? null : master;      // shown only while he isn't
 	}
 }
+
+// ---------------------------------------------------------------------------
+// The way in to a carried enemy (enemies_base.zsc: HCE_RideSeat, HCE_RideOut, HCE_RideEnd) for another mod, which knows
+// none of this pack's classes when it is compiled: a Service, found by name (ServiceIterator.Find("HCE_RideService")).
+// Every request's objectArg is the enemy; one that is no enemy of these packs answers "".
+//   GetString("seat")           seated in its carrier (which then keeps it where its seat is, each tic, facing as the seat
+//                         does, turned by the answer's first number: 0, or 90 for one that stands side on in a Spirit's
+//                         bay; its second: 1 if its model has Halo CE's own seat in that bay, 0 if it only stands there)
+//   GetString("out")            on its way out: "tics x y z": how long its way out plays, and where that leaves it from
+//                         its seat as it faces (forward, left, up: map units, at its own size); "0 0 0 0": it has no
+//                         seat of its own and is to be let go at once
+//   GetString("end", "", fall)  on its own again; fall 1: let go in the air, airborne till it lands
+// ---------------------------------------------------------------------------
+class HCE_RideService : Service
+{
+	override String GetString(String request, String stringArg, int intArg, double doubleArg, Object objectArg, Name nameArg)
+	{
+		let e = HaloDoom_EnemyBase(objectArg); if(!e) return "";
+		if(request ~== "seat") { e.HCE_RideSeat(); return String.Format("%d %d", int(e.HCE_RideTurn()), e.HCE_HasSeat()); }
+		if(request ~== "out")
+		{
+			int t = e.HCE_RideOut(); if(t <= 0) return "0 0 0 0";
+			// (the model's 80 map units to Halo's world unit, 96 up, at the body's own scale)
+			vector3 x = e.HCE_RideExit();
+			return String.Format("%d %.2f %.2f %.2f", t, x.x * 80 * e.scale.x, x.y * 80 * e.scale.x, x.z * 96 * e.scale.y / 1.2);
+		}
+		if(request ~== "end") { e.HCE_RideEnd(intArg != 0); return "1"; }
+		return "";
+	}
+}

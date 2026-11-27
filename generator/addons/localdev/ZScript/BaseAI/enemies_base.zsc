@@ -1491,6 +1491,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_flailTics > 0 && health > 0) { HCE_FlailTick(); return; }
+		if(hce_ride && HCE_RideTick()) return;
 		if(HCE_DummyTick()) return;
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(hce_animLock > 0) { hce_animLock--; HCE_LockedTick(); return; }
@@ -1541,6 +1542,7 @@ class HaloDoom_EnemyBase : Actor abstract
 		if(health <= 0 && hce_corpseInit) { SetStateLabel('Dead'); return; }
 		if(hce_burnDying) { HCE_BurnPanicTick(); return; }
 		if(hce_flailTics > 0 && health > 0) { HCE_FlailTick(); return; }
+		if(hce_ride && HCE_RideTick()) return;
 		if(HCE_DummyTick()) return;
 		if(hce_bleedOut > 0 && HCE_BleedOutTick()) return;
 		if(health > 0) HCE_StepTick();
@@ -7948,6 +7950,91 @@ class HaloDoom_EnemyBase : Actor abstract
 	}
 	// the body's own model, for HCE_ShatterBody's pieces: its folder and file (a pack sets them on the class, as
 	// build_pack.py does for the Beetle: models/hce/<Character>/<Character>.iqm); 'None': no pieces, blood only
+	// ------------------------------------------------------------------
+	// Carried: a dropship's troop bay, a gravity lift (a map that flies the Covenant in: HDE-Maps' Firefight; another
+	// mod asks through hce_core.zsc's HCE_RideService). Held where its carrier puts it, its AI off:
+	//   HCE_RideSeat()      seated: no gravity, nothing hurts, hits or moves it but its carrier, which keeps it at its
+	//                       seat. A model with Halo CE's own seat in the Spirit's bay stands in it (cd-passenger idle:
+	//                       generator/dropship_anims.py); the rest stand as they stand.
+	//   HCE_RideOut()       out: one of Halo CE's two ways out plays (cd-passenger exit%0, %1), the body still at the
+	//                       seat while its model hops out and down; returns its tics (0: no seat of its own, let go at once)
+	//   HCE_RideExit()      where that leaves the body, from the seat as the body faces: forward, left, up (Halo world units)
+	//   HCE_RideTurn()      how far a model stands turned in its seat (the Hunter stands side on in the bay)
+	//   HCE_RideEnd(fall)   on its own again; fall: let go in the air, in its airborne pose till it lands (its landing)
+	// ------------------------------------------------------------------
+	int hce_ride, hce_rideWay;      // 0 not; 1 seated; 2 on its way out; 3 let go, falling
+	bool hce_rideSolid, hce_rideShoot, hce_rideGrav;
+	// (the body its model is: Halo CE's own four, by the class its kind is made from)
+	Name HCE_RideBody()
+	{
+		for(class<Object> c = GetClass(); c; c = c.GetParentClass())
+		{
+			Name n = c.GetClassName();
+			if(n == 'HCE_EliteBase' || n == 'HCE_EliteSpecialBase') return 'Elite';
+			if(n == 'HCE_GruntBase' || n == 'HCE_GruntSpecOpsBase') return 'Grunt';
+			if(n == 'HCE_JackalBase' || n == 'HCE_JackalMajorBase') return 'Jackal';
+			if(n == 'HCE_HunterBase') return 'Hunter';
+		}
+		return 'None';
+	}
+	bool HCE_HasSeat() { return HCE_RideBody() != 'None'; }
+	double HCE_RideTurn() { return HCE_RideBody() == 'Hunter' ? 90 : 0; }
+	void HCE_RideAnim(Name n, bool loop)
+	{
+		hce_applyFrame = 0; hce_animLock = 0;
+		HCE_ApplyAnim(n, 3, loop);
+		hce_curAnim = n; hce_curAnimKind = -1; hce_curLoop = loop; hce_animStartTic = level.maptime;
+	}
+	void HCE_RideSeat()
+	{
+		if(health <= 0) return;
+		if(!hce_ride) { hce_rideSolid = bSOLID; hce_rideShoot = bSHOOTABLE; hce_rideGrav = bNOGRAVITY; }
+		hce_ride = 1; bSOLID = false; bSHOOTABLE = false; bNOGRAVITY = true; vel = (0, 0, 0);
+		target = null; lastheard = null; hce_shotsLeft = 0; HCE_StopFireLoop();
+		if(HCE_HasSeat()) HCE_RideAnim('cd-passenger idle', true);
+		else HCE_Play(HCE_A_IDLE, true, true, 4, true);
+	}
+	int HCE_RideOut()
+	{
+		if(hce_ride != 1 || !HCE_HasSeat()) return 0;
+		hce_ride = 2; hce_rideWay = random[HCERide](0, 1);
+		HCE_RideAnim(hce_rideWay ? 'cd-passenger exit%1' : 'cd-passenger exit%0', false);
+		Name f = HCE_RideBody();
+		// (Halo CE's frames, at 30 a second)
+		int fr = f == 'Elite' ? (hce_rideWay ? 30 : 41) : f == 'Grunt' ? (hce_rideWay ? 44 : 30) : f == 'Hunter' ? (hce_rideWay ? 34 : 30) : (hce_rideWay ? 32 : 44);
+		return (fr - 1) * 35 / 30;
+	}
+	vector3 HCE_RideExit()
+	{
+		Name f = HCE_RideBody(); bool w = hce_rideWay != 0;
+		if(f == 'Elite') return w ? (1.37, -0.05, -1.22) : (1.42, -0.02, -1.29);
+		if(f == 'Grunt') return w ? (1.42, -0.01, -1.04) : (1.34, 0, -0.97);
+		if(f == 'Hunter') return w ? (0.07, -1.21, -1.31) : (-0.01, -1.20, -1.24);
+		return w ? (1.15, 0, -1.08) : (1.16, 0.06, -1.15);
+	}
+	void HCE_RideEnd(bool fall)
+	{
+		if(!hce_ride) return;
+		bSOLID = hce_rideSolid; bSHOOTABLE = hce_rideShoot; bNOGRAVITY = hce_rideGrav;
+		hce_ride = (fall && health > 0) ? 3 : 0;
+		hce_curAnimKind = -1;
+		if(hce_ride == 3)
+		{
+			int k = HCE_HasAnim(HCE_A_AIRBORNE) ? HCE_A_AIRBORNE : HCE_HasAnim(HCE_A_LEAP_AIR) ? HCE_A_LEAP_AIR : HCE_A_IDLE;
+			HCE_Play(k, true, true, 4, true);
+		}
+	}
+	// (a tic of it; false: over, its AI goes on)
+	bool HCE_RideTick()
+	{
+		if(health <= 0) { HCE_RideEnd(false); return false; }
+		if(hce_ride < 3) { vel = (0, 0, 0); return true; }
+		if(pos.z > floorz + 1 && waterlevel < 2 && !bNOGRAVITY) return true;
+		hce_ride = 0;
+		if(HCE_HasAnim(HCE_A_LAND)) HCE_PlayLocked(HCE_A_LAND, 0.5);
+		return false;
+	}
+
 	virtual String HCE_ModelPath() { return ""; }
 	virtual Name HCE_ModelFile() { return 'None'; }
 

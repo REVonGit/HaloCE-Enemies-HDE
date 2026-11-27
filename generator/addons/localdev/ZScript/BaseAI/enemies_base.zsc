@@ -7961,8 +7961,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	//   HCE_RideExit()      where that leaves the body, from the seat as the body faces: forward, left, up (Halo world units)
 	//   HCE_RideTurn()      how far a model stands turned in its seat (the Hunter stands side on in the bay)
 	//   HCE_RideEnd(fall)   on its own again; fall: let go in the air, in its airborne pose till it lands (its landing)
+	// A seat is named: none, Halo CE's seat in the Spirit's bay (the Covenant's four bodies); 'p-riderlf', 'lm', 'rf',
+	// 'rm': Halo CE's Marines' seats on the Pelican's benches (p-rider<seat> idle and exit: sat with the rifle across
+	// the knees, then up and to the bay's door), for the Marines' three bodies.
 	// ------------------------------------------------------------------
 	int hce_ride, hce_rideWay;      // 0 not; 1 seated; 2 on its way out; 3 let go, falling
+	String hce_rideBench;            // (the seat it has: '' the Spirit's, or a Pelican bench's)
 	bool hce_rideSolid, hce_rideShoot, hce_rideGrav;
 	// (the body its model is: Halo CE's own four, by the class its kind is made from)
 	Name HCE_RideBody()
@@ -7974,10 +7978,17 @@ class HaloDoom_EnemyBase : Actor abstract
 			if(n == 'HCE_GruntBase' || n == 'HCE_GruntSpecOpsBase') return 'Grunt';
 			if(n == 'HCE_JackalBase' || n == 'HCE_JackalMajorBase') return 'Jackal';
 			if(n == 'HCE_HunterBase') return 'Hunter';
+			if(n == 'HCE_MarineBase') return 'Marine';
 		}
 		return 'None';
 	}
-	bool HCE_HasSeat() { return HCE_RideBody() != 'None'; }
+	bool HCE_HasSeat(String seat = "-")
+	{
+		if(seat == "-") seat = hce_rideBench;
+		Name f = HCE_RideBody();
+		if(f == 'Marine') return seat == "p-riderlf" || seat == "p-riderlm" || seat == "p-riderrf" || seat == "p-riderrm";
+		return f != 'None' && seat == "";
+	}
 	double HCE_RideTurn() { return HCE_RideBody() == 'Hunter' ? 90 : 0; }
 	void HCE_RideAnim(Name n, bool loop)
 	{
@@ -7985,19 +7996,27 @@ class HaloDoom_EnemyBase : Actor abstract
 		HCE_ApplyAnim(n, 3, loop);
 		hce_curAnim = n; hce_curAnimKind = -1; hce_curLoop = loop; hce_animStartTic = level.maptime;
 	}
-	void HCE_RideSeat()
+	void HCE_RideSeat(String seat = "")
 	{
 		if(health <= 0) return;
+		hce_rideBench = seat.MakeLower();
 		if(!hce_ride) { hce_rideSolid = bSOLID; hce_rideShoot = bSHOOTABLE; hce_rideGrav = bNOGRAVITY; }
 		hce_ride = 1; bSOLID = false; bSHOOTABLE = false; bNOGRAVITY = true; vel = (0, 0, 0);
 		target = null; lastheard = null; hce_shotsLeft = 0; HCE_StopFireLoop();
-		if(HCE_HasSeat()) HCE_RideAnim('cd-passenger idle', true);
+		if(HCE_HasSeat()) HCE_RideAnim(hce_rideBench != "" ? hce_rideBench .. " idle" : "cd-passenger idle", true);
 		else HCE_Play(HCE_A_IDLE, true, true, 4, true);
 	}
 	int HCE_RideOut()
 	{
 		if(hce_ride != 1 || !HCE_HasSeat()) return 0;
-		hce_ride = 2; hce_rideWay = random[HCERide](0, 1);
+		hce_ride = 2;
+		if(hce_rideBench != "")
+		{	// (a Pelican bench's: Halo CE's frames, at 30 a second)
+			HCE_RideAnim(hce_rideBench .. " exit", false);
+			int pf = hce_rideBench == "p-riderlf" ? 22 : hce_rideBench == "p-riderlm" ? 40 : hce_rideBench == "p-riderrf" ? 30 : 46;
+			return (pf - 1) * 35 / 30;
+		}
+		hce_rideWay = random[HCERide](0, 1);
 		HCE_RideAnim(hce_rideWay ? 'cd-passenger exit%1' : 'cd-passenger exit%0', false);
 		Name f = HCE_RideBody();
 		// (Halo CE's frames, at 30 a second)
@@ -8007,6 +8026,12 @@ class HaloDoom_EnemyBase : Actor abstract
 	vector3 HCE_RideExit()
 	{
 		Name f = HCE_RideBody(); bool w = hce_rideWay != 0;
+		// (the Pelican's benches: up, and along the bay to its door. Sat, its hips are at the seat; stood at the door they
+		// are a standing Marine's 0.34 over its feet, which is where the body is)
+		if(hce_rideBench == "p-riderlf") return (0.12, -0.38, -0.36);
+		if(hce_rideBench == "p-riderlm") return (0.43, -1.10, -0.42);
+		if(hce_rideBench == "p-riderrf") return (0.25, 0.56, -0.39);
+		if(hce_rideBench == "p-riderrm") return (0.40, 1.00, -0.38);
 		if(f == 'Elite') return w ? (1.37, -0.05, -1.22) : (1.42, -0.02, -1.29);
 		if(f == 'Grunt') return w ? (1.42, -0.01, -1.04) : (1.34, 0, -0.97);
 		if(f == 'Hunter') return w ? (0.07, -1.21, -1.31) : (-0.01, -1.20, -1.24);

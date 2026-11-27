@@ -599,7 +599,8 @@ class HCE_RideService : Service
 	override String GetString(String request, String stringArg, int intArg, double doubleArg, Object objectArg, Name nameArg)
 	{
 		let e = HaloDoom_EnemyBase(objectArg); if(!e) return "";
-		if(request ~== "seat") { e.HCE_RideSeat(); return String.Format("%d %d", int(e.HCE_RideTurn()), e.HCE_HasSeat()); }
+		// (stringArg: the seat's name; none: the Spirit's bay)
+		if(request ~== "seat") { e.HCE_RideSeat(stringArg); return String.Format("%d %d", int(e.HCE_RideTurn()), e.HCE_HasSeat()); }
 		if(request ~== "out")
 		{
 			int t = e.HCE_RideOut(); if(t <= 0) return "0 0 0 0";
